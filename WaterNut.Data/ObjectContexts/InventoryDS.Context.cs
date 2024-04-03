@@ -63,6 +63,8 @@ namespace InventoryDS.Business.Entities
      
         public DbSet<InventoryItemSource> InventoryItemSources { get; set; }
      
+        public DbSet<InventoryItems_DoNotMap> InventoryItems_DoNotMap { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -82,6 +84,8 @@ namespace InventoryDS.Business.Entities
             modelBuilder.Configurations.Add(new InventorySourceMap());
          
             modelBuilder.Configurations.Add(new InventoryItemSourceMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItems_DoNotMapMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

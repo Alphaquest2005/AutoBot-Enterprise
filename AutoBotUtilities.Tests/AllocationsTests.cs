@@ -170,12 +170,16 @@ namespace AutoBotUtilities.Tests
         [TestCase("18130-05GTUR", "3/1/2023", 60)] //infinite loop
         [TestCase("0532-1168", "3/1/2023", 60)]
         [TestCase("14002-85LGMUL", "3/1/2023", 60)]
+        [TestCase("0424-09-16KHT", "3/1/2023", 60)]
 
         ////////// IWW
         
         [TestCase("MM07722", "3/1/2023", 60)]
         [TestCase("ML33451", "3/1/2023", 60)] // not marking overallocations
         [TestCase("SA00363", "3/1/2023", 60)] // not marking overallocations
+        [TestCase("FJ41051431", "3/1/2023", 60)] // not allocating all im7 7400-WSC
+        [TestCase("E7763322", "3/1/2023", 60)]  // return marked as early sales
+        [TestCase("HF01360", "3/1/2023", 60)]  //return and 2 sales not labeled properly
 
         ////////////Rouge
         [TestCase("82453688", "3/1/2023", 60)] // not allocating
@@ -183,6 +187,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("68400", "3/1/2023", 60)] 
         [TestCase("004211", "3/1/2023", 60)]
         [TestCase("65100000000", "3/1/2023", 60)]// over allocation issue
+        [TestCase("LC9935007", "3/1/2023", 60)] // incomplete allocations
+
 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
@@ -192,6 +198,7 @@ namespace AutoBotUtilities.Tests
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if(itemSets == null || !itemSets.Any()) throw new ApplicationException("No Item Found");
                 if(string.IsNullOrEmpty(itemNumber) )
                     AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
                 else

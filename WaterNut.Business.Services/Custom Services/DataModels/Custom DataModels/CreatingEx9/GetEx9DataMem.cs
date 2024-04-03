@@ -43,6 +43,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var res = new List<EX9Allocations>();
             filterExpression = CreateFilterExpression(filterExpression);
 
+            //var test = tres.Where(x => x.AllocationId == 4597648).ToList();
+
             var rres = tres
                 .Where(filterExpression)
                 .ToList();

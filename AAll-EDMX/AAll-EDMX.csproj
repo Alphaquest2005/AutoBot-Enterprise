@@ -496,6 +496,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\PackageType.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItemAlia.cs
+..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItems_DoNotMap.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItemSource.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventorySource.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\TariffCategory.cs
@@ -941,6 +942,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItems_DoNotMap.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemSource.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventorySource.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
@@ -1395,6 +1397,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\PackageType.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItemAlia.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItems_DoNotMap.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItemSource.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventorySource.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\TariffCategory.cs
@@ -1826,6 +1829,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\PackageType.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItemAlia.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItems_DoNotMap.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItemSource.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventorySource.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\TariffCategory.cs
@@ -2257,6 +2261,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\PackageType.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItemAlia.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItems_DoNotMap.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItemSource.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventorySource.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\TariffCategory.cs
@@ -2688,6 +2693,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\PackageType.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItemAlia.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItems_DoNotMap.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItemSource.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventorySource.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\TariffCategory.cs
@@ -4408,6 +4414,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItems_DoNotMap.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemSource.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventorySource.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
@@ -5077,6 +5084,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IInventoryItemsExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IPackageTypeService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItemAliaService.cs
+..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItems_DoNotMapService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItemService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItemSourceService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventorySourceService.cs
@@ -5508,6 +5516,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataQS\InventoryItemsExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\PackageTypeService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventoryItemAliaService.cs
+..\WaterNut.Business.Services\Services\InventoryDS\InventoryItems_DoNotMapService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventoryItemService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventoryItemSourceService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventorySourceService.cs

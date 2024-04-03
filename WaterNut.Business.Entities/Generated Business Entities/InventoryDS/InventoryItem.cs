@@ -155,6 +155,8 @@ namespace InventoryDS.Business.Entities
         public List<InventoryItemSource> InventoryItemSources { get; set; }
         [DataMember]
         public List<InventoryItemAlia> AliasInventoryItem { get; set; }
+        [DataMember]
+        public InventoryItems_DoNotMap InventoryItems_DoNotMap { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

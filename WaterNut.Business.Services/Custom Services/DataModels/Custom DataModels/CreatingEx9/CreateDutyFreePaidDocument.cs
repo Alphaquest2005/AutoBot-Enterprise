@@ -737,7 +737,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (Math.Round( totalSalesAll, 2) <
                         Math.Round((totalPiAll  + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))//
                     {
-                        var availibleQty = Math.Round(totalSalesAll, 2) - (Math.Round(totalPiAll, 2)+ docPi);
+                        var availibleQty = totalSalesAll < totalPiAll 
+                                                    ? Math.Round(totalPiAll, 2) - (Math.Round(totalSalesAll, 2) + docPi) // in event of over exwarehousing
+                                                    : Math.Round(totalSalesAll, 2) - (Math.Round(totalPiAll, 2)+ docPi);
                         if (availibleQty <= 0)
                         {
                             UpdateXStatus(mypod.Allocations,
@@ -789,14 +791,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 }
 
 
-                // todo: ensure allocations are marked for investigation
-                double qty = mypod.EntlnData.Quantity;
-                if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
-                {
-                    UpdateXStatus(mypod.Allocations,
-                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}",ref sql);
-                    return (0, sql);
-                }
+                //took this out because qtyallocated is not the same as xQuantity
+                //double qty = mypod.EntlnData.Quantity;
+                //if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
+                //{
+                //    UpdateXStatus(mypod.Allocations,
+                //        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}",ref sql);
+                //    return (0, sql);
+                //}
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
@@ -829,7 +831,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       Total Historic PI: {totalPiHistoric}
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
-                        var availibleQty = totalSalesHistoric - (totalPiHistoric + docDFPpi);
+                        var availibleQty = totalSalesHistoric < totalPiHistoric 
+                                    ? totalPiHistoric - ( totalSalesHistoric+ docDFPpi) // in event of over exwarehousing
+                                    : totalSalesHistoric - (totalPiHistoric + docDFPpi);
                         if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic",ref sql);
                         if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                         {
@@ -903,8 +907,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = itemSalesHistoric - (itemPiHistoric + itemDocPi);
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic",ref sql);
-                        if (mypod.EntlnData.Quantity == 0)
+                        if (availibleQty > 0) Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic",ref sql);
+                        if (mypod.EntlnData.Quantity == 0 || availibleQty < 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Item Historical Check:: Item Historic Sales:{Math.Round(itemSalesHistoric, 2)}
@@ -1317,42 +1321,48 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var rejects = new List<AsycudaSalesAllocations>();
                 for (int i = totalallocations; i <= totalallocations; i--)
                 {
-                    var remainingSalesQty = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
-                    
+                    var remainingSalesQty = mypod.Allocations.Take(i)
+                        .Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
+
                     //if (remainingSalesQty > availibleQty && totalallocations > 1)
                     //{
-                    if (i <= 0  && remainingSalesQty <= 0)//&& rejects.Any()
+                    if (i <= 0 && remainingSalesQty <= 0) //&& rejects.Any()
                     {
-                         UpdateXStatus(rejects,
+                        UpdateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}", ref sql);
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); 
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                         return;
                     }
-                    var ssa = mypod.Allocations.ElementAt(i-1);
+
+                    var ssa = mypod.Allocations.ElementAt(i - 1);
                     var piData = ssa.PIData.Sum(x => x.xQuantity) ?? 0;
-                    
+
                     var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
                     //if (piData == 0 && totalPiAll > 0) // put this becase Iww - pCnumber 43681-129 && xCnumber 56932-128... exout in 2022 but no pi data considered now have to double check if another check could fix this total pi check
                     //{
-                       // piData = totalPiAll;
-                       // nr -= totalPiAll;// need to also update this figure
-                        
+                    // piData = totalPiAll;
+                    // nr -= totalPiAll;// need to also update this figure
+
                     //}
 
-                    if (nr >= availibleQty && !(piData == 0 && totalPiAll > 0) )//put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
+                    if (nr >= availibleQty &&
+                        !(piData == 0 &&
+                          totalPiAll >
+                          0)) //put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
                     {
                         //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
                         //ssa.QtyAllocated = availibleQty; // took out because over allocating in multiple allocations...
-                                                //// disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
-                        
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
+                        //// disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
+
+                        mypod.EntlnData.Quantity =
+                            availibleQty; //mypod.Allocations.Sum(x => x.QtyAllocated); ; // changed to availablQty to fix overexwarehousing C#31256 line 114... 
                         break;
                     }
 
                     if (nr == availibleQty // put this because i can't figure out what is best solution
-                        && (piData == 0 && totalPiAll > 0))// this condition negates one on top
+                        && (piData == 0 && totalPiAll > 0)) // this condition negates one on top
                     {
                         //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
                         //foreach (var allocation in mypod.Allocations)
@@ -1360,12 +1370,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //    ssa.QtyAllocated = availibleQty;
                         //}
                         //ssa.QtyAllocated = availibleQty; // disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
+                        ;
                         break;
                     }
 
-                    if ((nr < availibleQty && (nr + (ssa.QtyAllocated- piData)) >= availibleQty)
-                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll)  <= 0))//Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0 cuz always false
+                    if ((nr < availibleQty && (nr + (ssa.QtyAllocated - piData)) >= availibleQty)
+                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0)
+                        || (nr >= availibleQty &&
+                            ssa.QtyAllocated >
+                            availibleQty)) //Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0 cuz always false
                     {
                         //if (availibleQty - nr <= 0)
                         //{
@@ -1375,25 +1389,46 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //        "availibleQty - nr <= 0- find out why this is lest than zero cuz i changed the line above to remove abs");
                         //}
 
-                        ssa.QtyAllocated = availibleQty - nr;
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
-                        break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
+                        //ssa.QtyAllocated = ssa.QtyAllocated - availibleQty; -- took out not seeing logic
+
+
+
+                        mypod.EntlnData.Quantity = availibleQty; //mypod.Allocations.Sum(x => x.QtyAllocated);
+
+
+                        break; //put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
+
                     }
                     else
                     {
-                        mypod.Allocations.RemoveAt(i-1);
+                        if ((ssa.QtyAllocated > nr - availibleQty)) // add check to allow partial ex-amounts to remain in set eg trying to take 7 out of 8 but allocation is 2 i will leave it in set
+                        {
+                            mypod.EntlnData.Quantity = availibleQty;
+                            break;
+                        }
+
+                        
+
+
+                        mypod.Allocations.RemoveAt(i - 1);
                         rejects.Add(ssa);
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                     }
-                   
+
                 }
 
-                UpdateXStatus( rejects,
-                    $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+
+
+                if (rejects.Any())
+                {
+                    UpdateXStatus(rejects,
+                        $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}", ref sql);
-                mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
-               
+                }
+
+                //mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
+
             }
             catch (Exception e)
             {

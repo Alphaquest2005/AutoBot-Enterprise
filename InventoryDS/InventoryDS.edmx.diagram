@@ -11,7 +11,7 @@
         <EntityTypeShape EntityType="Model.TariffSupUnitLkp" Width="2.125" PointX="2.125" PointY="5.75" IsExpanded="true" />
         <AssociationConnector Association="Model.FK_InventoryItems_TariffCodes" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_TariffCodes_TariffCategory" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="Model.InventoryItemAlia" Width="2.5" PointX="10.625" PointY="2.25" />
+        <EntityTypeShape EntityType="Model.InventoryItemAlia" Width="2.5" PointX="10.875" PointY="0.5" />
         <EntityTypeShape EntityType="Model.TariffCategoryCodeSuppUnit" Width="2.25" PointX="5.25" PointY="6" />
         <AssociationConnector Association="Model.FK_TariffCategoryCodeSuppUnit_TariffCategory" />
         <AssociationConnector Association="Model.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" />
@@ -21,6 +21,8 @@
         <AssociationConnector Association="Model.InventorySourceInventoryItemSource1" />
         <AssociationConnector Association="Model.FK_InventoryItemSource_InventoryItems" />
         <AssociationConnector Association="Model.FK_InventoryItemAlias_InventoryItems11" />
+        <EntityTypeShape EntityType="Model.InventoryItems_DoNotMap" Width="2.25" PointX="12.125" PointY="3" />
+        <AssociationConnector Association="Model.FK_InventoryItems_DoNotMap_InventoryItems" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

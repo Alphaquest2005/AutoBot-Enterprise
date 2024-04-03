@@ -1563,7 +1563,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         private void SetEffectiveAssessmentDate(DocumentCT documentCt, string commentsFreeText)
         {
             if (string.IsNullOrEmpty(commentsFreeText) || !commentsFreeText.Contains("EffectiveAssessmentDate:")) return;
-            var strlst = commentsFreeText.Split(new string[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var strlst = commentsFreeText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var res = strlst.First(x => x.Contains("EffectiveAssessmentDate:"));
             documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = FileTypeManager.ImportAnyDate(res.Replace("EffectiveAssessmentDate:",""));
         }

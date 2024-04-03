@@ -26,6 +26,12 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="InventoryItems-DoNotMap">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="InventoryItemSource">
           <Key>
             <PropertyRef Name="Id" />
@@ -124,6 +130,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InventoryItems-DoNotMap_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItems-DoNotMap" Type="Self.InventoryItems-DoNotMap" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItems-DoNotMap">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryItemSource_InventoryItems">
           <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -195,6 +215,7 @@
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems-DoNotMap" EntityType="Self.InventoryItems-DoNotMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItemSource" EntityType="Self.InventoryItemSource" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventorySources" EntityType="Self.InventorySources" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
@@ -212,6 +233,10 @@
           <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="Self.FK_InventoryItems_TariffCodes">
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="InventoryItems" EntitySet="InventoryItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItems-DoNotMap_InventoryItems" Association="Self.FK_InventoryItems-DoNotMap_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItems-DoNotMap" EntitySet="InventoryItems-DoNotMap" />
           </AssociationSet>
           <AssociationSet Name="FK_InventoryItemSource_InventoryItems" Association="Self.FK_InventoryItemSource_InventoryItems">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
@@ -253,7 +278,8 @@
           <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
           <NavigationProperty Name="InventoryItemSources" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemSource" />
           <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AliasInventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems11" FromRole="InventoryItem" ToRole="InventoryItemAlia" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
+          <NavigationProperty Name="AliasInventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems11" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
+          <NavigationProperty Name="InventoryItems_DoNotMap" Relationship="Model.FK_InventoryItems_DoNotMap_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItems_DoNotMap" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -361,6 +387,11 @@
           <AssociationSet Name="FK_InventoryItemAlias_InventoryItems11" Association="Model.FK_InventoryItemAlias_InventoryItems11">
             <End Role="InventoryItem" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlia" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
+          <EntitySet Name="InventoryItems_DoNotMap" EntityType="Model.InventoryItems_DoNotMap" />
+          <AssociationSet Name="FK_InventoryItems_DoNotMap_InventoryItems" Association="Model.FK_InventoryItems_DoNotMap_InventoryItems">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="InventoryItems_DoNotMap" EntitySet="InventoryItems_DoNotMap" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="InventoryItemAlia">
@@ -481,6 +512,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InventoryItems_DoNotMap">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItem" Relationship="Model.FK_InventoryItems_DoNotMap_InventoryItems" FromRole="InventoryItems_DoNotMap" ToRole="InventoryItem" />
+        </EntityType>
+        <Association Name="FK_InventoryItems_DoNotMap_InventoryItems">
+          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.InventoryItems_DoNotMap" Role="InventoryItems_DoNotMap" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItems_DoNotMap">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -573,6 +625,13 @@
                 <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
                 <ScalarProperty Name="InventorySourceId" ColumnName="InventorySourceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItems_DoNotMap">
+            <EntityTypeMapping TypeName="Model.InventoryItems_DoNotMap">
+              <MappingFragment StoreEntitySet="InventoryItems-DoNotMap">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

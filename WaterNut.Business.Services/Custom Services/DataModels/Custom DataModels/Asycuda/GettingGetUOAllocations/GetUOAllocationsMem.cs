@@ -48,7 +48,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .Where(x => x.EntryDataDetails.IsReconciled != true)
                     .Where(x => x != null && x.PreviousDocumentItem != null)
                     .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
-                    .OrderBy(x => x.AllocationId)
+                    .OrderByDescending(x => x.AllocationId)
                     .ToList();
 
                

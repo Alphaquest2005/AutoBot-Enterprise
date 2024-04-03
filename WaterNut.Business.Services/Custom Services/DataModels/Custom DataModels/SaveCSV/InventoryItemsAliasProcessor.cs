@@ -91,7 +91,17 @@ namespace WaterNut.DataSpace
         private InventoryItem GetInventoryItem(RawEntryDataValue.InventoryItemsValue e)
         {
             var inventoryItem = new GetInventoryItemSelector().Execute((string)e.ItemNumber, (string) e.Description);
-
+            var aliasItems = e.ItemAlias == null ? null : new GetInventoryItemSelector().Execute((string)e.ItemAlias, (string)e.Description);
+            if (aliasItems != null)
+            {
+                if (aliasItems.InventoryItems_DoNotMap != null) return inventoryItem;
+                inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                {
+                    InventoryItemId = inventoryItem.Id,
+                    AliasItemId = aliasItems.Id,
+                });
+                return inventoryItem;
+            }
             if (inventoryItem.InventoryItemAlias.FirstOrDefault(x =>
                     x.AliasItem?.ItemNumber == e.ItemAlias) ==
                 null)

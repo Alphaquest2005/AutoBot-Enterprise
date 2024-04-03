@@ -756,6 +756,7 @@
     <Compile Include="Contracts\InventoryDS\IInventoryItemAliaService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemSourceService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItems_DoNotMapService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventorySourceService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCategoryCodeSuppUnitService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCategoryService.cs" />
@@ -1069,6 +1070,7 @@
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
     <Compile Include="Services\EntryDataDS\SystemDocumentSetsService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItems_DoNotMapService.cs" />
     <Compile Include="Utils\AutoMatching\AutoMatchProcessorSingleSetBased.cs" />
     <Compile Include="Utils\AutoMatching\AutoMatchProcessorSetBased.cs" />
     <Compile Include="Utils\AutoMatching\AutoMatchProcessor.cs" />

@@ -350,13 +350,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                         try
                         {
                             folder = Path.GetDirectoryName(folder);
-                            var data = GetDocumentEntryData(doc.ASYCUDA_Id).Result.OrderBy(x => x.LineNumber);
-                            if (data != null)
+                            var data = GetDocumentEntryData(doc.ASYCUDA_Id).Result.OrderBy(x => x.LineNumber).ToList();
+                            if (data.Any())
                             {
                                 string path = Path.Combine(folder,
                                     !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
 
-                                s.dataToPrint = data.ToList();
+                                s.dataToPrint = data;
                                 s.SaveReport(path);
                                 new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, folder);
                             }

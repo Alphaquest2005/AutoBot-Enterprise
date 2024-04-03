@@ -521,6 +521,7 @@
     <Compile Include="Generated Business Entities\InventoryDS\InventoryItem.cs" />
     <Compile Include="Generated Business Entities\InventoryDS\InventoryItemAlia.cs" />
     <Compile Include="Generated Business Entities\InventoryDS\InventoryItemSource.cs" />
+    <Compile Include="Generated Business Entities\InventoryDS\InventoryItems_DoNotMap.cs" />
     <Compile Include="Generated Business Entities\InventoryDS\InventorySource.cs" />
     <Compile Include="Generated Business Entities\InventoryDS\TariffCategory.cs" />
     <Compile Include="Generated Business Entities\InventoryDS\TariffCategoryCodeSuppUnit.cs" />
@@ -953,6 +954,7 @@
     <Compile Include="Generated ChangeTracking Models\InventoryDS\InventoryItem.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryDS\InventoryItemAlia.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryDS\InventoryItemSource.cs" />
+    <Compile Include="Generated ChangeTracking Models\InventoryDS\InventoryItems_DoNotMap.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryDS\InventorySource.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryDS\TariffCategory.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryDS\TariffCategoryCodeSuppUnit.cs" />
@@ -1384,6 +1386,7 @@
     <Compile Include="Generated Constructors Models\InventoryDS\InventoryItem.cs" />
     <Compile Include="Generated Constructors Models\InventoryDS\InventoryItemAlia.cs" />
     <Compile Include="Generated Constructors Models\InventoryDS\InventoryItemSource.cs" />
+    <Compile Include="Generated Constructors Models\InventoryDS\InventoryItems_DoNotMap.cs" />
     <Compile Include="Generated Constructors Models\InventoryDS\InventorySource.cs" />
     <Compile Include="Generated Constructors Models\InventoryDS\TariffCategory.cs" />
     <Compile Include="Generated Constructors Models\InventoryDS\TariffCategoryCodeSuppUnit.cs" />
@@ -1815,6 +1818,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\InventoryItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\InventoryItemAlia.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\InventoryItemSource.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\InventoryItems_DoNotMap.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\InventorySource.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\TariffCategory.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryDS\TariffCategoryCodeSuppUnit.cs" />
@@ -2246,6 +2250,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\InventoryItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\InventoryItemAlia.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\InventoryItemSource.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\InventoryItems_DoNotMap.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\InventorySource.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\TariffCategory.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryDS\TariffCategoryCodeSuppUnit.cs" />
@@ -2687,6 +2692,7 @@
     <Compile Include="Generated Mappings\InventoryDS\InventoryItem.map.cs" />
     <Compile Include="Generated Mappings\InventoryDS\InventoryItemAlia.map.cs" />
     <Compile Include="Generated Mappings\InventoryDS\InventoryItemSource.map.cs" />
+    <Compile Include="Generated Mappings\InventoryDS\InventoryItems_DoNotMap.map.cs" />
     <Compile Include="Generated Mappings\InventoryDS\InventorySource.map.cs" />
     <Compile Include="Generated Mappings\InventoryDS\TariffCategory.map.cs" />
     <Compile Include="Generated Mappings\InventoryDS\TariffCategoryCodeSuppUnit.map.cs" />

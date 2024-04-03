@@ -150,22 +150,12 @@ namespace WaterNut.DataSpace
                 var saleitm = GetSaleEntries(saleslst, CurrentSalesItemIndex);
 
 
-                while (cAsycudaItm.QtyAllocated == Convert.ToDouble((double)cAsycudaItm.ItemQuantity))
-                {
-                    if (startAsycudaItemIndex + 1 < asycudaEntries.Count())
-                    {
-                        startAsycudaItemIndex += 1;
-                        cAsycudaItm = GetAsycudaEntriesWithItemNumber(asycudaEntries, startAsycudaItemIndex);
-                    }
-                    else
-                        break;
-                }
+                
 
 
                 for (var s = CurrentSalesItemIndex; s < saleslst.Count(); s++)
                 {
-                    var CurrentAsycudaItemIndex = startAsycudaItemIndex;// foreach sale start at beginning to search for possible qty to allocate
-
+                    
 
 
                     if (CurrentSalesItemIndex != s)
@@ -187,7 +177,20 @@ namespace WaterNut.DataSpace
                     var nextSalesQty = salesLst.ElementAt(salesItemIndex + 1>= salesLst.Count ? salesItemIndex: salesItemIndex+1).Quantity;
 
 
-                    if (saleitmQtyToallocate > 0 && CurrentAsycudaItemIndex == asycudaEntries.Count())
+                    while (Math.Abs(cAsycudaItm.QtyAllocated - Convert.ToDouble((double)cAsycudaItm.ItemQuantity )) < 0.0001 && saleitmQtyToallocate + nextSalesQty != 0)
+                    {
+                        if (startAsycudaItemIndex + 1 < asycudaEntries.Count())
+                        {
+                            startAsycudaItemIndex += 1;
+                            cAsycudaItm = GetAsycudaEntriesWithItemNumber(asycudaEntries, startAsycudaItemIndex);
+                        }
+                        else
+                            break;
+                    }
+                    var currentAsycudaItemIndex = startAsycudaItemIndex;// foreach sale start at beginning to search for possible qty to allocate
+
+
+                    if (saleitmQtyToallocate > 0 && currentAsycudaItemIndex == asycudaEntries.Count())
                     {
                         // over allocate to handle out of stock in case returns deal with it
                         await AllocateSaleItem(cAsycudaItm, saleitm, saleitmQtyToallocate, null)
@@ -198,33 +201,33 @@ namespace WaterNut.DataSpace
                     if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse &&
                         (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
                     {
-                        if (CurrentAsycudaItemIndex == 0 &&  (nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)))
+                        if (currentAsycudaItemIndex == 0 &&  (nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)))
                         {
                             await AddExceptionAllocation(saleitm, cAsycudaItm, "Early Sales" ).ConfigureAwait(false);
                             continue;
                         }
                     }
 
-                    for (var i = CurrentAsycudaItemIndex; i < asycudaEntries.Count(); i++)
+                    for (var i = currentAsycudaItemIndex; i < asycudaEntries.Count(); i++)
                     {
                         // reset in event earlier dat
                         if (saleitmQtyToallocate == 0) break;
-                        if (CurrentAsycudaItemIndex != i || GetAsycudaEntriesWithItemNumber(asycudaEntries, CurrentAsycudaItemIndex).Item_Id != cAsycudaItm.Item_Id)
+                        if (currentAsycudaItemIndex != i || GetAsycudaEntriesWithItemNumber(asycudaEntries, currentAsycudaItemIndex).Item_Id != cAsycudaItm.Item_Id)
                         {
                             if (i < 0) i = 0;
-                            CurrentAsycudaItemIndex = i;
-                            cAsycudaItm = GetAsycudaEntriesWithItemNumber(asycudaEntries, CurrentAsycudaItemIndex);
+                            currentAsycudaItemIndex = i;
+                            cAsycudaItm = GetAsycudaEntriesWithItemNumber(asycudaEntries, currentAsycudaItemIndex);
 
                         }
-                        await Task.Run(() => Task.Run(() => Debug.WriteLine($"Processing {saleitm.ItemNumber} - {currentSetNo} of {setNo} with {saleslst.Count} Sales: {s} of {saleslst.Count} : {CurrentAsycudaItemIndex} of {asycudaEntries.Count}"))).ConfigureAwait(false);
+                        await Task.Run(() => Task.Run(() => Debug.WriteLine($"Processing {saleitm.ItemNumber} - {currentSetNo} of {setNo} with {saleslst.Count} Sales: {s} of {saleslst.Count} : {currentAsycudaItemIndex} of {asycudaEntries.Count}"))).ConfigureAwait(false);
 
 
                         var asycudaItmQtyToAllocate = GetAsycudaItmQtyToAllocate(cAsycudaItm, saleitm, out var subitm);
 
 
-                        if (asycudaItmQtyToAllocate == 0 && saleitmQtyToallocate > 0)
+                        if (asycudaItmQtyToAllocate == 0 && (saleitmQtyToallocate > 0 && saleitmQtyToallocate + nextSalesQty != 0) && currentAsycudaItemIndex + 1 < asycudaEntries.Count())
                         {
-                            CurrentAsycudaItemIndex += 1;
+                            currentAsycudaItemIndex += 1;
                             continue;
                         }
 
@@ -248,7 +251,7 @@ namespace WaterNut.DataSpace
                        
 
                         if (saleitmQtyToallocate < 0 
-                            && ((saleitmQtyToallocate + prevSalesQty == 0 && CurrentAsycudaItemIndex != 0) || saleitmQtyToallocate + nextSalesQty >0)
+                            && ((saleitmQtyToallocate + prevSalesQty == 0 && currentAsycudaItemIndex != 0) || saleitmQtyToallocate + nextSalesQty >0)
                             && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
                             var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleslst, saleitm, i,salesSet);
@@ -264,7 +267,7 @@ namespace WaterNut.DataSpace
                         }
                         
                         if (asycudaItmQtyToAllocate < 0 &&
-                            (CurrentAsycudaItemIndex != asycudaEntries.Count - 1 && asycudaEntries[i + 1].AsycudaDocument.AssessmentDate <= saleitm.Sales.EntryDataDate))
+                            (currentAsycudaItemIndex != asycudaEntries.Count - 1 && asycudaEntries[i + 1].AsycudaDocument.AssessmentDate <= saleitm.Sales.EntryDataDate))
                         {
                             if (saleitmQtyToallocate > 0) continue;
                         } 
@@ -273,7 +276,7 @@ namespace WaterNut.DataSpace
 
                         if (cAsycudaItm.QtyAllocated == 0 && saleitmQtyToallocate < 0 && CurrentSalesItemIndex > 0)
                         {
-                            if (CurrentAsycudaItemIndex == 0)
+                            if (currentAsycudaItemIndex == 0)
                             {
                                 await AddExceptionAllocation(saleitm, "Returned More than Sold").ConfigureAwait(false);
                                 break;
@@ -283,14 +286,14 @@ namespace WaterNut.DataSpace
                         }
                         else if (onlyNewAllocations && cAsycudaItm.ItemQuantity <= cAsycudaItm.PiQuantity)
                         {
-                            CurrentAsycudaItemIndex += 1;
+                            currentAsycudaItemIndex += 1;
                             continue;
                         }
                         else
                         {
                             if ((asycudaItmQtyToAllocate > 0 && asycudaItmQtyToAllocate >= saleitmQtyToallocate) 
                                 || (saleitmQtyToallocate + nextSalesQty == 0 || saleitmQtyToallocate + prevSalesQty == 0)
-                                || CurrentAsycudaItemIndex == asycudaEntries.Count - 1)
+                                || currentAsycudaItemIndex == asycudaEntries.Count - 1)
                             {
                                 var ramt = await AllocateSaleItem(cAsycudaItm, saleitm, saleitmQtyToallocate, subitm)
                                     .ConfigureAwait(false);
@@ -298,7 +301,7 @@ namespace WaterNut.DataSpace
 
                                 if (GetAsycudaItmQtyToAllocate(cAsycudaItm, saleitm, out subitm) == 0 && ramt != 0)
                                 {
-                                    CurrentAsycudaItemIndex += 1;
+                                    currentAsycudaItemIndex += 1;
                                     continue;
                                 }
 
@@ -327,7 +330,7 @@ namespace WaterNut.DataSpace
                                     saleitmQtyToallocate += asycudaItmQtyToAllocate * -1;
                                     if (GetAsycudaItmQtyToAllocate(cAsycudaItm, saleitm, out subitm) == 0)
                                     {
-                                        CurrentAsycudaItemIndex += 1;
+                                        currentAsycudaItemIndex += 1;
                                     }
                                 }
                                 else
@@ -392,7 +395,7 @@ namespace WaterNut.DataSpace
 
         private async Task AddExceptionAllocation(EntryDataDetails saleitm,  string error)
         {
-            if (saleitm.AsycudaSalesAllocations.FirstOrDefault(x => x.Status == error) == null)
+            if (saleitm.AsycudaSalesAllocations.FirstOrDefault(x => x.Status == error && error != null) == null)
             {
                 var ssa = new AsycudaSalesAllocations(true)
                 {

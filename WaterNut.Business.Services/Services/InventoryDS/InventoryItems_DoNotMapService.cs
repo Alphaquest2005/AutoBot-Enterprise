@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace InventoryDS.Business.Services
 {
-   [Export (typeof(IInventoryItemService))]
+   [Export (typeof(IInventoryItems_DoNotMapService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class InventoryItemService : IInventoryItemService, IDisposable
+    public partial class InventoryItems_DoNotMapService : IInventoryItems_DoNotMapService, IDisposable
     {
         //private readonly InventoryDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public InventoryItemService()
+        public InventoryItems_DoNotMapService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace InventoryDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItems(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMap(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace InventoryDS.Business.Services
                   using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<InventoryItem> entities = set.AsNoTracking().ToList();
+                    IEnumerable<InventoryItems_DoNotMap> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,16 +97,16 @@ namespace InventoryDS.Business.Services
         }
 
 
-        public async Task<InventoryItem> GetInventoryItemByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItems_DoNotMap> GetInventoryItems_DoNotMapByKey(string InventoryItemId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(InventoryItemId))return null; 
               using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(InventoryItemId);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItem entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
+                InventoryItems_DoNotMap entity = set.AsNoTracking().SingleOrDefault(x => x.InventoryItemId == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace InventoryDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMapByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems_DoNotMap>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace InventoryDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMapByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItem>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItems_DoNotMap>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace InventoryDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpressionNav(string exp,
+		public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMapByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace InventoryDS.Business.Services
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems_DoNotMap>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,34 +229,10 @@ namespace InventoryDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
+                            case "InventoryItem":
                                 return
                                     await
-                                        GetWhere<TariffCode>(dbContext, exp, itm.Value, "InventoryItems", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAlias":
-                                return
-                                    await
-                                        GetWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemSources":
-                                return
-                                    await
-                                        GetWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AliasInventoryItem":
-                                return
-                                    await
-                                        GetWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItems_DoNotMap":
-                                return
-                                    await
-                                        GetWhere<InventoryItems_DoNotMap>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany", includesLst)
+                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItems_DoNotMap", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -284,17 +260,17 @@ namespace InventoryDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByBatch(string exp,
+        public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMapByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItem>>();
+                var res = new ConcurrentQueue<List<InventoryItems_DoNotMap>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems_DoNotMap>();
 
 
                 var batchSize = 500;
@@ -315,14 +291,14 @@ namespace InventoryDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItem> dset;
+                                IQueryable<InventoryItems_DoNotMap> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.InventoryItemId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -359,17 +335,17 @@ namespace InventoryDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<InventoryItems_DoNotMap>> GetInventoryItems_DoNotMapByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItem>>();
+                var res = new ConcurrentQueue<List<InventoryItems_DoNotMap>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItem>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItems_DoNotMap>();
 
 
                 var batchSize = 500;
@@ -390,15 +366,15 @@ namespace InventoryDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItem> dset;
+                                IQueryable<InventoryItems_DoNotMap> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -435,13 +411,13 @@ namespace InventoryDS.Business.Services
         }
 
 
-        public async Task<InventoryItem> UpdateInventoryItem(InventoryItem entity)
+        public async Task<InventoryItems_DoNotMap> UpdateInventoryItems_DoNotMap(InventoryItems_DoNotMap entity)
         { 
             using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (InventoryItem) entity;
+                     var res = (InventoryItems_DoNotMap) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -508,14 +484,14 @@ namespace InventoryDS.Business.Services
            return entity;
         }
 
-        public async Task<InventoryItem> CreateInventoryItem(InventoryItem entity)
+        public async Task<InventoryItems_DoNotMap> CreateInventoryItems_DoNotMap(InventoryItems_DoNotMap entity)
         {
             try
             {
-                var res = (InventoryItem) entity;
+                var res = (InventoryItems_DoNotMap) entity;
               using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
               {
-                dbContext.InventoryItems.Add(res);
+                dbContext.InventoryItems_DoNotMap.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -535,20 +511,20 @@ namespace InventoryDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItem(string Id)
+        public async Task<bool> DeleteInventoryItems_DoNotMap(string InventoryItemId)
         {
             try
             {
               using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                InventoryItem entity = dbContext.InventoryItems
-													.SingleOrDefault(x => x.Id == i);
+                var i = Convert.ToInt32(InventoryItemId);
+                InventoryItems_DoNotMap entity = dbContext.InventoryItems_DoNotMap
+													.SingleOrDefault(x => x.InventoryItemId == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.InventoryItems.Attach(entity);
-                    dbContext.InventoryItems.Remove(entity);
+                    dbContext.InventoryItems_DoNotMap.Attach(entity);
+                    dbContext.InventoryItems_DoNotMap.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -567,19 +543,19 @@ namespace InventoryDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedInventoryItem(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedInventoryItems_DoNotMap(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing InventoryItem", lst.Count());
+                StatusModel.StartStatusUpdate("Removing InventoryItems_DoNotMap", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new InventoryItemService())
+                    using (var ctx = new InventoryItems_DoNotMapService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteInventoryItem(item).Wait();
+                            ctx.DeleteInventoryItems_DoNotMap(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -614,7 +590,7 @@ namespace InventoryDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<InventoryItem>)dbContext.InventoryItems; 
+                    var set = (IQueryable<InventoryItems_DoNotMap>)dbContext.InventoryItems_DoNotMap; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -650,14 +626,14 @@ namespace InventoryDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.InventoryItems
+                        return dbContext.InventoryItems_DoNotMap
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.InventoryItems
+                        return dbContext.InventoryItems_DoNotMap
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -678,19 +654,19 @@ namespace InventoryDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<InventoryItem>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<InventoryItems_DoNotMap>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems_DoNotMap>();
                     if (exp == "All")
                     {
-                        return dbContext.InventoryItems
+                        return dbContext.InventoryItems_DoNotMap
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -698,10 +674,10 @@ namespace InventoryDS.Business.Services
                     else
                     {
                         
-                        return dbContext.InventoryItems
+                        return dbContext.InventoryItems_DoNotMap
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -732,7 +708,7 @@ namespace InventoryDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.InventoryItems
+                        return dbContext.InventoryItems_DoNotMap
 										.AsNoTracking()
                                         .Count();
                     }
@@ -740,24 +716,12 @@ namespace InventoryDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
-                                return await CountWhere<TariffCode>(dbContext, exp, itm.Value, "InventoryItems", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAlias":
-                                return await CountWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemSources":
-                                return await CountWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AliasInventoryItem":
-                                return await CountWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItems_DoNotMap":
-                                return await CountWhere<InventoryItems_DoNotMap>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+                            case "InventoryItem":
+                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItems_DoNotMap", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return dbContext.InventoryItems_DoNotMap.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -798,10 +762,10 @@ namespace InventoryDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InventoryItemId")
                 .Count();
 			}
 			catch (Exception)
@@ -818,10 +782,10 @@ namespace InventoryDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InventoryItemId")
                 .Count();
 			}
 			catch (Exception)
@@ -831,7 +795,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<InventoryItem>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<InventoryItems_DoNotMap>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -839,7 +803,7 @@ namespace InventoryDS.Business.Services
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItem>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItems_DoNotMap>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -847,7 +811,7 @@ namespace InventoryDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.InventoryItemId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -857,34 +821,10 @@ namespace InventoryDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
+                            case "InventoryItem":
                                 return
                                     await
-                                        LoadRangeWhere<TariffCode>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAlias":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemAlia>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemSources":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemSource>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AliasInventoryItem":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemAlia>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItems_DoNotMap":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItems_DoNotMap>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems_DoNotMap", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -893,10 +833,10 @@ namespace InventoryDS.Business.Services
 						}
 
                     }
-                    return set//dbContext.InventoryItems
+                    return set//dbContext.InventoryItems_DoNotMap
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
+								.OrderBy(y => y.InventoryItemId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -919,7 +859,7 @@ namespace InventoryDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItems_DoNotMap>> LoadRangeWhere<T>(int startIndex, int count,
             InventoryDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -934,7 +874,7 @@ namespace InventoryDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItems_DoNotMap>> LoadRangeSelectMany<T>(int startIndex, int count,
             InventoryDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -942,14 +882,14 @@ namespace InventoryDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>();
+                .SelectMany(navProp).OfType<InventoryItems_DoNotMap>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -962,7 +902,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItems_DoNotMap>> LoadRangeSelect<T>(int startIndex, int count,
             InventoryDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -970,14 +910,14 @@ namespace InventoryDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>();
+                .Select(navProp).OfType<InventoryItems_DoNotMap>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -990,7 +930,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<InventoryItem>> GetWhere<T>(InventoryDSContext dbContext,
+        private static async Task<IEnumerable<InventoryItems_DoNotMap>> GetWhere<T>(InventoryDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1014,7 +954,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> GetWhereSelectMany<T>(InventoryDSContext dbContext,
+		private static async Task<IEnumerable<InventoryItems_DoNotMap>> GetWhereSelectMany<T>(InventoryDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1025,17 +965,17 @@ namespace InventoryDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<InventoryItem>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<InventoryItems_DoNotMap>()
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<InventoryItem>)dbContext.Set<T>()
+			var set = (DbQuery<InventoryItems_DoNotMap>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1049,7 +989,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> GetWhereSelect<T>(InventoryDSContext dbContext,
+		private static async Task<IEnumerable<InventoryItems_DoNotMap>> GetWhereSelect<T>(InventoryDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1060,17 +1000,17 @@ namespace InventoryDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<InventoryItem>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<InventoryItems_DoNotMap>()
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<InventoryItem>)dbContext.Set<T>()
+			var set = (DbQuery<InventoryItems_DoNotMap>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1084,38 +1024,7 @@ namespace InventoryDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<InventoryItem>> GetInventoryItemByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<InventoryItem> entities = set//dbContext.InventoryItems
-                                                    // .Include(x => x.InventoryItemAlias)									  
-                                                    // .Include(x => x.InventoryItemSources)									  
-                                                    // .Include(x => x.AliasInventoryItem)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1127,11 +1036,11 @@ namespace InventoryDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.InventoryItems_DoNotMap.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.InventoryItems_DoNotMap.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1159,10 +1068,10 @@ namespace InventoryDS.Business.Services
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.InventoryItems.Any()) return 0;
+                    if (!dbContext.InventoryItems_DoNotMap.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.InventoryItems
+                        return Convert.ToDecimal(dbContext.InventoryItems_DoNotMap
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1170,24 +1079,12 @@ namespace InventoryDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
-                                return await SumWhere<TariffCode>(dbContext, exp, itm.Value, "InventoryItems", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAlias":
-                                return await SumWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemSources":
-                                return await SumWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AliasInventoryItem":
-                                return await SumWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItems_DoNotMap":
-                                return await SumWhere<InventoryItems_DoNotMap>(dbContext, exp, itm.Value, "InventoryItem", field, "SelectMany")
+                            case "InventoryItem":
+                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItems_DoNotMap", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.InventoryItems_DoNotMap.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1227,10 +1124,10 @@ namespace InventoryDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1247,10 +1144,10 @@ namespace InventoryDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<InventoryItems_DoNotMap>()
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1273,11 +1170,11 @@ namespace InventoryDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.InventoryItems_DoNotMap.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.InventoryItems_DoNotMap.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1298,12 +1195,12 @@ namespace InventoryDS.Business.Services
          }
 
 		 
-		private static IQueryable<InventoryItem> AddIncludes(IEnumerable<string> includesLst, InventoryDSContext dbContext)
+		private static IQueryable<InventoryItems_DoNotMap> AddIncludes(IEnumerable<string> includesLst, InventoryDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<InventoryItem>) dbContext.InventoryItems; 
+			   var set =(DbQuery<InventoryItems_DoNotMap>) dbContext.InventoryItems_DoNotMap; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1314,7 +1211,7 @@ namespace InventoryDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<InventoryItem> AddWheres(List<string> expLst, IQueryable<InventoryItem> set)
+	   private IQueryable<InventoryItems_DoNotMap> AddWheres(List<string> expLst, IQueryable<InventoryItems_DoNotMap> set)
         {
             try
             {
