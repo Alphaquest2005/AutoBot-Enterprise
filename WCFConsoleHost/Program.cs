@@ -123,10 +123,10 @@ namespace AutoWaterNutServer
                 ListenBacklog = 1000,
                 MaxReceivedMessageSize = Int32.MaxValue,
                 ReliableSession = new OptionalReliableSession(new ReliableSessionBindingElement(false)){Enabled = false},
-                CloseTimeout = new TimeSpan(0, 60, 0),
-                SendTimeout = new TimeSpan(0, 60, 0),
-                OpenTimeout = new TimeSpan(0, 60, 0),
-                ReceiveTimeout = new TimeSpan(0, 60, 0)
+                CloseTimeout = new TimeSpan(0, 180, 0),
+                SendTimeout = new TimeSpan(0, 180, 0),
+                OpenTimeout = new TimeSpan(0, 180, 0),
+                ReceiveTimeout = new TimeSpan(0, 180, 0)
             };
 
             return _netTcpBinding;

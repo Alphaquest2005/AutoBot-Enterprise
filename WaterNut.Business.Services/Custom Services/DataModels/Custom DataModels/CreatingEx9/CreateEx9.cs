@@ -81,6 +81,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
         private static List<PiSummary> DocSetPi = new List<PiSummary>();
+        
 
         private static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
         private async Task<List<DocumentCT>> ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,

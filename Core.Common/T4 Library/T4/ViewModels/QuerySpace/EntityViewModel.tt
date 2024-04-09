@@ -640,7 +640,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
                     displayName = p.Name;
                 ////}	
 #> 
-                    <#=displayName#> = x.<#=p.Name#> <#=p == pplst.LastOrDefault()?"":","#>
+                    <#=displayName#> = x.<#=p.Name#><#=p.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string)?".Replace(""","""")":""#> <#=p == pplst.LastOrDefault()?"":","#>
                     
 <#+
 	}

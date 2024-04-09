@@ -12,7 +12,9 @@ using AllocationDS.Business.Entities;
 using Core.Common.UI;
 using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
+using java.util;
 using MoreLinq;
+using Org.BouncyCastle.Asn1.Cmp;
 using TrackableEntities;
 using WaterNut.Business.Entities;
 using WaterNut.Business.Services.Utils;
@@ -625,6 +627,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
 
+                var debugItemSalesPiSummaryLst = itemSalesPiSummaryLst.Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId).ToList();
+
                 universalData = itemSalesPiSummaryLst.Where(x => (mypod.AllNames.Contains(x.ItemNumber) || x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
                                                                  && x.Type == "Universal").ToList();
 
@@ -659,10 +663,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                                                        //&& x.pLineNumber ==
                                                                        //mypod.EntlnData.pDocumentItem.LineNumber
                                                                        && x.Type == "Historic").ToList();
-                //itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                //                                                  && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                //                                                  && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
-                //                                                  && x.Type == "Current").ToList();
+                //itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
+                //                                                      && x.Type == "Current").ToList();
 
 
                 Debug.WriteLine(
@@ -676,15 +678,23 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
                     .ToList();
 
+                var docPiAll = docSetPiLst
+                    .Select(x => x.TotalQuantity)
+                    .DefaultIfEmpty(0).Sum();
+
                 var docPi = docSetPiLst
+                    .Where(x => x.pAssessmentDate >= mypod.Filter.startDate && x.pAssessmentDate <= mypod.Filter.endDate)// multi threading causing problems here
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
                 var itemDocPi = docSetPiLst
                     .Where(x => x.Type == entryType)
                     .Where(x => x.DutyFreePaid == dfp)//c#17227 line 40 -Appid = 7
+                    .Where(x => x.pAssessmentDate >= mypod.Filter.startDate && x.pAssessmentDate <= mypod.Filter.endDate)
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
+
+               
 
                 // var universalSalesAll = (double)universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault()?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
 
@@ -712,10 +722,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
-              
+                
+
                 //if(mypod.Filter.startDate == DateTime.Parse("1/1/2022") && mypod.EntlnData.PreviousDocumentItemId == 362441) Debugger.Break();
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
+                    //&& DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == false)// this because not possible to do bucketing on grouped items
+                    
                     if (ex9BucketType == "Current")
                     {
                         Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll, docPreviousItems, ref sql);
@@ -735,11 +748,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 if (overPIcheck)
                     if (Math.Round( totalSalesAll, 2) <
-                        Math.Round((totalPiAll  + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))//
+                        Math.Round((totalPiAll  + docPiAll + mypod.EntlnData.Quantity) * salesFactor, 2))//
                     {
                         var availibleQty = totalSalesAll < totalPiAll 
-                                                    ? Math.Round(totalPiAll, 2) - (Math.Round(totalSalesAll, 2) + docPi) // in event of over exwarehousing
-                                                    : Math.Round(totalSalesAll, 2) - (Math.Round(totalPiAll, 2)+ docPi);
+                                                    ? Math.Round(totalPiAll, 2) - (Math.Round(totalSalesAll, 2) + docPiAll) // in event of over exwarehousing
+                                                    : Math.Round(totalSalesAll, 2) - (Math.Round(totalPiAll, 2)+ docPiAll);
                         if (availibleQty <= 0)
                         {
                             UpdateXStatus(mypod.Allocations,
@@ -749,7 +762,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             return (0, sql);
                         }
 
-                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total",ref sql);
+                        if (availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total",ref sql);
                     }
 
                 if (universalPIcheck)
@@ -766,7 +779,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             return (0, sql);
                         }
 
-                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal",ref sql);
+                        if(availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal",ref sql);
 
                     }
 
@@ -822,7 +835,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
                     
 
-                    var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId).Sum(x => x.TotalQuantity);
+                    var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp 
+                                                       && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
+                                                       && x.pAssessmentDate <= mypod.Filter.endDate
+                                                       && x.Type == entryType
+                                                       )
+                        .Sum(x => x.TotalQuantity);
                     if (Math.Round(totalSalesHistoric, 2) <
                         Math.Round((totalPiHistoric + docDFPpi + mypod.EntlnData.Quantity) * salesFactor, 2))// take out docpi because its included in sales
                     {
@@ -834,7 +852,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         var availibleQty = totalSalesHistoric < totalPiHistoric 
                                     ? totalPiHistoric - ( totalSalesHistoric+ docDFPpi) // in event of over exwarehousing
                                     : totalSalesHistoric - (totalPiHistoric + docDFPpi);
-                        if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic",ref sql);
+                        if (availibleQty != 0 && availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic",ref sql);
                         if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
@@ -853,25 +871,54 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     ///     Sales Cap/ Sales Bucket Current
 
 
-                    if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
+                    if (totalSalesCurrent == 0) // && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"No Current Sales Found",ref sql);
+                            $@"No Current Sales Found", ref sql);
                         return (0, sql);
                     }
 
                     // no sales found
 
 
-                    if (Math.Round(totalSalesCurrent, 2) <
-                        Math.Round((totalPiCurrent + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    //if (Math.Round(totalSalesCurrent, 2) <
+                    //    Math.Round((totalPiCurrent + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    //{
+                    //    UpdateXStatus(mypod.Allocations,
+                    //        $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
+                    //           Total Current PI: {totalPiCurrent}
+                    //           xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                    //    return (0, sql);
+                    //}
+
+                    // same logic as historic check
+
+                    var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp
+                                                       && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
+                                                       && (x.pAssessmentDate >= mypod.Filter.startDate &&
+                                                           x.pAssessmentDate <= mypod.Filter.endDate)
+                                                       && x.Type == entryType
+                                                       )
+                                            .Sum(x => x.TotalQuantity);
+
+                    var availibleQty = totalSalesCurrent < totalPiCurrent
+                        ? totalPiCurrent - (totalSalesCurrent + docDFPpi) // in event of over exwarehousing
+                        : totalSalesCurrent - (totalPiCurrent + docDFPpi);
+                    if (availibleQty != 0 && availibleQty < mypod.EntlnData.Quantity)
+
+                    {
+                        Ex9Bucket(mypod, availibleQty, totalSalesCurrent, totalPiCurrent, "Current", ref sql);
+                    }
+
+                    if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                     {
                         UpdateXStatus(mypod.Allocations,
                             $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
-                               Total Current PI: {totalPiCurrent}
-                               xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                                   Total Current PI: {totalPiCurrent}
+                                   xQuantity:{mypod.EntlnData.Quantity}", ref sql);
                         return (0, sql);
                     }
+
                 }
 
                 // mandatory check to prevent overtaking
@@ -880,7 +927,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
 
                     var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (totalPiAll + docPi);
-                    if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, totalPiAll + docPi, "Historic",ref sql);
+                    if (availibleQty != 0 && availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, totalPiAll + docPi, "Historic",ref sql);
                     if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                     {
                         UpdateXStatus(mypod.Allocations,
@@ -907,7 +954,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = itemSalesHistoric - (itemPiHistoric + itemDocPi);
-                        if (availibleQty > 0) Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic",ref sql);
+                        if (availibleQty > 0 && availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic",ref sql);
                         if (mypod.EntlnData.Quantity == 0 || availibleQty < 0)
                         {
                             UpdateXStatus(mypod.Allocations,
@@ -929,7 +976,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (itemPiHistoric + itemDocPi);
                         /// pass item quantity to ex9 bucket
                         //Debugger.Break();
-                        Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, itemPiHistoric + itemDocPi , "Historic", ref sql);
+                        if (availibleQty < mypod.EntlnData.Quantity) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, itemPiHistoric + itemDocPi , "Historic", ref sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
@@ -944,24 +991,37 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                   
 
                 }
-                
-                ////////////////////////////////////////////////////////////////////////
-                //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
-                var xSalesPi = mypod.Allocations
-                    .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Where(z => z.CustomsOperation == "Exwarehouse").Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
-                ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
-                if (xSalesPi < Math.Round(mypod.EntlnData.Quantity, 2))//take out docpi its throwing it ouff   //itemDocPi + 
-                {
 
-                    var availibleQty = xSalesPi - Math.Round( mypod.EntlnData.Quantity, 2);//take out docpi its throwing it ouff   //itemDocPi + 
-                    /// pass item quantity to ex9 bucket
-                    if (availibleQty >= 0)
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", ref sql);
-                    if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
+                if (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == false)
+                {
+                    ////////////////////////////////////////////////////////////////////////
+                    //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
+                    var xSalesPi = mypod.Allocations
+                        .Select(x => new
+                        {
+                            e = x.EntryDataDetails.Quantity,
+                            pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails
+                                .Where(z => z.CustomsOperation == "Exwarehouse").Sum(z => z.Quantity) ?? 0
+                        }).Sum(x => x.e - x.pi);
+                    ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
+                    if (xSalesPi > 0 &&
+                        xSalesPi < Math.Round(mypod.EntlnData.Quantity,
+                            2)) //take out docpi its throwing it ouff   //itemDocPi + 
                     {
-                        UpdateXStatus(mypod.Allocations,
-                            $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}", ref sql);
-                        return (0,sql);
+
+                        var availibleQty =
+                            xSalesPi - Math.Round(mypod.EntlnData.Quantity,
+                                2); //take out docpi its throwing it ouff   //itemDocPi + 
+                        /// pass item quantity to ex9 bucket
+                        if (availibleQty >= 0 && availibleQty < mypod.EntlnData.Quantity)
+                            Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", ref sql);
+                        if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
+                        {
+                            UpdateXStatus(mypod.Allocations,
+                                $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o, n) => $"{o}, {n}")}",
+                                ref sql);
+                            return (0, sql);
+                        }
                     }
                 }
 
@@ -1099,6 +1159,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 ItemNumber = mypod.EntlnData.ItemNumber,
                 PreviousItem_Id = mypod.EntlnData.PreviousDocumentItemId,
                 DutyFreePaid = dfp,
+                pAssessmentDate = mypod.Filter.endDate,
                 Type = entryType,
                 TotalQuantity = mypod.EntlnData.Quantity,
                 pCNumber = mypod.EntlnData.EX9Allocation.pCNumber,
@@ -1311,121 +1372,27 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return false;
         }
 
+
+
+
         private void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll,
             double totalPiAll,
             string type, ref string sql)
         {
             try
             {
-                var totalallocations = mypod.Allocations.Count();
+                
                 var rejects = new List<AsycudaSalesAllocations>();
-                for (int i = totalallocations; i <= totalallocations; i--)
-                {
-                    var remainingSalesQty = mypod.Allocations.Take(i)
-                        .Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
-
-                    //if (remainingSalesQty > availibleQty && totalallocations > 1)
-                    //{
-                    if (i <= 0 && remainingSalesQty <= 0) //&& rejects.Any()
-                    {
-                        UpdateXStatus(rejects,
-                            $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
-                                            {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
-                        return;
-                    }
-
-                    var ssa = mypod.Allocations.ElementAt(i - 1);
-                    var piData = ssa.PIData.Sum(x => x.xQuantity) ?? 0;
-
-                    var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
-                    //if (piData == 0 && totalPiAll > 0) // put this becase Iww - pCnumber 43681-129 && xCnumber 56932-128... exout in 2022 but no pi data considered now have to double check if another check could fix this total pi check
-                    //{
-                    // piData = totalPiAll;
-                    // nr -= totalPiAll;// need to also update this figure
-
-                    //}
-
-                    if (nr >= availibleQty &&
-                        !(piData == 0 &&
-                          totalPiAll >
-                          0)) //put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
-                    {
-                        //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
-                        //ssa.QtyAllocated = availibleQty; // took out because over allocating in multiple allocations...
-                        //// disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
-
-                        mypod.EntlnData.Quantity =
-                            availibleQty; //mypod.Allocations.Sum(x => x.QtyAllocated); ; // changed to availablQty to fix overexwarehousing C#31256 line 114... 
-                        break;
-                    }
-
-                    if (nr == availibleQty // put this because i can't figure out what is best solution
-                        && (piData == 0 && totalPiAll > 0)) // this condition negates one on top
-                    {
-                        //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
-                        //foreach (var allocation in mypod.Allocations)
-                        //{
-                        //    ssa.QtyAllocated = availibleQty;
-                        //}
-                        //ssa.QtyAllocated = availibleQty; // disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
-                        ;
-                        break;
-                    }
-
-                    if ((nr < availibleQty && (nr + (ssa.QtyAllocated - piData)) >= availibleQty)
-                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0)
-                        || (nr >= availibleQty &&
-                            ssa.QtyAllocated >
-                            availibleQty)) //Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0 cuz always false
-                    {
-                        //if (availibleQty - nr <= 0)
-                        //{
-                        //    Debugger
-                        //        .Break(); // find out why this is lest than zero cuz i changed the line above to remove abs
-                        //    throw new ApplicationException(
-                        //        "availibleQty - nr <= 0- find out why this is lest than zero cuz i changed the line above to remove abs");
-                        //}
-
-                        //ssa.QtyAllocated = ssa.QtyAllocated - availibleQty; -- took out not seeing logic
+                var finalQuantity = CalculateFinalQuantity(mypod, availibleQty, totalSalesAll, totalPiAll, type, ref sql, rejects);
+                mypod.EntlnData.Quantity = finalQuantity;
 
 
-
-                        mypod.EntlnData.Quantity = availibleQty; //mypod.Allocations.Sum(x => x.QtyAllocated);
-
-
-                        break; //put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
-
-                    }
-                    else
-                    {
-                        if ((ssa.QtyAllocated > nr - availibleQty)) // add check to allow partial ex-amounts to remain in set eg trying to take 7 out of 8 but allocation is 2 i will leave it in set
-                        {
-                            mypod.EntlnData.Quantity = availibleQty;
-                            break;
-                        }
-
-                        
-
-
-                        mypod.Allocations.RemoveAt(i - 1);
-                        rejects.Add(ssa);
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
-                    }
-
-                }
-
-
-
-                if (rejects.Any())
-                {
-                    UpdateXStatus(rejects,
-                        $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
-                                            {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
-                }
+                if (!rejects.Any()) return;
+                UpdateXStatus(rejects,
+                    $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                                        {type} PI: {totalPiAll}
+                                        xQuantity:{mypod.EntlnData.Quantity}", ref sql);
+                mypod.Allocations = mypod.Allocations.Except(rejects).ToList();
 
                 //mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
 
@@ -1436,6 +1403,146 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 throw;
             }
 
+        }
+
+        private double CalculateFinalQuantity(DataSpace.BaseDataModel.MyPodData mypod, double targetQty,
+            double totalSalesAll, double totalPiAll, string type,
+            ref string sql, List<AsycudaSalesAllocations> rejects)
+        {
+            var totalAllocations = mypod.Allocations.Count();
+            
+            double finalQuantity = mypod.Allocations.Sum(x => x.QtyAllocated);
+            
+
+            var i = totalAllocations;
+            var intitialRemainingSalesQty = CalculateRemainingSalesQty(mypod.Allocations, i);
+
+            var piAllocations = mypod.Allocations.OrderBy(x => x.PIData.Count)
+                                                        .ThenBy(x => Math.Abs(x.QtyAllocated - intitialRemainingSalesQty))// just a preference for qty allocated close to remaining sales qty
+                                                        .ThenBy(x => x.AllocationId).ToList();
+
+            while (finalQuantity > intitialRemainingSalesQty || intitialRemainingSalesQty > targetQty)
+            {
+               var remainingSalesQty = CalculateRemainingSalesQty(piAllocations, i);
+
+               
+                if (i <= 0 && remainingSalesQty <= 0) //&& rejects.Any()
+                {
+                    //UpdateXStatus(rejects,
+                    //    $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                    //                    {type} PI: {totalPiAll}
+                    //                    xQuantity:{mypod.EntlnData.Quantity}", ref sql);
+                    //finalQuantity = piAllocations.Sum(x => x.QtyAllocated);
+                    return finalQuantity;
+                }
+                if (remainingSalesQty == targetQty ) // this covers partials
+                {
+                    finalQuantity = remainingSalesQty;
+                    break;
+                }
+
+                if (remainingSalesQty == intitialRemainingSalesQty 
+                    && !piAllocations.Any(x => x.PIData.Any())
+                    && intitialRemainingSalesQty < targetQty) // this covers partials
+                {
+                    finalQuantity = intitialRemainingSalesQty;
+                    break;
+                }
+
+                var ssa = piAllocations.ElementAt(i - 1);
+                var remainingAllocationQty = ssa.QtyAllocated - (ssa.PIData.Sum(x => x.xQuantity) ?? 0);
+
+                
+
+                if (remainingAllocationQty > 0 && remainingSalesQty > targetQty
+                    && targetQty > remainingSalesQty - remainingAllocationQty 
+                    )
+                {
+                    finalQuantity = targetQty;
+                    break;
+                }
+
+                if (remainingAllocationQty > 0 && remainingSalesQty > intitialRemainingSalesQty
+                                               && intitialRemainingSalesQty > remainingSalesQty - remainingAllocationQty
+                                               && !piAllocations.Any(x => x.PIData.Any())
+                                               && intitialRemainingSalesQty < targetQty) // this covers partials
+                {
+                    finalQuantity = intitialRemainingSalesQty;
+                    break;
+                }
+
+
+                piAllocations.RemoveAt(i - 1);
+                rejects.Add(ssa);
+                finalQuantity = piAllocations.Sum(x => x.QtyAllocated);
+                i -= 1;
+
+                if(targetQty == finalQuantity) break;
+
+            }
+
+            return finalQuantity;
+        }
+
+        private double CalculateItmQuantity(List<AsycudaSalesAllocations> piAllocations, double availibleQty, 
+            AsycudaSalesAllocations ssa, 
+            double totalPiAll, double rejectsQty)
+        {
+            var piData = ssa.PIData.Sum(x => x.xQuantity) ?? 0;
+
+            var nr = piAllocations.Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
+
+            if (nr >= availibleQty &&
+                       !(piData == 0 &&
+                         totalPiAll >
+                         0)) //put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
+            {
+
+
+                return availibleQty; //mypod.Allocations.Sum(x => x.QtyAllocated); ; // changed to availablQty to fix overexwarehousing C#31256 line 114... 
+                
+            }
+
+            if (nr == availibleQty // put this because i can't figure out what is best solution
+                && (piData == 0 && totalPiAll > 0)) // this condition negates one on top
+            {
+
+               return piAllocations.Sum(x => x.QtyAllocated);
+            }
+
+            if (nr < availibleQty && (nr + (ssa.QtyAllocated - piData)) >= availibleQty)
+            {
+                return availibleQty - nr;
+            }
+
+            if (nr < availibleQty && (ssa.QtyAllocated - piData) >= nr)
+            {
+                return  nr;
+            }
+
+
+          
+            if (nr >= availibleQty &&
+                ssa.QtyAllocated >
+                nr - availibleQty) // add check to allow partial ex-amounts to remain in set eg trying to take 7 out of 8 but allocation is 2 i will leave it in set
+            {
+                return availibleQty;
+            }
+
+            return 0;
+        }
+
+        private static double CalculateRemainingSalesQty(List<AsycudaSalesAllocations> piAllocations, int i)
+        {
+            var remainingSalesAllocationQty = piAllocations.Take(i)
+                .Sum(x => x.QtyAllocated);
+            var remainingSalesPiQty = piAllocations.Take(i)
+                .SelectMany(x => x.PIData)
+                .DistinctBy(x => x.xBond_Item_Id)
+                .Sum(x => x.xQuantity).GetValueOrDefault();
+
+            var remainingSalesQty = remainingSalesAllocationQty - remainingSalesPiQty;
+            return remainingSalesQty;
         }
 
         private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus,ref string sql )

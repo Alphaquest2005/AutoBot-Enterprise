@@ -180,6 +180,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("FJ41051431", "3/1/2023", 60)] // not allocating all im7 7400-WSC
         [TestCase("E7763322", "3/1/2023", 60)]  // return marked as early sales
         [TestCase("HF01360", "3/1/2023", 60)]  //return and 2 sales not labeled properly
+        [TestCase("RK00650", "3/1/2023", 60)] // not allocating existing ex9 properly need to set the piqty for each allocation
+        [TestCase("DD43011", "3/1/2023", 60)]  // missing allocations for entrydatadeatilsid = 1279189
 
         ////////////Rouge
         [TestCase("82453688", "3/1/2023", 60)] // not allocating

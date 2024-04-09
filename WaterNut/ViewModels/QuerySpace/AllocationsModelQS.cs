@@ -119,7 +119,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     ItemNumber = x.ItemNumber,
 
 
-                    ItemDescription = x.ItemDescription,
+                    ItemDescription = x.ItemDescription.Replace("\"","\"\""),
 
 
                     DutyFreePaid = x.DutyFreePaid,

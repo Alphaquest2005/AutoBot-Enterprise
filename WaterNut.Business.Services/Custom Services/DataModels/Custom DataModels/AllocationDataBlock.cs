@@ -12,5 +12,6 @@ namespace WaterNut.DataSpace
         public string CNumber { get; set; }
         public string Type { get; set; }
         public (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) Filter { get; set; }
+        public int? PreviousItem_Id { get; set; }
     }
 }

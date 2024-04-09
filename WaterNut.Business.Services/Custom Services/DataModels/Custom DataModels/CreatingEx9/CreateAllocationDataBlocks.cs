@@ -63,13 +63,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var source = slstSource.OrderBy(x => x.pTariffCode).ToList();
 
                 slst = from s in source
-                    group s by new {s.DutyFreePaid, s.Type, MonthYear = "NoMTY"}
+                    group s by new {s.DutyFreePaid, s.Type, MonthYear = "NoMTY", s.PreviousItem_Id}
                     into g
                     select new AllocationDataBlock
                     {
                         Type = g.Key.Type,
                         MonthYear = g.Key.MonthYear,
                         DutyFreePaid = g.Key.DutyFreePaid,
+                        PreviousItem_Id = g.Key.PreviousItem_Id,
                         Allocations = g.ToList(),
                         Filter = filter
                     };

@@ -26,19 +26,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             var splitrows = preAllocations
                 .GroupBy(x => x.EntryDataDetailsId)
-                .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) <= x.First().SalesQuantity)
+                .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) < x.First().SalesQuantity)
+                .SelectMany(x => x.ToList())
+                .ToList();
+
+            var partialRows = preAllocations
+                .GroupBy(x => x.EntryDataDetailsId)
+                .Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) < x.First().SalesQuantity)
                 .SelectMany(x => x.ToList())
                 .ToList();
 
             var normalrows = preAllocations
                 .GroupBy(x => x.EntryDataDetailsId)
-                .Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) <= x.First().SalesQuantity)
+                .Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) == x.First().SalesQuantity)
                 .SelectMany(x => x.ToList())
                 .ToList();
 
             var res = new List<PreAllocations>();
             res.AddRange(firstofoverExwarehoused);
             res.AddRange(splitrows);
+            res.AddRange(partialRows);
             res.AddRange(normalrows);
 
             res = res.OrderBy(x => x.InvoiceDate).ToList();
