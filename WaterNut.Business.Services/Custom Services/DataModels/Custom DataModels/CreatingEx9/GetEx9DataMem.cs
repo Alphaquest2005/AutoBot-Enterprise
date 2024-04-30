@@ -20,12 +20,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
 
-        public async Task<List<EX9Allocations>> Execute(string filterExpression, string dateFilter)
+        public IEnumerable<EX9Allocations> Execute(string filterExpression, string dateFilter)
         {
             try
             {
                 
-                var data = await _getEx9DataByDateRangeMem.Execute(dateFilter).ConfigureAwait(false);
+                var data =  _getEx9DataByDateRangeMem.Execute(dateFilter);
 
                 return CreateEx9Allocations(filterExpression, data.AsQueryable());
             }
@@ -36,34 +36,20 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-      
 
-        private List<EX9Allocations> CreateEx9Allocations(string filterExpression, IQueryable<EX9AsycudaSalesAllocations> tres)
+
+        private IEnumerable<EX9Allocations> CreateEx9Allocations(string filterExpression, IQueryable<EX9AsycudaSalesAllocations> tres)
         {
-            var res = new List<EX9Allocations>();
             filterExpression = CreateFilterExpression(filterExpression);
-
-            //var test = tres.Where(x => x.AllocationId == 4597648).ToList();
 
             var rres = tres
                 .Where(filterExpression)
+                .OrderBy(x => x.AllocationId)
                 .ToList();
-            foreach (var x in rres)
+            foreach (var allocations in rres.Select(CreateEx9Allocations))
             {
-                try
-                {
-                    var allocations = CreateEx9Allocations(x);
-                    res.Add(allocations);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                yield return allocations;
             }
-
-
-            return res.OrderBy(x => x.AllocationId).ToList();
         }
 
         private string CreateFilterExpression(string filterExpression)

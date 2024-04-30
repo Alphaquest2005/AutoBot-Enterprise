@@ -172,8 +172,12 @@ namespace AutoBotUtilities.Tests
         [TestCase("14002-85LGMUL", "3/1/2023", 60)]
         [TestCase("0424-09-16KHT", "3/1/2023", 60)]
 
+        [TestCase("0101-0898", "3/1/2023", 60)]// checking mapping
+        [TestCase("0101-0898XLCRL", "3/1/2023", 60)]// checking mapping
+
+
         ////////// IWW
-        
+
         [TestCase("MM07722", "3/1/2023", 60)]
         [TestCase("ML33451", "3/1/2023", 60)] // not marking overallocations
         [TestCase("SA00363", "3/1/2023", 60)] // not marking overallocations

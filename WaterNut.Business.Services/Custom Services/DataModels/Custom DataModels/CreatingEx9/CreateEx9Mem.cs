@@ -171,32 +171,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             //        List<PreviousItems>>(); // moved here because the reloaded month data already has data 
             //// move higher because i need data entire run
             var allocationDataBlocks =
-                (await new CreateAllocationDataBlocks().Execute(filter.currentFilter + exPro, errors, filter, getEx9DataMem, PerIM7)
-                    .ConfigureAwait(false))
-                .Where(x => x.Allocations.Count > 0)
-               // .GroupBy(x => x.PreviousItem_Id)
-                .ToList();
+                new CreateAllocationDataBlocks().Execute(filter.currentFilter + exPro, errors, filter, getEx9DataMem, PerIM7)
+                    .Where(x => x.Allocations.Count > 0);
 
-            if (allocationDataBlocks.ToList().Any())
+            if (allocationDataBlocks.Any())
                 await CreateDutyFreePaidEntires(docSet, documentType, ex9BucketType, isGrouped,
                                                checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
                                                                           applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
                                                                           universalPIcheck, itemPIcheck, allocationDataBlocks, filter, docs,
                                                                           docPreviousItems).ConfigureAwait(false);
-            //allocationDataBlocks.AsParallel()
-            //    .AsOrdered()
-            //    // previous item id is the bottleneck in overpi check
-            //   // .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-            //     //                                        DataSpace.BaseDataModel.Instance.ResourcePercentage))
-            //    .WithDegreeOfParallelism(1)
-            //    .ForAll(async allocationDataBlock =>
-            //    {
-            //        await CreateDutyFreePaidEntires(docSet, documentType, ex9BucketType, isGrouped,
-            //                                       checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
-            //                                                                  applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
-            //                                                                  universalPIcheck, itemPIcheck, allocationDataBlock.ToList(), filter, docs,
-            //                                                                  docPreviousItems).ConfigureAwait(false);
-            //    });
+          
 
         }
 
@@ -227,7 +211,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths,
             bool applyEx9Bucket,
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
-            bool universalPIcheck, bool itemPIcheck, List<AllocationDataBlock> allocationDataBlocks,
+            bool universalPIcheck, bool itemPIcheck, IEnumerable<AllocationDataBlock> allocationDataBlocks,
             (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter, List<DocumentCT> docs, ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             var dutylst = new List<string>() { "Duty Paid", "Duty Free" };
@@ -246,7 +230,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
                             checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
                             applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
-                            universalPIcheck, itemPIcheck, allocationDataBlocks.Where(x => x.DutyFreePaid == dfp).ToList(), dfp, filter, docs, docPreviousItems)
+                            universalPIcheck, itemPIcheck, allocationDataBlocks.Where(x => x.DutyFreePaid == dfp), dfp, filter, docs, docPreviousItems)
                         .ConfigureAwait(false);
                 });
         }
@@ -278,7 +262,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths,
             bool applyEx9Bucket,
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
-            bool universalPIcheck, bool itemPIcheck, List<AllocationDataBlock> allocationDataBlocks, string dfp,
+            bool universalPIcheck, bool itemPIcheck, IEnumerable<AllocationDataBlock> allocationDataBlocks, string dfp,
             (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter, List<DocumentCT> docs,
             ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
@@ -768,6 +752,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 ctx.Configuration.ValidateOnSaveEnabled = false;
 
                return ctx.ItemSalesAsycudaPiSummary
+                    .AsNoTracking()
                     .GroupJoin(ctx.AsycudaItemPiQuantityData,
                         pis => new { PreviousItem_Id = (int)pis.PreviousItem_Id, pis.DutyFreePaid },
                         pid => new { PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid },

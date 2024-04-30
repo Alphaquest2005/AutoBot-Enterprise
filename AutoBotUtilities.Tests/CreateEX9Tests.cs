@@ -27,7 +27,7 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
-            Infrastructure.Utils.SetTestApplicationSettings(2);
+            Infrastructure.Utils.SetTestApplicationSettings(5);
             Infrastructure.Utils.ClearDataBase();
             
         }
@@ -46,6 +46,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("2/1/2023","2/28/2023", "SEH/1277G", 1, 2, 5)]
         [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
         [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 2, 5)]// overexwarehousing
+        // IWW
+        [TestCase("9/1/2018", "4/30/2024", "MRL/JB0057F", 1, 2, 5)]// overexwarehousing
         public void CanCreateEx9(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,int totalQuantiy)
         {
             try
@@ -62,6 +64,32 @@ namespace AutoBotUtilities.Tests
 
                 AssertTest(docCount, lineCount, totalQuantiy, testData.docset);
                 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        // IWW
+        [TestCase("9/1/2018", "4/30/2024", "RK00650", "63696", "55", 3, 3, 14)]// overexwarehousing
+        public void CanCreateEx9(DateTime startDate, DateTime endDate, string itemNumber, string pCnumber , string pLineNumber, int docCount, int lineCount, int totalQuantiy)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+
+                var testData = SetupTest(startDate, endDate, itemNumber, pCnumber, pLineNumber);
+
+                var timer = new System.Diagnostics.Stopwatch();
+                timer.Start();
+                var res = new CreateEx9Mem().Execute(testData.filterExpression, false, false, true, testData.docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+                timer.Stop();
+                Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
+
+                AssertTest(docCount, lineCount, totalQuantiy, testData.docset);
+
             }
             catch (Exception e)
             {
@@ -155,7 +183,7 @@ namespace AutoBotUtilities.Tests
                 var sDate = DateTime.Parse("1/1/2022");
                 var eDate = DateTime.Parse("1/31/2022").AddHours(23);
                 var currentFilterExpression = GetFilterExpression(itemNumber, sDate, eDate);
-                var lst = new CreateAllocationDataBlocks().Execute(currentFilterExpression,new List<string>(),(currentFilterExpression,rdateFilter,sDate,eDate), res, false ).Result;
+                var lst = new CreateAllocationDataBlocks().Execute(currentFilterExpression,new List<string>(),(currentFilterExpression,rdateFilter,sDate,eDate), res, false );
 
                 timer.Stop();
                 Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
@@ -175,7 +203,7 @@ namespace AutoBotUtilities.Tests
 
 
 
-        private static (DocumentDS.Business.Entities.AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber)
+        private static (DocumentDS.Business.Entities.AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber, string pCnumber = "", string pLineNumber = "")
         {
             var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
 
@@ -183,7 +211,7 @@ namespace AutoBotUtilities.Tests
             BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
             BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0);
 
-            var filterExpression = GetFilterExpression(itemNumber, startDate, endDate);
+            var filterExpression = GetFilterExpression(itemNumber, startDate, endDate,pCnumber, pLineNumber);
             return (docset, filterExpression);
         }
 
@@ -227,7 +255,7 @@ namespace AutoBotUtilities.Tests
                 });
             }
         }
-        private static string GetFilterExpression(string itemNumbers, DateTime startDate, DateTime endDate)
+        private static string GetFilterExpression(string itemNumbers, DateTime startDate, DateTime endDate, string pCnumber = "", string pLineNumber = "")
         {
             var filterExpression =
                 $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
@@ -237,6 +265,8 @@ namespace AutoBotUtilities.Tests
                 //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
                 "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
                 "&& PreviousItem_Id != null" +
+                (!string.IsNullOrEmpty(pCnumber)?$" && (pCNumber == \"{pCnumber}\")":"") +
+                (!string.IsNullOrEmpty(pCnumber) ? $" && (pLineNumber == \"{pLineNumber}\")" : "") +
                 "&& (xBond_Item_Id == 0 )" +
                 "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
                 "&& (PiQuantity < pQtyAllocated)" +

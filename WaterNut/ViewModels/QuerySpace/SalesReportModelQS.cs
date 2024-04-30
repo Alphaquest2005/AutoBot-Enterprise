@@ -338,7 +338,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             
         }
 
-        private static async Task ExportEntryData(string folder, AsycudaDocument doc)
+        private static async Task ExportEntryData(string ofolder, AsycudaDocument doc)
         {
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
             {
@@ -349,22 +349,29 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
                         try
                         {
-                            folder = Path.GetDirectoryName(folder);
+                            var folder = Path.GetFullPath(ofolder);
                             var data = GetDocumentEntryData(doc.ASYCUDA_Id).Result.OrderBy(x => x.LineNumber).ToList();
+
+                            string csvPath = Path.Combine(folder,
+                                !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+
+                            string pdfPath = Path.Combine(folder,
+                                !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".pdf");
+
                             if (data.Any())
                             {
-                                string path = Path.Combine(folder,
-                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+
 
                                 s.dataToPrint = data;
-                                s.SaveReport(path);
-                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, folder);
+                                s.SaveReport(csvPath);
+                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, pdfPath);
                             }
                             else
                             {
                                 s.dataToPrint = new List<EntryDataLine>();
-                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
-                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, folder);
+                                
+                                File.Create(csvPath);
+                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, pdfPath);
                             }
 
                             StatusModel.StatusUpdate();

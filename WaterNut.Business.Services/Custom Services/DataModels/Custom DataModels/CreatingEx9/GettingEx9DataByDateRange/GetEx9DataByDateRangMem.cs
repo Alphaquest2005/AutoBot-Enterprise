@@ -14,10 +14,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             _getEx9AsycudaSalesAllocationsMem = new GetEx9AsycudaSalesAllocationsMem(filterExp, rdateFilter);
         }
 
-        public async Task<List<EX9AsycudaSalesAllocations>> Execute(string dateFilter)
+        public IEnumerable<EX9AsycudaSalesAllocations> Execute(string dateFilter)
         {
-            
-            return await _getEx9AsycudaSalesAllocationsMem.Execute(dateFilter).ConfigureAwait(false);
+
+            return  _getEx9AsycudaSalesAllocationsMem.Execute(dateFilter);
         }
     }
 }

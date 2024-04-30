@@ -295,22 +295,17 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
 
-        public async Task<List<EX9AsycudaSalesAllocations>> Execute(string filterExpression)
+        public IEnumerable<EX9AsycudaSalesAllocations> Execute(string filterExpression)
         {
-            try
-            {
-                return _eX9AsycudaSalesAllocations
-                    .Select(x => x.Value)
-                    .AsQueryable()
-                    .Where(filterExpression)
-                    .ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
+            
+                foreach (var allocation in _eX9AsycudaSalesAllocations
+                             .Select(x => x.Value)
+                             .AsQueryable()
+                             .Where(filterExpression))
+                {
+                    yield return allocation;
+                }
+            
         }
     }
 }
