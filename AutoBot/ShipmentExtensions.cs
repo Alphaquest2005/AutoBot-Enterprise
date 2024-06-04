@@ -669,7 +669,7 @@ namespace AutoBotUtilities
                 .Where(x => !string.IsNullOrEmpty(x))
                 .SelectMany(x => GetShipmentBls()
                     .Where(z => z.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && z.BLNumber == x)) // &&
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && (z.BLNumber.Contains(x) || x.Contains(z.BLNumber)))) // &&
                 //.Select(x =>
                 //{
                 //    x.ShipmentBLDetails = Utils.CreatePackingList(x);
@@ -832,16 +832,16 @@ namespace AutoBotUtilities
                     .Select(x => (WarehouseCode: "Marks", Packages: 1, x.ShipmentInvoice.InvoiceNo)).ToList();
 
                 var blManifests = masterShipment.ShipmentAttachedManifest
-                    .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest)
+                    .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber || x.ShipmentManifest.WayBill.Contains(bl.BLNumber) || bl.BLNumber.Contains(x.ShipmentManifest.WayBill)).Select(x => x.ShipmentManifest)
                     .DistinctBy(x => x.Id)
                     .ToList();
 
 
                 var manifests = masterShipment.ShipmentAttachedManifest
-                    .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber ||
+                    .Where(x => (x.ShipmentManifest.WayBill == bl.BLNumber || x.ShipmentManifest.WayBill.Contains(bl.BLNumber) || bl.BLNumber.Contains(x.ShipmentManifest.WayBill)) ||
                                 (!IsNullOrEmpty(bl.Voyage) && x.ShipmentManifest.Voyage.Contains(bl.Voyage)))
                     .Select(x => x.ShipmentManifest)
-                    .OrderByDescending(x => x.WayBill == bl.BLNumber)
+                    .OrderByDescending(x => (x.WayBill == bl.BLNumber || x.WayBill.Contains(bl.BLNumber) ||  bl.BLNumber.Contains(x.WayBill)))
                     .ToList();
 
 
