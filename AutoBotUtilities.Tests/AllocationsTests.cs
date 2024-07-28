@@ -1,27 +1,20 @@
-using System.IO;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Services;
 using AllocationDS.Business.Entities;
 using AllocationQS.Business.Entities;
-using Core.Common.Utils;
-using EntryDataDS.Business.Entities;
 using WaterNut.Business.Services.Custom_Services.AdjustmentQS.GettingEx9AllocationsList;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingEntryDataDetails;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingXcudaItems;
-using WaterNut.Business.Services.Utils;
 using WaterNut.Business.Services.Utils.AutoMatching;
 using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
 {
-    using AutoBot;
     using System;
     using NUnit.Framework;
-    using CoreEntities.Business.Entities;
     using System.Collections.Generic;
     using System.Linq;
-    using Org.BouncyCastle.Asn1.Pkcs;
 
     [TestFixture]
     public class AllocationsTests
@@ -51,14 +44,14 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 Assert.That(new GetXcudaItemsMem(), Is.Not.Null);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -67,14 +60,14 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 Assert.That(new GetEntryDataDetailsMem(), Is.Not.Null);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -83,14 +76,14 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var itemSets = BaseDataModel.GetItemSets(null);
                 var list = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
                 Assert.Multiple(() =>
                 {
                     Assert.That(itemSets.Any(), Is.True);
                     
-                    Assert.AreEqual(1, list.Count());
+                    Assert.Equals(1, list.Count());
 
 
                 });
@@ -101,7 +94,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -112,7 +105,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
                  new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(2, false, false, "TOH/MTSX018S").Wait();
@@ -123,7 +116,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -175,6 +168,9 @@ namespace AutoBotUtilities.Tests
         [TestCase("0101-0898", "3/1/2023", 60)]// checking mapping
         [TestCase("0101-0898XLCRL", "3/1/2023", 60)]// checking mapping
 
+        [TestCase("0645-7733", "3/1/2023", 60)]// Allocate to Manually Assessed OPS
+
+
 
         ////////// IWW
 
@@ -200,7 +196,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -217,7 +214,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
                 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 //using (var ctx = new AllocationDSContext())
                 //{
@@ -240,9 +237,9 @@ namespace AutoBotUtilities.Tests
 
                 //    Assert.Multiple(() =>
                 //    {
-                //        Assert.AreEqual(NoOfAllocations, allocations);
-                //        Assert.AreEqual(0, overallocatedSales);
-                //        Assert.AreEqual(0, unallocatedSales);
+                //        Assert.Equals(NoOfAllocations, allocations);
+                //        Assert.Equals(0, overallocatedSales);
+                //        Assert.Equals(0, unallocatedSales);
                 //    });
                 //}
                 
@@ -252,7 +249,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -265,7 +262,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -281,7 +278,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 //using (var ctx = new AllocationDSContext())
                 //{
@@ -304,9 +301,9 @@ namespace AutoBotUtilities.Tests
 
                 //    Assert.Multiple(() =>
                 //    {
-                //        Assert.AreEqual(NoOfAllocations, allocations);
-                //        Assert.AreEqual(0, overallocatedSales);
-                //        Assert.AreEqual(0, unallocatedSales);
+                //        Assert.Equals(NoOfAllocations, allocations);
+                //        Assert.Equals(0, overallocatedSales);
+                //        Assert.Equals(0, unallocatedSales);
                 //    });
                 //}
 
@@ -316,7 +313,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -328,7 +325,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemNumbers = GetItemNumbers(invoiceNo);
@@ -347,13 +344,13 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -378,7 +375,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -394,7 +391,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 using (var ctx = new AllocationDSContext())
                 {
@@ -404,7 +401,7 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(2, allocations);
+                        Assert.Equals(2, allocations);
                         
 
                     });
@@ -416,7 +413,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -428,7 +425,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -444,7 +441,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 using (var ctx = new AllocationDSContext())
                 {
@@ -459,8 +456,8 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(0, allocations);
-                        Assert.IsNotNull(isCancelled);
+                        Assert.Equals(0, allocations);
+                        Assert.That(isCancelled, Is.Not.Null);
 
                     });
                 }
@@ -471,7 +468,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -483,7 +480,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -499,7 +496,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 using (var ctx = new AllocationDSContext())
                 {
@@ -514,8 +511,8 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(0, allocations);
-                        Assert.IsNotNull(isCancelled);
+                        Assert.Equals(0, allocations);
+                        Assert.That(isCancelled, Is.Not.Null); ;
                         
                     });
                 }
@@ -526,7 +523,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -536,7 +533,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -552,7 +549,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 var lastInvoiceDate = DateTime.Parse(LastInvoiceDate) + TimeSpan.FromHours(12);
                 using (var ctx = new AllocationDSContext())
                 {
@@ -579,10 +576,10 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(NoOfAllocations, allocations);
-                        Assert.AreEqual(0, overallocatedSales);
-                        Assert.AreEqual(0, unallocatedSales);
-                        Assert.AreEqual(1, errallocations);
+                        Assert.Equals(NoOfAllocations, allocations);
+                        Assert.Equals(0, overallocatedSales);
+                        Assert.Equals(0, unallocatedSales);
+                        Assert.Equals(1, errallocations);
                     });
                 }
 
@@ -592,7 +589,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -602,7 +599,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -618,7 +615,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
-                Assert.IsTrue(true);
+                Assert.That(true);
                 var lastInvoiceDate = DateTime.Parse(LastInvoiceDate) + TimeSpan.FromHours(12);
                 using (var ctx = new AllocationDSContext())
                 {
@@ -631,8 +628,8 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(NoOfAllocations, allocations.Count);
-                        Assert.AreEqual(qtyallocated, salesQty);
+                        Assert.Equals(NoOfAllocations, allocations.Count);
+                        Assert.Equals(qtyallocated, salesQty);
                        
                     });
                 }
@@ -643,7 +640,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -655,7 +652,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 if (Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
@@ -701,9 +698,9 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(NoOfAllocations, allocations);
-                        Assert.AreEqual(0, overallocatedSales);
-                        Assert.AreEqual(0, unallocatedSales);
+                        Assert.Equals(NoOfAllocations, allocations);
+                        Assert.Equals(0, overallocatedSales);
+                        Assert.Equals(0, unallocatedSales);
                     });
                 }
 
@@ -713,7 +710,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -726,7 +723,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 if (Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
@@ -771,9 +768,9 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(NoOfAllocations, allocations);
-                        Assert.AreEqual(0, overallocatedSales);
-                        Assert.AreEqual(0, unallocatedSales);
+                        Assert.Equals(NoOfAllocations, allocations);
+                        Assert.Equals(0, overallocatedSales);
+                        Assert.Equals(0, unallocatedSales);
                     });
                 }
 
@@ -783,7 +780,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -796,7 +793,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
                 
@@ -818,7 +815,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write($"MarkErrors in seconds: {timer.Elapsed.TotalSeconds} \r\n");
-               Assert.IsTrue(true);
+               Assert.That(true);
 
 
 
@@ -826,7 +823,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -838,7 +835,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
 
@@ -856,7 +853,7 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write($"AutoMatch in seconds: {timer.Elapsed.TotalSeconds} \r\n");
-                Assert.IsTrue(true);
+                Assert.That(true);
 
 
 
@@ -864,7 +861,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -876,7 +873,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
 
@@ -904,13 +901,13 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
 
                 Console.Write($"ClearDocSetAllocations in seconds: {timer.Elapsed.TotalSeconds} \r\n");
-                Assert.IsTrue(true);
+                Assert.That(true);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -920,7 +917,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var res = OldSalesAllocator
                     .GetEntryDataDetails(
                         new List<(string ItemNumber, int InventoryItemId)>() { ("TOH/MTSX018S", 8116) }, true)
@@ -933,7 +930,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -943,7 +940,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
                 var lst = BaseDataModel.GetItemSets("CAM/CMMP83RZ");
@@ -955,7 +952,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -965,7 +962,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
                 var lst = new getEx9AllocationsRefactored().Execute("TOH/MTSX018S");
@@ -977,7 +974,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 

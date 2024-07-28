@@ -16,7 +16,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Consignee" Width="1.5" PointX="5.25" PointY="108.875" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Container" Width="1.5" PointX="3" PointY="67.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Country" Width="1.5" PointX="5.25" PointY="99.25" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Declarant" Width="1.5" PointX="3" PointY="90.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Declarant" Width="2" PointX="3" PointY="90.125" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Delivery_terms" Width="1.5" PointX="5.25" PointY="71.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Departure_arrival_information" Width="1.5" PointX="7.5" PointY="82.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Destination" Width="1.5" PointX="7.5" PointY="98.25" />
@@ -123,7 +123,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperation" Width="2" PointX="7.875" PointY="73.25" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="1.5" PointX="3.625" PointY="114" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="2.5" PointX="3.625" PointY="114" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Assessment" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Identification" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Office_segment" />

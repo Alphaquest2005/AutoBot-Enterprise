@@ -48,7 +48,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "02679.xlsx" });
                 var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
                 foreach (var fileType in fileTypes)
@@ -61,17 +61,17 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(ctx.EntryData.Count(), 1);
-                        Assert.AreEqual(ctx.EntryDataDetails.Count(), 1);
+                        Assert.Equals(ctx.EntryData.Count(), 1);
+                        Assert.Equals(ctx.EntryDataDetails.Count(), 1);
                     });
                 }
 
-                //Assert.IsTrue(true);
+                //Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -80,7 +80,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Monthly Customs Sales Report as at May 2022.xlsx" });
                 var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile);
                 foreach (var fileType in fileTypes)
@@ -93,17 +93,17 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(ctx.EntryData.Count(), 2213);
-                        Assert.AreEqual(ctx.EntryDataDetails.Count(), 5703);
+                        Assert.Equals(ctx.EntryData.Count(), 2213);
+                        Assert.Equals(ctx.EntryDataDetails.Count(), 5703);
                     });
                 }
 
-                //Assert.IsTrue(true);
+                //Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
         [Test]
@@ -111,7 +111,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "INTERNATIONAL PAINT DISCREPANCY- Customs.xlsx" });
                 var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Dis, FileTypeManager.FileFormats.Xlsx, testFile);
                 foreach (var fileType in fileTypes)
@@ -124,17 +124,17 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(ctx.EntryData.Count(), 1);
-                        Assert.AreEqual(ctx.EntryDataDetails.Count(), 1);
+                        Assert.Equals(ctx.EntryData.Count(), 1);
+                        Assert.Equals(ctx.EntryDataDetails.Count(), 1);
                     });
                 }
 
-                //Assert.IsTrue(true);
+                //Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
         [Test]
@@ -142,7 +142,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "INTERNATIONAL PAINT DISCREPANCY- Customs.xlsx" });
                 var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Xlsx, testFile);
                 foreach (var fileType in fileTypes)
@@ -155,17 +155,17 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(1, ctx.EntryData.Count());
-                        Assert.AreEqual(1, ctx.EntryDataDetails.Count());
+                        Assert.Equals(1, ctx.EntryData.Count());
+                        Assert.Equals(1, ctx.EntryDataDetails.Count());
                     });
                 }
 
-                //Assert.IsTrue(true);
+                //Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -174,7 +174,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "July-Sept 2020.xlsx" });
                 var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile);
                 foreach (var fileType in fileTypes)
@@ -187,17 +187,17 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(6961, ctx.EntryData.Where(x => x.SourceFile == testFile).Count());
-                        Assert.AreEqual(17958, ctx.EntryDataDetails.Count(x => x.EntryData.SourceFile == testFile));
+                        Assert.Equals(6961, ctx.EntryData.Where(x => x.SourceFile == testFile).Count());
+                        Assert.Equals(17958, ctx.EntryDataDetails.Count(x => x.EntryData.SourceFile == testFile));
                     });
                 }
 
-                //Assert.IsTrue(true);
+                //Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 

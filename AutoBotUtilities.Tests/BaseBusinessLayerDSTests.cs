@@ -24,15 +24,15 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var docSet = EntryDocSetUtils.GetLatestDocSet();
                 BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
-                Assert.IsTrue(true);
+                Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
 
         }
@@ -42,7 +42,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var docSet = EntryDocSetUtils.GetDocSet("Imports");
 
                 var fileNames = new System.Collections.Generic.List<string>()
@@ -52,15 +52,15 @@ namespace AutoBotUtilities.Tests
 
                 Infrastructure.Utils.ImportDocuments(docSet, fileNames);
 
-                Assert.IsTrue(true);
+                Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
 
-        }
+        }   
 
   
     }

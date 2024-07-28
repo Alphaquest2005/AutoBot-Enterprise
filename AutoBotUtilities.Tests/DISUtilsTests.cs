@@ -47,12 +47,12 @@ namespace AutoBotUtilities.Tests
             {
 
                 DISUtils.GetSubmitEntryData(fileType);
-                Assert.IsTrue(true);
+                Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 

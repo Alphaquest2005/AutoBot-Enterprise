@@ -41,22 +41,22 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true); 
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); 
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
                 EX9Utils.ImportXSalesFiles(testFile);
                 using (var ctx = new EntryDataDSContext())
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(ctx.xSalesFiles.Count(), 1);
-                        Assert.AreEqual(ctx.xSalesDetails.Count(), 1);
+                        Assert.Equals(ctx.xSalesFiles.Count(), 1);
+                        Assert.Equals(ctx.xSalesDetails.Count(), 1);
                     });
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -67,12 +67,12 @@ namespace AutoBotUtilities.Tests
             {
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
                 var fileType = EX9Utils.GetxSalesFileType(testFile);
-                Assert.AreEqual(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
+                Assert.Equals(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -82,12 +82,12 @@ namespace AutoBotUtilities.Tests
             try
             {
                 var fileType = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestXSalesFile.csv"});
-                Assert.IsTrue(fileType.Contains("TestXSalesFile.csv"));
+                Assert.That(fileType.Contains("TestXSalesFile.csv"));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 

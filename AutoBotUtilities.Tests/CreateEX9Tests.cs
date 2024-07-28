@@ -52,7 +52,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
                 var testData = SetupTest(startDate,endDate, itemNumber);
 
@@ -68,7 +68,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -78,7 +78,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
                 var testData = SetupTest(startDate, endDate, itemNumber, pCnumber, pLineNumber);
 
@@ -94,7 +94,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -111,7 +111,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
                 var testData = SetupTest(startDate,endDate, itemNumber);
 
@@ -128,7 +128,7 @@ namespace AutoBotUtilities.Tests
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -142,7 +142,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
                 var testData = SetupTest(startDate, endDate, itemNumber);
 
@@ -154,13 +154,13 @@ namespace AutoBotUtilities.Tests
                 timer.Stop();
                 Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
 
-                Assert.IsTrue(true);
+                Assert.That(true);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -171,7 +171,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
                 var testData = SetupTest(startDate, endDate, itemNumber);
 
@@ -190,14 +190,14 @@ namespace AutoBotUtilities.Tests
 
                 Assert.Multiple(() =>
                 {
-                    Assert.AreEqual(previousItemsCount, lst.Sum(x => x.Allocations.Sum(z => z.previousItems.Count)));
+                    Assert.Equals(previousItemsCount, lst.Sum(x => x.Allocations.Sum(z => z.previousItems.Count)));
                 });
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 
@@ -223,7 +223,7 @@ namespace AutoBotUtilities.Tests
             var itemSets = BaseDataModel.GetItemSets(itemNumber);
             var itemNumbers = itemSets.SelectMany(x => x.Select(z => z.ItemNumber)).DefaultIfEmpty("")
                 .Aggregate((o, n) => $"{o},{n}");
-            Assert.True(true);
+            Assert.That(true);
         }
 
             private static (DocumentDS.Business.Entities.AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
@@ -249,9 +249,9 @@ namespace AutoBotUtilities.Tests
                     .ToList();
                 Assert.Multiple(() =>
                 {
-                    Assert.AreEqual(docCount, docs.Count);
-                    Assert.AreEqual(lineCount, docs.Sum(x => x.Lines));
-                    Assert.AreEqual(totalQuantiy, docs.Sum(x => x.AsycudaDocumentItems.Sum(z => z.ItemQuantity)));
+                    Assert.Equals(docCount, docs.Count);
+                    Assert.Equals(lineCount, docs.Sum(x => x.Lines));
+                    Assert.Equals(totalQuantiy, docs.Sum(x => x.AsycudaDocumentItems.Sum(z => z.ItemQuantity)));
                 });
             }
         }

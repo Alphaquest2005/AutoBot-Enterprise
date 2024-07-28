@@ -235,7 +235,7 @@ namespace WaterNut.DataSpace.Asycuda
 
         private async Task<bool> DeleteExistingDocument()
         {
-            xcuda_ASYCUDA doc = null;
+            
             if (string.IsNullOrEmpty(a.Identification.Registration.Number))
             {
                 if (ImportOnlyRegisteredDocuments) return true;
@@ -246,9 +246,10 @@ namespace WaterNut.DataSpace.Asycuda
                 a.Identification.Registration.Date = DateTime.MinValue.ToShortDateString();
 
             //docs =  db.xcuda_ASYCUDA.Where(x => x.id == a.id).ToList();
-            doc = (await DBaseDataModel.Instance.Searchxcuda_ASYCUDA(new List<string>()
+           var  docs = (await DBaseDataModel.Instance.Searchxcuda_ASYCUDA(new List<string>()
             {
-                $"id == \"{a.id}\""
+               // $"id == \"{a.id}\""
+                $"id == \"{a.id}\" || (xcuda_Declarant.Number == \"{a.Declarant.Reference.Number.Text.FirstOrDefault()}\" && xcuda_Identification.xcuda_Registration.Number == null) "//
             }, new List<string>()
             {
                 "xcuda_Identification ",
@@ -256,7 +257,7 @@ namespace WaterNut.DataSpace.Asycuda
                 "xcuda_Identification.xcuda_Registration",
                 "xcuda_Identification.xcuda_Office_segment",
                 "xcuda_Declarant"
-            }).ConfigureAwait(false)).FirstOrDefault();
+            }).ConfigureAwait(false)).ToList();
 
             ////if (doc == null)
             ////{
@@ -305,12 +306,11 @@ namespace WaterNut.DataSpace.Asycuda
 
             //}
 
-            if (doc != null)
+            foreach (var doc in docs)
             {
                 if (!OverwriteExisting && doc.xcuda_ASYCUDA_ExtendedProperties.ImportComplete) return true;
                 await BaseDataModel.Instance.DeleteAsycudaDocument(doc.ASYCUDA_Id).ConfigureAwait(false);
             }
-
             return false;
         }
 
