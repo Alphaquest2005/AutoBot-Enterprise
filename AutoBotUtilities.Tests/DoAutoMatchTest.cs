@@ -33,7 +33,7 @@ namespace AutoBotUtilities.Tests
         public async Task CanDoAutoMatch()
         {
 
-            if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+            if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
             
             var lst = new AdjustmentQSContext().AdjustmentDetails
                 .Where(x => x.ItemNumber == @"DAI/JB4U80-3000IB" || x.ItemNumber == "DAI/JB4U80-300IB")
@@ -61,7 +61,7 @@ namespace AutoBotUtilities.Tests
             Assert.Multiple(() =>
             {
 
-                Assert.IsTrue(res == 2 && ares == 1);
+                Assert.That(res == 2 && ares == 1);
                 Assert.That(elapsed, Is.LessThanOrEqualTo(TimeSpan.FromSeconds(1)));
             });
            
@@ -71,7 +71,7 @@ namespace AutoBotUtilities.Tests
         public async Task CanDoAutoMatchAllPerformance()
         {
 
-            if (Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+            if (Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
             List<AdjustmentDetail> lst = null;
             var elapsedGetAdjustmentDetails = Infrastructure.Utils.Time(() => lst = new AdjustmentQSContext().AdjustmentDetails.Take(1000).ToList());
 

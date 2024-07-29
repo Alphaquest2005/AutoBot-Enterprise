@@ -26,7 +26,8 @@ namespace WaterNut.DataSpace
 
 		static OldSalesAllocator()
 		{
-		}
+            Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
+        }
 
 		public OldSalesAllocator()
 		{

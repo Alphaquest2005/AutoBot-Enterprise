@@ -54,7 +54,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "01987.pdf" });
                 var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
                 foreach (var fileType in fileTypes)
@@ -67,20 +67,20 @@ namespace AutoBotUtilities.Tests
                         Assert.Multiple(() =>
                         {
 
-                            Assert.AreEqual(ctx.ShipmentInvoice.Count(), 1);
-                            Assert.AreEqual(ctx.ShipmentInvoiceDetails.Count(), 8);
+                            Assert.Equals(ctx.ShipmentInvoice.Count(), 1);
+                            Assert.Equals(ctx.ShipmentInvoiceDetails.Count(), 8);
                         });
                     }
 
 
                 }
 
-                Assert.IsTrue(true);
+                Assert.That(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Assert.IsTrue(false);
+                Assert.That(false);
             }
         }
 

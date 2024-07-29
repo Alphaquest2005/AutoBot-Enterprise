@@ -85,8 +85,8 @@ namespace WaterNut.DataSpace
                                                              InventoryItems ON CounterPointPODetails.ITEM_NO COLLATE Database_Default = InventoryItems.ItemNumber COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId INNER JOIN
                                                              InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId INNER JOIN
                                                              InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
-                                    WHERE        (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationSettingsId) AND (EntryData.EntryDataDate = @Date) AND 
-                                                             (InventorySources.Name = N'POS')
+                                    WHERE        (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationSettingsId) AND (EntryData.EntryDataDate = @Date)
+                                                           -- AND   (InventorySources.Name = N'POS') --- took out because same item can be in multiple sources
                                     GROUP BY EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
                                                              CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT
 ",

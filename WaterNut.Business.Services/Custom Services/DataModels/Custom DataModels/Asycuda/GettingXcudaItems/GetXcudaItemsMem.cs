@@ -18,6 +18,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             lock (Identity)
             {
+                try
+                {
+
+               
                 if (_asycudaItems != null) return;
                 List<int> res;
                 using (var ctx = new AllocationDSContext { StartTracking = false })
@@ -70,9 +74,15 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                     _asycudaItems = new ConcurrentDictionary<int, xcuda_Item>(aelst.ToDictionary(x => x.Item_Id, x => x));
                 }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
 
-              
             }
+
         }
 
         public List<xcuda_Item> Execute(int? asycudaDocumentSetId, List<(string ItemNumber, int InventoryItemId)> itemslst)
@@ -82,6 +92,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return _asycudaItems
                     .Join(xlst, a => a.Key, i => i, (a, i) => a)
                     .Where(x => asycudaDocumentSetId == null || x.Value.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Where(x => x.Value.AsycudaDocument.Cancelled != true)
+                    .Where(x => x.Value.IsAssessed == true)
                     .Select(x => x.Value)
                     .ToList();
             }

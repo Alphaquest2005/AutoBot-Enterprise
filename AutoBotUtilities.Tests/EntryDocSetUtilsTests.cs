@@ -35,7 +35,7 @@ namespace AutoBotUtilities.Tests
         {
             var docSets = EntryDocSetUtils.GetLatestModifiedDocSet();
             foreach (var res in docSets.Select(EntryDocSetUtils.GetRelatedDocuments))
-                Assert.IsTrue(res.First().First().xcuda_ASYCUDA_ExtendedProperties != null);
+                Assert.That(res.First().First().xcuda_ASYCUDA_ExtendedProperties != null);
         }
 
 

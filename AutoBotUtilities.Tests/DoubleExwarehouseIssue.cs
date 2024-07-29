@@ -39,7 +39,7 @@ namespace AutoBotUtilities.Tests
                 .Wait();
 
 
-            if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+            if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
             var startDate = DateTime.Parse("5/1/2022");
           
@@ -67,7 +67,7 @@ namespace AutoBotUtilities.Tests
 
             var res =  AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
 
-            Assert.IsEmpty(res);
+            Assert.That(res, Is.Empty);
 
 
         }
