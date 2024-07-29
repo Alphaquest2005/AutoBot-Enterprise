@@ -1573,7 +1573,7 @@ namespace WaterNut.DataSpace
                     var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc)
                         .Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum(); //* 0.01
                     ////////// added total items to prevent over weight due to minimum 0.01 requirement
-                    var val = t.GetValueOrDefault() - f.GetValueOrDefault(); // + ; 
+                    var val = f > t ? t.GetValueOrDefault() : t.GetValueOrDefault() - f.GetValueOrDefault(); // + ; 
                     CIFValues.Add(doc, val);
                     ItemQuantities.Add(doc, totalItems.GetValueOrDefault());
                     totalfob += val;
