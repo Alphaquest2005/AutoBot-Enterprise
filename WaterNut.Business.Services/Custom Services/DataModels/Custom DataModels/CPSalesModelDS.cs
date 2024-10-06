@@ -3,10 +3,13 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using CounterPointQS.Business.Entities;
+using DocumentDS.Business.Entities;
 using WaterNut.DataLayer;
 
 namespace WaterNut.DataSpace
 {
+    using AsycudaDocumentSet = global::DocumentDS.Business.Entities.AsycudaDocumentSet;
+
     public class CPSalesModel
     {
         static CPSalesModel()
@@ -22,7 +25,8 @@ namespace WaterNut.DataSpace
             if (docSetId != 0)
             {
                 StatusModel.Timer("Downloading CP Sales...");
-                using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
+                var sysDocSet = GetSalesSysDocSet();
+                using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
                 {
                     ctx.ExecuteStoreCommand(@"
                             
@@ -44,6 +48,13 @@ namespace WaterNut.DataSpace
                                     INSERT INTO AsycudaDocumentSetEntryData
                                                       (EntryData_Id, AsycudaDocumentSetId)
                                     SELECT EntryData.EntryData_Id, @AsycudaDocumentSetId AS Expr1
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.INVNO = @INVNumber)
+
+                                    INSERT INTO AsycudaDocumentSetEntryData
+                                                      (EntryData_Id, AsycudaDocumentSetId)
+                                    SELECT EntryData.EntryData_Id, @SalesDocSetId AS Expr1
 									FROM    CounterPointSales INNER JOIN
 													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
 									WHERE (CounterPointSales.INVNO = @INVNumber)
@@ -89,6 +100,7 @@ namespace WaterNut.DataSpace
                                     WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
                                                      (EntryData.ApplicationSettingsId = @ApplicationSettingsId) AND (InventorySources.Name = N'POS')",
                         new SqlParameter("@AsycudaDocumentSetId", docSetId),
+                        new SqlParameter("@SalesDocSetId", sysDocSet.AsycudaDocumentSetId),
                         new SqlParameter("@INVNumber", c.InvoiceNo),
                         new SqlParameter("@Date", c.Date),
                         new SqlParameter("@ApplicationSettingsId",
@@ -105,7 +117,8 @@ namespace WaterNut.DataSpace
         public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
         {
             StatusModel.Timer("Downloading CP Sales Data...");
-            using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
+            var sysDocSet = GetSalesSysDocSet();
+            using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
             {
                 ctx.ExecuteStoreCommand(@"
 
@@ -127,6 +140,15 @@ namespace WaterNut.DataSpace
 									FROM    CounterPointSales INNER JOIN
 													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
 									WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate)
+
+
+                                    INSERT INTO AsycudaDocumentSetEntryData
+                                                      (EntryData_Id, AsycudaDocumentSetId)
+                                    SELECT DISTINCT EntryData.EntryData_Id, @SalesDocSetId AS Expr1
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate)
+
 
                                     DELETE From EntryData_Sales
                                     Where EntryData_Id in (SELECT DISTINCT EntryData.EntryData_Id
@@ -174,6 +196,7 @@ namespace WaterNut.DataSpace
 									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (CounterPointSalesDetails.ITEM_DESCR IS NOT NULL) 
 													 AND (InventorySources.Name = N'POS')",
                     new SqlParameter("@AsycudaDocumentSetId", docSetId),
+                    new SqlParameter("@SalesDocSetId", sysDocSet.AsycudaDocumentSetId),
                     new SqlParameter("@StartDate", startDate),
                     new SqlParameter("@EndDate", endDate),
                     new SqlParameter("@ApplicationSettingsId",
@@ -181,6 +204,13 @@ namespace WaterNut.DataSpace
             }
 
             StatusModel.StopStatusUpdate();
+        }
+
+        private static AsycudaDocumentSet GetSalesSysDocSet()
+        {
+            var sysDocSet = EntryDocSetUtils.GetAsycudaDocumentSet("Sales", true);
+            if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Sales'");
+            return sysDocSet;
         }
     }
 }

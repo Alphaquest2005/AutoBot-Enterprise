@@ -21,8 +21,13 @@ namespace WaterNut.DataSpace
             if (c == null) return;
             if (asycudaDocumentSetId != 0)
             {
+
+                var sysDocSet = EntryDocSetUtils.GetAsycudaDocumentSet("Purchase Orders", true);
+                if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Purchase Orders'");
+
+
                 StatusModel.Timer("Downloading CP Data...");
-                using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
+                using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
                 {
                     await ctx.ExecuteStoreCommandAsync(@"
 
@@ -48,6 +53,15 @@ namespace WaterNut.DataSpace
 									FROM    CounterPointPOs INNER JOIN
 													 EntryData ON CounterPointPOs.PO_NO COLLATE Database_Default = EntryData.EntryDataId COLLATE Database_Default AND CounterPointPOs.DATE = EntryData.EntryDataDate
 									WHERE (CounterPointPOs.PO_NO = @PONumber) AND (CounterPointPOs.DATE = @Date) and entrydata.ApplicationSettingsId = @ApplicationSettingsId
+
+
+                                    INSERT INTO AsycudaDocumentSetEntryData
+                                                      (EntryData_Id, AsycudaDocumentSetId)
+                                   SELECT EntryData.EntryData_Id, @PoDocSetId AS Expr1
+									FROM    CounterPointPOs INNER JOIN
+													 EntryData ON CounterPointPOs.PO_NO COLLATE Database_Default = EntryData.EntryDataId COLLATE Database_Default AND CounterPointPOs.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointPOs.PO_NO = @PONumber) AND (CounterPointPOs.DATE = @Date) and entrydata.ApplicationSettingsId = @ApplicationSettingsId
+
 
                                     INSERT INTO EntryData_PurchaseOrders
                                                       (EntryData_Id, PONumber)
@@ -91,6 +105,7 @@ namespace WaterNut.DataSpace
                                                              CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT
 ",
                             new SqlParameter("@AsycudaDocumentSetId", asycudaDocumentSetId),
+                            new SqlParameter("@PoDocSetId", sysDocSet.AsycudaDocumentSetId),
                             new SqlParameter("@PONumber", c.PurchaseOrderNo),
                             new SqlParameter("@Date", c.Date),
                             new SqlParameter("@ApplicationSettingsId",
