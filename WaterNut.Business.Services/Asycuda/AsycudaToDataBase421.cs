@@ -847,7 +847,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         {
             try
             {
-                using (var ctx = new InventoryDSContext())
+                using (var ctx = new InventoryDSContext(){StartTracking = true})
                 {
                     var iv = ctx.InventoryItems.FirstOrDefault(x =>
                         x.ItemNumber == ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() && x.ApplicationSettingsId == da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId);
@@ -880,10 +880,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                     }
 
                     if (iv == null || !updateItemsTariffCode || iv.TariffCode == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()) return iv;
-                    iv.StartTracking();
+                    //iv.StartTracking();
                     iv.TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
                     
-                    ctx.ApplyChanges(iv);
+                    ctx.SingleUpdate(iv);
                     ctx.SaveChanges();
 
 
