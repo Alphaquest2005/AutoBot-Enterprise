@@ -66,158 +66,169 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             
         }
 
-        public  new async Task Send2Excel()
+        public new async Task Send2Excel()
         {
             IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> lst = null;
             using (var ctx = new AsycudaSalesAndAdjustmentAllocationsExRepository())
             {
-                lst = await ctx.GetAsycudaSalesAndAdjustmentAllocationsExesByExpressionNav(vloader.FilterExpression, vloader.NavigationExpression).ConfigureAwait(continueOnCapturedContext: false);
+                lst = await ctx
+                    .GetAsycudaSalesAndAdjustmentAllocationsExesByExpressionNav(vloader.FilterExpression,
+                        vloader.NavigationExpression).ConfigureAwait(continueOnCapturedContext: false);
             }
-            if (lst == null || !lst.Any())
+
+            var asycudaSalesAndAdjustmentAllocationsExes = lst.ToList();
+            if (!asycudaSalesAndAdjustmentAllocationsExes.Any())
             {
                 MessageBox.Show("No Data to Send to Excel");
                 return;
             }
-            var s = new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsExExcelLine, List<AsycudaSalesAndAdjustmentAllocationsExExcelLine>>
-            {
-                dataToPrint = lst.OrderBy(x => x.AllocationId).Select(x => new AsycudaSalesAndAdjustmentAllocationsExExcelLine
+
+            var s =
+                new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsExExcelLine,
+                    List<AsycudaSalesAndAdjustmentAllocationsExExcelLine>>
                 {
+                    dataToPrint = asycudaSalesAndAdjustmentAllocationsExes
+                        .OrderBy(x => x.AllocationId)
+                        .Select(x => new AsycudaSalesAndAdjustmentAllocationsExExcelLine
+                        {
 
-                    TotalValue = x.TotalValue,
+                            TotalValue = x.TotalValue,
 
 
-                    AllocatedValue = x.AllocatedValue,
+                            AllocatedValue = x.AllocatedValue,
 
 
-                    Status = x.Status,
+                            Status = x.Status,
 
 
-                    QtyAllocated = x.QtyAllocated,
+                            QtyAllocated = x.QtyAllocated,
 
 
-                    SANumber = x.SANumber,
+                            SANumber = x.SANumber,
 
 
-                    InvoiceDate = x.InvoiceDate,
+                            InvoiceDate = x.InvoiceDate,
 
 
-                    CustomerName = x.CustomerName,
+                            CustomerName = x.CustomerName,
 
 
-                    SalesQuantity = x.SalesQuantity,
+                            SalesQuantity = x.SalesQuantity,
 
 
-                    SalesQtyAllocated = x.SalesQtyAllocated,
+                            SalesQtyAllocated = x.SalesQtyAllocated,
 
 
-                    InvoiceNo = x.InvoiceNo,
+                            InvoiceNo = x.InvoiceNo,
 
 
-                    SalesLineNumber = x.SalesLineNumber,
+                            SalesLineNumber = x.SalesLineNumber,
 
 
-                    ItemNumber = x.ItemNumber,
+                            ItemNumber = x.ItemNumber,
 
 
-                    ItemDescription = x.ItemDescription.Replace("\"","\"\""),
+                            ItemDescription = x.ItemDescription?.Replace("\"", "\"\""),
 
 
-                    DutyFreePaid = x.DutyFreePaid,
+                            DutyFreePaid = x.DutyFreePaid,
 
 
-                    Cost = x.Cost,
+                            Cost = x.Cost,
 
 
-                    Total_CIF_itm = x.Total_CIF_itm,
+                            Total_CIF_itm = x.Total_CIF_itm,
 
 
-                    DutyLiability = x.DutyLiability,
+                            DutyLiability = x.DutyLiability,
 
 
-                    TaxAmount = x.TaxAmount,
+                            TaxAmount = x.TaxAmount,
 
 
-                    SalesFactor = x.SalesFactor,
+                            SalesFactor = x.SalesFactor,
 
 
-                    pReferenceNumber = x.pReferenceNumber,
+                            pReferenceNumber = x.pReferenceNumber,
 
 
-                    pRegistrationDate = x.pRegistrationDate,
+                            pRegistrationDate = x.pRegistrationDate,
 
 
-                    pCNumber = x.pCNumber,
+                            pCNumber = x.pCNumber,
 
 
-                    pLineNumber = x.pLineNumber,
+                            pLineNumber = x.pLineNumber,
 
 
-                    pQuantity = x.pQuantity,
+                            pQuantity = x.pQuantity,
 
 
-                    pQtyAllocated = x.pQtyAllocated,
+                            pQtyAllocated = x.pQtyAllocated,
 
 
-                    PiQuantity = x.PiQuantity,
+                            PiQuantity = x.PiQuantity,
 
 
-                    pExpiryDate = x.pExpiryDate,
+                            pExpiryDate = x.pExpiryDate,
 
 
-                    pTariffCode = x.pTariffCode,
+                            pTariffCode = x.pTariffCode,
 
 
-                    pIsAssessed = x.pIsAssessed,
+                            pIsAssessed = x.pIsAssessed,
 
 
-                    DoNotAllocateSales = x.DoNotAllocateSales,
+                            DoNotAllocateSales = x.DoNotAllocateSales,
 
 
-                    DoNotAllocatePreviousEntry = x.DoNotAllocatePreviousEntry,
+                            DoNotAllocatePreviousEntry = x.DoNotAllocatePreviousEntry,
 
 
-                    WarehouseError = x.WarehouseError,
+                            WarehouseError = x.WarehouseError,
 
 
-                    TariffCode = x.TariffCode,
+                            TariffCode = x.TariffCode,
 
 
-                    Invalid = x.Invalid,
+                            Invalid = x.Invalid,
 
 
-                    pItemNumber = x.pItemNumber,
+                            pItemNumber = x.pItemNumber,
 
 
-                    Type = x.Type,
+                            Type = x.Type,
 
 
-                    AssessmentDate = x.AssessmentDate,
+                            AssessmentDate = x.AssessmentDate,
 
 
-                    xStatus = x.xStatus,
+                            xStatus = x.xStatus,
 
 
-                    xReferenceNumber = x.xReferenceNumber,
+                            xReferenceNumber = x.xReferenceNumber,
 
 
-                    xCNumber = x.xCNumber,
+                            xCNumber = x.xCNumber,
 
 
-                    xLineNumber = x.xLineNumber,
+                            xLineNumber = x.xLineNumber,
 
 
-                    xRegistrationDate = x.xRegistrationDate,
+                            xRegistrationDate = x.xRegistrationDate,
 
 
-                    xQuantity = x.xQuantity,
+                            xQuantity = x.xQuantity,
 
-                    AllocationId = x.AllocationId
+                            AllocationId = x.AllocationId
 
-                }).ToList()
-            };
+                        })
+                        .ToList()
+                };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
             {
-                await Task.Factory.StartNew(s.GenerateReport, CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+                await Task.Factory.StartNew(s.GenerateReport, CancellationToken.None, TaskCreationOptions.None, sta)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -882,7 +893,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     // "&& (ItemNumber == \"WA99004\")" +//A002416,A002402,X35019044,AB111510
                     // "&&  PreviousItem_Id == 388376" +
                     " && PreviousItem_Id != null" +
-                    //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
+                    //" && (xBond_Item_Id == 0)" + //not relevant because it could be assigned to another sale but not exwarehoused
+                    " && AsycudaSalesAllocationsPIData.Count == 0" +
                     " && (QtyAllocated != null && EntryDataDetailsId != null)" + 
                     " && (PiQuantity < pQtyAllocated)" +
                     //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
@@ -951,9 +963,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                    // "&& (ItemNumber == \"WA99004\")" +//A002416,A002402,X35019044,AB111510
                    // "&&  PreviousItem_Id == 388376" +
                    " && PreviousItem_Id != null" +
-                   //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
+                    //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
+                   " && AsycudaSalesAllocationsPIData.Count == 0" +
                    " && (QtyAllocated != null && EntryDataDetailsId != null)" +
-                   //  " && (PiQuantity < pQtyAllocated)" +
+                    " && (PiQuantity < pQtyAllocated)" +
                    //" && (pQuantity > PiQuantity)" + disabled this to allow for over exwarehousing - the audit
                    //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
                    " && (Status == null || Status == \"\")" +

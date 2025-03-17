@@ -164,7 +164,11 @@ namespace WaterNut.DataSpace
             }
         }
 
-       
+        public static int GetDefaultCustomsOperation()
+        {
+            return (int)(BaseDataModel.Instance.CurrentApplicationSettings.AllowXBond == "Visible" ? CustomsOperations.Warehouse : CustomsOperations.Import);
+        }
+
 
         #region IAsyncInitialization Members
 

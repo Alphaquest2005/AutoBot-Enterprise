@@ -1294,38 +1294,44 @@ namespace AutoBotUtilities
                         TrackingState = TrackingState.Added
                     });
 
-
-                var shipment = new Shipment
-                {
-                    ShipmentName = "NextShipment",
-                    ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
-                    BLNumber = manifests.LastOrDefault()?.WayBill?? bl?.BLNumber,
-                    WeightKG = manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
-                    Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
-                    ExpectedEntries = invoices.Count(),
-                    TotalInvoices = invoices.Select(x => x.Id).Count(),
-                    FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                    Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
-                    Origin = "US",
-                    Packages = bl?.PackagesNo ?? 0,
-                    Location = manifests.LastOrDefault()?.LocationOfGoods,
-                    Office = manifests.LastOrDefault()?.CustomsOffice,
-                    TrackingState = TrackingState.Added
-                };
-
-                //if (shipment.Currency.Length != 3)
-                //    throw new ApplicationException("Currency must be 3 letters");
-
-
-                shipments.Add(shipment);
-
-                shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
-                    new ShipmentAttachments
+                Shipment manifestShipments(ShipmentManifest manifest) =>
+                    new Shipment
                     {
-                        Attachments = x,
-                        Shipment = shipment,
+                        ShipmentName = "NextShipment",
+                        ManifestNumber = manifest.RegistrationNumber,
+                        BLNumber = manifest.WayBill ?? bl?.BLNumber,
+                        WeightKG = manifest?.GrossWeightKG ?? bl?.WeightKG,
+                        Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
+                        ExpectedEntries = invoices.Count(),
+                        TotalInvoices = invoices.Select(x => x.Id).Count(),
+                        FreightCurrency = manifest.FreightCurrency ?? freightInvoices.LastOrDefault()?.Currency ?? "USD",
+                        Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
+                        Origin = "US",
+                        Packages = manifest?.Packages ?? bl?.PackagesNo ?? 0,
+                        Location = manifest.LocationOfGoods,
+                        Office = manifest.CustomsOffice,
                         TrackingState = TrackingState.Added
-                    }));
+                    };
+
+                foreach (var shipment in manifests.Select(manifestShipments))
+                {
+                    //if (shipment.Currency.Length != 3)
+                    //    throw new ApplicationException("Currency must be 3 letters");
+
+
+                    shipments.Add(shipment);
+                    
+                    shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
+                        new ShipmentAttachments
+                        {
+                            Attachments = x,
+                            Shipment = shipment,
+                            TrackingState = TrackingState.Added
+                        }));
+                }
+
+
+                
             }
         }
 

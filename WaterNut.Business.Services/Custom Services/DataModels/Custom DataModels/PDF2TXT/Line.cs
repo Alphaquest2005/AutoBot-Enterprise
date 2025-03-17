@@ -16,9 +16,9 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        //private int Instance { get; set; } = 0;
+        
 
-        public bool Read(string line, int lineNumber, string section)
+        public bool Read(string line, int lineNumber, string section, int instance)
         {
             try
             {
@@ -29,13 +29,13 @@ namespace WaterNut.DataSpace
                         : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                 if (matches.Count == 0) return false;
                 var values = new Dictionary<(Fields Fields, int Instance), string>();
-                var instance = 0;
+                //var instance = 0;
 
                 
 
                 foreach (Match match in matches)
                 {
-                    instance += 1;
+                  //  instance += 1;
 
                     
 

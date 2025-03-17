@@ -14,39 +14,63 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         public async Task<(List<AsycudaSalesAllocations> allocations, List<EntryDataDetails> entryDataDetails, List<xcuda_Item> pItems)> Execute(List<PreAllocations> preAllocations)
         {
             List<AsycudaSalesAllocations> allocations = null;
+            var res = new List<PreAllocations>();
 
             var overExWarehoused = preAllocations
+                .Where(x => x.EntryDataDetailsId != 0)
                 .GroupBy(x => x.EntryDataDetailsId)
                 .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) > x.First().SalesQuantity);
             var firstofoverExwarehoused = overExWarehoused
                 .Select(x => x.First())
                 .ToList();
-
+            res.AddRange(firstofoverExwarehoused);
             //var overExWarehousedAllocations = GetAllocationsFromOverExwarehoused(overExWarehoused);
 
             var splitrows = preAllocations
+                .Where(x => x.EntryDataDetailsId != 0)
                 .GroupBy(x => x.EntryDataDetailsId)
                 .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) < x.First().SalesQuantity)
                 .SelectMany(x => x.ToList())
                 .ToList();
+            res.AddRange(splitrows);
 
             var partialRows = preAllocations
+                .Where(x => x.EntryDataDetailsId != 0)
                 .GroupBy(x => x.EntryDataDetailsId)
                 .Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) < x.First().SalesQuantity)
                 .SelectMany(x => x.ToList())
-                .ToList();
+                .ToList(); 
+            res.AddRange(partialRows);
 
             var normalrows = preAllocations
+                .Where(x => x.EntryDataDetailsId != 0)
                 .GroupBy(x => x.EntryDataDetailsId)
                 .Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) == x.First().SalesQuantity)
                 .SelectMany(x => x.ToList())
                 .ToList();
-
-            var res = new List<PreAllocations>();
-            res.AddRange(firstofoverExwarehoused);
-            res.AddRange(splitrows);
-            res.AddRange(partialRows);
             res.AddRange(normalrows);
+
+            var nonSalesRows = preAllocations
+                .Where(x => x.EntryDataDetailsId == 0)
+                .Where(x => !res.Any(z => z.XItemId ==  x.XItemId))
+                .GroupBy(x => x.PItemId)
+                //.Where(x => x.Count() == 1 && x.Sum(z => z.QtyAllocated) < x.First().)
+                .SelectMany(x => x.ToList())
+                .ToList();
+            res.AddRange(nonSalesRows);
+
+            var d = nonSalesRows.Where(x => x.XItemId == 228319).ToList();
+            var f = normalrows.Where(x => x.XItemId == 228319).ToList();
+            var h = partialRows.Where(x => x.XItemId == 228319).ToList();
+            var j = splitrows.Where(x => x.XItemId == 228319).ToList();
+            var gj = overExWarehoused.SelectMany(z => z.ToList()).Where(x => x.XItemId == 228319).ToList();
+
+            
+            
+            
+           
+            
+            
 
             res = res.OrderBy(x => x.InvoiceDate).ToList();
 

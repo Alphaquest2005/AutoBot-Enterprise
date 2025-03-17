@@ -955,6 +955,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ManifestImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFSimplifiedDeclarationImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\POCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawDataFile.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryData.cs" />
@@ -968,6 +969,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveItemHistory.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SimplifiedDeclarationImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ValidateEntryDataProcessor.cs" />

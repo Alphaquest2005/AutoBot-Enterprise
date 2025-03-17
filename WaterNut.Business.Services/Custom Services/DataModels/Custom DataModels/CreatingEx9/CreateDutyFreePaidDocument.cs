@@ -602,20 +602,18 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 /// 
                 if (checkQtyAllocatedGreaterThanPiQuantity)
                 {
-                   
-                    //var psum = mypod.EntlnData.pDocumentItem.previousItems
-                    //    .DistinctBy(x => x.PreviousItem_Id)
-                    //    .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
-                    //if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
-                    //{
-                    //    updateXStatus(mypod.Allocations,
-                    //        $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {
-                    //                mypod.EntlnData.pDocumentItem.QtyAllocated
-                    //            } PiQuantity: {psum}");
-                    //    return 0;
-                    //}
 
-                   
+                    var psum = mypod.EntlnData.pDocumentItem.previousItems
+                        .DistinctBy(x => x.PreviousItem_Id)
+                        .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
+                    if (mypod.EntlnData.pDocumentItem.QtyAllocated == psum)
+                    {
+                        UpdateXStatus(mypod.Allocations,
+                            $@"Failed QtyAllocated == PiQuantity:: QtyAllocated: {mypod.EntlnData.pDocumentItem.QtyAllocated} PiQuantity: {psum}", ref sql);
+                        return (0, sql);
+                    }
+
+
                 }
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic

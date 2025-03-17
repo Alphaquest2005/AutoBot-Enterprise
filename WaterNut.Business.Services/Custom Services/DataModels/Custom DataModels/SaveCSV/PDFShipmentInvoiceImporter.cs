@@ -9,32 +9,34 @@ namespace WaterNut.DataSpace
 {
     public class PDFShipmentInvoiceImporter
     {
-        private SaveCsvEntryData _saveCsvEntryData;
         private InventoryImporter _inventoryImporter = new InventoryImporter();
         private ShipmentInvoiceImporter _shipmentInvoiceImporter = new ShipmentInvoiceImporter();
 
 
         public async Task<bool> Process(DataFile dataFile)
         {
-            if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                dataFile.FileType.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF)
-            {
-                var file = new DataFile(dataFile.FileType, dataFile.DocSet,dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath,
-                    Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
+            if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.ShipmentInvoice
+                || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
+
+            await ImportInventory(dataFile).ConfigureAwait(false);
+
+
+            _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
+                dataFile.DroppedFilePath, dataFile.Data, null);
+
+            return true;
+
+        }
+
+        private Task ImportInventory(DataFile dataFile)
+        {
+            var file = new DataFile(dataFile.FileType, dataFile.DocSet,dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath,
+                Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
                         ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"]))
-                        .Where(x => x != null)
-                        .SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+                    .Where(x => x != null)
+                    .SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
 
-                await _inventoryImporter.ImportInventory( file).ConfigureAwait(false);
-
-
-                _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
-                    dataFile.DroppedFilePath, dataFile.Data, null);
-
-                return true;
-            }
-
-            return false;
+            return _inventoryImporter.ImportInventory( file);
         }
     }
 }

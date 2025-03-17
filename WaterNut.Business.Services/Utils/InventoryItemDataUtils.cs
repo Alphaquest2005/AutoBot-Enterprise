@@ -107,6 +107,10 @@ namespace WaterNut.Business.Services.Utils
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                 Description = ((string)item.Key.ItemDescription).Truncate(255), // quicker trust database than file
                 ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
+                TariffCode = //create a function that call deepseek api with item description and return tariff code
+                    string.IsNullOrEmpty(item.Key.TariffCode)
+                        ? DeepSeekApi.GetTariffCode(item.Key.ItemDescription)
+                        : item.Key.TariffCode,
                 InventoryItemSources = new List<InventoryItemSource>()
                 {
                     new InventoryItemSource(true)

@@ -131,6 +131,7 @@ namespace WaterNut.Business.Services.Utils
             public const string Info = "Info";
             public const string xSales = "xSales";
             public const string ItemHistory = "ItemHistory";
+            public const string SimplifiedDeclaration = "Simplified Declaration";
         }
 
 

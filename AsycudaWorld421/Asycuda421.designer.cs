@@ -808,6 +808,10 @@ namespace Asycuda421
                 file.Close();
                 return Deserialize(xmlString);
             }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }   
             finally
             {
                 if ((file != null))

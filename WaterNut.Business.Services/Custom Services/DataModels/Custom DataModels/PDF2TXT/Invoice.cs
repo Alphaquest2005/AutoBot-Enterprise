@@ -109,24 +109,24 @@ namespace WaterNut.DataSpace
                         table.Add(line.OCR_Lines.Fields.First().EntityType, new List<BetterExpando>() { itm });
 
 
+                    var instances = values.SelectMany(z => z.Value).GroupBy(x => x.Key.instance).ToList();
 
                     for (int i = 0; i <= values.Count() - 1; i++)
                     {
                         var value = values[i];
 
-                        var instances = value.Value.GroupBy(x => x.Key.instance).ToList();
-                        foreach (var instance in instances)
-                        {
-                            itm = CreateOrGetDitm(part, line, i, itm, ref ditm);
+                        //foreach (var instance in instances)
+                        //{
+                            itm = CreateOrGetDitm(part, line, i, itm, ref ditm, lst);
 
                             ditm["FileLineNumber"] = value.Key.lineNumber + 1;
-                            ditm["Instance"] = instance.Key;
+                            ditm["Instance"] = i;//instance.Key;
                             ditm["Section"] = value.Key.section;
 
 
 
 
-                            foreach (var field in instance)
+                            foreach (var field in value.Value)
                             {
                                 if (ditm.ContainsKey(field.Key.fields.Field) &&
                                     (field.Key.fields.AppendValues == true || line.OCR_Lines.Fields.Select(z => z.Field)
@@ -144,8 +144,8 @@ namespace WaterNut.DataSpace
 
                             if (ditm.Count == 1) continue;
                             if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
-                                lst.Add(itm);
-                        }
+                                if(lst.ElementAtOrDefault(i) == null) lst.Add(itm);
+                        //}
                     }
                 }
 
@@ -201,24 +201,32 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static BetterExpando CreateOrGetDitm(Part part, Line line, int i, BetterExpando itm, ref IDictionary<string, object> ditm)
+        private static BetterExpando CreateOrGetDitm(Part part, Line line, int i, BetterExpando itm,
+            ref IDictionary<string, object> ditm, List<IDictionary<string, object>> lst)
         {
             if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
             {
-                if (line.OCR_Lines.IsColumn != true || (line.OCR_Lines.IsColumn == true &&
-                                                        i > table[line.OCR_Lines.Fields.First().EntityType]
-                                                            .Count - 1))
+                if (line.OCR_Lines?.IsColumn == true)
                 {
-                    itm = new BetterExpando();
-                    if (line.OCR_Lines.IsColumn == true)
+                    if (i > table[line.OCR_Lines.Fields.First().EntityType]
+                            .Count - 1)
                     {
-                        table[line.OCR_Lines.Fields.First().EntityType].Add(itm);
+                        itm = new BetterExpando();
+                        if (line.OCR_Lines.IsColumn == true)
+                        {
+                            table[line.OCR_Lines.Fields.First().EntityType].Add(itm);
+                        }
+                    }
+                    else
+                    {
+                        itm = table[line.OCR_Lines.Fields.First().EntityType][i];
                     }
                 }
                 else
                 {
-                    itm = table[line.OCR_Lines.Fields.First().EntityType][i];
+                    itm = (BetterExpando)lst.ElementAtOrDefault(i) ?? new BetterExpando();
                 }
+                
 
                 ditm = ((IDictionary<string, object>)itm);
             }

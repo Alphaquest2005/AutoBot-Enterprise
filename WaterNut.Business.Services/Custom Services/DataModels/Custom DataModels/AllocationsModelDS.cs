@@ -329,6 +329,14 @@ namespace WaterNut.DataSpace
                                              EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
                             WHERE (EntryDataDetails.InventoryItemId in ({lst}))
 
+                            -- clear non sales allocations too
+
+                            DELETE FROM AsycudaSalesAllocations
+                            FROM    AsycudaSalesAllocations INNER JOIN
+                                                AsycudaItemBasicInfo ON AsycudaSalesAllocations.PreviousItem_Id = AsycudaItemBasicInfo.Item_Id inner join
+					                            xcuda_Inventory_Item on AsycudaSalesAllocations.PreviousItem_Id = xcuda_Inventory_Item.Item_Id
+                            WHERE (AsycudaSalesAllocations.EntryDataDetailsId = 0) and AsycudaSalesAllocations.PreviousItem_Id is not null and (xcuda_Inventory_Item.InventoryItemId in ({lst}))
+
                             UPDATE xcuda_Item
                             SET         DFQtyAllocated = 0, DPQtyAllocated = 0
                             FROM    xcuda_Item INNER JOIN

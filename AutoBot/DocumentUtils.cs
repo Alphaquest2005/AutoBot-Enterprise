@@ -83,6 +83,28 @@ namespace AutoBot
             }
         }
 
+        public static void ImportEntries(bool overwriteExisting, string fileLst)
+        {
+            try
+            {
+                Console.WriteLine("Import Entries");
+
+                var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
+
+                if (ImportEntries(overwriteExisting, fileTypes, fileLst)) return;
+
+                //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
+
+                EntryDocSetUtils.RemoveDuplicateEntries();
+                EntryDocSetUtils.FixIncompleteEntries();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         private static bool ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, DateTime? getMinFileDate = null)
         {
             if (!fileTypes.Any()) return true;
@@ -97,6 +119,18 @@ namespace AutoBot
             return false;
         }
 
+        private static bool ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, string filelst)
+        {
+            if (!fileTypes.Any()) return true;
+
+            var docSetId = GetDefaultAsycudaDocumentSetId();
+
+            var fileTypeFiles = GetFileTypeFiles(fileTypes, docSetId, filelst);
+
+            ImportEntries(overwriteExisting, fileTypeFiles);
+            return false;
+        }
+
         private static IEnumerable<(FileTypes FileType, List<FileInfo> Files)> GetFileTypeFiles(List<FileTypes> fileTypes, int docSetId, DateTime lastfiledate)
         {
             var directoryInfo = GetDocSetDirectoryInfo(docSetId);
@@ -105,6 +139,18 @@ namespace AutoBot
                 .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
                 .Where(x => x.LastWriteTime >= lastfiledate)
                 .ToList()));
+            return fileTypeFiles;
+        }
+
+        private static IEnumerable<(FileTypes FileType, List<FileInfo> Files)> GetFileTypeFiles(List<FileTypes> fileTypes, int docSetId, string filelst)
+        {
+            var directoryInfo = GetDocSetDirectoryInfo(docSetId);
+            var files = filelst.Split(new[] { "\r\n", " ", "," }, StringSplitOptions.RemoveEmptyEntries);
+
+            var fileTypeFiles = fileTypes.Select(ft => (FileType: ft, Files: directoryInfo.GetFiles()
+                                                               .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
+                                                               .Where(x => files.Any(z => x.FullName.Contains($"-{z}.xml")))
+                                                               .ToList()));
             return fileTypeFiles;
         }
 

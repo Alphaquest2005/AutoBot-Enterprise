@@ -71,10 +71,13 @@ namespace WaterNut.DataSpace
 
                 var possibleInvoices = GetPossibleInvoices(templates, pdfTxt).ToList();
                 foreach (var tmp in possibleInvoices)//.Where(x => x.OcrInvoices.Id == 117)
+                {
                     try
                     {
 
-                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId, tmp == possibleInvoices.Last())) return true;
+                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId, tmp == possibleInvoices.Last()) == false)
+                            ReportUnImportedFile(docSet,file, emailId,fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
+                      
                     }
                     catch (Exception e)
                     {
@@ -93,7 +96,9 @@ namespace WaterNut.DataSpace
                         // return false;
                     }
 
-                ReportUnImportedFile(docSet,file, emailId,fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
+                }
+
+                
 
                    // SeeWhatSticks(pdfTxt.ToString());
                 
@@ -168,16 +173,17 @@ namespace WaterNut.DataSpace
 
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt);
-            
-            var doc = ((List<IDictionary<string, object>>)csvLines.FirstOrDefault())?.FirstOrDefault();
-            
-            if (csvLines.Count == 1 && !tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
-            {
-                
-                if(!doc.Keys.Contains("SupplierCode")) doc.Add( "SupplierCode", tmp.OcrInvoices.Name );
-                if (!doc.Keys.Contains("Name")) doc.Add( "Name", tmp.OcrInvoices.Name);
-            }
 
+            if(csvLines.Count == 1 && !tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
+                foreach (var doc in ((List<IDictionary<string, object>>) csvLines.First()))
+                {
+                    if (!doc.Keys.Contains("SupplierCode")) doc.Add("SupplierCode", tmp.OcrInvoices.Name);
+                    if (!doc.Keys.Contains("Name")) doc.Add("Name", tmp.OcrInvoices.Name);
+                }
+
+            //var doc = ((List<IDictionary<string, object>>)csvLines.FirstOrDefault())?.FirstOrDefault();
+            
+           
             if (csvLines.Count < 1 || !tmp.Success)
             {
                 return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc);
@@ -536,49 +542,49 @@ namespace WaterNut.DataSpace
         
 
 
-        private static void SeeWhatSticks(string pdftext)
-        {
-            using (var ctx = new OCRContext())
-            {
-                var allLines = ctx.Lines.Include(x => x.RegularExpressions).ToList();
+        //private static void SeeWhatSticks(string pdftext)
+        //{
+        //    using (var ctx = new OCRContext())
+        //    {
+        //        var allLines = ctx.Lines.Include(x => x.RegularExpressions).ToList();
 
-                var goodLines = new List<Line>();
-                foreach (var regLine in allLines)
-                {
-                    try
-                    {
-                        var match = Regex.Match(pdftext, regLine.RegularExpressions.RegEx,
-                            (regLine.RegularExpressions.MultiLine == true
-                                ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,
-                            TimeSpan.FromSeconds(5));
-                        if (match.Success)
-                        {
-                            var line = new Line(regLine);
-                            line.Read(match.Value, 1, "SeeWhatSticks");
-                            if (line.Values.Any(x => x.Value.Values.Any())) goodLines.Add(line);
-                        }
-                    }
-                    catch (RegexMatchTimeoutException e)
-                    {
+        //        var goodLines = new List<Line>();
+        //        foreach (var regLine in allLines)
+        //        {
+        //            try
+        //            {
+        //                var match = Regex.Match(pdftext, regLine.RegularExpressions.RegEx,
+        //                    (regLine.RegularExpressions.MultiLine == true
+        //                        ? RegexOptions.Multiline
+        //                        : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,
+        //                    TimeSpan.FromSeconds(5));
+        //                if (match.Success)
+        //                {
+        //                    var line = new Line(regLine);
+        //                    line.Read(match.Value, 1, "SeeWhatSticks",1);
+        //                    if (line.Values.Any(x => x.Value.Values.Any())) goodLines.Add(line);
+        //                }
+        //            }
+        //            catch (RegexMatchTimeoutException e)
+        //            {
 
-                    }
-                    catch (Exception e)
-                    {
+        //            }
+        //            catch (Exception e)
+        //            {
 
-                        Console.WriteLine(e);
-                        throw;
+        //                Console.WriteLine(e);
+        //                throw;
 
-                    }
-                }
+        //            }
+        //        }
 
-                foreach (var line in goodLines)
-                {
+        //        foreach (var line in goodLines)
+        //        {
 
-                }
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         public static string GetImageTxt(string directoryName)
         {
