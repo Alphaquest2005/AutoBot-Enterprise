@@ -56,10 +56,10 @@ namespace WaterNut.DataSpace
                                           "UpdateLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
                                           "AddFieldFormatRegex: RegexId: 000, Keyword:'', Regex:'', ReplaceRegex:'', ReplacementRegexIsMultiLine: True, RegexIsMultiLine: True\r\n";
 
-        public static Dictionary<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
+        public static Dictionary<string, (string file, string, ImportStatus Success)> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
-            var imports = new Dictionary<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>();
+            var imports = new Dictionary<string, (string file, string, ImportStatus Success)>();
             //Get Text
             try
             {

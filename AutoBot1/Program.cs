@@ -131,7 +131,7 @@ namespace AutoBot
                     var res = PDFUtils.ImportPDF(fileInfos, fileType);
                     if (!res.Any(x =>
                             x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                            x.Value.status == ImportStatus.Success))
+                            x.Value.Status == ImportStatus.Success))
                     {
                         // try import with deepseekapi
                         var res2 = PDFUtils.ImportPDFDeepSeek(fileInfos, fileType);

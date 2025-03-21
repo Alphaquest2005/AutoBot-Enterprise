@@ -68,10 +68,10 @@ namespace AutoBot
             }
         }
 
-        public static List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
+        public static List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
-            List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>>();
+            List<KeyValuePair<string, (string file, string, ImportStatus Success)>> success = new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>();
             Console.WriteLine("Importing PDF " + fileType.FileImporterInfos.EntryType);
             var failedFiles = new List<string>();
             foreach (var file in pdfFiles.Where(x => x.Extension.ToLower() == ".pdf"))

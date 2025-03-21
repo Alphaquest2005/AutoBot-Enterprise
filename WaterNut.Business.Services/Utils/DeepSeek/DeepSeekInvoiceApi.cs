@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,7 +19,6 @@ namespace WaterNut.Business.Services.Utils
         private readonly string _apiKey;
         private readonly string _baseUrl;
 
-        // Existing configuration properties
         public string PromptTemplate { get; set; }
         public string Model { get; set; } = "deepseek-chat";
         public double DefaultTemperature { get; set; } = 0.3;
@@ -52,35 +50,39 @@ Extract BOTH commercial invoices AND customs declarations from:
 
 {0}
 
-Return JSON with:
-{
-  ""Invoices"": [{
+Return PURE JSON ONLY without any markdown formatting, comments, or additional text. Formatting requirements:
+- No backticks (```) or markdown
+- No explanatory text
+- Only valid JSON structure
+
+Valid response format:
+{{
+  ""Invoices"": [{{
     ""InvoiceNo"": """",
     ""InvoiceDate"": """",
     ""Total"": 0.00,
     ""Currency"": """",
     ""Supplier"": """",
-    ""LineItems"": [{""Description"": """", ""Quantity"": 0}]
-  }],
-  ""CustomsDeclarations"": [{
+    ""LineItems"": [{{""Description"": """", ""Quantity"": 0}}]
+  }}],
+  ""CustomsDeclarations"": [{{
     ""Consignee"": """",
     ""BLNumber"": """",
-    ""Goods"": [{""Description"": """", ""TariffCode"": """"}],
-    ""PackageInfo"": {""Count"": 0, ""WeightKG"": 0.0}
-  }]
-}";
-
+    ""Goods"": [{{""Description"": """", ""TariffCode"": """"}}],
+    ""PackageInfo"": {{""Count"": 0, ""WeightKG"": 0.0}}
+  }}]
+}}";
         }
 
         public async Task<List<IDictionary<string, object>>> ExtractShipmentInvoice(List<string> pdfTextVariants)
         {
             var results = new List<IDictionary<string, object>>();
 
-            foreach (var text in pdfTextVariants.Take(3))
+            foreach (var text in pdfTextVariants)
             {
                 try
                 {
-                    var response = await ProcessTextVariant(text);
+                    var response = await ProcessTextVariant(text).ConfigureAwait(false);
                     results.AddRange(response);
                 }
                 catch (Exception ex)
@@ -94,19 +96,75 @@ Return JSON with:
 
         private async Task<List<IDictionary<string, object>>> ProcessTextVariant(string text)
         {
-            var prompt = string.Format(PromptTemplate, text);
-            var response = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens);
+            var escapedText = EscapeBraces(text);
+            var prompt = string.Format(PromptTemplate, escapedText);
+            var response = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
             return ParseApiResponse(response);
+        }
+
+        private static string EscapeBraces(string input)
+        {
+            return input.Replace("{", "{{").Replace("}", "}}");
         }
 
         private List<IDictionary<string, object>> ParseApiResponse(string jsonResponse)
         {
             var documents = new List<IDictionary<string, object>>();
 
-            using var doc = JsonDocument.Parse(jsonResponse);
-            var root = doc.RootElement;
+            try
+            {
+                var cleanJson = CleanJsonResponse(jsonResponse);
 
-            // Process invoices
+                if (string.IsNullOrWhiteSpace(cleanJson))
+                {
+                    _logger.LogWarning("Empty JSON after cleaning");
+                    return documents;
+                }
+
+                if (!IsValidJsonStructure(cleanJson))
+                {
+                    _logger.LogError("Invalid JSON structure. Content: {CleanJson}", cleanJson);
+                    return documents;
+                }
+
+                using var doc = JsonDocument.Parse(cleanJson);
+                var root = doc.RootElement;
+
+                ProcessInvoices(root, documents);
+                ProcessCustomsDeclarations(root, documents);
+
+                return documents;
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "JSON parsing failed. Content: {JsonResponse}", jsonResponse);
+                return new List<IDictionary<string, object>>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error parsing response");
+                return new List<IDictionary<string, object>>();
+            }
+        }
+
+        private string CleanJsonResponse(string jsonResponse)
+        {
+            return jsonResponse?
+                .Replace("```json", "")
+                .Replace("```", "")
+                .Replace("'''json", "")
+                .Replace("'''", "")
+                .Replace("\uFEFF", "")
+                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
+        }
+
+        private bool IsValidJsonStructure(string json)
+        {
+            return json.StartsWith("{") && json.EndsWith("}");
+        }
+
+        private void ProcessInvoices(JsonElement root, List<IDictionary<string, object>> documents)
+        {
             if (root.TryGetProperty("Invoices", out var invoices))
             {
                 foreach (var inv in invoices.EnumerateArray())
@@ -124,8 +182,10 @@ Return JSON with:
                     documents.Add(dict);
                 }
             }
+        }
 
-            // Process customs declarations
+        private void ProcessCustomsDeclarations(JsonElement root, List<IDictionary<string, object>> documents)
+        {
             if (root.TryGetProperty("CustomsDeclarations", out var customs))
             {
                 foreach (var cd in customs.EnumerateArray())
@@ -141,11 +201,8 @@ Return JSON with:
                     documents.Add(dict);
                 }
             }
-
-            return documents;
         }
 
-        // New helper methods
         private string GetStringValue(JsonElement element, string propertyName)
         {
             return element.TryGetProperty(propertyName, out var value) ? value.GetString() : null;
@@ -165,7 +222,6 @@ Return JSON with:
                 : 0;
         }
 
-        // Updated parsing methods
         private List<IDictionary<string, object>> ParseLineItems(JsonElement invoiceElement)
         {
             var items = new List<IDictionary<string, object>>();
@@ -211,9 +267,8 @@ Return JSON with:
             }
             return pkgInfo;
         }
-        
 
-        private string ValidateTariffCode(string rawCode)
+        public string ValidateTariffCode(string rawCode)
         {
             if (string.IsNullOrWhiteSpace(rawCode)) return "";
             var cleanCode = Regex.Replace(rawCode, @"[^\d\.\-]", "");
@@ -229,28 +284,74 @@ Return JSON with:
 
         private async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
         {
-            var request = new
+            try
             {
-                model = Model,
-                messages = new[] { new { role = "user", content = prompt } },
-                temperature,
-                max_tokens = maxTokens
-            };
+                var request = new
+                {
+                    model = Model,
+                    messages = new[] { new { role = "user", content = prompt } },
+                    temperature,
+                    max_tokens = maxTokens
+                };
 
-            var json = JsonSerializer.Serialize(request);
-            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var json = JsonSerializer.Serialize(request);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{_baseUrl}/chat/completions", content);
-            response.EnsureSuccessStatusCode();
+                var response = await _httpClient.PostAsync($"{_baseUrl}/chat/completions", content)
+                    .ConfigureAwait(false);
 
-            var responseJson = await response.Content.ReadAsStringAsync();
-            using var responseDoc = JsonDocument.Parse(responseJson);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.LogError("API request failed. Status: {StatusCode}, Response: {ErrorContent}",
+                        response.StatusCode, errorContent);
+                    return string.Empty;
+                }
 
-            return responseDoc.RootElement
-                .GetProperty("choices")[0]
-                .GetProperty("message")
-                .GetProperty("content")
-                .GetString();
+                var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return ExtractJsonContent(responseJson);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to get API completion");
+                return string.Empty;
+            }
+        }
+
+        private string ExtractJsonContent(string responseJson)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(responseJson);
+                var root = doc.RootElement;
+
+                if (!root.TryGetProperty("choices", out var choices) ||
+                    choices.GetArrayLength() == 0 ||
+                    !choices[0].TryGetProperty("message", out var message) ||
+                    !message.TryGetProperty("content", out var contentElement))
+                {
+                    _logger.LogError("Invalid API response structure");
+                    return string.Empty;
+                }
+
+                var rawContent = contentElement.GetString() ?? string.Empty;
+                return CleanJsonContent(rawContent);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to parse API response");
+                return string.Empty;
+            }
+        }
+
+        private string CleanJsonContent(string rawContent)
+        {
+            return rawContent
+                .Replace("```json", "")
+                .Replace("```", "")
+                .Replace("'''json", "")
+                .Replace("'''", "")
+                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'' });
         }
 
         private List<IDictionary<string, object>> MergeDocuments(List<IDictionary<string, object>> documents)
@@ -270,10 +371,6 @@ Return JSON with:
                 {
                     merged[key] = doc;
                 }
-                else
-                {
-                    // Merge logic for overlapping documents
-                }
             }
 
             return merged.Values.ToList();
@@ -282,5 +379,3 @@ Return JSON with:
         public void Dispose() => _httpClient?.Dispose();
     }
 }
-
-

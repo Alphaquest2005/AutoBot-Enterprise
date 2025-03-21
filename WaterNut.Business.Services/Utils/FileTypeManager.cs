@@ -160,10 +160,11 @@ namespace WaterNut.Business.Services.Utils
                 EntryTypes.SimplifiedDeclaration
             };
 
-            public static EntryTypes GetEntryType(string entry)
+            public static string GetEntryType(string entry)
             {
-                return (EntryTypes)Enum.Parse(typeof(EntryTypes), _entryTypes.FirstOrDefault(x =>
-                    x.ToUpper().Replace(" ", "") == entry.ToUpper().Replace(" ", "")) ?? "Unknown");
+                return _entryTypes.FirstOrDefault(x =>
+                    x.ToUpper().Replace(" ", "") == entry.ToUpper().Replace(" ", "")) ?? EntryTypes.Unknown;
+
             }
         }
 
