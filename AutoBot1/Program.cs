@@ -88,6 +88,8 @@ namespace AutoBot
                         ProcessEmails(appSetting, timeBeforeImport, ctx);
 
                         ExecuteDBSessionActions(ctx, appSetting);
+
+                        ProcessDownloadFolder(appSetting);
                     }
                 }
                 //Console.WriteLine($"Press ENTER to Close...");
@@ -104,6 +106,39 @@ namespace AutoBot
 
 
 
+            }
+        }
+
+        private static void ProcessDownloadFolder(ApplicationSettings appSetting)
+        {
+            var downloadFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder, "Downloads"));
+            
+            if(!downloadFolder.Exists)downloadFolder.Create();
+            
+            foreach (var file in downloadFolder.GetFiles("*.pdf").ToList())
+            {
+                var documentsFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder,"Documents", file.Name.Replace(file.Extension, "")));
+                if (!documentsFolder.Exists) documentsFolder.Create();
+                var destFileName = Path.Combine(documentsFolder.FullName, file.Name);
+                file.MoveTo(destFileName);
+                var fileTypes =
+                    FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName)
+                        .Where(x => x.Description == "Unknown")
+                        .ToList();
+                foreach (var fileType in fileTypes)
+                {
+                    var fileInfos = new FileInfo[] { new FileInfo(destFileName)};
+                    var res = PDFUtils.ImportPDF(fileInfos, fileType);
+                    if (!res.Any(x =>
+                            x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice &&
+                            x.Value.status == ImportStatus.Success))
+                    {
+                        // try import with deepseekapi
+                        var res2 = PDFUtils.ImportPDFDeepSeek(fileInfos, fileType);
+                    }
+                    ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+                }
+                
             }
         }
 

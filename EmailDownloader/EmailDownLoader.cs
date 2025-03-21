@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;

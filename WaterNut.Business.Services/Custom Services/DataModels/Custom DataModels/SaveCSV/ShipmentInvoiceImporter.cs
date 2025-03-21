@@ -4,7 +4,9 @@ using System.Linq;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
+using InventoryDS.Business.Entities;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace WaterNut.DataSpace
@@ -42,6 +44,20 @@ namespace WaterNut.DataSpace
                 .Select(x =>
                 {
                     var invoice = new ShipmentInvoice();
+
+                    var Itms = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                        .Where(z => z != null)
+                        .Where(z => z.ContainsKey("ItemDescription"))
+                        .Select(z =>
+                        {
+                            //return a named tuple with item number,item description and tariffcode
+                            return (ItemNumber: z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString() : null,
+                                ItemDescription: z["ItemDescription"].ToString(),
+                                TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : "");
+                        }).ToList();
+
+                    var classifiedItms = new DeepSeekApi().ClassifyItems(Itms);
+
                     invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
                     invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ?  x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
                     invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
@@ -66,8 +82,9 @@ namespace WaterNut.DataSpace
                             details.Quantity = z.ContainsKey("Quantity")
                                 ? Convert.ToDouble(z["Quantity"].ToString())
                                 : 0;
-                            details.ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
-                            details.ItemDescription = z["ItemDescription"].ToString().Truncate(255);
+                            details.ItemNumber = classifiedItms[z["ItemDescription"].ToString()].ItemNumber;//z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
+                            details.ItemDescription = classifiedItms[z["ItemDescription"].ToString()].ItemDescription;
+                            details.TariffCode = classifiedItms[z["ItemDescription"].ToString()].TariffCode;
                             details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;
                             details.Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(z["Quantity"].ToString()) == 0 ? 1 : Convert.ToDouble(z["Quantity"].ToString()));
                             details.TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(z["Quantity"].ToString());

@@ -63,7 +63,11 @@ namespace WaterNut.DataSpace
                     Parts.ForEach(x => x.Read(iLine, section));
                 }
 
+                AddMissingRequiredFieldValues();
+
                 if (!this.Lines.SelectMany(x => x.Values.Values).Any()) return new List<dynamic>();//!Success
+
+
 
                 var ores = Parts.Select(x =>
                     {
@@ -81,6 +85,52 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+
+        private void AddMissingRequiredFieldValues()
+        {
+            var requiredFieldsList = this.Lines.SelectMany(x => x.OCR_Lines.Fields)
+                .Where(z => z.IsRequired && !string.IsNullOrEmpty(z.FieldValue?.Value)).ToList();
+            var instances = Lines.SelectMany(x => x.Values)
+                .Where(x => x.Key.section == "Single")
+                .SelectMany(x => x.Value.Keys.Select(k => (Instance: k.instance, LineNumber: x.Key.lineNumber)))
+                .DistinctBy(x => x.Instance)
+                .ToList();
+            foreach (var field in requiredFieldsList)
+            {
+                var lines = this.Lines.Where(x => LineHasField(x, field)
+                                                  && ValueContainsRequiredField(x, field)
+                                                  && ValueForAllInstances(x, instances)
+                                                  ).ToList();
+                foreach (var line in lines)
+                {
+                    var lineInstances = line.Values.SelectMany(z => z.Value.Keys.Select(k => k.instance)).Distinct().ToList();
+                    foreach (var instance in instances)
+                    {
+                        if(!lineInstances.Contains(instance.Instance))
+                            line.Values.Add((instance.LineNumber, "Single"), new Dictionary<(Fields fields, int instance), string> { { (field, instance.Instance), field.FieldValue.Value } });
+                    }
+                    
+                    
+                }
+            }
+        }
+
+        private static bool LineHasField(Line x, Fields field)
+        {
+            return x.OCR_Lines.Fields.Any(z => z.Field == field.Field);
+        }
+
+        private static bool ValueContainsRequiredField(Line x, Fields field)
+        {
+            return x.Values.All(v => v.Value.Keys.Any(k => k.fields == field));
+        }
+
+        private static bool ValueForAllInstances(Line x, List<(int Instance, int LineNumber)> instances)
+        {
+            var lst = instances.Select(x => x.Instance).ToList();
+            return x.Values.SelectMany(z => z.Value.Keys.Select(k => k.instance)).Distinct().ToList().Union(lst).Count() == lst.Count();
         }
 
         public double MaxLinesCheckedToStart { get; set; } = 0.5;

@@ -107,7 +107,7 @@ namespace WaterNut.Business.Services.Utils
 
      
 
-        public static class EntryTypes
+        public class EntryTypes
         {
             public const string Unknown = "Unknown";
             public const string Po = "PO";
@@ -132,6 +132,39 @@ namespace WaterNut.Business.Services.Utils
             public const string xSales = "xSales";
             public const string ItemHistory = "ItemHistory";
             public const string SimplifiedDeclaration = "Simplified Declaration";
+
+            private static readonly List<string> _entryTypes = new List<string>
+            {
+                EntryTypes.Unknown,
+                EntryTypes.Po,
+                EntryTypes.Sales,
+                EntryTypes.Inv,
+                EntryTypes.ShipmentInvoice,
+                EntryTypes.Ops,
+                EntryTypes.Adj,
+                EntryTypes.Dis,
+                EntryTypes.Rcon,
+                EntryTypes.CancelledEntries,
+                EntryTypes.ExpiredEntries,
+                EntryTypes.Freight,
+                EntryTypes.BL,
+                EntryTypes.Manifest,
+                EntryTypes.Rider,
+                EntryTypes.SubItems,
+                EntryTypes.C71,
+                EntryTypes.Lic,
+                EntryTypes.POTemplate,
+                EntryTypes.Info,
+                EntryTypes.xSales,
+                EntryTypes.ItemHistory,
+                EntryTypes.SimplifiedDeclaration
+            };
+
+            public static EntryTypes GetEntryType(string entry)
+            {
+                return (EntryTypes)Enum.Parse(typeof(EntryTypes), _entryTypes.FirstOrDefault(x =>
+                    x.ToUpper().Replace(" ", "") == entry.ToUpper().Replace(" ", "")) ?? "Unknown");
+            }
         }
 
 
@@ -151,8 +184,8 @@ namespace WaterNut.Business.Services.Utils
         public static List<FileTypes> GetImportableFileType(string entryType, string fileFormat, string fileName) =>
             FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                .Where(x => (x.FileImporterInfos?.EntryType == entryType || entryType == EntryTypes.Unknown) && x.FileImporterInfos?.Format == fileFormat)
-                .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown || x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF)
+                .Where(x => (x.FileImporterInfos?.EntryType == entryType) && x.FileImporterInfos?.Format == fileFormat)// || entryType == EntryTypes.Unknown - wanted stricter selection
+                .Where(x => x.FileTypeMappings.Any() || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
                 .Where(x => x.ParentFileTypeId == null)
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
                 .Select(x =>

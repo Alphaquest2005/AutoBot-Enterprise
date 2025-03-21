@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,17 +99,17 @@ namespace WaterNut.Business.Services.Utils
         public static InventoryDataItem CreateInventoryItem(InventorySource inventorySource,
             InventoryData item)
         {
-
-
+            //create a function that call deepseek api with item description and return tariff code
+            var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
+                ? new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).Result
+                : item.Key.TariffCode;
             var i = new InventoryItem(true)
             {
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                 Description = ((string)item.Key.ItemDescription).Truncate(255), // quicker trust database than file
                 ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
-                TariffCode = //create a function that call deepseek api with item description and return tariff code
-                    string.IsNullOrEmpty(item.Key.TariffCode)
-                        ? DeepSeekApi.GetTariffCode(item.Key.ItemDescription)
-                        : item.Key.TariffCode,
+                TariffCode = 
+                    keyTariffCode,
                 InventoryItemSources = new List<InventoryItemSource>()
                 {
                     new InventoryItemSource(true)
@@ -121,7 +120,6 @@ namespace WaterNut.Business.Services.Utils
                 },
                 TrackingState = TrackingState.Added
             };
-            if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
             if (string.IsNullOrEmpty(item.Key.ItemDescription))
                 foreach (var line in item.Data)
                 {

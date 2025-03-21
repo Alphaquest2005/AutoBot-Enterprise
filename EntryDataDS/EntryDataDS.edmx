@@ -486,6 +486,7 @@
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
           <Property Name="Discount" Type="float" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="12" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails-Volume">
           <Key>
@@ -3703,6 +3704,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
           <NavigationProperty Name="Volume" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetails_Volume" />
           <Property Name="Discount" Type="Double" />
+          <Property Name="TariffCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -5621,6 +5623,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoiceDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
               <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />

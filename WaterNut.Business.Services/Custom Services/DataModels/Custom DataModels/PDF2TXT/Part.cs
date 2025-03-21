@@ -38,10 +38,16 @@ namespace WaterNut.DataSpace
 
         private int StartCount { get; }
 
-        public bool Success => AllRequiredFieldsFilled()
-                               //&& this.Lines.Any()
-                               && NoFailedLines()
-                               && AllChildPartsSucceded();
+        public bool Success
+        {
+            get
+            {
+                return AllRequiredFieldsFilled()
+                       //&& this.Lines.Any()
+                       && NoFailedLines()
+                       && AllChildPartsSucceded();
+            }
+        }
 
         private bool AllRequiredFieldsFilled()
         {
@@ -60,12 +66,24 @@ namespace WaterNut.DataSpace
             return ChildParts.All(x => x.Success == true);
         }
 
-        public List<Line> FailedLines => Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) && !x.Values.Any())
-            .ToList()
-            .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
+        public List<Line> FailedLines
+        {
+            get
+            {
+                var maxCount = Lines.Max(x => x.Values.Count(z => z.Key.section == "Single"));
 
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields =>
-            Lines.SelectMany(x => x.FailedFields).ToList();
+
+                return Lines.Where(x =>
+                        x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) &&  x.Values.Count < maxCount)
+                    .ToList()
+                    .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
+            }
+        }
+
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields
+        {
+            get { return Lines.SelectMany(x => x.FailedFields).ToList(); }
+        }
         //public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => Lines
         //                                                  .Where(x => x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
         //                                                  .Select(x => x.Values.SelectMany(z => z.Value.ToList())
@@ -73,10 +91,19 @@ namespace WaterNut.DataSpace
         //                                                                        .ToDictionary(k => k.Key, v => v.ToList())
         //).ToList();
 
-        public List<Line> AllLines =>
-            Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
+        public List<Line> AllLines
+        {
+            get { return Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList(); }
+        }
 
-        public bool WasStarted => this._startlines.Any();//{ get; set; } //;
+        public bool WasStarted
+        {
+            get
+            {
+                return this._startlines.Any();
+                //{ get; set; } //;
+            }
+        }
 
         private int lastLineRead = 0;
         private int _instance = 1;

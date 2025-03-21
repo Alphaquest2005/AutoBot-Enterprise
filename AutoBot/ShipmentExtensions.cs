@@ -1249,7 +1249,11 @@ namespace AutoBotUtilities
                     .ToList();
 
 
-                attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
+                attachments.AddRange(
+                    invocieAttachments
+                        .Where(x => x.filepath.EndsWith(".pdf"))
+                        .Where(x => attachments.All(z => z.FilePath != x.filepath))
+                                                                .Select(x =>
                     new Attachments
                     {
                         FilePath = x.filepath,
@@ -1257,7 +1261,10 @@ namespace AutoBotUtilities
                         Reference = x.reference,
                         TrackingState = TrackingState.Added
                     }));
-                attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".xlsx")).Select(x =>
+                attachments.AddRange(invocieAttachments
+                    .Where(x => x.filepath.EndsWith(".xlsx"))
+                    .Where(x => attachments.All(z => z.FilePath != x.filepath))
+                    .Select(x =>
                     new Attachments
                     {
                         FilePath = x.filepath,
@@ -1267,7 +1274,7 @@ namespace AutoBotUtilities
                     }));
 
 
-                attachments.AddRange(freightInvoices.Select(x => new Attachments
+                attachments.AddRange(freightInvoices.Where(x => attachments.All(z => z.FilePath != x.SourceFile)).Select(x => new Attachments
                 {
                     FilePath = x.SourceFile,
                     DocumentCode = "IV04",
@@ -1275,13 +1282,7 @@ namespace AutoBotUtilities
                     TrackingState = TrackingState.Added
                 }));
 
-                attachments.AddRange(manifests.Select(x => new Attachments
-                {
-                    FilePath = x.SourceFile,
-                    DocumentCode = "IV04",
-                    Reference = x.RegistrationNumber,
-                    TrackingState = TrackingState.Added
-                }));
+                
 
                 var bl = masterShipment.ShipmentAttachedBL.FirstOrDefault(x =>
                     x.ShipmentBL.EmailId == masterShipment.EmailId)?.ShipmentBL;
@@ -1320,7 +1321,18 @@ namespace AutoBotUtilities
 
 
                     shipments.Add(shipment);
-                    
+
+                    attachments.AddRange(manifests
+                        .Where(x => x.WayBill == shipment.BLNumber)
+                        .Where(x => attachments.All(z => z.FilePath != x.SourceFile))
+                        .Select(x => new Attachments
+                    {
+                        FilePath = x.SourceFile,
+                        DocumentCode = "IV04",
+                        Reference = x.RegistrationNumber,
+                        TrackingState = TrackingState.Added
+                    }));
+
                     shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
                         new ShipmentAttachments
                         {

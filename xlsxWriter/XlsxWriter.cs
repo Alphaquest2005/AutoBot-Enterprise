@@ -229,6 +229,8 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
 
+                SetValue(workbook, i, header.First(x => x.Key.Column == "TariffCode").Key.Index, itm.TariffCode);
+
                 if (doRider && i < packageDetails.Count)
                     foreach (var riderdetail in packageDetails)
                     {

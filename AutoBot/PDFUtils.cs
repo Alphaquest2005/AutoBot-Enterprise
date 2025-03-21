@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBot
@@ -67,9 +68,10 @@ namespace AutoBot
             }
         }
 
-        public static void ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
+        public static List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
+            List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>>();
             Console.WriteLine("Importing PDF " + fileType.FileImporterInfos.EntryType);
             var failedFiles = new List<string>();
             foreach (var file in pdfFiles.Where(x => x.Extension.ToLower() == ".pdf"))
@@ -82,11 +84,14 @@ namespace AutoBot
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
                         .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
                     emailId = res?.EmailId;
-                    fileTypeId = res?.FileTypeId;
+                    fileTypeId = res?.FileTypeId ?? fileType.Id;
                 }
-                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
-               
+
+                var import = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
+                success.AddRange(import.ToList());
             }
+
+            return success;
         }
 
         public static void DownloadPDFs()
@@ -245,6 +250,19 @@ namespace AutoBot
             {
 
             }
+        }
+
+        public static List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
+        {
+            List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>>();
+            var logger = LoggingConfig.CreateLogger();
+            foreach (var file in fileInfos)
+            {
+              var txt = InvoiceReader.GetPdftxt(file.FullName);  
+
+            }
+
+            return success;
         }
     }
 }

@@ -1,0 +1,1816 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--<Import Project="..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />-->
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{02885F55-31E7-48FB-9944-DF99540F3270}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNut.Business.Services</RootNamespace>
+    <AssemblyName>WaterNut.Business.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="commons-logging">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\commons-logging.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.7.0\lib\net462\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.7.0\lib\net462\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="fontbox-1.8.9">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\fontbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.3\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.6.0.0\lib\net462\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ConcurrencyVisualizer.Markers">
+      <HintPath>..\..\..\..\..\program files\microsoft visual studio\2022\enterprise\common7\ide\extensions\rf2nfg00.o0t\SDK\Managed\4.0\Microsoft.ConcurrencyVisualizer.Markers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Expression.Interactions">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MoreLinq, Version=4.4.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.4.4.0\lib\netstandard2.0\MoreLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueInjecter.3.2.0\lib\net45\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="ParallelExtensionsExtras">
+      <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
+    <Reference Include="pdfbox-1.8.9">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\pdfbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="PipelineNet, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PipelineNet.0.11.0\lib\netstandard2.0\PipelineNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Serialize.Linq, Version=4.0.167.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serialize.Linq.4.0.167\lib\net48\Serialize.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-Common">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-WPF">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.3\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.9.0.3\lib\net462\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Pipelines, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.9.0.3\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Async, Version=6.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Async.6.0.1\lib\net48\System.Linq.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Async.Queryable, Version=6.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Async.Queryable.6.0.1\lib\net48\System.Linq.Async.Queryable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.1\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.1\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=9.0.0.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.9.0.3\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.9.0.3\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.9.0.3\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.1\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Tesseract, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tesseract.5.2.0\lib\net48\Tesseract.dll</HintPath>
+    </Reference>
+    <Reference Include="Tesseract.Drawing, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tesseract.Drawing.5.2.0\lib\netstandard2.0\Tesseract.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="TesserNet, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.0.8.0\lib\netstandard2.0\TesserNet.dll</HintPath>
+    </Reference>
+    <Reference Include="TesserNet.System.Drawing, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.System.Drawing.0.8.0\lib\netstandard2.0\TesserNet.System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackableEntities.Common.2.5.7\lib\portable40-net40+sl5+win8+wp8+wpa81\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.EF.6, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackableEntities.EF.6.2.5.7\lib\net45\TrackableEntities.EF.6.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.Package.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.Tokenization.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.10.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.10\lib\net471\UglyToad.PdfPig.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Z.EntityFramework.Extensions, Version=8.102.3.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Extensions.8.102.3\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Asycuda\LicenseToDatabase.cs" />
+    <Compile Include="Asycuda\C71ToDatabase.cs" />
+    <Compile Include="Asycuda\AsycudaToDataBase421.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAdjustmentDetailService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAdjustmentExService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAdjustmentOversAllocationService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAdjustmentOverService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentItemLastItemCostService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaSalesAllocationService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IEntryDataDetailService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IInventoryItemAliasExService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IInventoryItemsExService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IShortAllocationService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\ISystemDocumentSetService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\ITODO_AdjustmentOversToXMLService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\Ixcuda_ItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAdjustmentShort_IM9DataService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAdjustmentsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAllocationErrorsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAllocationsTestCasesService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAscyudaItemPiQuantityService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaDocumentItemEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaDocumentService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaItemPiQuantityDataService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaItemRemainingQuantitiesService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaLkpLstService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsPIDataService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocations_XcudaItemsToAllocateService.cs" />
+    <Compile Include="Contracts\AllocationDS\ICustomsOperationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\ICustoms_ProcedureService.cs" />
+    <Compile Include="Contracts\AllocationDS\IEntryDataDetailsExService.cs" />
+    <Compile Include="Contracts\AllocationDS\IEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IEntryDataService.cs" />
+    <Compile Include="Contracts\AllocationDS\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IEX9AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IExistingAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IInventoryItemAliasEx_NoReverseMappingsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IInventoryItemAliasService.cs" />
+    <Compile Include="Contracts\AllocationDS\IInventoryItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\IItemSalesAsycudaPiSummaryService.cs" />
+    <Compile Include="Contracts\AllocationDS\IItemSalesPiSummaryService.cs" />
+    <Compile Include="Contracts\AllocationDS\ILumpedItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\IManualAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IPreviousItemsExService.cs" />
+    <Compile Include="Contracts\AllocationDS\ISalesService.cs" />
+    <Compile Include="Contracts\AllocationDS\ISubItemsService.cs" />
+    <Compile Include="Contracts\AllocationDS\ISystemDocumentSetsService.cs" />
+    <Compile Include="Contracts\AllocationDS\ITariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Contracts\AllocationDS\ITariffCategoryService.cs" />
+    <Compile Include="Contracts\AllocationDS\ITariffCodesService.cs" />
+    <Compile Include="Contracts\AllocationDS\ITariffSupUnitLkpsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IxBondAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Goods_descriptionService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_HScodeService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Inventory_ItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_ItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Item_InvoiceService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_PreviousItemService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Supplementary_unitService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_TarificationService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_TaxationService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Taxation_lineService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Valuation_itemService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_WeightService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Weight_itmService.cs" />
+    <Compile Include="Contracts\AllocationDS\IXSales_UnAllocatedService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAdjustmentShortAllocationService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAllocationsTestCasService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IActionDocSetLogsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IApplicationSettingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentBasicInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetAttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAttachmentLogService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICancelledEntriesLstService.cs" />
+    <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICustomsOperationsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureInOutService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
+    <Compile Include="Contracts\CoreEntities\IDeclarantService.cs" />
+    <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailAttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailFileTypesService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingRexExsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IExpiredEntriesLstService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileGroupsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileImporterInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeMappingRegExsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeMappingsValuesService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeReplaceRegexService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypesService.cs" />
+    <Compile Include="Contracts\CoreEntities\IImportActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInfoMappingRegExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInfoMappingService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInventoryItemAliasXService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInventoryItemXService.cs" />
+    <Compile Include="Contracts\CoreEntities\ILicenceSummaryService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParameterSetParametersService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParameterSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParametersService.cs" />
+    <Compile Include="Contracts\CoreEntities\ISessionActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ISessionScheduleService.cs" />
+    <Compile Include="Contracts\CoreEntities\ISessionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ISubItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_C71ToCreateService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_C71ToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_CreateEx9Service.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesExecutionReportService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_IncompleteImportService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ImportCompleteEntriesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LicenceAvailableQtyService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LicenseToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LICToAssessService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LICToCreateService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessErrorsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToExportService.cs" />
+    <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitEntryCIFService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitPOInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitSalesToCustomsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedShortsService.cs" />
+    <Compile Include="Contracts\CoreEntities\Ixcuda_Supplementary_unitService.cs" />
+    <Compile Include="Contracts\CounterPointQS\ICounterPointPODetailsService.cs" />
+    <Compile Include="Contracts\CounterPointQS\ICounterPointPOsService.cs" />
+    <Compile Include="Contracts\CounterPointQS\ICounterPointSalesDetailsService.cs" />
+    <Compile Include="Contracts\CounterPointQS\ICounterPointSalesService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAsycudaDocumentSetService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Contracts\DocumentDS\IAttachmentService.cs" />
+    <Compile Include="Contracts\DocumentDS\IContainerService.cs" />
+    <Compile Include="Contracts\DocumentDS\ICustomsOperationService.cs" />
+    <Compile Include="Contracts\DocumentDS\ICustoms_ProcedureInOutService.cs" />
+    <Compile Include="Contracts\DocumentDS\ICustoms_ProcedureService.cs" />
+    <Compile Include="Contracts\DocumentDS\IDocument_TypeService.cs" />
+    <Compile Include="Contracts\DocumentDS\IExportTemplateService.cs" />
+    <Compile Include="Contracts\DocumentDS\IFileTypeService.cs" />
+    <Compile Include="Contracts\DocumentDS\IPackageTypesService.cs" />
+    <Compile Include="Contracts\DocumentDS\ISystemDocumentSetService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_AssessmentService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Assessment_noticeService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ASYCUDAExService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ASYCUDAService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ASYCUDA_ExtendedPropertiesService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Border_informationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Border_officeService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ConsigneeService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ContainerService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_CountryService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_DeclarantService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Delivery_termsService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Departure_arrival_informationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_DestinationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ExporterService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ExportService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Export_releaseService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_FinancialService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Financial_AmountsService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Financial_GuaranteeService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_FormsService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_General_informationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Global_taxesService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_deductionService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_external_freightService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_insuranceService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_internal_freightService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_InvoiceService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Gs_other_costService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_IdentificationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Means_of_transportService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_NbersService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Office_segmentService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Place_of_loadingService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_PrincipalService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_PropertyService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_receiptService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_RegistrationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_SealsService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_SignatureService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Suppliers_documentsService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_TotalService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_TradersService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Traders_FinancialService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_TransitService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_Transit_DestinationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_TransportService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_TypeService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_ValuationService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_WarehouseService.cs" />
+    <Compile Include="Contracts\DocumentDS\Ixcuda_WeightService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\IAttachmentsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\IPreviousItemsExService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\ISubItemsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\IxBondAllocationsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Attached_documentsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_AttachmentsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Goods_descriptionService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_HScodeService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Inventory_ItemService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_ItemEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_ItemService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_item_deductionService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_item_external_freightService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_item_insuranceService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_item_internal_freightService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Item_InvoiceService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_item_other_costService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_PackagesService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_PreviousItemService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Previous_docService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Supplementary_unitService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Suppliers_linkService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_TarificationService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_TaxationService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Taxation_lineService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Valuation_itemService.cs" />
+    <Compile Include="Contracts\DocumentItemDS\Ixcuda_Weight_itmService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAdjustmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataLineService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAttachmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEDDocumentTypesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataExTotalsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataFilesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IFileTypesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemAliasService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemsExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemSourceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItems_NonStockService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventorySourcesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsVolumeService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoiceExtraInfoService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IItemHistoryService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IOpeningStockService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IPackageTypesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISalesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShimentBLChargesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedManifestService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedPOsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedRiderService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLInvoiceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightBLsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightManifestsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceBLManualMatchesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceDetailsItemAliasService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemDataService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemMISMatchesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemQueryMatchesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOManualMatchesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceRiderDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceRiderManualMatchesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentManifestBLsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentManifestDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentManifestService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentMIS_InvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentMIS_POsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentPOsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderBLsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderManifestsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupplierItemDescriptionRegExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupplierItemDescriptionService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupportingDetailService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISystemDocumentSetsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesFilesService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataLineService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IEmptyFullCodeService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IEntryDataExService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IInventoryItemsExService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IPackageTypeService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItemAliaService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItemService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItemSourceService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItems_DoNotMapService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventorySourceService.cs" />
+    <Compile Include="Contracts\InventoryDS\ITariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Contracts\InventoryDS\ITariffCategoryService.cs" />
+    <Compile Include="Contracts\InventoryDS\ITariffCodeService.cs" />
+    <Compile Include="Contracts\InventoryDS\ITariffSupUnitLkpService.cs" />
+    <Compile Include="Contracts\InventoryQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="Contracts\InventoryQS\IInventoryItemsExService.cs" />
+    <Compile Include="Contracts\InventoryQS\ITariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Contracts\InventoryQS\ITariffCategoryService.cs" />
+    <Compile Include="Contracts\InventoryQS\ITariffCodesService.cs" />
+    <Compile Include="Contracts\InventoryQS\ITariffSupUnitLkpsService.cs" />
+    <Compile Include="Contracts\LicenseDS\IRegisteredService.cs" />
+    <Compile Include="Contracts\LicenseDS\ITODO_LicenceAvailableQtyService.cs" />
+    <Compile Include="Contracts\LicenseDS\ITODO_LICToCreateService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_General_segmentService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_LicenseService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_Lic_item_segmentService.cs" />
+    <Compile Include="Contracts\OCR\IChildPartsService.cs" />
+    <Compile Include="Contracts\OCR\IEndService.cs" />
+    <Compile Include="Contracts\OCR\IFieldFormatRegExService.cs" />
+    <Compile Include="Contracts\OCR\IFieldsService.cs" />
+    <Compile Include="Contracts\OCR\IImportErrorsService.cs" />
+    <Compile Include="Contracts\OCR\IInvoiceIdentificatonRegExService.cs" />
+    <Compile Include="Contracts\OCR\IInvoiceRegExService.cs" />
+    <Compile Include="Contracts\OCR\IInvoicesService.cs" />
+    <Compile Include="Contracts\OCR\ILinesService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FailedFieldsService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FailedLinesService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FieldMappingsService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FieldValueService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_PartLineFieldsService.cs" />
+    <Compile Include="Contracts\OCR\IPartsService.cs" />
+    <Compile Include="Contracts\OCR\IPartTypesService.cs" />
+    <Compile Include="Contracts\OCR\IRecuringPartService.cs" />
+    <Compile Include="Contracts\OCR\IRegularExpressionsService.cs" />
+    <Compile Include="Contracts\OCR\IStartService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\IEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\IPreviousEntryService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\Ixcuda_HScodeService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\Ixcuda_PreviousItemService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\Ixcuda_TarificationService.cs" />
+    <Compile Include="Contracts\PreviousDocumentDS\Ixcuda_Valuation_itemService.cs" />
+    <Compile Include="Contracts\PreviousDocumentQS\IPreviousDocumentItemService.cs" />
+    <Compile Include="Contracts\PreviousDocumentQS\IPreviousDocumentService.cs" />
+    <Compile Include="Contracts\PreviousDocumentQS\IPreviousItemsExService.cs" />
+    <Compile Include="Contracts\QuickBooksDS\IInventoryItemsService.cs" />
+    <Compile Include="Contracts\SalesDataQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Contracts\SalesDataQS\IAsycudaDocumentSetEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\SalesDataQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\SalesDataQS\ISalesDataAllocationsService.cs" />
+    <Compile Include="Contracts\SalesDataQS\ISalesDataDetailService.cs" />
+    <Compile Include="Contracts\SalesDataQS\ISalesDataService.cs" />
+    <Compile Include="Contracts\ValuationDS\IC71SummaryService.cs" />
+    <Compile Include="Contracts\ValuationDS\IRegisteredService.cs" />
+    <Compile Include="Contracts\ValuationDS\ITODO_C71ToCreateService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Buyer_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Declarant_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Identification_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_ItemService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Seller_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Value_declaration_formService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentOverService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\getEx9AllocationsRefactored.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\getEx9AllocationsList.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\IgetEx9AllocationsListProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\AllocationDataBlock.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\AlloEntryLineData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSalesChain.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\AllocatePreAllocationsTasks.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\AllocatePreAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\IAllocatePreAllocationsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\IAllocateSalesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\CheckExistingStockFromMemory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\CheckExistingStockDB.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\GetExistingStockTextProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\ICheckExistingStock.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GeAsycudaEntriesWithItemNumber.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\GetOverAllocatedAsycudaEntriesMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\GetOverAllocatedAsycudaEntries.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\GetEntryDataDetailsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\GetExistingEx9Mem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\GetExistingEx9s.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\GetEntryDataDetailsOld.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\IGetEntryDataDetailsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\IGetExistingEx9Processor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\GetUOAllocationsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\IGetUOAllocationsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\IGetOverAllocatedAsycudaEntriesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousAllocatedAsycudaItemDB.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousAllocatedASycudaItemMemory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousItemFromAllocationProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\IGetPreviousAllocatedAsycudaItem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\GetUnAllocatedxSalesMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\IGetUnAllocatedxSalesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\GetUnderAllocatedAsycudaItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\IGetUnderAllocatedAsycudaItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\GetXcudaInventoryItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\IGetXcudaInventoryItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItemsDbQuery.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\IGetXcudaItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\GetUnAllocatedxSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\GetXcudaInventoryItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\GetUOAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\GetUnderAllocatedAsycudaItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ItemEntries.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\MarkErrors.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\OldSalesAllocator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ProcessPreAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ReAllocatedExistingXSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ReallocateExistingEx9.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SalesAllocator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\ISaveAllocationSQLProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\SaveAllocationBulk.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\SaveAllocationSQL.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BondStessTest.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateAllocationDataBlocks.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateDutyFreePaidDocument.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9Mem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocation.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GetEx9DataMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\GetEx9AsycudaSalesAllocationsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\GetEx9AsycudaSalesAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GetEx9Data.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9DataByDateRange\GetEx9DataByDateRangMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9DataByDateRange\GetEx9DataByDateRange.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9DataByDateRange\IGetEx9DataByDateRange.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\IGetEx9AsycudaSalesAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\ICreateEx9.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\ItemSalesPiSummary.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\pDocumentItem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PiSummary.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PreviousItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSetSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSetMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\IAddToDocSetProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ADJCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\BillOfLadenImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CancelledEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryDataSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryDataSetBased.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVDataFileActions.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVShipmentImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSet.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataCreating\EntryDataCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataDetailsCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\ExistingEntryDataMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\ExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\IExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\IExistingEntryDataSetProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItemSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItemMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\IGetInventoryItemProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IEntryDataCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryAliasCodesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryCodesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryItemsAliasProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\IInventoryProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessorSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessorSet.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventorySourceFactory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventorySourceProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InvoiceCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IRawDataExtractor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\INewEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\NewEntryDataProcessorNoSave.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\NewEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\OPSCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFDataFileActions.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\DataFileProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVToShipmentInvoiceConverter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\DataFile.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataFileImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExpiredEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\FreightImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ImportData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ImportLibary.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ManifestImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFSimplifiedDeclarationImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\POCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawDataFile.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataExtractor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\ICreateEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataProcessing\RawEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawRiderData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderPdfImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveItemHistory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SimplifiedDeclarationImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ValidateEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\ISaveDocumentCT.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\PreProcessDocumentItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCTBulk.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCT.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SummaryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\CleanAsycudaDocument.cs" />
+    <Compile Include="Importers\EntryData\ChainedProcessor.cs" />
+    <Compile Include="Importers\EntryData\ChainedProcessorConstruction.cs" />
+    <Compile Include="Importers\EntryData\FilterValidEntryData.cs" />
+    <Compile Include="Importers\EntryData\GetExistingInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\GetNewInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\GetRawEntryData.cs" />
+    <Compile Include="Importers\EntryData\GetRawXSalesData.cs" />
+    <Compile Include="Importers\EntryData\GetSupplierData.cs" />
+    <Compile Include="Importers\EntryData\IInventoryProcessor.cs" />
+    <Compile Include="Importers\EntryData\ProcessorPipline.cs" />
+    <Compile Include="Importers\EntryData\SaveEntryDataFile.cs" />
+    <Compile Include="Importers\EntryData\SaveInventoryAlias.cs" />
+    <Compile Include="Importers\EntryData\SaveInventoryCodes.cs" />
+    <Compile Include="Importers\EntryData\SaveNewSuppliers.cs" />
+    <Compile Include="Importers\EntryData\SaveRawEntryData.cs" />
+    <Compile Include="Importers\EntryData\SaveXSales.cs" />
+    <Compile Include="Importers\EntryData\SupplierPipeline.cs" />
+    <Compile Include="Importers\EntryData\UpdateLineInventoryItemId.cs" />
+    <Compile Include="Importers\EntryData\xsalesProcessor.cs" />
+    <Compile Include="Importers\IDataSetProcessor.cs" />
+    <Compile Include="Importers\ImportSettings.cs" />
+    <Compile Include="Importers\MisMatchesProcessor.cs" />
+    <Compile Include="Importers\ValidateFileType.cs" />
+    <Compile Include="Importers\XlsxEntryDataProcessor.cs" />
+    <Compile Include="Importers\XLSXUtils.cs" />
+    <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\AdjustmentShort_IM9DataService.cs" />
+    <Compile Include="Services\AllocationDS\AdjustmentsService.cs" />
+    <Compile Include="Services\AllocationDS\AllocationErrorsService.cs" />
+    <Compile Include="Services\AllocationDS\AllocationsTestCasesService.cs" />
+    <Compile Include="Services\AllocationDS\AscyudaItemPiQuantityService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaDocumentItemEntryDataDetailsService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaDocumentService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaItemPiQuantityDataService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaItemRemainingQuantitiesService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaLkpLstService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsPIDataService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaSalesAllocations_XcudaItemsToAllocateService.cs" />
+    <Compile Include="Services\AllocationDS\CustomsOperationsService.cs" />
+    <Compile Include="Services\AllocationDS\Customs_ProcedureService.cs" />
+    <Compile Include="Services\AllocationDS\EntryDataDetailsExService.cs" />
+    <Compile Include="Services\AllocationDS\EntryDataDetailsService.cs" />
+    <Compile Include="Services\AllocationDS\EntryDataService.cs" />
+    <Compile Include="Services\AllocationDS\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\AllocationDS\EX9AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\ExistingAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\InventoryItemAliasEx_NoReverseMappingsService.cs" />
+    <Compile Include="Services\AllocationDS\InventoryItemAliasService.cs" />
+    <Compile Include="Services\AllocationDS\InventoryItemService.cs" />
+    <Compile Include="Services\AllocationDS\ItemSalesAsycudaPiSummaryService.cs" />
+    <Compile Include="Services\AllocationDS\ItemSalesPiSummaryService.cs" />
+    <Compile Include="Services\AllocationDS\LumpedItemService.cs" />
+    <Compile Include="Services\AllocationDS\ManualAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\PreviousItemsExService.cs" />
+    <Compile Include="Services\AllocationDS\SalesService.cs" />
+    <Compile Include="Services\AllocationDS\SubItemsService.cs" />
+    <Compile Include="Services\AllocationDS\SystemDocumentSetsService.cs" />
+    <Compile Include="Services\AllocationDS\TariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Services\AllocationDS\TariffCategoryService.cs" />
+    <Compile Include="Services\AllocationDS\TariffCodesService.cs" />
+    <Compile Include="Services\AllocationDS\TariffSupUnitLkpsService.cs" />
+    <Compile Include="Services\AllocationDS\xBondAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Goods_descriptionService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_HScodeService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Inventory_ItemService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_ItemService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Item_InvoiceService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_PreviousItemService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Supplementary_unitService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_TarificationService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_TaxationService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Taxation_lineService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Valuation_itemService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
+    <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetAttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\Customs_ProcedureInOutService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeMappingsValuesService.cs" />
+    <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
+    <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
+    <Compile Include="Services\CoreEntities\ParametersService.cs" />
+    <Compile Include="Services\DocumentDS\Customs_ProcedureInOutService.cs" />
+    <Compile Include="Services\DocumentDS\PackageTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\ItemHistoryService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
+    <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
+    <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
+    <Compile Include="Services\EntryDataDS\SystemDocumentSetsService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItems_DoNotMapService.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessorSingleSetBased.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessorSetBased.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessor.cs" />
+    <Compile Include="Utils\AutoMatchUtils.cs" />
+    <Compile Include="Importers\ChainedDataExtractor.cs" />
+    <Compile Include="Importers\CSVDataExtractor.cs" />
+    <Compile Include="Importers\CSVImporter.cs" />
+    <Compile Include="Importers\EntryDataExtractor.cs" />
+    <Compile Include="Importers\EntryData\AddInventorySource.cs" />
+    <Compile Include="Importers\EntryData\ChainedDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\EntryDataManager.cs" />
+    <Compile Include="Importers\EntryData\GetInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\IDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\InventoryImporter.cs" />
+    <Compile Include="Importers\EntryData\MergedDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\DocumentProcessorPipline.cs" />
+    <Compile Include="Importers\EntryData\EntryDataProcessor.cs" />
+    <Compile Include="Importers\EntryData\SaveInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\UpdateItemDescription.cs" />
+    <Compile Include="Importers\EntryData\UpdateItemTariffCode.cs" />
+    <Compile Include="Importers\EntryData\UpdateLineDescription.cs" />
+    <Compile Include="Importers\EntryData\UpdateLineNumbers.cs" />
+    <Compile Include="Importers\FileImportExtension.cs" />
+    <Compile Include="Importers\IDataExtractor.cs" />
+    <Compile Include="Importers\IFileTypeImporter.cs" />
+    <Compile Include="Importers\IImporter.cs" />
+    <Compile Include="Importers\StringTextSplitter.cs" />
+    <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
+    <Compile Include="Utils\CSVUtils.cs" />
+    <Compile Include="Utils\DeepSeekApi.cs" />
+    <Compile Include="Utils\DomainFactLibary.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\GetAllDiscrepancyDetailsMem.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\GetAllDiscrepancyDetails.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\IGetAllDiscrepancyDetailsProcessor.cs" />
+    <Compile Include="Utils\InventoryData.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\GetAsycudaDocumentEntryDataDetailMem.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\GetAsycudaDocumentEntryDataDetail.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\IMatchToAsycudaItemProcessor.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\MatchToAsycudaItemBulkSave.cs" />
+    <Compile Include="Utils\Matching\CNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\EffectiveDatefProcessor.cs" />
+    <Compile Include="Utils\FileTypeManager.cs" />
+    <Compile Include="Utils\DirectoryUtils.cs" />
+    <Compile Include="Utils\EntryDocSetUtils.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceReader.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SQLBlackBox.cs" />
+    <Compile Include="ExpressionCSharp60.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="Custom Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\AllocationQS\IAllocationsService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CoreEntities\IDocumentSetService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CoreEntities\ISystemService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CounterPointQS\ICounterPointPOsService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\CounterPointQS\ICounterPointSalesService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\DocumentItemsDS\Ixcuda_ItemService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\EntryDataQS\IContainerExService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\EntryDataQS\IEntryDataExService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\InventoryQS\IInventoryItemsEXService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\SalesDataQS\ISalesDataDetailService.cs" />
+    <Compile Include="Custom Contracts\Custom Contracts\SalesDataQS\ISalesDataService.cs" />
+    <Compile Include="Custom Services\AllocationQS\AllocationsService.cs" />
+    <Compile Include="Custom Services\AllocationQS\AsycudaSalesAllocationsExService.cs" />
+    <Compile Include="Custom Services\CoreEntities\AsycudaDocumentItemService.cs" />
+    <Compile Include="Custom Services\CoreEntities\AsycudaDocumentService.cs" />
+    <Compile Include="Custom Services\CoreEntities\SystemService.cs" />
+    <Compile Include="Custom Services\CoreEntities\DocumentSetService.cs" />
+    <Compile Include="Custom Services\CounterPointQS\CounterPointPOsService.cs" />
+    <Compile Include="Custom Services\CounterPointQS\CounterPointSalesService.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\AllocationsModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\AsycudaEntrySummaryListModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\Allocation.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseBusinessLayerDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BuildSalesReportClass.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CPPurchaseOrdersModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CPSalesModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreateAsycudaDocumentModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreateErrOPS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreateIM9.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreateIncompOPSClass.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreateOPSClass.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\DocumentItemModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\EntryDataDetailsModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\EntryDataModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\EX9SalesDataModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\InterFaceBased\BaseBusinessLayerDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\LicenceSummaryModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\NullTarifInventoryItemsModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PreviousEntriesModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SalesReportModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveCSV.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveCsvEntryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveCsvSubItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SubItemsDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\TariffCodesModelDS.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\TariffSuppUnitModel.cs" />
+    <Compile Include="Custom Services\DocumentDS\xcuda_ASYCUDAService.cs" />
+    <Compile Include="Custom Services\DocumentItemDS\xcuda_ItemService.cs" />
+    <Compile Include="Custom Services\EntryDataExService.cs" />
+    <Compile Include="Custom Services\EntryDataQS\ContainerExService.cs" />
+    <Compile Include="Custom Services\EntryDataQS\EntryDataDetailsExService.cs" />
+    <Compile Include="Custom Services\EntryDataQS\EntryDataExService.cs" />
+    <Compile Include="Custom Services\InventoryQS\InventoryItemsExService.cs" />
+    <Compile Include="Custom Services\SalesDataQS\SalesDataDetailService.cs" />
+    <Compile Include="Custom Services\SalesDataQS\SalesDataService.cs" />
+    <Compile Include="CustomFaultExceptions.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\AsycudaDocumentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\AsycudaLkpLstDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\AsycudaSalesAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDetailsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryPreviousItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EX9AsycudaSalesAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\InventoryItemAliasDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\InventoryItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\SalesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\SubItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffCategoryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffCodesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffSupUnitLkpsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xBondAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Goods_descriptionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Item_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Supplementary_unitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_TaxationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Taxation_lineDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_WeightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Weight_itmDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\AsycudaDocumentEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\AsycudaDocumentSetDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\AsycudaDocumentSetEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\Customs_ProcedureDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\Document_TypeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\ExportTemplateDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_AssessmentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Assessment_noticeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDADataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDAExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDA_ExtendedPropertiesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Border_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Border_officeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ConsigneeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ContainerDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_CountryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_DeclarantDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Delivery_termsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Departure_arrival_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_DestinationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ExportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ExporterDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Export_releaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_FinancialDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Financial_AmountsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Financial_GuaranteeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_FormsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_General_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Global_taxesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_deductionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_external_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_insuranceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_internal_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_other_costDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_IdentificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Means_of_transportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_NbersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Office_segmentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Place_of_loadingDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_PrincipalDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_PropertyDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_receiptDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_RegistrationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_SealsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_SignatureDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Suppliers_documentsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TotalDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TradersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Traders_FinancialDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TransitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Transit_DestinationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TransportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TypeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ValuationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_WarehouseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_WeightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\EntryPreviousItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\PreviousItemsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\SubItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xBondAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Attached_documentsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Goods_descriptionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Inventory_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_ItemEntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_deductionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_external_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_insuranceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_internal_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Item_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_other_costDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_PackagesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Previous_docDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Supplementary_unitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Suppliers_linkDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_TaxationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Taxation_lineDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Weight_itmDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\AsycudaDocumentEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\AsycudaDocumentSetEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDetailsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\InventoryItemsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\OpeningStockDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\PackageTypesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\PurchaseOrdersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\SalesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\SuppliersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\InventoryItemAliaDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\InventoryItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffCategoryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffCodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffSupUnitLkpDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\PreviousEntryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\QuickBooksDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\QuickBooksDS\InventoryItemsDataModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdjustmentQS\AdjustmentDetailService.cs" />
+    <Compile Include="Services\AdjustmentQS\AdjustmentExService.cs" />
+    <Compile Include="Services\AdjustmentQS\AdjustmentOversAllocationService.cs" />
+    <Compile Include="Services\AdjustmentQS\AdjustmentOverService.cs" />
+    <Compile Include="Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaDocumentItemLastItemCostService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaSalesAllocationService.cs" />
+    <Compile Include="Services\AdjustmentQS\EntryDataDetailService.cs" />
+    <Compile Include="Services\AdjustmentQS\InventoryItemAliasExService.cs" />
+    <Compile Include="Services\AdjustmentQS\InventoryItemsExService.cs" />
+    <Compile Include="Services\AdjustmentQS\ShortAllocationService.cs" />
+    <Compile Include="Services\AdjustmentQS\SystemDocumentSetService.cs" />
+    <Compile Include="Services\AdjustmentQS\TODO_AdjustmentOversToXMLService.cs" />
+    <Compile Include="Services\AdjustmentQS\TODO_PreDiscrepancyErrorsService.cs" />
+    <Compile Include="Services\AdjustmentQS\xcuda_ItemService.cs" />
+    <Compile Include="Services\AllocationQS\AdjustmentShortAllocationService.cs" />
+    <Compile Include="Services\AllocationQS\AllocationsTestCasService.cs" />
+    <Compile Include="Services\AllocationQS\AsycudaSalesAllocationsExService.cs" />
+    <Compile Include="Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs" />
+    <Compile Include="Services\CoreEntities\ActionDocSetLogsService.cs" />
+    <Compile Include="Services\CoreEntities\ActionsService.cs" />
+    <Compile Include="Services\CoreEntities\ApplicationSettingsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentBasicInfoService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentItemService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetC71Service.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetEntryDataExService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetExService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaItemBasicInfoService.cs" />
+    <Compile Include="Services\CoreEntities\AttachmentLogService.cs" />
+    <Compile Include="Services\CoreEntities\AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\CancelledEntriesLstService.cs" />
+    <Compile Include="Services\CoreEntities\ContactsService.cs" />
+    <Compile Include="Services\CoreEntities\CustomsOperationsService.cs" />
+    <Compile Include="Services\CoreEntities\Customs_ProcedureService.cs" />
+    <Compile Include="Services\CoreEntities\DeclarantService.cs" />
+    <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
+    <Compile Include="Services\CoreEntities\EmailAttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\EmailFileTypesService.cs" />
+    <Compile Include="Services\CoreEntities\EmailInfoMappingsService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingRexExsService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
+    <Compile Include="Services\CoreEntities\EmailsService.cs" />
+    <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\CoreEntities\ExpiredEntriesLstService.cs" />
+    <Compile Include="Services\CoreEntities\FileGroupsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeActionsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeContactsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeMappingRegExsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeMappingsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeReplaceRegexService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypesService.cs" />
+    <Compile Include="Services\CoreEntities\ImportActionsService.cs" />
+    <Compile Include="Services\CoreEntities\InfoMappingRegExService.cs" />
+    <Compile Include="Services\CoreEntities\InfoMappingService.cs" />
+    <Compile Include="Services\CoreEntities\InventoryItemAliasXService.cs" />
+    <Compile Include="Services\CoreEntities\InventoryItemXService.cs" />
+    <Compile Include="Services\CoreEntities\LicenceSummaryService.cs" />
+    <Compile Include="Services\CoreEntities\SessionActionsService.cs" />
+    <Compile Include="Services\CoreEntities\SessionScheduleService.cs" />
+    <Compile Include="Services\CoreEntities\SessionsService.cs" />
+    <Compile Include="Services\CoreEntities\SubItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_AssessDiscrepancyEntriesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_C71ToCreateService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_C71ToXMLService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_CreateEx9Service.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesAlreadyXMLedService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesExecutionReportService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepancyPreExecutionReportService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_IncompleteImportService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ImportCompleteEntriesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LicenceAvailableQtyService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LicenseToXMLService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LICToAssessService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LICToCreateService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetToAssessErrorsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetToAssessService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetToExportService.cs" />
+    <Compile Include="Services\CoreEntities\ToDo_POToXMLService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitAllXMLToCustomsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitEntryCIFService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitMissingInvoicePDFsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitPOInfoService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitSalesToCustomsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitUnclassifiedItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_TotalAdjustmentsToProcessService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_UnallocatedSalesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_UnallocatedShortsService.cs" />
+    <Compile Include="Services\CoreEntities\xcuda_Supplementary_unitService.cs" />
+    <Compile Include="Services\CounterPointQS\CounterPointPODetailsService.cs" />
+    <Compile Include="Services\CounterPointQS\CounterPointPOsService.cs" />
+    <Compile Include="Services\CounterPointQS\CounterPointSalesDetailsService.cs" />
+    <Compile Include="Services\CounterPointQS\CounterPointSalesService.cs" />
+    <Compile Include="Services\DocumentDS\AsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Services\DocumentDS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\DocumentDS\AsycudaDocumentSetService.cs" />
+    <Compile Include="Services\DocumentDS\AsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Services\DocumentDS\AsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Services\DocumentDS\AttachmentService.cs" />
+    <Compile Include="Services\DocumentDS\ContainerService.cs" />
+    <Compile Include="Services\DocumentDS\CustomsOperationService.cs" />
+    <Compile Include="Services\DocumentDS\Customs_ProcedureService.cs" />
+    <Compile Include="Services\DocumentDS\Document_TypeService.cs" />
+    <Compile Include="Services\DocumentDS\ExportTemplateService.cs" />
+    <Compile Include="Services\DocumentDS\FileTypeService.cs" />
+    <Compile Include="Services\DocumentDS\SystemDocumentSetService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_AssessmentService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Assessment_noticeService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ASYCUDAExService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ASYCUDAService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ASYCUDA_ExtendedPropertiesService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Border_informationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Border_officeService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ConsigneeService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ContainerService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_CountryService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_DeclarantService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Delivery_termsService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Departure_arrival_informationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_DestinationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ExporterService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ExportService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Export_releaseService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_FinancialService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Financial_AmountsService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Financial_GuaranteeService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_FormsService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_General_informationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Global_taxesService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_deductionService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_external_freightService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_insuranceService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_internal_freightService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_InvoiceService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Gs_other_costService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_IdentificationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Means_of_transportService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_NbersService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Office_segmentService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Place_of_loadingService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_PrincipalService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_PropertyService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_receiptService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_RegistrationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_SealsService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_SignatureService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Suppliers_documentsService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_TotalService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_TradersService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Traders_FinancialService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_TransitService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_Transit_DestinationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_TransportService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_TypeService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_ValuationService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_WarehouseService.cs" />
+    <Compile Include="Services\DocumentDS\xcuda_WeightService.cs" />
+    <Compile Include="Services\DocumentItemDS\AttachmentsService.cs" />
+    <Compile Include="Services\DocumentItemDS\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\DocumentItemDS\PreviousItemsExService.cs" />
+    <Compile Include="Services\DocumentItemDS\SubItemsService.cs" />
+    <Compile Include="Services\DocumentItemDS\xBondAllocationsService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Attached_documentsService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_AttachmentsService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Goods_descriptionService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_HScodeService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Inventory_ItemService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_ItemEntryDataDetailsService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_ItemService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_item_deductionService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_item_external_freightService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_item_insuranceService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_item_internal_freightService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Item_InvoiceService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_item_other_costService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_PackagesService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_PreviousItemService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Previous_docService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Supplementary_unitService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Suppliers_linkService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_TarificationService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_TaxationService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Taxation_lineService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Valuation_itemService.cs" />
+    <Compile Include="Services\DocumentItemDS\xcuda_Weight_itmService.cs" />
+    <Compile Include="Services\EntryDataDS\AdjustmentsService.cs" />
+    <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataLineService.cs" />
+    <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\EntryDataDS\AttachmentsService.cs" />
+    <Compile Include="Services\EntryDataDS\EDDocumentTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataDetailsExService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataExService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataExTotalsService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataFilesService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataService.cs" />
+    <Compile Include="Services\EntryDataDS\FileTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemAliasService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemsExService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemSourceService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemsService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItems_NonStockService.cs" />
+    <Compile Include="Services\EntryDataDS\InventorySourcesService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoiceDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoiceDetailsVolumeService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoiceExtraInfoService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\OpeningStockService.cs" />
+    <Compile Include="Services\EntryDataDS\PackageTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />
+    <Compile Include="Services\EntryDataDS\SalesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShimentBLChargesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedFreightService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedInvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedManifestService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedPOsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedRiderService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachmentsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLFreightService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatMarksService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightBLsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightManifestsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceDetailsItemAliasService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOItemDataService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOItemMISMatchesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOItemQueryMatchesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOManualMatchesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceRiderDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceRiderManualMatchesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentManifestBLsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentManifestDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentManifestService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentMIS_InvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentMIS_POsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentPOsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderBLsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderExService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderManifestsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
+    <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
+    <Compile Include="Services\EntryDataDS\SupportingDetailService.cs" />
+    <Compile Include="Services\EntryDataDS\VolumeUnitsService.cs" />
+    <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesFilesService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataLineService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\EntryDataQS\EmptyFullCodeService.cs" />
+    <Compile Include="Services\EntryDataQS\EntryDataDetailsExService.cs" />
+    <Compile Include="Services\EntryDataQS\EntryDataExService.cs" />
+    <Compile Include="Services\EntryDataQS\EntryDataService.cs" />
+    <Compile Include="Services\EntryDataQS\InventoryItemsExService.cs" />
+    <Compile Include="Services\EntryDataQS\PackageTypeService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItemAliaService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItemService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItemSourceService.cs" />
+    <Compile Include="Services\InventoryDS\InventorySourceService.cs" />
+    <Compile Include="Services\InventoryDS\TariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Services\InventoryDS\TariffCategoryService.cs" />
+    <Compile Include="Services\InventoryDS\TariffCodeService.cs" />
+    <Compile Include="Services\InventoryDS\TariffSupUnitLkpService.cs" />
+    <Compile Include="Services\InventoryQS\EntryDataDetailsExService.cs" />
+    <Compile Include="Services\InventoryQS\InventoryItemsExService.cs" />
+    <Compile Include="Services\InventoryQS\TariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="Services\InventoryQS\TariffCategoryService.cs" />
+    <Compile Include="Services\InventoryQS\TariffCodesService.cs" />
+    <Compile Include="Services\InventoryQS\TariffSupUnitLkpsService.cs" />
+    <Compile Include="Services\LicenseDS\RegisteredService.cs" />
+    <Compile Include="Services\LicenseDS\TODO_LicenceAvailableQtyService.cs" />
+    <Compile Include="Services\LicenseDS\TODO_LICToCreateService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_General_segmentService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_LicenseService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_Lic_item_segmentService.cs" />
+    <Compile Include="Services\OCR\ChildPartsService.cs" />
+    <Compile Include="Services\OCR\EndService.cs" />
+    <Compile Include="Services\OCR\FieldFormatRegExService.cs" />
+    <Compile Include="Services\OCR\FieldsService.cs" />
+    <Compile Include="Services\OCR\ImportErrorsService.cs" />
+    <Compile Include="Services\OCR\InvoiceIdentificatonRegExService.cs" />
+    <Compile Include="Services\OCR\InvoiceRegExService.cs" />
+    <Compile Include="Services\OCR\InvoicesService.cs" />
+    <Compile Include="Services\OCR\LinesService.cs" />
+    <Compile Include="Services\OCR\OCR_FailedFieldsService.cs" />
+    <Compile Include="Services\OCR\OCR_FailedLinesService.cs" />
+    <Compile Include="Services\OCR\OCR_FieldMappingsService.cs" />
+    <Compile Include="Services\OCR\OCR_FieldValueService.cs" />
+    <Compile Include="Services\OCR\OCR_PartLineFieldsService.cs" />
+    <Compile Include="Services\OCR\PartsService.cs" />
+    <Compile Include="Services\OCR\PartTypesService.cs" />
+    <Compile Include="Services\OCR\RecuringPartService.cs" />
+    <Compile Include="Services\OCR\RegularExpressionsService.cs" />
+    <Compile Include="Services\OCR\StartService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\EntryDataDetailsService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\PreviousEntryService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\xcuda_HScodeService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\xcuda_PreviousItemService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\xcuda_TarificationService.cs" />
+    <Compile Include="Services\PreviousDocumentDS\xcuda_Valuation_itemService.cs" />
+    <Compile Include="Services\PreviousDocumentQS\PreviousDocumentItemService.cs" />
+    <Compile Include="Services\PreviousDocumentQS\PreviousDocumentService.cs" />
+    <Compile Include="Services\PreviousDocumentQS\PreviousItemsExService.cs" />
+    <Compile Include="Services\QuickBooksDS\InventoryItemsService.cs" />
+    <Compile Include="Services\SalesDataQS\AsycudaDocumentEntryDataService.cs" />
+    <Compile Include="Services\SalesDataQS\AsycudaDocumentSetEntryDataDetailsService.cs" />
+    <Compile Include="Services\SalesDataQS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\SalesDataQS\SalesDataAllocationsService.cs" />
+    <Compile Include="Services\SalesDataQS\SalesDataDetailService.cs" />
+    <Compile Include="Services\SalesDataQS\SalesDataService.cs" />
+    <Compile Include="Services\ValuationDS\C71SummaryService.cs" />
+    <Compile Include="Services\ValuationDS\RegisteredService.cs" />
+    <Compile Include="Services\ValuationDS\TODO_C71ToCreateService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Buyer_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Declarant_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Identification_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_ItemService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Seller_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Value_declaration_formService.cs" />
+    <Compile Include="Utils\Matching\IAutoMatchProcessor.cs" />
+    <Compile Include="Utils\InventoryDataItem.cs" />
+    <Compile Include="Utils\InventoryItemDataUtils.cs" />
+    <Compile Include="Utils\InventoryItemUtils.cs" />
+    <Compile Include="Utils\Matching\MatchToAsycudaItemSelector.cs" />
+    <Compile Include="Utils\Matching\MissingCostProcessor.cs" />
+    <Compile Include="Utils\Matching\OverCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\PreviousInvoiceNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortPreviousNumberMatcher.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\MatchToAsycudaItem.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocationNoDB.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocationMem.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocation.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemsBulk.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemSelector.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItems.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemsProcessor.cs" />
+    <Compile Include="Utils\SupplierData.cs" />
+    <Compile Include="Utils\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AllocationQS\AllocationQS.csproj">
+      <Project>{859a7626-5ea1-4cfd-bc1b-9f653a81655f}</Project>
+      <Name>AllocationQS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AsycudaWorld421\AsycudaWorld421.csproj">
+      <Project>{0426f0e8-f84c-46d2-aa56-759eba752269}</Project>
+      <Name>AsycudaWorld421</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{d6846386-8741-4619-bae3-b0cfedbf2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.UI\Core.Common.UI.csproj">
+      <Project>{5dd82ad7-f344-45e3-92cc-96f8d07700af}</Project>
+      <Name>Core.Common.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{11bb58a0-1c42-49d9-bf54-ea05ecc74719}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj">
+      <Project>{5E51C8C3-9BF4-4C13-AD00-7094FFB83AD6}</Project>
+      <Name>EmailDownloader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
+      <Project>{523FBF1E-BB4F-435A-9A9E-63DE49CD721D}</Project>
+      <Name>pdf-ocr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Linq.Dynamic\System.Linq.Dynamic.csproj">
+      <Project>{17c0d5de-c72d-4a06-a12c-445ebcf3b9ea}</Project>
+      <Name>System.Linq.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
+      <Project>{978b7943-bd11-41eb-91c9-59a09c6f0ecc}</Project>
+      <Name>WaterNut.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
+      <Project>{92eb0cbf-4018-427b-aa8b-13b088650db8}</Project>
+      <Name>WaterNut.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Start\" />
+    <Folder Include="Custom Services\AllocationDS\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+    <Error Condition="!Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.5.2.0\build\Tesseract.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <!--<Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.1\build\Tesseract.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />-->
+  </Target>
+  <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Import Project="..\packages\Tesseract.5.2.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" />
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

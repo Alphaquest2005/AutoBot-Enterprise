@@ -56,9 +56,10 @@ namespace WaterNut.DataSpace
                                           "UpdateLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
                                           "AddFieldFormatRegex: RegexId: 000, Keyword:'', Regex:'', ReplaceRegex:'', ReplacementRegexIsMultiLine: True, RegexIsMultiLine: True\r\n";
 
-        public static bool Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
+        public static Dictionary<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
+            var imports = new Dictionary<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>();
             //Get Text
             try
             {
@@ -66,6 +67,7 @@ namespace WaterNut.DataSpace
                 
                 var pdfTxt = GetPdftxt(file);
 
+                
                 //Get Template
                 var templates = GetTemplates(x => true);
 
@@ -74,10 +76,21 @@ namespace WaterNut.DataSpace
                 {
                     try
                     {
-
-                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId, tmp == possibleInvoices.Last()) == false)
-                            ReportUnImportedFile(docSet,file, emailId,fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
-                      
+                        var importStatus = TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp,
+                            fileTypeId, tmp == possibleInvoices.Last());
+                        switch (importStatus)
+                        {
+                            case ImportStatus.Success:
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file,  FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.Success));
+                                break;
+                            case ImportStatus.HasErrors:
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.HasErrors));
+                                break;
+                            case ImportStatus.Failed:
+                                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.Failed));
+                                break;
+                        }
                     }
                     catch (Exception e)
                     {
@@ -98,12 +111,12 @@ namespace WaterNut.DataSpace
 
                 }
 
-                
+               // if(possibleInvoices.Where(x => x.OcrInvoices.))
 
                    // SeeWhatSticks(pdfTxt.ToString());
                 
 
-                return false;
+                return imports;
             }
             catch (Exception e)
             {
@@ -116,7 +129,7 @@ namespace WaterNut.DataSpace
                              $"AutoBot";
                 EmailDownloader.EmailDownloader.SendBackMsg(emailId, client, errTxt);
                 
-                return false;
+                return imports;
             }
         }
 
@@ -164,37 +177,55 @@ namespace WaterNut.DataSpace
             return templates;
         }
 
-        public static bool TryReadFile(string file, string emailId, FileTypes fileType, StringBuilder pdftxt,
+        public static ImportStatus TryReadFile(string file, string emailId, FileTypes fileType, StringBuilder pdftxt,
             Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet,
             Invoice tmp, int fileTypeId, bool isLastdoc)
         {
 
-           // if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
-
+           
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
+
             var csvLines = tmp.Read(formattedPdfTxt);
 
+            AddNameSupplier(tmp, csvLines);
+
+            AddMissingRequiredFieldValues(tmp, csvLines);
+
+            WriteTextFile(file, formattedPdfTxt);
+
+            if (csvLines.Count < 1 || !tmp.Success)
+            {
+                return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc)  ? ImportStatus.HasErrors : ImportStatus.Failed;
+            }
+            else
+            {
+                return ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines) == true ? ImportStatus.Success : ImportStatus.HasErrors;
+            }
+
+
+        }
+
+        private static void AddNameSupplier(Invoice tmp, List<dynamic> csvLines)
+        {
             if(csvLines.Count == 1 && !tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
                 foreach (var doc in ((List<IDictionary<string, object>>) csvLines.First()))
                 {
                     if (!doc.Keys.Contains("SupplierCode")) doc.Add("SupplierCode", tmp.OcrInvoices.Name);
                     if (!doc.Keys.Contains("Name")) doc.Add("Name", tmp.OcrInvoices.Name);
                 }
+        }
 
-            //var doc = ((List<IDictionary<string, object>>)csvLines.FirstOrDefault())?.FirstOrDefault();
-            
-           
-            if (csvLines.Count < 1 || !tmp.Success)
+        private static void AddMissingRequiredFieldValues(Invoice tmp, List<dynamic> csvLines)
+        {
+            var requiredFieldsList = tmp.Lines.SelectMany(x => x.OCR_Lines.Fields)
+                .Where(z => z.IsRequired && !string.IsNullOrEmpty(z.FieldValue?.Value)).ToList();
+            foreach (var field in requiredFieldsList)
             {
-                return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc);
+                foreach (var doc in ((List<IDictionary<string, object>>)csvLines.First()).Where(doc => !doc.Keys.Contains(field.Field)))
+                {
+                    doc.Add(field.Field, field.FieldValue.Value);
+                }
             }
-            else
-            {
-                WriteTextFile(file, formattedPdfTxt);
-                return ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines);
-            }
-
-
         }
 
         private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
@@ -216,7 +247,9 @@ namespace WaterNut.DataSpace
             Invoice tmp, int fileTypeId, bool isLastdoc)
         {
             var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
-                z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
+                z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired && f.FieldValue?.Value == null) && !z.Values.Any())).ToList();
+
+            failedlines.AddRange(tmp.Parts.SelectMany(z => z.FailedLines).ToList());
 
             var allRequried = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
                 z.OCR_Lines.Fields.Any(f => f.IsRequired && (f.Field != "SupplierCode" && f.Field != "Name"))).ToList();
