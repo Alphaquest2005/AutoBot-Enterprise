@@ -8,7 +8,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Core.Common.Extensions;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 
 namespace WaterNut.Business.Services.Utils
 {
@@ -18,6 +21,7 @@ namespace WaterNut.Business.Services.Utils
         private readonly ILogger<DeepSeekInvoiceApi> _logger;
         private readonly string _apiKey;
         private readonly string _baseUrl;
+        private readonly AsyncRetryPolicy<HttpResponseMessage> _retryPolicy;
 
         public string PromptTemplate { get; set; }
         public string Model { get; set; } = "deepseek-chat";
@@ -25,14 +29,33 @@ namespace WaterNut.Business.Services.Utils
         public int DefaultMaxTokens { get; set; } = 1500;
         public string HsCodePattern { get; set; } = @"\b\d{4}(?:[\.\-]\d{2,4})*\b";
 
-        public DeepSeekInvoiceApi(ILogger<DeepSeekInvoiceApi> logger, HttpClient httpClient = null)
+        private static readonly HttpStatusCode[] HttpStatusCodesToRetry =
+        {
+            HttpStatusCode.RequestTimeout,
+            HttpStatusCode.GatewayTimeout
+        };
+
+        public DeepSeekInvoiceApi(HttpClient httpClient = null)
         {
             _apiKey = "sk-2872e533da794296b127537a6b53607f";
             _baseUrl = "https://api.deepseek.com/v1";
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger =  LoggingConfig.CreateLogger();//logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClient = httpClient ?? new HttpClient();
+
             ConfigureHttpClient();
             SetDefaultPrompts();
+
+            _retryPolicy = Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
+                .Or<TaskCanceledException>()
+                .OrResult(r => HttpStatusCodesToRetry.Contains(r.StatusCode))
+                .WaitAndRetryAsync(3, retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (outcome, timespan, retryCount, context) =>
+                    {
+                        _logger.LogWarning("Retry {RetryCount}/3. Error: {Error}",
+                            retryCount, outcome.Exception?.Message ?? outcome.Result?.StatusCode.ToString());
+                    });
         }
 
         private void ConfigureHttpClient()
@@ -40,41 +63,116 @@ namespace WaterNut.Business.Services.Utils
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("X-DeepSeek-Version", "2023-07-01");
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromMinutes(2);
         }
 
         private void SetDefaultPrompts()
         {
-            PromptTemplate = @"DOCUMENT PROCESSING PROMPT:
-Extract BOTH commercial invoices AND customs declarations from:
+            PromptTemplate = @"DOCUMENT PROCESSING RULES:
 
+0. PROCESS THIS TEXT INPUT:
 {0}
 
-Return PURE JSON ONLY without any markdown formatting, comments, or additional text. Formatting requirements:
-- No backticks (```) or markdown
-- No explanatory text
-- Only valid JSON structure
+1. TEXT STRUCTURE ANALYSIS:
+   - Focus sections between: ""SHOP FASTER WITH THE APP"" and ""For Comptroller of Customs""
+   - Priority order:
+     1. Item tables with prices/quantities
+     2. Customs declaration forms
+     3. Address blocks
+     4. Payment/header sections
 
-Valid response format:
+2. FIELD EXTRACTION GUIDANCE:
+   - SupplierCode: 
+     * Source: Store/merchant name in header/footer (e.g., ""FASHIONNOWVA"")
+     * NEVER use consignee name
+     * Fallback: Email domain analysis (@company.com)
+   
+   - TotalDeduction: 
+     * Look for: Coupons, credits, free shipping markers
+     * Calculate: Sum of all price reductions
+   
+   - TotalInternalFreight:
+     * Combine: Shipping + Handling + Transportation fees
+     * Source: ""FREIGHT"" values in consignee line
+
+3. CUSTOMS DECLARATION RULES:
+   - Packages = Count from ""No. of Packages"" or ""Package Count""
+   - GrossWeightKG = Numeric value from ""Gross Weight"" with KG units
+   - Freight: Extract numeric value after ""FREIGHT""
+   - FreightCurrency: Currency from freight context (e.g., ""US"" = USD)
+
+4. DATA VALIDATION REQUIREMENTS:
+   - Reject if: SupplierCode == ConsigneeName
+   - Required fields: 
+     * InvoiceDetails.TariffCode (use ""000000"" if missing)
+     * CustomsDeclarations.Freight (0.0 if not found)
+
+6. JSON STRUCTURE VALIDATION:
+   - MUST close all arrays/objects
+   - REQUIRED fields:
+     * Invoices[]
+     * CustomsDeclarations[] (can be empty)
+   - If no customs data: 
+     """"CustomsDeclarations"""": []
+
+5. JSON SCHEMA WITH EXTRACTION GUIDANCE:
 {{
   ""Invoices"": [{{
-    ""InvoiceNo"": """",
-    ""InvoiceDate"": """",
-    ""Total"": 0.00,
-    ""Currency"": """",
-    ""Supplier"": """",
-    ""LineItems"": [{{""Description"": """", ""Quantity"": 0}}]
+    // INVOICE HEADER DATA //
+    ""InvoiceNo"": ""<str>"",                    // From ""Order #"" value
+    ""PONumber"": ""<str|null>"",                 // ""PO Number"" if exists
+    ""InvoiceDate"": ""<YYYY-MM-DD>"",            // ""Date Placed:"" value
+    ""Currency"": ""<ISO_CODE>"",                 // Symbol analysis ($=USD)
+    
+    // FINANCIAL BREAKDOWN //
+    ""SubTotal"": <float>,                       // Sum before deductions
+    ""Total"": <float>,                          // Final payable amount
+    ""TotalDeduction"": <float|null>,            // SUM(Coupons + Credits)
+    ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
+    ""TotalInternalFreight"": <float|null>,      // Shipping + Handling
+    ""TotalInsurance"": <float|null>,            // Insurance fees if present
+    
+    // SUPPLIER INFORMATION //
+    ""SupplierCode"": ""<str>"",                 // Merchant name (cleaned)
+    ""SupplierAddress"": ""<str>"",              // From header/footer
+    ""SupplierCountryCode"": ""<ISO3166-2>"",    // From supplier address
+    
+    // LINE ITEMS //
+    ""InvoiceDetails"": [{{
+      ""ItemNumber"": ""<str|null>"",           // SKU/Part number
+      ""ItemDescription"": ""<str>"",           // Full item text
+      ""Quantity"": <float>,                    // ""Qty:"" value
+      ""Cost"": <float>,                        // Unit price
+      ""TotalCost"": <float>,                   // Quantity * Cost
+      ""Units"": ""<str>"",                     // Size→Units mapping
+      ""TariffCode"": ""<str>"",                // From ""Tariff No."" column
+      ""Discount"": <float|null>                // Item-level discounts
+    }}]
   }}],
+  
   ""CustomsDeclarations"": [{{
-    ""Consignee"": """",
-    ""BLNumber"": """",
-    ""Goods"": [{{""Description"": """", ""TariffCode"": """"}}],
-    ""PackageInfo"": {{""Count"": 0, ""WeightKG"": 0.0}}
+    // SHIPPING INFO //
+    ""Consignee"": ""<str>"",                   // Delivery address name
+    ""BLNumber"": ""<str>"",                    // ""WayBill Number"" value
+    ""Freight"": <float>,                       // From ""FREIGHT"" marker
+    ""FreightCurrency"": ""<ISO>"",             // Matches invoice currency
+    
+    // PACKAGE DETAILS //
+    ""PackageInfo"": {{
+      ""Packages"": <int>,                      // Former 'Count' field
+      ""GrossWeightKG"": <float>                // Former 'WeightKG' field
+    }},
+    
+    // ITEM CLASSIFICATION //
+    ""Goods"": [{{
+      ""Description"": ""<str>"",               // Must match invoice items
+      ""TariffCode"": ""<str>""                 // Must match item tariff code
+    }}]
   }}]
 }}";
         }
 
-        public async Task<List<IDictionary<string, object>>> ExtractShipmentInvoice(List<string> pdfTextVariants)
+        public async Task<List<dynamic>> ExtractShipmentInvoice(List<string> pdfTextVariants)
         {
             var results = new List<IDictionary<string, object>>();
 
@@ -82,7 +180,8 @@ Valid response format:
             {
                 try
                 {
-                    var response = await ProcessTextVariant(text).ConfigureAwait(false);
+                    var cleanedText = CleanText(text);
+                    var response = await ProcessTextVariant(cleanedText).ConfigureAwait(false);
                     results.AddRange(response);
                 }
                 catch (Exception ex)
@@ -91,7 +190,25 @@ Valid response format:
                 }
             }
 
-            return MergeDocuments(results);
+            return new List<dynamic> { MergeDocuments(results)};
+        }
+
+        private string CleanText(string rawText)
+        {
+            try
+            {
+                var cleaned = Regex.Replace(rawText, @"-{30,}.*?-{30,}", "", RegexOptions.Singleline);
+                var match = Regex.Match(cleaned,
+                    @"(?<=SHOP FASTER WITH THE APP)(.*?)(?=For Comptroller of Customs)",
+                    RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+                return match.Success ? match.Value : cleaned;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Text cleaning failed");
+                return rawText;
+            }
         }
 
         private async Task<List<IDictionary<string, object>>> ProcessTextVariant(string text)
@@ -102,10 +219,7 @@ Valid response format:
             return ParseApiResponse(response);
         }
 
-        private static string EscapeBraces(string input)
-        {
-            return input.Replace("{", "{{").Replace("}", "}}");
-        }
+        private static string EscapeBraces(string input) => input.Replace("{", "{{").Replace("}", "}}");
 
         private List<IDictionary<string, object>> ParseApiResponse(string jsonResponse)
         {
@@ -114,54 +228,25 @@ Valid response format:
             try
             {
                 var cleanJson = CleanJsonResponse(jsonResponse);
-
-                if (string.IsNullOrWhiteSpace(cleanJson))
-                {
-                    _logger.LogWarning("Empty JSON after cleaning");
-                    return documents;
-                }
-
-                if (!IsValidJsonStructure(cleanJson))
-                {
-                    _logger.LogError("Invalid JSON structure. Content: {CleanJson}", cleanJson);
-                    return documents;
-                }
+                if (string.IsNullOrWhiteSpace(cleanJson)) return documents;
 
                 using var doc = JsonDocument.Parse(cleanJson);
                 var root = doc.RootElement;
 
                 ProcessInvoices(root, documents);
                 ProcessCustomsDeclarations(root, documents);
+                ValidateAndEnhanceData(documents);
 
                 return documents;
             }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, "JSON parsing failed. Content: {JsonResponse}", jsonResponse);
-                return new List<IDictionary<string, object>>();
-            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error parsing response");
+                _logger.LogError(ex, "Response parsing failed");
                 return new List<IDictionary<string, object>>();
             }
         }
 
-        private string CleanJsonResponse(string jsonResponse)
-        {
-            return jsonResponse?
-                .Replace("```json", "")
-                .Replace("```", "")
-                .Replace("'''json", "")
-                .Replace("'''", "")
-                .Replace("\uFEFF", "")
-                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
-        }
 
-        private bool IsValidJsonStructure(string json)
-        {
-            return json.StartsWith("{") && json.EndsWith("}");
-        }
 
         private void ProcessInvoices(JsonElement root, List<IDictionary<string, object>> documents)
         {
@@ -169,19 +254,50 @@ Valid response format:
             {
                 foreach (var inv in invoices.EnumerateArray())
                 {
-                    var dict = new Dictionary<string, object>
+                    var dict = new BetterExpando()
                     {
                         ["DocumentType"] = "Invoice",
                         ["InvoiceNo"] = GetStringValue(inv, "InvoiceNo"),
+                        ["PONumber"] = GetStringValue(inv, "PONumber"),
                         ["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate")),
+                        ["SubTotal"] = GetDecimalValue(inv, "SubTotal"),
                         ["Total"] = GetDecimalValue(inv, "Total"),
                         ["Currency"] = GetStringValue(inv, "Currency"),
-                        ["Supplier"] = GetStringValue(inv, "Supplier"),
-                        ["LineItems"] = ParseLineItems(inv)
+                        ["SupplierCode"] = GetStringValue(inv, "SupplierCode"),
+                        ["SupplierAddress"] = GetStringValue(inv, "SupplierAddress"),
+                        ["SupplierCountryCode"] = GetStringValue(inv, "SupplierCountryCode"),
+                        ["TotalDeduction"] = GetNullableDecimalValue(inv, "TotalDeduction"),
+                        ["TotalOtherCost"] = GetNullableDecimalValue(inv, "TotalOtherCost"),
+                        ["TotalInternalFreight"] = GetNullableDecimalValue(inv, "TotalInternalFreight"),
+                        ["TotalInsurance"] = GetNullableDecimalValue(inv, "TotalInsurance"),
+                        ["InvoiceDetails"] = ParseInvoiceDetails(inv)
                     };
                     documents.Add(dict);
                 }
             }
+        }
+
+        private List<IDictionary<string, object>> ParseInvoiceDetails(JsonElement invoiceElement)
+        {
+            var details = new List<IDictionary<string, object>>();
+            if (invoiceElement.TryGetProperty("InvoiceDetails", out var detailsElement))
+            {
+                foreach (var det in detailsElement.EnumerateArray())
+                {
+                    details.Add(new BetterExpando()
+                    {
+                        ["ItemNumber"] = GetStringValue(det, "ItemNumber"),
+                        ["ItemDescription"] = GetStringValue(det, "ItemDescription"),
+                        ["Quantity"] = GetDecimalValue(det, "Quantity"),
+                        ["Cost"] = GetDecimalValue(det, "Cost"),
+                        ["TotalCost"] = GetDecimalValue(det, "TotalCost"),
+                        ["Units"] = GetStringValue(det, "Units"),
+                        ["TariffCode"] = ValidateTariffCode(GetStringValue(det, "TariffCode")),
+                        ["Discount"] = GetNullableDecimalValue(det, "Discount")
+                    });
+                }
+            }
+            return details;
         }
 
         private void ProcessCustomsDeclarations(JsonElement root, List<IDictionary<string, object>> documents)
@@ -190,7 +306,7 @@ Valid response format:
             {
                 foreach (var cd in customs.EnumerateArray())
                 {
-                    var dict = new Dictionary<string, object>
+                    var dict = new BetterExpando()
                     {
                         ["DocumentType"] = "CustomsDeclaration",
                         ["Consignee"] = GetStringValue(cd, "Consignee"),
@@ -203,43 +319,6 @@ Valid response format:
             }
         }
 
-        private string GetStringValue(JsonElement element, string propertyName)
-        {
-            return element.TryGetProperty(propertyName, out var value) ? value.GetString() : null;
-        }
-
-        private decimal GetDecimalValue(JsonElement element, string propertyName)
-        {
-            return element.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.Number
-                ? value.GetDecimal()
-                : 0m;
-        }
-
-        private int GetIntValue(JsonElement element, string propertyName)
-        {
-            return element.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.Number
-                ? value.GetInt32()
-                : 0;
-        }
-
-        private List<IDictionary<string, object>> ParseLineItems(JsonElement invoiceElement)
-        {
-            var items = new List<IDictionary<string, object>>();
-            if (invoiceElement.TryGetProperty("LineItems", out var lineItems))
-            {
-                foreach (var li in lineItems.EnumerateArray())
-                {
-                    items.Add(new Dictionary<string, object>
-                    {
-                        ["Description"] = GetStringValue(li, "Description"),
-                        ["Quantity"] = GetDecimalValue(li, "Quantity"),
-                        ["TariffCode"] = ValidateTariffCode(GetStringValue(li, "TariffCode"))
-                    });
-                }
-            }
-            return items;
-        }
-
         private List<IDictionary<string, object>> ParseGoodsClassifications(JsonElement customsElement)
         {
             var goods = new List<IDictionary<string, object>>();
@@ -247,7 +326,7 @@ Valid response format:
             {
                 foreach (var g in goodsElement.EnumerateArray())
                 {
-                    goods.Add(new Dictionary<string, object>
+                    goods.Add(new BetterExpando()
                     {
                         ["Description"] = GetStringValue(g, "Description"),
                         ["TariffCode"] = ValidateTariffCode(GetStringValue(g, "TariffCode"))
@@ -259,27 +338,132 @@ Valid response format:
 
         private IDictionary<string, object> ParsePackageInfo(JsonElement customsElement)
         {
-            var pkgInfo = new Dictionary<string, object>();
+            var pkgInfo = new BetterExpando();
             if (customsElement.TryGetProperty("PackageInfo", out var packageElement))
             {
-                pkgInfo["Count"] = GetIntValue(packageElement, "Count");
-                pkgInfo["WeightKG"] = GetDecimalValue(packageElement, "WeightKG");
+                pkgInfo["Packages"] = GetIntValue(packageElement, "Packages");
+                pkgInfo["GrossWeightKG"] = GetDecimalValue(packageElement, "GrossWeightKG");
             }
             return pkgInfo;
         }
+
+        private void ValidateAndEnhanceData(List<IDictionary<string, object>> documents)
+        {
+            CleanTotals(documents);
+            CleanSupplierCodeConsignee(documents);
+        }
+
+        private void CleanSupplierCodeConsignee(List<IDictionary<string, object>> documents)
+        {
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Invoice"))
+            {
+                // Prevent consignee/supplier mismatch
+                var supplier = doc["SupplierCode"]?.ToString() ?? "";
+                var consignee = documents
+                    .FirstOrDefault(d => d["DocumentType"].ToString() == "CustomsDeclaration")?["Consignee"]?.ToString() ?? "";
+
+                if (supplier.Equals(consignee, StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogWarning("Supplier matches consignee: {Name}. Resetting to UNKNOWN.", supplier);
+                    doc["SupplierCode"] = "UNKNOWN";
+                    doc["SupplierAddress"] = null;
+                }
+
+                // Clean freight info from names
+                if (doc["SupplierCode"] is string sc)
+                    doc["SupplierCode"] = Regex.Replace(sc, @"\s*\(FREIGHT.*?\)", "");
+            }
+        }
+
+        private void CleanTotals(List<IDictionary<string, object>> documents)
+        {
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Invoice"))
+            {
+                var subTotal = Convert.ToDecimal(doc["SubTotal"]);
+                var total = Convert.ToDecimal(doc["Total"]);
+                var calculatedTotal = subTotal
+                                      - Convert.ToDecimal(doc["TotalDeduction"] ?? 0m)
+                                      + Convert.ToDecimal(doc["TotalOtherCost"] ?? 0m)
+                                      + Convert.ToDecimal(doc["TotalInternalFreight"] ?? 0m);
+
+                if (Math.Abs(total - calculatedTotal) > 0.01m)
+                {
+                    _logger.LogWarning("Total mismatch in invoice {InvoiceNo}: Expected {Calculated}, Actual {Actual}",
+                        doc["InvoiceNo"], calculatedTotal, total);
+                }
+
+                if (string.IsNullOrEmpty(doc["SupplierCountryCode"]?.ToString()))
+                {
+                    doc["SupplierCountryCode"] = DeriveCountryCode(doc["SupplierAddress"]?.ToString());
+                }
+            }
+        }
+
+        private string DeriveCountryCode(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) return "";
+
+            var countryMatch = Regex.Match(address, @"\b([A-Z]{2})$");
+            if (countryMatch.Success) return countryMatch.Groups[1].Value;
+
+            return address.Contains("United States") ? "US" :
+                   address.Contains("Canada") ? "CA" :
+                   address.Contains("Germany") ? "DE" : "";
+        }
+
+        private string GetStringValue(JsonElement element, string propertyName) =>
+            element.TryGetProperty(propertyName, out var value) ? value.GetString() : null;
+
+        private decimal GetDecimalValue(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var value))
+                return 0m;
+
+            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
+                return 0m;
+
+            try
+            {
+                return value.GetDecimal();
+            }
+            catch (InvalidOperationException)
+            {
+                _logger.LogWarning("Failed to parse decimal value for property {PropertyName}", propertyName);
+                return 0m;
+            }
+        }
+
+        // Add this method for nullable decimals
+        private decimal? GetNullableDecimalValue(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var value))
+                return null;
+
+            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
+                return null;
+
+            try
+            {
+                return value.GetDecimal();
+            }
+            catch (InvalidOperationException)
+            {
+                _logger.LogWarning("Failed to parse nullable decimal for property {PropertyName}", propertyName);
+                return null;
+            }
+        }
+
+        private int GetIntValue(JsonElement element, string propertyName) =>
+            element.TryGetProperty(propertyName, out var value) ? value.GetInt32() : 0;
+
+        private DateTime? ParseDate(string dateStr) =>
+            DateTime.TryParse(dateStr, out var date) ? date : (DateTime?)null;
 
         public string ValidateTariffCode(string rawCode)
         {
             if (string.IsNullOrWhiteSpace(rawCode)) return "";
             var cleanCode = Regex.Replace(rawCode, @"[^\d\.\-]", "");
             return Regex.IsMatch(cleanCode, HsCodePattern) ? cleanCode : "";
-        }
-
-        private DateTime? ParseDate(string dateStr)
-        {
-            if (DateTime.TryParse(dateStr, out var date)) return date;
-            _logger.LogWarning("Failed to parse date: {DateString}", dateStr);
-            return null;
         }
 
         private async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
@@ -295,68 +479,46 @@ Valid response format:
                 };
 
                 var json = JsonSerializer.Serialize(request);
-                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync($"{_baseUrl}/chat/completions", content)
-                    .ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode)
+                var response = await _retryPolicy.ExecuteAsync(async () =>
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("API request failed. Status: {StatusCode}, Response: {ErrorContent}",
-                        response.StatusCode, errorContent);
-                    return string.Empty;
-                }
+                    using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    return await _httpClient.PostAsync(
+                        $"{_baseUrl}/chat/completions",
+                        content
+                    ).ConfigureAwait(false);
+                });
 
-                var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return ExtractJsonContent(responseJson);
+                return await HandleApiResponse(response).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to get API completion");
-                return string.Empty;
+                _logger.LogError(ex, "API request failed after retries");
+                return "";
             }
         }
 
-        private string ExtractJsonContent(string responseJson)
+        private async Task<string> HandleApiResponse(HttpResponseMessage response)
         {
-            try
+            if (!response.IsSuccessStatusCode)
             {
-                using var doc = JsonDocument.Parse(responseJson);
-                var root = doc.RootElement;
-
-                if (!root.TryGetProperty("choices", out var choices) ||
-                    choices.GetArrayLength() == 0 ||
-                    !choices[0].TryGetProperty("message", out var message) ||
-                    !message.TryGetProperty("content", out var contentElement))
-                {
-                    _logger.LogError("Invalid API response structure");
-                    return string.Empty;
-                }
-
-                var rawContent = contentElement.GetString() ?? string.Empty;
-                return CleanJsonContent(rawContent);
+                var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                _logger.LogError("API Error: {StatusCode} - {Content}", response.StatusCode, errorContent);
+                return "";
             }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, "Failed to parse API response");
-                return string.Empty;
-            }
+
+            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            using var doc = JsonDocument.Parse(responseJson);
+            return doc.RootElement
+                .GetProperty("choices")[0]
+                .GetProperty("message")
+                .GetProperty("content")
+                .GetString();
         }
 
-        private string CleanJsonContent(string rawContent)
+        private List<IDictionary<string,object>> MergeDocuments(List<IDictionary<string, object>> documents)
         {
-            return rawContent
-                .Replace("```json", "")
-                .Replace("```", "")
-                .Replace("'''json", "")
-                .Replace("'''", "")
-                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'' });
-        }
-
-        private List<IDictionary<string, object>> MergeDocuments(List<IDictionary<string, object>> documents)
-        {
-            var merged = new Dictionary<string, IDictionary<string, object>>();
+            var merged = new Dictionary<string, BetterExpando>();
 
             foreach (var doc in documents)
             {
@@ -367,13 +529,105 @@ Valid response format:
                     _ => Guid.NewGuid().ToString()
                 };
 
-                if (!merged.ContainsKey(key))
+                if (!merged.ContainsKey(key)) merged[key] = (BetterExpando)doc;
+            }
+
+            return new List<IDictionary<string, object>>(merged.Values.ToList());
+        }
+
+        private string CleanJsonResponse(string jsonResponse)
+        {
+            return HandleWrappedResponse(RemoveMarkDCleanJsonResponse(jsonResponse));
+        }
+
+        private string HandleWrappedResponse(string jsonResponse)
+        {
+            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+
+            var sanitized = new StringBuilder();
+            var stack = new Stack<char>();
+            var lastValidIndex = 0;
+
+            for (int i = 0; i < jsonResponse.Length; i++)
+            {
+                var c = jsonResponse[i];
+                switch (c)
                 {
-                    merged[key] = doc;
+                    case '{':
+                    case '[':
+                        stack.Push(c);
+                        sanitized.Append(c);
+                        lastValidIndex = i;
+                        break;
+
+                    case '}':
+                        if (stack.Count > 0 && stack.Peek() == '{')
+                        {
+                            stack.Pop();
+                            sanitized.Append(c);
+                            lastValidIndex = i;
+                        }
+                        break;
+
+                    case ']':
+                        if (stack.Count > 0 && stack.Peek() == '[')
+                        {
+                            stack.Pop();
+                            sanitized.Append(c);
+                            lastValidIndex = i;
+                        }
+                        break;
+
+                    default:
+                        sanitized.Append(c);
+                        break;
                 }
             }
 
-            return merged.Values.ToList();
+            while (stack.Count > 0)
+            {
+                var opener = stack.Pop();
+                sanitized.Append(opener switch
+                {
+                    '{' => '}',
+                    '[' => ']',
+                    _ => ' '
+                });
+            }
+
+            var clean = sanitized.ToString().Trim();
+            if (clean.Length == 0 ||
+                (clean.Length > 0 && clean[0] != '{') ||
+                (clean.Length > 0 && clean[clean.Length - 1] != '}'))
+            {
+                _logger.LogWarning("Invalid JSON structure after cleaning");
+                return string.Empty;
+            }
+
+            return clean;
+        }
+
+        private string RemoveMarkDCleanJsonResponse(string jsonResponse)
+        {
+            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+
+            var clean = Regex.Replace(jsonResponse,
+                @"```json|```|'''|\uFEFF",
+                string.Empty,
+                RegexOptions.IgnoreCase
+            );
+
+            var startIndex = clean.IndexOf('{');
+            var endIndex = clean.LastIndexOf('}');
+
+            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
+            {
+                _logger.LogWarning("No valid JSON boundaries detected");
+                return string.Empty;
+            }
+
+            return clean.Substring(startIndex, endIndex - startIndex + 1)
+                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
         }
 
         public void Dispose() => _httpClient?.Dispose();

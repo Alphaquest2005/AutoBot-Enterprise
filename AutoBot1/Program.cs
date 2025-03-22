@@ -120,7 +120,7 @@ namespace AutoBot
                 var documentsFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder,"Documents", file.Name.Replace(file.Extension, "")));
                 if (!documentsFolder.Exists) documentsFolder.Create();
                 var destFileName = Path.Combine(documentsFolder.FullName, file.Name);
-                file.MoveTo(destFileName);
+                if(!File.Exists(destFileName)) file.CopyTo(destFileName);
                 var fileTypes =
                     FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName)
                         .Where(x => x.Description == "Unknown")
@@ -138,7 +138,7 @@ namespace AutoBot
                     }
                     ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
                 }
-                
+                file.Delete();
             }
         }
 

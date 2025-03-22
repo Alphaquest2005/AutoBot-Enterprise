@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using Core.Common.Extensions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {
@@ -252,17 +255,43 @@ namespace AutoBot
             }
         }
 
-        public static List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
+        public static List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
         {
-            List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, FileTypeManager.EntryTypes DocumentType, ImportStatus status)>>();
+            //List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>();
+            var success = new Dictionary<string, (string FileName, string DocumentType, ImportStatus status)>();
             var logger = LoggingConfig.CreateLogger();
+            var docTypes = new Dictionary<string, string>()
+                { { "Invoice", "Shipment Invoice" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
               var txt = InvoiceReader.GetPdftxt(file.FullName);  
+              var res =  new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).Result;
+              foreach (var doc in res.GroupBy(x => x["DocumentType"]))
+              {
+                   var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
+                   var docType = docTypes[(doc.Key as string) ?? "Unknown"];
+                   var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),FileTypeManager.FileFormats.PDF, file.FullName );
+                   var import = ImportSuccessState(file.FullName, null, docFileType.FirstOrDefault(), true, docSet, new List<dynamic>(){doc.ToList()});
+                   if(import)
+                        success.Add($"{file}-{docType}-{doc.Key}", (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success));
+              }
+             
+
 
             }
 
-            return success;
+            return success.ToList();
+        }
+
+        private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
+            List<AsycudaDocumentSet> docSet,  List<dynamic> csvLines)
+        {
+
+            new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
+                emailId,
+                file, csvLines)).Wait();
+
+            return true;
         }
     }
 }

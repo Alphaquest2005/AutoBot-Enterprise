@@ -197,6 +197,22 @@ namespace WaterNut.Business.Services.Utils
                 })
                 .ToList();
 
+
+        public static List<FileTypes> GetFileType(string entryType, string fileFormat, string fileName) =>
+            FileTypes()
+                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                .Where(x => (x.FileImporterInfos?.EntryType == entryType) && x.FileImporterInfos?.Format == fileFormat)// || entryType == EntryTypes.Unknown - wanted stricter selection
+                //.Where(x => x.FileTypeMappings.Any() || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
+                .Where(x => x.ParentFileTypeId == null)
+                .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
+                .Select(x =>
+                {
+                    x.AsycudaDocumentSetId = EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true)
+                        .AsycudaDocumentSetId;
+                    return x;
+                })
+                .ToList();
+
         public static void SendBackTooBigEmail(FileInfo file, FileTypes fileType)
         {
             if (fileType.MaxFileSizeInMB != null && (file.Length / WaterNut.DataSpace.Utils._oneMegaByte) > fileType.MaxFileSizeInMB)
@@ -386,6 +402,11 @@ namespace WaterNut.Business.Services.Utils
             }
 
             return fileType;
+        }
+
+        public static object GetFileType(string fileTypeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

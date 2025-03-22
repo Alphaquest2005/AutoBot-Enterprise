@@ -26,15 +26,15 @@ namespace AutoBotUtilities.Tests
             public async Task ExtractShipmentInvoice_ProcessesSampleText_ReturnsValidDocuments()
             {
                 // Arrange
-                ILogger<DeepSeekInvoiceApi> logger = LoggingConfig.CreateLogger();
-                var api = new DeepSeekInvoiceApi(logger);
+                
+                var api = new DeepSeekInvoiceApi();
                 var textVariants = new List<string> { SampleText };
 
                 // Act
                 var results = await api.ExtractShipmentInvoice(textVariants).ConfigureAwait(false);
 
                 // Assert - Invoices
-                var invoice = results.FirstOrDefault(d => d["DocumentType"] as string == "Invoice");
+                var invoice = results.FirstOrDefault(d => d["DocumentType"] as string == "ShipmentInvoice");
                 Assert.That(invoice, Is.Not.Null, "No invoice found");
                 Assert.That(invoice["InvoiceNo"], Is.EqualTo("138845514"));
                 Assert.That(invoice["InvoiceDate"], Is.EqualTo(DateTime.Parse("2024-07-15")));
@@ -42,15 +42,15 @@ namespace AutoBotUtilities.Tests
                 Assert.That(invoice["Currency"], Is.EqualTo("USD"));
 
                 // Assert Line Items
-                var lineItems = invoice["LineItems"] as List<IDictionary<string, object>>;
+                var lineItems = invoice["InvoiceDetails"] as List<IDictionary<string, object>>;
                 Assert.That(lineItems.Count, Is.EqualTo(9));
-                Assert.That(lineItems[0]["Description"], Is.EqualTo("Going Viral Handbag - Silver"));
+                Assert.That(lineItems[0]["ItemDescription"], Is.EqualTo("Going Viral Handbag - Silver"));
                 Assert.That(lineItems[0]["Quantity"], Is.EqualTo(1m));
 
                 // Assert - Customs Declaration
-                var customs = results.FirstOrDefault(d => d["DocumentType"] as string == "CustomsDeclaration");
+                var customs = results.FirstOrDefault(d => d["DocumentType"] as string == "SimplifiedDeclaration");
                 Assert.That(customs, Is.Not.Null, "No customs declaration found");
-                Assert.That(customs["Consignee"], Is.EqualTo("ARTISHA CHARLES (FREIGHT 13.00 US)"));
+                Assert.That(customs["Consignee"], Is.EqualTo("ARTISHA CHARLES"));
                 Assert.That(customs["BLNumber"], Is.EqualTo("HAWB9592028"));
 
                 // Assert Package Info
@@ -70,7 +70,7 @@ namespace AutoBotUtilities.Tests
             [Test]
             public void ValidateTariffCode_CleansHsCodesCorrectly()
             {
-                var api = new DeepSeekInvoiceApi(Mock.Of<ILogger<DeepSeekInvoiceApi>>());
+                var api = new DeepSeekInvoiceApi();
 
                 Assert.Multiple(() =>
                 {
