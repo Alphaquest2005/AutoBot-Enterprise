@@ -29,7 +29,8 @@ namespace WaterNut.Business.Services.Utils
 
         public DeepSeekApi()
         {
-            _apiKey = "sk-2872e533da794296b127537a6b53607f";
+            _apiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
+                      ?? throw new InvalidOperationException("API key not found in environment variables");
             _baseUrl = "https://api.deepseek.com/v1";
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);

@@ -37,7 +37,9 @@ namespace WaterNut.Business.Services.Utils
 
         public DeepSeekInvoiceApi(HttpClient httpClient = null)
         {
-            _apiKey = "sk-2872e533da794296b127537a6b53607f";
+            _apiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
+                                ?? throw new InvalidOperationException("API key not found in environment variables");
+
             _baseUrl = "https://api.deepseek.com/v1";
             _logger =  LoggingConfig.CreateLogger();//logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClient = httpClient ?? new HttpClient();
@@ -254,24 +256,22 @@ namespace WaterNut.Business.Services.Utils
             {
                 foreach (var inv in invoices.EnumerateArray())
                 {
-                    var dict = new BetterExpando()
-                    {
-                        ["DocumentType"] = "Invoice",
-                        ["InvoiceNo"] = GetStringValue(inv, "InvoiceNo"),
-                        ["PONumber"] = GetStringValue(inv, "PONumber"),
-                        ["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate")),
-                        ["SubTotal"] = GetDecimalValue(inv, "SubTotal"),
-                        ["Total"] = GetDecimalValue(inv, "Total"),
-                        ["Currency"] = GetStringValue(inv, "Currency"),
-                        ["SupplierCode"] = GetStringValue(inv, "SupplierCode"),
-                        ["SupplierAddress"] = GetStringValue(inv, "SupplierAddress"),
-                        ["SupplierCountryCode"] = GetStringValue(inv, "SupplierCountryCode"),
-                        ["TotalDeduction"] = GetNullableDecimalValue(inv, "TotalDeduction"),
-                        ["TotalOtherCost"] = GetNullableDecimalValue(inv, "TotalOtherCost"),
-                        ["TotalInternalFreight"] = GetNullableDecimalValue(inv, "TotalInternalFreight"),
-                        ["TotalInsurance"] = GetNullableDecimalValue(inv, "TotalInsurance"),
-                        ["InvoiceDetails"] = ParseInvoiceDetails(inv)
-                    };
+                    IDictionary<string,object> dict = new BetterExpando();
+                    dict["DocumentType"] = "Invoice";
+                    dict["InvoiceNo"] = GetStringValue(inv, "InvoiceNo");
+                    dict["PONumber"] = GetStringValue(inv, "PONumber");
+                    dict["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate"));
+                    dict["SubTotal"] = GetDecimalValue(inv, "SubTotal");
+                    dict["Total"] = GetDecimalValue(inv, "Total");
+                    dict["Currency"] = GetStringValue(inv, "Currency");
+                    dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
+                    dict["SupplierAddress"] = GetStringValue(inv, "SupplierAddress");
+                    dict["SupplierCountryCode"] = GetStringValue(inv, "SupplierCountryCode");
+                    dict["TotalDeduction"] = GetNullableDecimalValue(inv, "TotalDeduction");
+                    dict["TotalOtherCost"] = GetNullableDecimalValue(inv, "TotalOtherCost");
+                    dict["TotalInternalFreight"] = GetNullableDecimalValue(inv, "TotalInternalFreight");
+                    dict["TotalInsurance"] = GetNullableDecimalValue(inv, "TotalInsurance");
+                    dict["InvoiceDetails"] = ParseInvoiceDetails(inv);
                     documents.Add(dict);
                 }
             }
@@ -284,17 +284,18 @@ namespace WaterNut.Business.Services.Utils
             {
                 foreach (var det in detailsElement.EnumerateArray())
                 {
-                    details.Add(new BetterExpando()
-                    {
-                        ["ItemNumber"] = GetStringValue(det, "ItemNumber"),
-                        ["ItemDescription"] = GetStringValue(det, "ItemDescription"),
-                        ["Quantity"] = GetDecimalValue(det, "Quantity"),
-                        ["Cost"] = GetDecimalValue(det, "Cost"),
-                        ["TotalCost"] = GetDecimalValue(det, "TotalCost"),
-                        ["Units"] = GetStringValue(det, "Units"),
-                        ["TariffCode"] = ValidateTariffCode(GetStringValue(det, "TariffCode")),
-                        ["Discount"] = GetNullableDecimalValue(det, "Discount")
-                    });
+                    IDictionary<string, object> item = new BetterExpando();
+
+                    item["ItemDescription"] = GetStringValue(det, "ItemDescription");
+                    item["Quantity"] = GetDecimalValue(det, "Quantity");
+                    item["Cost"] = GetDecimalValue(det, "Cost");
+                    item["TotalCost"] = GetDecimalValue(det, "TotalCost");
+                    item["Units"] = GetStringValue(det, "Units");
+                    item["TariffCode"] = ValidateTariffCode(GetStringValue(det, "TariffCode"));
+                    item["Discount"] = GetNullableDecimalValue(det, "Discount");
+                   
+                    item["ItemNumber"] = GetStringValue(det, "ItemNumber");
+                    details.Add(item);
                 }
             }
             return details;
@@ -306,14 +307,13 @@ namespace WaterNut.Business.Services.Utils
             {
                 foreach (var cd in customs.EnumerateArray())
                 {
-                    var dict = new BetterExpando()
-                    {
-                        ["DocumentType"] = "CustomsDeclaration",
-                        ["Consignee"] = GetStringValue(cd, "Consignee"),
-                        ["BLNumber"] = GetStringValue(cd, "BLNumber"),
-                        ["Goods"] = ParseGoodsClassifications(cd),
-                        ["PackageInfo"] = ParsePackageInfo(cd)
-                    };
+                    IDictionary<string, object> dict = new BetterExpando();
+
+                    dict["DocumentType"] = "CustomsDeclaration";
+                    dict["Consignee"] = GetStringValue(cd, "Consignee");
+                    dict["BLNumber"] = GetStringValue(cd, "BLNumber");
+                    dict["Goods"] = ParseGoodsClassifications(cd);
+                    dict["PackageInfo"] = ParsePackageInfo(cd);
                     documents.Add(dict);
                 }
             }
@@ -326,11 +326,10 @@ namespace WaterNut.Business.Services.Utils
             {
                 foreach (var g in goodsElement.EnumerateArray())
                 {
-                    goods.Add(new BetterExpando()
-                    {
-                        ["Description"] = GetStringValue(g, "Description"),
-                        ["TariffCode"] = ValidateTariffCode(GetStringValue(g, "TariffCode"))
-                    });
+                    IDictionary<string, object> item = new BetterExpando();
+                    item["Description"] = GetStringValue(g, "Description");
+                    item["TariffCode"] = ValidateTariffCode(GetStringValue(g, "TariffCode"));
+                    goods.Add(item);
                 }
             }
             return goods;
@@ -338,7 +337,7 @@ namespace WaterNut.Business.Services.Utils
 
         private IDictionary<string, object> ParsePackageInfo(JsonElement customsElement)
         {
-            var pkgInfo = new BetterExpando();
+            IDictionary<string, object> pkgInfo = new BetterExpando();
             if (customsElement.TryGetProperty("PackageInfo", out var packageElement))
             {
                 pkgInfo["Packages"] = GetIntValue(packageElement, "Packages");
