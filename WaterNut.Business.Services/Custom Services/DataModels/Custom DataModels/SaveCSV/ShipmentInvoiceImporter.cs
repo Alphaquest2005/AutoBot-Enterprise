@@ -92,7 +92,7 @@ namespace WaterNut.DataSpace
                             details.Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null;
                             details.SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1;
                             details.LineNumber = z.ContainsKey("Instance") ? Convert.ToInt32(z["Instance"].ToString()) :((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1;
-                            details.FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString());
+                            details.FileLineNumber = z.ContainsKey("FileLineNumber") ? Convert.ToInt32(z["FileLineNumber"].ToString()) : -1;
                             details.Section = z.ContainsKey("Section") ? z["Section"].ToString( ): null;
                             details.InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null;
                             details.TrackingState = TrackingState.Added;

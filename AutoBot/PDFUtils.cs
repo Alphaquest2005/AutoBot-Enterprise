@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -266,14 +267,27 @@ namespace AutoBot
             {
               var txt = InvoiceReader.GetPdftxt(file.FullName);  
               var res =  new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).Result;
-              foreach (var doc in res.GroupBy(x => x["DocumentType"]))
+              foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
+                           .GroupBy(x => x["DocumentType"]))
               {
-                   var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
-                   var docType = docTypes[(doc.Key as string) ?? "Unknown"];
-                   var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),FileTypeManager.FileFormats.PDF, file.FullName );
-                   var import = ImportSuccessState(file.FullName, null, docFileType.FirstOrDefault(), true, docSet, new List<dynamic>(){doc.ToList()});
-                   if(import)
-                        success.Add($"{file}-{docType}-{doc.Key}", (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success));
+                  var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
+                  var docType = docTypes[(doc.Key as string) ?? "Unknown"];
+                  var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
+                      FileTypeManager.FileFormats.PDF, file.FullName);
+                  if (!docFileType.Any())
+                  {
+                      continue;
+                  }
+                  var import = ImportSuccessState(file.FullName, null, docFileType.FirstOrDefault(), true, docSet,
+                      new List<dynamic>() { doc.ToList() });
+                  success.Add($"{file}-{docType}-{doc.Key}",
+                      import
+                          ? (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success)
+                          : (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Failed));
+
+
+
+
               }
              
 

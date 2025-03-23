@@ -267,10 +267,14 @@ namespace WaterNut.Business.Services.Utils
                     dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
                     dict["SupplierAddress"] = GetStringValue(inv, "SupplierAddress");
                     dict["SupplierCountryCode"] = GetStringValue(inv, "SupplierCountryCode");
-                    dict["TotalDeduction"] = GetNullableDecimalValue(inv, "TotalDeduction");
-                    dict["TotalOtherCost"] = GetNullableDecimalValue(inv, "TotalOtherCost");
-                    dict["TotalInternalFreight"] = GetNullableDecimalValue(inv, "TotalInternalFreight");
-                    dict["TotalInsurance"] = GetNullableDecimalValue(inv, "TotalInsurance");
+                    if (!jsonIsNull(inv, "TotalDeduction", out var deduction))
+                        dict["TotalDeduction"] = deduction.GetDecimal();//GetNullableDecimalValue(inv, "TotalDeduction");
+                    if (!jsonIsNull(inv, "TotalOtherCost", out var otherCost))
+                        dict["TotalOtherCost"] = otherCost.GetDecimal();//GetNullableDecimalValue(inv, "TotalOtherCost");
+                    if(!jsonIsNull( inv, "TotalInternalFreight", out var freight))
+                        dict["TotalInternalFreight"] = freight.GetDecimal();
+                    if (!jsonIsNull(inv, "TotalInsurance", out var insurance))
+                        dict["TotalInsurance"] = insurance.GetDecimal(); //GetNullableDecimalValue(inv, "TotalInsurance");
                     dict["InvoiceDetails"] = ParseInvoiceDetails(inv);
                     documents.Add(dict);
                 }
@@ -290,9 +294,12 @@ namespace WaterNut.Business.Services.Utils
                     item["Quantity"] = GetDecimalValue(det, "Quantity");
                     item["Cost"] = GetDecimalValue(det, "Cost");
                     item["TotalCost"] = GetDecimalValue(det, "TotalCost");
-                    item["Units"] = GetStringValue(det, "Units");
-                    item["TariffCode"] = ValidateTariffCode(GetStringValue(det, "TariffCode"));
-                    item["Discount"] = GetNullableDecimalValue(det, "Discount");
+                    if (!jsonIsNull(det, "Units", out var units))
+                        item["Units"] = units.GetString();//GetStringValue(det, "Units");
+                    if(!jsonIsNull(det, "TariffCode", out var tariffcode))
+                        item["TariffCode"] = ValidateTariffCode(tariffcode.GetString());//GetStringValue(det, "TariffCode");
+                    if (!jsonIsNull(det, "Discount", out var discount))
+                        item["Discount"] = discount.GetDecimal();//GetNullableDecimalValue(det, "Discount");
                    
                     item["ItemNumber"] = GetStringValue(det, "ItemNumber");
                     details.Add(item);
@@ -435,11 +442,7 @@ namespace WaterNut.Business.Services.Utils
         // Add this method for nullable decimals
         private decimal? GetNullableDecimalValue(JsonElement element, string propertyName)
         {
-            if (!element.TryGetProperty(propertyName, out var value))
-                return null;
-
-            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
-                return null;
+            if (jsonIsNull(element, propertyName, out var value)) return null;
 
             try
             {
@@ -450,6 +453,16 @@ namespace WaterNut.Business.Services.Utils
                 _logger.LogWarning("Failed to parse nullable decimal for property {PropertyName}", propertyName);
                 return null;
             }
+        }
+
+        private static bool jsonIsNull(JsonElement element, string propertyName, out JsonElement value)
+        {
+            if (!element.TryGetProperty(propertyName, out value))
+                return true;
+
+            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
+                return true;
+            return false;
         }
 
         private int GetIntValue(JsonElement element, string propertyName) =>
