@@ -642,7 +642,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var uData = _universalData
                 //.Where(x => x.Key.EntryDataDate >= startDate
                 //            && x.Key.EntryDataDate <= endDate)
-                //.Where(x => x.Key.PreviousItem_Id == 12199)
+                //.Where(x => x.Key.PreviousItem_Id == 77958)
                 //.Where(x => "MRL/JB0057F', 'MRL/JBO057F".Contains(x.Value.Summary.ItemNumber))
                 .Select(x => x.Value)
                 .ToList();

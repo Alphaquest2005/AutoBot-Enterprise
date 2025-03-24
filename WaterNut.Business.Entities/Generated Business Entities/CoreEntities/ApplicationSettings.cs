@@ -799,6 +799,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<System.DateTime> _allocationsopeningstockdate;
         [DataMember]
+        public Nullable<bool> GroupShipmentInvoices 
+        {
+            get
+            {
+                return _groupshipmentinvoices;
+            }
+            set
+            {
+                _groupshipmentinvoices = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _groupshipmentinvoices;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

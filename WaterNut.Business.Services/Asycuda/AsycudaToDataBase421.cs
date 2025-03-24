@@ -94,17 +94,17 @@ namespace WaterNut.DataSpace.Asycuda
 
             try
             {
+               
 
-                // db = new WaterNutDBEntities();
-                a = adoc;
+                    // db = new WaterNutDBEntities();
+                    a = adoc;
                 if (await DeleteExistingDocument().ConfigureAwait(false)) return;
 
                 var ads = docSet; //await GetAsycudaDocumentSet().ConfigureAwait(false);
                 //}
                 da = await CreateDocumentCt(ads, file).ConfigureAwait(false);
 
-
-
+               
                 await SaveGeneralInformation().ConfigureAwait(false);
                 await SaveDeclarant().ConfigureAwait(false);
                 await SaveTraders().ConfigureAwait(false);
@@ -119,6 +119,9 @@ namespace WaterNut.DataSpace.Asycuda
 
                 await Save_Items().ConfigureAwait(false);
 
+                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure == null)
+                    return;
+
                 if (!da.DocumentItems.Any() == true)
                 {
                     await BaseDataModel.Instance.DeleteAsycudaDocument(da.Document.ASYCUDA_Id).ConfigureAwait(false);
@@ -128,7 +131,7 @@ namespace WaterNut.DataSpace.Asycuda
                 if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems, false).ConfigureAwait(false);
 
                
-                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsOperationId == 3)
+                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure?.CustomsOperationId == (int)CoreEntities.Business.Enums.CustomsOperations.Exwarehouse)
                      await SavePreviousItem().ConfigureAwait(false);
 
                 await Save_Suppliers_Documents().ConfigureAwait(false);
@@ -320,22 +323,22 @@ namespace WaterNut.DataSpace.Asycuda
         private async Task SavePreviousItem()
         {
 
-            try
+
+
+            for (var i = 0; i < a.Prev_decl.Count; i++)
             {
 
-                for (var i = 0; i < a.Prev_decl.Count; i++)
+                try
                 {
-
-
                     var ai = a.Prev_decl.ElementAt(i);
                     if (ai == null) continue;
-                    var itm = da.DocumentItems.OrderBy(x => x.LineNumber).ElementAt(i);
+                    var itm = da.DocumentItems.OrderBy(x => x.LineNumber).ElementAtOrDefault(i) ?? da.DocumentItems.FirstOrDefault(x => x.ItemNumber == ai.Prev_decl_HS_spec.Text.FirstOrDefault() && x.ItemQuantity == Convert.ToDouble(ai.Prev_decl_supp_quantity) && x.Gross_weight == Convert.ToDecimal(ai.Prev_decl_weight));
+                    if (itm == null) continue;
                     if (itm.xcuda_Tarification.Extended_customs_procedure == "9071") return;
                     var pi = new xcuda_PreviousItem(true)
-                    {
-                        PreviousItem_Id = itm.Item_Id,
-                        TrackingState = TrackingState.Added
-                    };
+                                 {
+                                     PreviousItem_Id = itm.Item_Id, TrackingState = TrackingState.Added
+                                 };
 
                     itm.xcuda_PreviousItem = pi;
                     pi.xcuda_Item = itm;
@@ -364,18 +367,18 @@ namespace WaterNut.DataSpace.Asycuda
                     pi.Previous_Packages_number = ai.Prev_decl_number_packages_written_off;
 
                     if (ai.Prev_decl_ref_value_written_off != null)
-                        pi.Previous_value = (float) Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value_written_off), 2);
+                        pi.Previous_value = (float)Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value_written_off), 2);
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity))
                         pi.Suplementary_Quantity = Convert.ToDecimal(ai.Prev_decl_supp_quantity);
 
                     //await DataSpace.DocumentItemDS.ViewModels.BaseDataModel.Instance.Savexcuda_PreviousItem(pi).ConfigureAwait(false);
-
+                }
+                catch (Exception Ex)
+                {
+                    throw Ex;
                 }
             }
-            catch (Exception Ex)
-            {
-                throw;
-            }
+
         }
 
         private async Task LinkPIItem(ASYCUDAPrev_decl ai, xcuda_Item itm, xcuda_PreviousItem pi, bool noMessages)
@@ -597,7 +600,8 @@ namespace WaterNut.DataSpace.Asycuda
                     var ai = a.Item.ElementAt(i);
                     xcuda_Item di;
 
-                    if (!ai.Tarification.HScode.Commodity_code.Text.Any()) continue;
+                    //took this out because it bugging with number of items just leave it so
+                    //if (!ai.Tarification.HScode.Commodity_code.Text.Any()) continue;
 
                     di = da.DocumentItems.ElementAtOrDefault(i);
 
@@ -739,7 +743,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
                     if (tariffCode.TariffCategory == null)
                     {
-                        var cat = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault().Substring(0, 4);
+                        var cat = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()?.Substring(0, 4);
                         var tariffCategory = ctx.TariffCategories
                             .Include("TariffCategoryCodeSuppUnits.TariffSupUnitLkp")
                             .FirstOrDefault(x => x.TariffCategoryCode == cat);
@@ -847,7 +851,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         {
             try
             {
-                using (var ctx = new InventoryDSContext())
+                using (var ctx = new InventoryDSContext(){StartTracking = true})
                 {
                     var iv = ctx.InventoryItems.FirstOrDefault(x =>
                         x.ItemNumber == ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() && x.ApplicationSettingsId == da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId);
@@ -880,10 +884,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                     }
 
                     if (iv == null || !updateItemsTariffCode || iv.TariffCode == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()) return iv;
-                    iv.StartTracking();
+                    //iv.StartTracking();
                     iv.TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
                     
-                    ctx.ApplyChanges(iv);
+                    ctx.SingleUpdate(iv);
                     ctx.SaveChanges();
 
 
@@ -922,9 +926,94 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
             Save_Item_Invoice(vi, ai);
             Save_item_External_freight(vi, ai);
+            Save_item_Internal_freight(vi, ai);
+            Save_item_deduction(vi, ai);
+            Save_item_other_cost(vi, ai);
+            Save_item_insurance(vi, ai);
+
             Save_Weight_Item(vi, ai);
 
            //await DIBaseDataModel.Instance.Savexcuda_Valuation_item(vi).ConfigureAwait(false);
+        }
+
+        private void Save_item_insurance(xcuda_Valuation_item vi, ASYCUDAItem ai)
+        {
+            //use same implementation as external freight
+            var i = vi.xcuda_item_insurance;
+            if (i == null)
+            {
+                i = new xcuda_item_insurance(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
+                vi.xcuda_item_insurance = i;
+            }
+            if (ai.Valuation_item.item_insurance.Amount_foreign_currency != "")
+                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.item_insurance.Amount_foreign_currency);
+            if (ai.Valuation_item.item_insurance.Amount_national_currency != "")
+                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.item_insurance.Amount_national_currency);
+
+            i.Currency_name = ai.Valuation_item.item_insurance.Currency_code.Text.FirstOrDefault();
+
+            if (ai.Valuation_item.item_insurance.Currency_rate != "")
+                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.item_insurance.Currency_rate);
+        }
+
+        private void Save_item_other_cost(xcuda_Valuation_item vi, ASYCUDAItem ai)
+        {
+            //use same implementation as internal freight
+            var i = vi.xcuda_item_other_cost;
+            if (i == null)
+            {
+                i = new xcuda_item_other_cost(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
+                vi.xcuda_item_other_cost = i;
+            }
+            if (ai.Valuation_item.item_other_cost.Amount_foreign_currency != "")
+                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.item_other_cost.Amount_foreign_currency);
+            if (ai.Valuation_item.item_other_cost.Amount_national_currency != "")
+                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.item_other_cost.Amount_national_currency);
+
+            i.Currency_name = ai.Valuation_item.item_other_cost.Currency_code.Text.FirstOrDefault();
+
+            if (ai.Valuation_item.item_other_cost.Currency_rate != "")
+                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.item_other_cost.Currency_rate);
+        }
+
+        private void Save_item_deduction(xcuda_Valuation_item vi, ASYCUDAItem ai)
+        {
+            //use same implementation as external freight
+            var i = vi.xcuda_item_deduction;
+            if (i == null)
+            {
+                i = new xcuda_item_deduction(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
+                vi.xcuda_item_deduction = i;
+            }
+            if (ai.Valuation_item.item_deduction.Amount_foreign_currency != "")
+                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.item_deduction.Amount_foreign_currency);
+            if (ai.Valuation_item.item_deduction.Amount_national_currency != "")
+                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.item_deduction.Amount_national_currency);
+
+            i.Currency_name= ai.Valuation_item.item_deduction.Currency_code.Text.FirstOrDefault();
+
+            if (ai.Valuation_item.item_deduction.Currency_rate != "")
+                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.item_deduction.Currency_rate);
+        }
+
+        private void Save_item_Internal_freight(xcuda_Valuation_item vi, ASYCUDAItem ai)
+        {
+            //use same implementation as external freight
+            var i = vi.xcuda_item_internal_freight;
+            if (i == null)
+            {
+                i = new xcuda_item_internal_freight(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
+                vi.xcuda_item_internal_freight = i;
+            }
+            if (ai.Valuation_item.item_internal_freight.Amount_foreign_currency != "")
+                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.item_internal_freight.Amount_foreign_currency);
+            if (ai.Valuation_item.item_internal_freight.Amount_national_currency != "")
+                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.item_internal_freight.Amount_national_currency);
+
+            i.Currency_name = ai.Valuation_item.item_internal_freight.Currency_code.Text.FirstOrDefault();
+
+            if (ai.Valuation_item.item_internal_freight.Currency_rate != "")
+                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.item_internal_freight.Currency_rate);
         }
 
         private void Save_Weight_Item(xcuda_Valuation_item vi, ASYCUDAItem ai)
@@ -1088,7 +1177,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             if (ai.Tarification.Attached_doc_item.Text.Count > 0)
                 t.Attached_doc_item = ai.Tarification.Attached_doc_item.Text[0];
             
-           var cp =  await SaveCustomsProcedure(t).ConfigureAwait(false);
+            await SaveCustomsProcedure(t).ConfigureAwait(false);
             
             await Save_HScode(t, di,ai).ConfigureAwait(false);
 
@@ -1108,6 +1197,8 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             {
                 var scp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
                                                            && x.National_customs_procedure == t.National_customs_procedure);
+                // if scp is null return
+                if (scp == null) return null;
                 
                 cp = new Customs_Procedure(true)
                 {
@@ -1175,7 +1266,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 t.xcuda_HScode = h;
             }
 
-            h.Commodity_code = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
+            h.Commodity_code = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault() ?? "NULL ON IMPORT";
             h.Precision_1 = ai.Tarification.HScode.Precision_1.Text.FirstOrDefault();
             if (ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() != null)
             {

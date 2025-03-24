@@ -164,7 +164,11 @@ namespace WaterNut.DataSpace
             }
         }
 
-       
+        public static int GetDefaultCustomsOperation()
+        {
+            return (int)(BaseDataModel.Instance.CurrentApplicationSettings.AllowXBond == "Visible" ? CustomsOperations.Warehouse : CustomsOperations.Import);
+        }
+
 
         #region IAsyncInitialization Members
 
@@ -177,6 +181,8 @@ namespace WaterNut.DataSpace
         {
             get { return _saveDocumentCt; }
         }
+
+ 
 
 
         public static Client GetClient()
@@ -615,7 +621,7 @@ namespace WaterNut.DataSpace
             {
                 case "PO":
                     dtpredicate = x =>
-                        x.CustomsOperationId == (int)CustomsOperations.Warehouse
+                        x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()
                         && x.Sales == true && x.Stock != true;
 
                     break;

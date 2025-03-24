@@ -75,7 +75,7 @@ namespace AdjustmentQS.Business.Services
 
                 // get document item in cnumber
                 var aItem = Services.AutoMatchProcessor.AsycudaDocumentItemCache.Where( x => x.PreviousInvoiceNumber != null
-                                                                   && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
+                                                                   && x.AsycudaDocument.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()
                                                                    && x.AsycudaDocument.ImportComplete == true
                                                                    && x.ApplicationSettingsId == applicationSettingsId &&
                                                                    (x.PreviousInvoiceNumber.ToUpper().Trim() == sPreviousInvoiceNumber.ToUpper().Trim()

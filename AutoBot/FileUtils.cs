@@ -96,7 +96,8 @@ namespace AutoBot
                 {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
                 {"ImportPOEntries", (ft,fs) => DocumentUtils.ImportPOEntries(false) },
                 {"ImportAllAsycudaDocumentsInDataFolder", (ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) },
-                
+                {"ImportEntries",(ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString()) },
+
 
 
 

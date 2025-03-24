@@ -50,7 +50,8 @@ public class PDFCreator<T>
         {
 
             var fontSize = 12f;
-            float footerSpace = 20;
+            float footerSpace = 40;
+            var spacebuffer = 5;
             // Calculate the maximum width of the content in each column
             var columnWidths = new List<float>();
             foreach (var prop in typeof(T).GetProperties())
@@ -59,7 +60,8 @@ public class PDFCreator<T>
                 foreach (var item in data)
                 {
                     var content = prop.GetValue(item)?.ToString() ?? "";
-                    var width = content.Length * fontSize;  // Simplified width calculation
+                    
+                    var width = content.Length * fontSize + 5;  // Simplified width calculation
                     if (width > maxWidth)
                     {
                         maxWidth = width;

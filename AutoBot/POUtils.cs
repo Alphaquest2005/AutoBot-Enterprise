@@ -629,10 +629,8 @@ namespace AutoBot
                                         && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
                                         asycudaDocumentSetId
                                         && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                        && (x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsOperationId ==
-                                            (int)CustomsOperations.Import
-                                            || x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == (int)CustomsOperations.Warehouse));
+                                        &&  x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
+                                                .CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation());
                     }
                     else
                     {
@@ -643,10 +641,8 @@ namespace AutoBot
                                         && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
                                         asycudaDocumentSetId
                                         && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                        && (x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsOperationId ==
-                                            (int)CustomsOperations.Import
-                                            || x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == (int)CustomsOperations.Warehouse));
+                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
+                                                .CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation());
                     }
 
                     var res = docs.GroupBy(x => new

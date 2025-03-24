@@ -221,6 +221,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _discount;
         [DataMember]
+        public string TariffCode 
+        {
+            get
+            {
+                return _tariffcode;
+            }
+            set
+            {
+                _tariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _tariffcode;
+        [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }

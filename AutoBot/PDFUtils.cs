@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using Core.Common.Extensions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
+using MoreLinq;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {
@@ -67,9 +73,10 @@ namespace AutoBot
             }
         }
 
-        public static void ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
+        public static List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
+            List<KeyValuePair<string, (string file, string, ImportStatus Success)>> success = new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>();
             Console.WriteLine("Importing PDF " + fileType.FileImporterInfos.EntryType);
             var failedFiles = new List<string>();
             foreach (var file in pdfFiles.Where(x => x.Extension.ToLower() == ".pdf"))
@@ -81,12 +88,15 @@ namespace AutoBot
 
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
                         .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
-                    emailId = res?.EmailId;
-                    fileTypeId = res?.FileTypeId;
+                    emailId = res?.EmailId ?? fileType.EmailId;
+                    fileTypeId = res?.FileTypeId ?? fileType.Id;
                 }
-                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
-               
+
+                var import = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
+                success.AddRange(import.ToList());
             }
+
+            return success;
         }
 
         public static void DownloadPDFs()
@@ -245,6 +255,72 @@ namespace AutoBot
             {
 
             }
+        }
+
+        public static List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
+        {
+            //List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>();
+            var success = new Dictionary<string, (string FileName, string DocumentType, ImportStatus status)>();
+            var logger = LoggingConfig.CreateLogger();
+            var docTypes = new Dictionary<string, string>()
+                { { "Invoice", "Shipment Invoice" }, { "CustomsDeclaration", "Simplified Declaration" } };
+            foreach (var file in fileInfos)
+            {
+              var txt = InvoiceReader.GetPdftxt(file.FullName);  
+              var res =  new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).Result;
+              foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
+                           .GroupBy(x => x["DocumentType"]))
+              {
+                  var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
+                  var docType = docTypes[(doc.Key as string) ?? "Unknown"];
+                  var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
+                      FileTypeManager.FileFormats.PDF, file.FullName).FirstOrDefault();
+                  if (docFileType == null)
+                  {
+                      continue;
+                  }
+
+                  SetFileTypeMappingDefaultValues(docFileType, doc);
+
+                  var import = ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true, docSet,
+                      new List<dynamic>() { doc.ToList() });
+                  success.Add($"{file}-{docType}-{doc.Key}",
+                      import
+                          ? (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success)
+                          : (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Failed));
+
+
+
+
+              }
+             
+
+
+            }
+
+            return success.ToList();
+        }
+
+        private static void SetFileTypeMappingDefaultValues(FileTypes docFileType, IGrouping<object, IDictionary<string, object>> doc)
+        {
+            foreach (var mapping in docFileType.FileTypeMappings.Where(x => x.FileTypeMappingValues.Any()).ToList())
+            {
+                doc.ToList().Cast<IDictionary<string, object>>()
+                    .Select(x => ((IDictionary<string, object>)x))
+                    .Where(x => !x.ContainsKey(mapping.DestinationName))
+                    .ForEach(x => x[mapping.DestinationName] = mapping.FileTypeMappingValues.First().Value);
+            }
+        }
+
+        private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
+            List<AsycudaDocumentSet> docSet,  List<dynamic> csvLines)
+        {
+
+            new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
+                emailId,
+                file, csvLines)).Wait();
+
+            return true;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
+using iText.Layout;
 using MoreLinq;
 using MoreLinq.Extensions;
 using PicoXLSX;
@@ -14,6 +15,7 @@ using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using FormatException = PicoXLSX.FormatException;
+using Style = PicoXLSX.Style;
 
 namespace xlsxWriter
 {
@@ -73,7 +75,8 @@ namespace xlsxWriter
                                 || (!shipmentInvoice.ShipmentInvoicePOs.Any() && x.InvoiceNo == shipmentInvoice.InvoiceNo)))
                             .ToList();
 
-                        var isCombined = !packingLst.Any() 
+                        var isCombined = BaseDataModel.Instance.CurrentApplicationSettings.GroupShipmentInvoices == true
+                                         ||   !packingLst.Any() 
                                          ||  packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages == 0 
                                          || (shipmentInvoice.ShipmentInvoicePOs.Count == 1 
                                                 && shipmentInvoice.ShipmentInvoicePOs.First().PurchaseOrders.ShipmentInvoicePOs.Count > 1 && shipmentInvoices.Count > 1
@@ -81,7 +84,7 @@ namespace xlsxWriter
 
 
                         
-                            if (!isCombined)
+                            if (!isCombined || (isCombined && BaseDataModel.Instance.CurrentApplicationSettings.GroupShipmentInvoices == true && workbook == null))
                             {
                                 parent = shipmentInvoice;
 
@@ -228,6 +231,8 @@ namespace xlsxWriter
 
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
+
+                SetValue(workbook, i, header.First(x => x.Key.Column == "TariffCode").Key.Index, itm.TariffCode);
 
                 if (doRider && i < packageDetails.Count)
                     foreach (var riderdetail in packageDetails)
@@ -1146,7 +1151,7 @@ namespace xlsxWriter
             Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook, bool IsCombined)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var invoiceRow = IsCombined
+            var invoiceRow = IsCombined && workbook.CurrentWorksheet.GetLastRowNumber() > 1
                 ? workbook.CurrentWorksheet.GetLastRowNumber() + 1
                 : workbook.CurrentWorksheet.GetLastRowNumber();
 
@@ -1169,6 +1174,10 @@ namespace xlsxWriter
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceNo)).Key.Index,
                 shipmentInvoice.InvoiceNo);
+
+            SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == "DocumentType").Key.Index,
+                BaseDataModel.Instance.ExportTemplates.First(x => x.Customs_Procedure == BaseDataModel.Instance.Customs_Procedures.First(z => z.IsDefault == true && z.CustomsOperationId == (int)CoreEntities.Business.Enums.CustomsOperations.Import).CustomsProcedure).Customs_Procedure);
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,

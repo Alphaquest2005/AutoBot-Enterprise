@@ -120,7 +120,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<System.DateTime> _etd;
         [DataMember]
-        public System.DateTime ETA 
+        public Nullable<System.DateTime> ETA 
         {
             get
             {
@@ -133,7 +133,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _eta;
+        Nullable<System.DateTime> _eta;
         [DataMember]
         public string Vessel 
         {
@@ -165,7 +165,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _waybill;
         [DataMember]
-        public int LineNumber 
+        public Nullable<int> LineNumber 
         {
             get
             {
@@ -178,7 +178,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _linenumber;
+        Nullable<int> _linenumber;
         [DataMember]
         public string LoadingPort 
         {
@@ -330,7 +330,7 @@ namespace EntryDataDS.Business.Entities
         }
         double _grossweightkg;
         [DataMember]
-        public double Volume 
+        public Nullable<double> Volume 
         {
             get
             {
@@ -343,7 +343,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _volume;
+        Nullable<double> _volume;
         [DataMember]
         public Nullable<double> Freight 
         {
@@ -479,6 +479,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         int _filetypeid;
+        [DataMember]
+        public string FreightCurrency 
+        {
+            get
+            {
+                return _freightcurrency;
+            }
+            set
+            {
+                _freightcurrency = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _freightcurrency;
         [DataMember]
         public List<ShipmentAttachedManifest> ShipmentAttachedManifest { get; set; }
         [DataMember]

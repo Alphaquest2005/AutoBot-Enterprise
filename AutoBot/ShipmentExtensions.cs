@@ -1249,7 +1249,11 @@ namespace AutoBotUtilities
                     .ToList();
 
 
-                attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
+                attachments.AddRange(
+                    invocieAttachments
+                        .Where(x => x.filepath.EndsWith(".pdf"))
+                        .Where(x => attachments.All(z => z.FilePath != x.filepath))
+                                                                .Select(x =>
                     new Attachments
                     {
                         FilePath = x.filepath,
@@ -1257,7 +1261,10 @@ namespace AutoBotUtilities
                         Reference = x.reference,
                         TrackingState = TrackingState.Added
                     }));
-                attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".xlsx")).Select(x =>
+                attachments.AddRange(invocieAttachments
+                    .Where(x => x.filepath.EndsWith(".xlsx"))
+                    .Where(x => attachments.All(z => z.FilePath != x.filepath))
+                    .Select(x =>
                     new Attachments
                     {
                         FilePath = x.filepath,
@@ -1267,7 +1274,7 @@ namespace AutoBotUtilities
                     }));
 
 
-                attachments.AddRange(freightInvoices.Select(x => new Attachments
+                attachments.AddRange(freightInvoices.Where(x => attachments.All(z => z.FilePath != x.SourceFile)).Select(x => new Attachments
                 {
                     FilePath = x.SourceFile,
                     DocumentCode = "IV04",
@@ -1275,13 +1282,7 @@ namespace AutoBotUtilities
                     TrackingState = TrackingState.Added
                 }));
 
-                attachments.AddRange(manifests.Select(x => new Attachments
-                {
-                    FilePath = x.SourceFile,
-                    DocumentCode = "IV04",
-                    Reference = x.RegistrationNumber,
-                    TrackingState = TrackingState.Added
-                }));
+                
 
                 var bl = masterShipment.ShipmentAttachedBL.FirstOrDefault(x =>
                     x.ShipmentBL.EmailId == masterShipment.EmailId)?.ShipmentBL;
@@ -1294,38 +1295,64 @@ namespace AutoBotUtilities
                         TrackingState = TrackingState.Added
                     });
 
-
-                var shipment = new Shipment
-                {
-                    ShipmentName = "NextShipment",
-                    ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
-                    BLNumber = manifests.LastOrDefault()?.WayBill?? bl?.BLNumber,
-                    WeightKG = manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
-                    Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
-                    ExpectedEntries = invoices.Count(),
-                    TotalInvoices = invoices.Select(x => x.Id).Count(),
-                    FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                    Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
-                    Origin = "US",
-                    Packages = bl?.PackagesNo ?? 0,
-                    Location = manifests.LastOrDefault()?.LocationOfGoods,
-                    Office = manifests.LastOrDefault()?.CustomsOffice,
-                    TrackingState = TrackingState.Added
-                };
-
-                //if (shipment.Currency.Length != 3)
-                //    throw new ApplicationException("Currency must be 3 letters");
-
-
-                shipments.Add(shipment);
-
-                shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
-                    new ShipmentAttachments
+                Shipment manifestShipments(ShipmentManifest manifest) =>
+                    new Shipment
                     {
-                        Attachments = x,
-                        Shipment = shipment,
+                        ShipmentName = manifest.WayBill ?? bl?.BLNumber ?? "NextShipment",
+                        ManifestNumber = manifest.RegistrationNumber,
+                        BLNumber = manifest.WayBill ?? bl?.BLNumber,
+                        WeightKG = manifest?.GrossWeightKG ?? bl?.WeightKG,
+                        Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
+                        ExpectedEntries = attachments.Count(x => x.FilePath.ToUpper().Contains("xlsx".ToUpper()) && !x.FilePath.ToUpper().Contains("summary".ToUpper())),
+                        TotalInvoices = invoices.Select(x => x.Id).Count(),
+                        FreightCurrency = manifest.FreightCurrency ?? freightInvoices.LastOrDefault()?.Currency ?? "USD",
+                        Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
+                        Origin = "US",
+                        Packages = manifest?.Packages ?? bl?.PackagesNo ?? 0,
+                        Location = manifest.LocationOfGoods,
+                        Office = manifest.CustomsOffice,
                         TrackingState = TrackingState.Added
-                    }));
+                    };
+
+                foreach (var shipment in manifests.Select(manifestShipments))
+                {
+                    //if (shipment.Currency.Length != 3)
+                    //    throw new ApplicationException("Currency must be 3 letters");
+
+
+                    shipments.Add(shipment);
+
+                    var manifestAttachments = manifests
+                        .Where(x => x.WayBill == shipment.BLNumber)
+                        .Where(x => attachments.All(z => z.FilePath != x.SourceFile))
+                        .Select(x => new Attachments
+                        {
+                            FilePath = x.SourceFile,
+                            DocumentCode = "IV04",
+                            Reference = x.RegistrationNumber,
+                            TrackingState = TrackingState.Added
+                        });
+                    //attachments.AddRange(manifestAttachments);
+                    // don't add manifest attachment to attachments because it will keep all manifest attachments in all shipments
+                    shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
+                        new ShipmentAttachments
+                        {
+                            Attachments = x,
+                            Shipment = shipment,
+                            TrackingState = TrackingState.Added
+                        }));
+
+                    shipment.ShipmentAttachments.AddRange(manifestAttachments.Select(x =>
+                        new ShipmentAttachments
+                        {
+                            Attachments = x,
+                            Shipment = shipment,
+                            TrackingState = TrackingState.Added
+                        }));
+                }
+
+
+                
             }
         }
 

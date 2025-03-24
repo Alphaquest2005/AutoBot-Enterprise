@@ -486,6 +486,7 @@
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
           <Property Name="Discount" Type="float" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="12" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails-Volume">
           <Key>
@@ -547,15 +548,15 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegistrationDate" Type="date" Nullable="false" />
           <Property Name="CustomsOffice" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Voyage" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Voyage" Type="nvarchar" MaxLength="50" />
           <Property Name="ETD" Type="date" />
-          <Property Name="ETA" Type="date" Nullable="false" />
-          <Property Name="Vessel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ETA" Type="date" />
+          <Property Name="Vessel" Type="nvarchar" MaxLength="50" />
           <Property Name="WayBill" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
           <Property Name="LoadingPort" Type="nvarchar" MaxLength="50" />
-          <Property Name="ModeOfTransport" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TypeOfBL" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModeOfTransport" Type="nvarchar" MaxLength="50" />
+          <Property Name="TypeOfBL" Type="nvarchar" MaxLength="50" />
           <Property Name="CargoReporter" Type="nvarchar" MaxLength="255" />
           <Property Name="Exporter" Type="nvarchar" MaxLength="50" />
           <Property Name="Consignee" Type="nvarchar" MaxLength="50" />
@@ -563,16 +564,17 @@
           <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="PackageType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="GrossWeightKG" Type="float" Nullable="false" />
-          <Property Name="Volume" Type="float" Nullable="false" />
+          <Property Name="Volume" Type="float" />
           <Property Name="Freight" Type="float" />
-          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Goods" Type="nvarchar" MaxLength="1000" Nullable="false" />
-          <Property Name="Marks" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="255" />
+          <Property Name="Goods" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="1000" />
           <Property Name="Containers" Type="int" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="FreightCurrency" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ShipmentManifestDetails">
           <Key>
@@ -3702,6 +3704,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
           <NavigationProperty Name="Volume" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetails_Volume" />
           <Property Name="Discount" Type="Double" />
+          <Property Name="TariffCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -4146,15 +4149,15 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="CustomsOffice" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Voyage" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Voyage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ETD" Type="DateTime" Precision="0" />
-          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Vessel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ETA" Type="DateTime" Precision="0" />
+          <Property Name="Vessel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="WayBill" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="LineNumber" Type="Int32" />
           <Property Name="LoadingPort" Type="String" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModeOfTransport" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TypeOfBL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModeOfTransport" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TypeOfBL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CargoReporter" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Exporter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4162,11 +4165,11 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Packages" Type="Int32" Nullable="false" />
           <Property Name="PackageType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="GrossWeightKG" Type="Double" Nullable="false" />
-          <Property Name="Volume" Type="Double" Nullable="false" />
+          <Property Name="Volume" Type="Double" />
           <Property Name="Freight" Type="Double" />
-          <Property Name="LocationOfGoods" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Goods" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Marks" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LocationOfGoods" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Goods" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Marks" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Containers" Type="Int32" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -4177,6 +4180,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ShipmentManifestBLs" Relationship="WaterNutDBModel.ShipmentManifestShipmentManifestBLs" FromRole="ShipmentManifest" ToRole="ShipmentManifestBLs" />
           <NavigationProperty Name="ShipmentRiderManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" FromRole="ShipmentManifest" ToRole="ShipmentRiderManifests" />
           <NavigationProperty Name="ShipmentFreightManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" FromRole="ShipmentManifest" ToRole="ShipmentFreightManifests" />
+          <Property Name="FreightCurrency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ShipmentAttachedManifest_ShipmentManifest">
           <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1">
@@ -5619,6 +5623,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoiceDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
               <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
@@ -5790,6 +5795,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentManifest">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentManifest">
               <MappingFragment StoreEntitySet="ShipmentManifest">
+                <ScalarProperty Name="FreightCurrency" ColumnName="FreightCurrency" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />

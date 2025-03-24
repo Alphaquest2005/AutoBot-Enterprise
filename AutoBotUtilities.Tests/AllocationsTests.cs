@@ -190,6 +190,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("004211", "3/1/2023", 60)]
         [TestCase("65100000000", "3/1/2023", 60)]// over allocation issue
         [TestCase("LC9935007", "3/1/2023", 60)] // incomplete allocations
+        [TestCase("L5366300", "3/1/2023", 60)] // Make sure IM9 come out from im7 
 
 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )

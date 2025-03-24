@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using MoreLinq;
 using OCR.Business.Entities;
+using sun.security.jca;
 
 namespace WaterNut.DataSpace
 {
@@ -37,19 +38,52 @@ namespace WaterNut.DataSpace
 
         private int StartCount { get; }
 
-        public bool Success => Lines.All(x =>
-                                   !x.Values.SelectMany(z => z.Value).Any(z =>
-                                       z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
-                               //&& this.Lines.Any()
-                               && !this.FailedLines.Any()
-                               && ChildParts.All(x => x.Success == true);
+        public bool Success
+        {
+            get
+            {
+                return AllRequiredFieldsFilled()
+                       //&& this.Lines.Any()
+                       && NoFailedLines()
+                       && AllChildPartsSucceded();
+            }
+        }
 
-        public List<Line> FailedLines => Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.Any())
-            .ToList()
-            .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
+        private bool AllRequiredFieldsFilled()
+        {
+            return Lines.All(x =>
+                !x.Values.SelectMany(z => z.Value).Any(z =>
+                    z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value.ToString())));
+        }
 
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields =>
-            Lines.SelectMany(x => x.FailedFields).ToList();
+        private bool NoFailedLines()
+        {
+            return !this.FailedLines.Any();
+        }
+
+        private bool AllChildPartsSucceded()
+        {
+            return ChildParts.All(x => x.Success == true);
+        }
+
+        public List<Line> FailedLines
+        {
+            get
+            {
+                var maxCount = Lines.Max(x => x.Values.Count(z => z.Key.section == "Single"));
+
+
+                return Lines.Where(x =>
+                        x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) &&  x.Values.Count < maxCount)
+                    .ToList()
+                    .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
+            }
+        }
+
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields
+        {
+            get { return Lines.SelectMany(x => x.FailedFields).ToList(); }
+        }
         //public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => Lines
         //                                                  .Where(x => x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
         //                                                  .Select(x => x.Values.SelectMany(z => z.Value.ToList())
@@ -57,13 +91,22 @@ namespace WaterNut.DataSpace
         //                                                                        .ToDictionary(k => k.Key, v => v.ToList())
         //).ToList();
 
-        public List<Line> AllLines =>
-            Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
+        public List<Line> AllLines
+        {
+            get { return Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList(); }
+        }
 
-        public bool WasStarted => this._startlines.Any();//{ get; set; } //;
+        public bool WasStarted
+        {
+            get
+            {
+                return this._startlines.Any();
+                //{ get; set; } //;
+            }
+        }
 
         private int lastLineRead = 0;
-
+        private int _instance = 1;
 
 
         //public string Section { get; set; }
@@ -90,6 +133,7 @@ namespace WaterNut.DataSpace
                             lastLineRead = _lines.LastOrDefault()?.LineNumber??0;
                             _lines.Clear();
                             _linesTxt.Clear();
+                            _instance += 1;
                         }
 
                     }
@@ -119,6 +163,7 @@ namespace WaterNut.DataSpace
                 {
                     // WasStarted = true;
                     if (!WasStarted || (WasStarted && OCR_Part.RecuringPart != null))
+                    {
                         if (_startlines.Count() < StartCount)
                             _startlines.Add(_lines.First());
                         else if (_startlines.Count() == StartCount) // treat as start tot start
@@ -127,7 +172,11 @@ namespace WaterNut.DataSpace
                             _endlines.Clear();
                             _bodylines.Clear();
                             if (StartCount != 0) _startlines.Add(_lines.First());
+                           
                         }
+                        _instance += 1;
+
+                    } 
                 }
 
                 if (_startlines.Count() == StartCount &&
@@ -142,8 +191,8 @@ namespace WaterNut.DataSpace
                     Lines.ForEach(x =>
                     {
                         if (x.OCR_Lines.RegularExpressions.MultiLine == true)
-                            x.Read(_bodylines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines??10).Select(z => z.Line).DefaultIfEmpty("").Aggregate((o,n) => $"{o}\r\n{n}").ToString(), _bodylines.First().LineNumber, Section);
-                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section);
+                            x.Read(_bodylines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines??10).Select(z => z.Line).DefaultIfEmpty("").Aggregate((o,n) => $"{o}\r\n{n}").ToString(), _bodylines.First().LineNumber, Section, _instance);
+                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section, _instance);
                     });
 
                 }

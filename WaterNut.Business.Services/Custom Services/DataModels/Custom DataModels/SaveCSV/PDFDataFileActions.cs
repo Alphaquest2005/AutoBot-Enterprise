@@ -13,8 +13,8 @@ namespace WaterNut.DataSpace
             {FileTypeManager.EntryTypes.BL, (dataFile) => new BillOfLadenImporter().Process(dataFile)},
             {FileTypeManager.EntryTypes.Freight, (dataFile) => new FreightImporter().Process(dataFile)},
             {FileTypeManager.EntryTypes.ShipmentInvoice, async (dataFile) => await new PDFShipmentInvoiceImporter().Process(dataFile).ConfigureAwait(false)},
-            
-            
+            {FileTypeManager.EntryTypes.SimplifiedDeclaration, async (dataFile) => await new PDFSimplifiedDeclarationImporter().Process(dataFile).ConfigureAwait(false)},
+
         };
     }
 }

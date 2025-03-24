@@ -874,6 +874,21 @@ public Nullable<System.DateTime> AllocationsOpeningStockDate
 		}
      
 
+       
+       
+public Nullable<bool> GroupShipmentInvoices
+		{ 
+		    get { return this.applicationsettings.GroupShipmentInvoices; }
+			set
+			{
+			    if (value == this.applicationsettings.GroupShipmentInvoices) return;
+				this.applicationsettings.GroupShipmentInvoices = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GroupShipmentInvoices");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{
