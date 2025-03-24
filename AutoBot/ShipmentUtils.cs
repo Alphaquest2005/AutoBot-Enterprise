@@ -121,7 +121,7 @@ namespace AutoBot
                     shipments.ForEach(shipment =>
                     {
                         EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
-                            $"CSVs for {shipment.ShipmentName}", contacts, shipment.ToString(),
+                            $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
                             shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
 
                        

@@ -684,6 +684,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<System.DateTime> _AllocationsOpeningStockDate;
 
+        [DataMember]
+        public Nullable<bool> GroupShipmentInvoices
+		{ 
+		    get { return _GroupShipmentInvoices; }
+			set
+			{
+			    if (value == _GroupShipmentInvoices) return;
+				_GroupShipmentInvoices = value;
+				NotifyPropertyChanged();//m => this.GroupShipmentInvoices
+			}
+		}
+        private Nullable<bool> _GroupShipmentInvoices;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

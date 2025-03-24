@@ -1298,12 +1298,12 @@ namespace AutoBotUtilities
                 Shipment manifestShipments(ShipmentManifest manifest) =>
                     new Shipment
                     {
-                        ShipmentName = "NextShipment",
+                        ShipmentName = manifest.WayBill ?? bl?.BLNumber ?? "NextShipment",
                         ManifestNumber = manifest.RegistrationNumber,
                         BLNumber = manifest.WayBill ?? bl?.BLNumber,
                         WeightKG = manifest?.GrossWeightKG ?? bl?.WeightKG,
                         Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
-                        ExpectedEntries = invoices.Count(),
+                        ExpectedEntries = attachments.Count(x => x.FilePath.ToUpper().Contains("xlsx".ToUpper()) && !x.FilePath.ToUpper().Contains("summary".ToUpper())),
                         TotalInvoices = invoices.Select(x => x.Id).Count(),
                         FreightCurrency = manifest.FreightCurrency ?? freightInvoices.LastOrDefault()?.Currency ?? "USD",
                         Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
@@ -1322,18 +1322,27 @@ namespace AutoBotUtilities
 
                     shipments.Add(shipment);
 
-                    attachments.AddRange(manifests
+                    var manifestAttachments = manifests
                         .Where(x => x.WayBill == shipment.BLNumber)
                         .Where(x => attachments.All(z => z.FilePath != x.SourceFile))
                         .Select(x => new Attachments
-                    {
-                        FilePath = x.SourceFile,
-                        DocumentCode = "IV04",
-                        Reference = x.RegistrationNumber,
-                        TrackingState = TrackingState.Added
-                    }));
-
+                        {
+                            FilePath = x.SourceFile,
+                            DocumentCode = "IV04",
+                            Reference = x.RegistrationNumber,
+                            TrackingState = TrackingState.Added
+                        });
+                    //attachments.AddRange(manifestAttachments);
+                    // don't add manifest attachment to attachments because it will keep all manifest attachments in all shipments
                     shipment.ShipmentAttachments.AddRange(attachments.Select(x =>
+                        new ShipmentAttachments
+                        {
+                            Attachments = x,
+                            Shipment = shipment,
+                            TrackingState = TrackingState.Added
+                        }));
+
+                    shipment.ShipmentAttachments.AddRange(manifestAttachments.Select(x =>
                         new ShipmentAttachments
                         {
                             Attachments = x,

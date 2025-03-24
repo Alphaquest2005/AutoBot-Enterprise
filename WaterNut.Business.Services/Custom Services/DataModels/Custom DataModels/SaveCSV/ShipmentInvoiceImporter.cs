@@ -28,7 +28,11 @@ namespace WaterNut.DataSpace
                 var invoiceData = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
                 var shipmentInvoices = ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData);
                 var invoices = ReduceLstByInvoiceNo(shipmentInvoices);
-                SaveInvoicePOs(invoicePOs, invoices);
+                var goodInvoices = invoices.Where(x => x.InvoiceDetails.All(z => !string.IsNullOrEmpty(z.ItemDescription)))
+                                                                    .Where(x => x.InvoiceDetails.Any())
+                                                                    .ToList();
+                
+                SaveInvoicePOs(invoicePOs, goodInvoices);
             }
             catch (Exception e)
             {
@@ -51,7 +55,7 @@ namespace WaterNut.DataSpace
                         .Select(z =>
                         {
                             //return a named tuple with item number,item description and tariffcode
-                            return (ItemNumber: z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString() : null,
+                            return (ItemNumber: z["ItemNumber"]!=null ? z["ItemNumber"].ToString() : null,
                                 ItemDescription: z["ItemDescription"].ToString(),
                                 TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : "");
                         }).ToList();
@@ -74,7 +78,7 @@ namespace WaterNut.DataSpace
                     invoice.TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null;
                     invoice.InvoiceDetails = !x.ContainsKey("InvoiceDetails") ? new List<InvoiceDetails>() : ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                         .Where(z => z != null)
-                        .Where(z => z.ContainsKey("ItemDescription"))
+                        .Where(z => z.ContainsKey("ItemDescription") && z["ItemDescription"] != null)
                                               
                         .Select(z =>
                         {
@@ -83,7 +87,7 @@ namespace WaterNut.DataSpace
                                 ? Convert.ToDouble(z["Quantity"].ToString())
                                 : 0;
                             details.ItemNumber = classifiedItms[z["ItemDescription"].ToString()].ItemNumber;//z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
-                            details.ItemDescription = classifiedItms[z["ItemDescription"].ToString()].ItemDescription;
+                            details.ItemDescription = classifiedItms[z["ItemDescription"].ToString()].ItemDescription.Truncate(255);
                             details.TariffCode = classifiedItms[z["ItemDescription"].ToString()].TariffCode;
                             details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;
                             details.Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(z["Quantity"].ToString()) == 0 ? 1 : Convert.ToDouble(z["Quantity"].ToString()));

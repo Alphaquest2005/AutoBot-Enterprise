@@ -1,0 +1,75 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build x64 Debug",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "--configuration",
+                "Debug",
+                "--runtime",
+                "win-x64"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build x64 Release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "--configuration",
+                "Release",
+                "--runtime",
+                "win-x64"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build x86 Debug",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "--configuration",
+                "Debug",
+                "--runtime",
+                "win-x86"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build x86 Release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "--configuration",
+                "Release",
+                "--runtime",
+                "win-x86"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Clean",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/AutoBot-Enterprise.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

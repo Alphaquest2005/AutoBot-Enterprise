@@ -109,39 +109,145 @@ namespace AutoBot
             }
         }
 
+        //private static void ProcessDownloadFolder(ApplicationSettings appSetting)
+        //{
+        //    var downloadFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder, "Downloads"));
+            
+        //    if(!downloadFolder.Exists)downloadFolder.Create();
+
+        //    foreach (var file in downloadFolder.GetFiles("*.pdf").ToList())
+        //    {
+        //        try
+        //        {
+        //            var documentsFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder, "Documents",
+        //                file.Name.Replace(file.Extension, "")));
+        //            if (!documentsFolder.Exists) documentsFolder.Create();
+        //            var destFileName = Path.Combine(documentsFolder.FullName, file.Name);
+        //            if (!File.Exists(destFileName)) file.CopyTo(destFileName);
+        //            var fileTypes =
+        //                FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown,
+        //                        FileTypeManager.FileFormats.PDF, file.FullName)
+        //                    .Where(x => x.Description == "Unknown")
+        //                    .ToList();
+        //            var allgood = true;
+        //            foreach (var fileType in fileTypes)
+        //            {
+        //                var fileInfos = new FileInfo[] { new FileInfo(destFileName) };
+        //                var res = PDFUtils.ImportPDF(fileInfos, fileType);
+        //                if (!res.Any(x =>
+        //                        x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice &&
+        //                        x.Value.Status == ImportStatus.Success))
+        //                {
+        //                    // try import with deepseekapi
+        //                    var res2 = PDFUtils.ImportPDFDeepSeek(fileInfos, fileType);
+        //                    if(res2.Any(x => x.Value.status != ImportStatus.Success))
+        //                    {EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Unknown PDF Found",
+        //                            EmailDownloader.EmailDownloader.GetContacts("Developer"),
+        //                            $"Unknown PDF Found: {file.Name}\r\n{res2.First(x => x.Value.status != ImportStatus.Success).Value.message}",
+        //                            Array.Empty<string>());
+        //                        allgood = false;
+        //                        continue;
+        //                    }
+        //                }
+                        
+        //                if(allgood) ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+        //            }
+
+        //            if(allgood) file.Delete();
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine(e.Message);
+        //            continue;
+        //        }
+        //    }
         private static void ProcessDownloadFolder(ApplicationSettings appSetting)
         {
             var downloadFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder, "Downloads"));
-            
-            if(!downloadFolder.Exists)downloadFolder.Create();
-            
+
+            if (!downloadFolder.Exists) downloadFolder.Create();
+
             foreach (var file in downloadFolder.GetFiles("*.pdf").ToList())
             {
-                var documentsFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder,"Documents", file.Name.Replace(file.Extension, "")));
-                if (!documentsFolder.Exists) documentsFolder.Create();
-                var destFileName = Path.Combine(documentsFolder.FullName, file.Name);
-                if(!File.Exists(destFileName)) file.CopyTo(destFileName);
-                var fileTypes =
-                    FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName)
-                        .Where(x => x.Description == "Unknown")
-                        .ToList();
-                foreach (var fileType in fileTypes)
+                try
                 {
-                    var fileInfos = new FileInfo[] { new FileInfo(destFileName)};
-                    var res = PDFUtils.ImportPDF(fileInfos, fileType);
-                    if (!res.Any(x =>
-                            x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                            x.Value.Status == ImportStatus.Success))
-                    {
-                        // try import with deepseekapi
-                        var res2 = PDFUtils.ImportPDFDeepSeek(fileInfos, fileType);
-                    }
-                    ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+                    ProcessFile(appSetting, file);
                 }
-                file.Delete();
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
+                }
             }
         }
 
+        private static void ProcessFile(ApplicationSettings appSetting, FileInfo file)
+        {
+            var documentsFolder = CreateDocumentsFolder(appSetting, file);
+            var destFileName = CopyFileToDocumentsFolder(file, documentsFolder);
+
+            var fileTypes = GetUnknownFileTypes(file);
+
+            fileTypes.ForEach(x => x.EmailId = file.Name);
+
+            var allgood = ProcessFileTypes(fileTypes, destFileName, file);
+
+            if (allgood) file.Delete();
+        }
+
+        private static DirectoryInfo CreateDocumentsFolder(ApplicationSettings appSetting, FileInfo file)
+        {
+            var documentsFolder = new DirectoryInfo(Path.Combine(appSetting.DataFolder, "Documents", file.Name.Replace(file.Extension, "")));
+            if (!documentsFolder.Exists) documentsFolder.Create();
+            return documentsFolder;
+        }
+
+        private static string CopyFileToDocumentsFolder(FileInfo file, DirectoryInfo documentsFolder)
+        {
+            var destFileName = Path.Combine(documentsFolder.FullName, file.Name);
+            if (!File.Exists(destFileName)) file.CopyTo(destFileName);
+            return destFileName;
+        }
+
+        private static List<FileTypes> GetUnknownFileTypes(FileInfo file)
+        {
+            return FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName)
+                .Where(x => x.Description == "Unknown")
+                .ToList();
+        }
+
+        private static bool ProcessFileTypes(List<FileTypes> fileTypes, string destFileName, FileInfo file)
+        {
+            var allgood = true;
+            foreach (var fileType in fileTypes)
+            {
+                var fileInfos = new FileInfo[] { new FileInfo(destFileName) };
+                var res = PDFUtils.ImportPDF(fileInfos, fileType);
+                if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
+                {
+                    var res2 = PDFUtils.ImportPDFDeepSeek(fileInfos, fileType);
+                    if (res2.Any(x => x.Value.status != ImportStatus.Success))
+                    {
+                        NotifyUnknownPDF(file, res2);
+                        allgood = false;
+                        continue;
+                    }
+                }
+
+                if (allgood) ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+            }
+
+            return allgood;
+        }
+
+        private static void NotifyUnknownPDF(FileInfo file, List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> res2)
+        {
+            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Unknown PDF Found",
+                EmailDownloader.EmailDownloader.GetContacts("Developer"),
+                $"Unknown PDF Found: {file.Name}\r\n{res2.First(x => x.Value.status != ImportStatus.Success).Value.DocumentType}",
+                res2.Select(x => x.Value.FileName).Distinct().ToArray());
+        }
+        
         private static bool ExecuteLastDBSessionAction(CoreEntitiesContext ctx, ApplicationSettings appSetting)
         {
             var lastAction = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")

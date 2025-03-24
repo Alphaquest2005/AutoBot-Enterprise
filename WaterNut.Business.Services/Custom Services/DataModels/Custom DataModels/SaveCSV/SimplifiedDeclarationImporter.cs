@@ -22,6 +22,7 @@ public class SimplifiedDeclarationImporter
             {
                 try
                 {
+                    if (!x.ContainsKey("Packages")) return null;
                     return new ShipmentManifest()
                     {
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
@@ -31,9 +32,10 @@ public class SimplifiedDeclarationImporter
                         WayBill = x["BLNumber"].ToString(),
                         Packages = Convert.ToInt32(x["Packages"].ToString()),
                         PackageType = x["PackageType"].ToString(),
-                        GrossWeightKG = Convert.ToDouble(x["GrossWeightKG"].ToString()),
-                        Freight = Convert.ToDouble(x["Freight"].ToString()),
+                        GrossWeightKG = x.ContainsKey("GrossWeightKG") ? Convert.ToDouble(x["GrossWeightKG"].ToString()) : 0,
+                        Freight = x.ContainsKey("Freight") ? Convert.ToDouble(x["Freight"].ToString()) : 0,
                         FreightCurrency = x.ContainsKey("FreightCurrency") ? x["FreightCurrency"].ToString() : "",
+                        LocationOfGoods = x.ContainsKey("LocationOfGoods") ? x["LocationOfGoods"].ToString() : "",
                         EmailId = dataFile.EmailId,
                         SourceFile = dataFile.DroppedFilePath,
                         FileTypeId = dataFile.FileType.Id,

@@ -26,7 +26,7 @@ namespace WaterNut.Business.Services.Utils
         public string PromptTemplate { get; set; }
         public string Model { get; set; } = "deepseek-chat";
         public double DefaultTemperature { get; set; } = 0.3;
-        public int DefaultMaxTokens { get; set; } = 1500;
+        public int DefaultMaxTokens { get; set; } = 8192;
         public string HsCodePattern { get; set; } = @"\b\d{4}(?:[\.\-]\d{2,4})*\b";
 
         private static readonly HttpStatusCode[] HttpStatusCodesToRetry =
@@ -76,7 +76,7 @@ namespace WaterNut.Business.Services.Utils
 {0}
 
 1. TEXT STRUCTURE ANALYSIS:
-   - Focus sections between: ""SHOP FASTER WITH THE APP"" and ""For Comptroller of Customs""
+   
    - Priority order:
      1. Item tables with prices/quantities
      2. Customs declaration forms
@@ -97,82 +97,93 @@ namespace WaterNut.Business.Services.Utils
      * Combine: Shipping + Handling + Transportation fees
      * Source: ""FREIGHT"" values in consignee line
 
+   - TotalOtherCost:
+     * Include: Taxes + Fees + Duties
+     * Look for: ""Tax"", ""Duty"", ""Fee"" markers
+     * Calculate: Sum of all non-freight additional costs
+
 3. CUSTOMS DECLARATION RULES:
    - Packages = Count from ""No. of Packages"" or ""Package Count""
    - GrossWeightKG = Numeric value from ""Gross Weight"" with KG units
    - Freight: Extract numeric value after ""FREIGHT""
    - FreightCurrency: Currency from freight context (e.g., ""US"" = USD)
+   - BLNumber: Full value from ""WayBill Number"" including letters/numbers
+   - ManifestYear/Number: Split ""Man Reg Number"" (e.g., 2024/1253 → 2024 & 1253)
 
 4. DATA VALIDATION REQUIREMENTS:
-   - Reject if: SupplierCode == ConsigneeName
+   - Reject if: 
+     * SupplierCode == ConsigneeName
+     * JSON contains unclosed brackets/braces
+     * Any field is truncated mid-name
    - Required fields: 
      * InvoiceDetails.TariffCode (use ""000000"" if missing)
      * CustomsDeclarations.Freight (0.0 if not found)
+     * CustomsDeclarations[] (must exist even if empty)
 
-6. JSON STRUCTURE VALIDATION:
-   - MUST close all arrays/objects
+5. JSON STRUCTURE VALIDATION:
+   - MUST close all arrays/objects - CRITICAL REQUIREMENT
    - REQUIRED fields:
      * Invoices[]
-     * CustomsDeclarations[] (can be empty)
-   - If no customs data: 
-     """"CustomsDeclarations"""": []
+     * CustomsDeclarations[]
+   - Field completion examples:
+     Good: ""GrossWeightKG"": 1.0}}
+     Bad: ""Gross""
+   - Final JSON must end with: }}]}}
 
-5. JSON SCHEMA WITH EXTRACTION GUIDANCE:
+6. JSON SCHEMA WITH COMPLETION GUARANTEES:
 {{
   ""Invoices"": [{{
-    // INVOICE HEADER DATA //
-    ""InvoiceNo"": ""<str>"",                    // From ""Order #"" value
-    ""PONumber"": ""<str|null>"",                 // ""PO Number"" if exists
-    ""InvoiceDate"": ""<YYYY-MM-DD>"",            // ""Date Placed:"" value
-    ""Currency"": ""<ISO_CODE>"",                 // Symbol analysis ($=USD)
-    
-    // FINANCIAL BREAKDOWN //
-    ""SubTotal"": <float>,                       // Sum before deductions
-    ""Total"": <float>,                          // Final payable amount
-    ""TotalDeduction"": <float|null>,            // SUM(Coupons + Credits)
+    ""InvoiceNo"": ""<str>"",                    
+    ""PONumber"": ""<str|null>"",                 
+    ""InvoiceDate"": ""<YYYY-MM-DD>"",            
+    ""Currency"": ""<ISO_CODE>"",                 
+    ""SubTotal"": <float>,                       
+    ""Total"": <float>,                          
+    ""TotalDeduction"": <float|null>,            
     ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
-    ""TotalInternalFreight"": <float|null>,      // Shipping + Handling
-    ""TotalInsurance"": <float|null>,            // Insurance fees if present
-    
-    // SUPPLIER INFORMATION //
-    ""SupplierCode"": ""<str>"",                 // Merchant name (cleaned)
-    ""SupplierAddress"": ""<str>"",              // From header/footer
-    ""SupplierCountryCode"": ""<ISO3166-2>"",    // From supplier address
-    
-    // LINE ITEMS //
+    ""TotalInternalFreight"": <float|null>,      
+    ""TotalInsurance"": <float|null>,            
+    ""SupplierCode"": ""<str>"",                 
+    ""SupplierAddress"": ""<str>"",              
+    ""SupplierCountryCode"": ""<ISO3166-2>"",    
     ""InvoiceDetails"": [{{
-      ""ItemNumber"": ""<str|null>"",           // SKU/Part number
-      ""ItemDescription"": ""<str>"",           // Full item text
-      ""Quantity"": <float>,                    // ""Qty:"" value
-      ""Cost"": <float>,                        // Unit price
-      ""TotalCost"": <float>,                   // Quantity * Cost
-      ""Units"": ""<str>"",                     // Size→Units mapping
-      ""TariffCode"": ""<str>"",                // From ""Tariff No."" column
-      ""Discount"": <float|null>                // Item-level discounts
+      ""ItemNumber"": ""<str|null>"",           
+      ""ItemDescription"": ""<str>"",           
+      ""Quantity"": <float>,                    
+      ""Cost"": <float>,                        
+      ""TotalCost"": <float>,                   
+      ""Units"": ""<str>"",                     
+      ""TariffCode"": ""<str>"",                
+      ""Discount"": <float|null>                
     }}]
   }}],
   
   ""CustomsDeclarations"": [{{
-    // SHIPPING INFO //
-    ""Consignee"": ""<str>"",                   // Delivery address name
-    ""BLNumber"": ""<str>"",                    // ""WayBill Number"" value
-    ""Freight"": <float>,                       // From ""FREIGHT"" marker
-    ""FreightCurrency"": ""<ISO>"",             // Matches invoice currency
-    
-    // PACKAGE DETAILS //
-    ""PackageInfo"": {{
-      ""Packages"": <int>,                      // Former 'Count' field
-      ""GrossWeightKG"": <float>                // Former 'WeightKG' field
-    }},
-    
-    // ITEM CLASSIFICATION //
+    ""Consignee"": ""<str>"",                  
+    ""CustomsOffice"": ""<str>"",              
+    ""ManifestYear"": <int>,                   
+    ""ManifestNumber"": <int>,                 
+    ""BLNumber"": ""<str>"",                   
+    ""Freight"": <float>,                      
+    ""FreightCurrency"": ""<ISO>"",            
+    ""PackageType"": ""<str>"",                
+    ""Packages"": <int>,                       
+    ""GrossWeightKG"": <float>,               
     ""Goods"": [{{
-      ""Description"": ""<str>"",               // Must match invoice items
-      ""TariffCode"": ""<str>""                 // Must match item tariff code
+      ""Description"": ""<str>"",               
+      ""TariffCode"": ""<str>""                 
     }}]
   }}]
-}}";
+}}
+
+7. OUTPUT INSTRUCTIONS:
+   - GENERATE FULL JSON RESPONSE
+   - VALIDATE FIELD ENDINGS BEFORE FINALIZING
+   - ENSURE FINAL BRACKET STRUCTURE: }}]}}";
         }
+
+
+
 
         public async Task<List<dynamic>> ExtractShipmentInvoice(List<string> pdfTextVariants)
         {
@@ -262,7 +273,7 @@ namespace WaterNut.Business.Services.Utils
                     dict["PONumber"] = GetStringValue(inv, "PONumber");
                     dict["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate"));
                     dict["SubTotal"] = GetDecimalValue(inv, "SubTotal");
-                    dict["Total"] = GetDecimalValue(inv, "Total");
+                    dict["InvoiceTotal"] = GetDecimalValue(inv, "Total");
                     dict["Currency"] = GetStringValue(inv, "Currency");
                     dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
                     dict["SupplierAddress"] = GetStringValue(inv, "SupplierAddress");
@@ -317,10 +328,18 @@ namespace WaterNut.Business.Services.Utils
                     IDictionary<string, object> dict = new BetterExpando();
 
                     dict["DocumentType"] = "CustomsDeclaration";
+                    dict["CustomsOffice"] = GetStringValue(cd, "CustomsOffice");
+                    dict["ManifestYear"] = GetIntValue(cd, "ManifestYear");
+                    dict["ManifestNumber"] = GetIntValue(cd, "ManifestNumber");
                     dict["Consignee"] = GetStringValue(cd, "Consignee");
                     dict["BLNumber"] = GetStringValue(cd, "BLNumber");
                     dict["Goods"] = ParseGoodsClassifications(cd);
-                    dict["PackageInfo"] = ParsePackageInfo(cd);
+                    //dict["PackageInfo"] = ParsePackageInfo(cd);
+                    dict["PackageType"] = GetStringValue(cd, "PackageType");
+                    dict["Packages"] = GetIntValue(cd, "Packages");
+                    dict["GrossWeightKG"] = GetDecimalValue(cd, "GrossWeightKG");
+                    dict["FreightCurrency"] = GetStringValue(cd, "FreightCurrency");
+                    dict["Freight"] = GetDecimalValue(cd, "Freight");
                     documents.Add(dict);
                 }
             }
@@ -385,17 +404,30 @@ namespace WaterNut.Business.Services.Utils
         {
             foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Invoice"))
             {
-                var subTotal = Convert.ToDecimal(doc["SubTotal"]);
-                var total = Convert.ToDecimal(doc["Total"]);
-                var calculatedTotal = subTotal
-                                      - Convert.ToDecimal(doc["TotalDeduction"] ?? 0m)
-                                      + Convert.ToDecimal(doc["TotalOtherCost"] ?? 0m)
-                                      + Convert.ToDecimal(doc["TotalInternalFreight"] ?? 0m);
-
-                if (Math.Abs(total - calculatedTotal) > 0.01m)
+                try
                 {
-                    _logger.LogWarning("Total mismatch in invoice {InvoiceNo}: Expected {Calculated}, Actual {Actual}",
-                        doc["InvoiceNo"], calculatedTotal, total);
+                    var subTotal = Convert.ToDecimal(doc["SubTotal"]);
+                    var total = Convert.ToDecimal(doc["InvoiceTotal"]);
+                    var totalDeduction = Convert.ToDecimal(doc["TotalDeduction"] ?? 0m);
+                    var totalOtherCost = Convert.ToDecimal(doc["TotalOtherCost"] ?? 0m);
+                    var totalFreight = Convert.ToDecimal(doc["TotalInternalFreight"] ?? 0m);
+                    var totalInsurance = Convert.ToDecimal(doc["TotalInsurance"] ?? 0m);
+
+                    var calculatedTotal = subTotal
+                                          - totalDeduction
+                                          + totalOtherCost
+                                          + totalFreight
+                                          + totalInsurance;
+
+                    if (Math.Abs(total - calculatedTotal) > 0.01m)
+                    {
+                        _logger.LogWarning("Total mismatch in invoice {InvoiceNo}: Expected {Calculated}, Actual {Actual}",
+                            doc["InvoiceNo"], calculatedTotal, total);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to validate totals for invoice {InvoiceNo}", doc["InvoiceNo"]);
                 }
 
                 if (string.IsNullOrEmpty(doc["SupplierCountryCode"]?.ToString()))
@@ -645,3 +677,119 @@ namespace WaterNut.Business.Services.Utils
         public void Dispose() => _httpClient?.Dispose();
     }
 }
+
+
+
+
+
+//        private void SetDefaultPrompts()
+//        {
+//            PromptTemplate = @"DOCUMENT PROCESSING RULES:
+
+//0. PROCESS THIS TEXT INPUT:
+//{0}
+
+//1. TEXT STRUCTURE ANALYSIS:
+//   - Focus sections between: ""SHOP FASTER WITH THE APP"" and ""For Comptroller of Customs""
+//   - Priority order:
+//     1. Item tables with prices/quantities
+//     2. Customs declaration forms
+//     3. Address blocks
+//     4. Payment/header sections
+
+//2. FIELD EXTRACTION GUIDANCE:
+//   - SupplierCode: 
+//     * Source: Store/merchant name in header/footer (e.g., ""FASHIONNOWVA"")
+//     * NEVER use consignee name
+//     * Fallback: Email domain analysis (@company.com)
+
+//   - TotalDeduction: 
+//     * Look for: Coupons, credits, free shipping markers
+//     * Calculate: Sum of all price reductions
+
+//   - TotalInternalFreight:
+//     * Combine: Shipping + Handling + Transportation fees
+//     * Source: ""FREIGHT"" values in consignee line
+
+//3. CUSTOMS DECLARATION RULES:
+//   - Packages = Count from ""No. of Packages"" or ""Package Count""
+//   - GrossWeightKG = Numeric value from ""Gross Weight"" with KG units
+//   - Freight: Extract numeric value after ""FREIGHT""
+//   - FreightCurrency: Currency from freight context (e.g., ""US"" = USD)
+
+//4. DATA VALIDATION REQUIREMENTS:
+//   - Reject if: SupplierCode == ConsigneeName
+//   - Required fields: 
+//     * InvoiceDetails.TariffCode (use ""000000"" if missing)
+//     * CustomsDeclarations.Freight (0.0 if not found)
+
+//6. JSON STRUCTURE VALIDATION:
+//   - MUST close all arrays/objects
+//   - REQUIRED fields:
+//     * Invoices[]
+//     * CustomsDeclarations[] (can be empty)
+//   - If no customs data: 
+//     """"CustomsDeclarations"""": []
+
+//5. JSON SCHEMA WITH EXTRACTION GUIDANCE:
+//{{
+//  ""Invoices"": [{{
+//    // INVOICE HEADER DATA //
+//    ""InvoiceNo"": ""<str>"",                    // From ""Order #"" value
+//    ""PONumber"": ""<str|null>"",                 // ""PO Number"" if exists
+//    ""InvoiceDate"": ""<YYYY-MM-DD>"",            // ""Date Placed:"" value
+//    ""Currency"": ""<ISO_CODE>"",                 // Symbol analysis ($=USD)
+
+//    // FINANCIAL BREAKDOWN //
+//    ""SubTotal"": <float>,                       // Sum before deductions
+//    ""Total"": <float>,                          // Final payable amount
+//    ""TotalDeduction"": <float|null>,            // SUM(Coupons + Credits)
+//    ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
+//    ""TotalInternalFreight"": <float|null>,      // Shipping + Handling
+//    ""TotalInsurance"": <float|null>,            // Insurance fees if present
+
+//    // SUPPLIER INFORMATION //
+//    ""SupplierCode"": ""<str>"",                 // Merchant name (cleaned)
+//    ""SupplierAddress"": ""<str>"",              // From header/footer
+//    ""SupplierCountryCode"": ""<ISO3166-2>"",    // From supplier address
+
+//    // LINE ITEMS //
+//    ""InvoiceDetails"": [{{
+//      ""ItemNumber"": ""<str|null>"",           // SKU/Part number
+//      ""ItemDescription"": ""<str>"",           // Full item text
+//      ""Quantity"": <float>,                    // ""Qty:"" value
+//      ""Cost"": <float>,                        // Unit price
+//      ""TotalCost"": <float>,                   // Quantity * Cost
+//      ""Units"": ""<str>"",                     // Size→Units mapping
+//      ""TariffCode"": ""<str>"",                // From ""Tariff No."" column
+//      ""Discount"": <float|null>                // Item-level discounts
+//    }}]
+//  }}],
+
+//  ""CustomsDeclarations"": [{{
+//    // SHIPPING INFO //
+//    ""Consignee"": ""<str>"",                  // Delivery address name
+//    ""CustomsOffice"": ""<str>"",              // Customs Office field
+//    ""ManifestYear"": <int>,                   // First part of ""Man Reg Number"" Field eg. ""2024/1253"" ManifestYear = 2024 & ManifestNumber = 1253
+//    ""ManifestNumber"": <int>,                 // Second part of ""Man Reg Number"" Field eg. ""2024/1253"" ManifestYear = 2024 & ManifestNumber = 1253
+//    ""BLNumber"": ""<str>"",                   // ""WayBill Number"" value
+//    ""Freight"": <float>,                      // From ""FREIGHT"" marker
+//    ""FreightCurrency"": ""<ISO>"",            // Matches invoice currency
+//    ""PackageType"": ""<str>"",                // 'Type of Package' field
+//    ""Packages"": <int>,                       // 'Count' field
+//    ""GrossWeightKG"": <float>                 // 'WeightKG' field
+
+//    // PACKAGE DETAILS //
+//    //""PackageInfo"": {{
+//    //  ""Packages"": <int>,                      // 'Count' field
+//    //  ""GrossWeightKG"": <float>                // 'WeightKG' field
+//    //}},
+
+//    // ITEM CLASSIFICATION //
+//    ""Goods"": [{{
+//      ""Description"": ""<str>"",               // Must match invoice items
+//      ""TariffCode"": ""<str>""                 // Must match item tariff code
+//    }}]
+//  }}]
+//}}";
+//        } 

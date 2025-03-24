@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Core.Common.Extensions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
+using MoreLinq;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
@@ -87,7 +88,7 @@ namespace AutoBot
 
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
                         .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
-                    emailId = res?.EmailId;
+                    emailId = res?.EmailId ?? fileType.EmailId;
                     fileTypeId = res?.FileTypeId ?? fileType.Id;
                 }
 
@@ -273,12 +274,15 @@ namespace AutoBot
                   var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
                   var docType = docTypes[(doc.Key as string) ?? "Unknown"];
                   var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
-                      FileTypeManager.FileFormats.PDF, file.FullName);
-                  if (!docFileType.Any())
+                      FileTypeManager.FileFormats.PDF, file.FullName).FirstOrDefault();
+                  if (docFileType == null)
                   {
                       continue;
                   }
-                  var import = ImportSuccessState(file.FullName, null, docFileType.FirstOrDefault(), true, docSet,
+
+                  SetFileTypeMappingDefaultValues(docFileType, doc);
+
+                  var import = ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true, docSet,
                       new List<dynamic>() { doc.ToList() });
                   success.Add($"{file}-{docType}-{doc.Key}",
                       import
@@ -295,6 +299,17 @@ namespace AutoBot
             }
 
             return success.ToList();
+        }
+
+        private static void SetFileTypeMappingDefaultValues(FileTypes docFileType, IGrouping<object, IDictionary<string, object>> doc)
+        {
+            foreach (var mapping in docFileType.FileTypeMappings.Where(x => x.FileTypeMappingValues.Any()).ToList())
+            {
+                doc.ToList().Cast<IDictionary<string, object>>()
+                    .Select(x => ((IDictionary<string, object>)x))
+                    .Where(x => !x.ContainsKey(mapping.DestinationName))
+                    .ForEach(x => x[mapping.DestinationName] = mapping.FileTypeMappingValues.First().Value);
+            }
         }
 
         private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
