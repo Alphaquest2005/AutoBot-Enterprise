@@ -131,7 +131,7 @@ namespace WaterNut.DataSpace.Asycuda
                 if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems, false).ConfigureAwait(false);
 
                
-                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure?.CustomsOperationId == 3)
+                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure?.CustomsOperationId == (int)CoreEntities.Business.Enums.CustomsOperations.Exwarehouse)
                      await SavePreviousItem().ConfigureAwait(false);
 
                 await Save_Suppliers_Documents().ConfigureAwait(false);

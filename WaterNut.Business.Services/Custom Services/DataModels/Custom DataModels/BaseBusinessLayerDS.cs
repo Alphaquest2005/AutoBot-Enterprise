@@ -182,6 +182,8 @@ namespace WaterNut.DataSpace
             get { return _saveDocumentCt; }
         }
 
+ 
+
 
         public static Client GetClient()
         {
@@ -619,7 +621,7 @@ namespace WaterNut.DataSpace
             {
                 case "PO":
                     dtpredicate = x =>
-                        x.CustomsOperationId == (int)CustomsOperations.Warehouse
+                        x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()
                         && x.Sales == true && x.Stock != true;
 
                     break;
