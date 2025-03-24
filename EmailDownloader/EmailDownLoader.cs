@@ -31,17 +31,18 @@ namespace EmailDownloader
             var res = new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
             try
             {
-                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
-                            var imapClient = GetImapClient(client);
+                if (string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
+                var imapClient = GetImapClient(client);
+                if (!Directory.Exists(client.DataFolder)) Directory.CreateDirectory(client.DataFolder);
 
-                            DownloadAttachment(imapClient, client.DataFolder, client.EmailMappings, client,ref res);
+                DownloadAttachment(imapClient, client.DataFolder, client.EmailMappings, client, ref res);
 
-                            imapClient.Disconnect(true);
-                            return res;
+                imapClient.Disconnect(true);
+                return res;
             }
             catch (Exception e)
             {
-                
+
                 Console.WriteLine(e);
                 return res;
             }

@@ -2266,8 +2266,8 @@ namespace WaterNut.DataSpace
                     var fileCode = a.General_segment.Importer_code.Text.FirstOrDefault();
                     if (fileCode == null) return;
                     if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
-                        throw new ApplicationException(
-                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
+                        return;
+                       // throw new ApplicationException( $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
                 }
 
 
