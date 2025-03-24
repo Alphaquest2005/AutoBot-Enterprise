@@ -114,7 +114,7 @@ namespace AutoBotUtilities.Tests
             };
 
             // Act
-            var results = api.ClassifyItems(testItems);
+            var results = api.ClassifyItemsAsync(testItems).Result;
 
             // Assert
             foreach (var kvp in results)
@@ -160,7 +160,7 @@ namespace AutoBotUtilities.Tests
                 ("", "Wireless Mouse", "8517.60.00")
             };
 
-            var results = api.ClassifyItems(testItems);
+            var results = api.ClassifyItemsAsync(testItems).Result;
 
             // Verify item number sanitization
             var mouseEntry = results["Wireless Mouse"];

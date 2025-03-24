@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WaterNut.Business.Services.Utils
@@ -14,6 +18,8 @@ namespace WaterNut.Business.Services.Utils
     public partial class DeepSeekApi : IDisposable
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<DeepSeekApi> _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
         private readonly string _apiKey;
         private readonly string _baseUrl;
 
@@ -29,13 +35,46 @@ namespace WaterNut.Business.Services.Utils
 
         public DeepSeekApi()
         {
+
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("WaterNut", LogLevel.Debug)
+                    .AddConsole()
+                    .AddDebug();
+            });
+            var logger = loggerFactory.CreateLogger<DeepSeekApi>();
+
+            _logger = logger;
             _apiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
                       ?? throw new InvalidOperationException("API key not found in environment variables");
+
+            _retryPolicy = Policy
+                .Handle<HttpRequestException>()
+                .Or<TaskCanceledException>()
+                .WaitAndRetryAsync(3, retryAttempt =>
+                        TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (exception, delay, retryCount, context) =>
+                    {
+                        _logger.LogWarning(exception, "Retry {RetryCount} after {DelaySeconds}s", retryCount, delay.TotalSeconds);
+                    });
+
             _baseUrl = "https://api.deepseek.com/v1";
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient(new HttpClientHandler
+            {
+                MaxConnectionsPerServer = 20,
+                UseProxy = false
+            })
+            {
+                Timeout = TimeSpan.FromSeconds(300)
+            };
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("X-DeepSeek-Version", "2023-07-01");
+           // _httpClient.DefaultRequestVersion = HttpVersion.Version20;
             SetDefaultPrompt();
         }
 
@@ -55,7 +94,7 @@ Respond EXCLUSIVELY in the format: |HS_CODE|full_code_with_dots| |CATEGORY|brief
 Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
         }
 
-        public async Task<string> GetTariffCode(string itemDescription, double? temperature = null, int? maxTokens = null)
+        public async Task<string> GetTariffCode(string itemDescription, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -75,12 +114,14 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to retrieve HS code for {ItemDescription}", itemDescription);
                 throw new HSCodeRequestException("Failed to retrieve HS code", ex);
             }
         }
 
-        public Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)> ClassifyItems(
-            List<(string ItemNumber, string ItemDescription, string TariffCode)> items)
+        public async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>> ClassifyItemsAsync(
+            List<(string ItemNumber, string ItemDescription, string TariffCode)> items,
+            CancellationToken cancellationToken = default)
         {
             var sanitizedItems = items.Select(item => (
                 SanitizeItemNumber(item.ItemNumber),
@@ -92,7 +133,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
 
             try
             {
-                var batchResult = ProcessBatch(sanitizedItems).GetAwaiter().GetResult();
+                var batchResult = await ProcessBatch(sanitizedItems, cancellationToken).ConfigureAwait(false);
                 foreach (var item in sanitizedItems)
                 {
                     var (itemNumber, description, tariffCode) = item;
@@ -104,17 +145,27 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                     result[description] = (itemNumber, description, tariffCode);
                 }
             }
-            catch
+            catch (Exception batchEx)
             {
+                _logger.LogWarning(batchEx, "Batch processing failed, falling back to individual processing");
+
                 foreach (var item in sanitizedItems)
                 {
                     var (itemNumber, description, tariffCode) = item;
 
-                    if (string.IsNullOrWhiteSpace(itemNumber))
-                        itemNumber = GenerateProductCode(description).GetAwaiter().GetResult();
+                    try
+                    {
+                        if (string.IsNullOrWhiteSpace(itemNumber))
+                            itemNumber = await GenerateProductCode(description, cancellationToken).ConfigureAwait(false);
 
-                    if (string.IsNullOrWhiteSpace(tariffCode))
-                        tariffCode = GetTariffCode(description).GetAwaiter().GetResult();
+                        if (string.IsNullOrWhiteSpace(tariffCode))
+                            tariffCode = await GetTariffCode(description, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to process item: {Description}", description);
+                        tariffCode = "ERROR";
+                    }
 
                     result[description] = (itemNumber, description, tariffCode);
                 }
@@ -124,7 +175,8 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
         }
 
         private async Task<Dictionary<string, (string ItemNumber, string TariffCode)>> ProcessBatch(
-            List<(string ItemNumber, string ItemDescription, string TariffCode)> items)
+            List<(string ItemNumber, string ItemDescription, string TariffCode)> items,
+            CancellationToken cancellationToken)
         {
             var batchPrompt = CreateBatchPrompt(items);
             var jsonResponse = await PostRequestAsync(new
@@ -134,7 +186,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                 temperature = DefaultTemperature,
                 max_tokens = 1000,
                 stream = false
-            });
+            }, cancellationToken).ConfigureAwait(false);
 
             return ParseBatchResponse(jsonResponse);
         }
@@ -185,14 +237,20 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                 .GetProperty("content")
                 .GetString();
 
+            if (string.IsNullOrEmpty(content))
+                return new Dictionary<string, (string, string)>();
+
             var batchData = JsonSerializer.Deserialize<JsonElement>(content);
             var result = new Dictionary<string, (string, string)>();
 
             foreach (var item in batchData.GetProperty("items").EnumerateArray())
             {
-                var description = item.GetProperty("original_description").GetString();
-                var productCode = item.GetProperty("product_code").GetString();
-                var hsCode = item.GetProperty("hs_code").GetString().Replace(".", "");
+                var description = item.GetProperty("original_description").GetString() ?? string.Empty;
+                var productCode = item.GetProperty("product_code").GetString() ?? string.Empty;
+                var hsCodeElement = item.GetProperty("hs_code");
+                var hsCode = hsCodeElement.ValueKind == JsonValueKind.String
+                    ? hsCodeElement.GetString()?.Replace(".", "") ?? string.Empty
+                    : string.Empty;
 
                 result[description] = (SanitizeProductCode(productCode), hsCode);
             }
@@ -233,13 +291,13 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             return Regex.IsMatch(sanitized, TariffCodePattern) ? sanitized : "";
         }
 
-        private async Task<string> GenerateProductCode(string description)
+        private async Task<string> GenerateProductCode(string description, CancellationToken cancellationToken)
         {
             var cleanDesc = SanitizeInputText(description);
             const string prompt = @"Generate a concise product code under 20 characters for: {0}
                 Use alphanumerics and hyphens only. Respond ONLY with the code.";
 
-            var response = await GetCompletionAsync(string.Format(prompt, cleanDesc), maxTokens: 20);
+            var response = await GetCompletionAsync(string.Format(prompt, cleanDesc), maxTokens: 20, cancellationToken: cancellationToken).ConfigureAwait(false);
             return SanitizeProductCode(response);
         }
 
@@ -249,7 +307,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             return sanitized.Length <= 20 ? sanitized : sanitized.Substring(0, 20);
         }
 
-        private async Task<string> GetCompletionAsync(string prompt, double? temperature = null, int? maxTokens = null)
+        private async Task<string> GetCompletionAsync(string prompt, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
         {
             var requestBody = new
             {
@@ -260,7 +318,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                 stream = false
             };
 
-            var jsonResponse = await PostRequestAsync(requestBody);
+            var jsonResponse = await PostRequestAsync(requestBody, cancellationToken).ConfigureAwait(false);
             return ParseCompletionContent(jsonResponse);
         }
 
@@ -275,19 +333,39 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                 .Trim();
         }
 
-        private async Task<string> PostRequestAsync(object requestBody)
+        private async Task<string> PostRequestAsync(object requestBody, CancellationToken cancellationToken = default)
         {
-            var json = JsonSerializer.Serialize(requestBody);
-            using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"{_baseUrl}/chat/completions", content).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
+            return await _retryPolicy.ExecuteAsync(async () =>
             {
-                var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new HttpRequestException($"API request failed: {response.StatusCode}\n{errorContent}");
-            }
+                var json = JsonSerializer.Serialize(requestBody);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                _logger.LogDebug("Sending request to DeepSeek API");
 
-            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                try
+                {
+                    var response = await _httpClient.PostAsync(
+                        $"{_baseUrl}/chat/completions",
+                        content,
+                        cancellationToken
+                    ).ConfigureAwait(false);
+
+                    _logger.LogInformation("API call completed in {ElapsedMs}ms", stopwatch.ElapsedMilliseconds);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        throw new HttpRequestException($"API request failed: {response.StatusCode}\n{errorContent}");
+                    }
+
+                    return await response.Content.ReadAsStringAsync();
+                }
+                catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+                {
+                    _logger.LogError(ex, "API request timed out after {ElapsedMs}ms", stopwatch.ElapsedMilliseconds);
+                    throw new TimeoutException("API request timed out", ex);
+                }
+            });
         }
 
         private string ParseHsCode(string jsonResponse)

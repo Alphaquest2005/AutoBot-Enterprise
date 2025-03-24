@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace
                                 TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : "");
                         }).ToList();
 
-                    var classifiedItms = new DeepSeekApi().ClassifyItems(Itms);
+                    var classifiedItms = new DeepSeekApi().ClassifyItemsAsync(Itms).Result;
 
                     invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
                     invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ?  x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
