@@ -6,7 +6,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public interface IInventoryProcessor
     {
-        void Execute(int applicationSettingsId,
+        bool Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource);
     }

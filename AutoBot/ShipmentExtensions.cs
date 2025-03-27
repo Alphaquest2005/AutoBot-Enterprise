@@ -159,6 +159,7 @@ namespace AutoBotUtilities
                     var manifests = ctx.ShipmentManifest
                         .Include("ShipmentManifestBLs.ShipmentBL")
                         .Include(z => z.ShipmentRiderManifests)
+                        .Include(z => z.Consignees)
                         .Where(x => x.EmailId == shipment.EmailId)
                         .ToList();
 
@@ -600,6 +601,7 @@ namespace AutoBotUtilities
                 shipmentManifests = ctx.ShipmentManifest
                     .Include("ShipmentManifestBLs.ShipmentBL")
                     .Include(z => z.ShipmentRiderManifests)
+                    .Include(z => z.Consignees)
                     .ToList();
             }
             return shipmentManifests;
@@ -753,6 +755,7 @@ namespace AutoBotUtilities
                     .Include(z => z.ShipmentRiderBLs)
                     .Include(z => z.ShipmentManifestBLs)
                     .Include(z => z.ShipmentAttachedBL)
+                    .Include(z => z.Consignees)
                     .ToList();
             }
 
@@ -1303,7 +1306,7 @@ namespace AutoBotUtilities
                         BLNumber = manifest.WayBill ?? bl?.BLNumber,
                         WeightKG = manifest?.GrossWeightKG ?? bl?.WeightKG,
                         Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
-                        ExpectedEntries = attachments.Count(x => x.FilePath.ToUpper().Contains("xlsx".ToUpper()) && !x.FilePath.ToUpper().Contains("summary".ToUpper())),
+                        ExpectedEntries = attachments.Count(x => x.Reference.ToUpper() != "summary".ToUpper() && x.FilePath.ToUpper().Contains("xlsx".ToUpper())),
                         TotalInvoices = invoices.Select(x => x.Id).Count(),
                         FreightCurrency = manifest.FreightCurrency ?? freightInvoices.LastOrDefault()?.Currency ?? "USD",
                         Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
@@ -1311,6 +1314,9 @@ namespace AutoBotUtilities
                         Packages = manifest?.Packages ?? bl?.PackagesNo ?? 0,
                         Location = manifest.LocationOfGoods,
                         Office = manifest.CustomsOffice,
+                        ConsigneeCode = manifest.Consignees.ConsigneeCode,
+                        ConsigneeName = manifest.ConsigneeName,
+                        ConsigneeAddress = manifest.Consignees.Address,
                         TrackingState = TrackingState.Added
                     };
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -14,7 +15,7 @@ namespace WaterNut.DataSpace
 {
     public class RiderImporter
     {
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -88,17 +89,20 @@ namespace WaterNut.DataSpace
                                 TrackingState = TrackingState.Added,
                                 ShipmentRiderDetails = riderDetails//rawRider.ShipmentRiderDetails --- put because all matching logic depends on this
                             });
-                            ctx.SaveChanges();
+                            await ctx.SaveChangesAsync().ConfigureAwait(false);
 
                         }
 
 
                     }
+
+                    return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return false;
+                //throw;
             }
         }
     }

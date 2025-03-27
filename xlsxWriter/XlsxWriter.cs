@@ -1168,6 +1168,18 @@ namespace xlsxWriter
                 shipmentInvoice.SupplierCode);
 
             SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierName)).Key.Index,
+                shipmentInvoice.SupplierName);
+
+            SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierAddress)).Key.Index,
+                shipmentInvoice.SupplierAddress);
+
+            SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == "CountryCode").Key.Index,
+                shipmentInvoice.SupplierCountry);
+
+            SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index,
                 shipmentInvoice.Currency);
 

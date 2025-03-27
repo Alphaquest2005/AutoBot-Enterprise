@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
@@ -15,16 +16,27 @@ namespace WaterNut.DataSpace
 
         public async Task<bool> Process(DataFile dataFile)
         {
-            if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.ShipmentInvoice
-                || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
+            try
+            {
 
-            await ImportInventory(dataFile).ConfigureAwait(false);
+                if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.ShipmentInvoice
+                    || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
+
+                await ImportInventory(dataFile).ConfigureAwait(false);
 
 
-            _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
-                dataFile.DroppedFilePath, dataFile.Data, null);
+                 return _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
+                    dataFile.OverWriteExisting, dataFile.EmailId,
+                    dataFile.DroppedFilePath, dataFile.Data, null);
 
-            return true;
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                //throw;
+                return false;
+            }
 
         }
 

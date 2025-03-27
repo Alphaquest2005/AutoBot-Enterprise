@@ -346,6 +346,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _PackageType;
 
+        [DataMember]
+        public string ConsigneeName
+		{ 
+		    get { return _ConsigneeName; }
+			set
+			{
+			    if (value == _ConsigneeName) return;
+				_ConsigneeName = value;
+				NotifyPropertyChanged();//m => this.ConsigneeName
+			}
+		}
+        private string _ConsigneeName;
+
        
         [DataMember]
         public ChangeTrackingCollection<ActionDocSetLogs> ActionDocSetLogs
@@ -404,6 +417,22 @@ namespace CoreEntities.Client.DTO
 		}
         private Customs_Procedure _Customs_Procedure;
         private ChangeTrackingCollection<Customs_Procedure> Customs_ProcedureChangeTracker { get; set; }
+
+        [DataMember]
+        public Consignees Consignees
+		{
+		    get { return _Consignees; }
+			set
+			{
+			    if (value == _Consignees) return;
+				_Consignees = value;
+                ConsigneesChangeTracker = _Consignees == null ? null
+                    : new ChangeTrackingCollection<Consignees> { _Consignees };
+				NotifyPropertyChanged();//m => this.Consignees
+			}
+		}
+        private Consignees _Consignees;
+        private ChangeTrackingCollection<Consignees> ConsigneesChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

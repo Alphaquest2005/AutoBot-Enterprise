@@ -28,7 +28,6 @@
               this.Property(t => t.TypeOfBL).HasColumnName("TypeOfBL").HasMaxLength(50);
               this.Property(t => t.CargoReporter).HasColumnName("CargoReporter").HasMaxLength(255);
               this.Property(t => t.Exporter).HasColumnName("Exporter").HasMaxLength(50);
-              this.Property(t => t.Consignee).HasColumnName("Consignee").HasMaxLength(50);
               this.Property(t => t.Notify).HasColumnName("Notify").HasMaxLength(50);
               this.Property(t => t.Packages).HasColumnName("Packages");
               this.Property(t => t.PackageType).HasColumnName("PackageType").IsRequired().HasMaxLength(50);
@@ -44,6 +43,8 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.FreightCurrency).HasColumnName("FreightCurrency").HasMaxLength(10);
+              this.Property(t => t.ConsigneeName).HasColumnName("ConsigneeName").HasMaxLength(100);
+              this.HasOptional(t => t.Consignees).WithMany(t =>(ICollection<ShipmentManifest>) t.ShipmentManifest).HasForeignKey(d => d.ConsigneeName);
               this.HasMany(t => t.ShipmentAttachedManifest).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
               this.HasMany(t => t.ShipmentManifestDetails).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
               this.HasMany(t => t.ShipmentManifestBLs).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);

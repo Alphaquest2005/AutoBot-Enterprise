@@ -183,6 +183,7 @@
     <Content Include="SQLBlackBox\UpdateStats.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebSource-AutoBot.sql" />
     <None Include="ICSharpCode.SharpZipLib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

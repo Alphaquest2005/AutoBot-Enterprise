@@ -38,7 +38,9 @@
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
               this.Property(t => t.PackageType).HasColumnName("PackageType").HasMaxLength(50);
+              this.Property(t => t.ConsigneeName).HasColumnName("ConsigneeName").HasMaxLength(100);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.Customs_ProcedureId);
+              this.HasOptional(t => t.Consignee).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.ConsigneeName);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasMany(t => t.xcuda_ASYCUDA_ExtendedProperties).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);

@@ -136,6 +136,7 @@
     <Compile Include="CoreEntities\AttachmentLogClient.cs" />
     <Compile Include="CoreEntities\AttachmentsClient.cs" />
     <Compile Include="CoreEntities\CancelledEntriesLstClient.cs" />
+    <Compile Include="CoreEntities\ConsigneesClient.cs" />
     <Compile Include="CoreEntities\ContactsClient.cs" />
     <Compile Include="CoreEntities\CustomsOperationsClient.cs" />
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />

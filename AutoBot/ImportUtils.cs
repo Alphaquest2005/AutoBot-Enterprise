@@ -24,13 +24,14 @@ namespace AutoBotUtilities
                     var emailMappings = File.ReadAllLines(file.FullName)
                         .Where(line => !line.ToLower().Contains("Not Found".ToLower()))
                         .Select(line => GetEmailMappings(fileType, line))
+                        .Where(x => !string.IsNullOrEmpty(x.line))
                         .ToList();
 
                     if (emailMappings.Any()) res.Add(file);
                     var dbStatement = emailMappings.Select(linex =>
                         {
 
-                            var str = linex.im.Select(im => GetMappingData(fileType, im, linex.line))
+                            var str = linex.im.Select(im => GetMappingData(im, linex.line))
                                 .Select(kp =>
                                 {
                                     fileType.Data.Add(kp.InfoData);
@@ -76,7 +77,7 @@ namespace AutoBotUtilities
             return (line,im);
         }
 
-        private static ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) GetMappingData(FileTypes fileType, (EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) x, string line)
+        private static ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) GetMappingData((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) x, string line)
         {
                 try
                 {

@@ -78,17 +78,19 @@ namespace WaterNut.DataSpace
                     {
                         var importStatus = TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp,
                             fileTypeId, tmp == possibleInvoices.Last());
+                        var fileDescription = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId).Description;
                         switch (importStatus)
                         {
                             case ImportStatus.Success:
-                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file,  FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.Success));
+                                
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file,  FileTypeManager.EntryTypes.GetEntryType(fileDescription), ImportStatus.Success));
                                 break;
                             case ImportStatus.HasErrors:
-                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.HasErrors));
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(fileDescription), ImportStatus.HasErrors));
                                 break;
                             case ImportStatus.Failed:
                                 ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
-                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(tmp.OcrInvoices.Name), ImportStatus.Failed));
+                                imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(fileDescription), ImportStatus.Failed));
                                 break;
                         }
                     }

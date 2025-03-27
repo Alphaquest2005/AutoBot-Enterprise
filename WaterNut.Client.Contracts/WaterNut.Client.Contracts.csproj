@@ -130,6 +130,7 @@
     <Compile Include="CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="CoreEntities\IAttachmentsService.cs" />
     <Compile Include="CoreEntities\ICancelledEntriesLstService.cs" />
+    <Compile Include="CoreEntities\IConsigneesService.cs" />
     <Compile Include="CoreEntities\IContactsService.cs" />
     <Compile Include="CoreEntities\ICustomsOperationsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureInOutService.cs" />

@@ -476,6 +476,21 @@ namespace DocumentDS.Business.Entities
         }
         string _bl;
         [DataMember]
+        public string Consignee_Address 
+        {
+            get
+            {
+                return _consignee_address;
+            }
+            set
+            {
+                _consignee_address = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consignee_address;
+        [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
 
  //       [DataMember]

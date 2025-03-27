@@ -70,11 +70,12 @@ namespace WaterNut.DataSpace
         {
             get
             {
-                var maxCount = Lines.Max(x => x.Values.Count(z => z.Key.section == "Single"));
+                //var maxCount = Lines.Max(x => x.Values.Count(z => z.Key.section == "Single" 
+                //                                                  && x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null)));
 
 
                 return Lines.Where(x =>
-                        x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) &&  x.Values.Count < maxCount)
+                        x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) &&  x.Values.Count == 0)//took out maxcount having issues with composite data over instances
                     .ToList()
                     .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
             }
@@ -191,14 +192,17 @@ namespace WaterNut.DataSpace
                     Lines.ForEach(x =>
                     {
                         if (x.OCR_Lines.RegularExpressions.MultiLine == true)
-                            x.Read(_bodylines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines??10).Select(z => z.Line).DefaultIfEmpty("").Aggregate((o,n) => $"{o}\r\n{n}").ToString(), _bodylines.First().LineNumber, Section, _instance);
+                        {
+                            var line = _bodylines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines??10).Select(z => z.Line).DefaultIfEmpty("").Aggregate((o,n) => $"{o}\r\n{n}").ToString();
+                            x.Read(line, _bodylines.First().LineNumber, Section, _instance);
+                        }
                         else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section, _instance);
                     });
 
                 }
 
                 if (_startlines.Count() == StartCount
-                    && _startlines.All(x => _lines.All(l => l.LineNumber != x.LineNumber))
+                    //&& _startlines.All(x => _lines.All(l => l.LineNumber != x.LineNumber))
                     && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex
                         .Match(_linesTxt.ToString(),
                             z.RegularExpressions.RegEx,
@@ -238,12 +242,7 @@ namespace WaterNut.DataSpace
                 foreach (var z in OCR_Part.Start)
                 {
                     var val = _linesTxt.ToString().TrimEnd("\r\n".ToArray());
-                    var match = Regex
-                        .Match(val,
-                            z.RegularExpressions.RegEx,
-                            (z.RegularExpressions.MultiLine == true
-                                ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(5));
+                    var match = IsMatch(val, z);
                     if (match.Success)
                     {
 
@@ -256,9 +255,13 @@ namespace WaterNut.DataSpace
                             {
                                 if (sline.Count(x => !string.IsNullOrEmpty(x.Line)) > matchLines.Count(x => !string.IsNullOrEmpty(x)) + 1) return false;
                                 var line = lines[index];
-                                if(match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x))) sline.Add(line);
-                                if (!sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")
-                                        .Aggregate((c, n) => c + "\r\n" + n).Contains(match.Value.Trim())) continue;
+                                if(match.Value.Contains(line.Line) 
+                                   || matchLines.Any(x => line.Line.Contains(x)) || index == 0) 
+                                        sline.Add(line);
+
+                                var slineTxt = sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")
+                                    .Aggregate((c, n) => c + "\r\n" + n);
+                                if (!slineTxt.Contains(match.Value.Trim()) || !IsMatch(slineTxt, z).Success) continue;
 
                                 _lines.Clear();
                                 _lines.AddRange(sline.OrderBy(x => x.LineNumber));
@@ -280,5 +283,15 @@ namespace WaterNut.DataSpace
             }
         }
 
+        private static Match IsMatch(string val, Start z)
+        {
+            var match = Regex
+                .Match(val,
+                    z.RegularExpressions.RegEx,
+                    (z.RegularExpressions.MultiLine == true
+                        ? RegexOptions.Multiline
+                        : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(5));
+            return match;
+        }
     }
 }

@@ -402,6 +402,21 @@ namespace CoreEntities.Business.Entities
         }
         string _packagetype;
         [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
         public List<ActionDocSetLogs> ActionDocSetLogs { get; set; }
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
@@ -409,6 +424,8 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
+        [DataMember]
+        public Consignees Consignees { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

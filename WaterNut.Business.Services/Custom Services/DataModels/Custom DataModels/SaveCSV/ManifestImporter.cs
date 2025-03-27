@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using TrackableEntities;
@@ -18,17 +19,19 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
                 var lst = ExtractShipmentManifests(dataFile);
                 SaveManifest(dataFile, lst);
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                //throw;
+                return false;
             }
         }
 

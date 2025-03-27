@@ -141,10 +141,11 @@ namespace WaterNut.Business.Services.Utils
     ""Total"": <float>,                          
     ""TotalDeduction"": <float|null>,            
     ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
-    ""TotalInternalFreight"": <float|null>,      
+    ""TotalInternalFreight"": <float|null>,      //Shipping + Handling + Transportation fees
     ""TotalInsurance"": <float|null>,            
-    ""SupplierCode"": ""<str>"",                 
-    ""SupplierAddress"": ""<str>"",              
+    ""SupplierCode"": ""<str>"",     //One word name that is unique eg. ""Shien"" or ""Amazon"" or ""Walmart"" 
+    ""SupplierName"": ""<str>"",     //Full Business name of supplier 
+    ""SupplierAddress"": ""<str>"",  //Full address of supplier IF NOT available use email address domain            
     ""SupplierCountryCode"": ""<ISO3166-2>"",    
     ""InvoiceDetails"": [{{
       ""ItemNumber"": ""<str|null>"",           
@@ -276,6 +277,8 @@ namespace WaterNut.Business.Services.Utils
                     dict["InvoiceTotal"] = GetDecimalValue(inv, "Total");
                     dict["Currency"] = GetStringValue(inv, "Currency");
                     dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
+                    dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
+                    dict["SupplierName"] = GetStringValue(inv, "SupplierName");
                     dict["SupplierAddress"] = GetStringValue(inv, "SupplierAddress");
                     dict["SupplierCountryCode"] = GetStringValue(inv, "SupplierCountryCode");
                     if (!jsonIsNull(inv, "TotalDeduction", out var deduction))

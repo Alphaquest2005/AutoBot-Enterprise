@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
+        public bool ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
         {
             try
             {
@@ -33,11 +33,13 @@ namespace WaterNut.DataSpace
                                                                     .ToList();
                 
                 SaveInvoicePOs(invoicePOs, goodInvoices);
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return false;
+                //throw;
             }
         }
 
@@ -70,6 +72,9 @@ namespace WaterNut.DataSpace
                     invoice.SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null;
                     invoice.ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count;
                     invoice.SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null;
+                    invoice.SupplierName = (x.ContainsKey("SupplierName") ? x["SupplierName"]?.ToString() : null)??(x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null);
+                    invoice.SupplierAddress = x.ContainsKey("SupplierAddress") ? x["SupplierAddress"]?.ToString() : null;
+                    invoice.SupplierCountry = x.ContainsKey("SupplierCountryCode") ? x["SupplierCountryCode"]?.ToString() : null;
                     invoice.FileLineNumber = itms.IndexOf(x) + 1;
                     invoice.Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null;
                     invoice.TotalInternalFreight = x.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(x["TotalInternalFreight"].ToString()) : (double?)null;
@@ -83,15 +88,21 @@ namespace WaterNut.DataSpace
                         .Select(z =>
                         {
                             var details = new InvoiceDetails();
-                            details.Quantity = z.ContainsKey("Quantity")
+                            var qty = z.ContainsKey("Quantity")
                                 ? Convert.ToDouble(z["Quantity"].ToString())
-                                : 0;
-                            details.ItemNumber = classifiedItms[z["ItemDescription"].ToString()].ItemNumber;//z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
-                            details.ItemDescription = classifiedItms[z["ItemDescription"].ToString()].ItemDescription.Truncate(255);
-                            details.TariffCode = classifiedItms[z["ItemDescription"].ToString()].TariffCode;
+                                : 1;
+                            details.Quantity = qty;
+                            var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString()) 
+                                    ? classifiedItms[z["ItemDescription"].ToString()] 
+                                    : (ItemNumber:z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20) : null,
+                                        ItemDescription: z["ItemDescription"].ToString().Truncate(255),
+                                        TariffCode: z.ContainsKey("TariffCode") ? z["TariffCode"].ToString().ToUpper().Truncate(20) : null);
+                            details.ItemNumber = classifiedItm.ItemNumber;//z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
+                            details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
+                            details.TariffCode = classifiedItm.TariffCode;
                             details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;
-                            details.Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(z["Quantity"].ToString()) == 0 ? 1 : Convert.ToDouble(z["Quantity"].ToString()));
-                            details.TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(z["Quantity"].ToString());
+                            details.Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(qty) == 0 ? 1 : Convert.ToDouble(qty));
+                            details.TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(qty);
                             details.Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0;
                             details.Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null;
                             details.SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1;

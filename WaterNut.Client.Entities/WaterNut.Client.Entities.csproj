@@ -148,6 +148,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Consignees.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Customs_Procedure.cs" />
@@ -328,6 +329,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
@@ -504,6 +506,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
@@ -684,6 +687,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs" />

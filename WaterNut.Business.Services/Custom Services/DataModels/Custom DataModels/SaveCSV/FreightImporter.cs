@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -19,7 +20,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -71,13 +72,16 @@ namespace WaterNut.DataSpace
 
                     }
 
-                    ctx.SaveChanges();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
+
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                //throw;
+                return false;
             }
         }
     }

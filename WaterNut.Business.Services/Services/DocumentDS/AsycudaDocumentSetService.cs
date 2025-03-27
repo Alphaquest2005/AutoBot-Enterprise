@@ -265,6 +265,12 @@ namespace DocumentDS.Business.Services
                                         GetWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "Consignee":
+                                return
+                                    await
+                                        GetWhere<Consignee>(dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -764,6 +770,9 @@ namespace DocumentDS.Business.Services
                             case "Customs_Procedure":
                                 return await CountWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Consignee":
+                                return await CountWhere<Consignee>(dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.AsycudaDocumentSets.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
@@ -900,6 +909,12 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Customs_Procedure>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Consignee":
+                                return
+                                    await
+                                        LoadRangeWhere<Consignee>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSets", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1233,6 +1248,9 @@ namespace DocumentDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Customs_Procedure":
                                 return await SumWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocumentSets", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Consignee":
+                                return await SumWhere<Consignee>(dbContext, exp, itm.Value, "AsycudaDocumentSets", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

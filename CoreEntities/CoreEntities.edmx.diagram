@@ -176,6 +176,8 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Customs_ProcedureInOut" Width="2.375" PointX="5.125" PointY="46.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Consignees" Width="1.5" PointX="33.375" PointY="23.875" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

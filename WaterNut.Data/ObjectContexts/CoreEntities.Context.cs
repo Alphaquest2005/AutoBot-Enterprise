@@ -257,6 +257,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<Customs_ProcedureInOut> Customs_ProcedureInOut { get; set; }
      
+        public DbSet<Consignees> Consignees { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -470,6 +472,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileTypeMappingsValuesMap());
          
             modelBuilder.Configurations.Add(new Customs_ProcedureInOutMap());
+         
+            modelBuilder.Configurations.Add(new ConsigneesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

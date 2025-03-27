@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using TrackableEntities;
@@ -16,7 +18,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -24,34 +26,35 @@ namespace WaterNut.DataSpace
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.ExecuteSqlCommand("delete from CancelledEntriesLst");
-                    foreach (var itm in dataFile.Data)
+                    await ctx.Database.ExecuteSqlCommandAsync("delete from CancelledEntriesLst").ConfigureAwait(false);
+                    foreach (var expireditm in dataFile.Data.Select(itm => new CancelledEntriesLst(true)
+                             {
+                                 Office = itm.Office,
+                                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                                 RegistrationDate = itm.RegistrationDate,
+                                 RegistrationNumber = itm.RegistrationNumber,
+                                 TrackingState = TrackingState.Added
+                             }))
                     {
-                        var expireditm = new CancelledEntriesLst(true)
-                        {
-                            Office = itm.Office,
-                            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            RegistrationDate = itm.RegistrationDate,
-                            RegistrationNumber = itm.RegistrationNumber,
-                            TrackingState = TrackingState.Added
-                        };
                         ctx.CancelledEntriesLst.Add(expireditm);
                     }
 
-                    ctx.SaveChanges();
-                    ctx.Database.ExecuteSqlCommand($@"UPDATE xcuda_ASYCUDA_ExtendedProperties
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
+                    await ctx.Database.ExecuteSqlCommandAsync($@"UPDATE xcuda_ASYCUDA_ExtendedProperties
                                                         SET         Cancelled = 1
                                                         FROM    (SELECT AsycudaDocument.ASYCUDA_Id, AsycudaDocument.CNumber, AsycudaDocument.RegistrationDate, AsycudaDocument.ReferenceNumber, AsycudaDocument.Customs_clearance_office_code
                                                                             FROM     CancelledEntriesLst INNER JOIN
                                                                                             AsycudaDocument ON CancelledEntriesLst.Office = AsycudaDocument.Customs_clearance_office_code AND CancelledEntriesLst.RegistrationDate = AsycudaDocument.RegistrationDate AND 
                                                                                             CancelledEntriesLst.RegistrationNumber = AsycudaDocument.CNumber ) AS exp INNER JOIN
-                                                                            xcuda_ASYCUDA_ExtendedProperties ON exp.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id");
+                                                                            xcuda_ASYCUDA_ExtendedProperties ON exp.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id").ConfigureAwait(false);
                 }
+                return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                Console.WriteLine(e.Message);
+                return false;
+                //throw;
             }
         }
     }

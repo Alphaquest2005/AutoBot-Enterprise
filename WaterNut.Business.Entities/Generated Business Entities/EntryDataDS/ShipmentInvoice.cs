@@ -287,6 +287,96 @@ namespace EntryDataDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public string SupplierName 
+        {
+            get
+            {
+                return _suppliername;
+            }
+            set
+            {
+                _suppliername = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suppliername;
+        [DataMember]
+        public string SupplierAddress 
+        {
+            get
+            {
+                return _supplieraddress;
+            }
+            set
+            {
+                _supplieraddress = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _supplieraddress;
+        [DataMember]
+        public string SupplierCountry 
+        {
+            get
+            {
+                return _suppliercountry;
+            }
+            set
+            {
+                _suppliercountry = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suppliercountry;
+        [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
+        public string ConsigneeAddress 
+        {
+            get
+            {
+                return _consigneeaddress;
+            }
+            set
+            {
+                _consigneeaddress = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneeaddress;
+        [DataMember]
+        public string ConsigneeCountry 
+        {
+            get
+            {
+                return _consigneecountry;
+            }
+            set
+            {
+                _consigneecountry = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneecountry;
+        [DataMember]
         public List<InvoiceDetails> InvoiceDetails { get; set; }
         [DataMember]
         public List<InvoiceExtraInfo> InvoiceExtraInfo { get; set; }

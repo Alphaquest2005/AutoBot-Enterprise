@@ -17,25 +17,23 @@ namespace WaterNut.DataSpace
     {
        
 
-        public async Task ImportInventory(DataFile dataFile)
+        public async Task<bool> ImportInventory(DataFile dataFile)
         {
             try
             {
 
-
-
                 var itmlst = InventoryItemDataUtils.CreateItemGroupList(dataFile.Data);
-
-
+                
                 var inventorySource = InventorySourceFactory.GetInventorySource(dataFile.FileType);
 
-                new InventoryProcessorSelector().Execute(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
+                return new InventoryProcessorSelector().Execute(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return false;
+                //throw;
             }
         }
     }

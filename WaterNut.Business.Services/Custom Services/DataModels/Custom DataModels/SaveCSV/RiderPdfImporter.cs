@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Extensions;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
@@ -15,33 +16,48 @@ namespace WaterNut.DataSpace
 {
     public class RiderPdfImporter
     {
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
-            var rawRiders = CreateRawRider(dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.FileType, dataFile.DroppedFilePath);
-
-            using (var ctx = new EntryDataDSContext())
+            try
             {
-                foreach (var itm in rawRiders)
+
+
+                var rawRiders = CreateRawRider(dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.FileType,
+                    dataFile.DroppedFilePath);
+
+                using (var ctx = new EntryDataDSContext())
                 {
-                    var rider = ctx.ShipmentRider.Include(x => x.ShipmentRiderDetails).FirstOrDefault(x => x.ETA == itm.ETA);
-                    if (rider != null) 
+                    foreach (var itm in rawRiders)
                     {
-                        //////// check if this updating
-                        rider.DocumentDate = itm.DocumentDate;
-                        ctx.ShipmentRiderDetails.RemoveRange(rider.ShipmentRiderDetails);
-                        rider.ShipmentRiderDetails = itm.ShipmentRiderDetails;
-                    }
-                    else
-                    {
-                        rider = itm;
-                        ctx.ShipmentRider.Add(rider);
+                        var rider = ctx.ShipmentRider.Include(x => x.ShipmentRiderDetails)
+                            .FirstOrDefault(x => x.ETA == itm.ETA);
+                        if (rider != null)
+                        {
+                            //////// check if this updating
+                            rider.DocumentDate = itm.DocumentDate;
+                            ctx.ShipmentRiderDetails.RemoveRange(rider.ShipmentRiderDetails);
+                            rider.ShipmentRiderDetails = itm.ShipmentRiderDetails;
+                        }
+                        else
+                        {
+                            rider = itm;
+                            ctx.ShipmentRider.Add(rider);
+                        }
+
+
                     }
 
-                    
+                    ctx.SaveChanges();
                 }
-                ctx.SaveChanges();
+
+                return true;
+                /// pass to rider importer            
             }
-            /// pass to rider importer
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
 
         public static List<ShipmentRider> CreateRawRider(List<dynamic> data, List<AsycudaDocumentSet> docSet, string emailId, FileTypes fileType, string droppedFilePath)

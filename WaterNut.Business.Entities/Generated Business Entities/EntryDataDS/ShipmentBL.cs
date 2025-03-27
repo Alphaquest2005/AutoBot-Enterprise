@@ -332,6 +332,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _freightcurrency;
         [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
         public List<ShimentBLCharges> ShimentBLCharges { get; set; }
         [DataMember]
         public List<ShipmentAttachedBL> ShipmentAttachedBL { get; set; }
@@ -345,6 +360,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentBLFreight> ShipmentBLFreight { get; set; }
         [DataMember]
         public List<ShipmentBLInvoice> ShipmentBLInvoice { get; set; }
+        [DataMember]
+        public Consignees Consignees { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

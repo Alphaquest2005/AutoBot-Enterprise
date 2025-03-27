@@ -14,19 +14,20 @@ namespace WaterNut.DataSpace
     {
 
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
                 var lstHistories = CreateItemHistories(dataFile);
                 DeleteData(lstHistories);
                 SaveItemHistories(GetItemHistories(dataFile, lstHistories));
-
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                //throw;
+                return false;
             }
         }
 

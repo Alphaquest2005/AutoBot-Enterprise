@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace
 
 
 
-        public async Task Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -25,11 +25,12 @@ namespace WaterNut.DataSpace
                 await _supplierImporter.ImportSuppliers(dataFile).ConfigureAwait(false);
                 await _entryDataFileImporter.ImportEntryDataFile(dataFile).ConfigureAwait(false);
                 await _entryDataImporter.ImportEntryData(dataFile).ConfigureAwait(false);
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return false;
             }
 
 

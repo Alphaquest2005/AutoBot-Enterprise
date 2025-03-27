@@ -125,6 +125,7 @@
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="ExpectedEntries" Type="int" />
           <Property Name="PackageType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -164,6 +165,16 @@
           <Property Name="Office" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="8" Nullable="false" />
           <Property Name="RegistrationDate" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Consignees">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ConsigneeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="300" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="3" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Contacts">
@@ -2226,6 +2237,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AsycudaDocumentSet_Consignees">
+          <End Role="Consignees" Type="Self.Consignees" Multiplicity="0..1" />
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="0..1" />
           <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
@@ -2728,6 +2751,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="AttachmentLog" EntityType="Self.AttachmentLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CancelledEntriesLst" EntityType="Self.CancelledEntriesLst" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Consignees" EntityType="Self.Consignees" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_ProcedureInOut" EntityType="Self.Customs_ProcedureInOut" Schema="dbo" store:Type="Tables" />
@@ -3944,6 +3968,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Consignees" Association="Self.FK_AsycudaDocumentSet_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+          </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="Self.FK_AsycudaDocumentSet_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
@@ -4461,6 +4489,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure1" Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
+          <EntitySet Name="Consignees" EntityType="WaterNutDBModel.Consignees" />
+          <AssociationSet Name="FK_AsycudaDocumentSet_Consignees" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -7162,6 +7195,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="AsycudaDocumentSet" ToRole="ApplicationSettings" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Consignees" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" FromRole="AsycudaDocumentSet" ToRole="Consignees" />
         </EntityType>
         <Association Name="FK_ActionDocSetLogs_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -7269,6 +7304,29 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             </Principal>
             <Dependent Role="Customs_ProcedureInOut">
               <PropertyRef Name="ExwarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Consignees">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" FromRole="Consignees" ToRole="AsycudaDocumentSet" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Consignees">
+          <End Type="WaterNutDBModel.Consignees" Role="Consignees" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ConsigneeName" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9052,6 +9110,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
                 <ScalarProperty Name="PackageType" ColumnName="PackageType" />
                 <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
@@ -9095,6 +9154,17 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="ExwarehouseCustomsProcedureId" ColumnName="ExwarehouseCustomsProcedureId" />
                 <ScalarProperty Name="WarehouseCustomsProcedureId" ColumnName="WarehouseCustomsProcedureId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Consignees">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Consignees">
+              <MappingFragment StoreEntitySet="Consignees">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

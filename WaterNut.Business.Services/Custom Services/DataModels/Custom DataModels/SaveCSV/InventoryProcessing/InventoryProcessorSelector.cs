@@ -12,14 +12,15 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     {
         private bool isDbMem = false;
 
-        public void Execute(int applicationSettingsId,
+        public bool Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
             if(isDbMem)
-                new InventoryProcessor().Execute(applicationSettingsId, inventoryDataList, inventorySource);
+                return new InventoryProcessor().Execute(applicationSettingsId, inventoryDataList, inventorySource);
             else
-                new InventoryProcessorSet().Execute(applicationSettingsId, inventoryDataList, inventorySource);
+                return new InventoryProcessorSet().Execute(applicationSettingsId, inventoryDataList, inventorySource);
+            
 
         }
     }

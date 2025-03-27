@@ -272,6 +272,51 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _freight;
         [DataMember]
+        public string ConsigneeCode 
+        {
+            get
+            {
+                return _consigneecode;
+            }
+            set
+            {
+                _consigneecode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneecode;
+        [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
+        public string ConsigneeAddress 
+        {
+            get
+            {
+                return _consigneeaddress;
+            }
+            set
+            {
+                _consigneeaddress = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneeaddress;
+        [DataMember]
         public List<ShipmentAttachedBL> ShipmentAttachedBL { get; set; }
         [DataMember]
         public List<ShipmentAttachedFreight> ShipmentAttachedFreight { get; set; }
@@ -285,6 +330,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentAttachments> ShipmentAttachments { get; set; }
         [DataMember]
         public List<ShipmentAttachedPOs> ShipmentAttachedPOs { get; set; }
+        [DataMember]
+        public Consignees Consignees { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

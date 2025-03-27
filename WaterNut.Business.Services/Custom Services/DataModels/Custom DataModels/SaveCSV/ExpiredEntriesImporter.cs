@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using TrackableEntities;
@@ -16,7 +17,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -49,20 +50,22 @@ namespace WaterNut.DataSpace
                     }
 
                     ctx.SaveChanges();
-                    ctx.Database.ExecuteSqlCommand($@"UPDATE xcuda_ASYCUDA_ExtendedProperties
+                    await ctx.Database.ExecuteSqlCommandAsync($@"UPDATE xcuda_ASYCUDA_ExtendedProperties
                                                     SET         EffectiveExpiryDate = exp.Expiration
                                                     FROM    (SELECT AsycudaDocument.ASYCUDA_Id, AsycudaDocument.CNumber, AsycudaDocument.RegistrationDate, AsycudaDocument.ReferenceNumber, AsycudaDocument.Customs_clearance_office_code, 
                                                                                       CAST(ExpiredEntriesLst.Expiration AS datetime) AS Expiration
                                                                      FROM     ExpiredEntriesLst INNER JOIN
                                                                                       AsycudaDocument ON ExpiredEntriesLst.Office = AsycudaDocument.Customs_clearance_office_code AND ExpiredEntriesLst.RegistrationDate = AsycudaDocument.RegistrationDate AND 
                                                                                       ExpiredEntriesLst.RegistrationNumber = AsycudaDocument.CNumber AND ExpiredEntriesLst.DeclarantReference = AsycudaDocument.ReferenceNumber) AS exp INNER JOIN
-                                                                     xcuda_ASYCUDA_ExtendedProperties ON exp.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id");
+                                                                     xcuda_ASYCUDA_ExtendedProperties ON exp.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id").ConfigureAwait(false);
                 }
-            }
-            catch (Exception)
-            {
 
-                throw;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
             }
         }
     }

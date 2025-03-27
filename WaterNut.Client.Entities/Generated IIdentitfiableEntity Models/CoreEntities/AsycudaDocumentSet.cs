@@ -104,6 +104,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string ConsigneesEntityName
+        {
+            get
+            {
+                return this.Consignees == null ? "" : this.Consignees.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ConsigneesClient ctx = new ConsigneesClient())
+                    {
+                        var dto = ctx.GetConsignees().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.Consignees = (Consignees)new Consignees().CreateEntityFromString(value);
+							
+							this.AsycudaDocumentSetId = Convert.ToInt32(this.Consignees.ConsigneeName);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddConsignees");
+                        }
+                        else
+                        {
+                            var obj = new Consignees(dto);
+                           if (this.Consignees == null || this.Consignees.EntityId != obj.EntityId) this.Consignees = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

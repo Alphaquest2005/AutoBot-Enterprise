@@ -31,6 +31,16 @@
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Consignees">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ConsigneeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="300" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="EntryData">
           <Key>
             <PropertyRef Name="EntryData_Id" />
@@ -312,6 +322,9 @@
           <Property Name="Office" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Freight" Type="float" />
+          <Property Name="ConsigneeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ConsigneeAddress" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="ShipmentAttachedBL">
           <Key>
@@ -393,6 +406,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Freight" Type="float" />
           <Property Name="FreightCurrency" Type="nvarchar" MaxLength="10" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="ShipmentBLDetails">
           <Key>
@@ -446,6 +460,12 @@
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="100" />
+          <Property Name="SupplierAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="SupplierCountry" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ConsigneeAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="ConsigneeCountry" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
@@ -559,7 +579,7 @@
           <Property Name="TypeOfBL" Type="nvarchar" MaxLength="50" />
           <Property Name="CargoReporter" Type="nvarchar" MaxLength="255" />
           <Property Name="Exporter" Type="nvarchar" MaxLength="50" />
-          <Property Name="Consignee" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
           <Property Name="Notify" Type="nvarchar" MaxLength="50" />
           <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="PackageType" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1527,6 +1547,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Shipment_Consignees">
+          <End Role="Consignees" Type="Self.Consignees" Multiplicity="0..1" />
+          <End Role="Shipment" Type="Self.Shipment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="Shipment">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShipmentAttachedBL_Shipment">
           <End Role="Shipment" Type="Self.Shipment" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1723,6 +1755,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShipmentBL_Consignees">
+          <End Role="Consignees" Type="Self.Consignees" Multiplicity="0..1" />
+          <End Role="ShipmentBL" Type="Self.ShipmentBL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="ShipmentBL">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShipmentBLDetails_ShipmentBL1">
           <End Role="ShipmentBL" Type="Self.ShipmentBL" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1849,6 +1893,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShipmentManifest_Consignees">
+          <End Role="Consignees" Type="Self.Consignees" Multiplicity="0..1" />
+          <End Role="ShipmentManifest" Type="Self.ShipmentManifest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="ShipmentManifest">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShipmentManifestDetails_ShipmentManifest">
           <End Role="ShipmentManifest" Type="Self.ShipmentManifest" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1923,6 +1979,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Consignees" EntityType="Self.Consignees" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData" EntityType="Self.EntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Adjustments" EntityType="Self.EntryData_Adjustments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_DocumentType" EntityType="Self.EntryData_DocumentType" Schema="dbo" store:Type="Tables" />
@@ -2428,6 +2485,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentBL" EntitySet="ShipmentBL" />
             <End Role="ShimentBLCharges" EntitySet="ShimentBLCharges" />
           </AssociationSet>
+          <AssociationSet Name="FK_Shipment_Consignees" Association="Self.FK_Shipment_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="Shipment" EntitySet="Shipment" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShipmentAttachedBL_Shipment" Association="Self.FK_ShipmentAttachedBL_Shipment">
             <End Role="Shipment" EntitySet="Shipment" />
             <End Role="ShipmentAttachedBL" EntitySet="ShipmentAttachedBL" />
@@ -2484,6 +2545,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="Shipment" EntitySet="Shipment" />
             <End Role="ShipmentAttachments" EntitySet="ShipmentAttachments" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShipmentBL_Consignees" Association="Self.FK_ShipmentBL_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShipmentBLDetails_ShipmentBL1" Association="Self.FK_ShipmentBLDetails_ShipmentBL1">
             <End Role="ShipmentBL" EntitySet="ShipmentBL" />
             <End Role="ShipmentBLDetails" EntitySet="ShipmentBLDetails" />
@@ -2519,6 +2584,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails" Association="Self.FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails">
             <End Role="ShipmentRiderDetails" EntitySet="ShipmentRiderDetails" />
             <End Role="ShipmentInvoiceRiderDetails" EntitySet="ShipmentInvoiceRiderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentManifest_Consignees" Association="Self.FK_ShipmentManifest_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
           </AssociationSet>
           <AssociationSet Name="FK_ShipmentManifestDetails_ShipmentManifest" Association="Self.FK_ShipmentManifestDetails_ShipmentManifest">
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
@@ -2914,6 +2983,19 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsEx" />
           </AssociationSet>
           <EntitySet Name="ItemHistory" EntityType="WaterNutDBModel.ItemHistory" />
+          <EntitySet Name="Consignees" EntityType="WaterNutDBModel.Consignees" />
+          <AssociationSet Name="FK_Shipment_Consignees" Association="WaterNutDBModel.FK_Shipment_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="Shipment" EntitySet="Shipment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentBL_Consignees" Association="WaterNutDBModel.FK_ShipmentBL_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentManifest_Consignees" Association="WaterNutDBModel.FK_ShipmentManifest_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -3533,6 +3615,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Freight" Type="Double" />
           <Property Name="FreightCurrency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ShipmentBLInvoice" Relationship="WaterNutDBModel.ShipmentBLShipmentBLInvoice" FromRole="ShipmentBL" ToRole="ShipmentBLInvoice" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Consignees" Relationship="WaterNutDBModel.FK_ShipmentBL_Consignees" FromRole="ShipmentBL" ToRole="Consignees" />
         </EntityType>
         <EntityType Name="ShipmentBLDetails">
           <Key>
@@ -3682,6 +3766,12 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoicePOs" />
           <NavigationProperty Name="ShipmentInvoiceRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceRiderDetails" />
           <NavigationProperty Name="ShipmentBLInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentBLInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentBLInvoice" />
+          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeCountry" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="InvoiceDetails">
           <Key>
@@ -3947,6 +4037,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Freight" Type="Double" />
           <NavigationProperty Name="ShipmentAttachedPOs" Relationship="WaterNutDBModel.FK_ShipmentAttachedPOs_Shipment" FromRole="Shipment" ToRole="ShipmentAttachedPOs" />
+          <Property Name="ConsigneeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeAddress" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Consignees" Relationship="WaterNutDBModel.FK_Shipment_Consignees" FromRole="Shipment" ToRole="Consignees" />
         </EntityType>
         <Association Name="FK_ShipmentAttachedBL_Shipment">
           <End Type="WaterNutDBModel.Shipment" Role="Shipment" Multiplicity="1">
@@ -4160,7 +4254,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="TypeOfBL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CargoReporter" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Exporter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Notify" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Packages" Type="Int32" Nullable="false" />
           <Property Name="PackageType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4181,6 +4274,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ShipmentRiderManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" FromRole="ShipmentManifest" ToRole="ShipmentRiderManifests" />
           <NavigationProperty Name="ShipmentFreightManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" FromRole="ShipmentManifest" ToRole="ShipmentFreightManifests" />
           <Property Name="FreightCurrency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Consignees" Relationship="WaterNutDBModel.FK_ShipmentManifest_Consignees" FromRole="ShipmentManifest" ToRole="Consignees" />
         </EntityType>
         <Association Name="FK_ShipmentAttachedManifest_ShipmentManifest">
           <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1">
@@ -5121,6 +5216,55 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Cost" Type="Double" />
           <Property Name="Comments" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Consignees">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Shipment" Relationship="WaterNutDBModel.FK_Shipment_Consignees" FromRole="Consignees" ToRole="Shipment" />
+          <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.FK_ShipmentBL_Consignees" FromRole="Consignees" ToRole="ShipmentBL" />
+          <NavigationProperty Name="ShipmentManifest" Relationship="WaterNutDBModel.FK_ShipmentManifest_Consignees" FromRole="Consignees" ToRole="ShipmentManifest" />
+        </EntityType>
+        <Association Name="FK_Shipment_Consignees">
+          <End Type="WaterNutDBModel.Consignees" Role="Consignees" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.Shipment" Role="Shipment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="Shipment">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentBL_Consignees">
+          <End Type="WaterNutDBModel.Consignees" Role="Consignees" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ShipmentBL" Role="ShipmentBL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="ShipmentBL">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentManifest_Consignees">
+          <End Type="WaterNutDBModel.Consignees" Role="Consignees" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="ShipmentManifest">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5497,6 +5641,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentBL">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBL">
               <MappingFragment StoreEntitySet="ShipmentBL">
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
                 <ScalarProperty Name="FreightCurrency" ColumnName="FreightCurrency" />
                 <ScalarProperty Name="Freight" ColumnName="Freight" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -5600,6 +5745,12 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoice">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoice">
               <MappingFragment StoreEntitySet="ShipmentInvoice">
+                <ScalarProperty Name="ConsigneeCountry" ColumnName="ConsigneeCountry" />
+                <ScalarProperty Name="ConsigneeAddress" ColumnName="ConsigneeAddress" />
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
+                <ScalarProperty Name="SupplierCountry" ColumnName="SupplierCountry" />
+                <ScalarProperty Name="SupplierAddress" ColumnName="SupplierAddress" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
@@ -5740,6 +5891,9 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="Shipment">
             <EntityTypeMapping TypeName="WaterNutDBModel.Shipment">
               <MappingFragment StoreEntitySet="Shipment">
+                <ScalarProperty Name="ConsigneeAddress" ColumnName="ConsigneeAddress" />
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
+                <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
                 <ScalarProperty Name="Freight" ColumnName="Freight" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
@@ -5795,6 +5949,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentManifest">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentManifest">
               <MappingFragment StoreEntitySet="ShipmentManifest">
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
                 <ScalarProperty Name="FreightCurrency" ColumnName="FreightCurrency" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -5810,7 +5965,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="PackageType" ColumnName="PackageType" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="Notify" ColumnName="Notify" />
-                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
                 <ScalarProperty Name="Exporter" ColumnName="Exporter" />
                 <ScalarProperty Name="CargoReporter" ColumnName="CargoReporter" />
                 <ScalarProperty Name="TypeOfBL" ColumnName="TypeOfBL" />
@@ -6288,6 +6442,17 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Consignees">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Consignees">
+              <MappingFragment StoreEntitySet="Consignees">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

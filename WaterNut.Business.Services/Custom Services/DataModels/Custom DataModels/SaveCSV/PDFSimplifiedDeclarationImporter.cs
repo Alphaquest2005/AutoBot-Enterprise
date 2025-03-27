@@ -20,9 +20,9 @@ namespace WaterNut.DataSpace
                 || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
 
             
-            _simplifiedDeclarationImporter.ProcessSimplifiedDeclaration(dataFile);
+           return _simplifiedDeclarationImporter.ProcessSimplifiedDeclaration(dataFile);
 
-            return true;
+         
 
         }
     }

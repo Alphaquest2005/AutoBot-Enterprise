@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Core.Common.Extensions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
@@ -257,7 +258,7 @@ namespace AutoBot
             }
         }
 
-        public static List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
+        public static async Task<List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
         {
             //List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>();
             var success = new Dictionary<string, (string FileName, string DocumentType, ImportStatus status)>();
@@ -267,7 +268,7 @@ namespace AutoBot
             foreach (var file in fileInfos)
             {
               var txt = InvoiceReader.GetPdftxt(file.FullName);  
-              var res =  new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).Result;
+              var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {
@@ -282,8 +283,8 @@ namespace AutoBot
 
                   SetFileTypeMappingDefaultValues(docFileType, doc);
 
-                  var import = ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true, docSet,
-                      new List<dynamic>() { doc.ToList() });
+                  var import = await ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true, docSet,
+                      new List<dynamic>() { doc.ToList() }).ConfigureAwait(false);
                   success.Add($"{file}-{docType}-{doc.Key}",
                       import
                           ? (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success)
@@ -312,15 +313,24 @@ namespace AutoBot
             }
         }
 
-        private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
-            List<AsycudaDocumentSet> docSet,  List<dynamic> csvLines)
+        private static async Task<bool> ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
+            List<AsycudaDocumentSet> docSet, List<dynamic> csvLines)
         {
+            try
+            {
+               return await new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
+                    emailId,
+                    file, csvLines)).ConfigureAwait(false);
 
-            new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
-                emailId,
-                file, csvLines)).Wait();
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
 
-            return true;
+
         }
     }
 }

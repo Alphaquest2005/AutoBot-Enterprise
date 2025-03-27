@@ -179,6 +179,8 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<Customs_ProcedureInOut> Customs_ProcedureInOut { get; set; }
      
+        public DbSet<Consignee> Consignees { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -314,6 +316,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new Customs_ProcedureMap());
          
             modelBuilder.Configurations.Add(new Customs_ProcedureInOutMap());
+         
+            modelBuilder.Configurations.Add(new ConsigneeMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -119,18 +119,17 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             }
         }
 
-        public async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>> ClassifyItemsAsync(
-            List<(string ItemNumber, string ItemDescription, string TariffCode)> items,
-            CancellationToken cancellationToken = default)
+        public async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>>
+            ClassifyItemsAsync(
+                List<(string ItemNumber, string ItemDescription, string TariffCode)> items,
+                CancellationToken cancellationToken = default)
         {
+            var result = new Dictionary<string, (string, string, string)>();
             var sanitizedItems = items.Select(item => (
                 SanitizeItemNumber(item.ItemNumber),
                 SanitizeInputText(item.ItemDescription),
                 SanitizeTariffCode(item.TariffCode)
             )).ToList();
-
-            var result = new Dictionary<string, (string, string, string)>();
-
             try
             {
                 var batchResult = await ProcessBatch(sanitizedItems, cancellationToken).ConfigureAwait(false);
@@ -142,6 +141,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                         itemNumber = string.IsNullOrWhiteSpace(itemNumber) ? batchValues.ItemNumber : itemNumber;
                         tariffCode = string.IsNullOrWhiteSpace(tariffCode) ? batchValues.TariffCode : tariffCode;
                     }
+
                     result[description] = (itemNumber, description, tariffCode);
                 }
             }
@@ -156,10 +156,12 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
                     try
                     {
                         if (string.IsNullOrWhiteSpace(itemNumber))
-                            itemNumber = await GenerateProductCode(description, cancellationToken).ConfigureAwait(false);
+                            itemNumber = await GenerateProductCode(description, cancellationToken)
+                                .ConfigureAwait(false);
 
                         if (string.IsNullOrWhiteSpace(tariffCode))
-                            tariffCode = await GetTariffCode(description, cancellationToken: cancellationToken).ConfigureAwait(false);
+                            tariffCode = await GetTariffCode(description, cancellationToken: cancellationToken)
+                                .ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

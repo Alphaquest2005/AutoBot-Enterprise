@@ -165,6 +165,10 @@
         <AssociationConnector Association="WaterNutDBModel.ShipmentBLShipmentBLInvoice" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Width="2" PointX="22.5" PointY="11.375" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Consignees" Width="1.5" PointX="0.75" PointY="5.875" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Shipment_Consignees" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentBL_Consignees" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentManifest_Consignees" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

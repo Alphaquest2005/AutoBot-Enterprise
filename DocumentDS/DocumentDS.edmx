@@ -50,6 +50,7 @@
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="ExpectedEntries" Type="int" />
           <Property Name="PackageType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -80,6 +81,16 @@
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Consignees">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ConsigneeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="300" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Container">
           <Key>
@@ -151,6 +162,7 @@
           <Property Name="Exporter_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Consignee_code" Type="nvarchar" MaxLength="100" />
           <Property Name="Consignee_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Consignee_Address" Type="nvarchar" MaxLength="500" />
           <Property Name="Financial_code" Type="nvarchar" MaxLength="100" />
           <Property Name="Customs_clearance_office_code" Type="nvarchar" MaxLength="100" />
           <Property Name="Customs_Procedure" Type="nvarchar" MaxLength="100" />
@@ -981,6 +993,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AsycudaDocumentSet_Consignees">
+          <End Role="Consignees" Type="Self.Consignees" Multiplicity="0..1" />
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignees">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="0..1" />
           <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
@@ -1628,6 +1652,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Consignees" EntityType="Self.Consignees" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Container" EntityType="Self.Container" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_ProcedureInOut" EntityType="Self.Customs_ProcedureInOut" Schema="dbo" store:Type="Tables" />
@@ -1772,6 +1797,10 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_FileTypes" Association="Self.FK_AsycudaDocumentSet_Attachments_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Consignees" Association="Self.FK_AsycudaDocumentSet_Consignees">
+            <End Role="Consignees" EntitySet="Consignees" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
           </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="Self.FK_AsycudaDocumentSet_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
@@ -2305,6 +2334,11 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
           </AssociationSet>
+          <EntitySet Name="Consignees" EntityType="WaterNutDBModel.Consignee" />
+          <AssociationSet Name="FK_AsycudaDocumentSet_Consignees" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees">
+            <End Role="Consignee" EntitySet="Consignees" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -2341,6 +2375,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ExpectedEntries" Type="Int32" />
           <Property Name="PackageType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
+          <Property Name="ConsigneeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Consignee" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" FromRole="AsycudaDocumentSet" ToRole="Consignee" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -2386,6 +2422,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Manifest" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="BL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Consignee_Address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Assessment">
           <Key>
@@ -4065,6 +4102,29 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Consignee">
+          <Key>
+            <PropertyRef Name="ConsigneeName" />
+          </Key>
+          <Property Name="ConsigneeName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConsigneeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" FromRole="Consignee" ToRole="AsycudaDocumentSet" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Consignees">
+          <End Type="WaterNutDBModel.Consignee" Role="Consignee" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consignee">
+              <PropertyRef Name="ConsigneeName" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ConsigneeName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4074,6 +4134,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
                 <ScalarProperty Name="PackageType" ColumnName="PackageType" />
                 <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
@@ -4114,6 +4175,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="ExportTemplates">
             <EntityTypeMapping TypeName="WaterNutDBModel.ExportTemplate">
               <MappingFragment StoreEntitySet="ExportTemplate">
+                <ScalarProperty Name="Consignee_Address" ColumnName="Consignee_Address" />
                 <ScalarProperty Name="BL" ColumnName="BL" />
                 <ScalarProperty Name="Manifest" ColumnName="Manifest" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -4828,6 +4890,17 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="ExwarehouseCustomsProcedureId" ColumnName="ExwarehouseCustomsProcedureId" />
                 <ScalarProperty Name="WarehouseCustomsProcedureId" ColumnName="WarehouseCustomsProcedureId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Consignees">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Consignee">
+              <MappingFragment StoreEntitySet="Consignees">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
+                <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

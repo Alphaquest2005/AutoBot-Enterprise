@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using InventoryDS.Business.Entities;
 using MoreLinq;
@@ -10,10 +11,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class InventoryProcessor : IInventoryProcessor
     {
-        public void Execute(int applicationSettingsId,
+        public bool Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
+            try
+            {
 
             var existingInventoryItem = InventoryItemDataUtils.GetExistingInventoryItemFromData(inventoryDataList, inventorySource);
 
@@ -77,6 +80,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             newInventoryItems
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
                 .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
+            return true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
 
         }
     }

@@ -225,6 +225,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Consignees.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Generated Business Entities\DocumentDS\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\AsycudaDocument_Attachments.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Attachment.cs" />
+    <Compile Include="Generated Business Entities\DocumentDS\Consignee.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Container.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Customs_Procedure.cs" />
@@ -419,6 +421,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataDetails.cs" />
@@ -664,6 +667,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
@@ -761,6 +765,7 @@
     <Compile Include="Generated ChangeTracking Models\DocumentDS\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\AsycudaDocument_Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Attachment.cs" />
+    <Compile Include="Generated ChangeTracking Models\DocumentDS\Consignee.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Container.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Customs_Procedure.cs" />
@@ -854,6 +859,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataDetails.cs" />
@@ -1096,6 +1102,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
@@ -1193,6 +1200,7 @@
     <Compile Include="Generated Constructors Models\DocumentDS\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\AsycudaDocument_Attachments.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\Attachment.cs" />
+    <Compile Include="Generated Constructors Models\DocumentDS\Consignee.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\Container.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\Customs_Procedure.cs" />
@@ -1286,6 +1294,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataDetails.cs" />
@@ -1528,6 +1537,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
@@ -1625,6 +1635,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\AsycudaDocument_Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Attachment.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Consignee.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Container.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Customs_Procedure.cs" />
@@ -1718,6 +1729,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataDetails.cs" />
@@ -1960,6 +1972,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Consignees.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
@@ -2057,6 +2070,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\AsycudaDocument_Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Attachment.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Consignee.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Container.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Customs_Procedure.cs" />
@@ -2150,6 +2164,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataDetails.cs" />
@@ -2402,6 +2417,7 @@
     <Compile Include="Generated Mappings\CoreEntities\AttachmentLog.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Attachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\Consignees.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\CustomsOperations.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />
@@ -2499,6 +2515,7 @@
     <Compile Include="Generated Mappings\DocumentDS\AsycudaDocumentSet_Attachments.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\AsycudaDocument_Attachments.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\Attachment.map.cs" />
+    <Compile Include="Generated Mappings\DocumentDS\Consignee.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\Container.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\CustomsOperation.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\Customs_Procedure.map.cs" />
@@ -2592,6 +2609,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Attachments.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\Consignees.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataDetails.map.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,65 +21,80 @@ namespace WaterNut.DataSpace
         {
         }
 
-        
 
-        public async Task<bool> Process(DataFile dataFile)
+
+        public async Task<bool> ProcessAsync(DataFile dataFile)
         {
-            if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                dataFile.FileType.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv)
+            try
             {
-                var itm = (IDictionary<string, object>)dataFile.Data.FirstOrDefault(); //&& itm.Keys.Contains("EntryDataId")
-                var entrydataid = itm["EntryDataId"];
-                
-                var xeslst = _csvToShipmentInvoiceConverter.ConvertCSVToShipmentInvoice(dataFile.Data);
-
-                var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
-                        x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()
-                    ?.FilePath;
-
-                //if (string.IsNullOrEmpty(xdroppedFilePath)) return false;
-                if (xeslst == null) return false;
-
-                var invoicePOsData = xeslst.SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z =>
-                            new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))
-                    .Distinct()
-                    .Where(x => !string.IsNullOrEmpty(x.InvoiceNo?.ToString()))
-                    .ToList();
 
 
-
-                var invoicePOs = new Dictionary<string, string>();
-
-                foreach (var ip in invoicePOsData.GroupBy(x => x.InvoiceNo))
+                if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
+                    dataFile.FileType.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv)
                 {
-                    foreach (var a in ip)
+                    var itm = (IDictionary<string, object>)dataFile.Data
+                        .FirstOrDefault(); //&& itm.Keys.Contains("EntryDataId")
+                    var entrydataid = itm["EntryDataId"];
+
+                    var xeslst = _csvToShipmentInvoiceConverter.ConvertCSVToShipmentInvoice(dataFile.Data);
+
+                    var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
+                            x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()
+                        ?.FilePath;
+
+                    //if (string.IsNullOrEmpty(xdroppedFilePath)) return false;
+                    if (xeslst == null) return false;
+
+                    var invoicePOsData = xeslst.SelectMany(x =>
+                            ((List<IDictionary<string, object>>)x).Select(z =>
+                                new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))
+                        .Distinct()
+                        .Where(x => !string.IsNullOrEmpty(x.InvoiceNo?.ToString()))
+                        .ToList();
+
+
+
+                    var invoicePOs = new Dictionary<string, string>();
+
+                    foreach (var ip in invoicePOsData.GroupBy(x => x.InvoiceNo))
                     {
-                        if (ip.Count() > 1 && a.InvoiceNo == a.PONumber) continue;
-                        invoicePOs.Add(a.InvoiceNo.ToString(), a.PONumber?.ToString() ?? "");
+                        foreach (var a in ip)
+                        {
+                            if (ip.Count() > 1 && a.InvoiceNo == a.PONumber) continue;
+                            invoicePOs.Add(a.InvoiceNo.ToString(), a.PONumber?.ToString() ?? "");
+                        }
                     }
-                } 
 
-                if(!invoicePOs.Any()) return false;
-
-
-                var file = new DataFile(
-                    dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath, xeslst.SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
-
-                await _inventoryImporter.ImportInventory(file).ConfigureAwait(false);
-               
+                    if (!invoicePOs.Any()) return false;
 
 
+                    var file = new DataFile(
+                        dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
+                        dataFile.DroppedFilePath, xeslst.SelectMany(x =>
+                            ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
+                            ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
 
-                _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
-                    xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs);
+                    await _inventoryImporter.ImportInventory(file).ConfigureAwait(false);
 
-                return true;
+
+
+
+                    _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
+                        dataFile.OverWriteExisting, dataFile.EmailId,
+                        xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs);
+
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+                //return false;
             }
 
-            return false;
+           
         }
 
 

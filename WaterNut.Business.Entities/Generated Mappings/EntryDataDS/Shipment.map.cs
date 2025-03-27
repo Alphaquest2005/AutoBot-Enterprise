@@ -29,6 +29,10 @@
               this.Property(t => t.Office).HasColumnName("Office").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.Freight).HasColumnName("Freight");
+              this.Property(t => t.ConsigneeCode).HasColumnName("ConsigneeCode").HasMaxLength(100);
+              this.Property(t => t.ConsigneeName).HasColumnName("ConsigneeName").HasMaxLength(100);
+              this.Property(t => t.ConsigneeAddress).HasColumnName("ConsigneeAddress").HasMaxLength(300);
+              this.HasOptional(t => t.Consignees).WithMany(t =>(ICollection<Shipment>) t.Shipment).HasForeignKey(d => d.ConsigneeName);
               this.HasMany(t => t.ShipmentAttachedBL).WithRequired(t => (Shipment)t.Shipment);
               this.HasMany(t => t.ShipmentAttachedFreight).WithRequired(t => (Shipment)t.Shipment);
               this.HasMany(t => t.ShipmentAttachedInvoices).WithRequired(t => (Shipment)t.Shipment);

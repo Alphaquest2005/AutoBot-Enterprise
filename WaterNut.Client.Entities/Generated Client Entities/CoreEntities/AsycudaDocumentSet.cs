@@ -442,6 +442,23 @@ public string PackageType
 		}
      
 
+       
+       
+                
+                [MaxLength(100, ErrorMessage = "ConsigneeName has a max length of 100 letters ")]
+public string ConsigneeName
+		{ 
+		    get { return this.asycudadocumentset.ConsigneeName; }
+			set
+			{
+			    if (value == this.asycudadocumentset.ConsigneeName) return;
+				this.asycudadocumentset.ConsigneeName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ConsigneeName");
+			}
+		}
+     
+
         ObservableCollection<ActionDocSetLogs> _ActionDocSetLogs = null;
         public  ObservableCollection<ActionDocSetLogs> ActionDocSetLogs
 		{
@@ -652,6 +669,59 @@ public string PackageType
                      this.asycudadocumentset.Customs_Procedure = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("Customs_Procedure");
+			}
+		}
+        
+
+       private Consignees _Consignees;
+        public  Consignees Consignees
+		{
+		    get
+               { 
+                  if (this.asycudadocumentset != null)
+                   {
+                       if (_Consignees != null)
+                       {
+                           if (this.asycudadocumentset.Consignees !=
+                               _Consignees.DTO)
+                           {
+                                if (this.asycudadocumentset.Consignees  != null)
+                               _Consignees = new Consignees(this.asycudadocumentset.Consignees);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentset.Consignees  != null)
+                           _Consignees = new Consignees(this.asycudadocumentset.Consignees);
+                       }
+                   }
+
+
+             //       if (_Consignees != null) return _Consignees;
+                       
+             //       var i = new Consignees(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentset.Consignees == null) Debugger.Break();
+			//		if (this.asycudadocumentset.Consignees != null)
+            //        {
+            //           i. = this.asycudadocumentset.Consignees;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentset.Consignees = i.;
+             //       }
+                           
+            //        _Consignees = i;
+                     
+                    return _Consignees;
+               }
+			set
+			{
+			    if (value == _Consignees) return;
+                _Consignees = value;
+                if(value != null)
+                     this.asycudadocumentset.Consignees = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("Consignees");
 			}
 		}
         

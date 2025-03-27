@@ -255,21 +255,6 @@ namespace EntryDataDS.Business.Entities
         }
         string _exporter;
         [DataMember]
-        public string Consignee 
-        {
-            get
-            {
-                return _consignee;
-            }
-            set
-            {
-                _consignee = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _consignee;
-        [DataMember]
         public string Notify 
         {
             get
@@ -495,6 +480,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _freightcurrency;
         [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
         public List<ShipmentAttachedManifest> ShipmentAttachedManifest { get; set; }
         [DataMember]
         public List<ShipmentManifestDetails> ShipmentManifestDetails { get; set; }
@@ -504,6 +504,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentRiderManifests> ShipmentRiderManifests { get; set; }
         [DataMember]
         public List<ShipmentFreightManifests> ShipmentFreightManifests { get; set; }
+        [DataMember]
+        public Consignees Consignees { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

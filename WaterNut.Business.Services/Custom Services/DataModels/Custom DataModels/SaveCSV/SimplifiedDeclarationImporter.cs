@@ -9,10 +9,20 @@ namespace WaterNut.DataSpace;
 
 public class SimplifiedDeclarationImporter
 {
-    public void ProcessSimplifiedDeclaration(DataFile dataFile)
+    public bool ProcessSimplifiedDeclaration(DataFile dataFile)
     {
-        var lst = ExtractShipmentManifests(dataFile);
-        SaveManifest(dataFile, lst);
+        try
+        {
+            var lst = ExtractShipmentManifests(dataFile);
+            SaveManifest(dataFile, lst);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+
     }
 
     private static List<ShipmentManifest> ExtractShipmentManifests(DataFile dataFile)
@@ -28,10 +38,10 @@ public class SimplifiedDeclarationImporter
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         RegistrationNumber = $"{x["ManifestYear"]} {x["ManifestNumber"]}",
                         CustomsOffice = x["CustomsOffice"].ToString(),
-                        Consignee = x["Consignee"].ToString(),
+                        ConsigneeName = x["Consignee"].ToString(),
                         WayBill = x["BLNumber"].ToString(),
                         Packages = Convert.ToInt32(x["Packages"].ToString()),
-                        PackageType = x["PackageType"].ToString(),
+                        PackageType = x["PackageType"]?.ToString()??"Package",
                         GrossWeightKG = x.ContainsKey("GrossWeightKG") ? Convert.ToDouble(x["GrossWeightKG"].ToString()) : 0,
                         Freight = x.ContainsKey("Freight") ? Convert.ToDouble(x["Freight"].ToString()) : 0,
                         FreightCurrency = x.ContainsKey("FreightCurrency") ? x["FreightCurrency"].ToString() : "",
@@ -40,6 +50,12 @@ public class SimplifiedDeclarationImporter
                         SourceFile = dataFile.DroppedFilePath,
                         FileTypeId = dataFile.FileType.Id,
                         TrackingState = TrackingState.Added,
+                        Consignees = new Consignees()
+                        {
+                            ConsigneeName = x["Consignee"].ToString(),
+                            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+
+                        }
                     };
                 }
                 catch (Exception e)
@@ -61,12 +77,31 @@ public class SimplifiedDeclarationImporter
             {
                 var filename = BaseDataModel.SetFilename(dataFile.DroppedFilePath, manifest.WayBill, "-Manifest.pdf");
                 manifest.SourceFile = filename;
-                var existingManifest =
-                    ctx.ShipmentManifest.FirstOrDefault(
-                        x => x.RegistrationNumber == manifest.RegistrationNumber && x.WayBill == manifest.WayBill);
+
+                // Resolve Consignee FIRST before adding the manifest to the context
+                var existingConsignee = ctx.Consignees.Local.FirstOrDefault(
+                                            x => x.ConsigneeName == manifest.Consignees.ConsigneeName &&
+                                                 x.ApplicationSettingsId == manifest.Consignees.ApplicationSettingsId)
+                                        ?? ctx.Consignees.FirstOrDefault(
+                                            x => x.ConsigneeName == manifest.Consignees.ConsigneeName &&
+                                                 x.ApplicationSettingsId == manifest.Consignees.ApplicationSettingsId);
+                if (existingConsignee == null)
+                {
+                    ctx.Consignees.Add(manifest.Consignees);
+                }
+                else
+                {
+                    manifest.Consignees = existingConsignee;
+                }
+
+                // Now handle the manifest
+                var existingManifest = ctx.ShipmentManifest.FirstOrDefault(
+                    x => x.RegistrationNumber == manifest.RegistrationNumber && x.WayBill == manifest.WayBill);
                 if (existingManifest != null)
                     ctx.ShipmentManifest.Remove(existingManifest);
                 ctx.ShipmentManifest.Add(manifest);
+
+                // Existing BL checks remain unchanged
                 var bls = ctx.ShipmentBL
                     .Where(x => x.BLNumber == manifest.WayBill || x.Voyage == manifest.Voyage).ToList();
                 if (bls.Any() && bls.All(x => x.PackagesNo != manifest.Packages))
@@ -74,11 +109,10 @@ public class SimplifiedDeclarationImporter
                     throw new ApplicationException(
                         $"Manifest:{manifest.RegistrationNumber} Packages <> BL:{bls.Select(x => x.BLNumber).Aggregate((o, n) => o + ", " + n)} Packages");
                 }
-
-
             }
 
             ctx.SaveChanges();
         }
     }
+
 }

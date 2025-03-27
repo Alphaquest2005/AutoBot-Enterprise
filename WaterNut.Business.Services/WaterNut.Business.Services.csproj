@@ -230,6 +230,7 @@
     <Compile Include="Contracts\CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICancelledEntriesLstService.cs" />
+    <Compile Include="Contracts\CoreEntities\IConsigneesService.cs" />
     <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustomsOperationsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureInOutService.cs" />
@@ -327,6 +328,7 @@
     <Compile Include="Contracts\DocumentDS\IAsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="Contracts\DocumentDS\IAsycudaDocument_AttachmentsService.cs" />
     <Compile Include="Contracts\DocumentDS\IAttachmentService.cs" />
+    <Compile Include="Contracts\DocumentDS\IConsigneeService.cs" />
     <Compile Include="Contracts\DocumentDS\IContainerService.cs" />
     <Compile Include="Contracts\DocumentDS\ICustomsOperationService.cs" />
     <Compile Include="Contracts\DocumentDS\ICustoms_ProcedureInOutService.cs" />
@@ -420,6 +422,7 @@
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAttachmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IConsigneesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEDDocumentTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsService.cs" />
@@ -810,14 +813,17 @@
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetAttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\ConsigneesService.cs" />
     <Compile Include="Services\CoreEntities\Customs_ProcedureInOutService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingsValuesService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
     <Compile Include="Services\CoreEntities\ParametersService.cs" />
+    <Compile Include="Services\DocumentDS\ConsigneeService.cs" />
     <Compile Include="Services\DocumentDS\Customs_ProcedureInOutService.cs" />
     <Compile Include="Services\DocumentDS\PackageTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\ConsigneesService.cs" />
     <Compile Include="Services\EntryDataDS\ItemHistoryService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
@@ -1747,7 +1753,6 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -23,7 +24,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void Process(DataFile dataFile)
+        public async Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace WaterNut.DataSpace
                             ctx.ShipmentBL.Remove(existingBl);
                         ctx.ShipmentBL.Add(bl);
 
-                        ctx.SaveChanges();
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
                         //if (bl.PackagesNo != detailsQty)
                         //{
                         //    throw new ApplicationException(
@@ -119,11 +120,14 @@ namespace WaterNut.DataSpace
 
 
                 }
+
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return false;
+                //throw;
             }
         }
 

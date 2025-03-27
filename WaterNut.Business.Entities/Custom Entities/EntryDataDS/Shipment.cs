@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
+
 namespace EntryDataDS.Business.Entities
 {
     
@@ -20,6 +21,12 @@ namespace EntryDataDS.Business.Entities
 
             return $@"  Expected Entries: {ExpectedEntries}
 Manifest: {(string.IsNullOrEmpty(ManifestNumber) ? "Manifest Not Found! BL Number must equal Manifest WayBill" : ManifestNumber)}
+
+Consignee Code: {(string.IsNullOrEmpty(ConsigneeCode) ? "Consignee Code Not Found" : ConsigneeCode)}
+
+Consignee Name: {(string.IsNullOrEmpty(ConsigneeName) ? "Consignee Not Found" : ConsigneeName)}
+
+Consignee Address: {(string.IsNullOrEmpty(ConsigneeAddress) ? "Consignee Address Not Found" : ConsigneeAddress)}
 
 BL: {(string.IsNullOrEmpty(BLNumber) ? "BL Not Found" : BLNumber)}
 

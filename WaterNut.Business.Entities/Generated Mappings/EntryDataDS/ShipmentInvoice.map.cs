@@ -30,6 +30,12 @@
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.SubTotal).HasColumnName("SubTotal");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.SupplierName).HasColumnName("SupplierName").HasMaxLength(100);
+              this.Property(t => t.SupplierAddress).HasColumnName("SupplierAddress").HasMaxLength(500);
+              this.Property(t => t.SupplierCountry).HasColumnName("SupplierCountry").HasMaxLength(50);
+              this.Property(t => t.ConsigneeName).HasColumnName("ConsigneeName").HasMaxLength(100);
+              this.Property(t => t.ConsigneeAddress).HasColumnName("ConsigneeAddress").HasMaxLength(500);
+              this.Property(t => t.ConsigneeCountry).HasColumnName("ConsigneeCountry").HasMaxLength(50);
               this.HasMany(t => t.InvoiceDetails).WithRequired(t => (ShipmentInvoice)t.Invoice);
               this.HasMany(t => t.InvoiceExtraInfo).WithRequired(t => (ShipmentInvoice)t.Invoice);
               this.HasMany(t => t.ShipmentRiderInvoice).WithOptional(t => t.ShipmentInvoice).HasForeignKey(d => d.InvoiceId);

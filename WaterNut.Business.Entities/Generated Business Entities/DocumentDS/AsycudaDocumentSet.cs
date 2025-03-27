@@ -403,6 +403,21 @@ namespace DocumentDS.Business.Entities
         }
         string _packagetype;
         [DataMember]
+        public string ConsigneeName 
+        {
+            get
+            {
+                return _consigneename;
+            }
+            set
+            {
+                _consigneename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _consigneename;
+        [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }
         [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
@@ -414,6 +429,8 @@ namespace DocumentDS.Business.Entities
         public SystemDocumentSet SystemDocumentSet { get; set; }
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
+        [DataMember]
+        public Consignee Consignee { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
