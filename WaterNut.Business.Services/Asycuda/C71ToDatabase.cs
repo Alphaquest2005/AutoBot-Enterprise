@@ -1,4 +1,4 @@
-﻿using Asycuda421;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using Asycuda421;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using System;
@@ -476,21 +476,32 @@ namespace WaterNut.DataSpace.Asycuda
         }
 
         public xC71_Value_declaration_form CreateC71(Suppliers supplier, List<TODO_C71ToXML> lst,
-            string docRef)
+            string docRef, string consigneeCode, string consigneeName, string consigneeAddress) // Added parameters
         {
             try
             {
-
-               
-
                 var c71 = CreateNewC71();
+
+                // Set Seller Info
                 c71.xC71_Identification_segment.xC71_Seller_segment.Name =
                     supplier.SupplierName ?? supplier.SupplierCode;
                 c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef},\r\n{supplier.Street}";
                 c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
 
+                // Set Buyer (Consignee) Info using passed parameters
+                if (!string.IsNullOrEmpty(consigneeName))
+                {
+                    // Ensure Buyer segment exists (it should from CreateNewC71)
+                    if (c71.xC71_Identification_segment.xC71_Buyer_segment == null) 
+                        c71.xC71_Identification_segment.xC71_Buyer_segment = new xC71_Buyer_segment(true);
 
-                c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+                    c71.xC71_Identification_segment.xC71_Buyer_segment.Code = consigneeCode;
+                    c71.xC71_Identification_segment.xC71_Buyer_segment.Name = consigneeName;
+                    c71.xC71_Identification_segment.xC71_Buyer_segment.Address = consigneeAddress ?? "";
+                    // Code might need to be fetched similarly if required, currently not set.
+                }
+
+                // Set Declarant & Other Fields
                 c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
                 c71.xC71_Identification_segment.No_7A = true;
                 c71.xC71_Identification_segment.No_8A = true;

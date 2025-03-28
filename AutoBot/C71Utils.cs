@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -98,7 +98,7 @@ namespace AutoBot
                 using (var ctx = new ValuationDSContext())
                 {
 
-
+                    var consigneeCode = GetConsigneeData( out var consigneeName, out var consigneeAddress, ft.AsycudaDocumentSetId);
 
 
 
@@ -123,6 +123,10 @@ namespace AutoBot
                             File.Delete(c71results);
                             if (File.Exists(Path.Combine(directoryName, "C71OverView-PDF.txt"))) File.Delete(Path.Combine(directoryName, "C71OverView-PDF.txt"));
                         }
+
+                        
+
+
                         var lst = new CoreEntitiesContext().TODO_C71ToXML.Where(x =>
                                 x.ApplicationSettingsId == pO.ApplicationSettingsId &&
                                 x.AsycudaDocumentSetId == pO.AsycudaDocumentSetId)
@@ -142,7 +146,8 @@ namespace AutoBot
                                 x.ApplicationSettingsId == pO.ApplicationSettingsId);
                         }
 
-                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Declarant_Reference_Number);
+                        // Pass consigneeName and consigneeAddress to CreateC71
+                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Declarant_Reference_Number, consigneeCode, consigneeName, consigneeAddress ?? ""); // Pass fetched values, ensure address is not null
                         ctx.xC71_Value_declaration_form.Add(c71);
                         ctx.SaveChanges();
                         C71ToDataBase.Instance.ExportC71(pO.AsycudaDocumentSetId, c71, fileName);
@@ -159,7 +164,59 @@ namespace AutoBot
             }
         }
 
-      
+        private static string GetConsigneeData(out string consigneeName, out string consigneeAddress, int asycudaDocumentSetId)
+        {
+            // --- Fetch Consignee Info ---
+            string consigneeCode = null;
+            consigneeName = null;
+            consigneeAddress = null;
+            // Assuming ApplicationSettingsId is available in TODO_C71ToCreate
+           
+
+            if (asycudaDocumentSetId != 0)
+            {
+                using (var coreCtx = new CoreEntitiesContext())
+                {
+                    var docSetData = coreCtx.AsycudaDocumentSet
+                        .Where(ds => ds.AsycudaDocumentSetId == asycudaDocumentSetId)
+                        .Select(ds => new { ds.ConsigneeName, ds.Consignees.ConsigneeCode , ds.Customs_ProcedureId, ds.ApplicationSettingsId })
+                        .FirstOrDefault();
+
+                    if (docSetData != null && !string.IsNullOrEmpty(docSetData.ConsigneeName))
+                    {
+                        consigneeCode = docSetData.ConsigneeCode; 
+                        consigneeName = docSetData.ConsigneeName;
+                        int? docSetCustomsProcId = docSetData.Customs_ProcedureId;
+                        int? docSetAppId = docSetData.ApplicationSettingsId;
+
+                        // Fetch primary address
+                        var cName = consigneeName;
+                        var consignee = coreCtx.Consignees
+                            .FirstOrDefault(c => c.ConsigneeName == cName && c.ApplicationSettingsId == docSetAppId.Value);
+                        consigneeAddress = consignee?.Address;
+
+                        // Fallback Logic
+                        if (string.IsNullOrWhiteSpace(consigneeAddress) && docSetCustomsProcId.HasValue)
+                        {
+                            var customsProcedureStr = coreCtx.Customs_Procedure
+                                .Where(cp => cp.Customs_ProcedureId == docSetCustomsProcId.Value)
+                                .Select(cp => cp.CustomsProcedure)
+                                .FirstOrDefault();
+
+                            if (!string.IsNullOrEmpty(customsProcedureStr))
+                            {
+                                var exportTemplate = BaseDataModel.Instance.ExportTemplates
+                                    .FirstOrDefault(et => et.ApplicationSettingsId == docSetAppId.Value
+                                                          && et.Customs_Procedure == customsProcedureStr);
+                                consigneeAddress = exportTemplate?.Consignee_Address;
+                            }
+                        }
+                    }
+                }
+            }
+            // --- End Fetch Consignee Info ---
+            return consigneeCode;
+        }
 
 
         public static void DownLoadC71(FileTypes ft)

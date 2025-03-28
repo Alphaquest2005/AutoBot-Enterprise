@@ -212,7 +212,7 @@ namespace WaterNut.DataSpace.Asycuda
         }
 
         public xLIC_License CreateLicense(List<TODO_LicenseToXML> lst, Contacts contact, Suppliers supplier,
-            string docRef)
+            string docRef, string consigneeCode,string consigneeName, string consigneeAddress)
         {
             
 
@@ -220,15 +220,17 @@ namespace WaterNut.DataSpace.Asycuda
             lic.xLIC_General_segment.Application_date = DateTime.Now.Date.ToShortDateString();
             lic.xLIC_General_segment.Importation_date = DateTime.Now.Date.AddMonths(3).ToShortDateString();
             lic.xLIC_General_segment.Arrival_date = DateTime.Now.Date.ToShortDateString();
-            lic.xLIC_General_segment.Importer_contact = contact.Name;
-            lic.xLIC_General_segment.Importer_cellphone = contact.CellPhone;
-            lic.xLIC_General_segment.Importer_email = contact.EmailAddress;
+            
             lic.xLIC_General_segment.Exporter_address =
                 $"Ref:{docRef}\r\n{supplier?.Street}\r\n{supplier?.City},{supplier?.CountryCode}\r\n{supplier?.Country}";
             lic.xLIC_General_segment.Exporter_name = supplier?.SupplierName?? supplier?.SupplierCode;
             lic.xLIC_General_segment.Exporter_country_code = supplier?.CountryCode;
 
-            lic.xLIC_General_segment.Importer_code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+            lic.xLIC_General_segment.Importer_code = consigneeCode; //BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+            lic.xLIC_General_segment.Importer_name = $"{consigneeName}\r\n{consigneeAddress}"; //BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantName;
+            lic.xLIC_General_segment.Importer_contact = contact.Name;
+            lic.xLIC_General_segment.Importer_cellphone = contact.CellPhone;
+            lic.xLIC_General_segment.Importer_email = contact.EmailAddress;
 
             foreach (var item in lst.GroupBy(x => new{ x.TariffCode, x.LicenseDescription}))
             {

@@ -86,7 +86,7 @@ namespace WaterNut.QuerySpace
                         //        FileTypeManager.FileFormats.Xlsx, f);
 
                         fileTypes.ForEach(x => x.AsycudaDocumentSetId = asycudaDocumentSetId);
-                        XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes, overwrite);
+                        await XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes, overwrite).ConfigureAwait(false);
                     }
                    
 

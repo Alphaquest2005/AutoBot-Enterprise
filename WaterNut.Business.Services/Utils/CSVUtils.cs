@@ -53,18 +53,17 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        public static void SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType)
+        public static async Task SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType)
         {
             Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
-            foreach (var file in csvFiles) TryImportFile(fileType, file);
+            foreach (var file in csvFiles) await TryImportFile(fileType, file).ConfigureAwait(false);
         }
 
-        private static void TryImportFile(FileTypes fileType, FileInfo file)
+        private static async Task TryImportFile(FileTypes fileType, FileInfo file)
         {
             try
             {
-                SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true)
-                    .Wait(); //set to false to merge
+                await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true).ConfigureAwait(false); //set to false to merge
             }
             catch (Exception e)
             {
@@ -206,7 +205,7 @@ namespace WaterNut.Business.Services.Utils
             //return str;
         }
 
-        public static void FixCsv(FileInfo file, FileTypes fileType, bool? overwrite)
+        public static async Task FixCsv(FileInfo file, FileTypes fileType, bool? overwrite)
         {
 
             var dic = FileTypeManager.PreCalculatedFileTypeMappings(fileType);
@@ -219,7 +218,7 @@ namespace WaterNut.Business.Services.Utils
                 ImportRows(file, fileType, dic, dRows, header, table);
 
                 
-                ImportFile(file, fileType, overwrite, table);
+                await ImportFile(file, fileType, overwrite, table).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -500,7 +499,7 @@ namespace WaterNut.Business.Services.Utils
 
         }
 
-        private static void ImportFile(FileInfo file, FileTypes fileType, bool? overwrite, ConcurrentDictionary<int, string> table)
+        private static async Task ImportFile(FileInfo file, FileTypes fileType, bool? overwrite, ConcurrentDictionary<int, string> table)
         {
             var output = CreateFile(file, table);
             if (fileType.ChildFileTypes.Any())
@@ -509,7 +508,7 @@ namespace WaterNut.Business.Services.Utils
             }
             else
             {
-                SaveCsv(new FileInfo[] { new FileInfo(output) }, fileType);
+                await SaveCsv(new FileInfo[] { new FileInfo(output) }, fileType).ConfigureAwait(false);
             }
         }
 

@@ -57,7 +57,7 @@ namespace AutoBot
                 {"DownLoadLicense", () => LICUtils.DownLoadLicence(false,new FileTypes()) },
                 {"ReDownLoadLicence", () => LICUtils.DownLoadLicence(true, new FileTypes()) },
                 {"CreateC71", () => C71Utils.CreateC71(new FileTypes()) },
-                {"CreateLicense",() => LICUtils.CreateLicence(new FileTypes()) },
+                {"CreateLicense",() => LICUtils.CreateLicence(new FileTypes() ) },
                 { "ImportC71", () => C71Utils.ImportC71(new FileTypes()) },
 
                 {"ImportLicense", () => LICUtils.ImportLicense(new FileTypes()) },
@@ -79,6 +79,10 @@ namespace AutoBot
                 {"DownloadPOFiles",() => EX9Utils.DownloadSalesFiles(10, "IM7", false) },
                 {"SubmitPOs", POUtils.SubmitPOs },
                 {"RecreateEx9", () => EX9Utils.RecreateEx9(-1) },
+
+
+                
+
                 
                 {"ReDownloadSalesFiles", SalesUtils.ReDownloadSalesFiles },
                 {"CleanupDiscpancies", DISUtils.CleanupDiscpancies },

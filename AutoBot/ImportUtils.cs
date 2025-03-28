@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -35,6 +36,10 @@ namespace AutoBotUtilities
                                 .Select(kp =>
                                 {
                                     fileType.Data.Add(kp.InfoData);
+
+                                    // --- BEGIN ADDED LOGGING ---
+                                        Console.WriteLine($"--- EmailTextProcessor: Added to fileType.Data - Key: '{kp.InfoData.Key}', Value: '{kp.InfoData.Value}'");
+                                        // --- END ADDED LOGGING ---
 
                                     return kp;
                                 })
@@ -137,16 +142,30 @@ namespace AutoBotUtilities
                     throw new ApplicationException(
                         $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
                 }
+                // --- MODIFICATION START: Query DB directly for ordered actions ---
+                using (var ctx = new CoreEntitiesContext()) // Use a new context for fresh data
+                {
+                    var orderedActions = ctx.FileTypeActions
+                        .Include(fta => fta.Actions) // Eager load Actions
+                        .Where(fta => fta.FileTypeId == fileType.Id)
+                        .Where(fta => fta.Actions.IsDataSpecific == true) // Original filter
+                        .Where(fta => (fta.AssessIM7.Equals(null) && fta.AssessEX.Equals(null)) || // Original filter
+                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
+                                       appSetting.AssessEX == fta.AssessEX))
+                        .Where(fta => fta.Actions.TestMode == // Original filter
+                                      (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
+                        .OrderBy(fta => fta.Id)
+                        .Include(fileTypeActions => fileTypeActions.Actions) // Order by ID from DB
+                        .ToList(); // Execute query
 
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select<FileTypeActions, (string Name, Action<FileTypes, FileInfo[]>)>(x =>  (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
-                    .ForEach(x => { ExecuteActions(fileType, files, x); });
-
+                    // Now iterate through 'orderedActions'
+                    orderedActions
+                        .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists in dictionary
+                        .Select(fta => (fta.Actions.Name, FileUtils.FileActions[fta.Actions.Name])) // Get action delegate
+                        .ToList()
+                        .ForEach(actionTuple => { ExecuteActions(fileType, files, actionTuple); }); // Execute
+                }
+                // --- MODIFICATION END ---
             }
             catch (Exception e)
             {
@@ -221,20 +240,46 @@ namespace AutoBotUtilities
         {
             try
             {
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select<FileTypeActions, (string Name, Action<FileTypes, FileInfo[]>)>(x => (x.Actions.Name , FileUtils.FileActions[x.Actions.Name])).ToList()
-                    .ForEach(x =>  ExecuteActions(fileType, files, x));
+                // Check for missing action implementations first (using cached FileTypeActions is fine here)
+                var missingActionsCheck = fileType.FileTypeActions
+                                           .Where(x => (x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true) && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
+                                           .ToList();
+                if (missingActionsCheck.Any())
+                {
+                    // Log or handle missing non-specific actions if necessary, maybe less critical than specific ones
+                    Console.WriteLine($"WARNING: Non-specific actions missing implementation: {missingActionsCheck.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                }
+
+                // --- MODIFICATION START: Query DB directly for ordered actions ---
+                using (var ctx = new CoreEntitiesContext()) // Use a new context for fresh data
+                {
+                    var orderedActions = ctx.FileTypeActions
+                                            .Include(fta => fta.Actions) // Eager load Actions
+                                            .Where(fta => fta.FileTypeId == fileType.Id)
+                                            .Where(fta => fta.Actions.IsDataSpecific == null || fta.Actions.IsDataSpecific != true) // Original filter
+                                            .Where(fta => (fta.AssessIM7.Equals(null) && fta.AssessEX.Equals(null)) || // Original filter
+                                                        (appSetting.AssessIM7 == fta.AssessIM7 ||
+                                                         appSetting.AssessEX == fta.AssessEX))
+                                            .Where(fta => fta.Actions.TestMode == // Original filter
+                                                        (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
+                                            .OrderBy(fta => fta.Id) // Order by ID from DB
+                                            .ToList(); // Execute query
+
+                    // Now iterate through 'orderedActions'
+                    orderedActions
+                       .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists in dictionary
+                       .Select(fta => (fta.Actions.Name, FileUtils.FileActions[fta.Actions.Name])) // Get action delegate
+                       .ToList()
+                       .ForEach(actionTuple => { ExecuteActions(fileType, files, actionTuple); }); // Execute
+                }
+                // --- MODIFICATION END ---
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
                      EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>());
+                // Consider re-throwing if needed: throw;
             }
         }
     }

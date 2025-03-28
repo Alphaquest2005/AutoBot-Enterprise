@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug AutoBot1 (x64)",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "Build AutoBot1 (Debug x64)",
+            "program": "${workspaceFolder}/AutoBot1/bin/x64/Debug/AutoBot.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/AutoBot1",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Debug AutoBot1 (x86)",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "Build AutoBot1 (Debug x86)",
+            "program": "${workspaceFolder}/AutoBot1/bin/x86/Debug/AutoBot.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/AutoBot1",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}

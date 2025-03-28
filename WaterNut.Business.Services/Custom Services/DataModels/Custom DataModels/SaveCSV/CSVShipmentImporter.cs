@@ -7,7 +7,7 @@ using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
-
+using TrackableEntities; // Added for TrackingState
 namespace WaterNut.DataSpace
 {
     public class CSVShipmentImporter
@@ -79,9 +79,9 @@ namespace WaterNut.DataSpace
 
 
 
-                    _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
+                    await _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
                         dataFile.OverWriteExisting, dataFile.EmailId,
-                        xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs);
+                        xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs).ConfigureAwait(true);
 
                     return true;
                 }

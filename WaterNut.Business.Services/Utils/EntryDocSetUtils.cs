@@ -263,11 +263,16 @@ namespace WaterNut.DataSpace
 
 
                 AsycudaDocumentSet docSet;
+                var defaultCustomsOperation = BaseDataModel.GetDefaultCustomsOperation();
                 using (var ctx = new DocumentDSContext())
                 {
                     var doctype = BaseDataModel.Instance.Customs_Procedures
-                        .First(x => x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()
-                                    && x.IsDefault == true); //&& x.Discrepancy != true
+                        .First(x =>
+                        {
+                            
+                            return x.CustomsOperationId == defaultCustomsOperation
+                                   && x.IsDefault == true;
+                        }); //&& x.Discrepancy != true
                     ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Customs_ProcedureId},0)");

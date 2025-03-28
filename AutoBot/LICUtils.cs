@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -255,13 +255,61 @@ namespace AutoBot
 
 
                         var instructions = Path.Combine(directoryName, "LIC-Instructions.txt");
-                        if (File.Exists(instructions)) File.Delete(instructions);
+                            if (File.Exists(instructions)) File.Delete(instructions);
 
 
+                        // --- Fetch Consignee Info --- Moved inside the outer loop
+                        string consigneeCode = null;
+                        string consigneeName = null;
+                            string consigneeAddress = null;
+                            int? docSetAppId = pO.ApplicationSettingsId; 
+                            int? asycudaDocumentSetId = pO.AsycudaDocumentSetId; 
+
+                            if (asycudaDocumentSetId.HasValue && docSetAppId.HasValue)
+                            {
+                                using (var coreCtx = new CoreEntitiesContext())
+                                {
+                                    var docSetData = coreCtx.AsycudaDocumentSet
+                                                        .Where(ds => ds.AsycudaDocumentSetId == asycudaDocumentSetId.Value)
+                                                        .Select(ds => new { ds.ConsigneeName, ds.Customs_ProcedureId })
+                                                        .FirstOrDefault();
+
+                                    if (docSetData != null && !string.IsNullOrEmpty(docSetData.ConsigneeName))
+                                    {
+                                        consigneeName = docSetData.ConsigneeName;
+                                        int? docSetCustomsProcId = docSetData.Customs_ProcedureId;
+
+                                        // Fetch primary address
+                                        var consignee = coreCtx.Consignees
+                                                               .FirstOrDefault(c => c.ConsigneeName == consigneeName && c.ApplicationSettingsId == docSetAppId.Value);
+                                        
+                                        consigneeCode = consignee?.ConsigneeCode;
+                                        consigneeAddress = consignee?.Address;
+
+                                        // Fallback Logic
+                                        if (string.IsNullOrWhiteSpace(consigneeAddress) && docSetCustomsProcId.HasValue)
+                                        {
+                                            var customsProcedureStr = coreCtx.Customs_Procedure
+                                                                           .Where(cp => cp.Customs_ProcedureId == docSetCustomsProcId.Value)
+                                                                           .Select(cp => cp.CustomsProcedure)
+                                                                           .FirstOrDefault();
+
+                                            if (!string.IsNullOrEmpty(customsProcedureStr))
+                                            {
+                                                var exportTemplate = BaseDataModel.Instance.ExportTemplates
+                                                                            .FirstOrDefault(et => et.ApplicationSettingsId == docSetAppId.Value
+                                                                                                 && et.Customs_Procedure == customsProcedureStr);
+
+                                                consigneeAddress = exportTemplate?.Consignee_Address;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // --- End Fetch Consignee Info ---
 
 
-
-                        var llst = new CoreEntitiesContext().Database
+                            var llst = new CoreEntitiesContext().Database
                             .SqlQuery<TODO_LicenseToXML>(
                                 $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId} and LicenseDescription is not null").ToList();
 
@@ -310,9 +358,10 @@ namespace AutoBot
                                         .Any(z => z == x.SupplierCode) &&
                                     x.ApplicationSettingsId == pO.ApplicationSettingsId);
                             }
-
+                            // Pass consigneeName and consigneeAddress to CreateLicense
+                            // IMPORTANT: LicenseToDataBase.CreateLicense signature must be manually updated elsewhere
                             var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(itm), contact, supplier,
-                                itm.Key.EntryDataId);
+                                itm.Key.EntryDataId, consigneeCode ,consigneeName, consigneeAddress ?? ""); // Pass fetched values
                             var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, Path.Combine(new FileInfo(x.SourceFile).DirectoryName, $"{x.EntryDataId}.pdf"))).Where(x => File.Exists(x.Item2)).Distinct().ToList();
                             if (!invoices.Any()) continue;
                             ctx.xLIC_License.Add(lic);

@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AllocationDS.Business.Services;
 using Core.Common.Extensions;
 using Core.Common.Utils;
 using InventoryDS.Business.Entities;
+using InventoryQS.Business.Services;
 using MoreLinq.Extensions;
 using TrackableEntities;
 using TrackableEntities.Common;
@@ -101,7 +103,7 @@ namespace WaterNut.Business.Services.Utils
         {
             //create a function that call deepseek api with item description and return tariff code
             var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
-                ? new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).Result
+                ? GetTariffCode(item)
                 : item.Key.TariffCode;
             var i = new InventoryItem(true)
             {
@@ -127,6 +129,12 @@ namespace WaterNut.Business.Services.Utils
                 }
 
             return new InventoryDataItem(item, i);
+        }
+
+        private static dynamic GetTariffCode(InventoryData item)
+        {
+            var suspectedTariffCode = new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).Result;
+            return InventoryItemsExService.GetTariffCode(suspectedTariffCode);
         }
     }
 }
