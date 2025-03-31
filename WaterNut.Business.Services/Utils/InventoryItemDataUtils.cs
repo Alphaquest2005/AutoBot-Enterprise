@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System; // Added for Type and Convert
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,13 +108,17 @@ namespace WaterNut.Business.Services.Utils
             var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
                 ? await GetTariffCode(item).ConfigureAwait(false)
                 : item.Key.TariffCode;
+            // Use helper method to safely get values
+            var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
+            var itemNumber = await GetDynamicStringValueAsync(item.Key.ItemNumber).ConfigureAwait(false);
+
             var i = new InventoryItem(true)
             {
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                Description = ((string)item.Key.ItemDescription).Truncate(255), // quicker trust database than file
-                ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
-                TariffCode = 
-                    keyTariffCode,
+                Description = description.Truncate(255),
+                ItemNumber = itemNumber.Truncate(20),
+                TariffCode =
+                    keyTariffCode, // Already awaited or string
                 InventoryItemSources = new List<InventoryItemSource>()
                 {
                     new InventoryItemSource(true)
@@ -133,9 +138,34 @@ namespace WaterNut.Business.Services.Utils
             return new InventoryDataItem(item, i);
         }
 
+        // Helper to safely get string from dynamic property (might be Task<string> or string)
+        private static async Task<string> GetDynamicStringValueAsync(dynamic dynamicValue)
+        {
+            if (dynamicValue == null) return string.Empty;
+
+            // Check if it's awaitable and likely a Task<string>
+            // A simple check for Task<string> might not be enough with dynamics
+            // We check if GetAwaiter exists and if it's likely a string task
+            var type = (Type)dynamicValue.GetType();
+            if (type.GetMethod("GetAwaiter") != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                 // It's likely a Task<T>, await it
+                await dynamicValue.ConfigureAwait(false);
+                // Now get the result (which we hope is string or convertible)
+                 var result = dynamicValue.Result;
+                 return Convert.ToString(result) ?? string.Empty;
+            }
+
+            // Assume it's already a string or convertible to one
+            return Convert.ToString(dynamicValue) ?? string.Empty;
+        }
+
+
         private static async Task<dynamic> GetTariffCode(InventoryData item)
         {
-            var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).ConfigureAwait(false);
+            // Use the helper for the description passed to the API as well
+            var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
+            var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(description).ConfigureAwait(false);
             return InventoryItemsExService.GetTariffCode(suspectedTariffCode);
         }
     }

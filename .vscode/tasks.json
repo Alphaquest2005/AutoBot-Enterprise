@@ -1,6 +1,7 @@
 {
     "version": "2.0.0",
     "tasks": [
+        // --- Existing Solution Build Tasks (unchanged) ---
         {
             "label": "Build x64 Debug",
             "command": "dotnet",
@@ -70,6 +71,55 @@
                 "${workspaceFolder}/AutoBot-Enterprise.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        // --- Tasks for AutoBot1 Debug Launch ---
+        {
+            // Step 1: Restore NuGet packages for the solution/platform
+            "label": "restore-solution-x64",
+            "type": "process",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "args": [
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "/t:Restore",
+                "/property:Configuration=Debug",
+                "/property:Platform=x64"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            // Step 2: Rebuild the solution for the platform
+            "label": "rebuild-solution-x64",
+            "type": "process",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "args": [
+                "${workspaceFolder}/AutoBot-Enterprise.sln",
+                "/t:Rebuild",
+                "/property:Configuration=Debug",
+                "/property:Platform=x64"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            // Step 3: Compound task used by launch.json's preLaunchTask
+            "label": "build", // This label MUST match preLaunchTask in launch.json
+            "dependsOrder": "sequence", // Run tasks sequentially
+            "dependsOn": [
+                "restore-solution-x64",
+                "rebuild-solution-x64"
+            ],
+            "problemMatcher": [], // No matcher needed for compound task itself
+            "group": {
+                "kind": "build",
+                "isDefault": false // Not the default build for F5/Ctrl+Shift+B on solution
+            }
         }
     ]
 }
