@@ -35,26 +35,28 @@ namespace WaterNut.Business.Services.Utils
         }
 
 
-        public static List<InventoryDataItem> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
+        public static async Task<List<InventoryDataItem>> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
             var inventoryItems =
                 InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string) x.Key.ItemNumber).ToList());
 
 
-            var newInventoryItems = CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems);
+            var newInventoryItems = await CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems).ConfigureAwait(false);
 
 
             return newInventoryItems;
         }
 
-        public static List<InventoryDataItem> CreateNewInventoryData(InventorySource inventorySource,
+        public static async Task<List<InventoryDataItem>> CreateNewInventoryData(InventorySource inventorySource,
             List<InventoryData> validItems, List<InventoryItem> inventoryItems)
         {
-            var newInventoryItem = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
-            var newInventoryItems = newInventoryItem
-                .Select(item => CreateInventoryItem(inventorySource, item))
-                .ToList();
+            var newInventoryItemData = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
+            var newInventoryItems = new List<InventoryDataItem>();
+            foreach (var itemData in newInventoryItemData)
+            {
+                newInventoryItems.Add(await CreateInventoryItem(inventorySource, itemData).ConfigureAwait(false));
+            }
 
             new SaveInventoryItemsSelector().Execute(newInventoryItems);
 
@@ -98,12 +100,12 @@ namespace WaterNut.Business.Services.Utils
                 .ToList();
         }
 
-        public static InventoryDataItem CreateInventoryItem(InventorySource inventorySource,
+        public static async Task<InventoryDataItem> CreateInventoryItem(InventorySource inventorySource,
             InventoryData item)
         {
             //create a function that call deepseek api with item description and return tariff code
             var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
-                ? GetTariffCode(item)
+                ? await GetTariffCode(item).ConfigureAwait(false)
                 : item.Key.TariffCode;
             var i = new InventoryItem(true)
             {
@@ -131,9 +133,9 @@ namespace WaterNut.Business.Services.Utils
             return new InventoryDataItem(item, i);
         }
 
-        private static dynamic GetTariffCode(InventoryData item)
+        private static async Task<dynamic> GetTariffCode(InventoryData item)
         {
-            var suspectedTariffCode = new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).Result;
+            var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).ConfigureAwait(false);
             return InventoryItemsExService.GetTariffCode(suspectedTariffCode);
         }
     }

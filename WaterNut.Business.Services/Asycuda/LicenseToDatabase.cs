@@ -319,11 +319,11 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        public bool ExportLicense(int docSetId, xLIC_License lic, string fileName, List<Tuple<string, string>> invoices)
+        public async Task<bool> ExportLicense(int docSetId, xLIC_License lic, string fileName, List<Tuple<string, string>> invoices)
         {
             try
             {
-                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).Result;
+                var docSet = await BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
                 var adoc = DatabaseToLicence(lic);
 
                 var fileInfo = new FileInfo(fileName);

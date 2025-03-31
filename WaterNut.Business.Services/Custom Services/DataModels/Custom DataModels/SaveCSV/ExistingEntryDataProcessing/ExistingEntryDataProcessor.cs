@@ -19,24 +19,32 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 GetExistingEntryData(item.EntryData.EntryDataId, item.EntryData.ApplicationSettingsId);
 
              return overWriteExisting
-                 ? await ExistingEntryData(item, existingEntryDataList)
-                 : OverWriteExistingEntryData(docSet, item, existingEntryDataList);
+                 ? await ExistingEntryData(item, existingEntryDataList).ConfigureAwait(false)
+                 : await OverWriteExistingEntryData(docSet, item, existingEntryDataList).ConfigureAwait(false);
         }
 
-        public List<(dynamic existingEntryData, List<EntryDataDetails> details)> GetExistingEntryData(List<AsycudaDocumentSet> docSet, bool overWriteExisting, List<RawEntryDataValue> itemList)
+        public async Task<List<(dynamic existingEntryData, List<EntryDataDetails> details)>> GetExistingEntryData(List<AsycudaDocumentSet> docSet, bool overWriteExisting, List<RawEntryDataValue> itemList)
         {
-            return itemList
-                .Select(item => GetExistingEntryData(docSet,overWriteExisting,item).Result)
+             // Create a list of tasks by calling the async overload
+            var tasks = itemList
+                .Select(item => GetExistingEntryData(docSet, overWriteExisting, item)) // Calls the async overload
                 .ToList();
+            
+            // Await all tasks concurrently
+            var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            return results.ToList();
         }
 
-        private static (dynamic existingEntryData, List<EntryDataDetails> details) OverWriteExistingEntryData(List<AsycudaDocumentSet> docSet,
+        // Made async
+        private static async Task<(dynamic existingEntryData, List<EntryDataDetails> details)> OverWriteExistingEntryData(List<AsycudaDocumentSet> docSet,
             RawEntryDataValue item, List<EntryData> existingEntryDataList)
         {
             var existingEntryData = existingEntryDataList.FirstOrDefault();
             existingEntryData.EmailId = item.EntryData.EmailId;
-            return (existingEntryData, details: LoadExistingDetails(docSet, existingEntryData.EntryDataDetails,
-                item.EntryDataDetails.ToList()));
+            var details = await LoadExistingDetails(docSet, existingEntryData.EntryDataDetails,
+                            item.EntryDataDetails.ToList()).ConfigureAwait(false);
+            return (existingEntryData, details);
         }
 
         private async Task<(dynamic existingEntryData, List<EntryDataDetails> details)> ExistingEntryData(
@@ -56,7 +64,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private static List<EntryDataDetails> LoadExistingDetails(List<AsycudaDocumentSet> docSet,
+        // Made async
+        private static async Task<List<EntryDataDetails>> LoadExistingDetails(List<AsycudaDocumentSet> docSet,
             List<EntryDataDetails> oldDetails, List<EntryDataDetails> newDetails)
         {
             var details = new List<EntryDataDetails>();
@@ -78,8 +87,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         details.Add(newEntryDataDetails);
 
                     if (oldEntryDataDetails != null)
-                        new EntryDataDetailsService()
-                            .DeleteEntryDataDetails(oldEntryDataDetails.EntryDataDetailsId.ToString()).Wait();
+                        await new EntryDataDetailsService() // Assuming DeleteEntryDataDetails returns Task
+                            .DeleteEntryDataDetails(oldEntryDataDetails.EntryDataDetailsId.ToString()).ConfigureAwait(false);
                 }
             }
 

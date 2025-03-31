@@ -90,10 +90,10 @@ namespace WaterNut.DataSpace
 				var adjlstTask = Task.Run(async () => await GetAdjustmentslstWithItemNumber(itemSetLst).ConfigureAwait(false));
 				var dislstTask = Task.Run(async () => await GetDiscrepancieslstWithItemNumber(itemSetLst).ConfigureAwait(false));
 
-				Task.WaitAll(asycudaEntriesTask, saleslstTask, adjlstTask, dislstTask);
+				await Task.WhenAll(asycudaEntriesTask, saleslstTask, adjlstTask, dislstTask).ConfigureAwait(false);
 
 				var asycudaEntries = asycudaEntriesTask.Result;
-			   
+				  
 				
 				var saleslst = saleslstTask.Result;
 				var adjlst = adjlstTask.Result;

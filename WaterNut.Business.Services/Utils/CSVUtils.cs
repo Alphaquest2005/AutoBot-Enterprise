@@ -127,7 +127,7 @@ namespace WaterNut.Business.Services.Utils
                 && x.Status == "Sender Informed of Error");
         }
 
-        public static void ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
+        public static async Task ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
         {
             Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
             foreach (var file in csvFiles)
@@ -135,8 +135,8 @@ namespace WaterNut.Business.Services.Utils
 
                 try
                 {
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true)//set to false to merge
-                        .Wait();
+                    await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true).ConfigureAwait(false);//set to false to merge
+                        
 
 
                     //if (VerifyCSVImport(file))

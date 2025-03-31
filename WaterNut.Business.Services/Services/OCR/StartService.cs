@@ -74,8 +74,8 @@ namespace OCR.Business.Services
                // {
                   using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
                   {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<Start> entities = set.AsNoTracking().ToList();
+        var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<Start> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace OCR.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Id)) return null;
               using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                Start entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
+                Start entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

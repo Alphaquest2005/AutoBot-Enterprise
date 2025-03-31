@@ -44,6 +44,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                 OnCurrentAsycudaDocumentChanged);
         }
 
+        // Change signature to async void for event handler
         private async void OnCurrentAsycudaDocumentChanged(object sender, NotificationEventArgs<AsycudaDocument> e)
         {
             if (e.Data != null)

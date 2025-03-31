@@ -46,17 +46,17 @@ namespace WaterNut.DataSpace
             
             // MarkNoAsycudaEntry();
 
-            MarkOverAllocatedEntries(itemSetLst);
+            await MarkOverAllocatedEntries(itemSetLst).ConfigureAwait(false);
 
-            MarkUnderAllocatedEntries(itemSetLst);
+            await MarkUnderAllocatedEntries(itemSetLst).ConfigureAwait(false);
 
 
         }
 
-        private void MarkOverAllocatedEntries(List<(string ItemNumber, int InventoryItemId)> itemList)
+        private async Task MarkOverAllocatedEntries(List<(string ItemNumber, int InventoryItemId)> itemList)
         {
             
-            var allocations = GetUOAllocations(GetOverAllocatedAsycudaEntries(itemList));
+            var allocations = await GetUOAllocations(GetOverAllocatedAsycudaEntries(itemList)).ConfigureAwait(false);
 
             var sqlLst = Enumerable.ToList<string>(allocations.Select(CreateOverAllocatedSQL));
 
@@ -151,9 +151,9 @@ namespace WaterNut.DataSpace
                     allo.EntryDataDetails.EntryData.EntryDataDate);
         }
 
-        private void MarkUnderAllocatedEntries(List<(string ItemNumber, int InventoryItemId)> itemList)
+        private async Task MarkUnderAllocatedEntries(List<(string ItemNumber, int InventoryItemId)> itemList)
         {
-            var allocations = GetUOAllocations(GetUnderAllocatedAsycudaItems(itemList));
+            var allocations = await GetUOAllocations(GetUnderAllocatedAsycudaItems(itemList)).ConfigureAwait(false);
 
             var sqlLst =Enumerable.ToList<string>(allocations.Select(CreateUnderAllocatedSql));
 
@@ -255,11 +255,12 @@ namespace WaterNut.DataSpace
             return sql;
         }
 
-        private static List<IGrouping<xcuda_Item, AsycudaSalesAllocations>> GetUOAllocations(List<int> itemList)
+        private static async Task<List<IGrouping<xcuda_Item, AsycudaSalesAllocations>>> GetUOAllocations(List<int> itemList)
         {
+            // Assuming GetUOAllocations().Execute is synchronous or already handled
             return AllocationsBaseModel.isDBMem
                 ? new GetUOAllocations().Execute(itemList)
-                : new GetUOAllocationsMem().Execute(itemList);
+                : (await GetUOAllocationsMem.CreateAsync().ConfigureAwait(false)).Execute(itemList);
         }
     }
 }

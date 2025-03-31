@@ -179,10 +179,17 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                 if (!lst.Any()) return new List<EntryDataDetail>();
                 StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
 
-                var edLst = ParallelEnumerable.Select(lst
-                        .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                        .AsParallel(), s => AutoMatchItemNumber(s).Result)
+                // Create a list of tasks
+                var tasks = lst
+                    .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
+                    .Select(s => AutoMatchItemNumber(s)) // Don't await here
                     .ToList();
+
+                // Await all tasks concurrently
+                var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+                
+                // Collect results (assuming AutoMatchItemNumber returns EntryDataDetail)
+                var edLst = results.ToList();
 
 
                 SetMinimumEffectDate(edLst);

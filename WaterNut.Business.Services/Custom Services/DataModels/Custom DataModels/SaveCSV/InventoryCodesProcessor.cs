@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using InventoryDS.Business.Entities;
 using MoreLinq;
@@ -11,7 +12,7 @@ namespace WaterNut.DataSpace
 {
     public class InventoryCodesProcessor
     {
-        public static void SaveInventoryCodes(InventorySource inventorySource,
+        public static async Task SaveInventoryCodes(InventorySource inventorySource,
             List<(string SupplierItemNumber, string SupplierItemDescription)> itemCodes,
             InventoryItem i)
         {
@@ -33,9 +34,17 @@ namespace WaterNut.DataSpace
                                                  x.ItemNumber == supplierItemNumber);
                         if (invItem == null)
                         {
-                            invItem = CreateInventoryItem(inventorySource, invItemCode);
+                            // Construct InventoryData from invItemCode
+                            var inventoryData = new InventoryData(
+                                (ItemNumber: invItemCode.SupplierItemNumber,
+                                 ItemDescription: invItemCode.SupplierItemDescription,
+                                 TariffCode: ""), // Assuming TariffCode is not available here
+                                new List<dynamic>() // Assuming no raw data items needed here
+                            );
+                            var inventoryDataItem = await InventoryItemDataUtils.CreateInventoryItem(inventorySource, inventoryData).ConfigureAwait(false);
+                            invItem = inventoryDataItem.Item; // Get the created InventoryItem
                             ctx.InventoryItems.Add(invItem);
-                           // ctx.SaveChanges();
+                           // ctx.SaveChanges(); // Consider if saving immediately is needed or batch save later
                         }
 
                         if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasItem != null && x.AliasItem.ItemNumber == supplierItemNumber) == null &&

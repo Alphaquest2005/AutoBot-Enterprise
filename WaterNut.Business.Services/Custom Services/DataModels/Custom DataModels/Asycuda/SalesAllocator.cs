@@ -29,15 +29,16 @@ namespace WaterNut.DataSpace
             
         }
 
-        public List<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>> AllocateSales(bool allocateToLastAdjustment, KeyValuePair<int, (List<int> Lst, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> group)> groupItemSets)
+        public async Task<List<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>>> AllocateSales(bool allocateToLastAdjustment, KeyValuePair<int, (List<int> Lst, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> group)> groupItemSets)
         {
-            var res = groupItemSets.Value.group.Value.Select(v => v.Value.Select(z => ((KeyValuePair<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), AllocationsBaseModel.ItemSet >)z).Value).ToList())
+            var tasks = groupItemSets.Value.group.Value.Select(v => v.Value.Select(z => ((KeyValuePair<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), AllocationsBaseModel.ItemSet >)z).Value).ToList())
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                                                         BaseDataModel.Instance.ResourcePercentage)).Select(async x => await AllocateSales(allocateToLastAdjustment, false, x).ConfigureAwait(false))
-                .ToList();
+                                                         BaseDataModel.Instance.ResourcePercentage)).Select(x => AllocateSales(allocateToLastAdjustment, false, x)); // Select the tasks
 
-            var alloLst = res.SelectMany(x => x.Result)
+            var results = await Task.WhenAll(tasks).ConfigureAwait(false); // Await all tasks
+
+            var alloLst = results.SelectMany(x => x) // Process the results
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          BaseDataModel.Instance.ResourcePercentage))

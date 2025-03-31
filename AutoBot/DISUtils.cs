@@ -1100,8 +1100,9 @@ namespace AutoBot
 
         }
 
-       
-        public static void AllocateDocSetDiscrepancies(FileTypes fileType)
+
+        // Change signature to async Task
+        public static async Task AllocateDocSetDiscrepancies(FileTypes fileType)
         {
             try
             {
@@ -1115,34 +1116,38 @@ namespace AutoBot
                 if (!lst.Any()) return;
 
 
-
-                AllocationsModel.Instance
-                    .ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).Wait();
+                // Replace Wait() with await ConfigureAwait(false)
+                await AllocationsModel.Instance
+                    .ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
 
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
-                
-                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor
-                    .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        fileType.AsycudaDocumentSetId).Wait();
 
+                // Replace Wait() with await ConfigureAwait(false)
+                await new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor
+                    .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        fileType.AsycudaDocumentSetId).ConfigureAwait(false);
+
+                // ProcessDisErrorsForAllocation.Execute is synchronous, remove Wait()
                 new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                     .Execute(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();
+                        lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")
+                    ); // Removed Wait()
 
-               
 
                 var shortlst = GetShorts(lst, fileType);
                 if (string.IsNullOrEmpty(shortlst)) return;
 
-                new OldSalesAllocator()
+                // Replace Wait() with await ConfigureAwait(false)
+                await new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst).Wait();
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst).ConfigureAwait(false);
 
-                new MarkErrors()
+                // Replace Wait() with await ConfigureAwait(false)
+                await new MarkErrors()
                     .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
-                    .Wait();
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {

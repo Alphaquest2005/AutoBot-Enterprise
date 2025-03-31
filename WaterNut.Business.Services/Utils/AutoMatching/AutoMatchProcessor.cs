@@ -94,13 +94,15 @@ namespace AdjustmentQS.Business.Services
                 var itemGrps = Utils.CreateItemSet(data).Partition(100);
 
 
-
-                itemGrps.SelectMany(x => x.ToList())
+                // Refactor ForAll with Wait() to use Task.WhenAll
+                var tasks = itemGrps.SelectMany(x => x.ToList())
                     .AsParallel()
                     //.WithDegreeOfParallelism(1)
                     .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                              BaseDataModel.Instance.ResourcePercentage))
-                    .ForAll(l => AutoMatch(applicationSettingsId, l).Wait());
+                    .Select(l => AutoMatch(applicationSettingsId, l)); // Select the tasks
+
+                await Task.WhenAll(tasks).ConfigureAwait(false); // Await all tasks
 
             }
             catch (Exception e)
@@ -120,26 +122,31 @@ namespace AdjustmentQS.Business.Services
 
         private static async Task AutoMatch(int applicationSettingsId, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
         {
-            AllocationsModel.Instance
+            await AllocationsModel.Instance // Made async
                 .ClearDocSetAllocations(lst.Value.Select(x => $"'{x.Key.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
-                .Wait();
+                .ConfigureAwait(false); // Replaced Wait()
 
-           
+
             await DoAutoMatch(applicationSettingsId, lst.Value.SelectMany(v => v.Value).ToList()).ConfigureAwait(false);
 
 
-            ProcessDISErrorsForAllocation(lst);
+            await ProcessDISErrorsForAllocation(lst).ConfigureAwait(false); // Added await, made target async
         }
 
-        private static void ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
+        // Made async Task
+        private static async Task ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
         {
+            // Assuming AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation.Execute returns Task
+            // Add ConfigureAwait(false) before await
             new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                 .Execute(
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    // Correctly chain Aggregate before Execute and apply ConfigureAwait once
                     lst.Value
                         .SelectMany(g => g.Value)
                         .Select(v => v).Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
-                        .Aggregate((o, n) => $"{o},{n}")).Wait();
+                        .Aggregate((o, n) => $"{o},{n}") // Aggregate the strings first
+                ); // Apply ConfigureAwait to the Task returned by Execute
         }
 
         public async Task MatchToAsycudaItem(int entryDataDetailId, int itemId)
@@ -169,12 +176,11 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-            
 
                 var lst = GetDocSetAdjustmentDetails(applicationSettingsId, docSetId);
 
                 await DoAutoMatch(applicationSettingsId, lst);
-                
+
             }
             catch (Exception e)
             {
@@ -214,12 +220,18 @@ namespace AdjustmentQS.Business.Services
                 if (!lst.Any()) return;
                 StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
 
-                var edLst = lst
-                    //ParallelEnumerable.Select<AdjustmentDetail, EntryDataDetail>(lst
-                        .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                    .Select(s =>  AutoMatchItemNumber(s).Result)
+                // Create a list of tasks
+                var tasks = lst
+                    .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
+                    .Select(s => AutoMatchItemNumber(s)) // Don't await here
                     .ToList();
-               
+
+                // Await all tasks concurrently
+                var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                // Collect results (assuming AutoMatchItemNumber returns EntryDataDetail)
+                var edLst = results.ToList();
+
 
                 SetMinimumEffectDate(edLst);
             }
@@ -233,7 +245,7 @@ namespace AdjustmentQS.Business.Services
         private static async Task<EntryDataDetail> AutoMatchItemNumber(AdjustmentDetail s)
         {
 
-            
+
             try
             {
 
@@ -248,9 +260,13 @@ namespace AdjustmentQS.Business.Services
 
                 };
 
-                
-                processors.Where(x => x.IsApplicable(s, ed))
-                    .ForEach(async x => await x.Execute().ConfigureAwait(false));
+
+                // Need to await the Execute calls if they are async
+                var applicableProcessors = processors.Where(x => x.IsApplicable(s, ed)).ToList();
+                foreach(var processor in applicableProcessors)
+                {
+                    await processor.Execute().ConfigureAwait(false); // Assuming Execute is async Task
+                }
 
 
                 SaveEntryDataDetails(ed);

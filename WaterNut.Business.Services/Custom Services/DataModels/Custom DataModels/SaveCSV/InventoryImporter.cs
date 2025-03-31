@@ -26,7 +26,8 @@ namespace WaterNut.DataSpace
                 
                 var inventorySource = InventorySourceFactory.GetInventorySource(dataFile.FileType);
 
-                return new InventoryProcessorSelector().Execute(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
+                // Await the async call
+                return await new InventoryProcessorSelector().Execute(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource).ConfigureAwait(false);
 
             }
             catch (Exception e)

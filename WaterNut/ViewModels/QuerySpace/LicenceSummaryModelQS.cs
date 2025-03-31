@@ -31,12 +31,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		{
 		    
             RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetChanged);
-		}
+  }
 
-        private async void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
-        {
-            await RefreshData().ConfigureAwait(false);
-        }
+  // Change signature to async void for event handler
+  private async void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+  {
+      await RefreshData().ConfigureAwait(false);
+		}
 
 	    public async Task RefreshData()
 	    {

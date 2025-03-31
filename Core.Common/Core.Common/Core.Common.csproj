@@ -11,6 +11,7 @@
     <AssemblyName>Core.Common</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers> <!-- Trying multiple RIDs -->
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">
     </SolutionDir>
     <TargetFrameworkProfile />

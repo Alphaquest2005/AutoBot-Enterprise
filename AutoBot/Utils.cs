@@ -119,58 +119,66 @@ namespace AutoBot
       
 
 
-        public static void RunAllocationTestCases()
-        {
-            try
-            {
-                Console.WriteLine("Running Test Cases");
-                List<KeyValuePair<int, string>> lst;
-                using (var ctx = new AllocationDSContext())
-                {
-                    ctx.Database.CommandTimeout = 10;
+       // Change signature to async Task
+       public static async Task RunAllocationTestCases()
+       {
+           try
+           {
+               Console.WriteLine("Running Test Cases");
+               List<KeyValuePair<int, string>> lst;
+               using (var ctx = new AllocationDSContext())
+               {
+                   ctx.Database.CommandTimeout = 10;
 
-                    lst = ctx
-                        .AllocationsTestCases
-                        .Select(x => new { x.EntryDataDetailsId, x.ItemNumber })
-                        .Distinct()
-                        .ToList()
-                        .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
-                        .ToList();
-                }
+                   lst = ctx
+                       .AllocationsTestCases
+                       .Select(x => new { x.EntryDataDetailsId, x.ItemNumber })
+                       .Distinct()
+                       .ToList()
+                       .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
+                       .ToList();
+               }
 
-                if (!lst.Any()) return;
-                AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).Wait();
+               if (!lst.Any()) return;
+               // Replace Wait() with await ConfigureAwait(false)
+               await AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
 
-                AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
-
-
-
-                var strLst = lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o, n) => $"{o},{n}");
+               AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
 
-                new AdjustmentShortService().AutoMatchUtils.AutoMatchItems(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, strLst).Wait();
+
+               var strLst = lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o, n) => $"{o},{n}");
 
 
-                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
-                    .Execute(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        strLst).Wait();
+               // Replace Wait() with await ConfigureAwait(false)
+               await new AdjustmentShortService().AutoMatchUtils.AutoMatchItems(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, strLst).ConfigureAwait(false);
 
-                new OldSalesAllocator()
-                    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, strLst).Wait();
 
-                new MarkErrors()
-                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+               // Replace Wait() with await ConfigureAwait(false)
+               // ProcessDisErrorsForAllocation.Execute is synchronous, remove await and ConfigureAwait
+               new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+                   .Execute(
+                       BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                       strLst
+                   ); // Removed await and ConfigureAwait
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+               // Replace Wait() with await ConfigureAwait(false)
+               await new OldSalesAllocator()
+                   .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+                       BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, strLst).ConfigureAwait(false);
 
-        }
+               // Replace Wait() with await ConfigureAwait(false)
+               await new MarkErrors()
+                   .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+
+           }
+           catch (Exception e)
+           {
+               Console.WriteLine(e);
+               throw;
+           }
+
+       }
 
 
         public static void SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email)

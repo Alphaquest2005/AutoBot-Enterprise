@@ -9,9 +9,9 @@ using MoreLinq;
 
 namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
 {
-    public class ProcessDISErrorsForAllocation 
+    public class ProcessDISErrorsForAllocation
     {
-        public async Task<List<EntryDataDetail>> Execute(int applicationSettingsId, string res)
+        public List<EntryDataDetail> Execute(int applicationSettingsId, string res) // Removed async Task<>
         {
             try
             {
