@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.ComponentModel;
 using System.Linq;
 using System.Data.Entity;
+using System.Threading.Tasks; // Added for Task
 using System.Collections.ObjectModel;
 using CoreEntities.Client.Entities;
 using PreviousDocumentQS.Client.Repositories;
@@ -41,8 +42,9 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetChanged);
            
             RegisterToReceiveMessages<PreviousDocumentItem>(MessageToken.CurrentPreviousDocumentItemChanged, OnCurrentPreviousDocumentItemChanged);
-		}
+  }
 
+        // Change signature to async void for event handler
         private async void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
         {
             if (e.Data != null && ManualMode == false)

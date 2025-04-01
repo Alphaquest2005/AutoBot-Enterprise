@@ -74,8 +74,8 @@ namespace PreviousDocumentDS.Business.Services
                // {
                   using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                   {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Valuation_item> entities = set.AsNoTracking().ToList();
+        var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xcuda_Valuation_item> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace PreviousDocumentDS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(Item_Id))return null; 
+			   if(string.IsNullOrEmpty(Item_Id)) return null;
               using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xcuda_Valuation_item entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
+                xcuda_Valuation_item entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Item_Id == i).ConfigureAwait(false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

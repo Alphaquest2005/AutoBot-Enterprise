@@ -44,35 +44,48 @@ namespace WaterNut.DataSpace
         public static bool isDBMem = false;
         private static readonly AllocationsBaseModel instance;
         internal static readonly object Identity = new object();
+        // Semaphore for asynchronous locking
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
         static AllocationsBaseModel()
-		{
-			instance = new AllocationsBaseModel();
-		}
+  {
+   instance = new AllocationsBaseModel();
+  }
 
-		private DataCache<InventoryItemAlias> _inventoryAliasCache;
+  private DataCache<InventoryItemAlias> _inventoryAliasCache;
         
 
         public static AllocationsBaseModel Instance
-		{
-			get { return instance; }
-		}
+  {
+   get { return instance; }
+  }
 
-		public DataCache<InventoryItemAlias> InventoryAliasCache
-		{
-			get => _inventoryAliasCache ?? GetDataCache();
+  public DataCache<InventoryItemAlias> InventoryAliasCache
+  {
+            // NOTE: Calling .Result here can block. Consider initializing the cache asynchronously elsewhere.
+   get => _inventoryAliasCache ?? GetDataCache().Result;
             set => _inventoryAliasCache = value;
         }
 
+
        
 
-
-        private DataCache<InventoryItemAlias> GetDataCache()
+        private async Task<DataCache<InventoryItemAlias>> GetDataCache()
         {
-            lock(Identity) {
-                _inventoryAliasCache =
-                    new DataCache<InventoryItemAlias>(
-                        AllocationDS.DataModels.BaseDataModel.Instance.SearchInventoryItemAlias(
-                            new List<string> { "All" }, new List<string> { "InventoryItem.LumpedItem" }).Result);
+            // Use semaphore instead of lock for async operations
+            await _semaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                 if (_inventoryAliasCache == null) // Double-check locking pattern
+                 {
+                    var aliases = await AllocationDS.DataModels.BaseDataModel.Instance.SearchInventoryItemAlias(
+                                        new List<string> { "All" }, new List<string> { "InventoryItem.LumpedItem" })
+                                        .ConfigureAwait(false);
+                    _inventoryAliasCache = new DataCache<InventoryItemAlias>(aliases);
+                 }
+            }
+            finally
+            {
+                _semaphore.Release();
             }
             return _inventoryAliasCache;
         }

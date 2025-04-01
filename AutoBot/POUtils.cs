@@ -617,6 +617,7 @@ namespace AutoBot
                 try
                 {
                     IQueryable<xcuda_ASYCUDA> docs;
+                    var defaultCustomsOperation = BaseDataModel.GetDefaultCustomsOperation();
                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true)
                     {
                         if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x =>
@@ -630,7 +631,7 @@ namespace AutoBot
                                         asycudaDocumentSetId
                                         && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
                                         &&  x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation());
+                                                .CustomsOperationId == defaultCustomsOperation);
                     }
                     else
                     {
@@ -642,7 +643,7 @@ namespace AutoBot
                                         asycudaDocumentSetId
                                         && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
                                         && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation());
+                                                .CustomsOperationId == defaultCustomsOperation);
                     }
 
                     var res = docs.GroupBy(x => new

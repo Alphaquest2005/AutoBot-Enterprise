@@ -216,6 +216,11 @@ namespace WaterNut.DataSpace
                         DocumentDS.DataModels.BaseDataModel.Instance.SearchCustoms_Procedure(new List<string> {"All"})
                             .ConfigureAwait(false));
 
+            // Load ExportTemplates asynchronously during initialization
+            using (var ctx = new ExportTemplateService())
+            {
+                 Instance._exportTemplates = await ctx.GetExportTemplates().ConfigureAwait(false);
+            }
 
             StatusModel.StopStatusUpdate();
         }
@@ -285,22 +290,12 @@ namespace WaterNut.DataSpace
 
         internal async Task Clear(int AsycudaDocumentSetId)
         {
-            AsycudaDocumentSet docset = null;
-            using (var ctx = new AsycudaDocumentSetService())
-            {
-                docset = await ctx.GetAsycudaDocumentSetByKey(AsycudaDocumentSetId.ToString(),
-                    new List<string>
-                    {
-                        "xcuda_ASYCUDA_ExtendedProperties",
-                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
-                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_PreviousItem"
-                    }).ConfigureAwait(false);
-            }
+            AsycudaDocumentSet docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
 
-            Clear(docset);
+            await Clear(docset).ConfigureAwait(false);
         }
 
-        internal async void Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
+        internal async Task Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
             await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
         }
@@ -540,8 +535,8 @@ namespace WaterNut.DataSpace
                         deliveryTerms.Code = Exp.Delivery_terms_Code;
                 }
 
-                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
-                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = $"{ads.Consignee.ConsigneeName ?? Exp.Consignee_name}\r\n{ads.Consignee.Address ?? Exp.Consignee_Address}" ;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = ads.Consignee.ConsigneeCode ?? Exp.Consignee_code;
             
         }
 
@@ -610,6 +605,7 @@ namespace WaterNut.DataSpace
 
         public async Task ValidateExistingTariffCodes(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
+            throw new NotImplementedException("ValidateExistingTariff");
         }
 
         public static Customs_Procedure GetCustomsProcedure(string dfp, string DocumentType)
@@ -620,9 +616,12 @@ namespace WaterNut.DataSpace
             switch (DocumentType)
             {
                 case "PO":
+                    var defaultCustomsOperation = BaseDataModel.GetDefaultCustomsOperation();
                     dtpredicate = x =>
-                        x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()
-                        && x.Sales == true && x.Stock != true;
+                    {
+                        return x.CustomsOperationId == defaultCustomsOperation
+                               && x.Sales == true && x.Stock != true;
+                    };
 
                     break;
                 case "Sales":
@@ -2612,7 +2611,8 @@ namespace WaterNut.DataSpace
                         "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
                         "AsycudaDocumentSet_Attachments.Attachment",
                         "AsycudaDocumentSet_Attachments.FileType",
-                        "Customs_Procedure.Document_Type"
+                        "Customs_Procedure.Document_Type",
+                        "Consignee"
                     })
                     .ConfigureAwait(false);
             }
@@ -3723,15 +3723,9 @@ namespace WaterNut.DataSpace
                 get => _previousDocumentItemId;
                 set
                 {
+                    // Avoid blocking calls in property setters. Load PreviousDocumentItem explicitly when needed.
                     _previousDocumentItemId = value;
-
-                    using (var ctx = new xcuda_ItemService())
-                    {
-                        if (_previousDocumentItemId != 0)
-                            PreviousDocumentItem = ctx.Getxcuda_ItemByKey(_previousDocumentItemId.ToString()).Result;
-                        else
-                            PreviousDocumentItem = null;
-                    }
+                    PreviousDocumentItem = null; // Clear related property when Id changes
                 }
             }
 

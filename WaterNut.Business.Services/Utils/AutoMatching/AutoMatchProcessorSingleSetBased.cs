@@ -169,11 +169,13 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
        
         private async Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
         {
-            var errors = await new ProcessDISErrorsForAllocation().Execute(
+            // Apply ConfigureAwait to the Task before awaiting
+            var errors =  new ProcessDISErrorsForAllocation().Execute( // Move ConfigureAwait here
                       BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                       lst
                           .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
-                          .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
+                          .Aggregate((o, n) => $"{o},{n}")
+                      ); // Correct placement
 
 
             //var errors = await  new ProcessDISErrorsForAllocationMem().Execute(
@@ -216,12 +218,17 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                 if (!lst.Any()) return new List<EntryDataDetail>();
                 StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
 
-                var edLst = ParallelEnumerable.Select(lst
-                        .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                        .AsParallel(), s => AutoMatchItemNumber(s).Result)
-                    .Where(x => x != null)
+                // Create a list of tasks
+                var tasks = lst
+                    .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
+                    .Select(s => AutoMatchItemNumber(s)) // Don't await here
                     .ToList();
-                   
+
+                // Await all tasks concurrently
+                var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+                
+                // Collect non-null results (assuming AutoMatchItemNumber returns EntryDataDetail or null)
+                var edLst = results.Where(x => x != null).ToList();
 
 
                 if(edLst.Any()) SetMinimumEffectDate(edLst);

@@ -74,8 +74,8 @@ namespace PreviousDocumentQS.Business.Services
                // {
                   using ( var dbContext = new PreviousDocumentQSContext(){StartTracking = StartTracking})
                   {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<PreviousItemsEx> entities = set.AsNoTracking().ToList();
+        var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<PreviousItemsEx> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;

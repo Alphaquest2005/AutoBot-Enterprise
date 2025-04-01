@@ -19,25 +19,35 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             try
             { 
                 new InventoryItemsAliasProcessor().UpdateInventoryItems(goodLst);
-                var entryDataLst = new EntryDataCreator()
-                    .GetEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, goodLst);
+                // Await the asynchronous call to get the actual list of tuples
+                // Each tuple is expected to be (dynamic existingEntryData, List<EntryDataDetails> details)
+                var entryDataTuples = await new EntryDataCreator()
+                    .GetEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, goodLst)
+                    .ConfigureAwait(false); // Added ConfigureAwait(false)
 
+                // --- Process EntryData ---
+                // Select the 'existingEntryData' part from each tuple
+                var extractedEntryData = entryDataTuples.Select(tuple => tuple.existingEntryData).ToList();
 
-                var existingEntryData = entryDataLst.Select(x => x.existingEntryData).Where(x => x.EntryData_Id > 0).ToList();
-                var newEntryData = entryDataLst.Select(x => x.existingEntryData).Where(x => x.EntryData_Id == 0).ToList();
+                // Filter the extracted EntryData list using the new variable name
+                var existingEntries = extractedEntryData.Where(ed => ed.EntryData_Id > 0).ToList();
+                var newEntries = extractedEntryData.Where(ed => ed.EntryData_Id == 0).ToList();
 
-                new EntryDataDSContext().BulkMerge<EntryData>(existingEntryData, o => o.IncludeGraph = true);
-                new EntryDataDSContext().BulkInsert<EntryData>(newEntryData, o => o.IncludeGraph = true);
+                // Use the filtered lists for bulk operations
+                new EntryDataDSContext().BulkMerge<EntryData>(existingEntries, o => o.IncludeGraph = true);
+                new EntryDataDSContext().BulkInsert<EntryData>(newEntries, o => o.IncludeGraph = true);
 
-
-                var entryDataWithDetailsLst = entryDataLst
-                        .Select(entryData => new EntryDataDetailsCreator()
-                        .CreateEntryDataDetails(entryData))
-                        .SelectMany(x => x.ToList())
+                // --- Process EntryDataDetails ---
+                // Use the original tuple list 'entryDataTuples'
+                var allEntryDataDetails = entryDataTuples
+                        .Select(entryDataTuple => new EntryDataDetailsCreator()
+                        .CreateEntryDataDetails(entryDataTuple)) // Pass the tuple
+                        .SelectMany(detailsList => detailsList) // Flatten the list of lists
                         .ToList();
                
-                var existingEntryDataDetails = entryDataWithDetailsLst.Where(x => x.EntryDataDetailsId > 0).ToList();
-                var newEntryDataDetails = entryDataWithDetailsLst.Where(x => x.EntryDataDetailsId == 0).ToList();
+                // Filter the details list
+                var existingEntryDataDetails = allEntryDataDetails.Where(x => x.EntryDataDetailsId > 0).ToList();
+                var newEntryDataDetails = allEntryDataDetails.Where(x => x.EntryDataDetailsId == 0).ToList();
 
                 new EntryDataDSContext().BulkMerge(existingEntryDataDetails);
                 new EntryDataDSContext().BulkInsert(newEntryDataDetails);

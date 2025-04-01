@@ -180,17 +180,28 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             List<(string ItemNumber, string ItemDescription, string TariffCode)> items,
             CancellationToken cancellationToken)
         {
-            var batchPrompt = CreateBatchPrompt(items);
-            var jsonResponse = await PostRequestAsync(new
+            try
             {
-                model = Model,
-                messages = new[] { new { role = "user", content = batchPrompt } },
-                temperature = DefaultTemperature,
-                max_tokens = 1000,
-                stream = false
-            }, cancellationToken).ConfigureAwait(false);
 
-            return ParseBatchResponse(jsonResponse);
+
+                var batchPrompt = CreateBatchPrompt(items);
+                var jsonResponse = await PostRequestAsync(new
+                {
+                    model = Model,
+                    messages = new[] { new { role = "user", content = batchPrompt } },
+                    temperature = DefaultTemperature,
+                    max_tokens = 1000,
+                    stream = false
+                }, cancellationToken).ConfigureAwait(false);
+
+                return ParseBatchResponse(jsonResponse);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         private string CreateBatchPrompt(List<(string ItemNumber, string ItemDescription, string TariffCode)> items)
@@ -242,7 +253,36 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             if (string.IsNullOrEmpty(content))
                 return new Dictionary<string, (string, string)>();
 
-            var batchData = JsonSerializer.Deserialize<JsonElement>(content);
+            // Trim potential markdown fences before parsing
+            var cleanContent = content.Trim();
+            if (cleanContent.StartsWith("```json"))
+            {
+                cleanContent = cleanContent.Substring(7); // Remove ```json
+            }
+            else if (cleanContent.StartsWith("```"))
+            {
+                 cleanContent = cleanContent.Substring(3); // Remove ```
+            }
+            if (cleanContent.EndsWith("```"))
+            {
+                cleanContent = cleanContent.Substring(0, cleanContent.Length - 3); // Remove ```
+            }
+            cleanContent = cleanContent.Trim(); // Trim any remaining whitespace
+
+
+            JsonElement batchData;
+            try
+            {
+                // Use the cleaned content for deserialization
+                batchData = JsonSerializer.Deserialize<JsonElement>(cleanContent);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to deserialize batch response content. Content: {Content}", content);
+                // Return empty dictionary to allow fallback to individual processing
+                return new Dictionary<string, (string, string)>();
+            }
+
             var result = new Dictionary<string, (string, string)>();
 
             foreach (var item in batchData.GetProperty("items").EnumerateArray())

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks; // Added missing using
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
@@ -20,12 +21,14 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
 
+        // Revert signature to match IProcessor<InventoryDataItem> interface
         public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
 
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
             var newItems = data.Where(x => x.Item == null).Select(x => x.Data).ToList();
-            var newInventoryItemFromData = InventoryItemDataUtils.GetNewInventoryItemFromData(newItems, inventorySource);
+            // Synchronously wait for the async call result (potential blocking issue)
+            var newInventoryItemFromData = InventoryItemDataUtils.GetNewInventoryItemFromData(newItems, inventorySource).Result;
             return new Result<List<InventoryDataItem>>(newInventoryItemFromData, true, "") ;
 
         }

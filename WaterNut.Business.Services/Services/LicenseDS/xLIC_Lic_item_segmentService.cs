@@ -74,8 +74,8 @@ namespace LicenseDS.Business.Services
                // {
                   using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                   {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xLIC_Lic_item_segment> entities = set.AsNoTracking().ToList();
+        var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xLIC_Lic_item_segment> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;

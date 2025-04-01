@@ -438,11 +438,11 @@ namespace WaterNut.DataSpace.Asycuda
             return c71;
         }
 
-        public bool ExportC71(int docSetId,xC71_Value_declaration_form c71, string fileName)
+        public async Task<bool> ExportC71(int docSetId,xC71_Value_declaration_form c71, string fileName)
         {
             try
             {
-                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).Result;
+                var docSet = await BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
                 var adoc = DatabaseToC71(c71);
                 adoc.SaveToFile(fileName);
                 var fileInfo = new FileInfo(fileName);

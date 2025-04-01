@@ -144,6 +144,7 @@ Refactor the solution to adhere to SOLID principles (especially SRP), improve na
     14. **Build Caching Issues:** Encountered persistent errors despite code fixes being present. Used `MSBuild.exe /t:Clean` before `/t:Rebuild` multiple times, which eventually helped resolve phantom errors.
 
 *   **Files Modified:**
+
     *   `DataLayer\Custom Classes\WaterNutDBEntities.cs`
     *   `Core.Common\Core.Common.UI\Core.Common.UI.csproj`
     *   `WaterNut.Business.Entities\WaterNut.Business.Entities.csproj`

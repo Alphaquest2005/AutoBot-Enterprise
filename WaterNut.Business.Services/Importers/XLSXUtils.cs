@@ -225,10 +225,10 @@ namespace WaterNut.Business.Services.Importers
             }
         }
 
-        public static void FixCSVFile(FileTypes fileType, bool? overwrite, string output)
+        public static async Task FixCSVFile(FileTypes fileType, bool? overwrite, string output)
         {
           
-            CSVUtils.FixCsv(new FileInfo(output), fileType, overwrite);
+            await CSVUtils.FixCsv(new FileInfo(output), fileType, overwrite).ConfigureAwait(false);
         }
 
 

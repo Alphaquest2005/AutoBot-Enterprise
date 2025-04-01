@@ -320,7 +320,7 @@ namespace WaterNut.DataSpace
             Clear(docset);
         }
 
-        internal async void Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
+        internal async Task Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
             await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
         }

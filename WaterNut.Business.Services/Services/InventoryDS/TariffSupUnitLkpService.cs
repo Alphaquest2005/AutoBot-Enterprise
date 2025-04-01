@@ -74,8 +74,8 @@ namespace InventoryDS.Business.Services
                // {
                   using ( var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                   {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<TariffSupUnitLkp> entities = set.AsNoTracking().ToList();
+        var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<TariffSupUnitLkp> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;

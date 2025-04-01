@@ -69,30 +69,36 @@ namespace EntryDataDS.Business.Services
         {
             try
             {
-            //using (var scope = new TransactionScope(TransactionScopeOption.Required,
-                                   //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
-               // {
-                  using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-                  {
-				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xSalesFiles> entities = set.AsNoTracking().ToList();
-                           //scope.Complete();
-                            if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
-                   }
+                //using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
+                // {
+                using (var dbContext = new EntryDataDSContext() { StartTracking = StartTracking })
+                {
+                    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xSalesFiles> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+                    //scope.Complete();
+                    if (tracking)
+                    {
+                        foreach (var entity in entities)
+                        {
+                            entity.StartTracking();
+                        }
+                    }
+                    return entities;
+                }
                 //}
-             }
+            }
             catch (Exception updateEx)
             {
-                    System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
             }
         }
 
@@ -101,162 +107,171 @@ namespace EntryDataDS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
-              using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(Id);
-				var set = AddIncludes(includesLst, dbContext);
-                xSalesFiles entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
-                if(tracking && entity != null) entity.StartTracking();
-                return entity;
-              }
-             }
+                if (string.IsNullOrEmpty(Id)) return null;
+                using (var dbContext = new EntryDataDSContext() { StartTracking = StartTracking })
+                {
+                    var i = Convert.ToInt32(Id);
+                    var set = AddIncludes(includesLst, dbContext);
+                    xSalesFiles entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(false);
+                    if (tracking && entity != null) entity.StartTracking();
+                    return entity;
+                }
+            }
             catch (Exception updateEx)
             {
                 System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
             }
         }
 
 
-		 public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext() { StartTracking = StartTracking })
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xSalesFiles>();
-					var set = AddIncludes(includesLst, dbContext);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xSalesFiles>();
+                    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xSalesFiles> entities;
                     if (exp == "All")
                     {
-						var entities = set.AsNoTracking().ToList();
-
-                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                     }
-					else
-					{
-						var entities = set.AsNoTracking().Where(exp)
-											.ToList();
-                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
-											
-					}
-					
+                    else
+                    {
+                        entities = await set.AsNoTracking().Where(exp).ToListAsync().ConfigureAwait(false);
+                    }
+
+                    if (tracking)
+                    {
+                        foreach (var entity in entities)
+                        {
+                            entity.StartTracking();
+                        }
+                    }
+                    return entities;
                 }
             }
             catch (Exception updateEx)
             {
-                    System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
             }
         }
 
-		 public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext() { StartTracking = StartTracking })
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xSalesFiles>();
-					var set = AddIncludes(includesLst, dbContext);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xSalesFiles>();
+                    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xSalesFiles> entities;
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = set.AsNoTracking().ToList(); 
-                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
                     }
-					else
-					{
-						set = AddWheres(expLst, set);
-						var entities = set.AsNoTracking().ToList();
-                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
-											
-					}
-					
+                    else
+                    {
+                        set = AddWheres(expLst, set);
+                        entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+                    }
+
+                    if (tracking)
+                    {
+                        foreach (var entity in entities)
+                        {
+                            entity.StartTracking();
+                        }
+                    }
+                    return entities;
                 }
             }
             catch (Exception updateEx)
             {
-                    System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
             }
         }
 
-		public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpressionNav(string exp,
-																							  Dictionary<string, string> navExp,
-																							  List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xSalesFiles>> GetxSalesFilesByExpressionNav(string exp,
+                                                                                  Dictionary<string, string> navExp,
+                                                                                  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext() { StartTracking = StartTracking })
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xSalesFiles>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = AddIncludes(includesLst, dbContext)
-												.ToList();
-                        if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return aentities; 
+                        var aentities = await AddIncludes(includesLst, dbContext).ToListAsync().ConfigureAwait(false);
+                        if (tracking)
+                        {
+                            foreach (var entity in aentities) { entity.StartTracking(); }
+                        }
+                        return aentities;
                     }
                     foreach (var itm in navExp)
                     {
                         switch (itm.Key)
                         {
                             case "xSalesDetails":
-                                return
-                                    await
-                                        GetWhere<xSalesDetails>(dbContext, exp, itm.Value, "xSalesFiles", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                // This case already returns Task<IEnumerable<xSalesFiles>>
+                                return await GetWhere<xSalesDetails>(dbContext, exp, itm.Value, "xSalesFiles", "Select", includesLst)
+                                        .ConfigureAwait(continueOnCapturedContext: false);
 
                         }
 
                     }
-					var set = AddIncludes(includesLst, dbContext);
-                    var entities = set.AsNoTracking().Where(exp)
-									.ToList();
-                    if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                    var set = AddIncludes(includesLst, dbContext);
+                    var entities = await set.AsNoTracking().Where(exp).ToListAsync().ConfigureAwait(false);
+                    if (tracking)
+                    {
+                        foreach (var entity in entities) { entity.StartTracking(); }
+                    }
+                    return entities;
 
                 }
             }
             catch (Exception updateEx)
             {
-                    System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
             }
         }
 

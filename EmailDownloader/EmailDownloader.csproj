@@ -13,6 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers> <!-- Added RuntimeIdentifier -->
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

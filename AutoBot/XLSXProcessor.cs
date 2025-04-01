@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
@@ -12,7 +13,7 @@ namespace AutoBotUtilities
 {
     public static class XLSXProcessor
     {
-        public static void Xlsx2csv(FileInfo[] files, List<FileTypes> fileTypes, bool? overwrite = null )
+        public static async Task Xlsx2csv(FileInfo[] files, List<FileTypes> fileTypes, bool? overwrite = null )
         {
             try
             {
@@ -39,7 +40,7 @@ namespace AutoBotUtilities
 
                         var output = XLSXUtils.CreateCSVFile(file, fileText);
 
-                        XLSXUtils.FixCSVFile(fileType, overwrite, output);
+                       await XLSXUtils.FixCSVFile(fileType, overwrite, output).ConfigureAwait(false);
                     }
                 }
 

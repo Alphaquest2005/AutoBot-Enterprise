@@ -115,7 +115,7 @@
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Taxation_Taxation_line" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Transit_Destination_xcuda_Transit" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_item_internal_freight" Width="1.5" PointX="8.375" PointY="9.75" />
-        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_item_other_cost" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_item_other_cost" Width="1.5" PointX="12.5" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Market_valuer" Width="1.5" PointX="10.375" PointY="3.75" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Valuation_item" Width="1.5" PointX="6.625" PointY="30" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Valuation_item_item_internal_freight" />
@@ -153,10 +153,6 @@
         <AssociationConnector Association="WaterNutDB.DataLayer.InventoryItemsxcuda_Inventory_Item" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Weight_itm" Width="3.875" PointX="8.875" PointY="31" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Valuation_item_Weight_itm" />
-        </Diagram>
-      <Diagram DiagramId="b567f2678d3d49a3818d4cb1141ba6eb" Name="WaterNut" ZoomLevel="74" >
-        </Diagram>
-      <Diagram DiagramId="15d94d10c68b48d9900e58b56cde41e1" Name="Diagram1" ZoomLevel="71" >
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

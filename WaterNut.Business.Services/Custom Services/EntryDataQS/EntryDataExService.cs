@@ -82,7 +82,7 @@ namespace EntryDataQS.Business.Services
 
                 dfileType.AsycudaDocumentSetId = docSetId;
                 var client = BaseDataModel.GetClient();
-                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, Utils.GetDocSets(dfileType), dfileType, client);
+                await InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, Utils.GetDocSets(dfileType), dfileType, client).ConfigureAwait(false);
             
             
         }

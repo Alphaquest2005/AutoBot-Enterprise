@@ -84,9 +84,9 @@ namespace AutoBot
                         {
                             if (ExecuteLastDBSessionAction(ctx, appSetting)) continue;
                         }
-
-                        ProcessEmails(appSetting, timeBeforeImport, ctx);
-
+ 
+                        await ProcessEmails(appSetting, timeBeforeImport, ctx);
+ 
                         ExecuteDBSessionActions(ctx, appSetting);
 
                         await ProcessDownloadFolder(appSetting).ConfigureAwait(false);
@@ -171,7 +171,8 @@ namespace AutoBot
             foreach (var fileType in fileTypes)
             {
                 var fileInfos = new FileInfo[] { new FileInfo(destFileName) };
-                var res = PDFUtils.ImportPDF(fileInfos, fileType);
+                // Add await and ConfigureAwait
+                var res = await PDFUtils.ImportPDF(fileInfos, fileType).ConfigureAwait(false);
                 if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
                 {
                     var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);
@@ -217,7 +218,7 @@ namespace AutoBot
             return false;
         }
 
-        private static void ProcessEmails(ApplicationSettings appSetting, DateTime beforeImport, CoreEntitiesContext ctx)
+        private static async Task ProcessEmails(ApplicationSettings appSetting, DateTime beforeImport, CoreEntitiesContext ctx)
         {
             if (!string.IsNullOrEmpty(appSetting.Email))
             {
@@ -234,7 +235,7 @@ namespace AutoBot
                     NotifyUnknownMessages = appSetting.NotifyUnknownMessages??false
                 };
 
-                var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result
+                var msgLst = (await Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)))
                     .ToList();
                 // get downloads
                 Console.WriteLine($"{msgLst.Count()} Emails Processed");

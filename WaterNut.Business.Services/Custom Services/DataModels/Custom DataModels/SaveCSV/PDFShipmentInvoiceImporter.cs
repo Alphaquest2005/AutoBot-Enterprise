@@ -25,9 +25,9 @@ namespace WaterNut.DataSpace
                 await ImportInventory(dataFile).ConfigureAwait(false);
 
 
-                 return _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
+                 return await _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
                     dataFile.OverWriteExisting, dataFile.EmailId,
-                    dataFile.DroppedFilePath, dataFile.Data, null);
+                    dataFile.DroppedFilePath, dataFile.Data, null).ConfigureAwait(false);
 
                 
             }

@@ -14,6 +14,7 @@
     <AssemblyName>WaterNut.Business.Services</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <SccProjectName>
@@ -1750,7 +1751,7 @@
     <PackageReference Include="Z.EntityFramework.Extensions">
       <Version>8.102.3</Version>
     </PackageReference>
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <!-- Removed duplicate PackageReference for System.Net.Http -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
+using CoreObjects = System.Data.Entity.Core.Objects; // Added alias
 using System.Data.Entity.Core;
 
 namespace WaterNut.DataLayer
@@ -30,7 +30,7 @@ namespace WaterNut.DataLayer
             {
                 var now = DateTime.UtcNow;
 
-                var entities = ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified)
+                var entities = ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added | System.Data.Entity.EntityState.Modified) // Explicitly qualify EntityState
                                         .Select(e => e.Entity)
                                         .OfType<IHasEntryTimeStamp>();
 
@@ -45,7 +45,7 @@ namespace WaterNut.DataLayer
 
                 return base.SaveChanges(options);
             }
-            catch (UpdateException u)
+            catch (System.Data.Entity.Core.UpdateException u) // Qualified UpdateException
             {
                 throw;
             }
