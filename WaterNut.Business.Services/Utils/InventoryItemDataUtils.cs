@@ -17,6 +17,7 @@ using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
 {
+
     public static class InventoryItemDataUtils
     {
 
@@ -115,8 +116,8 @@ namespace WaterNut.Business.Services.Utils
             var i = new InventoryItem(true)
             {
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                Description = description.Truncate(255),
-                ItemNumber = itemNumber.Truncate(20),
+                Description = description.Truncate(255), // Removed explicit cast
+                ItemNumber = itemNumber.Truncate(20),  // Removed explicit cast
                 TariffCode =
                     keyTariffCode, // Already awaited or string
                 InventoryItemSources = new List<InventoryItemSource>()
@@ -132,7 +133,7 @@ namespace WaterNut.Business.Services.Utils
             if (string.IsNullOrEmpty(item.Key.ItemDescription))
                 foreach (var line in item.Data)
                 {
-                    line.ItemDescription = i.Description.Truncate(255);
+                    line.ItemDescription = i.Description.Truncate(255); // Removed explicit cast
                 }
 
             return new InventoryDataItem(item, i);
@@ -143,9 +144,13 @@ namespace WaterNut.Business.Services.Utils
         {
             if (dynamicValue == null) return string.Empty;
 
-            // Check if it's awaitable and likely a Task<string>
-            // A simple check for Task<string> might not be enough with dynamics
-            // We check if GetAwaiter exists and if it's likely a string task
+            // Explicitly check if it's already a Task<string>
+            if (dynamicValue is Task<string> taskString)
+            {
+                return await taskString.ConfigureAwait(false) ?? string.Empty;
+            }
+
+            // Check if it's some other awaitable Task<T>
             var type = (Type)dynamicValue.GetType();
             if (type.GetMethod("GetAwaiter") != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
             {
@@ -156,7 +161,7 @@ namespace WaterNut.Business.Services.Utils
                  return Convert.ToString(result) ?? string.Empty;
             }
 
-            // Assume it's already a string or convertible to one
+            // Otherwise, assume it's directly convertible
             return Convert.ToString(dynamicValue) ?? string.Empty;
         }
 

@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Asycuda421.designer.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="FolderProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -195,6 +195,7 @@ namespace WaterNut.DataSpace
 
             WriteTextFile(file, formattedPdfTxt);
 
+            
             if (csvLines.Count < 1 || !tmp.Success)
             {
                 return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc)  ? ImportStatus.HasErrors : ImportStatus.Failed;
