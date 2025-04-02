@@ -457,7 +457,7 @@ namespace AutoBot
         }
 
         private static int oldProcessId = 0;
-        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "", int sMonths = 0, int sYears = 0, int eMonths = 0, int eYears = 0)
+        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "", int sMonths = 0, int sYears = 0, int eMonths = 0, int eYears = 0, bool enableDebugging = false) // Added enableDebugging parameter
         {
             try
             {
@@ -472,11 +472,12 @@ namespace AutoBot
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "java.exe",
+                    // Construct arguments string
                     Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r C:\Users\{Environment.UserName
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\\\"}"" {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + "")
-                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $" {sMonths} {sYears} {eMonths} {eYears}")}",
+                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $" {sMonths} {sYears} {eMonths} {eYears}")}{(enableDebugging ? " --debug-screenshots" : "")}", // Conditionally add debug flag
                     UseShellExecute = false
                 };
                 process.StartInfo = startInfo;
