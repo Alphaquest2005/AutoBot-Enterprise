@@ -1507,7 +1507,7 @@
       <Name>EmailDownloader</Name>
     </ProjectReference>
     <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
-      <Project>{523FBF1E-BB4F-435A-9A9E-63DE49CD721D}</Project>
+      <Project>{523fbf1e-bb4f-435a-9a9e-63de49cd721d}</Project>
       <Name>pdf-ocr</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Linq.Dynamic\System.Linq.Dynamic.csproj">
