@@ -79,10 +79,15 @@ namespace WaterNut.DataSpace
         private async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
             bool overWriteExisting)
         {
+            Console.WriteLine($"SaveCSVModel.SaveCSV: START - File: '{droppedFilePath}', FTID: {fileType.Id}");
             var rawDataFile = CreateRawDataFile(droppedFilePath, fileType, docSet, overWriteExisting);
 
-            await extractors[fileType.FileImporterInfos.EntryType].Extract(rawDataFile).ConfigureAwait(false);
+            var extractorKey = fileType.FileImporterInfos.EntryType;
+            Console.WriteLine($"SaveCSVModel.SaveCSV: Using Extractor Key: '{extractorKey}'");
+            if (!extractors.ContainsKey(extractorKey)) throw new ApplicationException($"No extractor found for EntryType '{extractorKey}'");
 
+            await extractors[extractorKey].Extract(rawDataFile).ConfigureAwait(false);
+            Console.WriteLine($"SaveCSVModel.SaveCSV: END - Extractor '{extractorKey}' completed.");
         }
 
         private static RawDataFile CreateRawDataFile(string droppedFilePath, FileTypes fileType,
@@ -91,16 +96,22 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: START - File: '{droppedFilePath}', FTID: {fileType.Id}");
                 var csvImporter = new CSVImporter(fileType);
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: CSVImporter created with FTID: {fileType.Id}");
 
                 var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: Read {lines.Length} lines from file.");
 
                 var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: Extracted {fixedHeadings.Length} headings: [{string.Join(", ", fixedHeadings)}]");
 
                 var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: Found EmailId: {emailId ?? "N/A"}");
                 var rawDataFile =
                     new RawDataFile(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId,
                         droppedFilePath);
+                Console.WriteLine($"SaveCSVModel.CreateRawDataFile: END - RawDataFile created.");
                 return rawDataFile;
             }
             catch (Exception e)

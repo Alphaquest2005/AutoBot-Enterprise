@@ -5,6 +5,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks; // Added for Task
 using SalesDataQS.Client.Repositories;
 
 namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
@@ -50,9 +51,10 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
         
          
 
-        private async void OnSalesDataDetailsFilterExpressionChangetals(object sender, SimpleMvvmToolkit.NotificationEventArgs<string> e)
-        {
-            using (var ctx = new SalesDataDetailRepository())
+         // Change signature to async void for event handler
+         private async void OnSalesDataDetailsFilterExpressionChangetals(object sender, SimpleMvvmToolkit.NotificationEventArgs<string> e)
+         {
+             using (var ctx = new SalesDataDetailRepository())
             {
                 TotalSalesValue = await ctx.SumNav(e.Data, vloader.NavigationExpression, "SalesValue").ConfigureAwait(false);
   

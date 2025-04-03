@@ -19,20 +19,20 @@ namespace AutoBot
                 {"CreateEx9",(ft, fs) => CreateEX9Utils.CreateEx9(false, -1) },
                 {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
                 {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries(-1) },
-                {"SaveCsv",(ft, fs) => CSVUtils.SaveCsv(fs, ft) },
+                {"SaveCsv", (ft, fs) => CSVUtils.SaveCsv(fs, ft).GetAwaiter().GetResult() }, // Corrected namespace qualification
                 {"ReplaceCSV",(ft, fs) => CSVUtils.ReplaceCSV(fs, ft) },
                 {"RecreatePOEntries",(ft, fs) => POUtils.RecreatePOEntries(ft.AsycudaDocumentSetId) },
                 {"ExportPOEntries",(ft, fs) => POUtils.ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv", async (ft, fs) => await XLSXProcessor.Xlsx2csv(fs, new List<FileTypes>(){ft}) },
+                {"Xlsx2csv",  (ft, fs) =>  XLSXProcessor.Xlsx2csv(fs, new List<FileTypes>(){ft}).GetAwaiter().GetResult() },
                 {"SaveInfo",(ft, fs) => EmailTextProcessor.Execute(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
-                {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs,ft) },
+                {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
                 {"CreateShipmentEmail", ShipmentUtils.CreateShipmentEmail },
                 //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
@@ -100,10 +100,10 @@ namespace AutoBot
                 {"ImportPOEntries", (ft,fs) => DocumentUtils.ImportPOEntries(false) },
                 {"ImportAllAsycudaDocumentsInDataFolder", (ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) },
                 {"ImportEntries",(ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString()) },
-
-
+                {"ImportShipmentInfoFromTxt", ShipmentUtils.ImportShipmentInfoFromTxt }, // Added mapping for new action
 
 
             };
+            // Removed extra closing brace here
     }
 }

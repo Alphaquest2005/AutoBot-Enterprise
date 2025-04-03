@@ -56,7 +56,7 @@ namespace WaterNut.DataSpace
                                           "UpdateLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
                                           "AddFieldFormatRegex: RegexId: 000, Keyword:'', Regex:'', ReplaceRegex:'', ReplacementRegexIsMultiLine: True, RegexIsMultiLine: True\r\n";
 
-        public static Dictionary<string, (string file, string, ImportStatus Success)> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
+        public static async Task<Dictionary<string, (string file, string, ImportStatus Success)>> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
             var imports = new Dictionary<string, (string file, string, ImportStatus Success)>();
@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace
             {
 
                 
-                var pdfTxt = GetPdftxt(file);
+                var pdfTxt = await GetPdftxt(file).ConfigureAwait(false);
 
                 
                 //Get Template
@@ -195,6 +195,7 @@ namespace WaterNut.DataSpace
 
             WriteTextFile(file, formattedPdfTxt);
 
+            
             if (csvLines.Count < 1 || !tmp.Success)
             {
                 return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc)  ? ImportStatus.HasErrors : ImportStatus.Failed;
@@ -290,7 +291,7 @@ namespace WaterNut.DataSpace
                     RegexOptions.IgnoreCase |RegexOptions.Multiline | RegexOptions.ExplicitCapture));
         }
 
-        public static StringBuilder GetPdftxt(string file)
+        public static async Task<StringBuilder> GetPdftxt(string file)
         {
             StringBuilder pdftxt = new StringBuilder();
 
@@ -347,7 +348,7 @@ namespace WaterNut.DataSpace
             //    return txt;
             //});
 
-            Task.WaitAll(ripTask, singleColumnTask, sparseTextTask); //RawLineTextTask, OsdOnlyTextTask, SingleWordTextTask, sparsOsdTextTask
+            await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false); //RawLineTextTask, OsdOnlyTextTask, SingleWordTextTask, sparsOsdTextTask
 
             pdftxt.AppendLine(singleColumnTask.Result);
             pdftxt.AppendLine(sparseTextTask.Result);

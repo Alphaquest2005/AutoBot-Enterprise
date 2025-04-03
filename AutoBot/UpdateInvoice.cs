@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks; // Added for Task
 using CoreEntities.Business.Entities;
 using MoreLinq;
 using OCR.Business.Entities;
@@ -531,7 +532,8 @@ namespace AutoBot
             }
         }
 
-        private static void RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes)
+        // Change signature to async Task
+        private static async Task RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes)
         {
             try
             {
@@ -545,7 +547,8 @@ namespace AutoBot
                     var files = new Dictionary<string, string>();
                     foreach (var pdf in pdfs)
                     {
-                        var str = InvoiceReader.GetPdftxt(pdf.FullName);
+                        // Await the async call
+                        var str = await InvoiceReader.GetPdftxt(pdf.FullName).ConfigureAwait(false);
                         if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
                     }
                     foreach (var invoice in invoices)

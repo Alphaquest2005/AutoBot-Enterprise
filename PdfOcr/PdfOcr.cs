@@ -159,7 +159,7 @@ namespace pdf_ocr
             {
                 using (var img = Pix.LoadFromFile(file.FullName))
                 {
-                    using (var tesseractEngine = new TesseractEngine(Path.Combine(Environment.CurrentDirectory, "tessdata"), ocrLanguage, EngineMode.Default))
+                    using (var tesseractEngine = new TesseractEngine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"), ocrLanguage, EngineMode.Default))
                     {
                         tesseractEngine.DefaultPageSegMode = pagemode;
                         

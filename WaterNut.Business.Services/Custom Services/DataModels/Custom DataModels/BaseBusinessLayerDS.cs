@@ -216,6 +216,11 @@ namespace WaterNut.DataSpace
                         DocumentDS.DataModels.BaseDataModel.Instance.SearchCustoms_Procedure(new List<string> {"All"})
                             .ConfigureAwait(false));
 
+            // Load ExportTemplates asynchronously during initialization
+            using (var ctx = new ExportTemplateService())
+            {
+                 Instance._exportTemplates = await ctx.GetExportTemplates().ConfigureAwait(false);
+            }
 
             StatusModel.StopStatusUpdate();
         }
@@ -285,22 +290,12 @@ namespace WaterNut.DataSpace
 
         internal async Task Clear(int AsycudaDocumentSetId)
         {
-            AsycudaDocumentSet docset = null;
-            using (var ctx = new AsycudaDocumentSetService())
-            {
-                docset = await ctx.GetAsycudaDocumentSetByKey(AsycudaDocumentSetId.ToString(),
-                    new List<string>
-                    {
-                        "xcuda_ASYCUDA_ExtendedProperties",
-                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
-                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_PreviousItem"
-                    }).ConfigureAwait(false);
-            }
+            AsycudaDocumentSet docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
 
-            Clear(docset);
+            await Clear(docset).ConfigureAwait(false);
         }
 
-        internal async void Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
+        internal async Task Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
             await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
         }
@@ -3728,15 +3723,9 @@ namespace WaterNut.DataSpace
                 get => _previousDocumentItemId;
                 set
                 {
+                    // Avoid blocking calls in property setters. Load PreviousDocumentItem explicitly when needed.
                     _previousDocumentItemId = value;
-
-                    using (var ctx = new xcuda_ItemService())
-                    {
-                        if (_previousDocumentItemId != 0)
-                            PreviousDocumentItem = ctx.Getxcuda_ItemByKey(_previousDocumentItemId.ToString()).Result;
-                        else
-                            PreviousDocumentItem = null;
-                    }
+                    PreviousDocumentItem = null; // Clear related property when Id changes
                 }
             }
 

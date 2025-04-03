@@ -45,7 +45,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         static List<string> _progressLst = new List<string>();
 
-        public void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
+        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
             List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             
@@ -60,53 +60,56 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             UpdateStatus($"Status = Start PrepareDataForAllocation ..., StartTime = {DateTime.Now.ToShortTimeString()}");
             AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
             UpdateStatus($"Status = Finish PrepareDataForAllocation ..., EndTime = {DateTime.Now.ToShortTimeString()}");
-            //var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+            
             UpdateStatus($"Status = Start ReAllocatedExistingXSales ..., StartTime = {DateTime.Now.ToShortTimeString()}");
-            itemSets
+            var task1 = Task.WhenAll(itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
-                .ForAll(x => new ReAllocatedExistingXSales().Execute(x).Wait());
-            UpdateStatus($"Status = Finish PrepareDataForAllocation ..., EndTime = {DateTime.Now.ToShortTimeString()}");
+                .Select(x => new ReAllocatedExistingXSales().Execute(x))); // Assuming Execute returns Task
+            await task1.ConfigureAwait(false);
+            UpdateStatus($"Status = Finish ReAllocatedExistingXSales ..., EndTime = {DateTime.Now.ToShortTimeString()}");
 
             UpdateStatus($"Status = Start ReallocateExistingEx9 ..., StartTime = {DateTime.Now.ToShortTimeString()}");
-            itemSets
+             var task2 = Task.WhenAll(itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
-                .ForAll(x => new ReallocateExistingEx9().Execute(x).Wait()); // to prevent changing allocations when im7 info changes
-
+                .Select(x => new ReallocateExistingEx9().Execute(x))); // Assuming Execute returns Task
+            await task2.ConfigureAwait(false);
             UpdateStatus($"Status = Finish ReallocateExistingEx9 ..., EndTime = {DateTime.Now.ToShortTimeString()}");
 
             StatusModel.Timer("Auto Match Adjustments");
 
-            //new AdjustmentShortService().AutoMatch(applicationSettings.ApplicationSettingsId, true, itemSets)
-            //    .Wait();
+            
             UpdateStatus($"Status = Start AutoMatch ..., StartTime = {DateTime.Now.ToShortTimeString()}");
-            itemSets
+            var task3 = Task.WhenAll(itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
-                .ForAll(x => new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).Wait());
+                .Select(x => new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x))); // AutoMatch is already async Task
+            await task3.ConfigureAwait(false);
             UpdateStatus($"Status = Finish AutoMatch ..., EndTime = {DateTime.Now.ToShortTimeString()}");
 
             UpdateStatus($"Status = Start Allocate Sales ..., StartTime = {DateTime.Now.ToShortTimeString()}");
-            itemSets
+            var task4 = Task.WhenAll(itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
                 // .WithDegreeOfParallelism(1)
-                .ForAll(x =>
+                .Select(x =>
                     new OldSalesAllocator()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x).Wait());
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x))); // AllocateSalesByMatching... is already async Task
+            await task4.ConfigureAwait(false);
             UpdateStatus($"Status = Finish Allocate Sales ..., EndTime = {DateTime.Now.ToShortTimeString()}");
 
             UpdateStatus($"Status = Start MarkErrors ..., StartTime = {DateTime.Now.ToShortTimeString()}");
-            itemSets
+            var task5 = Task.WhenAll(itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
-                .ForAll(x => new MarkErrors().Execute(x).Wait());
+                .Select(x => new MarkErrors().Execute(x))); // MarkErrors.Execute is now async Task
+            await task5.ConfigureAwait(false);
             UpdateStatus($"Status = Finish MarkErrors ..., EndTime = {DateTime.Now.ToShortTimeString()}");
             UpdateStatus($"Status = Finish Allocation..., TotalRecords = {itemSets.Count},  EndTime = {DateTime.Now.ToShortTimeString()}");
 

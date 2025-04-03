@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System; // Added for Type and Convert
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
 {
+
     public static class InventoryItemDataUtils
     {
 
@@ -35,26 +37,28 @@ namespace WaterNut.Business.Services.Utils
         }
 
 
-        public static List<InventoryDataItem> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
+        public static async Task<List<InventoryDataItem>> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
             var inventoryItems =
                 InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string) x.Key.ItemNumber).ToList());
 
 
-            var newInventoryItems = CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems);
+            var newInventoryItems = await CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems).ConfigureAwait(false);
 
 
             return newInventoryItems;
         }
 
-        public static List<InventoryDataItem> CreateNewInventoryData(InventorySource inventorySource,
+        public static async Task<List<InventoryDataItem>> CreateNewInventoryData(InventorySource inventorySource,
             List<InventoryData> validItems, List<InventoryItem> inventoryItems)
         {
-            var newInventoryItem = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
-            var newInventoryItems = newInventoryItem
-                .Select(item => CreateInventoryItem(inventorySource, item))
-                .ToList();
+            var newInventoryItemData = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
+            var newInventoryItems = new List<InventoryDataItem>();
+            foreach (var itemData in newInventoryItemData)
+            {
+                newInventoryItems.Add(await CreateInventoryItem(inventorySource, itemData).ConfigureAwait(false));
+            }
 
             new SaveInventoryItemsSelector().Execute(newInventoryItems);
 
@@ -98,43 +102,94 @@ namespace WaterNut.Business.Services.Utils
                 .ToList();
         }
 
-        public static InventoryDataItem CreateInventoryItem(InventorySource inventorySource,
+        public static async Task<InventoryDataItem> CreateInventoryItem(InventorySource inventorySource,
             InventoryData item)
         {
-            //create a function that call deepseek api with item description and return tariff code
-            var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
-                ? GetTariffCode(item)
-                : item.Key.TariffCode;
-            var i = new InventoryItem(true)
+            try
             {
-                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                Description = ((string)item.Key.ItemDescription).Truncate(255), // quicker trust database than file
-                ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
-                TariffCode = 
-                    keyTariffCode,
-                InventoryItemSources = new List<InventoryItemSource>()
-                {
-                    new InventoryItemSource(true)
-                    {
-                        InventorySourceId = inventorySource.Id,
-                        TrackingState = TrackingState.Added
-                    }
-                },
-                TrackingState = TrackingState.Added
-            };
-            if (string.IsNullOrEmpty(item.Key.ItemDescription))
-                foreach (var line in item.Data)
-                {
-                    line.ItemDescription = i.Description.Truncate(255);
-                }
 
-            return new InventoryDataItem(item, i);
+                //create a function that call deepseek api with item description and return tariff code
+                string keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
+                    ? await GetTariffCode(item).ConfigureAwait(false)//GetTariffCodeValue(item)
+                    : item.Key.TariffCode;
+
+                // Use helper method to safely get values
+                string description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
+                string itemNumber = await GetDynamicStringValueAsync(item.Key.ItemNumber).ConfigureAwait(false);
+
+                var i = new InventoryItem(true)
+                {
+                    ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    Description = ((string)description).Truncate(255), // Do not Remove explicit cast as it is needed for extension call
+                    ItemNumber =
+                        ((string)itemNumber)
+                        .Truncate(20), // Do not Remove explicit cast as it is needed for extension call
+                    TariffCode =
+                        keyTariffCode, // Already awaited or string
+                    InventoryItemSources = new List<InventoryItemSource>()
+                    {
+                        new InventoryItemSource(true)
+                        {
+                            InventorySourceId = inventorySource.Id,
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                };
+                if (string.IsNullOrEmpty(item.Key.ItemDescription))
+                    foreach (var line in item.Data)
+                    {
+                        line.ItemDescription = i.Description.ToString().Truncate(255); // Removed explicit cast
+                    }
+
+                return new InventoryDataItem(item, i);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
-        private static dynamic GetTariffCode(InventoryData item)
+        private static string GetTariffCodeValue(InventoryData item)
         {
-            var suspectedTariffCode = new DeepSeekApi().GetTariffCode(item.Key.ItemDescription).Result;
-            return InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            return GetTariffCode(item).Result;
+        }
+
+        // Helper to safely get string from dynamic property (might be Task<string> or string)
+        private static async Task<string> GetDynamicStringValueAsync(dynamic dynamicValue)
+        {
+            if (dynamicValue == null) return string.Empty;
+
+            // Explicitly check if it's already a Task<string>
+            if (dynamicValue is Task<string> taskString)
+            {
+                return await taskString.ConfigureAwait(false) ?? string.Empty;
+            }
+
+            // Check if it's some other awaitable Task<T>
+            var type = (Type)dynamicValue.GetType();
+            if (type.GetMethod("GetAwaiter") != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                 // It's likely a Task<T>, await it
+                await dynamicValue.ConfigureAwait(false);
+                // Now get the result (which we hope is string or convertible)
+                 var result = dynamicValue.Result;
+                 return Convert.ToString(result) ?? string.Empty;
+            }
+
+            // Otherwise, assume it's directly convertible
+            return Convert.ToString(dynamicValue) ?? string.Empty;
+        }
+
+
+        private static async Task<string> GetTariffCode(InventoryData item)
+        {
+            // Use the helper for the description passed to the API as well
+            var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
+            var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(description).ConfigureAwait(false);
+            return await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
         }
     }
 }

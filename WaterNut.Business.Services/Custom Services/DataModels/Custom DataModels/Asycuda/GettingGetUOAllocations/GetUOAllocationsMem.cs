@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
 using MoreLinq;
@@ -14,14 +15,21 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     {
         static readonly object Identity = new object();
         private static ConcurrentDictionary<int , IGrouping<xcuda_Item, AsycudaSalesAllocations>> _allocations = null;
+        private static bool _isInitialized = false;
+        private static readonly SemaphoreSlim _initSemaphore = new SemaphoreSlim(1, 1);
 
-        public GetUOAllocationsMem()
+        // Private constructor
+        private GetUOAllocationsMem() {}
+
+        // Async factory method
+        public static async Task<GetUOAllocationsMem> CreateAsync()
         {
-            lock (Identity)
+            await _initSemaphore.WaitAsync().ConfigureAwait(false);
+            try
             {
-                if (_allocations != null) return;
-                    var res = GetAsycudaSalesAllocations();   
-
+                if (!_isInitialized)
+                {
+                    var res = await GetAsycudaSalesAllocations().ConfigureAwait(false);
                       
                         
                      var dic =   res.GroupBy(x => new xcuda_Item()
@@ -33,11 +41,18 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         })
                         .ToDictionary(x => x.Key.Item_Id, x => x);
                     _allocations = new ConcurrentDictionary<int, IGrouping<xcuda_Item, AsycudaSalesAllocations>>(dic);
-                
+                    _isInitialized = true;
+                }
             }
+            finally
+            {
+                _initSemaphore.Release();
+            }
+            return new GetUOAllocationsMem(); // Return instance after initialization
         }
 
-        private static List<AsycudaSalesAllocations> GetAsycudaSalesAllocations()
+
+        private static async Task<List<AsycudaSalesAllocations>> GetAsycudaSalesAllocations()
         {
             using (var ctx = new AllocationDSContext { StartTracking = false })
             {
@@ -53,15 +68,15 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                
 
-                var enttask = Task.Run(() => AddEntryDataDetails(res));
-                var prevtask = Task.Run(() => AddPreviousDocumentItem(res));
-                Task.WaitAll(enttask, prevtask);
+                var enttask = Task.Run(() => AddEntryDataDetails(res)); // Keep sync method in Task.Run
+                var prevtask = AddPreviousDocumentItem(res); // Call async method directly
+                await Task.WhenAll(enttask, prevtask).ConfigureAwait(false); // Await both
 
                 return res;
             }
         }
 
-        private static void  AddPreviousDocumentItem(List<AsycudaSalesAllocations> res)
+        private static async Task AddPreviousDocumentItem(List<AsycudaSalesAllocations> res)
         {
             //.Include(x => x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode)
             //.Include(x => x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit)
@@ -72,7 +87,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                            .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
                            .WhereBulkContains( prevItemlst, x => x.Item_Id)
                            .ToList());
-            prevItemTask.Wait();
+            await prevItemTask.ConfigureAwait(false);
             var prevItem = prevItemTask.Result;
             res.Join(prevItem, a => a.PreviousItem_Id, p => p.Item_Id, (a, p) => (a, p))
                 .ForEach(x => x.a.PreviousDocumentItem = x.p);

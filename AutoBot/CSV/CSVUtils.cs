@@ -61,14 +61,31 @@ namespace AutoBot
 
         private static void TryImportFile(FileTypes fileType, FileInfo file)
         {
+             // --- Detailed Logging ---
+             Console.WriteLine($"SaveCsv START: Processing file '{file.Name}' with FileType ID {fileType.Id} ('{fileType.Description}')");
+             var childCsvType = fileType.ChildFileTypes.FirstOrDefault(cf => cf.FileImporterInfos?.Format == FileTypeManager.FileFormats.Csv);
+             Console.WriteLine($"SaveCsv INFO: Does Parent FT {fileType.Id} have a Child CSV FT? {(childCsvType != null ? $"Yes (ID: {childCsvType.Id})" : "No")}");
+             using (var ctx = new CoreEntitiesContext())
+             {
+                 var mappingCountParent = ctx.FileTypeMappings.Count(m => m.FileTypeId == fileType.Id);
+                 var mappingCountChild = childCsvType != null ? ctx.FileTypeMappings.Count(m => m.FileTypeId == childCsvType.Id) : 0;
+                 Console.WriteLine($"SaveCsv INFO: Mapping Count for Parent FT {fileType.Id}: {mappingCountParent}");
+                 if (childCsvType != null) Console.WriteLine($"SaveCsv INFO: Mapping Count for Child FT {childCsvType.Id}: {mappingCountChild}");
+             }
+             // --- End Detailed Logging ---
+
             try
             {
+                // Call the original logic, passing the original fileType
                 SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true)
                     .Wait(); //set to false to merge
+                 Console.WriteLine($"SaveCsv SUCCESS: Processed file '{file.Name}' with FileType ID {fileType.Id} (ProcessDroppedFile completed without throwing).");
             }
             catch (Exception e)
             {
-                EmailCSVImportError(file, e);
+                 Console.WriteLine($"SaveCsv FAILED: Error processing file '{file.Name}' with FileType ID {fileType.Id}. Error: {e.Message}");
+                 Console.WriteLine($"Stack Trace: {e.StackTrace}");
+                EmailCSVImportError(file, e); // Keep existing error handling
             }
         }
 

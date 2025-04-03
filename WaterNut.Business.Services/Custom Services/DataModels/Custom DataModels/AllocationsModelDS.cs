@@ -411,14 +411,21 @@ namespace WaterNut.DataSpace
         }
 
 
-        public void Send2Excel(List<AsycudaSalesAllocations> lst)
+        public async Task Send2Excel(List<AsycudaSalesAllocations> lst)
         {
-            var s = new ExportToCSV<AllocationsExcelLine, List<AllocationsExcelLine>>
+            var excelData = new List<AllocationsExcelLine>();
+            foreach (var sa in lst)
             {
-                dataToPrint = (from sa in lst
-                    let sales = sa.EntryDataDetails.Sales
-                    let prevEntry = sa.PreviousDocumentItem
-                    select new AllocationsExcelLine
+                var sales = sa.EntryDataDetails.Sales;
+                var prevEntry = sa.PreviousDocumentItem;
+                string ex9DocRef = "";
+                if (sa.xBondEntry != null)
+                {
+                    var doc = await BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).ConfigureAwait(false);
+                    ex9DocRef = doc?.ReferenceNumber ?? "";
+                }
+
+                excelData.Add(new AllocationsExcelLine
                     {
                         DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
                         InvoiceNo = sales?.INVNumber,
@@ -469,11 +476,14 @@ namespace WaterNut.DataSpace
                                     .Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
                         DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
                         DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),
-                        Ex9Doc = sa.xBondEntry == null
-                            ? ""
-                            : BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).Result.ReferenceNumber,
+                        Ex9Doc = ex9DocRef,
                         Ex9DocLine = sa.xBondEntry == null ? 0 : sa.xBondEntry.LineNumber
-                    }).ToList()
+                    });
+            }
+
+            var s = new ExportToCSV<AllocationsExcelLine, List<AllocationsExcelLine>>
+            {
+                dataToPrint = excelData
             };
             s.GenerateReport();
         }

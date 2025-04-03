@@ -281,7 +281,7 @@ namespace AdjustmentQS.Business.Services
 
                 var lst = GetSelectedAdjustmentDetails(applicationSettingsId, strLst);
 
-                await Services.AutoMatchProcessor.DoAutoMatch(applicationSettingsId, lst);
+                await Services.AutoMatchProcessor.DoAutoMatch(applicationSettingsId, lst).ConfigureAwait(false);
 
             }
             catch (Exception e)

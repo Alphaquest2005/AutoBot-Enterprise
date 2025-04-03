@@ -18,9 +18,10 @@ using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using xlsxWriter;
-using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
+using DocumentDS.Business.Entities; // Added for AsycudaDocumentSet, xcuda_Declarant etc.
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet; // Keep alias for clarity if needed elsewhere
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
-
+using System.Text; // Added for StringBuilder
 namespace AutoBot
 {
     public class ShipmentUtils
@@ -77,9 +78,9 @@ namespace AutoBot
             try
             {
 
-           
+
                 var emailId = fileType.EmailId;
-            
+
                 // Todo quick paks etc put Man reg#, bl numer, TotalWeight & Totalfreight in spreadsheet. so invoice can generate the entry.
                 // change the required documents to match too
 
@@ -109,7 +110,7 @@ namespace AutoBot
                         .ProcessShipment()
                     //.SaveShipment()
                     ;
-               
+
                 var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer" || x.Role == "PO Clerk")
                     .Select(x => x.EmailAddress)
                     .Distinct()
@@ -124,9 +125,9 @@ namespace AutoBot
                             $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
                             shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
 
-                       
+
                         ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
-                       
+
                     });
                     ctx.SaveChanges();
                 }
@@ -188,9 +189,8 @@ namespace AutoBot
 
         }
 
-        
 
-        
+
 
         public static void SubmitUnclassifiedItems(FileTypes ft)
         {
@@ -466,5 +466,276 @@ namespace AutoBot
                                                     delete from ShipmentManifest WHERE (EmailId = N'{fileType.EmailId}')");
             }
         }
-    }
-}
+// --- Start of Added/Corrected Methods ---
+
+        public static void ImportShipmentInfoFromTxt(FileTypes ft, FileInfo[] files)
+        {
+            Console.WriteLine($"Starting ImportShipmentInfoFromTxt for FileType: {ft.Id}");
+            var infoFile = files.FirstOrDefault(f => f.Name.Equals("Info.txt", StringComparison.OrdinalIgnoreCase));
+
+            if (infoFile == null || !infoFile.Exists)
+            {
+                Console.WriteLine("Error: Info.txt not found in the provided files.");
+                throw new FileNotFoundException("Info.txt not found for ImportShipmentInfoFromTxt action.", "Info.txt");
+            }
+
+            Console.WriteLine($"Found Info.txt: {infoFile.FullName}");
+            var infoData = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                var lines = File.ReadAllLines(infoFile.FullName);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var parts = line.Split(new[] { ':' }, 2);
+                    if (parts.Length == 2)
+                    {
+                        var key = parts[0].Trim();
+                        var value = parts[1].Trim();
+                        // Don't add empty values or known placeholders
+                        if (!infoData.ContainsKey(key) && !string.IsNullOrWhiteSpace(value) && !value.Equals("Consignee Address Not Found", StringComparison.OrdinalIgnoreCase) && !value.Equals("Not Found", StringComparison.OrdinalIgnoreCase))
+                        {
+                            infoData.Add(key, value);
+                        }
+                    }
+                }
+                Console.WriteLine($"Parsed {infoData.Count} key-value pairs from Info.txt");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading or parsing Info.txt: {ex.Message}");
+                throw; // Rethrow as this is critical
+            }
+
+            // --- Extract Key Identifier (BL Number) ---
+            if (!infoData.TryGetValue("BL", out var blNumber) || string.IsNullOrWhiteSpace(blNumber))
+            {
+                Console.WriteLine("Error: BL Number not found or empty in Info.txt.");
+                throw new ApplicationException("BL Number not found or empty in Info.txt.");
+            }
+            Console.WriteLine($"Using BLNumber '{blNumber}' as key identifier (Declarant_Reference_Number).");
+            string declarantRef = blNumber;
+
+            try
+            {
+                using (var ctx = new DocumentDSContext())
+                {
+                    ctx.Configuration.LazyLoadingEnabled = false;
+                    ctx.Configuration.AutoDetectChangesEnabled = false;
+
+                    // --- Find or Create AsycudaDocumentSet ---
+                    var docSet = ctx.AsycudaDocumentSets
+                                    .FirstOrDefault(ds => ds.Declarant_Reference_Number == declarantRef &&
+                                                           ds.ApplicationSettingsId == ft.ApplicationSettingsId);
+
+                    if (docSet == null)
+                    {
+                        Console.WriteLine($"AsycudaDocumentSet not found for Ref '{declarantRef}'. Creating new one.");
+
+                        // --- Parse required fields BEFORE creating ---
+                        if (!infoData.TryGetValue("Currency", out var currencyCode) || string.IsNullOrWhiteSpace(currencyCode))
+                        {
+                            throw new ApplicationException("Required field 'Currency' not found or empty in Info.txt.");
+                        }
+                        // Assuming default exchange rate if not provided
+                        double exchangeRate = 1.0;
+                        if (infoData.TryGetValue("Exchange Rate", out var exRateStr) && double.TryParse(exRateStr, out var parsedRate))
+                        {
+                            exchangeRate = parsedRate;
+                        }
+                         // FreightCurrencyCode has a DB default 'USD', so we don't strictly need to set it unless different
+
+                        docSet = new AsycudaDocumentSet(true)
+                        {
+                            TrackingState = TrackingState.Added,
+                            ApplicationSettingsId = ft.ApplicationSettingsId,
+                            Declarant_Reference_Number = declarantRef,
+                            EntryTimeStamp = DateTime.Now,
+                            // Set required fields found above
+                            Currency_Code = currencyCode,
+                            Exchange_Rate = exchangeRate,
+                            FreightCurrencyCode = infoData.TryGetValue("Freight Currency", out var frCurr) ? frCurr : "USD" // Use info or default
+                        };
+                        ctx.AsycudaDocumentSets.Add(docSet);
+                        ctx.SaveChanges(); // Save to get the ID
+                        Console.WriteLine($"Created new AsycudaDocumentSet with ID: {docSet.AsycudaDocumentSetId}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Found existing AsycudaDocumentSet with ID: {docSet.AsycudaDocumentSetId}");
+                        ctx.Entry(docSet).State = EntityState.Modified;
+                    }
+
+                    // --- Update AsycudaDocumentSet fields ---
+                    if (infoData.TryGetValue("Manifest", out var manifest)) docSet.Manifest_Number = manifest;
+                    if (infoData.TryGetValue("Freight", out var freightStr) && double.TryParse(freightStr, out var freight)) docSet.TotalFreight = freight;
+                    if (infoData.TryGetValue("Weight(kg)", out var weightStr) && double.TryParse(weightStr, out var weight)) docSet.TotalWeight = weight;
+                    if (infoData.TryGetValue("Currency", out var currency)) docSet.Currency_Code = currency;
+                    if (infoData.TryGetValue("Country of Origin", out var origin)) docSet.Country_of_origin_code = origin;
+                    if (infoData.TryGetValue("Total Invoices", out var totalInvStr) && int.TryParse(totalInvStr, out var totalInv)) docSet.TotalInvoices = totalInv;
+                    if (infoData.TryGetValue("Packages", out var packagesStr) && int.TryParse(packagesStr, out var packages)) docSet.TotalPackages = packages;
+                    if (infoData.TryGetValue("Freight Currency", out var freightCurr)) docSet.FreightCurrencyCode = freightCurr;
+                    if (infoData.TryGetValue("Office", out var office)) docSet.Office = office; // Corrected: Assign to docSet.Office
+
+                    // --- Find/Create/Update xcuda_ASYCUDA & related ---
+                    var extendedProps = ctx.xcuda_ASYCUDA_ExtendedProperties
+                                           .Include(x => x.xcuda_ASYCUDA.xcuda_Declarant)
+                                           .Include(x => x.xcuda_ASYCUDA.xcuda_Transport) // Include Transport
+                                           .FirstOrDefault(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId);
+
+                    xcuda_ASYCUDA asycudaDoc = null;
+                    if (extendedProps == null)
+                    {
+                        Console.WriteLine($"Creating xcuda_ASYCUDA and ExtendedProperties for DocSetId {docSet.AsycudaDocumentSetId}.");
+                        asycudaDoc = new xcuda_ASYCUDA(true) { TrackingState = TrackingState.Added };
+                        ctx.xcuda_ASYCUDA.Add(asycudaDoc);
+                        ctx.ChangeTracker.DetectChanges();
+                        ctx.SaveChanges(); // Save ASYCUDA first
+
+                        extendedProps = new xcuda_ASYCUDA_ExtendedProperties(true)
+                        {
+                            TrackingState = TrackingState.Added,
+                            ASYCUDA_Id = asycudaDoc.ASYCUDA_Id,
+                            AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                            ImportComplete = false
+                        };
+                        ctx.xcuda_ASYCUDA_ExtendedProperties.Add(extendedProps);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Found existing ExtendedProperties for DocSetId {docSet.AsycudaDocumentSetId}.");
+                        asycudaDoc = extendedProps.xcuda_ASYCUDA;
+                        ctx.Entry(extendedProps).State = EntityState.Modified;
+                        if (asycudaDoc != null) ctx.Entry(asycudaDoc).State = EntityState.Modified;
+                    }
+
+                    // Update/Create Transport for Location_of_Goods
+                    if (asycudaDoc != null && infoData.TryGetValue("Location of Goods", out var location))
+                    {
+                        var transport = asycudaDoc.xcuda_Transport.FirstOrDefault(); // Assuming one transport record per ASYCUDA doc
+                        if (transport == null)
+                        {
+                            transport = new xcuda_Transport(true) { TrackingState = TrackingState.Added, ASYCUDA_Id = asycudaDoc.ASYCUDA_Id };
+                            asycudaDoc.xcuda_Transport.Add(transport); // Add to collection
+                            ctx.Entry(transport).State = EntityState.Added;
+                        }
+                        else
+                        {
+                            ctx.Entry(transport).State = EntityState.Modified;
+                        }
+                        transport.Location_of_goods = location; // Corrected: Assign to xcuda_Transport
+                    }
+
+                    // Update/Create Declarant (Consignee) linked to xcuda_ASYCUDA
+                    if (asycudaDoc != null)
+                    {
+                        var declarant = asycudaDoc.xcuda_Declarant;
+                        if (declarant == null)
+                        {
+                            declarant = new xcuda_Declarant(true) { TrackingState = TrackingState.Added, ASYCUDA_Id = asycudaDoc.ASYCUDA_Id };
+                            asycudaDoc.xcuda_Declarant = declarant;
+                            ctx.Entry(declarant).State = EntityState.Added;
+                        }
+                        else
+                        {
+                            ctx.Entry(declarant).State = EntityState.Modified;
+                        }
+
+                        if (infoData.TryGetValue("Consignee Code", out var consigneeCode)) declarant.Declarant_code = consigneeCode;
+                        if (infoData.TryGetValue("Consignee Name", out var consigneeName)) declarant.Declarant_name = consigneeName;
+                    }
+                    else
+                    {
+                         Console.WriteLine($"Warning: Could not find or create xcuda_ASYCUDA for DocSetId {docSet.AsycudaDocumentSetId}. Transport and Consignee info not updated.");
+                    }
+
+
+                    // --- Save All Changes ---
+                    ctx.ChangeTracker.DetectChanges();
+                    ctx.SaveChanges();
+                    Console.WriteLine($"Saved DB changes related to DocSetId: {docSet.AsycudaDocumentSetId}");
+
+                    // --- Update FileType Context ---
+                    ft.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
+                    ft.DocSetRefernece = docSet.Declarant_Reference_Number;
+
+                    // Correctly handle ft.Data (List<KeyValuePair<string, string>>)
+                    var dataList = ft.Data as List<KeyValuePair<string, string>>;
+                    if (dataList != null)
+                    {
+                        var existingEntryIndex = dataList.FindIndex(kvp => kvp.Key.Equals("ShipmentKey", StringComparison.OrdinalIgnoreCase));
+                        if (existingEntryIndex >= 0)
+                        {
+                             Console.WriteLine("ShipmentKey already exists in FileType.Data, not overwriting.");
+                        }
+                        else
+                        {
+                            dataList.Add(new KeyValuePair<string, string>("ShipmentKey", blNumber)); // Add new
+                        }
+                    }
+                    else
+                    {
+                         Console.WriteLine("Warning: FileType.Data is not a List<KeyValuePair<string, string>>. Cannot store ShipmentKey.");
+                    }
+
+                    Console.WriteLine($"Updated FileType context: AsycudaDocumentSetId={ft.AsycudaDocumentSetId}, ShipmentKey='{blNumber}'");
+
+                } // end using DocumentDSContext
+            }
+            catch (Exception ex)
+            {
+                 Console.WriteLine($"Error processing Info.txt and updating database: {ex.Message}\n{ex.StackTrace}");
+                 BaseDataModel.EmailExceptionHandler(ex);
+                 throw;
+            }
+        } // End of ImportShipmentInfoFromTxt
+
+        public static void SaveShipmentInfoToFile(Shipment shipment, string outputDirectory)
+        {
+             if (shipment == null || string.IsNullOrWhiteSpace(outputDirectory))
+             {
+                 Console.WriteLine("Error: Shipment object or output directory is null/empty in SaveShipmentInfoToFile.");
+                 return;
+             }
+
+             try
+             {
+                 Directory.CreateDirectory(outputDirectory); // Ensure output directory exists
+
+                 string blNumber = shipment.BLNumber;
+                 if (string.IsNullOrWhiteSpace(blNumber))
+                 {
+                     Console.WriteLine("Warning: BLNumber is missing from Shipment object. Cannot generate ShipmentKey.");
+                     blNumber = $"MISSINGBL-{Guid.NewGuid()}";
+                 }
+
+                 StringBuilder infoContent = new StringBuilder();
+                 infoContent.AppendLine($"ShipmentKey: {blNumber}");
+                 infoContent.AppendLine($"Expected Entries: {shipment.ExpectedEntries}");
+                 infoContent.AppendLine($"Manifest: {shipment.ManifestNumber ?? "Not Found"}");
+                 infoContent.AppendLine($"Consignee Code: {shipment.ConsigneeCode ?? "Not Found"}");
+                 infoContent.AppendLine($"Consignee Name: {shipment.ConsigneeName ?? "Not Found"}");
+                 infoContent.AppendLine($"Consignee Address: {shipment.ConsigneeAddress ?? "Not Found"}");
+                 infoContent.AppendLine($"BL: {shipment.BLNumber ?? "Not Found"}");
+                 infoContent.AppendLine($"Freight: {shipment.Freight?.ToString() ?? "Not Found"}");
+                 infoContent.AppendLine($"Weight(kg): {shipment.WeightKG?.ToString() ?? "Not Found"}");
+                 infoContent.AppendLine($"Currency: {shipment.Currency ?? "Not Found"}");
+                 infoContent.AppendLine($"Country of Origin: {shipment.Origin ?? "Not Found"}");
+                 infoContent.AppendLine($"Total Invoices: {shipment.TotalInvoices?.ToString() ?? "Not Found"}");
+                 infoContent.AppendLine($"Packages: {shipment.Packages?.ToString() ?? "Not Found"}");
+                 infoContent.AppendLine($"Freight Currency: {shipment.FreightCurrency ?? "Not Found"}");
+                 infoContent.AppendLine($"Location of Goods: {shipment.Location ?? "Not Found"}");
+                 infoContent.AppendLine($"Office: {shipment.Office ?? "Not Found"}");
+
+                 string filePath = Path.Combine(outputDirectory, "Info.txt");
+                 File.WriteAllText(filePath, infoContent.ToString());
+                 Console.WriteLine($"Successfully saved shipment info to: {filePath}");
+             }
+             catch (Exception ex)
+             {
+                 Console.WriteLine($"Error saving shipment info to file: {ex.Message}");
+             }
+        } // End of SaveShipmentInfoToFile
+
+    } // End of ShipmentUtils Class
+} // End of namespace AutoBot

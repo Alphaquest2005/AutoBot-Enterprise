@@ -253,7 +253,36 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             if (string.IsNullOrEmpty(content))
                 return new Dictionary<string, (string, string)>();
 
-            var batchData = JsonSerializer.Deserialize<JsonElement>(content);
+            // Trim potential markdown fences before parsing
+            var cleanContent = content.Trim();
+            if (cleanContent.StartsWith("```json"))
+            {
+                cleanContent = cleanContent.Substring(7); // Remove ```json
+            }
+            else if (cleanContent.StartsWith("```"))
+            {
+                 cleanContent = cleanContent.Substring(3); // Remove ```
+            }
+            if (cleanContent.EndsWith("```"))
+            {
+                cleanContent = cleanContent.Substring(0, cleanContent.Length - 3); // Remove ```
+            }
+            cleanContent = cleanContent.Trim(); // Trim any remaining whitespace
+
+
+            JsonElement batchData;
+            try
+            {
+                // Use the cleaned content for deserialization
+                batchData = JsonSerializer.Deserialize<JsonElement>(cleanContent);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to deserialize batch response content. Content: {Content}", content);
+                // Return empty dictionary to allow fallback to individual processing
+                return new Dictionary<string, (string, string)>();
+            }
+
             var result = new Dictionary<string, (string, string)>();
 
             foreach (var item in batchData.GetProperty("items").EnumerateArray())
@@ -367,18 +396,18 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        var errorContent = await response.Content.ReadAsStringAsync();
+                        var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         throw new HttpRequestException($"API request failed: {response.StatusCode}\n{errorContent}");
                     }
 
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
                 catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
                 {
                     _logger.LogError(ex, "API request timed out after {ElapsedMs}ms", stopwatch.ElapsedMilliseconds);
                     throw new TimeoutException("API request timed out", ex);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private string ParseHsCode(string jsonResponse)

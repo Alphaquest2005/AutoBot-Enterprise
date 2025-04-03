@@ -534,7 +534,7 @@ namespace WaterNut.Business.Services.Utils
                         $"{_baseUrl}/chat/completions",
                         content
                     ).ConfigureAwait(false);
-                });
+                }).ConfigureAwait(false);
 
                 return await HandleApiResponse(response).ConfigureAwait(false);
             }

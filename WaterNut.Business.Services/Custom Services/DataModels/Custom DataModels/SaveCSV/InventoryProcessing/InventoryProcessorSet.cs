@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using InventoryDS.Business.Entities;
 using MoreLinq;
 using WaterNut.Business.Services.Utils;
 using WaterNut.Business.Services.Utils.SavingInventoryItems;
 using WaterNut.DataSpace;
 
+
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.InventoryProcessing
 {
     public class InventoryProcessorSet : IInventoryProcessor
     {
-        public bool Execute(int applicationSettingsId,
+        public async Task<bool> Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
@@ -67,11 +69,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
 
 
+            // Await the async method call
+            var newInventoryItems = await InventoryItemDataUtils.GetNewInventoryItemFromData(inventoryDataList, inventorySource).ConfigureAwait(false);
 
-            var newInventoryItems = InventoryItemDataUtils.GetNewInventoryItemFromData(inventoryDataList, inventorySource);
 
 
-
+            // Revert to iterating over x.Data.Data
             newInventoryItems.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
 
             newInventoryItems

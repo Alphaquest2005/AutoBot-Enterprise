@@ -11,6 +11,7 @@
     <AssemblyName>DataLayer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers> <!-- Trying multiple RIDs -->
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <SccProjectName>
@@ -96,6 +97,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="System.Data.Entity" /> <!-- Added missing reference -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Custom Classes\AsycudaDocumentSet.cs">

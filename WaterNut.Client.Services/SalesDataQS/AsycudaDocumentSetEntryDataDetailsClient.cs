@@ -124,7 +124,7 @@ namespace SalesDataQS.Client.Services
 
         public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
-            return await Channel.SumNav(exp,navExp,field);
+            return await Channel.SumNav(exp,navExp,field).ConfigureAwait(false);
         }
 
 		public string MinField(string whereExp, string sumExp)

@@ -36,16 +36,18 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                                                                     OnCurrentAsycudaSalesAllocationsExChanged);
             RegisterToReceiveMessages<PreviousDocumentItem>(MessageToken.CurrentPreviousDocumentItemChanged, OnCurrentPreviousDocumentItemChanged);
             RegisterToReceiveMessages<global::CoreEntities.Client.Entities.AsycudaDocumentItem>(CoreEntities.MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
-		}
+  }
 
+        // Change signature to async void for event handler
         private async void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
         {
             await GetPreviousItems(e.Data.PreviousItem_Id.GetValueOrDefault()).ConfigureAwait(false);
-        }
+		      }
 
-        private async void OnCurrentAsycudaDocumentItemChanged(object sender, NotificationEventArgs<global::CoreEntities.Client.Entities.AsycudaDocumentItem> e)
-        {
-            if (e.Data == null)
+		      // Change signature to async void for event handler
+		      private async void OnCurrentAsycudaDocumentItemChanged(object sender, NotificationEventArgs<global::CoreEntities.Client.Entities.AsycudaDocumentItem> e)
+		      {
+		          if (e.Data == null)
             {
                 PreviousItems = new List<PreviousItemsEx>();
             }
@@ -64,6 +66,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
+        // Change signature to async void for event handler
         private async void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
         {
             if (e.Data == null)
@@ -98,10 +101,11 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        private async void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
+        // Assuming this is an overload or intended duplicate name, making it async Task
+        private async Task OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
         {
-           
-               
+
+
                     await GetPreviousItems(e.Data.PreviousItem_Id).ConfigureAwait(false);
               
             

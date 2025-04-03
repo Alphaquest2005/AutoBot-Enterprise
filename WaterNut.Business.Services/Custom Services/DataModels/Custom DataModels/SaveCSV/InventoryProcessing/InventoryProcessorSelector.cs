@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using InventoryDS.Business.Entities;
 using MoreLinq;
 using WaterNut.Business.Services.Utils;
@@ -12,15 +13,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     {
         private bool isDbMem = false;
 
-        public bool Execute(int applicationSettingsId,
+        public async Task<bool> Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
             if(isDbMem)
-                return new InventoryProcessor().Execute(applicationSettingsId, inventoryDataList, inventorySource);
+                return await new InventoryProcessor().Execute(applicationSettingsId, inventoryDataList, inventorySource).ConfigureAwait(false);
             else
-                return new InventoryProcessorSet().Execute(applicationSettingsId, inventoryDataList, inventorySource);
-            
+                // Await the result of the async call
+                return await new InventoryProcessorSet().Execute(applicationSettingsId, inventoryDataList, inventorySource).ConfigureAwait(false);
+
 
         }
     }

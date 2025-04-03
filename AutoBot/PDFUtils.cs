@@ -74,7 +74,8 @@ namespace AutoBot
             }
         }
 
-        public static List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
+        // Change signature to async Task<>
+        public static async Task<List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
             List<KeyValuePair<string, (string file, string, ImportStatus Success)>> success = new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>();
@@ -93,8 +94,10 @@ namespace AutoBot
                     fileTypeId = res?.FileTypeId ?? fileType.Id;
                 }
 
-                var import = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
-                success.AddRange(import.ToList());
+                // Await the async call which returns a Dictionary
+                var importResult = await InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client).ConfigureAwait(false);
+                // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
+                success.AddRange(importResult);
             }
 
             return success;

@@ -285,13 +285,25 @@ namespace WaterNut.DataSpace
 
         private static Match IsMatch(string val, Start z)
         {
-            var match = Regex
-                .Match(val,
-                    z.RegularExpressions.RegEx,
-                    (z.RegularExpressions.MultiLine == true
-                        ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(5));
-            return match;
+            try
+            {
+                var match = Regex
+                    .Match(val,
+                        z.RegularExpressions.RegEx,
+                        (z.RegularExpressions.MultiLine == true
+                            ? RegexOptions.Multiline
+                            : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(5));
+                return match;
+            }
+            catch (RegexMatchTimeoutException ex)
+            {
+                // Log the problematic regex and a snippet of the input
+                var snippetLength = Math.Min(val?.Length ?? 0, 200); // Log first 200 chars
+                var inputSnippet = val?.Substring(0, snippetLength) ?? "[null]";
+                Console.WriteLine($"Regex Timeout: Pattern='{z?.RegularExpressions?.RegEx}', Input Snippet='{inputSnippet}', Error='{ex.Message}'");
+                return null;
+                //throw; // Re-throw the exception
+            }
         }
     }
 }
