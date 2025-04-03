@@ -465,7 +465,9 @@ namespace AutoBot
                 if (string.IsNullOrEmpty(directoryName)) return;
 
                 Console.WriteLine($"Executing {scriptName}");
-
+                var script =
+                    $"C:\\Users\\{Environment.UserName}\\OneDrive\\Clients\\AutoBot\\Scripts\\{scriptName}.sikuli";
+                if (!File.Exists(script)) throw new ApplicationException($"Script not found: '{script}'");
 
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo()
@@ -473,8 +475,7 @@ namespace AutoBot
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "java.exe",
                     // Construct arguments string
-                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r C:\Users\{Environment.UserName
-                    }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
+                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r {script} --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\\\"}"" {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + "")
                     }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $" {sMonths} {sYears} {eMonths} {eYears}")}{(enableDebugging ? " --debug-screenshots" : "")}", // Conditionally add debug flag

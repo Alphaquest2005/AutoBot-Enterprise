@@ -71,7 +71,9 @@ namespace AutoBotUtilities
 
         private static (string line, List<(EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field)> im) GetEmailMappings(FileTypes fileType, string line)
         {
-            var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z =>
+            var im = fileType.EmailInfoMappings
+                .Where(x => x.UpdateDatabase == true)
+                .SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z =>
                 (
                     EmailMapping: x,
                     RegEx: z,
