@@ -701,7 +701,7 @@ namespace AutoBot
                 while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
                 {
                     // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                    Utils.RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
+                    Utils.RunSiKuLi(directoryName, "SaveIM7", lcont.ToString(), 0, 0, 0, 0, true); // Pass true for enableDebugging
                 }
             }
             catch (Exception)

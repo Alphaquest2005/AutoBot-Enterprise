@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics; // Added for Stopwatch
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,7 +9,6 @@ using AutoBot;
 using CoreEntities.Business.Entities;
 using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
-
 namespace AutoBotUtilities
 {
     public class EmailTextProcessor
@@ -203,36 +203,77 @@ namespace AutoBotUtilities
             }
         }
 
-        private static void ExecuteActions(FileTypes fileType, FileInfo[] files,
+        public static void ExecuteActions(FileTypes fileType, FileInfo[] files,
             (string Name, Action<FileTypes, FileInfo[]> Action) x)
         {
+            // --- Enhanced Logging ---
+            var contextInfo = $"FTID: {fileType.Id}, EmailId: {fileType.EmailId ?? "N/A"}, DocSetId: {(fileType.AsycudaDocumentSetId == 0 ? "N/A" : fileType.AsycudaDocumentSetId.ToString())}, Ref: {fileType.DocSetRefernece ?? "N/A"}"; // Corrected null check for int
+            Console.WriteLine($"Action START: {x.Name} | Context: [{contextInfo}]");
+            var stopwatch = Stopwatch.StartNew();
+            // --- End Enhanced Logging ---
+
             try
             {
+                 // --- Existing ProcessNextStep Logic ---
                 if (fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                 {
                     var isContinue = false;
                     while (fileType.ProcessNextStep.Any())
                     {
-                        var res = fileType.ProcessNextStep.Select(z => new {Name = z, Action = FileUtils.FileActions[z]})
-                            .ToList();
-                        if (res.First().Name == "Continue")
+                        var nextActionName = fileType.ProcessNextStep.First();
+                        if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextAction))
                         {
-                            isContinue = true;
-                            break;
+                             Console.WriteLine($"Action SKIP (ProcessNextStep): Action '{nextActionName}' not found in FileUtils.FileActions. | Context: [{contextInfo}]");
+                             fileType.ProcessNextStep.RemoveAt(0); // Remove to avoid infinite loop
+                             continue;
                         }
-                        res.First().Action.Invoke(fileType, files);
-                        fileType.ProcessNextStep.RemoveAt(0);
-                    }
-                    if(!isContinue) return;
-                }
 
-                Console.WriteLine($"Executing -->> {x.Name}");
+                        Console.WriteLine($"Action START (ProcessNextStep): {nextActionName} | Context: [{contextInfo}]");
+                        var nextStopwatch = Stopwatch.StartNew();
+                        try
+                        {
+                            if (nextActionName == "Continue")
+                            {
+                                isContinue = true;
+                                nextStopwatch.Stop();
+                                Console.WriteLine($"Action CONTINUE (ProcessNextStep): {nextActionName} encountered. | Context: [{contextInfo}]");
+                                break; // Exit while loop to continue to main action
+                            }
+                            nextAction.Invoke(fileType, files);
+                            nextStopwatch.Stop();
+                            Console.WriteLine($"Action SUCCESS (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                        }
+                        catch (Exception nextEx)
+                        {
+                             nextStopwatch.Stop();
+                             Console.WriteLine($"Action FAILED (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Error: {nextEx.Message} | Context: [{contextInfo}]");
+                             // Decide whether to rethrow or just log and potentially stop further ProcessNextStep
+                             throw; // Rethrowing for now to maintain original behavior on error
+                        }
+                        finally
+                        {
+                             fileType.ProcessNextStep.RemoveAt(0);
+                        }
+                    }
+                    if (!isContinue)
+                    {
+                         Console.WriteLine($"Action EXIT (ProcessNextStep): Sequence terminated before 'Continue' or completion. | Context: [{contextInfo}]");
+                         return; // Exit if 'Continue' wasn't hit and loop finished
+                    }
+                }
+                 // --- End ProcessNextStep Logic ---
+
+                // Execute the main action passed into this method
                 x.Action.Invoke(fileType, files);
+                stopwatch.Stop();
+                Console.WriteLine($"Action SUCCESS: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                stopwatch.Stop();
+                Console.WriteLine($"Action FAILED: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Error: {e.Message} | Context: [{contextInfo}]");
+                Console.WriteLine($"Stack Trace: {e.StackTrace}"); // Log stack trace for failures
+                throw; // Re-throw exception to maintain original behavior
             }
         }
 

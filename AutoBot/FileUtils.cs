@@ -19,7 +19,7 @@ namespace AutoBot
                 {"CreateEx9",(ft, fs) => CreateEX9Utils.CreateEx9(false, -1) },
                 {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
                 {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries(-1) },
-                {"SaveCsv",(ft, fs) => CSVUtils.SaveCsv(fs, ft) },
+                {"SaveCsv",(ft, fs) => CSVUtils.SaveCsv(fs, ft) }, // Corrected namespace qualification
                 {"ReplaceCSV",(ft, fs) => CSVUtils.ReplaceCSV(fs, ft) },
                 {"RecreatePOEntries",(ft, fs) => POUtils.RecreatePOEntries(ft.AsycudaDocumentSetId) },
                 {"ExportPOEntries",(ft, fs) => POUtils.ExportPOEntries(ft.AsycudaDocumentSetId) },
@@ -100,10 +100,10 @@ namespace AutoBot
                 {"ImportPOEntries", (ft,fs) => DocumentUtils.ImportPOEntries(false) },
                 {"ImportAllAsycudaDocumentsInDataFolder", (ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) },
                 {"ImportEntries",(ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString()) },
-
-
+                {"ImportShipmentInfoFromTxt", ShipmentUtils.ImportShipmentInfoFromTxt }, // Added mapping for new action
 
 
             };
+            // Removed extra closing brace here
     }
 }
