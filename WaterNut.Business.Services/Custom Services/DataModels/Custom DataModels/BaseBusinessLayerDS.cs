@@ -620,7 +620,7 @@ namespace WaterNut.DataSpace
                     dtpredicate = x =>
                     {
                         return x.CustomsOperationId == defaultCustomsOperation
-                               && x.Sales == true && x.Stock != true;
+                               && x.Sales != true && x.Stock != true;
                     };
 
                     break;
