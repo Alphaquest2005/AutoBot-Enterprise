@@ -393,7 +393,10 @@ namespace Asycuda421
             a.Financial = new ASYCUDAFinancial();
 
             if (Exp.Deffered_payment_reference != null)
+            {
                 a.Financial.Deffered_payment_reference.Text.Add(Exp.Deffered_payment_reference);
+                
+            }
 
             a.Export_release = new ASYCUDAExport_release();
             a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(

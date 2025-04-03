@@ -92,7 +92,7 @@ namespace AutoBot
                         ExecuteDBSessionActions(ctx, appSetting);
 
                         // Use the instance method
-                        //await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
+                        await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
                     }
                 }
                 //Console.WriteLine($"Press ENTER to Close...");
