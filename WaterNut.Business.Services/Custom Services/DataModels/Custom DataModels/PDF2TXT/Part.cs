@@ -301,7 +301,8 @@ namespace WaterNut.DataSpace
                 var snippetLength = Math.Min(val?.Length ?? 0, 200); // Log first 200 chars
                 var inputSnippet = val?.Substring(0, snippetLength) ?? "[null]";
                 Console.WriteLine($"Regex Timeout: Pattern='{z?.RegularExpressions?.RegEx}', Input Snippet='{inputSnippet}', Error='{ex.Message}'");
-                throw; // Re-throw the exception
+                return null;
+                //throw; // Re-throw the exception
             }
         }
     }

@@ -119,7 +119,7 @@ namespace AutoBotUtilities.Tests
             Assert.That(Directory.Exists(expectedDocsFolderPath), Is.False, "Destination documents subfolder already exists before test.");
 
             // Act
-            await folderProcessor.ProcessDownloadFolder(_testAppSettings);
+            await folderProcessor.ProcessDownloadFolder(_testAppSettings).ConfigureAwait(false);
 
             // Assert
             // Assuming successful processing leads to deletion of the source file
@@ -181,7 +181,7 @@ namespace AutoBotUtilities.Tests
             Assert.That(File.Exists(expectedXmlFilePath), Is.False, "Expected XML file already exists before test.");
 
             // Act
-            await folderProcessor.ProcessShipmentFolders(_testAppSettings);
+            await folderProcessor.ProcessShipmentFolders(_testAppSettings).ConfigureAwait(false);
 
             // Assert
             Assert.That(Directory.Exists(inputSubfolderPath), Is.False, "Input shipment subfolder was not moved/deleted.");

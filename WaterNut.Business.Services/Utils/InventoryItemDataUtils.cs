@@ -105,38 +105,56 @@ namespace WaterNut.Business.Services.Utils
         public static async Task<InventoryDataItem> CreateInventoryItem(InventorySource inventorySource,
             InventoryData item)
         {
-            //create a function that call deepseek api with item description and return tariff code
-            var keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
-                ? await GetTariffCode(item).ConfigureAwait(false)
-                : item.Key.TariffCode;
-            // Use helper method to safely get values
-            var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
-            var itemNumber = await GetDynamicStringValueAsync(item.Key.ItemNumber).ConfigureAwait(false);
-
-            var i = new InventoryItem(true)
+            try
             {
-                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                Description = description.Truncate(255), // Removed explicit cast
-                ItemNumber = itemNumber.Truncate(20),  // Removed explicit cast
-                TariffCode =
-                    keyTariffCode, // Already awaited or string
-                InventoryItemSources = new List<InventoryItemSource>()
-                {
-                    new InventoryItemSource(true)
-                    {
-                        InventorySourceId = inventorySource.Id,
-                        TrackingState = TrackingState.Added
-                    }
-                },
-                TrackingState = TrackingState.Added
-            };
-            if (string.IsNullOrEmpty(item.Key.ItemDescription))
-                foreach (var line in item.Data)
-                {
-                    line.ItemDescription = i.Description.Truncate(255); // Removed explicit cast
-                }
 
-            return new InventoryDataItem(item, i);
+                //create a function that call deepseek api with item description and return tariff code
+                string keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
+                    ? await GetTariffCode(item).ConfigureAwait(false)//GetTariffCodeValue(item)
+                    : item.Key.TariffCode;
+
+                // Use helper method to safely get values
+                string description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
+                string itemNumber = await GetDynamicStringValueAsync(item.Key.ItemNumber).ConfigureAwait(false);
+
+                var i = new InventoryItem(true)
+                {
+                    ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    Description = ((string)description).Truncate(255), // Do not Remove explicit cast as it is needed for extension call
+                    ItemNumber =
+                        ((string)itemNumber)
+                        .Truncate(20), // Do not Remove explicit cast as it is needed for extension call
+                    TariffCode =
+                        keyTariffCode, // Already awaited or string
+                    InventoryItemSources = new List<InventoryItemSource>()
+                    {
+                        new InventoryItemSource(true)
+                        {
+                            InventorySourceId = inventorySource.Id,
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                };
+                if (string.IsNullOrEmpty(item.Key.ItemDescription))
+                    foreach (var line in item.Data)
+                    {
+                        line.ItemDescription = i.Description.ToString().Truncate(255); // Removed explicit cast
+                    }
+
+                return new InventoryDataItem(item, i);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static string GetTariffCodeValue(InventoryData item)
+        {
+            return GetTariffCode(item).Result;
         }
 
         // Helper to safely get string from dynamic property (might be Task<string> or string)
@@ -166,12 +184,12 @@ namespace WaterNut.Business.Services.Utils
         }
 
 
-        private static async Task<dynamic> GetTariffCode(InventoryData item)
+        private static async Task<string> GetTariffCode(InventoryData item)
         {
             // Use the helper for the description passed to the API as well
             var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
             var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(description).ConfigureAwait(false);
-            return InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            return await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
         }
     }
 }

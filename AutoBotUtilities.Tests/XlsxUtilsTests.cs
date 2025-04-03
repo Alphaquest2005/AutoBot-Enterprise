@@ -23,7 +23,8 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
-             Infrastructure.Utils.SetTestApplicationSettings(2);
+             // Changed AppSetting ID from 2 to 3, as ID 3 is known to exist from FolderProcessorTests
+             Infrastructure.Utils.SetTestApplicationSettings(3);
              SetupTest();
         }
 

@@ -25,7 +25,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             try
             {
                
-                var data = await LoadEx9Data(dateFilter);
+                var data = await LoadEx9Data(dateFilter).ConfigureAwait(false);
 
                 return CreateEx9Allocations(filterExpression, data.AsQueryable());
             }

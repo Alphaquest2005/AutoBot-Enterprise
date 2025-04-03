@@ -179,7 +179,7 @@ namespace AdjustmentQS.Business.Services
 
                 var lst = GetDocSetAdjustmentDetails(applicationSettingsId, docSetId);
 
-                await DoAutoMatch(applicationSettingsId, lst);
+                await DoAutoMatch(applicationSettingsId, lst).ConfigureAwait(false);
 
             }
             catch (Exception e)

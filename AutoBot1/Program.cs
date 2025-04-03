@@ -87,12 +87,12 @@ namespace AutoBot
                             if (ExecuteLastDBSessionAction(ctx, appSetting)) continue;
                         }
  
-                        await ProcessEmails(appSetting, timeBeforeImport, ctx);
+                        await ProcessEmails(appSetting, timeBeforeImport, ctx).ConfigureAwait(false);
  
                         ExecuteDBSessionActions(ctx, appSetting);
 
                         // Use the instance method
-                        await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
+                        //await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
                     }
                 }
                 //Console.WriteLine($"Press ENTER to Close...");
@@ -133,171 +133,191 @@ namespace AutoBot
             return false;
         }
 
-        private static async Task ProcessEmails(ApplicationSettings appSetting, DateTime beforeImport, CoreEntitiesContext ctx)
+        private static async Task ProcessEmails(ApplicationSettings appSetting, DateTime beforeImport,
+            CoreEntitiesContext ctx)
         {
-            if (!string.IsNullOrEmpty(appSetting.Email))
+            try
             {
-                //
-                Utils.Client = new EmailDownloader.Client
+
+
+                if (!string.IsNullOrEmpty(appSetting.Email))
                 {
-                    CompanyName = appSetting.CompanyName,
-                    DataFolder = appSetting.DataFolder,
-                    Password = appSetting.EmailPassword,
-                    Email = appSetting.Email,
-                    ApplicationSettingsId = appSetting.ApplicationSettingsId,
-                    EmailMappings = appSetting.EmailMapping.ToList(),
-                    DevMode = Settings.Default.DevMode,
-                    NotifyUnknownMessages = appSetting.NotifyUnknownMessages??false
-                };
-
-                var msgLst = (await Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)))
-                    .ToList();
-                // get downloads
-                Console.WriteLine($"{msgLst.Count()} Emails Processed");
-
-                var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
-
-                foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping.Id))
-                {
-
-                    ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping, new FileTypes(){EmailId = msg.Key.Item2.EmailId}, new FileInfo[]{}, appSetting);
-                }
-
-                foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true)).ThenBy(x => x.Key.Item2.EmailUniqueId))
-                {
-                    var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
-                        msg.Key.Item2.EmailUniqueId.ToString());
-
-                    if (!msg.Key.Item2.EmailMapping.EmailFileTypes
-                            .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
-                                .Any(z => Regex.IsMatch(z.FullName,
-                                    x.FileTypes.FilePattern,
-                                    RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
-
-
-
-                    var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true ? msg.Key.Item2.FileTypes.OrderByDescending(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList() : msg.Key.Item2.FileTypes.OrderBy(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList();
-                    foreach (var emailFileType in emailFileTypes)
+                    //
+                    Utils.Client = new EmailDownloader.Client
                     {
-                        var fileType = FileTypeManager.GetFileType(emailFileType);
-                        fileType.Data
-                            .Clear(); // because i am using emailmapping from email, its not a lookup
-                        fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
+                        CompanyName = appSetting.CompanyName,
+                        DataFolder = appSetting.DataFolder,
+                        Password = appSetting.EmailPassword,
+                        Email = appSetting.Email,
+                        ApplicationSettingsId = appSetting.ApplicationSettingsId,
+                        EmailMappings = appSetting.EmailMapping.ToList(),
+                        DevMode = Settings.Default.DevMode,
+                        NotifyUnknownMessages = appSetting.NotifyUnknownMessages ?? false
+                    };
+
+                    var msgLst = (await Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client))
+                            .ConfigureAwait(false))
+                        .ToList();
+                    // get downloads
+                    Console.WriteLine($"{msgLst.Count()} Emails Processed");
+
+                    var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
+
+                    foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping.Id))
+                    {
+
+                        ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping,
+                            new FileTypes() { EmailId = msg.Key.Item2.EmailId }, new FileInfo[] { }, appSetting);
+                    }
+
+                    foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true))
+                                 .ThenBy(x => x.Key.Item2.EmailUniqueId))
+                    {
+                        var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
+                            msg.Key.Item2.EmailUniqueId.ToString());
+
+                        if (!msg.Key.Item2.EmailMapping.EmailFileTypes
+                                .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
+                                    .Any(z => Regex.IsMatch(z.FullName,
+                                        x.FileTypes.FilePattern,
+                                        RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
 
-                        var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                            .Where(x => msg.Value.Select(z => z.Name).Any(z => z == x.Name) &&
-                                        Regex.IsMatch(x.FullName, fileType.FilePattern,
-                                            RegexOptions.IgnoreCase) &&
-                                        x.LastWriteTime >= beforeImport).ToArray();
 
-                        fileType.EmailId = msg.Key.Item2.EmailId;//msg.Key.Item3;
-                        fileType.FilePath = desFolder;
-                        if (csvFiles.Length == 0)
+                        var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true
+                            ? msg.Key.Item2.FileTypes.OrderByDescending(x =>
+                                x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList()
+                            : msg.Key.Item2.FileTypes
+                                .OrderBy(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info)
+                                .ToList();
+                        foreach (var emailFileType in emailFileTypes)
                         {
-                            // if (emailFileType.IsRequired == true) break;
-                            continue;
-                        }
-
-                                    
-                                    
-                        var docSetLst = 
-                            ctx.AsycudaDocumentSetExs
-                                .Where(x =>
-                                    x.Declarant_Reference_Number.Contains(msg.Key.Item1) &&
-                                    x.ApplicationSettingsId == BaseDataModel.Instance
-                                        .CurrentApplicationSettings.ApplicationSettingsId);
-
-                        //todo emailinfomapping
-                        //var reference = msg.Key.Item2.EmailMapping.IsSingleEmail == true
-                        //                                            ? msg.Key.Item1 + docSetLst.Count()
-                        //                                            : msg.Key.Item1;
-                        var reference = msg.Key.Item1;
+                            var fileType = FileTypeManager.GetFileType(emailFileType);
+                            fileType.Data
+                                .Clear(); // because i am using emailmapping from email, its not a lookup
+                            fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
 
 
-                        if (fileType.CreateDocumentSet)
-                        {
+                            var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                                .Where(x => msg.Value.Select(z => z.Name).Any(z => z == x.Name) &&
+                                            Regex.IsMatch(x.FullName, fileType.FilePattern,
+                                                RegexOptions.IgnoreCase) &&
+                                            x.LastWriteTime >= beforeImport).ToArray();
 
-                            var docSet = docSetLst.FirstOrDefault(x => x.Declarant_Reference_Number == reference);
-                            if (docSet == null)
+                            fileType.EmailId = msg.Key.Item2.EmailId; //msg.Key.Item3;
+                            fileType.FilePath = desFolder;
+                            if (csvFiles.Length == 0)
                             {
-                                var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
-                                    x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation() && x.IsDefault == true);
-                                ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                                // if (emailFileType.IsRequired == true) break;
+                                continue;
+                            }
+
+
+
+                            var docSetLst =
+                                ctx.AsycudaDocumentSetExs
+                                    .Where(x =>
+                                        x.Declarant_Reference_Number.Contains(msg.Key.Item1) &&
+                                        x.ApplicationSettingsId == BaseDataModel.Instance
+                                            .CurrentApplicationSettings.ApplicationSettingsId);
+
+                            //todo emailinfomapping
+                            //var reference = msg.Key.Item2.EmailMapping.IsSingleEmail == true
+                            //                                            ? msg.Key.Item1 + docSetLst.Count()
+                            //                                            : msg.Key.Item1;
+                            var reference = msg.Key.Item1;
+
+
+                            if (fileType.CreateDocumentSet)
+                            {
+
+                                var docSet = docSetLst.FirstOrDefault(x => x.Declarant_Reference_Number == reference);
+                                if (docSet == null)
+                                {
+                                    var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
+                                        x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation() &&
+                                        x.IsDefault == true);
+                                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{
                                         reference
                                     }',{cp.Customs_ProcedureId},0)");
 
+                                }
                             }
-                        }
 
-                        var ndocSet =
-                            ctx.AsycudaDocumentSetExs
-                                .FirstOrDefault(x =>
-                                    x.Declarant_Reference_Number == reference &&
-                                    x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings
-                                        .ApplicationSettingsId);
-                        if (ndocSet != null)
-                        {
-                            fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
-                            fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId",
-                                fileType.AsycudaDocumentSetId.ToString()));
-                        }
-                                    
-                        Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
-                        if (!ReadOnlyMode)
-                        {
-                            ImportUtils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
-                            //if (fileType.ProcessNextStep.FirstOrDefault() == "Kill") return;
-                            if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                            var ndocSet =
+                                ctx.AsycudaDocumentSetExs
+                                    .FirstOrDefault(x =>
+                                        x.Declarant_Reference_Number == reference &&
+                                        x.ApplicationSettingsId ==
+                                        BaseDataModel.Instance.CurrentApplicationSettings
+                                            .ApplicationSettingsId);
+                            if (ndocSet != null)
                             {
-                                ImportUtils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
+                                fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId",
+                                    fileType.AsycudaDocumentSetId.ToString()));
                             }
-                            else
+
+                            Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
+                            if (!ReadOnlyMode)
                             {
-                                processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType,
-                                    csvFiles, ndocSet?.AsycudaDocumentSetId ?? ctx.AsycudaDocumentSet.Where(x =>
-                                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                        .OrderByDescending(x => x.AsycudaDocumentSetId)
-                                        .FirstOrDefault().AsycudaDocumentSetId));
+                                ImportUtils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
+                                //if (fileType.ProcessNextStep.FirstOrDefault() == "Kill") return;
+                                if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                                {
+                                    ImportUtils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                }
+                                else
+                                {
+                                    processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType,
+                                        csvFiles, ndocSet?.AsycudaDocumentSetId ?? ctx.AsycudaDocumentSet.Where(x =>
+                                                x.ApplicationSettingsId == BaseDataModel.Instance
+                                                    .CurrentApplicationSettings.ApplicationSettingsId)
+                                            .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                            .FirstOrDefault().AsycudaDocumentSetId));
+                                }
                             }
+
+
+
+
+
                         }
-
-
-
-
-
                     }
-                }
 
-                if (ReadOnlyMode) return;
-                            
-                var pfg = processedFileTypes
-                    .Where(x => x.Item1.FileTypeActions.Any(z =>
-                        z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
-                    .GroupBy(x => x.Item3).ToList();
+                    if (ReadOnlyMode) return;
 
-                foreach (var docSetId in pfg)
-                {
-                                    
-                    var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
-                    foreach (var t in pf)
+                    var pfg = processedFileTypes
+                        .Where(x => x.Item1.FileTypeActions.Any(z =>
+                            z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
+                        .GroupBy(x => x.Item3).ToList();
+
+                    foreach (var docSetId in pfg)
                     {
-                        //if(t.Item1.ProcessNextStep == "Kill") return;
-                        t.Item1.AsycudaDocumentSetId = docSetId.Key;
-                        ImportUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
-                    }
-                }
-                            
 
+                        var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
+                        foreach (var t in pf)
+                        {
+                            //if(t.Item1.ProcessNextStep == "Kill") return;
+                            t.Item1.AsycudaDocumentSetId = docSetId.Key;
+                            ImportUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-            
         }
 
-      
+
         private static void ExecuteDBSessionActions(CoreEntitiesContext ctx, ApplicationSettings appSetting)
         {
             ctx.SessionActions.OrderBy(x => x.Id)

@@ -37,7 +37,7 @@ namespace WaterNut.DataSpace
                 ctx.SaveChanges();
             }
 
-            foreach (var doc in ASYCUDA_Id) await ReorderDocumentItems(doc);
+            foreach (var doc in ASYCUDA_Id) await ReorderDocumentItems(doc).ConfigureAwait(false);
         }
 
         public static async Task ReorderDocumentItems(int ASYCUDA_Id)

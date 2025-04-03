@@ -149,6 +149,7 @@ namespace WaterNut.Business.Services.Importers
             dynamic lastLine = null;
             foreach (var line in lines)
             {
+                if (lastLine == null) lastLine = line;
                 if (!string.IsNullOrEmpty(line.EntryDataId))
                 {
                     lastLine = line;
@@ -168,13 +169,21 @@ namespace WaterNut.Business.Services.Importers
     {
         public List<dynamic> Execute(List<dynamic> lines)
         {
-            lines.Select(x =>
+          var res =  lines.Select(x =>
             {
-                x.ItemNumber = x.ItemNumber ?? x.POItemNumber ?? x.SupplierItemNumber;
-                x.ItemDescription = x.ItemDescription ?? x.POItemDescription ?? x.SupplierItemDescription;
+                x.ItemNumber = string.IsNullOrEmpty(x.ItemNumber) 
+                                ? string.IsNullOrEmpty( x.POItemNumber)
+                                    ? x.SupplierItemNumber
+                                    : x.POItemNumber
+                                :x.ItemNumber;
+                x.ItemDescription = string.IsNullOrEmpty(x.ItemDescription)
+                                    ? string.IsNullOrEmpty(x.POItemDescription)
+                                        ? x.SupplierItemDescription
+                                        : x.POItemDescription
+                                    : x.ItemDescription;
                 return x;
             }).ToList();
-            return lines;
+            return res;
         }
     }
 }
