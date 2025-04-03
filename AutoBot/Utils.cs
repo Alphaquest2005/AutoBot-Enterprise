@@ -467,7 +467,7 @@ namespace AutoBot
                 Console.WriteLine($"Executing {scriptName}");
                 var script =
                     $"C:\\Users\\{Environment.UserName}\\OneDrive\\Clients\\AutoBot\\Scripts\\{scriptName}.sikuli";
-                if (!File.Exists(script)) throw new ApplicationException($"Script not found: '{script}'");
+                if (!Directory.Exists(script)) throw new ApplicationException($"Script not found: '{script}'");
 
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo()
