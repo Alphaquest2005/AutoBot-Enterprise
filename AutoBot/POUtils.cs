@@ -586,7 +586,7 @@ namespace AutoBot
                     Console.WriteLine("RecreatePOEntries");
 
 
-                    var res = ctx.ToDo_POToXML.Where(x =>
+                    var res = ctx.ToDo_POToXML_Recreate.Where(x =>
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                             x.AsycudaDocumentSetId == asycudaDocumentSetId)
