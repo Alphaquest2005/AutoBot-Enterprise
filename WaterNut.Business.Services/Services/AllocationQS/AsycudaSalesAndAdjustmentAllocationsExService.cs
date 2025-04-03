@@ -74,8 +74,8 @@ namespace AllocationQS.Business.Services
                // {
                   using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                   {
-        var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace AllocationQS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(TotalValue)) return null;
+			   if(string.IsNullOrEmpty(TotalValue))return null; 
               using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(TotalValue);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaSalesAndAdjustmentAllocationsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.TotalValue == i).ConfigureAwait(false);
+                AsycudaSalesAndAdjustmentAllocationsEx entity = set.AsNoTracking().SingleOrDefault(x => x.TotalValue == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

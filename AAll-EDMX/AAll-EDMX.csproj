@@ -292,6 +292,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -741,6 +742,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML_Recreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
@@ -1199,6 +1201,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -1634,6 +1637,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -2069,6 +2073,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -2504,6 +2509,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -2893,6 +2899,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3073,6 +3080,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3257,6 +3265,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3434,6 +3443,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3611,6 +3621,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3788,6 +3799,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -3965,6 +3977,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToAssessErrors.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ToDo_POToXML_Recreate.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
@@ -4235,6 +4248,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML_Recreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
@@ -4908,6 +4922,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetToAssessErrorsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetToAssessService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetToExportService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IToDo_POToXML_RecreateService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
@@ -5343,6 +5358,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetToAssessErrorsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetToAssessService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetToExportService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ToDo_POToXML_RecreateService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitAllXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs
@@ -5726,6 +5742,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetToAssessErrorsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetToAssessService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetToExportService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IToDo_POToXML_RecreateService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
@@ -5903,6 +5920,7 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetToAssessClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetToAssessErrorsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetToExportClient.cs
+..\WaterNut.Client.Services\CoreEntities\ToDo_POToXML_RecreateClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ToDo_POToXMLClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs

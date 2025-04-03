@@ -74,8 +74,8 @@ namespace EntryDataQS.Business.Services
                // {
                   using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                   {
-        var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<PackageType> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<PackageType> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace EntryDataQS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(PackageDescription)) return null;
+			   if(string.IsNullOrEmpty(PackageDescription))return null; 
               using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
                 var i = PackageDescription;
 				var set = AddIncludes(includesLst, dbContext);
-                PackageType entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.PackageDescription == i).ConfigureAwait(false);
+                PackageType entity = set.AsNoTracking().SingleOrDefault(x => x.PackageDescription == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

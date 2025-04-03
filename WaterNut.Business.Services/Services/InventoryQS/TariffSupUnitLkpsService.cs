@@ -74,8 +74,8 @@ namespace InventoryQS.Business.Services
                // {
                   using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                   {
-        var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<TariffSupUnitLkps> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<TariffSupUnitLkps> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace InventoryQS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id)) return null;
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                TariffSupUnitLkps entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(false);
+                TariffSupUnitLkps entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

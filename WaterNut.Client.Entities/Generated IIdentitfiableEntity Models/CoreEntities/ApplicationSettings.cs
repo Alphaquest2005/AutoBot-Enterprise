@@ -7,7 +7,7 @@ using System.Linq;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Services;
 //using WaterNut.Client.Services;
-// Removed duplicate: using CoreEntities.Client.Services;
+using CoreEntities.Client.Services;
 
 using System;
 

@@ -69,36 +69,30 @@ namespace DocumentDS.Business.Services
         {
             try
             {
-                //using (var scope = new TransactionScope(TransactionScopeOption.Required,
-                //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
-                // {
-                using (var dbContext = new DocumentDSContext() { StartTracking = StartTracking })
-                {
-                    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Weight> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
-                    //scope.Complete();
-                    if (tracking)
-                    {
-                        foreach (var entity in entities)
-                        {
-                            entity.StartTracking();
-                        }
-                    }
-                    return entities;
-                }
+            //using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                                   //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
+               // {
+                  using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
+                  {
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xcuda_Weight> entities = set.AsNoTracking().ToList();
+                           //scope.Complete();
+                            if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                            return entities;
+                   }
                 //}
-            }
+             }
             catch (Exception updateEx)
             {
-                System.Diagnostics.Debugger.Break();
+                    System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                var fault = new ValidationFault
-                {
-                    Result = false,
-                    Message = updateEx.Message,
-                    Description = updateEx.StackTrace
-                };
-                throw new FaultException<ValidationFault>(fault);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
             }
         }
 
