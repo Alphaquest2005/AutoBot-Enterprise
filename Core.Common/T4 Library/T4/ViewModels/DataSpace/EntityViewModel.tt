@@ -1,7 +1,7 @@
 ﻿
 <#@ import namespace="Core.Common.Data.Contracts" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ assembly name="D:\OneDrive\AutoBot-Enterprise\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
+<#@ assembly name="D:\OneDrive\MiniJoe\AutoBot-Enterprise\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
 
 <#+ 
   // Note: You can call this method from the outside of the template,

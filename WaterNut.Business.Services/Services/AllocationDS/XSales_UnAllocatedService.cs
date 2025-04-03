@@ -74,8 +74,8 @@ namespace AllocationDS.Business.Services
                // {
                   using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                   {
-        var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<XSales_UnAllocated> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<XSales_UnAllocated> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace AllocationDS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(pItemId)) return null;
+			   if(string.IsNullOrEmpty(pItemId))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(pItemId);
 				var set = AddIncludes(includesLst, dbContext);
-                XSales_UnAllocated entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.pItemId == i).ConfigureAwait(false);
+                XSales_UnAllocated entity = set.AsNoTracking().SingleOrDefault(x => x.pItemId == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,44 +127,44 @@ namespace AllocationDS.Business.Services
 
 
 		 public async Task<IEnumerable<XSales_UnAllocated>> GetXSales_UnAllocatedByExpression(string exp, List<string> includesLst = null, bool tracking = true)
-		      {
-		          try
-		          {
-		              using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
-		              {
-		                  dbContext.Database.CommandTimeout = 0;
-		 		if (string.IsNullOrEmpty(exp) || exp == "None") return new List<XSales_UnAllocated>();
-		 		var set = AddIncludes(includesLst, dbContext);
-		                  if (exp == "All")
-		                  {
-		 			var entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+        {
+            try
+            {
+                using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+                {
+                    dbContext.Database.CommandTimeout = 0;
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<XSales_UnAllocated>();
+					var set = AddIncludes(includesLst, dbContext);
+                    if (exp == "All")
+                    {
+						var entities = set.AsNoTracking().ToList();
 
-		                      if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-		                      return entities;
-		                  }
-		 		else
-		 		{
-		 			var entities = await set.AsNoTracking().Where(exp)
-		 								.ToListAsync().ConfigureAwait(false);
-		                      if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-		                      return entities;
-		 								
-		 		}
-		 		
-		              }
-		          }
-		          catch (Exception updateEx)
-		          {
-		                  System.Diagnostics.Debugger.Break();
-		              //throw new FaultException(updateEx.Message);
-		                  var fault = new ValidationFault
-		                              {
-		                                  Result = false,
-		                                  Message = updateEx.Message,
-		                                  Description = updateEx.StackTrace
-		                              };
-		                  throw new FaultException<ValidationFault>(fault);
-		          }
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
+                    }
+					else
+					{
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
+											
+					}
+					
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
         }
 
 		 public async Task<IEnumerable<XSales_UnAllocated>> GetXSales_UnAllocatedByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)

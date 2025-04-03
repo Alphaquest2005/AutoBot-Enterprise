@@ -69,36 +69,30 @@ namespace CoreEntities.Business.Services
         {
             try
             {
-                //using (var scope = new TransactionScope(TransactionScopeOption.Required,
-                //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
-                // {
-                using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
-                {
-                    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Supplementary_unit> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
-                    //scope.Complete();
-                    if (tracking)
-                    {
-                        foreach (var entity in entities)
-                        {
-                            entity.StartTracking();
-                        }
-                    }
-                    return entities;
-                }
+            //using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                                   //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
+               // {
+                  using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                  {
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<xcuda_Supplementary_unit> entities = set.AsNoTracking().ToList();
+                           //scope.Complete();
+                            if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                            return entities;
+                   }
                 //}
-            }
+             }
             catch (Exception updateEx)
             {
-                System.Diagnostics.Debugger.Break();
+                    System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                var fault = new ValidationFault
-                {
-                    Result = false,
-                    Message = updateEx.Message,
-                    Description = updateEx.StackTrace
-                };
-                throw new FaultException<ValidationFault>(fault);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
             }
         }
 
@@ -107,171 +101,162 @@ namespace CoreEntities.Business.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(Supplementary_unit_Id)) return null;
-                using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
-                {
-                    var i = Convert.ToInt32(Supplementary_unit_Id);
-                    var set = AddIncludes(includesLst, dbContext);
-                    xcuda_Supplementary_unit entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Supplementary_unit_Id == i).ConfigureAwait(false);
-                    if (tracking && entity != null) entity.StartTracking();
-                    return entity;
-                }
-            }
+			   if(string.IsNullOrEmpty(Supplementary_unit_Id))return null; 
+              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Supplementary_unit_Id);
+				var set = AddIncludes(includesLst, dbContext);
+                xcuda_Supplementary_unit entity = set.AsNoTracking().SingleOrDefault(x => x.Supplementary_unit_Id == i);
+                if(tracking && entity != null) entity.StartTracking();
+                return entity;
+              }
+             }
             catch (Exception updateEx)
             {
                 System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                var fault = new ValidationFault
-                {
-                    Result = false,
-                    Message = updateEx.Message,
-                    Description = updateEx.StackTrace
-                };
-                throw new FaultException<ValidationFault>(fault);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
             }
         }
 
 
-		      public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpression(string exp, List<string> includesLst = null, bool tracking = true)
-		      {
-		          try
-		          {
-		              using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
-		              {
-		                  dbContext.Database.CommandTimeout = 0;
-		                  if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Supplementary_unit>();
-		                  var set = AddIncludes(includesLst, dbContext);
-		                  IEnumerable<xcuda_Supplementary_unit> entities;
-		                  if (exp == "All")
-		                  {
-		                      entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
-		                  }
-		                  else
-		                  {
-		                      entities = await set.AsNoTracking().Where(exp).ToListAsync().ConfigureAwait(false);
-		                  }
-
-		                  if (tracking)
-		                  {
-		                      foreach (var entity in entities)
-		                      {
-		                          entity.StartTracking();
-		                      }
-		                  }
-		                  return entities;
-		              }
-		          }
-		          catch (Exception updateEx)
-		          {
-		              System.Diagnostics.Debugger.Break();
-		              //throw new FaultException(updateEx.Message);
-		              var fault = new ValidationFault
-		              {
-		                  Result = false,
-		                  Message = updateEx.Message,
-		                  Description = updateEx.StackTrace
-		              };
-		              throw new FaultException<ValidationFault>(fault);
-		          }
-		      }
-
-        public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Supplementary_unit>();
-                    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Supplementary_unit> entities;
-                    if (expLst.FirstOrDefault() == "All")
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Supplementary_unit>();
+					var set = AddIncludes(includesLst, dbContext);
+                    if (exp == "All")
                     {
-                        entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        set = AddWheres(expLst, set);
-                        entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
-                    }
+						var entities = set.AsNoTracking().ToList();
 
-                    if (tracking)
-                    {
-                        foreach (var entity in entities)
-                        {
-                            entity.StartTracking();
-                        }
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
                     }
-                    return entities;
+					else
+					{
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
+											
+					}
+					
                 }
             }
             catch (Exception updateEx)
             {
-                System.Diagnostics.Debugger.Break();
+                    System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                var fault = new ValidationFault
-                {
-                    Result = false,
-                    Message = updateEx.Message,
-                    Description = updateEx.StackTrace
-                };
-                throw new FaultException<ValidationFault>(fault);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
             }
         }
 
-        public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpressionNav(string exp,
-                                                                                  Dictionary<string, string> navExp,
-                                                                                  List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                {
+                    dbContext.Database.CommandTimeout = 0;
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Supplementary_unit>();
+					var set = AddIncludes(includesLst, dbContext);
+                    if (expLst.FirstOrDefault() == "All")
+                    {
+						var entities = set.AsNoTracking().ToList(); 
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
+                    }
+					else
+					{
+						set = AddWheres(expLst, set);
+						var entities = set.AsNoTracking().ToList();
+                        if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
+											
+					}
+					
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Supplementary_unit>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext).ToListAsync().ConfigureAwait(false);
-                        if (tracking)
-                        {
-                            foreach (var entity in aentities) { entity.StartTracking(); }
-                        }
-                        return aentities;
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
+                        if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return aentities; 
                     }
                     foreach (var itm in navExp)
                     {
                         switch (itm.Key)
                         {
                             case "AsycudaDocumentItem":
-                                // This case already returns Task<IEnumerable<xcuda_Supplementary_unit>>
-                                return await GetWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "xcuda_Supplementary_unit", "SelectMany", includesLst)
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "xcuda_Supplementary_unit", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
 
                     }
-                    var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp).ToListAsync().ConfigureAwait(false);
-                    if (tracking)
-                    {
-                        foreach (var entity in entities) { entity.StartTracking(); }
-                    }
-                    return entities;
+					var set = AddIncludes(includesLst, dbContext);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
+                    if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                        return entities; 
 
                 }
             }
             catch (Exception updateEx)
             {
-                System.Diagnostics.Debugger.Break();
+                    System.Diagnostics.Debugger.Break();
                 //throw new FaultException(updateEx.Message);
-                var fault = new ValidationFault
-                {
-                    Result = false,
-                    Message = updateEx.Message,
-                    Description = updateEx.StackTrace
-                };
-                throw new FaultException<ValidationFault>(fault);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
             }
         }
 
@@ -293,15 +278,14 @@ namespace CoreEntities.Business.Services
 
                 if (totalrow % batchSize > 0) batches += 1;
                 var exceptions = new ConcurrentQueue<Exception>();
-                // Consider replacing Parallel.For with async streams or TPL Dataflow for better async handling if needed.
-                await Task.Run(() => Parallel.For(0, batches,
+                Parallel.For(0, batches,
                    new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
                     bat =>
                     //  for (int bat = 0; bat < batches; bat++)
                     {
                         try
                         {
-                            using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
+                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
@@ -317,7 +301,6 @@ namespace CoreEntities.Business.Services
                                     dset = set.OrderBy(x => x.Supplementary_unit_Id).Where(exp);
                                 }
 
-                                // Using ToList() inside Parallel.For is blocking. Consider async alternatives if performance is critical.
                                 var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
@@ -331,15 +314,12 @@ namespace CoreEntities.Business.Services
                             exceptions.Enqueue(ex);
                         }
                     }
-                    )).ConfigureAwait(false); // Await the Task.Run
+                    );
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
-
+    
                 var entities = res.SelectMany(x => x.ToList());
-                if (tracking)
-                {
-                    foreach (var entity in entities) { entity.StartTracking(); } // Use simple loop instead of Parallel.ForAll
-                }
-                return entities;
+                if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -373,15 +353,14 @@ namespace CoreEntities.Business.Services
 
                 if (totalrow % batchSize > 0) batches += 1;
                 var exceptions = new ConcurrentQueue<Exception>();
-                // Consider replacing Parallel.For with async streams or TPL Dataflow for better async handling if needed.
-                await Task.Run(() => Parallel.For(0, batches,
+                Parallel.For(0, batches,
                    new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
                     bat =>
                     //  for (int bat = 0; bat < batches; bat++)
                     {
                         try
                         {
-                            using (var dbContext = new CoreEntitiesContext() { StartTracking = StartTracking })
+                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
@@ -398,7 +377,6 @@ namespace CoreEntities.Business.Services
                                     dset = set.OrderBy(x => x.Supplementary_unit_Id);
                                 }
 
-                                // Using ToList() inside Parallel.For is blocking. Consider async alternatives if performance is critical.
                                 var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
@@ -412,14 +390,11 @@ namespace CoreEntities.Business.Services
                             exceptions.Enqueue(ex);
                         }
                     }
-                    )).ConfigureAwait(false); // Await the Task.Run
+                    );
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
-                if (tracking)
-                {
-                    foreach (var entity in entities) { entity.StartTracking(); } // Use simple loop instead of Parallel.ForAll
-                }
-                return entities;
+                if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -1049,18 +1024,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-           public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByTarification_Id(string Tarification_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<xcuda_Supplementary_unit>> Getxcuda_Supplementary_unitByTarification_Id(string Tarification_Id, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Tarification_Id); // Assuming Tarification_Id in DB is int
+                var i = Convert.ToInt32(Tarification_Id);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xcuda_Supplementary_unit> entities = await set
+                IEnumerable<xcuda_Supplementary_unit> entities = set//dbContext.xcuda_Supplementary_unit
                                       .AsNoTracking()
-                                        .Where(x => x.Tarification_Id == i) // Compare int directly
-          .ToListAsync().ConfigureAwait(false); // Use async call
+                                        .Where(x => x.Tarification_Id.ToString() == Tarification_Id.ToString())
+										.ToList();
                 return entities;
               }
              }

@@ -303,6 +303,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\IToDo_POToXML_RecreateService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
@@ -821,6 +822,7 @@
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
     <Compile Include="Services\CoreEntities\ParametersService.cs" />
+    <Compile Include="Services\CoreEntities\ToDo_POToXML_RecreateService.cs" />
     <Compile Include="Services\DocumentDS\ConsigneeService.cs" />
     <Compile Include="Services\DocumentDS\Customs_ProcedureInOutService.cs" />
     <Compile Include="Services\DocumentDS\PackageTypesService.cs" />

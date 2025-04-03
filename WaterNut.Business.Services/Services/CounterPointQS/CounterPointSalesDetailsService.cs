@@ -74,8 +74,8 @@ namespace CounterPointQS.Business.Services
                // {
                   using ( var dbContext = new CounterPointQSContext(){StartTracking = StartTracking})
                   {
-        var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<CounterPointSalesDetails> entities = await set.AsNoTracking().ToListAsync().ConfigureAwait(false);
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<CounterPointSalesDetails> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -101,12 +101,12 @@ namespace CounterPointQS.Business.Services
         {
             try
             {
-			   if(string.IsNullOrEmpty(INVNO)) return null;
+			   if(string.IsNullOrEmpty(INVNO))return null; 
               using ( var dbContext = new CounterPointQSContext(){StartTracking = StartTracking})
               {
                 var i = INVNO;
 				var set = AddIncludes(includesLst, dbContext);
-                CounterPointSalesDetails entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.INVNO == i).ConfigureAwait(false);
+                CounterPointSalesDetails entity = set.AsNoTracking().SingleOrDefault(x => x.INVNO == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }

@@ -301,6 +301,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\ToDo_POToXML_Recreate.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -740,6 +741,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\ToDo_POToXML_Recreate.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -1175,6 +1177,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML_Recreate.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -1610,6 +1613,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML_Recreate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -2045,6 +2049,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML_Recreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -2490,6 +2495,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ToDo_POToXML.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\ToDo_POToXML_Recreate.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs" />

@@ -22,7 +22,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers> <!-- Added RuntimeIdentifier -->
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <!-- Added RuntimeIdentifier -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -209,6 +210,7 @@
     <Compile Include="CoreEntities\TODO_PODocSetToAssessErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />
     <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
+    <Compile Include="CoreEntities\ToDo_POToXML_RecreateClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs" />

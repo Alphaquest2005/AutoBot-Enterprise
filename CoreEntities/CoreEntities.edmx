@@ -1750,6 +1750,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not ha
           <Property Name="IsClassified" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML-Recreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ToDo-POToXML-Recreate">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="IsClassified" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-SubmitAllXMLToCustoms">
           <Key>
@@ -3681,6 +3694,14 @@ FROM [dbo].[TODO-PODocSetToExport] AS [TODO-PODocSetToExport]</DefiningQuery>
 [ToDo-POToXML].[IsClassified] AS [IsClassified]
 FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="ToDo-POToXML-Recreate" EntityType="Self.ToDo-POToXML-Recreate" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ToDo-POToXML-Recreate].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[ToDo-POToXML-Recreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ToDo-POToXML-Recreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[ToDo-POToXML-Recreate].[IsClassified] AS [IsClassified]
+FROM [dbo].[ToDo-POToXML-Recreate] AS [ToDo-POToXML-Recreate]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-SubmitAllXMLToCustoms" EntityType="Self.TODO-SubmitAllXMLToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-SubmitAllXMLToCustoms].[Id] AS [Id], 
@@ -4495,6 +4516,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="Consignees" EntitySet="Consignees" />
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
           </AssociationSet>
+          <EntitySet Name="ToDo_POToXML_Recreate" EntityType="WaterNutDBModel.ToDo_POToXML_Recreate" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -7330,6 +7352,17 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ToDo_POToXML_Recreate">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="IsClassified" Type="Boolean" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9165,6 +9198,16 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
                 <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ToDo_POToXML_Recreate">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ToDo_POToXML_Recreate">
+              <MappingFragment StoreEntitySet="ToDo-POToXML-Recreate">
+                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

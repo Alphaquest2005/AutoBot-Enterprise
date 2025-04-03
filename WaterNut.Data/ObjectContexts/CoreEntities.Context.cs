@@ -259,6 +259,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<Consignees> Consignees { get; set; }
      
+        public DbSet<ToDo_POToXML_Recreate> ToDo_POToXML_Recreate { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -474,6 +476,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new Customs_ProcedureInOutMap());
          
             modelBuilder.Configurations.Add(new ConsigneesMap());
+         
+            modelBuilder.Configurations.Add(new ToDo_POToXML_RecreateMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 
