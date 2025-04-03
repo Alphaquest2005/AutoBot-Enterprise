@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Code" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="255" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
           <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
@@ -401,7 +401,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="true" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />

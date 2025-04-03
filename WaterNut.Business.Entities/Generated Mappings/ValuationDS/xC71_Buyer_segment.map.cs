@@ -13,7 +13,7 @@
         {                        
               this.HasKey(t => t.Identification_segment_Id);        
               this.ToTable("xC71_Buyer_segment");
-              this.Property(t => t.Code).HasColumnName("Code").IsRequired().HasMaxLength(255);
+              this.Property(t => t.Code).HasColumnName("Code").HasMaxLength(255);
               this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(255);
               this.Property(t => t.Address).HasColumnName("Address").HasMaxLength(255);
               this.Property(t => t.Identification_segment_Id).HasColumnName("Identification_segment_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
