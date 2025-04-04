@@ -108,8 +108,27 @@ namespace WaterNut.DataSpace
                     var lineInstances = line.Values.SelectMany(z => z.Value.Keys.Select(k => k.instance)).Distinct().ToList();
                     foreach (var instance in instances)
                     {
-                        if(!lineInstances.Contains(instance.Instance))
-                            line.Values.Add((instance.LineNumber, "Single"), new Dictionary<(Fields fields, int instance), string> { { (field, instance.Instance), field.FieldValue.Value } });
+                        if (!lineInstances.Contains(instance.Instance))
+                        {
+                            var key = (instance.LineNumber, "Single");
+                            var innerValueKey = (field, instance.Instance);
+                            var valueToAdd = field.FieldValue.Value;
+
+                            if (line.Values.TryGetValue(key, out var innerDict))
+                            {
+                                // Key exists, add to inner dictionary if the specific field/instance doesn't exist yet
+                                if (!innerDict.ContainsKey(innerValueKey))
+                                {
+                                    innerDict.Add(innerValueKey, valueToAdd);
+                                }
+                                // Optional: Handle case where innerValueKey already exists (e.g., log, update, ignore)
+                            }
+                            else
+                            {
+                                // Key doesn't exist, add new entry with the inner dictionary
+                                line.Values.Add(key, new Dictionary<(Fields fields, int instance), string> { { innerValueKey, valueToAdd } });
+                            }
+                        }
                     }
                     
                     
