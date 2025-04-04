@@ -15,6 +15,7 @@ namespace AutoBotUtilities
     {
         public static FileInfo[] Execute(FileInfo[] csvFiles, FileTypes fileType)
         {
+            string dbStatement = null;
             try
             {
 
@@ -29,7 +30,7 @@ namespace AutoBotUtilities
                         .ToList();
 
                     if (emailMappings.Any()) res.Add(file);
-                    var dbStatement = emailMappings.Select(linex =>
+                        dbStatement = emailMappings.Select(linex =>
                         {
 
                             var str = linex.im.Select(im => GetMappingData(im, linex.line))
@@ -56,6 +57,7 @@ namespace AutoBotUtilities
 
                     if (!string.IsNullOrEmpty(dbStatement))
                     {
+                        AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles);
                         new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
                     }
 
