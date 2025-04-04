@@ -278,7 +278,7 @@ Example: |HS_CODE|8542.31.00| |CATEGORY|Electronic integrated circuits|";
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Failed to deserialize batch response content. Content: {Content}", content);
+                _logger.LogError(ex, "Failed to deserialize batch response content. Original Content: {OriginalContent}, Cleaned Content Attempt: {CleanedContent}", content, cleanContent);
                 // Return empty dictionary to allow fallback to individual processing
                 return new Dictionary<string, (string, string)>();
             }
