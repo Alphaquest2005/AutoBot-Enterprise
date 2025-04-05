@@ -36,6 +36,13 @@ namespace AutoBotUtilities
                             var str = linex.im.Select(im => GetMappingData(im, linex.line))
                                 .Select(kp =>
                                 {
+                                    if(kp.InfoData.Key == "Currency" || kp.InfoData.Key == "FreightCurrency")
+                                    {
+                                        if(kp.InfoData.Value == "US")
+                                        {
+                                            kp.InfoData = new KeyValuePair<string, string>(kp.InfoData.Key, "USD");
+                                        }
+                                    }
                                     fileType.Data.Add(kp.InfoData);
 
                                     // --- BEGIN ADDED LOGGING ---
