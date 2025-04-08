@@ -111,8 +111,13 @@ namespace WaterNut.DataSpace
 
 
         //public string Section { get; set; }
-        public void Read(List<InvoiceLine> newlines, string Section)
+        // Modified to accept parentInstance
+        public void Read(List<InvoiceLine> newlines, string Section, int? parentInstance = null)
         {
+            // Determine the instance number to use for processing and logging
+            // If called from a parent, use parentInstance. If top-level, use internal _instance.
+            var effectiveInstance = parentInstance ?? _instance;
+            Console.WriteLine($"[OCR DEBUG] Part.Read: Entry for Part ID {OCR_Part.Id}, Effective Instance {effectiveInstance} (Internal: {_instance}, Parent: {parentInstance?.ToString() ?? "N/A"}), Section '{Section}'. Processing {newlines.Count} new lines starting from line {newlines.FirstOrDefault()?.LineNumber}. Current buffer size: {_lines.Count}.");
             try
             {
 
@@ -124,17 +129,29 @@ namespace WaterNut.DataSpace
                         : _startlines.Count > StartCount && StartCount > 0)
                    ) //attempting to do start to start
                 {
-                    if (OCR_Part.RecuringPart != null)
+                    var rp = OCR_Part.RecuringPart ?? OCR_Part.ChildParts
+                        .FirstOrDefault(x => x.ParentPart.RecuringPart != null).ParentPart.RecuringPart;
+                    if (rp != null)
                     {
-                        if (!OCR_Part.RecuringPart.IsComposite)
+                        if (!rp.IsComposite)
                         {
+                            Console.WriteLine($"[OCR DEBUG] Part.Read: Resetting state for recurring Part ID {OCR_Part.Id} (Instance {_instance + 1} starting). IsComposite={rp.IsComposite}");
+                            // Reset parent state
                             _startlines.Clear();
                             _endlines.Clear();
                             _bodylines.Clear();
-                            lastLineRead = _lines.LastOrDefault()?.LineNumber??0;
+                            lastLineRead = _lines.LastOrDefault()?.LineNumber ?? 0;
                             _lines.Clear();
                             _linesTxt.Clear();
-                            _instance += 1;
+                            // Instance should only increment when a new start is found for THIS part.
+                            // The effectiveInstance used for processing lines/children will be updated below if needed.
+                            // _instance += 1;
+
+                            // Explicitly reset child parts' processing state for the new parent instance
+                            ChildParts.ForEach(child => {
+                                Console.WriteLine($"[OCR DEBUG] Part.Read: Calling Reset() on Child Part ID {child.OCR_Part.Id} from Parent Part ID {OCR_Part.Id}");
+                                child.Reset();
+                            });
                         }
 
                     }
@@ -160,6 +177,7 @@ namespace WaterNut.DataSpace
 
 
                 var startFound = FindStart();
+                Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {effectiveInstance}: FindStart result = {startFound}. WasStarted = {WasStarted}");
                 if (startFound)
                 {
                     // WasStarted = true;
@@ -175,7 +193,13 @@ namespace WaterNut.DataSpace
                             if (StartCount != 0) _startlines.Add(_lines.First());
                            
                         }
+                        // Increment internal instance counter ONLY when a new start is found for this part
                         _instance += 1;
+                        // Update the effective instance ONLY if this part is managing its own instances (not called from a parent)
+                        if (parentInstance == null) {
+                           effectiveInstance = _instance;
+                        }
+                        Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}: New start found or recurring part detected. Incremented internal instance to {_instance}. Effective instance for processing: {effectiveInstance}.");
 
                     } 
                 }
@@ -188,15 +212,27 @@ namespace WaterNut.DataSpace
                     _bodylines.AddRange(_lines);
                     
                     
-                    ChildParts.ForEach(x => x.Read(_lines, Section));
+                    // Pass only the current set of lines being processed to child parts
+                    // to ensure non-recurring children are scoped to the current parent instance.
+                    ChildParts.ForEach(x => {
+                        // Pass the CORRECT effective instance down to child parts
+                        Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {effectiveInstance}: Calling Read() on Child Part ID {x.OCR_Part.Id} with {newlines.Count} lines, passing instance {effectiveInstance}.");
+                        x.Read(new List<InvoiceLine>(newlines), Section, effectiveInstance);
+                        });
                     Lines.ForEach(x =>
                     {
                         if (x.OCR_Lines.RegularExpressions.MultiLine == true)
                         {
                             var line = _bodylines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines??10).Select(z => z.Line).DefaultIfEmpty("").Aggregate((o,n) => $"{o}\r\n{n}").ToString();
-                            x.Read(line, _bodylines.First().LineNumber, Section, _instance);
+                            // Pass the CORRECT effective instance to own lines
+                            Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {effectiveInstance}: Reading multi-line Line ID {x.OCR_Lines.Id}");
+                            x.Read(line, _bodylines.First().LineNumber, Section, effectiveInstance);
                         }
-                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section, _instance);
+                        else {
+                            // Pass the CORRECT effective instance to own lines
+                            Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {effectiveInstance}: Reading single-line Line ID {x.OCR_Lines.Id}");
+                            x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section, effectiveInstance);
+                        }
                     });
 
                 }
@@ -304,6 +340,23 @@ namespace WaterNut.DataSpace
                 return null;
                 //throw; // Re-throw the exception
             }
+        }
+
+        public void Reset()
+        {
+            _startlines.Clear();
+            _endlines.Clear();
+            _bodylines.Clear();
+            _lines.Clear();
+            _linesTxt.Clear();
+            lastLineRead = 0; // Assuming 0 is the correct initial state
+            _instance = 1; // Reset instance counter
+
+            Console.WriteLine($"[OCR DEBUG] Part.Reset: Resetting Part ID {OCR_Part.Id}");
+            // Recursively reset child parts
+            ChildParts.ForEach(child => child.Reset());
+
+            // Do NOT reset Lines here, as they hold the results (Values) which need to be preserved.
         }
     }
 }

@@ -153,7 +153,7 @@ namespace AutoBot
                  {
                     try
                     {
-                        ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+                        allgood = ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
                     }
                     catch(Exception ex)
                     {

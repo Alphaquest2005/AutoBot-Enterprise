@@ -73,7 +73,7 @@ namespace AutoBot
             }
         }
 
-        public static void CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
+        public static bool CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace AutoBot
                     ctx.Database.ExecuteSqlCommand(@"EXEC [dbo].[PreProcessShipmentSP]");
                 }
 
-
+                ShipmentExtensions.shipmentInvoices = null;
 
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
                         .LoadEmailPOs()
@@ -116,7 +116,7 @@ namespace AutoBot
                     .Distinct()
                     .ToArray();
 
-
+                var sent = false;
                 using (var ctx = new EntryDataDSContext())
                 {
                     shipments.ForEach(shipment =>
@@ -125,13 +125,14 @@ namespace AutoBot
                             $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
                             shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
 
-
+                        sent = true;
                         ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
 
                     });
                     ctx.SaveChanges();
                 }
 
+                return sent;
             }
             catch (Exception e)
             {

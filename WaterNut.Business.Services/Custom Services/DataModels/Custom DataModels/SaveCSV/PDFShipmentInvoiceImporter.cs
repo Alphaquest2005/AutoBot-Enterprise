@@ -22,9 +22,7 @@ namespace WaterNut.DataSpace
                 if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.ShipmentInvoice
                     || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
 
-                await ImportInventory(dataFile).ConfigureAwait(false);
-
-
+                
                  return await _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
                     dataFile.OverWriteExisting, dataFile.EmailId,
                     dataFile.DroppedFilePath, dataFile.Data, null).ConfigureAwait(false);

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -46,18 +46,69 @@ namespace WaterNut.Business.Services.Utils
 
             ConfigureHttpClient();
             SetDefaultPrompts();
-
-            _retryPolicy = Policy<HttpResponseMessage>
-                .Handle<HttpRequestException>()
-                .Or<TaskCanceledException>()
-                .OrResult(r => HttpStatusCodesToRetry.Contains(r.StatusCode))
-                .WaitAndRetryAsync(3, retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                    onRetry: (outcome, timespan, retryCount, context) =>
+ 
+            _retryPolicy = CreateRetryPolicy(); // Call the new method
+        }
+ 
+        // --- New CreateRetryPolicy method based on DeepSeekApi.cs ---
+        private AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy()
+        {
+            // Standard Exponential Backoff
+            Func<int, TimeSpan> calculateDelay = (retryAttempt) =>
+            {
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
+                _logger.LogTrace("Retry attempt {RetryCount}: Calculated delay {DelaySeconds}s", retryAttempt, delay.TotalSeconds);
+                return delay;
+            };
+ 
+            // Exception-Specific Logging for Retries
+            Action<DelegateResult<HttpResponseMessage>, TimeSpan> logRetryAction = (outcome, calculatedDelay) =>
+            {
+                var exception = outcome.Exception; // Exception that caused the retry
+                var response = outcome.Result;     // Result if the delegate completed but triggered retry (e.g., status code)
+ 
+                if (exception is RateLimitException rle)
+                {
+                    _logger.LogWarning(rle, "Retry needed due to Rate Limit (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", rle.StatusCode, calculatedDelay.TotalSeconds);
+                }
+                else if (exception is TaskCanceledException tce)
+                {
+                    if (tce.CancellationToken.IsCancellationRequested)
                     {
-                        _logger.LogWarning("Retry {RetryCount}/3. Error: {Error}",
-                            retryCount, outcome.Exception?.Message ?? outcome.Result?.StatusCode.ToString());
-                    });
+                        _logger.LogWarning(tce, "Retry triggered for Task Cancellation (possibly user initiated). Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                    }
+                    else
+                    {
+                        _logger.LogWarning(tce, "Retry needed due to operation Timeout. Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                    }
+                }
+                else if (exception is HttpRequestException httpEx) // Includes exceptions where Data["StatusCode"] might be set
+                {
+                    // Try to get status code from Data if available, otherwise log generic HttpRequestException
+                    var statusCode = httpEx.Data.Contains("StatusCode") ? httpEx.Data["StatusCode"] : "(unknown)";
+                    _logger.LogWarning(httpEx, "Retry needed due to HTTP Request Error (Code: {StatusCode}). Delaying for {DelaySeconds}s...", statusCode, calculatedDelay.TotalSeconds);
+                }
+                else if (response != null) // Handle retries triggered by OrResult (status code)
+                {
+                     _logger.LogWarning("Retry needed due to Response Status Code {StatusCode}. Delaying for {DelaySeconds}s...", response.StatusCode, calculatedDelay.TotalSeconds);
+                }
+                else // Default logging for other handled exceptions
+                {
+                    _logger.LogWarning(exception, "Retry needed due to handled Transient Error ({ExceptionType}). Delaying for {DelaySeconds}s...", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
+                }
+            };
+ 
+            // Build the Policy
+            return Policy<HttpResponseMessage>
+               .Handle<RateLimitException>()
+               .Or<HttpRequestException>() // Handle general HttpRequestExceptions
+               .Or<TaskCanceledException>(ex => !ex.CancellationToken.IsCancellationRequested) // Only retry timeouts, not user cancellations
+               .OrResult(r => r.StatusCode >= HttpStatusCode.InternalServerError || HttpStatusCodesToRetry.Contains(r.StatusCode)) // Retry on 5xx errors or specific configured codes
+               .WaitAndRetryAsync(
+                   retryCount: 3,
+                   sleepDurationProvider: calculateDelay,
+                   onRetry: logRetryAction
+               );
         }
 
         private void ConfigureHttpClient()
@@ -177,10 +228,12 @@ namespace WaterNut.Business.Services.Utils
   }}]
 }}
 
-7. OUTPUT INSTRUCTIONS:
-   - GENERATE FULL JSON RESPONSE
-   - VALIDATE FIELD ENDINGS BEFORE FINALIZING
-   - ENSURE FINAL BRACKET STRUCTURE: }}]}}";
+7. OUTPUT INSTRUCTIONS (STRICT):
+   - The entire response MUST be *only* the valid JSON object specified in the schema.
+   - Do NOT include any introductory text, explanations, apologies, summaries, or markdown formatting (like ```json or ```).
+   - Ensure all strings are properly escaped within the JSON.
+   - Validate field endings and ensure all objects and arrays are correctly closed before finalizing.
+   - The final output MUST be a single, complete, valid JSON structure ending precisely with `}}]}}`.";
         }
 
 
@@ -227,8 +280,18 @@ namespace WaterNut.Business.Services.Utils
 
         private async Task<List<IDictionary<string, object>>> ProcessTextVariant(string text)
         {
+            // Add a check for potentially incorrect input type (heuristic)
+            if (text != null && (text.StartsWith("System.Threading.Tasks.Task") || text.StartsWith("System.Text.StringBuilder")))
+            {
+                _logger.LogWarning("ProcessTextVariant received input that looks like a type name instead of content: {InputText}", TruncateForLog(text, 100));
+                // Depending on desired behavior, could return empty list or throw exception here.
+                // For now, let it proceed but the log indicates the upstream issue.
+            }
+
             var escapedText = EscapeBraces(text);
             var prompt = string.Format(PromptTemplate, escapedText);
+            // Log the final prompt being sent (Debug level recommended due to potential length/sensitivity)
+            _logger.LogDebug("ProcessTextVariant - Generated Prompt: {Prompt}", prompt); // Consider using TruncateForLog if prompts are very long
             var response = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
             return ParseApiResponse(response);
         }
@@ -238,12 +301,15 @@ namespace WaterNut.Business.Services.Utils
         private List<IDictionary<string, object>> ParseApiResponse(string jsonResponse)
         {
             var documents = new List<IDictionary<string, object>>();
-
-            try
-            {
-                var cleanJson = CleanJsonResponse(jsonResponse);
+string cleanJson = null; // Declare outside the try block
+try
+{
+    cleanJson = CleanJsonResponse(jsonResponse); // Assign inside
+                cleanJson = CleanJsonResponse(jsonResponse); // Assign to the existing variable
                 if (string.IsNullOrWhiteSpace(cleanJson)) return documents;
-
+ 
+                // Log the cleaned JSON before attempting to parse
+                _logger.LogDebug("Attempting to parse cleaned JSON: {CleanJson}", TruncateForLog(cleanJson));
                 using var doc = JsonDocument.Parse(cleanJson);
                 var root = doc.RootElement;
 
@@ -253,9 +319,15 @@ namespace WaterNut.Business.Services.Utils
 
                 return documents;
             }
-            catch (Exception ex)
+            catch (JsonException jsonEx) // Catch specific JsonException
             {
-                _logger.LogError(ex, "Response parsing failed");
+                // Log the parsing error along with the JSON that caused it
+                _logger.LogError(jsonEx, "Failed to parse JSON response. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse)); // Use original if cleanJson is null
+                return new List<IDictionary<string, object>>(); // Return empty list on error
+            }
+            catch (Exception ex) // Catch any other unexpected exceptions
+            {
+                _logger.LogError(ex, "Unexpected error during response parsing. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse)); // Use original if cleanJson is null
                 return new List<IDictionary<string, object>>();
             }
         }
@@ -329,6 +401,8 @@ namespace WaterNut.Business.Services.Utils
                 foreach (var cd in customs.EnumerateArray())
                 {
                     IDictionary<string, object> dict = new BetterExpando();
+
+                    if (string.IsNullOrEmpty(GetStringValue(cd, "BLNumber"))) continue;
 
                     dict["DocumentType"] = "CustomsDeclaration";
                     dict["CustomsOffice"] = GetStringValue(cd, "CustomsOffice");
@@ -527,15 +601,17 @@ namespace WaterNut.Business.Services.Utils
 
                 var json = JsonSerializer.Serialize(request);
 
+                // Use the new retry policy directly
                 var response = await _retryPolicy.ExecuteAsync(async () =>
                 {
-                    using var content = new StringContent(json, Encoding.UTF8, "application/json");
-                    return await _httpClient.PostAsync(
-                        $"{_baseUrl}/chat/completions",
-                        content
-                    ).ConfigureAwait(false);
+                    using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
+                    requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                    // Send the request - Polly will handle retries based on HandleApiResponse throwing exceptions
+                    return await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 }).ConfigureAwait(false);
-
+ 
+                // HandleApiResponse now potentially throws exceptions caught by Polly,
+                // or returns the successful content string.
                 return await HandleApiResponse(response).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -547,20 +623,58 @@ namespace WaterNut.Business.Services.Utils
 
         private async Task<string> HandleApiResponse(HttpResponseMessage response)
         {
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            _logger.LogTrace("Raw API Response Content received: {ResponseContent}", TruncateForLog(responseContent)); // Use TruncateForLog
+            _logger.LogDebug("API Response Status: {StatusCode}", response.StatusCode);
+ 
+            // --- Throw specific exceptions for Polly to handle ---
+            if (response.StatusCode == (HttpStatusCode)429) // Too Many Requests
+            {
+                _logger.LogDebug("HandleApiResponse: Throwing RateLimitException for status 429.");
+                throw new RateLimitException((int)response.StatusCode, $"API rate limit exceeded. Response: {responseContent}");
+            }
+ 
+            // Check for server errors (5xx) or specific retryable codes handled by OrResult in the policy
+            if (response.StatusCode >= HttpStatusCode.InternalServerError || HttpStatusCodesToRetry.Contains(response.StatusCode))
+            {
+                 var httpEx = new HttpRequestException($"API request failed with status {(int)response.StatusCode}. Response: {responseContent}");
+                 httpEx.Data["StatusCode"] = (int)response.StatusCode; // Add status code for logging in retry policy
+                 _logger.LogDebug(httpEx, "HandleApiResponse: Throwing HttpRequestException for retryable status {StatusCode}.", (int)response.StatusCode);
+                 throw httpEx; // Polly will catch this based on Or<HttpRequestException> or OrResult
+            }
+ 
+            // If not retried by Polly but still not success, log error and return empty (or throw a non-retryable exception)
             if (!response.IsSuccessStatusCode)
             {
-                var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                _logger.LogError("API Error: {StatusCode} - {Content}", response.StatusCode, errorContent);
-                return "";
+                _logger.LogError("API Error (non-retryable): {StatusCode} - {Content}", response.StatusCode, TruncateForLog(responseContent));
+                // Depending on requirements, you might throw a different exception type here
+                // or just return empty to indicate failure after non-retryable error.
+                return ""; // Return empty for now
             }
+            // --- End Polly exception throwing ---
 
-            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            using var doc = JsonDocument.Parse(responseJson);
-            return doc.RootElement
-                .GetProperty("choices")[0]
-                .GetProperty("message")
-                .GetProperty("content")
-                .GetString();
+            // Success case: Parse the actual content from the successful response
+            try
+            {
+                 using var doc = JsonDocument.Parse(responseContent); // Parse the already read content
+                 var messageContent = doc.RootElement
+                    .GetProperty("choices")[0]
+                    .GetProperty("message")
+                    .GetProperty("content")
+                    .GetString();
+                 _logger.LogTrace("HandleApiResponse - Extracted content: {MessageContent}", TruncateForLog(messageContent));
+                 return messageContent;
+            }
+            catch(JsonException jsonEx)
+            {
+                 _logger.LogError(jsonEx, "HandleApiResponse - Failed to parse successful response JSON. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                 return ""; // Or throw a specific parsing exception
+            }
+            catch(Exception ex)
+            {
+                 _logger.LogError(ex, "HandleApiResponse - Unexpected error parsing successful response. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                 return ""; // Or throw
+            }
         }
 
         private List<IDictionary<string,object>> MergeDocuments(List<IDictionary<string, object>> documents)
@@ -584,12 +698,22 @@ namespace WaterNut.Business.Services.Utils
 
         private string CleanJsonResponse(string jsonResponse)
         {
-            return HandleWrappedResponse(RemoveMarkDCleanJsonResponse(jsonResponse));
+            // Step 1: Log the initial input to this method
+            _logger.LogTrace("CleanJsonResponse - Input: {JsonResponse}", jsonResponse);
+            var removedMarkdown = RemoveMarkDCleanJsonResponse(jsonResponse);
+            // Step 2: Log the result after removing markdown/BOM and finding boundaries
+            _logger.LogTrace("CleanJsonResponse - After RemoveMarkDCleanJsonResponse: {RemovedMarkdown}", removedMarkdown);
+            return HandleWrappedResponse(removedMarkdown);
         }
 
         private string HandleWrappedResponse(string jsonResponse)
         {
-            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+            _logger.LogTrace("HandleWrappedResponse - Input: {JsonResponse}", jsonResponse);
+            if (string.IsNullOrWhiteSpace(jsonResponse))
+            {
+                _logger.LogTrace("HandleWrappedResponse - Returning empty due to null/whitespace input.");
+                return string.Empty;
+            }
 
             var sanitized = new StringBuilder();
             var stack = new Stack<char>();
@@ -647,39 +771,67 @@ namespace WaterNut.Business.Services.Utils
                 (clean.Length > 0 && clean[0] != '{') ||
                 (clean.Length > 0 && clean[clean.Length - 1] != '}'))
             {
-                _logger.LogWarning("Invalid JSON structure after cleaning");
+                // Log the specific string that failed validation
+                _logger.LogWarning("Invalid JSON structure after HandleWrappedResponse cleaning. String was: {Clean}", TruncateForLog(clean));
                 return string.Empty;
             }
 
+            _logger.LogTrace("HandleWrappedResponse - Returning cleaned string: {Clean}", TruncateForLog(clean));
             return clean;
         }
 
         private string RemoveMarkDCleanJsonResponse(string jsonResponse)
         {
-            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Input: {JsonResponse}", jsonResponse);
+            if (string.IsNullOrWhiteSpace(jsonResponse))
+            {
+                _logger.LogTrace("RemoveMarkDCleanJsonResponse - Returning empty due to null/whitespace input.");
+                return string.Empty;
+            }
 
             var clean = Regex.Replace(jsonResponse,
                 @"```json|```|'''|\uFEFF",
                 string.Empty,
                 RegexOptions.IgnoreCase
             );
-
+            _logger.LogTrace("RemoveMarkDCleanJsonResponse - After Regex Replace: {Clean}", clean);
+ 
             var startIndex = clean.IndexOf('{');
             var endIndex = clean.LastIndexOf('}');
+            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Found startIndex: {StartIndex}, endIndex: {EndIndex}", startIndex, endIndex);
 
             if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
             {
-                _logger.LogWarning("No valid JSON boundaries detected");
+                _logger.LogWarning("No valid JSON boundaries detected in string: {Clean}", clean);
                 return string.Empty;
             }
 
-            return clean.Substring(startIndex, endIndex - startIndex + 1)
+            var result = clean.Substring(startIndex, endIndex - startIndex + 1)
                 .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
+            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Returning substring: {Result}", TruncateForLog(result));
+            return result;
         }
+public void Dispose() => _httpClient?.Dispose();
 
-        public void Dispose() => _httpClient?.Dispose();
-    }
+// --- Helper for logging ---
+private string TruncateForLog(string text, int maxLength = 500)
+{
+    if (string.IsNullOrEmpty(text)) return string.Empty;
+    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
 }
+
+// --- Custom Exceptions ---
+public class RateLimitException : HttpRequestException
+{
+    public int StatusCode { get; }
+    public RateLimitException(int statusCode, string message) : base(message) { StatusCode = statusCode; }
+    public RateLimitException(int statusCode, string message, Exception inner) : base(message, inner) { StatusCode = statusCode; }
+}
+// Potentially add HSCodeRequestException if needed later, similar to DeepSeekApi.cs
+
+}
+}
+
 
 
 

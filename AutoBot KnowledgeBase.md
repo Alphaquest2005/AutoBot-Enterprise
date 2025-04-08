@@ -56,6 +56,31 @@
     *   Various other Utility Classes (`DocumentUtils`, `AllocateSalesUtils`, `ADJUtils`, `DISUtils`, `EX9Utils`, `CSVUtils`, `POUtils`, `XLSXProcessor`, `EntryDocSetUtils`, `SubmitSalesXmlToCustomsUtils`, `C71Utils`, `LICUtils`, `UpdateInvoice`, `ImportWarehouseErrorsUtils`, `SQLBlackBox`, etc. located in `AutoBot/` or `WaterNut.Business.Services/Utils/`): Contain the actual implementation logic invoked by the action dictionaries.
     *   SikuliX Scripts (e.g., "IM7-PDF"): External UI automation scripts called by `WaterNut.DataSpace.Utils.RunSiKuLi`.
 
+## OCR / PDF Processing (`InvoiceReader`, `Part`, `Invoice`)
+
+*   **Core Classes:** `InvoiceReader.cs`, `Invoice.cs`, `Part.cs`, `Line.cs`, `Field.cs` (within `WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/PDF2TXT/`).
+*   **Workflow:**
+    1.  `PDFUtils.ImportPDF` calls `InvoiceReader.Import`.
+    2.  `InvoiceReader.Import` gets PDF text (`InvoiceReader.GetPdftxt`), creates an `Invoice` object (which initializes `Part` objects based on DB config), and calls `Invoice.Read(textLines)`.
+    3.  `Invoice.Read` iterates through text lines, calling `Part.Read` for each top-level part.
+    4.  `Part.Read` manages state (`_currentInstance`, `_wasStarted`), finds start/end lines based on regex (`FindStart`, `FindEnd`), extracts field values using regex (`ReadLine`), and recursively calls `Part.Read` for child parts, passing the relevant text lines and the *parent's effective instance*.
+    5.  After all lines are processed by `Invoice.Read`, it calls `Invoice.SetPartLineValues` for each top-level part.
+    6.  `Invoice.SetPartLineValues` recursively calls itself for child parts first to gather all child data. Then, it iterates through the *parent's* distinct instances, populates parent fields for that instance, filters the pre-gathered child data for items matching the current parent instance, and attaches the relevant child items (correctly structured) to the parent item.
+    7.  The final list of assembled parent items (with nested child data) is returned up the chain.
+*   **Key Learnings (Shein Debugging - Recurring Header / Non-Recurring Detail):**
+    *   **Instance Propagation:** It is crucial that `Part.Read` correctly determines and passes the `effectiveInstance` (the instance associated with the *parent* part that triggered the read) when recursively calling `Read` on child parts. This ensures that data extracted from the child part is tagged with the correct parent instance number, even if the child part itself doesn't have lines that define instance boundaries.
+    *   **Data Aggregation (`SetPartLineValues`):** The aggregation logic must handle parent-child relationships correctly:
+        1.  Process child parts *recursively first* to gather all child items across all instances they might belong to. Store these results (e.g., in a dictionary keyed by child part ID).
+        2.  Iterate through the distinct instances captured for the *parent* part.
+        3.  For each parent instance, create the parent item object.
+        4.  Populate the parent item's fields based on data captured for that specific instance.
+        5.  For each child part associated with the parent:
+            *   Filter the pre-gathered child results (from step 1) to find items whose `Instance` property matches the *current parent instance*.
+            *   Attach these filtered child items to the parent item under the appropriate field name.
+    *   **Data Structure Consistency:** When attaching child data, ensure the data structure matches downstream expectations. If a subsequent process (e.g., `ShipmentInvoiceImporter`) expects a field containing child items to be a `List<IDictionary<string, object>>`, then even single, non-recurring child items must be wrapped in a `List` (e.g., `parentDitm[fieldname] = new List<IDictionary<string, object>> { childItem };`) before assignment in `SetPartLineValues`. Failure to do so can cause `InvalidCastException` errors later.
+    *   **Debugging:** Extensive `Console.WriteLine` logging, clearly indicating Part IDs, Line IDs, internal vs. effective instances, and method entry/exit points, is invaluable for tracing complex recursive logic and instance handling.
+
+
 ## Analysis: `AutoBot1/Program.cs`
 
 *   **Role:** Acts as the main application entry point, orchestrating processes like email checking (`ProcessEmails`), scheduled database actions (`ExecuteDBSessionActions`), and download folder processing (`FolderProcessor`) based on `ApplicationSettings` and database configurations.

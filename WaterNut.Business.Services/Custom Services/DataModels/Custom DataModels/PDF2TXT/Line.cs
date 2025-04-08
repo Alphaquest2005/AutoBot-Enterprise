@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,6 +18,7 @@ namespace WaterNut.DataSpace
 
         
 
+        // Modified to accept instance from the calling Part
         public bool Read(string line, int lineNumber, string section, int instance)
         {
             try
@@ -75,7 +76,8 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            values.Add((field, instance), value); 
+                            // Use the passed instance number (from the parent) in the key
+                            values.Add((field, instance), value);
                         }
                         
 
@@ -91,7 +93,26 @@ namespace WaterNut.DataSpace
 
                 }
 
-                Values[(lineNumber, section)] = values;
+                // Check if key exists before adding/updating
+                if (Values.ContainsKey((lineNumber, section))) {
+                    // Merge new values with existing ones for the same line/section, potentially handling duplicates if necessary
+                    foreach(var kvp in values) {
+                         // Ensure the key uses the correct instance number passed from the parent
+                         // Ensure the key uses the correct instance number passed from the parent and correct field access
+                         var correctInstanceKey = (kvp.Key.Fields, instance);
+                         if (!Values[(lineNumber, section)].ContainsKey(correctInstanceKey)) {
+                             Values[(lineNumber, section)].Add(correctInstanceKey, kvp.Value);
+                         } else {
+                             // Handle potential duplicate key scenario if needed (e.g., log, overwrite, append)
+                             // Current logic seems to append strings or add numbers based on field.DataType in lines 63-74
+                             // For simplicity, let's assume overwrite or the existing append logic handles it.
+                             // Ensure update uses the correct instance key
+                             Values[(lineNumber, section)][correctInstanceKey] = kvp.Value;
+                         }
+                    }
+                } else {
+                    Values[(lineNumber, section)] = values;
+                }
                 return true;
             }
             catch (Exception e)

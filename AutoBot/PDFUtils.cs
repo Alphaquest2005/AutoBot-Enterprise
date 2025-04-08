@@ -95,10 +95,33 @@ namespace AutoBot
                 }
 
                 // Await the async call which returns a Dictionary
-                var importResult = await InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client).ConfigureAwait(false);
+                var importResult = await InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId,
+                    true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client).ConfigureAwait(false);
                 // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
-                success.AddRange(importResult);
+
+
+
+                if (!importResult.Any())
+                {
+                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                    success.AddRange(res2);
+                }
+                else
+                {
+                    var fails = importResult.Values.Where(x => x.Success == ImportStatus.Failed).ToList();
+                    if(fails.Any())
+                        fails
+                            .ForEach(async x =>
+                            {
+                                var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                                success.AddRange(res2);
+                            });
+                    else
+                        success.AddRange(importResult);
+                }
             }
+
+
 
             return success;
         }
@@ -270,7 +293,7 @@ namespace AutoBot
                 { { "Invoice", "Shipment Invoice" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
-              var txt = InvoiceReader.GetPdftxt(file.FullName);  
+              var txt = await InvoiceReader.GetPdftxt(file.FullName).ConfigureAwait(false);  
               var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))

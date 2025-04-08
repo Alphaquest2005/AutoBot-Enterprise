@@ -392,9 +392,9 @@ namespace WaterNut.DataSpace
 
             foreach (var grp in lstData.GroupBy(x => x.InvoiceNo))
             {
-                var rinvoice = grp.FirstOrDefault(x => grp.Count() <= 1 || x.InvoiceNo == x.PONumber);
-                if(rinvoice == null) continue;
-                foreach (var invoice in grp.Where(x => grp.Count() > 1 && x.InvoiceNo != x.PONumber))
+                var rinvoice = grp.FirstOrDefault(x => grp.Count() <= 1 || (string.IsNullOrEmpty(x.PONumber) && x.InvoiceNo == x.PONumber) || x.InvoiceNo != x.PONumber);
+                if (rinvoice == null) continue;
+                foreach (var invoice in grp.Where(x => grp.Count() > 1 && x.InvoiceNo != x.PONumber && x.InvoiceNo != rinvoice.InvoiceNo))
                 {
                     rinvoice.InvoiceDetails.AddRange(invoice.InvoiceDetails);
                     rinvoice.PONumber = invoice.PONumber; // don't think this makes a difference
