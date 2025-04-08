@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -195,10 +195,14 @@ namespace WaterNut.DataSpace
                         }
                         // Increment internal instance counter ONLY when a new start is found for this part
                         _instance += 1;
-                        // Update the effective instance ONLY if this part is managing its own instances (not called from a parent)
-                        if (parentInstance == null) {
+                        // Update the effective instance:
+                        // - If this part is managing its own instances (not called from a parent), use its new _instance.
+                        // - If this part IS recurring AND was called from a parent, it should use its OWN new _instance
+                        //   for processing its lines and children, overriding the parentInstance for this new occurrence.
+                        if (parentInstance == null || OCR_Part.RecuringPart != null) {
                            effectiveInstance = _instance;
                         }
+                        // Otherwise (non-recurring child), continue using the parentInstance passed down.
                         Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}: New start found or recurring part detected. Incremented internal instance to {_instance}. Effective instance for processing: {effectiveInstance}.");
 
                     } 

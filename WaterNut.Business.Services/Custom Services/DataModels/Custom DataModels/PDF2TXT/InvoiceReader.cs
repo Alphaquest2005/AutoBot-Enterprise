@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Dynamic;
@@ -188,40 +188,58 @@ namespace WaterNut.DataSpace
             Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet,
             Invoice tmp, int fileTypeId, bool isLastdoc)
         {
-            Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: Processing template '{tmp.OcrInvoices.Name}' (ID: {tmp.OcrInvoices.Id}) for file '{file}'");
-           
-            var formattedPdfTxt = tmp.Format(pdftxt.ToString());
-            Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: PDF text formatted using template {tmp.OcrInvoices.Id}.");
-
-            var csvLines = tmp.Read(formattedPdfTxt);
-            Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: tmp.Read returned {csvLines?.Count ?? 0} data structures.");
-            if (csvLines != null && csvLines.Count > 0 && csvLines[0] is List<IDictionary<string, object>> list)
+            try
             {
-                Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: First data structure contains {list.Count} items.");
+
+
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: Processing template '{tmp.OcrInvoices.Name}' (ID: {tmp.OcrInvoices.Id}) for file '{file}'");
+
+                var formattedPdfTxt = tmp.Format(pdftxt.ToString());
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: PDF text formatted using template {tmp.OcrInvoices.Id}.");
+
+                var csvLines = tmp.Read(formattedPdfTxt);
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: tmp.Read returned {csvLines?.Count ?? 0} data structures.");
+                if (csvLines != null && csvLines.Count > 0 && csvLines[0] is List<IDictionary<string, object>> list)
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: First data structure contains {list.Count} items.");
+                }
+
+                AddNameSupplier(tmp, csvLines);
+
+                AddMissingRequiredFieldValues(tmp, csvLines);
+
+                WriteTextFile(file, formattedPdfTxt);
+
+
+                if (csvLines == null || csvLines.Count < 1 || !tmp.Success)
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: Read failed or returned no lines. tmp.Success = {tmp.Success}. Entering ErrorState.");
+                    var errorResult = ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId,
+                        isLastdoc);
+                    Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: ErrorState returned {errorResult}.");
+                    return errorResult ? ImportStatus.HasErrors : ImportStatus.Failed;
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: Read successful. Entering ImportSuccessState.");
+                    var successResult = ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp,
+                        csvLines);
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: ImportSuccessState returned {successResult}.");
+                    return successResult == true ? ImportStatus.Success : ImportStatus.HasErrors;
+                }
             }
-
-            AddNameSupplier(tmp, csvLines);
-
-            AddMissingRequiredFieldValues(tmp, csvLines);
-
-            WriteTextFile(file, formattedPdfTxt);
-
-            
-            if (csvLines == null || csvLines.Count < 1 || !tmp.Success)
+            catch (Exception e)
             {
-                Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: Read failed or returned no lines. tmp.Success = {tmp.Success}. Entering ErrorState.");
-                var errorResult = ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc);
-                Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: ErrorState returned {errorResult}.");
-                return errorResult ? ImportStatus.HasErrors : ImportStatus.Failed;
+                Console.WriteLine(e);
+                throw;
             }
-            else
-            {
-                Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: Read successful. Entering ImportSuccessState.");
-                var successResult = ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines);
-                Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: ImportSuccessState returned {successResult}.");
-                return successResult == true ? ImportStatus.Success : ImportStatus.HasErrors;
-            }
-
 
         }
 

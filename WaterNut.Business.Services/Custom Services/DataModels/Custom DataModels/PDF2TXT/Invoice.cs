@@ -79,9 +79,60 @@ namespace WaterNut.DataSpace
                 ).ToList();
 
                 
-                var finalResult = ores.SelectMany(x => x.ToList()).ToList();
-                Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Assembled {finalResult.Count} final items.");
-                return new List<dynamic> {finalResult};
+                // ores contains results from SetPartLineValues for each top-level part.
+                // For a typical invoice, this might be just one list of instance dictionaries.
+                var allInstanceItems = ores.SelectMany(x => x.ToList()).ToList(); // This is the List<IDictionary<string, object>> with 19 items in the log
+
+                if (!allInstanceItems.Any())
+                {
+                    Console.WriteLine($"[OCR DEBUG] Invoice.Read: No instances found for Invoice ID {OcrInvoices.Id}. Returning empty list structure.");
+                    // Return the expected structure but with an empty inner list
+                    return new List<dynamic> { new List<IDictionary<string, object>>() };
+                }
+
+                // 1. Create the single dictionary to hold the final aggregated result
+                var finalInvoiceObject = new BetterExpando();
+                var finalDitm = (IDictionary<string, object>)finalInvoiceObject;
+
+                // 2. Copy header fields from the first instance
+                var firstInstance = allInstanceItems.First();
+                string detailsListName = "InvoiceDetails"; // Default name for the details list
+
+                foreach (var kvp in firstInstance)
+                {
+                    // Copy fields that are NOT the details list itself
+                    if (!kvp.Key.Equals(detailsListName, StringComparison.OrdinalIgnoreCase))
+                    {
+                         // Use ContainsKey/Add for compatibility with older frameworks
+                         if (!finalDitm.ContainsKey(kvp.Key)) finalDitm.Add(kvp.Key, kvp.Value);
+                         Console.WriteLine($"[OCR DEBUG] Invoice.Read Aggregation: Copied header field '{kvp.Key}' from first instance.");
+                    }
+                }
+                 // Ensure Instance/FileLineNumber/Section from the first instance are included if present
+                 if (firstInstance.TryGetValue("Instance", out var instVal) && !finalDitm.ContainsKey("Instance")) finalDitm.Add("Instance", instVal);
+                 if (firstInstance.TryGetValue("FileLineNumber", out var lineVal) && !finalDitm.ContainsKey("FileLineNumber")) finalDitm.Add("FileLineNumber", lineVal);
+                 if (firstInstance.TryGetValue("Section", out var sectVal) && !finalDitm.ContainsKey("Section")) finalDitm.Add("Section", sectVal);
+
+
+                // 3. Aggregate all 'InvoiceDetails' lists from ALL instances
+                var aggregatedDetails = allInstanceItems
+                    .SelectMany(item => item.TryGetValue(detailsListName, out var details) && details is List<IDictionary<string, object>> list ? list : Enumerable.Empty<IDictionary<string, object>>())
+                    .ToList();
+
+                 Console.WriteLine($"[OCR DEBUG] Invoice.Read Aggregation: Aggregated {aggregatedDetails.Count} detail items from {allInstanceItems.Count} instances.");
+
+                // 4. Add the aggregated details list to the final single object
+                finalDitm[detailsListName] = aggregatedDetails;
+
+                // 5. Create the final inner list containing only the single aggregated object
+                var resultList = new List<IDictionary<string, object>> { finalInvoiceObject };
+
+                Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Returning 1 final aggregated object within the list structure.");
+
+                // 6. Return the result wrapped in List<dynamic> to match expected signature
+                // The caller expects `csvLines.First()` to be the `List<IDictionary<string, object>>`
+                // This inner list (`resultList`) now contains exactly ONE item: the aggregated invoice.
+                return new List<dynamic> { resultList };
             }
             catch (Exception e)
             {
@@ -164,30 +215,7 @@ namespace WaterNut.DataSpace
             var finalPartItems = new List<IDictionary<string, object>>();
             try
             {
-                // 1. Get all distinct instance numbers captured for this part's direct lines
-                var distinctInstances = part.Lines
-                                            .SelectMany(line => line.Values.SelectMany(v => v.Value.Keys.Select(k => k.instance)))
-                                            .Distinct()
-                                            .OrderBy(instance => instance)
-                                            .ToList();
-
-                if (!distinctInstances.Any() && !part.ChildParts.Any())
-                {
-                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} has no instances and no children. Returning empty list.");
-                     return finalPartItems; // No data captured for this part
-                }
-                 if (!distinctInstances.Any() && part.ChildParts.Any())
-                {
-                    // Handle cases where parent has no lines but children do (e.g., a grouping part)
-                    // We might need a default instance or rely on child instances. For now, let's assume instance 1 if parent has no lines.
-                     distinctInstances.Add(1); // Default to instance 1 if parent has no direct data but has children
-                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} has no direct instances but has children. Defaulting to instance 1.");
-                }
-
-
-                Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Found {distinctInstances.Count} distinct instances: [{string.Join(", ", distinctInstances)}]");
-
-                // 2. Process Child Parts Recursively (do this once)
+                // 1. Process Child Parts Recursively (do this once, BEFORE determining instances)
                 var childPartResults = part.ChildParts
                                            .Where(cp => cp.AllLines.Any())
                                            .ToDictionary(
@@ -200,9 +228,40 @@ namespace WaterNut.DataSpace
                      Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Child Part ID {kvp.Key} returned {kvp.Value.Count} total items across all instances.");
                  }
 
+                // 2. Get all distinct instance numbers from this part AND all child results
+                var parentInstances = part.Lines
+                                          .SelectMany(line => line.Values.SelectMany(v => v.Value.Keys.Select(k => k.instance)))
+                                          .ToList();
+
+                var childInstances = childPartResults.Values
+                                        .SelectMany(list => list.Select(item => item.TryGetValue("Instance", out var instObj) && instObj is int inst ? inst : (int?)null))
+                                        .Where(inst => inst.HasValue)
+                                        .Select(inst => inst.Value)
+                                        .ToList();
+
+                var allInstances = parentInstances.Union(childInstances).Distinct().OrderBy(instance => instance).ToList();
+
+                if (!allInstances.Any())
+                {
+                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} and its children have no instances. Returning empty list.");
+                     return finalPartItems; // No data captured for this part or its children
+                }
+                 // Ensure instance 1 is included if there are children but no parent instances (handles grouping parts)
+                 if (!parentInstances.Any() && childInstances.Any() && !allInstances.Contains(1))
+                 {
+                     allInstances.Insert(0, 1);
+                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} has no direct instances but children do. Ensuring instance 1 is processed.");
+                 }
+
+
+                Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Found {allInstances.Count} total distinct instances across parent and children: [{string.Join(", ", allInstances)}]");
+
+                // Child parts already processed above
+
 
                 // 3. Iterate through each distinct instance found for the PARENT part
-                foreach (var currentInstance in distinctInstances)
+                // 3. Iterate through ALL distinct instances found across parent and children
+                foreach (var currentInstance in allInstances)
                 {
                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Processing instance {currentInstance}.");
                     var parentItem = new BetterExpando();
@@ -329,7 +388,7 @@ namespace WaterNut.DataSpace
 
                     // 6. Add the assembled parent item (with its associated child data) to the final list
                     // Only add if we actually found data for this parent instance OR its children attached data
-                    if (parentDataFound && parentDitm.Count > 3) // Check count > 3 to avoid adding empty items with only FileLineNumber, Instance, Section
+                    if (parentDataFound) // Add if any data (parent or child) was found for this instance
                     {
                          Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Adding assembled item for instance {currentInstance} to results.");
                          finalPartItems.Add(parentItem);
