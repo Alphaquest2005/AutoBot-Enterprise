@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -133,6 +134,20 @@ namespace AutoBot
                 }
 
                 return sent;
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    var entityName = validationError.Entry.Entity.GetType().Name;
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        Console.WriteLine($"Validation Error in Entity: {entityName}, Field: {error.PropertyName}, Error: {error.ErrorMessage}, Value: {validationError.Entry.CurrentValues[error.PropertyName]}");
+                    }
+                }
+
+                BaseDataModel.EmailExceptionHandler(ex);
+                throw; // Re-throw the exception to preserve the stack trace
             }
             catch (Exception e)
             {

@@ -34,91 +34,103 @@ namespace WaterNut.DataSpace
 
                 
 
-                foreach (Match match in matches)
-                {
-                  //  instance += 1;
+                FormatValues(instance, matches, values);
 
-                    
-
-
-                    foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
-                    {
-                        var value = field.FieldValue?.Value.Trim() ?? match.Groups[field.Key].Value.Trim();
-                        foreach (var reg in field.FormatRegEx.OrderBy(x => x.Id))
-                        {
-                            value = (Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
-                                (OCR_Lines.RegularExpressions.MultiLine == true
-                                    ? RegexOptions.Multiline
-                                    : RegexOptions.Singleline) | RegexOptions.IgnoreCase |
-                                RegexOptions.ExplicitCapture)).Trim();
-                        }
-
-                        if(string.IsNullOrEmpty(value)) continue;
-
-                        if (values.ContainsKey((field, instance)))
-                        {
-                            if (/*OCR_Lines.Parts.RecuringPart != null && OCR_Lines.Parts.RecuringPart.IsComposite == true && 
-                                 Took this out becasue marineco has two details which combining
-                                 */ OCR_Lines.DistinctValues.GetValueOrDefault() == true) continue;
-                            
-                            switch (field.DataType)
-                            {
-                                case "String":
-                                    values[(field, instance)] = values[(field, instance)] + " " + value.Trim();
-                                    break;
-                                case "Number":
-                                    values[(field, instance)] = (double.Parse(values[(field, instance)]) + double.Parse(value)).ToString();
-                                    break;
-                                case "Date":
-                                    values[(field, instance)] = value;
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            // Use the passed instance number (from the parent) in the key
-                            values.Add((field, instance), value);
-                        }
-                        
-
-                        foreach (var childField in field.ChildFields)
-                        {
-                            ReadChildField(childField, values,
-                                values.Where(x => x.Key.Fields.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("")
-                                    .Aggregate((o, n) => o + " " + n));
-                        }
-
-                    }
-                    
-
-                }
-
-                // Check if key exists before adding/updating
-                if (Values.ContainsKey((lineNumber, section))) {
-                    // Merge new values with existing ones for the same line/section, potentially handling duplicates if necessary
-                    foreach(var kvp in values) {
-                         // Ensure the key uses the correct instance number passed from the parent
-                         // Ensure the key uses the correct instance number passed from the parent and correct field access
-                         var correctInstanceKey = (kvp.Key.Fields, instance);
-                         if (!Values[(lineNumber, section)].ContainsKey(correctInstanceKey)) {
-                             Values[(lineNumber, section)].Add(correctInstanceKey, kvp.Value);
-                         } else {
-                             // Handle potential duplicate key scenario if needed (e.g., log, overwrite, append)
-                             // Current logic seems to append strings or add numbers based on field.DataType in lines 63-74
-                             // For simplicity, let's assume overwrite or the existing append logic handles it.
-                             // Ensure update uses the correct instance key
-                             Values[(lineNumber, section)][correctInstanceKey] = kvp.Value;
-                         }
-                    }
-                } else {
-                    Values[(lineNumber, section)] = values;
-                }
+                SaveLineValues(lineNumber, section, instance, values);
                 return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private void SaveLineValues(int lineNumber, string section, int instance, Dictionary<(Fields Fields, int Instance), string> values)
+        {
+            // Check if key exists before adding/updating
+            if (Values.ContainsKey((lineNumber, section))) {
+                // Merge new values with existing ones for the same line/section, potentially handling duplicates if necessary
+                foreach(var kvp in values) {
+                    // Ensure the key uses the correct instance number passed from the parent
+                    // Ensure the key uses the correct instance number passed from the parent and correct field access
+                    var correctInstanceKey = (kvp.Key.Fields, instance);
+                    if (!Values[(lineNumber, section)].ContainsKey(correctInstanceKey)) {
+                        Values[(lineNumber, section)].Add(correctInstanceKey, kvp.Value);
+                    } else {
+                        // Handle potential duplicate key scenario if needed (e.g., log, overwrite, append)
+                        // Current logic seems to append strings or add numbers based on field.DataType in lines 63-74
+                        // For simplicity, let's assume overwrite or the existing append logic handles it.
+                        // Ensure update uses the correct instance key
+                        Values[(lineNumber, section)][correctInstanceKey] = kvp.Value;
+                    }
+                }
+            } 
+            else 
+            {
+                Values[(lineNumber, section)] = values;
+            }
+        }
+
+        private void FormatValues(int instance, MatchCollection matches, Dictionary<(Fields Fields, int Instance), string> values)
+        {
+            foreach (Match match in matches)
+            {
+                //  instance += 1;
+
+                    
+
+
+                foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
+                {
+                    var value = field.FieldValue?.Value.Trim() ?? match.Groups[field.Key].Value.Trim();
+                    foreach (var reg in field.FormatRegEx.OrderBy(x => x.Id))
+                    {
+                        value = (Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                            (OCR_Lines.RegularExpressions.MultiLine == true
+                                ? RegexOptions.Multiline
+                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase |
+                            RegexOptions.ExplicitCapture)).Trim();
+                    }
+
+                    if(string.IsNullOrEmpty(value)) continue;
+
+                    if (values.ContainsKey((field, instance)))
+                    {
+                        if (/*OCR_Lines.Parts.RecuringPart != null && OCR_Lines.Parts.RecuringPart.IsComposite == true && 
+                                 Took this out becasue marineco has two details which combining
+                                 */ OCR_Lines.DistinctValues.GetValueOrDefault() == true) continue;
+                            
+                        switch (field.DataType)
+                        {
+                            case "String":
+                                values[(field, instance)] = values[(field, instance)] + " " + value.Trim();
+                                break;
+                            case "Number":
+                                values[(field, instance)] = (double.Parse(values[(field, instance)]) + double.Parse(value)).ToString();
+                                break;
+                            case "Date":
+                                values[(field, instance)] = value;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Use the passed instance number (from the parent) in the key
+                        values.Add((field, instance), value);
+                    }
+                        
+
+                    foreach (var childField in field.ChildFields)
+                    {
+                        ReadChildField(childField, values,
+                            values.Where(x => x.Key.Fields.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("")
+                                .Aggregate((o, n) => o + " " + n));
+                    }
+
+                }
+                    
+
             }
         }
 

@@ -1298,7 +1298,7 @@ namespace AutoBotUtilities
                         TrackingState = TrackingState.Added
                     });
 
-                if(!manifests.Any()) manifests.Add(new ShipmentManifest());
+                if(!manifests.Any()) manifests.Add(new ShipmentManifest(){SourceFile = "Unknown"});
 
                 Shipment manifestShipments(ShipmentManifest manifest) =>
                     new Shipment
@@ -1331,6 +1331,7 @@ namespace AutoBotUtilities
                     shipments.Add(shipment);
 
                     var manifestAttachments = manifests
+                        .Where(x => x.Id != 0)// should be saved in database by this point, 0 is to prevent the new shipment from being saved
                         .Where(x => x.WayBill == shipment.BLNumber)
                         .Where(x => attachments.All(z => z.FilePath != x.SourceFile))
                         .Select(x => new Attachments

@@ -72,67 +72,29 @@ namespace WaterNut.DataSpace
 
                 var ores = Parts.Select(x =>
                     {
-
-                        var lst = SetPartLineValues(x);
+                        // Pass null for top-level calls, indicating no instance filtering yet
+                        var lst = SetPartLineValues(x, null);
                         return lst;
                     }
                 ).ToList();
 
                 
                 // ores contains results from SetPartLineValues for each top-level part.
-                // For a typical invoice, this might be just one list of instance dictionaries.
-                var allInstanceItems = ores.SelectMany(x => x.ToList()).ToList(); // This is the List<IDictionary<string, object>> with 19 items in the log
+                // Each item in ores is a List<IDictionary<string, object>> representing instances found for that part.
+                var finalResultList = ores.SelectMany(x => x.ToList()).ToList(); // This should now be a list of correctly formed invoice instances.
 
-                if (!allInstanceItems.Any())
+                if (!finalResultList.Any())
                 {
                     Console.WriteLine($"[OCR DEBUG] Invoice.Read: No instances found for Invoice ID {OcrInvoices.Id}. Returning empty list structure.");
                     // Return the expected structure but with an empty inner list
                     return new List<dynamic> { new List<IDictionary<string, object>>() };
                 }
 
-                // 1. Create the single dictionary to hold the final aggregated result
-                var finalInvoiceObject = new BetterExpando();
-                var finalDitm = (IDictionary<string, object>)finalInvoiceObject;
+                Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Returning {finalResultList.Count} assembled instances.");
 
-                // 2. Copy header fields from the first instance
-                var firstInstance = allInstanceItems.First();
-                string detailsListName = "InvoiceDetails"; // Default name for the details list
-
-                foreach (var kvp in firstInstance)
-                {
-                    // Copy fields that are NOT the details list itself
-                    if (!kvp.Key.Equals(detailsListName, StringComparison.OrdinalIgnoreCase))
-                    {
-                         // Use ContainsKey/Add for compatibility with older frameworks
-                         if (!finalDitm.ContainsKey(kvp.Key)) finalDitm.Add(kvp.Key, kvp.Value);
-                         Console.WriteLine($"[OCR DEBUG] Invoice.Read Aggregation: Copied header field '{kvp.Key}' from first instance.");
-                    }
-                }
-                 // Ensure Instance/FileLineNumber/Section from the first instance are included if present
-                 if (firstInstance.TryGetValue("Instance", out var instVal) && !finalDitm.ContainsKey("Instance")) finalDitm.Add("Instance", instVal);
-                 if (firstInstance.TryGetValue("FileLineNumber", out var lineVal) && !finalDitm.ContainsKey("FileLineNumber")) finalDitm.Add("FileLineNumber", lineVal);
-                 if (firstInstance.TryGetValue("Section", out var sectVal) && !finalDitm.ContainsKey("Section")) finalDitm.Add("Section", sectVal);
-
-
-                // 3. Aggregate all 'InvoiceDetails' lists from ALL instances
-                var aggregatedDetails = allInstanceItems
-                    .SelectMany(item => item.TryGetValue(detailsListName, out var details) && details is List<IDictionary<string, object>> list ? list : Enumerable.Empty<IDictionary<string, object>>())
-                    .ToList();
-
-                 Console.WriteLine($"[OCR DEBUG] Invoice.Read Aggregation: Aggregated {aggregatedDetails.Count} detail items from {allInstanceItems.Count} instances.");
-
-                // 4. Add the aggregated details list to the final single object
-                finalDitm[detailsListName] = aggregatedDetails;
-
-                // 5. Create the final inner list containing only the single aggregated object
-                var resultList = new List<IDictionary<string, object>> { finalInvoiceObject };
-
-                Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Returning 1 final aggregated object within the list structure.");
-
-                // 6. Return the result wrapped in List<dynamic> to match expected signature
+                // Return the list of instances, wrapped in List<dynamic> as expected by the caller.
                 // The caller expects `csvLines.First()` to be the `List<IDictionary<string, object>>`
-                // This inner list (`resultList`) now contains exactly ONE item: the aggregated invoice.
-                return new List<dynamic> { resultList };
+                return new List<dynamic> { finalResultList };
             }
             catch (Exception e)
             {
@@ -209,59 +171,49 @@ namespace WaterNut.DataSpace
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
         private static readonly Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
 
-        private List<IDictionary<string, object>> SetPartLineValues(Part part)
+        // Add filterInstance parameter
+        private List<IDictionary<string, object>> SetPartLineValues(Part part, int? filterInstance = null)
         {
-            Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Processing Part ID {part.OCR_Part.Id}");
+            Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Processing Part ID {part.OCR_Part.Id}" + (filterInstance.HasValue ? $" for Filter Instance {filterInstance.Value}" : " (Top Level)"));
             var finalPartItems = new List<IDictionary<string, object>>();
             try
             {
-                // 1. Process Child Parts Recursively (do this once, BEFORE determining instances)
-                var childPartResults = part.ChildParts
-                                           .Where(cp => cp.AllLines.Any())
-                                           .ToDictionary(
-                                                cp => cp.OCR_Part.Id, // Key: Child Part ID
-                                                cp => SetPartLineValues(cp) // Value: List of results for this child
-                                            );
+                // Child parts are processed recursively *within* the instance loop below.
 
-                 foreach (var kvp in childPartResults)
+                // 2. Determine the instances to process for THIS part based on the filter
+                var instancesToProcess = part.Lines
+                    .SelectMany(line => line.Values.SelectMany(v => v.Value.Keys))
+                    .Where(k => !filterInstance.HasValue || k.instance == filterInstance.Value)
+                    .Select(k => k.instance)
+                    .Distinct()
+                    .OrderBy(instance => instance)
+                    .ToList();
+
+                 // If filtering, check if children might have data even if parent doesn't
+                 if (filterInstance.HasValue && !instancesToProcess.Any())
                  {
-                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Child Part ID {kvp.Key} returned {kvp.Value.Count} total items across all instances.");
+                     if (part.ChildParts.Any(cp => cp.AllLines.Any(l => l.Values.SelectMany(v => v.Value.Keys).Any(k => k.instance == filterInstance.Value))))
+                     {
+                         Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: No direct data for Filter Instance {filterInstance.Value}, but children might. Processing instance {filterInstance.Value} for child aggregation.");
+                         instancesToProcess = new List<int> { filterInstance.Value };
+                     }
                  }
 
-                // 2. Get all distinct instance numbers from this part AND all child results
-                var parentInstances = part.Lines
-                                          .SelectMany(line => line.Values.SelectMany(v => v.Value.Keys.Select(k => k.instance)))
-                                          .ToList();
-
-                var childInstances = childPartResults.Values
-                                        .SelectMany(list => list.Select(item => item.TryGetValue("Instance", out var instObj) && instObj is int inst ? inst : (int?)null))
-                                        .Where(inst => inst.HasValue)
-                                        .Select(inst => inst.Value)
-                                        .ToList();
-
-                var allInstances = parentInstances.Union(childInstances).Distinct().OrderBy(instance => instance).ToList();
-
-                if (!allInstances.Any())
-                {
-                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} and its children have no instances. Returning empty list.");
-                     return finalPartItems; // No data captured for this part or its children
-                }
-                 // Ensure instance 1 is included if there are children but no parent instances (handles grouping parts)
-                 if (!parentInstances.Any() && childInstances.Any() && !allInstances.Contains(1))
+                 // If still no instances after checking children (or not filtering), return empty.
+                 if (!instancesToProcess.Any())
                  {
-                     allInstances.Insert(0, 1);
-                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id} has no direct instances but children do. Ensuring instance 1 is processed.");
+                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: No relevant instances found" + (filterInstance.HasValue ? $" for Filter Instance {filterInstance.Value}" : "") + ". Returning empty list.");
+                     return finalPartItems;
                  }
 
-
-                Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Found {allInstances.Count} total distinct instances across parent and children: [{string.Join(", ", allInstances)}]");
+                Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Processing instances [{string.Join(", ", instancesToProcess)}]" + (filterInstance.HasValue ? $" for Filter Instance {filterInstance.Value}" : ""));
 
                 // Child parts already processed above
 
 
                 // 3. Iterate through each distinct instance found for the PARENT part
-                // 3. Iterate through ALL distinct instances found across parent and children
-                foreach (var currentInstance in allInstances)
+                // 3. Iterate through the relevant instances for this part
+                foreach (var currentInstance in instancesToProcess)
                 {
                     Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}: Processing instance {currentInstance}.");
                     var parentItem = new BetterExpando();
@@ -334,57 +286,55 @@ namespace WaterNut.DataSpace
                     } // End foreach sectionName
 
                     // 5. Process and attach child part data for the CURRENT parent instance
+                    // 4. Process and attach child part data for the CURRENT parent instance
                     foreach (var childPart in part.ChildParts.Where(x => x.AllLines.Any()))
                     {
-                         var childPartId = childPart.OCR_Part.Id;
-                         if (!childPartResults.TryGetValue(childPartId, out var allChildItems)) continue; // Skip if no results for this child
+                        var childPartId = childPart.OCR_Part.Id;
+                        // Call SetPartLineValues recursively for the child WITHOUT filtering by instance yet
+                        var allChildItemsForPart = SetPartLineValues(childPart, null);
 
-                         // Filter child items matching the CURRENT parent instance
-                         var relevantChildItems = allChildItems.Where(childItem =>
-                             childItem.TryGetValue("Instance", out var instObj) &&
-                             instObj is int inst &&
-                             inst == currentInstance).ToList();
+                        // NOW filter the results to get only items matching the parent's currentInstance
+                        var rawChildItems = allChildItemsForPart.Where(item =>
+                                item.TryGetValue("Instance", out var instObj) &&
+                                instObj is int inst &&
+                                inst == currentInstance).ToList();
 
-                         Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: Found {relevantChildItems.Count} items for Child Part ID {childPartId} matching this instance.");
+                        // Deduplicate the filtered child items based on positional index and section precedence
+                        var itemsWithIndex = rawChildItems
+                            .GroupBy(item => item.TryGetValue("Section", out var sec) ? sec as string : "Unknown") // Group by Section first
+                            .SelectMany(sectionGroup => sectionGroup.Select((item, index) => new { Item = item, Index = index, Section = sectionGroup.Key })) // Assign index within section
+                            .ToList();
 
+                        var deduplicatedChildItems = itemsWithIndex
+                            .GroupBy(indexedItem => indexedItem.Index) // Group by positional index across sections
+                            .OrderBy(indexGroup => indexGroup.Key) // Order by index
+                            .Select(indexGroup => indexGroup
+                                .OrderBy(item => GetSectionPrecedence(item.Section)) // Order by section precedence within index group
+                                .First().Item // Select the item from the highest precedence section for this index
+                            ).ToList();
 
-                         var fieldname = childPart.AllLines.FirstOrDefault()?.OCR_Lines?.Fields?.FirstOrDefault()?.EntityType ?? $"ChildPart_{childPartId}";
+                        Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: Child Part ID {childPartId} - Raw items: {rawChildItems.Count}, Deduplicated items: {deduplicatedChildItems.Count} (using positional index).");
 
-                         if (childPart.OCR_Part.RecuringPart != null) // Child IS recurring
-                         {
-                             Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: Attaching {relevantChildItems.Count} recurring child items for Child Part ID {childPartId} under field '{fieldname}'.");
-                             if (parentDitm.ContainsKey(fieldname))
-                             {
-                                 // Append if field already exists (should be a list)
-                                 if (parentDitm[fieldname] is List<IDictionary<string, object>> existingList) {
-                                     existingList.AddRange(relevantChildItems);
-                                 } else {
-                                      Console.WriteLine($"[OCR WARNING] Invoice.SetPartLineValues: Field '{fieldname}' exists but is not a list for recurring child {childPartId}. Overwriting.");
-                                      parentDitm[fieldname] = relevantChildItems;
-                                 }
-                             }
-                             else
-                             {
-                                 parentDitm[fieldname] = relevantChildItems;
-                             }
-                             if(relevantChildItems.Any()) parentDataFound = true; // If we add child data, consider the parent item valid
-                         }
-                         else // Child is NOT recurring
-                         {
-                             var childItem = relevantChildItems.FirstOrDefault(); // Get the single child item for this parent instance
-                             if (childItem != null)
-                             {
-                                 Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: Attaching single non-recurring child item for Child Part ID {childPartId} under field '{fieldname}' (wrapped in list).");
-                                 // Wrap the single item in a list to match expected structure downstream
-                                 parentDitm[fieldname] = new List<IDictionary<string, object>> { childItem };
-                                 parentDataFound = true; // If we add child data, consider the parent item valid
-                             } else {
-                                Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: No matching non-recurring child item found for Child Part ID {childPartId}. Assigning empty list.");
-                                // Assign an empty list to ensure the field exists and is not null downstream.
-                                parentDitm[fieldname] = new List<IDictionary<string, object>>();
-                             }
-                         }
-                    }
+                        var fieldname = childPart.AllLines.FirstOrDefault()?.OCR_Lines?.Fields?.FirstOrDefault()?.EntityType ?? $"ChildPart_{childPartId}";
+
+                        // Attach the deduplicated list (always treat as a list, even if non-recurring child results in 0 or 1 item after deduplication)
+                        Console.WriteLine($"[OCR DEBUG] Invoice.SetPartLineValues: Part ID {part.OCR_Part.Id}, Instance {currentInstance}: Attaching {deduplicatedChildItems.Count} deduplicated child items for Child Part ID {childPartId} under field '{fieldname}'.");
+                        if (parentDitm.ContainsKey(fieldname))
+                        {
+                            if (parentDitm[fieldname] is List<IDictionary<string, object>> existingList) {
+                                existingList.AddRange(deduplicatedChildItems);
+                            } else {
+                                Console.WriteLine($"[OCR WARNING] Invoice.SetPartLineValues: Field '{fieldname}' exists but is not a list for child {childPartId}. Overwriting.");
+                                parentDitm[fieldname] = deduplicatedChildItems;
+                            }
+                        }
+                        else
+                        {
+                            parentDitm[fieldname] = deduplicatedChildItems;
+                        }
+                        if(deduplicatedChildItems.Any()) parentDataFound = true;
+
+                    } // End foreach childPart
 
                     // 6. Add the assembled parent item (with its associated child data) to the final list
                     // Only add if we actually found data for this parent instance OR its children attached data
@@ -532,6 +482,21 @@ namespace WaterNut.DataSpace
             var f = Lines.Where(x => x.OCR_Lines.Parts.RecuringPart == null).SelectMany(x => x.Values.Values)
                 .SelectMany(x => x).FirstOrDefault(x => x.Key.fields.Field == field);
             return f.Key.fields == null ? null : GetValue(f);
+        }
+
+        // Helper to get a grouping key (REMOVED - using positional index instead)
+        // private static object GetItemGroupKey(IDictionary<string, object> item) { ... }
+
+        // Helper to assign precedence to sections
+        private static int GetSectionPrecedence(string sectionName)
+        {
+            switch (sectionName)
+            {
+                case "Single": return 1;
+                case "Ripped": return 2;
+                case "Sparse": return 3;
+                default: return 99;
+            }
         }
 
         private static dynamic GetValue(KeyValuePair<(Fields fields, int instance), string> f)
