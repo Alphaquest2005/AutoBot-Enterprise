@@ -33,7 +33,7 @@ namespace AutoBot
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
                 {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
-                {"CreateShipmentEmail", ShipmentUtils.CreateShipmentEmail },
+                {"CreateShipmentEmail", (types, infos) => ShipmentUtils.CreateShipmentEmail(types, infos) },
                 //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
                 //{"AttachToDocSetByRef", (ft, fs) => AttachToDocSetByRef(ft.AsycudaDocumentSetId) },

@@ -218,7 +218,7 @@ namespace AutoBotUtilities.Tests
         {
             using var realApi = new DeepSeekApi();
 
-            Assert.ThrowsAsync<HSCodeRequestException>(() =>
+            Assert.ThrowsAsync<DeepSeekApi.HSCodeRequestException>(() =>
                 realApi.GetTariffCode("Non-existent imaginary product"));
         }
 

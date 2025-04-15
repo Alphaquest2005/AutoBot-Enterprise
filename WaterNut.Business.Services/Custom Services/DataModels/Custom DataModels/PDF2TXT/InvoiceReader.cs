@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Dynamic;
@@ -59,6 +59,7 @@ namespace WaterNut.DataSpace
         public static async Task<Dictionary<string, (string file, string, ImportStatus Success)>> Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
+            Console.WriteLine($"[OCR DEBUG] InvoiceReader.Import: Starting import for file '{file}', FileTypeId: {fileTypeId}, EmailId: '{emailId}'");
             var imports = new Dictionary<string, (string file, string, ImportStatus Success)>();
             //Get Text
             try
@@ -72,12 +73,15 @@ namespace WaterNut.DataSpace
                 var templates = GetTemplates(x => true);
 
                 var possibleInvoices = GetPossibleInvoices(templates, pdfTxt).ToList();
+                Console.WriteLine($"[OCR DEBUG] InvoiceReader.Import: Found {possibleInvoices.Count} possible invoice templates.");
                 foreach (var tmp in possibleInvoices)//.Where(x => x.OcrInvoices.Id == 117)
                 {
+                    Console.WriteLine($"[OCR DEBUG] InvoiceReader.Import: Attempting template '{tmp.OcrInvoices.Name}' (ID: {tmp.OcrInvoices.Id})");
                     try
                     {
                         var importStatus = TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp,
                             fileTypeId, tmp == possibleInvoices.Last());
+                        Console.WriteLine($"[OCR DEBUG] InvoiceReader.Import: TryReadFile result for template '{tmp.OcrInvoices.Name}': {importStatus}");
                         var fileDescription = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId).Description;
                         switch (importStatus)
                         {
@@ -118,6 +122,7 @@ namespace WaterNut.DataSpace
                    // SeeWhatSticks(pdfTxt.ToString());
                 
 
+                Console.WriteLine($"[OCR DEBUG] InvoiceReader.Import: Finished import for file '{file}'. Results: {imports.Count} entries.");
                 return imports;
             }
             catch (Exception e)
@@ -183,28 +188,58 @@ namespace WaterNut.DataSpace
             Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet,
             Invoice tmp, int fileTypeId, bool isLastdoc)
         {
-
-           
-            var formattedPdfTxt = tmp.Format(pdftxt.ToString());
-
-            var csvLines = tmp.Read(formattedPdfTxt);
-
-            AddNameSupplier(tmp, csvLines);
-
-            AddMissingRequiredFieldValues(tmp, csvLines);
-
-            WriteTextFile(file, formattedPdfTxt);
-
-            
-            if (csvLines.Count < 1 || !tmp.Success)
+            try
             {
-                return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc)  ? ImportStatus.HasErrors : ImportStatus.Failed;
-            }
-            else
-            {
-                return ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines) == true ? ImportStatus.Success : ImportStatus.HasErrors;
-            }
 
+
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: Processing template '{tmp.OcrInvoices.Name}' (ID: {tmp.OcrInvoices.Id}) for file '{file}'");
+
+                var formattedPdfTxt = tmp.Format(pdftxt.ToString());
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: PDF text formatted using template {tmp.OcrInvoices.Id}.");
+
+                var csvLines = tmp.Read(formattedPdfTxt);
+                Console.WriteLine(
+                    $"[OCR DEBUG] InvoiceReader.TryReadFile: tmp.Read returned {csvLines?.Count ?? 0} data structures.");
+                if (csvLines != null && csvLines.Count > 0 && csvLines[0] is List<IDictionary<string, object>> list)
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: First data structure contains {list.Count} items.");
+                }
+
+                AddNameSupplier(tmp, csvLines);
+
+                AddMissingRequiredFieldValues(tmp, csvLines);
+
+                WriteTextFile(file, formattedPdfTxt);
+
+
+                if (csvLines == null || csvLines.Count < 1 || !tmp.Success)
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: Read failed or returned no lines. tmp.Success = {tmp.Success}. Entering ErrorState.");
+                    var errorResult = ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId,
+                        isLastdoc);
+                    Console.WriteLine($"[OCR DEBUG] InvoiceReader.TryReadFile: ErrorState returned {errorResult}.");
+                    return errorResult ? ImportStatus.HasErrors : ImportStatus.Failed;
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: Read successful. Entering ImportSuccessState.");
+                    var successResult = ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp,
+                        csvLines);
+                    Console.WriteLine(
+                        $"[OCR DEBUG] InvoiceReader.TryReadFile: ImportSuccessState returned {successResult}.");
+                    return successResult == true ? ImportStatus.Success : ImportStatus.HasErrors;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
         }
 
@@ -238,11 +273,11 @@ namespace WaterNut.DataSpace
                 fileType = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId);
 
 
-            new DataFileProcessor().Process( new DataFile(fileType, docSet, overWriteExisting,
+          return  new DataFileProcessor().Process( new DataFile(fileType, docSet, overWriteExisting,
                 emailId,
-                file, csvLines)).Wait();
+                file, csvLines)).GetAwaiter().GetResult();
 
-            return true;
+            
         }
 
         private static bool ErrorState(string file, string emailId, string pdftxt, Client client,
@@ -265,9 +300,10 @@ namespace WaterNut.DataSpace
                 //    z.Values.Values.Any(v =>
                 //        v.Keys.Any(k => k.fields.Field == "Name") &&
                 //        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) ||
-                failedlines.Count >= allRequried.Count) return false;
+                failedlines.Count >= allRequried.Count && allRequried.Count > 0) return false;
 
-            if (isLastdoc && failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
+            if (//isLastdoc && 
+                failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                 (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
                 tmp.Lines.SelectMany(x => x.Values.Values).Any())
             {

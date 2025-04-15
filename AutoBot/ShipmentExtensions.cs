@@ -18,7 +18,7 @@ namespace AutoBotUtilities
     {
      
 
-        private static List<ShipmentInvoice> shipmentInvoices;
+        public static List<ShipmentInvoice> shipmentInvoices;
 
         public static Shipment LoadEmailPOs(this Shipment shipment)
         {
@@ -1298,6 +1298,8 @@ namespace AutoBotUtilities
                         TrackingState = TrackingState.Added
                     });
 
+                if(!manifests.Any()) manifests.Add(new ShipmentManifest(){SourceFile = "Unknown"});
+
                 Shipment manifestShipments(ShipmentManifest manifest) =>
                     new Shipment
                     {
@@ -1309,14 +1311,14 @@ namespace AutoBotUtilities
                         ExpectedEntries = attachments.Count(x => x.Reference.ToUpper() != "summary".ToUpper() && x.FilePath.ToUpper().Contains("xlsx".ToUpper())),
                         TotalInvoices = invoices.Select(x => x.Id).Count(),
                         FreightCurrency = manifest.FreightCurrency ?? freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                        Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
+                        Freight = manifest.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight ?? 0,
                         Origin = "US",
                         Packages = manifest?.Packages ?? bl?.PackagesNo ?? 0,
                         Location = manifest.LocationOfGoods,
                         Office = manifest.CustomsOffice,
-                        ConsigneeCode = manifest.Consignees.ConsigneeCode,
+                        ConsigneeCode = manifest.Consignees?.ConsigneeCode,
                         ConsigneeName = manifest.ConsigneeName,
-                        ConsigneeAddress = manifest.Consignees.Address,
+                        ConsigneeAddress = manifest.Consignees?.Address,
                         TrackingState = TrackingState.Added
                     };
 
@@ -1329,6 +1331,7 @@ namespace AutoBotUtilities
                     shipments.Add(shipment);
 
                     var manifestAttachments = manifests
+                        .Where(x => x.Id != 0)// should be saved in database by this point, 0 is to prevent the new shipment from being saved
                         .Where(x => x.WayBill == shipment.BLNumber)
                         .Where(x => attachments.All(z => z.FilePath != x.SourceFile))
                         .Select(x => new Attachments

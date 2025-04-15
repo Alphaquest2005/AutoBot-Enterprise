@@ -1,4 +1,4 @@
-    using System.IO;
+using System.IO;
 using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using OCR.Business.Services;
@@ -50,7 +50,7 @@ namespace AutoBotUtilities.Tests
 
         
         [Test]
-        public void CanImportShipmentInvoice()
+        public void CanImportShipmentInvoice() // Original Test
         {
             try
             {
@@ -84,9 +84,103 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-      
-
-    }
-
-   
-}
+          [Test]
+          public void CanImportAmazonMultiSectionInvoice() // Added Test (Corrected)
+          {
+              try
+              {
+                  //if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); // Skip if not test settings
+                  // Use the absolute path provided by the user
+                  var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\one amazon with muliple invoice details sections.pdf"; 
+                  
+                  if (!File.Exists(testFile))
+                  {
+                      Assert.Warn($"Test file not found: {testFile}");
+                      return; // Skip test if file doesn't exist
+                  }
+  
+                  var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                  if (!fileTypes.Any())
+                  {
+                      Assert.Warn($"No suitable PDF FileType found for: {testFile}");
+                      return; // Skip if no matching filetype
+                  }
+  
+                  foreach (var fileType in fileTypes)
+                  {
+                      Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
+                      // Clear DB before each filetype test within this method
+                      Infrastructure.Utils.ClearDataBase(); 
+                      PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+  
+  
+                      using (var ctx = new EntryDataDSContext())
+                      {
+                          // Basic assertion: Check if *any* data was imported. 
+                          // Specific counts might vary depending on the actual PDF content.
+                          Assert.That(ctx.ShipmentInvoice.Any(), Is.True, "No ShipmentInvoice created."); // Corrected Assert
+                          Assert.That(ctx.ShipmentInvoiceDetails.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Corrected Assert
+                          Console.WriteLine($"Import successful for FileType {fileType.Id}. Invoices: {ctx.ShipmentInvoice.Count()}, Details: {ctx.ShipmentInvoiceDetails.Count()}"); // Corrected property
+                      }
+                  }
+  
+                  Assert.That(true);
+              }
+              catch (Exception e)
+              {
+                  Console.WriteLine($"ERROR in CanImportAmazonMultiSectionInvoice: {e}");
+                  Assert.Fail($"Test failed with exception: {e.Message}");
+              }
+          }
+  
+         [Test]
+         public void CanImportSheinMultiInvoice() // New Test for Shein
+         {
+             try
+             {
+                 //if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); // Skip if not test settings
+                 // Use the absolute path provided by the user for Shein PDF
+                 var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Shein - multiple invoices for one shipment .pdf"; 
+                 
+                 if (!File.Exists(testFile))
+                 {
+                     Assert.Warn($"Test file not found: {testFile}");
+                     return; // Skip test if file doesn't exist
+                 }
+ 
+                 var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                 if (!fileTypes.Any())
+                 {
+                     Assert.Warn($"No suitable PDF FileType found for: {testFile}");
+                     return; // Skip if no matching filetype
+                 }
+ 
+                 foreach (var fileType in fileTypes)
+                 {
+                     Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
+                     // Clear DB before each filetype test within this method
+                     Infrastructure.Utils.ClearDataBase(); 
+                     PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+ 
+ 
+                     using (var ctx = new EntryDataDSContext())
+                     {
+                         // Basic assertion: Check if *any* data was imported. 
+                         // Specific counts might vary depending on the actual PDF content.
+                         Assert.That(ctx.ShipmentInvoice.Any(), Is.True, "No ShipmentInvoice created."); // Corrected Assert
+                         Assert.That(ctx.ShipmentInvoiceDetails.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Corrected Assert
+                         Console.WriteLine($"Import successful for FileType {fileType.Id}. Invoices: {ctx.ShipmentInvoice.Count()}, Details: {ctx.ShipmentInvoiceDetails.Count()}"); // Corrected property
+                     }
+                 }
+ 
+                 Assert.That(true);
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine($"ERROR in CanImportSheinMultiInvoice: {e}");
+                 Assert.Fail($"Test failed with exception: {e.Message}");
+             }
+         }
+ 
+     } // End Class
+ } // End Namespace

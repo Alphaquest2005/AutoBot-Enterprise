@@ -38,7 +38,7 @@ public class SimplifiedDeclarationImporter
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         RegistrationNumber = $"{x["ManifestYear"]} {x["ManifestNumber"]}",
                         CustomsOffice = x["CustomsOffice"].ToString(),
-                        ConsigneeName = x["Consignee"].ToString(),
+                        ConsigneeName = x.ContainsKey("Consignee") ? x["Consignee"].ToString() : "",
                         WayBill = x["BLNumber"].ToString(),
                         Packages = Convert.ToInt32(x["Packages"].ToString()),
                         PackageType = x["PackageType"]?.ToString()??"Package",
@@ -52,7 +52,7 @@ public class SimplifiedDeclarationImporter
                         TrackingState = TrackingState.Added,
                         Consignees = new Consignees()
                         {
-                            ConsigneeName = x["Consignee"].ToString(),
+                            ConsigneeName = x.ContainsKey("Consignee") ? x["Consignee"].ToString() : "",
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
 
                         }

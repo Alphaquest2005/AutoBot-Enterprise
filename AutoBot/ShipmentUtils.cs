@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -73,7 +74,7 @@ namespace AutoBot
             }
         }
 
-        public static void CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
+        public static bool CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
         {
             try
             {
@@ -89,7 +90,7 @@ namespace AutoBot
                     ctx.Database.ExecuteSqlCommand(@"EXEC [dbo].[PreProcessShipmentSP]");
                 }
 
-
+                ShipmentExtensions.shipmentInvoices = null;
 
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
                         .LoadEmailPOs()
@@ -116,7 +117,7 @@ namespace AutoBot
                     .Distinct()
                     .ToArray();
 
-
+                var sent = false;
                 using (var ctx = new EntryDataDSContext())
                 {
                     shipments.ForEach(shipment =>
@@ -125,13 +126,28 @@ namespace AutoBot
                             $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
                             shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
 
-
+                        sent = true;
                         ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
 
                     });
                     ctx.SaveChanges();
                 }
 
+                return sent;
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    var entityName = validationError.Entry.Entity.GetType().Name;
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        Console.WriteLine($"Validation Error in Entity: {entityName}, Field: {error.PropertyName}, Error: {error.ErrorMessage}, Value: {validationError.Entry.CurrentValues[error.PropertyName]}");
+                    }
+                }
+
+                BaseDataModel.EmailExceptionHandler(ex);
+                throw; // Re-throw the exception to preserve the stack trace
             }
             catch (Exception e)
             {
