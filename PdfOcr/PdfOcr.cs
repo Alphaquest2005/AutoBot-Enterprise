@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Ghostscript.NET;
-using iTextSharp.text.pdf;
+using iText.Kernel.Pdf;
 using Tesseract;
 
 /**
@@ -94,9 +94,9 @@ namespace pdf_ocr
                 int pageCount;
                 using (var reader = new PdfReader(pdfPath))
                 {
-                    //  as a matter of fact we need iTextSharp PdfReader (and all of iTextSharp) only to get the page count of PDF document;
-                    //  unfortunately GhostScript itself doesn't know how to do it
-                    pageCount = reader.NumberOfPages;
+                   var doc = new PdfDocument(reader);
+
+                   pageCount = doc.GetNumberOfPages();
                 }
 
                 //var ghostscriptRasterizer = new GhostscriptRasterizer();
