@@ -109,7 +109,8 @@ namespace WaterNut.Business.Services.Utils
             {
 
                 //create a function that call deepseek api with item description and return tariff code
-                string keyTariffCode = string.IsNullOrEmpty(item.Key.TariffCode)
+                
+                string keyTariffCode = inventorySource.Name != "POS" && string.IsNullOrEmpty(item.Key.TariffCode)
                     ? await GetTariffCode(item).ConfigureAwait(false)//GetTariffCodeValue(item)
                     : item.Key.TariffCode;
 

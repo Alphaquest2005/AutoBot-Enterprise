@@ -535,8 +535,8 @@ namespace WaterNut.DataSpace
                         deliveryTerms.Code = Exp.Delivery_terms_Code;
                 }
 
-                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = $"{ads.Consignee.ConsigneeName ?? Exp.Consignee_name}\r\n{ads.Consignee.Address ?? Exp.Consignee_Address}" ;
-                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = ads.Consignee.ConsigneeCode ?? Exp.Consignee_code;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = $"{ads.Consignee?.ConsigneeName ?? Exp.Consignee_name}\r\n{ads.Consignee?.Address ?? Exp.Consignee_Address}" ;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = ads.Consignee?.ConsigneeCode ?? Exp.Consignee_code;
             
         }
 

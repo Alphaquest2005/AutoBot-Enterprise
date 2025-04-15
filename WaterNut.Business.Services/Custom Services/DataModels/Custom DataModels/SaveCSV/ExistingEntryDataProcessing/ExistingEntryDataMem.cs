@@ -13,7 +13,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class ExistingEntryDataMem : IExistingEntryDataSetProcessor
     {
-        private static ConcurrentDictionary<(int EntryData_ID, string EntryDataId), EntryData> _entryDataLst = null;
+        private static ConcurrentDictionary<(int EntryData_ID, string EntryDataId, int AsycudaDocumentSetId), EntryData> _entryDataLst = null;
 
         static readonly object Identity = new object();
 
@@ -23,14 +23,25 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             {
                 if (_entryDataLst == null)
                 {
-                    var res = new EntryDataDSContext().EntryData
-                        .Include("AsycudaDocumentSets")
-                        .Include("EntryDataDetails")
-                        .Where(x => x.ApplicationSettingsId == DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        // this was to prevent deleting entrydata from other folders discrepancy with piece here and there with same entry data. but i changed the discrepancy to work with only one folder.
-                        //.Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
-                        .ToDictionary(x => (x.EntryData_Id, x.EntryDataId), x => x);
-                    _entryDataLst = new ConcurrentDictionary<(int EntryData_ID, string EntryDataId), EntryData>(res);
+                    try
+                    {
+
+
+                        var res = new EntryDataDSContext().EntryData
+                            .Include("AsycudaDocumentSets")
+                            .Include("EntryDataDetails")
+                            .Where(x => x.ApplicationSettingsId == DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .Where(x => x.AsycudaDocumentSets.Any())
+                            // this was to prevent deleting entrydata from other folders discrepancy with piece here and there with same entry data. but i changed the discrepancy to work with only one folder.
+                            //.Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
+                            .ToDictionary(x => (x.EntryData_Id, x.EntryDataId, AsycudaDocumentSetId: x.AsycudaDocumentSets.Max(z => z.AsycudaDocumentSetId)), x => x);
+                        _entryDataLst = new ConcurrentDictionary<(int EntryData_ID, string EntryDataId, int AsycudaDocumentSetId), EntryData>(res);
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
                 }
             }
         }
@@ -47,7 +58,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 : OverWriteExistingEntryData(docSet, existingEntryDataList);
         }
 
-        private List<(RawEntryDataValue rawItem, dynamic existingEntryData, List<EntryDataDetails> details)> OverWriteExistingEntryData(List<AsycudaDocumentSet> docSet, List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId), EntryData> EntryData)> existingEntryDataList)
+        private List<(RawEntryDataValue rawItem, dynamic existingEntryData, List<EntryDataDetails> details)> OverWriteExistingEntryData(List<AsycudaDocumentSet> docSet, List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId, int AsycudaDocumentSetId), EntryData> EntryData)> existingEntryDataList)
         {
             existingEntryDataList.ForEach(x => x.EntryData.Value.EmailId = x.Item.EntryData.EmailId);
             return existingEntryDataList
@@ -58,7 +69,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
         private List<(RawEntryDataValue rawItem, dynamic existingEntryData, List<EntryDataDetails> details)> ExistingEntryData
-        (List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId), EntryData> EntryData)> existingEntryDataList)
+        (List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId, int AsycudaDocumentSetId), EntryData> EntryData)> existingEntryDataList)
         {
              DeleteExistingEntryData(existingEntryDataList.Select(x => x.EntryData.Value).Where(x => x != null).ToList());
              return existingEntryDataList.Select(x => (rawItem: x.Item, existingEntryData: (dynamic)null, details: x.Item.EntryDataDetails.ToList())).ToList();
@@ -129,11 +140,19 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return oldEntryDataDetails;
         }
 
-        private List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId), EntryData> EntryData)> GetExistingEntryData(List<RawEntryDataValue> itemSet) =>
-           itemSet
-            
-                .GroupJoin(_entryDataLst, i =>  i.EntryData.EntryDataId, e => e.Key.EntryDataId, (i,e) => (Item:i, EntryData:e.FirstOrDefault()))
-                .ToList();
+        private List<(RawEntryDataValue Item, KeyValuePair<(int EntryData_ID, string EntryDataId, int AsycudaDocumentSetId), EntryData> EntryData)> GetExistingEntryData(List<RawEntryDataValue> itemSet)
+        {
+            var res = itemSet
+                        .Select(i => (
+                            Item: i,
+                            EntryData: _entryDataLst.FirstOrDefault(e =>
+                                e.Key.EntryDataId == i.EntryData.EntryDataId &&
+                                e.Key.AsycudaDocumentSetId == i.EntryData.AsycudaDocumentSetId)
+                        ))
+                        .ToList();
+
+            return res;
+        }
 
         private void DeleteEntryData(List<EntryData> items) => new EntryDataDSContext().BulkDelete(items);
 
