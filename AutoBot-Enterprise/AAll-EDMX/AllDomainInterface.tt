@@ -1,0 +1,118 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\DomainInterface.tt" #>
+<#
+    var ClientprocessedInterfaces = new List<string>();
+    var BusinessprocessedInterfaces = new List<string>();
+  ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+                        @"..\AllocationQS\AllocationQS.edmx",  
+                      @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref ClientprocessedInterfaces );   
+
+	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+                @"..\CounterPointQS\CounterPointQS.edmx",  
+			        
+             @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces );   
+
+	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+                        @"..\CoreEntities\CoreEntities.edmx",   
+					                
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces );   
+    	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+                        @"..\CoreEntities\OCR.edmx",   
+					                
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces ); 
+
+	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+					 @"..\EntryDataQS\EntryDataQS.edmx",    
+					                
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces );   
+
+	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+					 @"..\InventoryQS\InventoryQS.edmx",
+					                   
+                    @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces );   
+
+	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+					 @"..\PreviousDocumentQS\PreviousDocumentQS.edmx", 
+					                 
+                    @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref ClientprocessedInterfaces );     
+
+   ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+				     @"..\SalesDataQS\SalesDataQS.edmx", 
+					                  
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref ClientprocessedInterfaces );
+
+   
+ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+				     @"..\AdjustmentQS\AdjustmentQS.edmx", 
+					                  
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref ClientprocessedInterfaces );
+
+
+//////////////////////////////////////////Data space///////////////////////////////////////
+BusinessprocessedInterfaces = ClientprocessedInterfaces;
+
+BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\AllocationDS\AllocationDS.edmx",
+					
+                      @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );   
+
+	BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\DocumentDS\DocumentDS.edmx",
+					 
+                      @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );   
+
+	BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\DocumentItemDS\DocumentItemDS.edmx",
+					
+                    @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );   
+
+	BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\EntryDataDS\EntryDataDS.edmx",
+					
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces);   
+
+	BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\InventoryDS\InventoryDS.edmx",
+					
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces);   
+
+	BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+					
+                    @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );     
+
+    BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\QuickBooksDS\QuickBooksDS.edmx",
+					
+                     @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );
+  
+    BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\ValuationDS\ValuationDS.edmx",
+					 
+                      @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces ); 
+
+    BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"..\LicenseDS\LicenseDS.edmx",
+					 
+                      @"..\DomainInterfaces\InterfacesModel.csproj",
+                           @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces ); 
+#>

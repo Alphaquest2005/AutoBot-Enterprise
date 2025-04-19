@@ -1,0 +1,449 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ import namespace="Core.Common.Data.Contracts" #>
+<#@ assembly name="C:\Prism Projects\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+        public class EntityViewModelTPL : CSharpTemplate
+    {
+        public string contextName;
+        public string projectName;
+        public EntityType mainEntity; 
+        public string mainEntitySet; 
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public MetadataTools ef; 
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+       
+       CodeGenerationTools code = new CodeGenerationTools(this);
+       
+	   
+#>
+using System.Collections.ObjectModel;
+using System.Linq;
+using SimpleMvvmToolkit;
+using System;
+using <#=contextName #>.Client.Entities;
+using <#=contextName #>.Client.Repositories;
+using <#=projectName #>.Client.Repositories;
+
+
+
+namespace <#=projectName #>.<#=contextName #>.ViewModels
+{
+	public partial class <#=code.Escape(mainEntity)#>ViewModel : BaseViewModel
+	{
+
+<#+     
+        var mlst= mainEntity.NavigationProperties;
+        //var mlst= mainEntity.NavigationProperties.Where(np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);
+       var nplst= mainEntity.NavigationProperties.Where(np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);               
+#>  
+  
+
+        public <#=code.Escape(mainEntity)#>ViewModel()
+        {
+          try
+           {
+            RegisterToReceiveMessages<<#=code.Escape(mainEntity)#>>(MessageToken.Current<#=code.Escape(mainEntity)#>Changed, OnCurrent<#=code.Escape(mainEntity)#>Changed);
+            RegisterToReceiveMessages(MessageToken.<#=code.Escape(mainEntitySet)#>Changed, On<#=code.Escape(mainEntitySet)#>Changed);
+<#+ 
+        if(mlst.Any() == true && container.Name != COREcontainer.Name)
+        {
+            foreach (string mEntity in mlst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct())                
+            {
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity)
+                {
+ #> 
+            RegisterToReceiveMessages<<#=mEntity#>>(MessageToken.Current<#=mEntity#>Changed, OnCurrent<#=mEntity#>Changed);
+<#+    
+                }
+            }
+        }
+ #>
+            OnCreated();
+         }
+        catch (Exception ex)
+        {
+            throw;
+        }
+        }
+
+        partial void OnCreated();
+
+
+        private void OnCurrent<#=code.Escape(mainEntity)#>Changed(object sender, NotificationEventArgs<<#=code.Escape(mainEntity)#>> e)
+        {
+            if(Current<#=code.Escape(mainEntity)#> != null) Current<#=code.Escape(mainEntity)#>.PropertyChanged += Current<#=code.Escape(mainEntity)#>__propertyChanged;
+            NotifyPropertyChanged(x => this.Current<#=code.Escape(mainEntity)#>);
+        }   
+
+            void Current<#=code.Escape(mainEntity)#>__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+                {
+<#+
+           if(mainEntity.Abstract == false)
+            {
+                
+                Dictionary<string, EntityType> plst = new Dictionary<string,EntityType>();
+                plst = mainEntity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).ToDictionary(x => x.Name , x=> x.ToEndMember.GetEntityType());
+                WritePropertyEntityName(plst, mainEntity, container,  COREcontainer,  code);
+                plst = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  && mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false).ToDictionary( x=> x.Name.Substring(0,x.Name.Length - 2) , x=> entityCollection.FirstOrDefault(z => z.Name == x.Name.Substring(0,x.Name.Length - 2)));
+                WritePropertyEntityName(plst, mainEntity, container,  COREcontainer,  code);
+            }
+#>
+                 } 
+<#+ 
+         //   if(mainEntity.BaseType == null)
+           // {
+#>
+        private void On<#=mainEntitySet#>Changed(object sender, NotificationEventArgs e)
+        {
+
+            NotifyPropertyChanged(x => this.<#=                mainEntitySet#>);
+        }   
+<#+
+            //}
+ #>
+<#+ 
+        if(mlst.Any() == true)
+        {
+
+
+            foreach (string mEntity in mlst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct())                
+            {
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity)
+                {
+ #> 
+            private void OnCurrent<#=mEntity#>Changed(object sender, NotificationEventArgs<<#=        mEntity#>> e)
+                {
+                    
+                    NotifyPropertyChanged(x => this.Current<#=        mEntity#>);
+                } 
+
+
+<#+    
+                }
+            }
+        }
+ #>
+
+             
+       
+
+
+
+
+        #region "Crud Ops"
+<#+
+         if(mainEntity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("ReadOnlyProperty")) == null)
+            {
+#>
+        public void New<#=code.Escape(mainEntity)#>()
+        {
+
+             <#+
+                var nlst= nplst.Where(x => x.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.One && x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
+                               .Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct().Where(x => x != mainEntity.Name);
+                if(nlst.Any() == true && container.Name != COREcontainer.Name)
+                {
+             #>
+                    if(<#+
+                    var z = 0;
+                    foreach (string mEntity in nlst)                
+                    {
+                        z += 1;
+                        
+ #>
+<#=                            z > 1?"|| ":"" #>Current<#=mEntity#> == null<#+    
+                    }
+#>) return;
+<#+
+                }
+ #>
+
+            var te = new <#=code.Escape(mainEntity)#>(){<#+
+if(nplst.Any() == true && container.Name != COREcontainer.Name )
+        {
+
+            var z = 0;
+            foreach (var mEntity in nplst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType())).Distinct())                
+            {
+                
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity.Name)
+                        {
+                            z += 1;
+ #>
+<#=                            z > 1?", ":"" #> 
+                <#=mEntity.KeyMembers[0].Name#> = Current<#=mEntity.Name#>.<#=mEntity.KeyMembers[0].Name#>, <#=mEntity.Name#> = Current<#=mEntity.Name#><#+   
+                        }
+                    }
+                }
+ #>};
+
+            using (<#=code.Escape(mainEntity)#>Repository ctx = new <#=code.Escape(mainEntity)#>Repository())
+            {
+
+                te = ctx.Create<#=code.Escape(mainEntity)#>(te);
+            }
+
+<#+
+if(nplst.Any() == true && container.Name != COREcontainer.Name)
+        {
+
+            var z = 0;
+            foreach (string mEntity in nplst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct())                
+            {
+                
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity)
+                        {
+                            z += 1;
+ #>
+//<#=                            z > 1?", ":"" #> 
+                
+                te.<#=mEntity#> = Current<#=mEntity#>;<#+   
+                        }
+                    }
+                }
+ #>
+
+
+<#+//////////////////// The Many
+if( container.Name != COREcontainer.Name)//nplst.Any() == true &&
+        {
+
+            var z = 0;
+            foreach (var mEntity in mainEntity.NavigationProperties.Where(x => x.FromEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+                                                            .Select(x=> ((EntityType)x.ToEndMember.GetEntityType()) ).Distinct())                
+            {
+                
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity.Name)
+                        {
+                            z += 1;
+ #>
+//<#=                            z > 1?", ":"" #> 
+                Current<#=mEntity.Name#>.<#=mEntity.NavigationProperties.FirstOrDefault(x => (EntityType)x.ToEndMember.GetEntityType() == mainEntity).Name#>.Add(te);
+                NotifyPropertyChanged(x => Current<#=mEntity.Name#>);
+<#+             
+                        }
+             }
+       }
+ #>
+
+
+<#+
+if(nplst.Any() == true && container.Name != COREcontainer.Name)
+        {
+
+            var z = 0;
+            foreach (string mEntity in nplst.Where(x => x.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name ).Distinct())                
+            {
+                
+                //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                if(mainEntity.Name != mEntity)
+                        {
+                            z += 1;
+ #>
+//<#=                            z > 1?", ":"" #> 
+                Current<#=mEntity#>.<#=mainEntitySet#> = te;
+                NotifyPropertyChanged(x => Current<#=mEntity#>);
+<#+             
+                        }
+             }
+       }
+ #>
+
+             Current<#=code.Escape(mainEntity)#> = te;
+             NotifyPropertyChanged(x => this.Current<#=mainEntity.Name#>);
+             SendMessage(MessageToken.Current<#=code.Escape(mainEntity)#>Changed,
+                                                      new NotificationEventArgs<<#=code.Escape(mainEntity)#>>(MessageToken.Current<#=code.Escape(mainEntity)#>Changed, Current<#=code.Escape(mainEntity)#>));
+            
+             <#=mainEntitySet#>.Add(Current<#=code.Escape(mainEntity)#>);
+             SendMessage(MessageToken.<#=mainEntitySet#>Changed, new NotificationEventArgs());
+
+        }
+
+        public void Delete<#=                code.Escape(mainEntity)#>()
+        {
+             if (Current<#=                code.Escape(mainEntity)#> == null <#+
+                if(nplst.Any() == true && container.Name != COREcontainer.Name)
+                {
+
+                    var z = 0;
+                    foreach (string mEntity in nplst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct())                
+                    {
+                        z += 1;
+                        //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                        if(mainEntity.Name != mEntity)
+                        {
+ #>
+<#=                            z > 0?"|| ":"" #>Current<#=                            mEntity#> == null<#+    
+                        }
+                    }
+                }
+ #>) return;
+            
+            using (<#=mainEntity.Name#>Repository ctx = new <#=mainEntity.Name#>Repository())
+            {
+                ctx.Delete<#=mainEntity.Name#>(Current<#=code.Escape(mainEntity)#>.EntityId);
+            }
+<#+ 
+                if(mlst.Any() == true && container.Name != COREcontainer.Name)
+                {
+                    foreach (var m in mlst.Where(x => x.FromEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many))                
+                    {
+                        var mEntity= ((EntityType)m.ToEndMember.GetEntityType());
+                        if(mainEntity.Name != mEntity.Name)
+                        {
+                            var ep = ((EntityType)m.ToEndMember.GetEntityType()).NavigationProperties.Where(np => np.ToEndMember.GetEntityType().Name == mainEntity.Name && np.Name.Contains(m.Name)).FirstOrDefault();
+                            var eep = ((EntityType)m.ToEndMember.GetEntityType()).NavigationProperties.Where(np => np.ToEndMember.GetEntityType().Name == mainEntity.Name).FirstOrDefault();
+ #> 
+                Current<#=mEntity.Name#>.<#=ep == null? eep.Name : ep.Name#>.Remove(Current<#=mEntity.Name#>.<#=ep == null? eep.Name : ep.Name#>.FirstOrDefault(x => x.<#=mainEntity.KeyMembers[0].Name#> == Current<#=code.Escape(mainEntity)#>.<#=mainEntity.KeyMembers[0].Name#>));
+                NotifyPropertyChanged(x => this.Current<#=mEntity.Name#>);      
+<#+  
+                        }
+                    }
+                }
+ #>
+              
+            
+            Current<#=code.Escape(mainEntity)#> = null;
+            NotifyPropertyChanged(x => this.Current<#=mainEntity.Name#>);
+            
+            SendMessage(MessageToken.Current<#=code.Escape(mainEntity)#>Changed,
+                                                      new NotificationEventArgs<<#=code.Escape(mainEntity)#>>(MessageToken.Current<#=code.Escape(mainEntity)#>Changed, Current<#=code.Escape(mainEntity)#>));
+            
+            
+        }
+                
+        public void Save<#=code.Escape(mainEntity)#>()
+        {
+            if (Current<#=                code.Escape(mainEntity)#> == null<#+
+                if(nplst.Any() == true && container.Name != COREcontainer.Name)
+                {
+
+                    var z = 0;
+                    foreach (string mEntity in nplst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType()).Name).Distinct())                
+                    {
+                        z += 1;
+                        //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                        if(mainEntity.Name != mEntity)
+                        {
+ #>
+<#=                            z > 0?"| ":"" #>Current<#=                            mEntity#> == null<#+    
+                        }
+                    }
+                }
+ #>) return;
+            using (<#=mainEntity.Name#>Repository ctx = new <#=mainEntity.Name#>Repository())
+            {
+                Current<#=mainEntity.Name#> = ctx.Update<#=mainEntity.Name#>(Current<#=code.Escape(mainEntity)#>);
+<#+ 
+                if(mlst.Any() == true && container.Name != COREcontainer.Name)
+                {
+
+
+                    foreach (var mEntity in mlst.Select(x=> ((EntityType)x.ToEndMember.GetEntityType())).Distinct())                
+                    {
+                        //string mEntity= ((EntityType)navProperty.ToEndMember.GetEntityType()).Name;
+                        if(mainEntity.Name != mEntity.Name)
+                        {
+ #> 
+                //ctx.SaveChanges<<#=code.Escape((mEntity.BaseType == null?mEntity:mEntity.BaseType))#>>(Current<#=mEntity.Name#>);
+                NotifyPropertyChanged(x => this.Current<#=mEntity.Name#>);
+                SendMessage(MessageToken.Current<#=mEntity.Name#>Changed,
+                                                      new NotificationEventArgs<<#=mEntity.Name#>>(MessageToken.Current<#=mEntity.Name#>Changed, Current<#=mEntity.Name#>)); 
+               
+<#+    
+                        }
+                    }
+                }
+ #>
+
+                
+            }
+<#+ 
+                if(container.Name != COREcontainer.Name)
+                {
+#>
+             NotifyPropertyChanged(x => Current<#=code.Escape(mainEntity)#>);
+             SendMessage(MessageToken.Current<#=code.Escape(mainEntity)#>Changed,
+                                                      new NotificationEventArgs<<#=code.Escape(mainEntity)#>>(MessageToken.Current<#=code.Escape(mainEntity)#>Changed, Current<#=code.Escape(mainEntity)#>));
+            
+            SendMessage(MessageToken.<#=mainEntitySet#>Changed, new NotificationEventArgs());
+            NotifyPropertyChanged(x => this.<#=                    mainEntitySet#>);
+<#+                } #>
+        }
+<#+        
+            } 
+#>      
+        #endregion
+
+    }
+}
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }	
+#>
+
+<#+
+        void WritePropertyEntityName(Dictionary<string, EntityType> plst, EntityType mainEntity, EntityContainer container, EntityContainer COREcontainer, CodeGenerationTools code)
+        {
+            foreach (var navprop in plst)              
+            {
+                if(navprop.Value == null) continue;
+                string mEntity = navprop.Key;
+                EntityType entity = navprop.Value;
+                //if(entity.BaseType != null)mEntity = (entity.BaseType as EntityType).Name;
+                if(mEntity == mainEntity.Name) continue;
+                var CSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault();
+                string cSet = "";
+                if(CSet == null) 
+                {
+                    //if(entity.BaseType == null)
+                    //{
+                        CSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault();
+                        if(CSet != null) cSet = CSet.Name;
+
+                    //}
+                    //else
+                    //{
+                        //cSet = entity.Name;
+                    //}
+                }
+                if(entity.BaseType == null)
+                {
+                    cSet = CSet.Name;
+                }
+                else
+                {
+                    // take out because not working here if(cSet == "")
+                  cSet = entity.Name;  
+                }
+            
+               
+                       
+ #>
+                    if (e.PropertyName == "Add<#=mEntity#>")
+                    {
+                       if(<#=(cSet)#>.Contains(Current<#=code.Escape(mainEntity)#>.<#=mEntity#>) == false) <#=cSet#>.Add(Current<#=code.Escape(mainEntity)#>.<#=                mEntity#>);
+                    }
+<#+
+            }
+        }
+    }
+#>

@@ -1,0 +1,305 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientEntityTPL : CSharpTemplate
+    {
+        public string projectName;
+        public EntityType entity; 
+        public CodeGenerationTools code;
+        public MetadataLoader loader;
+        public CodeRegion region;
+        public MetadataTools ef;
+
+        public string inputFile;
+        public MetadataWorkspace metadataWorkspace;
+        public bool allMetadataLoaded;
+        public EdmItemCollection ItemCollection;
+        public OriginalValueMembers originalValueMembers;
+        public string namespaceName;
+        public EntityContainer container;
+
+        public MetadataWorkspace COREmetadataWorkspace;
+        public bool COREallMetadataLoaded;
+        public EdmItemCollection COREItemCollection;
+        public EntityContainer COREcontainer;
+
+ 
+       
+        
+        
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            var collectionNavigations = entity.NavigationProperties.Where(
+                np => //(np.DeclaringType == entity)
+                //&& 
+				np.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many);
+            string dto = code.Escape(entity).ToLower() + "";
+			
+#>
+
+using System;
+using System.Linq;
+using System.Diagnostics;
+using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
+using <#=projectName #>.Interfaces.Client;
+using Core.Common.Client.Entities;
+using <#=container.Name#>.Client.DTO;
+using TrackableEntities.Client;
+using TrackableEntities;
+using Core.Common.Validation;
+
+namespace <#=container.Name#>.Client.Entities
+{
+   <#+ //[JsonObject(IsReference = true)]
+    //[DataContract(IsReference = true)]#>
+    public partial class <#=entity.Name #>: <#=(entity.BaseType != null? entity.BaseType.Name :"BaseEntity<" + entity.Name +  ">")#>
+    {
+        I<#= code.Escape(entity) #> <#=dto#>;
+        public <#= code.Escape(entity) #>(I<#= code.Escape(entity) #> dto )<#=(entity.BaseType == null? "" :" : base(dto)")#>
+        {
+ <#+ if(entity.BaseType != null)
+            {
+#>          
+             base.DTO = dto;   
+<#+            }
+ #>
+             <#=dto#> = dto;
+             _changeTracker = new ChangeTrackingCollection<I<#=entity.Name #>>(<#=dto#>);
+
+        }
+
+        public I<#= code.Escape(entity) #> DTO
+        {
+            get
+            {
+             return <#=dto#>;
+            }
+            set
+            {
+                <#=dto#> = value;
+            }
+        }
+<#+
+
+            // Add a ctor to initialize any collections
+             if  (collectionNavigations.Any())
+            {
+#>
+        
+
+
+<#+
+            }
+        
+            foreach (var property in entity.Properties)
+            {
+                if (entity.BaseType != null && ((EntityType)entity.BaseType).Properties.Any(z => z.Name == property.Name)) continue;
+				//bool isImplements = property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsProperty")&& z.Value.ToString().Contains(">True<")) != null;
+				
+
+
+                var typeUsage = code.Escape(property.TypeUsage);
+                PrimitiveType edmType = (PrimitiveType) property.TypeUsage.EdmType;
+                // Fix-up spatial types for EF6
+                if (//efHost.EntityFrameworkVersion >= new Version(6, 0) && 
+                    typeUsage.StartsWith("System.Data.Spatial."))
+                {
+                    typeUsage = typeUsage.Replace(
+                        "System.Data.Spatial.",
+                        "System.Data.Entity.Spatial.");
+                }
+                   #>
+       <#=(property.Nullable == false ? "[RequiredValidationAttribute(ErrorMessage= \"" + property.Name.Replace("Id", "") + " is required\")]":"")  #>
+       <#=((edmType.ClrEquivalentType == typeof(int)||edmType.ClrEquivalentType == typeof(double) || edmType.ClrEquivalentType == typeof(decimal)) && code.Escape(property).EndsWith("Id") == false  ? "[NumberValidationAttribute]":"")  #>
+<#+      if(edmType.ClrEquivalentType == typeof(string) || edmType.ClrEquivalentType == typeof(byte[]))
+                {
+
+                    Facet maxLengthFacet = property.TypeUsage.Facets.SingleOrDefault(f => f.Name == "MaxLength");
+                    var maxLength = (maxLengthFacet != null && maxLengthFacet.Value != null && !maxLengthFacet.IsUnbounded) ? string.Format("[MaxLength({0}, ErrorMessage = \"{1} has a max length of {0} letters \")]", maxLengthFacet.Value, property.Name) : "";
+#>
+                
+                <#=(!string.IsNullOrEmpty(maxLength) ?maxLength:"")  #>
+<#+
+                }
+#>
+<#=Accessibility.ForProperty(property) #> <#=typeUsage #> <#= code.Escape(property) #>
+		{ 
+		    get { return this.<#=dto#>.<#=code.Escape(property)#>; }
+			set
+			{
+			    if (value == this.<#=dto#>.<#=code.Escape(property) #>) return;
+				this.<#=dto#>.<#=code.Escape(property) #> = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("<#=code.Escape(property) #>");
+			}
+		}
+     
+
+<#+
+            }
+
+            foreach (var navProperty in entity.NavigationProperties)//.Where(np => np.DeclaringType == entity))
+            {
+				if (entity.BaseType != null && ((EntityType)entity.BaseType).NavigationProperties.Any(z => z.Name == navProperty.Name)) continue;
+                if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+                {
+				
+#>
+        ObservableCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>> _<#=code.Escape(navProperty) #> = null;
+        public <#= entity.BaseType==null?"":"new" #> ObservableCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>> <#=code.Escape(navProperty) #>
+		{
+            
+		    get 
+				{ 
+					if(_<#=code.Escape(navProperty) #> != null) return _<#=code.Escape(navProperty) #>;
+					//if (this.<#=dto#>.<#=code.Escape(navProperty) #> == null) Debugger.Break();
+					if(this.<#=dto#>.<#= navProperty.Name #> != null)
+					{
+						_<#=code.Escape(navProperty) #> = new ObservableCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>>(this.<#=dto#>.<#= navProperty.Name #>.Select(x => new <#= code.Escape(navProperty.ToEndMember.GetEntityType()) #>(x)));
+					}
+					
+						_<#=code.Escape(navProperty) #>.CollectionChanged += <#= navProperty.Name #>_CollectionChanged; 
+					
+					return _<#=code.Escape(navProperty) #>; 
+				}
+			set
+			{
+			    if (Equals(value, _<#=code.Escape(navProperty) #>)) return;
+				if (value != null)
+					this.<#=dto#>.<#=code.Escape(navProperty) #> = new ChangeTrackingCollection<I<#= code.Escape(navProperty.ToEndMember.GetEntityType()) #>>(value.Select(x => x.DTO).ToList());
+                _<#=code.Escape(navProperty) #> = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_<#=code.Escape(navProperty) #> != null)
+				_<#=code.Escape(navProperty) #>.CollectionChanged += <#= navProperty.Name #>_CollectionChanged;               
+				NotifyPropertyChanged("<#=code.Escape(navProperty) #>");
+			}
+		}
+        
+        void <#=navProperty.Name#>_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #> itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        <#=dto#>.<#=navProperty.Name#>.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #> itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        <#=dto#>.<#=navProperty.Name#>.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+<#+
+                }
+                else
+                {
+#>
+       private <#=code.Escape(navProperty.ToEndMember.GetEntityType())#> _<#=code.Escape(navProperty) #>;
+        public <#= entity.BaseType==null?"":"new" #> <#=code.Escape(navProperty.ToEndMember.GetEntityType())#> <#=code.Escape(navProperty) #>
+		{
+		    get
+               { 
+                  if (this.<#=dto#> != null)
+                   {
+                       if (_<#=code.Escape(navProperty) #> != null)
+                       {
+                           if (this.<#=dto#>.<#=code.Escape(navProperty) #> !=
+                               _<#=code.Escape(navProperty) #>.DTO)
+                           {
+                                if (this.<#=dto#>.<#=code.Escape(navProperty) #>  != null)
+                               _<#=code.Escape(navProperty) #> = new <#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>(this.<#=dto#>.<#=code.Escape(navProperty) #>);
+                           }
+                       }
+                       else
+                       {
+                             if (this.<#=dto#>.<#=code.Escape(navProperty) #>  != null)
+                           _<#=code.Escape(navProperty) #> = new <#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>(this.<#=dto#>.<#=code.Escape(navProperty) #>);
+                       }
+                   }
+
+
+             //       if (_<#=code.Escape(navProperty) #> != null) return _<#=code.Escape(navProperty) #>;
+                       
+             //       var i = new <#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>(){TrackingState = TrackingState.Added};
+			//		//if (this.<#=dto#>.<#=code.Escape(navProperty) #> == null) Debugger.Break();
+			//		if (this.<#=dto#>.<#=code.Escape(navProperty) #> != null)
+            //        {
+            //           i. = this.<#=dto#>.<#=code.Escape(navProperty) #>;
+            //        }
+            //        else
+            //        {
+            //            this.<#=dto#>.<#=code.Escape(navProperty) #> = i.;
+             //       }
+                           
+            //        _<#=code.Escape(navProperty) #> = i;
+                     
+                    return _<#=code.Escape(navProperty) #>;
+               }
+			set
+			{
+			    if (value == _<#=code.Escape(navProperty) #>) return;
+                _<#=code.Escape(navProperty) #> = value;
+                if(value != null)
+                     this.<#=dto#>.<#=code.Escape(navProperty) #> = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("<#=code.Escape(navProperty) #>");
+			}
+		}
+        
+
+<#+
+                }
+            }
+#>
+
+        ChangeTrackingCollection<I<#=entity.Name#>> _changeTracker;    
+        public ChangeTrackingCollection<I<#=entity.Name#>> ChangeTracker
+        {
+            get
+            {
+                return _changeTracker;
+            }
+        }
+
+        public new TrackableEntities.TrackingState TrackingState
+        {
+            get
+            {
+                return this.TrackingState;
+            }
+            set
+            {
+                this.TrackingState = value;
+                NotifyPropertyChanged("TrackingState");
+            }
+        }
+
+    }
+}
+
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

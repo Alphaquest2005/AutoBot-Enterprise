@@ -1,0 +1,2339 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AdjustmentOversAllocations">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="Asycuda_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSetEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaSalesAllocations">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" />
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="EANumber" Type="int" Nullable="false" />
+          <Property Name="SANumber" Type="int" Nullable="false" />
+          <Property Name="xEntryItem_Id" Type="int" />
+          <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="EntryDataDetails">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="TotalCost" Type="float" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="Freight" Type="float" />
+          <Property Name="Weight" Type="float" />
+          <Property Name="InternalFreight" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="TaxAmount" Type="float" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="FileLineNumber" Type="int" />
+          <Property Name="UpgradeKey" Type="int" />
+          <Property Name="VolumeLiters" Type="float" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="60" StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="CLineNumber" Type="int" />
+        </EntityType>
+        <EntityType Name="SystemDocumentSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xcuda_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Amount_deducted_from_licence" Type="nvarchar" MaxLength="10" />
+          <Property Name="Quantity_deducted_from_licence" Type="nvarchar" MaxLength="4" />
+          <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
+          <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
+          <Property Name="EntryDataDetailsId" Type="int" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="IsAssessed" Type="bit" />
+          <Property Name="DPQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="DFQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="AttributeOnlyAllocation" Type="bit" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="DoNotEX" Type="bit" />
+          <Property Name="ImportComplete" Type="bit" Nullable="false" />
+          <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesFactor" Type="float" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
+          <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentDetails">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="Downloaded" Type="bit" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCLineNumber" Type="int" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="TaxAmount" Type="float" />
+          <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentEx">
+          <Key>
+            <PropertyRef Name="EntryData_Id" />
+            
+            
+            
+            
+          </Key>
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="ImportedLines" Type="int" />
+          <Property Name="TotalLines" Type="int" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileTypeId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentOvers">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentShortAllocations">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="AllocationId" Type="int" Nullable="false" />
+          <Property Name="TotalValue" Type="float" Nullable="false" />
+          <Property Name="AllocatedValue" Type="float" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="xLineNumber" Type="int" />
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="SalesQuantity" Type="float" Nullable="false" />
+          <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
+          <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="pQuantity" Type="float" />
+          <Property Name="pQtyAllocated" Type="float" />
+          <Property Name="PiQuantity" Type="float" />
+          <Property Name="SalesFactor" Type="float" />
+          <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="xQuantity" Type="float" />
+          <Property Name="pReferenceNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="pLineNumber" Type="int" />
+          <Property Name="xASYCUDA_Id" Type="int" />
+          <Property Name="pASYCUDA_Id" Type="int" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="Total_CIF_itm" Type="float" />
+          <Property Name="DutyLiability" Type="float" />
+          <Property Name="pIsAssessed" Type="bit" />
+          <Property Name="DoNotAllocateSales" Type="bit" />
+          <Property Name="DoNotAllocatePreviousEntry" Type="bit" />
+          <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
+          <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Invalid" Type="bit" />
+          <Property Name="pExpiryDate" Type="datetime2" Precision="7" />
+          <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="pPrecision1" Type="nvarchar" MaxLength="255" />
+          <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="SANumber" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentShorts">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="Downloaded" Type="bit" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentItemEntryDataDetails">
+          
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="key" Type="nvarchar" MaxLength="101" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="Quantity" Type="float" />
+          <Property Name="ImportComplete" Type="bit" Nullable="false" />
+          <Property Name="Asycuda_id" Type="int" Nullable="false" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="CustomsOperation" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemLastItemCost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentItemLastItemCost">
+          <Key>
+            <PropertyRef Name="applicationsettingsid" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="assessmentdate" />
+          </Key>
+          <Property Name="applicationsettingsid" Type="int" Nullable="false" />
+          <Property Name="assessmentdate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LocalItemCost" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+            
+            
+            
+            
+            <PropertyRef Name="AliasItemId" />
+          </Key>
+          <Property Name="AliasId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasItemId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+            
+            
+            
+          </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
+          <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentOversToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-AdjustmentOversToXML">
+          <Key>
+            
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="EntryData_Id" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="Quantity" Type="float" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="Cost" Type="float" />
+          <Property Name="QtyAllocated" Type="float" />
+          <Property Name="UnitWeight" Type="float" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+          <Property Name="AlreadyExecuted" Type="int" Nullable="false" />
+          <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-PreDiscrepancyErrors">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            <PropertyRef Name="ApplicationSettingsId" />
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="Downloaded" Type="bit" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+          <Property Name="PiQuantity" Type="float" />
+          <Property Name="ItemQuantity" Type="float" />
+        </EntityType>
+        <Association Name="FK_AdjustmentOversAllocations_EntryDataDetails">
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AdjustmentOversAllocations" Type="Self.AdjustmentOversAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocations">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdjustmentOversAllocations_xcuda_Item">
+          <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="0..1" />
+          <End Role="AdjustmentOversAllocations" Type="Self.AdjustmentOversAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocations">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaSalesAllocations" Type="Self.AsycudaSalesAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocations">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
+          <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="0..1" />
+          <End Role="AsycudaSalesAllocations" Type="Self.AsycudaSalesAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocations">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="AdjustmentOversAllocations" EntityType="Self.AdjustmentOversAllocations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaSalesAllocations" EntityType="Self.AsycudaSalesAllocations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemDocumentSets" EntityType="Self.SystemDocumentSets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xcuda_Item" EntityType="Self.xcuda_Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AdjustmentDetails" EntityType="Self.AdjustmentDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AdjustmentDetails].[EntryData_Id] AS [EntryData_Id], 
+[AdjustmentDetails].[EntryDataId] AS [EntryDataId], 
+[AdjustmentDetails].[LineNumber] AS [LineNumber], 
+[AdjustmentDetails].[ItemNumber] AS [ItemNumber], 
+[AdjustmentDetails].[Quantity] AS [Quantity], 
+[AdjustmentDetails].[Units] AS [Units], 
+[AdjustmentDetails].[ItemDescription] AS [ItemDescription], 
+[AdjustmentDetails].[Cost] AS [Cost], 
+[AdjustmentDetails].[QtyAllocated] AS [QtyAllocated], 
+[AdjustmentDetails].[UnitWeight] AS [UnitWeight], 
+[AdjustmentDetails].[DoNotAllocate] AS [DoNotAllocate], 
+[AdjustmentDetails].[TariffCode] AS [TariffCode], 
+[AdjustmentDetails].[Total] AS [Total], 
+[AdjustmentDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AdjustmentDetails].[InvoiceQty] AS [InvoiceQty], 
+[AdjustmentDetails].[ReceivedQty] AS [ReceivedQty], 
+[AdjustmentDetails].[Status] AS [Status], 
+[AdjustmentDetails].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AdjustmentDetails].[CNumber] AS [CNumber], 
+[AdjustmentDetails].[CLineNumber] AS [CLineNumber], 
+[AdjustmentDetails].[Downloaded] AS [Downloaded], 
+[AdjustmentDetails].[PreviousCNumber] AS [PreviousCNumber], 
+[AdjustmentDetails].[PreviousCLineNumber] AS [PreviousCLineNumber], 
+[AdjustmentDetails].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentDetails].[Type] AS [Type], 
+[AdjustmentDetails].[Comment] AS [Comment], 
+[AdjustmentDetails].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentDetails].[Currency] AS [Currency], 
+[AdjustmentDetails].[IsReconciled] AS [IsReconciled], 
+[AdjustmentDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentDetails].[EmailId] AS [EmailId], 
+[AdjustmentDetails].[FileTypeId] AS [FileTypeId], 
+[AdjustmentDetails].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentDetails].[Subject] AS [Subject], 
+[AdjustmentDetails].[EmailDate] AS [EmailDate], 
+[AdjustmentDetails].[InventoryItemId] AS [InventoryItemId], 
+[AdjustmentDetails].[TaxAmount] AS [TaxAmount], 
+[AdjustmentDetails].[Vendor] AS [Vendor], 
+[AdjustmentDetails].[SourceFile] AS [SourceFile]
+FROM [dbo].[AdjustmentDetails] AS [AdjustmentDetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AdjustmentEx" EntityType="Self.AdjustmentEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentEx].[EntryData_Id] AS [EntryData_Id], 
+[AdjustmentEx].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentEx].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentEx].[Type] AS [Type], 
+[AdjustmentEx].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentEx].[ImportedTotal] AS [ImportedTotal], 
+[AdjustmentEx].[InvoiceNo] AS [InvoiceNo], 
+[AdjustmentEx].[InvoiceTotal] AS [InvoiceTotal], 
+[AdjustmentEx].[ImportedLines] AS [ImportedLines], 
+[AdjustmentEx].[TotalLines] AS [TotalLines], 
+[AdjustmentEx].[Currency] AS [Currency], 
+[AdjustmentEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentEx].[EmailId] AS [EmailId], 
+[AdjustmentEx].[FileTypeId] AS [FileTypeId]
+FROM [dbo].[AdjustmentEx] AS [AdjustmentEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AdjustmentOvers" EntityType="Self.AdjustmentOvers" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentOvers].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AdjustmentOvers].[EntryData_Id] AS [EntryData_Id], 
+[AdjustmentOvers].[EntryDataId] AS [EntryDataId], 
+[AdjustmentOvers].[LineNumber] AS [LineNumber], 
+[AdjustmentOvers].[ItemNumber] AS [ItemNumber], 
+[AdjustmentOvers].[Quantity] AS [Quantity], 
+[AdjustmentOvers].[Units] AS [Units], 
+[AdjustmentOvers].[ItemDescription] AS [ItemDescription], 
+[AdjustmentOvers].[Cost] AS [Cost], 
+[AdjustmentOvers].[QtyAllocated] AS [QtyAllocated], 
+[AdjustmentOvers].[UnitWeight] AS [UnitWeight], 
+[AdjustmentOvers].[DoNotAllocate] AS [DoNotAllocate], 
+[AdjustmentOvers].[TariffCode] AS [TariffCode], 
+[AdjustmentOvers].[CNumber] AS [CNumber], 
+[AdjustmentOvers].[CLineNumber] AS [CLineNumber], 
+[AdjustmentOvers].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AdjustmentOvers].[InvoiceQty] AS [InvoiceQty], 
+[AdjustmentOvers].[ReceivedQty] AS [ReceivedQty], 
+[AdjustmentOvers].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AdjustmentOvers].[PreviousCNumber] AS [PreviousCNumber], 
+[AdjustmentOvers].[Comment] AS [Comment], 
+[AdjustmentOvers].[Status] AS [Status], 
+[AdjustmentOvers].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentOvers].[IsReconciled] AS [IsReconciled], 
+[AdjustmentOvers].[Currency] AS [Currency], 
+[AdjustmentOvers].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentOvers].[Type] AS [Type], 
+[AdjustmentOvers].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentOvers].[EmailId] AS [EmailId], 
+[AdjustmentOvers].[FileTypeId] AS [FileTypeId], 
+[AdjustmentOvers].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentOvers].[Subject] AS [Subject], 
+[AdjustmentOvers].[EmailDate] AS [EmailDate], 
+[AdjustmentOvers].[InventoryItemId] AS [InventoryItemId]
+FROM [dbo].[AdjustmentOvers] AS [AdjustmentOvers]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AdjustmentShortAllocations" EntityType="Self.AdjustmentShortAllocations" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentShortAllocations].[AllocationId] AS [AllocationId], 
+[AdjustmentShortAllocations].[TotalValue] AS [TotalValue], 
+[AdjustmentShortAllocations].[AllocatedValue] AS [AllocatedValue], 
+[AdjustmentShortAllocations].[Status] AS [Status], 
+[AdjustmentShortAllocations].[QtyAllocated] AS [QtyAllocated], 
+[AdjustmentShortAllocations].[xLineNumber] AS [xLineNumber], 
+[AdjustmentShortAllocations].[PreviousItem_Id] AS [PreviousItem_Id], 
+[AdjustmentShortAllocations].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentShortAllocations].[SalesQuantity] AS [SalesQuantity], 
+[AdjustmentShortAllocations].[SalesQtyAllocated] AS [SalesQtyAllocated], 
+[AdjustmentShortAllocations].[InvoiceNo] AS [InvoiceNo], 
+[AdjustmentShortAllocations].[SalesLineNumber] AS [SalesLineNumber], 
+[AdjustmentShortAllocations].[ItemNumber] AS [ItemNumber], 
+[AdjustmentShortAllocations].[ItemDescription] AS [ItemDescription], 
+[AdjustmentShortAllocations].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AdjustmentShortAllocations].[xBond_Item_Id] AS [xBond_Item_Id], 
+[AdjustmentShortAllocations].[pCNumber] AS [pCNumber], 
+[AdjustmentShortAllocations].[pRegistrationDate] AS [pRegistrationDate], 
+[AdjustmentShortAllocations].[pQuantity] AS [pQuantity], 
+[AdjustmentShortAllocations].[pQtyAllocated] AS [pQtyAllocated], 
+[AdjustmentShortAllocations].[PiQuantity] AS [PiQuantity], 
+[AdjustmentShortAllocations].[SalesFactor] AS [SalesFactor], 
+[AdjustmentShortAllocations].[xCNumber] AS [xCNumber], 
+[AdjustmentShortAllocations].[xRegistrationDate] AS [xRegistrationDate], 
+[AdjustmentShortAllocations].[xQuantity] AS [xQuantity], 
+[AdjustmentShortAllocations].[pReferenceNumber] AS [pReferenceNumber], 
+[AdjustmentShortAllocations].[pLineNumber] AS [pLineNumber], 
+[AdjustmentShortAllocations].[xASYCUDA_Id] AS [xASYCUDA_Id], 
+[AdjustmentShortAllocations].[pASYCUDA_Id] AS [pASYCUDA_Id], 
+[AdjustmentShortAllocations].[Cost] AS [Cost], 
+[AdjustmentShortAllocations].[Total_CIF_itm] AS [Total_CIF_itm], 
+[AdjustmentShortAllocations].[DutyLiability] AS [DutyLiability], 
+[AdjustmentShortAllocations].[pIsAssessed] AS [pIsAssessed], 
+[AdjustmentShortAllocations].[DoNotAllocateSales] AS [DoNotAllocateSales], 
+[AdjustmentShortAllocations].[DoNotAllocatePreviousEntry] AS [DoNotAllocatePreviousEntry], 
+[AdjustmentShortAllocations].[WarehouseError] AS [WarehouseError], 
+[AdjustmentShortAllocations].[xReferenceNumber] AS [xReferenceNumber], 
+[AdjustmentShortAllocations].[TariffCode] AS [TariffCode], 
+[AdjustmentShortAllocations].[Invalid] AS [Invalid], 
+[AdjustmentShortAllocations].[pExpiryDate] AS [pExpiryDate], 
+[AdjustmentShortAllocations].[pTariffCode] AS [pTariffCode], 
+[AdjustmentShortAllocations].[pPrecision1] AS [pPrecision1], 
+[AdjustmentShortAllocations].[pItemNumber] AS [pItemNumber], 
+[AdjustmentShortAllocations].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentShortAllocations].[Comment] AS [Comment], 
+[AdjustmentShortAllocations].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AdjustmentShortAllocations].[AssessmentDate] AS [AssessmentDate], 
+[AdjustmentShortAllocations].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentShortAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentShortAllocations].[FileTypeId] AS [FileTypeId], 
+[AdjustmentShortAllocations].[EmailId] AS [EmailId], 
+[AdjustmentShortAllocations].[xStatus] AS [xStatus], 
+[AdjustmentShortAllocations].[Type] AS [Type], 
+[AdjustmentShortAllocations].[SANumber] AS [SANumber]
+FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AdjustmentShorts" EntityType="Self.AdjustmentShorts" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentShorts].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AdjustmentShorts].[EntryData_Id] AS [EntryData_Id], 
+[AdjustmentShorts].[EntryDataId] AS [EntryDataId], 
+[AdjustmentShorts].[LineNumber] AS [LineNumber], 
+[AdjustmentShorts].[ItemNumber] AS [ItemNumber], 
+[AdjustmentShorts].[Quantity] AS [Quantity], 
+[AdjustmentShorts].[Units] AS [Units], 
+[AdjustmentShorts].[ItemDescription] AS [ItemDescription], 
+[AdjustmentShorts].[Cost] AS [Cost], 
+[AdjustmentShorts].[QtyAllocated] AS [QtyAllocated], 
+[AdjustmentShorts].[UnitWeight] AS [UnitWeight], 
+[AdjustmentShorts].[DoNotAllocate] AS [DoNotAllocate], 
+[AdjustmentShorts].[TariffCode] AS [TariffCode], 
+[AdjustmentShorts].[Total] AS [Total], 
+[AdjustmentShorts].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AdjustmentShorts].[InvoiceQty] AS [InvoiceQty], 
+[AdjustmentShorts].[ReceivedQty] AS [ReceivedQty], 
+[AdjustmentShorts].[Status] AS [Status], 
+[AdjustmentShorts].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AdjustmentShorts].[CNumber] AS [CNumber], 
+[AdjustmentShorts].[CLineNumber] AS [CLineNumber], 
+[AdjustmentShorts].[Downloaded] AS [Downloaded], 
+[AdjustmentShorts].[IsReconciled] AS [IsReconciled], 
+[AdjustmentShorts].[PreviousCNumber] AS [PreviousCNumber], 
+[AdjustmentShorts].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentShorts].[Comment] AS [Comment], 
+[AdjustmentShorts].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentShorts].[Currency] AS [Currency], 
+[AdjustmentShorts].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentShorts].[Type] AS [Type], 
+[AdjustmentShorts].[EmailId] AS [EmailId], 
+[AdjustmentShorts].[FileTypeId] AS [FileTypeId], 
+[AdjustmentShorts].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentShorts].[Subject] AS [Subject], 
+[AdjustmentShorts].[EmailDate] AS [EmailDate]
+FROM [dbo].[AdjustmentShorts] AS [AdjustmentShorts]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
+[AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentItemEntryDataDetails].[EntryData_Id] AS [EntryData_Id], 
+[AsycudaDocumentItemEntryDataDetails].[Item_Id] AS [Item_Id], 
+[AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
+[AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsProcedure] AS [CustomsProcedure], 
+[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
+[AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
+[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
+[AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
+[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
+FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AsycudaDocumentItemLastItemCost" EntityType="Self.AsycudaDocumentItemLastItemCost" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentItemLastItemCost].[applicationsettingsid] AS [applicationsettingsid], 
+[AsycudaDocumentItemLastItemCost].[assessmentdate] AS [assessmentdate], 
+[AsycudaDocumentItemLastItemCost].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItemLastItemCost].[LocalItemCost] AS [LocalItemCost]
+FROM [dbo].[AsycudaDocumentItemLastItemCost] AS [AsycudaDocumentItemLastItemCost]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemAliasEx].[AliasId] AS [AliasId], 
+[InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemAliasEx].[AliasName] AS [AliasName], 
+[InventoryItemAliasEx].[AliasItemId] AS [AliasItemId]
+FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-AdjustmentOversToXML" EntityType="Self.TODO-AdjustmentOversToXML" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-AdjustmentOversToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-AdjustmentOversToXML].[EntryData_Id] AS [EntryData_Id], 
+[TODO-AdjustmentOversToXML].[EntryDataId] AS [EntryDataId], 
+[TODO-AdjustmentOversToXML].[LineNumber] AS [LineNumber], 
+[TODO-AdjustmentOversToXML].[ItemNumber] AS [ItemNumber], 
+[TODO-AdjustmentOversToXML].[Quantity] AS [Quantity], 
+[TODO-AdjustmentOversToXML].[Units] AS [Units], 
+[TODO-AdjustmentOversToXML].[ItemDescription] AS [ItemDescription], 
+[TODO-AdjustmentOversToXML].[Cost] AS [Cost], 
+[TODO-AdjustmentOversToXML].[QtyAllocated] AS [QtyAllocated], 
+[TODO-AdjustmentOversToXML].[UnitWeight] AS [UnitWeight], 
+[TODO-AdjustmentOversToXML].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-AdjustmentOversToXML].[TariffCode] AS [TariffCode], 
+[TODO-AdjustmentOversToXML].[CNumber] AS [CNumber], 
+[TODO-AdjustmentOversToXML].[CLineNumber] AS [CLineNumber], 
+[TODO-AdjustmentOversToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-AdjustmentOversToXML].[InvoiceQty] AS [InvoiceQty], 
+[TODO-AdjustmentOversToXML].[ReceivedQty] AS [ReceivedQty], 
+[TODO-AdjustmentOversToXML].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-AdjustmentOversToXML].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-AdjustmentOversToXML].[Comment] AS [Comment], 
+[TODO-AdjustmentOversToXML].[Status] AS [Status], 
+[TODO-AdjustmentOversToXML].[EffectiveDate] AS [EffectiveDate], 
+[TODO-AdjustmentOversToXML].[Currency] AS [Currency], 
+[TODO-AdjustmentOversToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-AdjustmentOversToXML].[Type] AS [Type], 
+[TODO-AdjustmentOversToXML].[DutyFreePaid] AS [DutyFreePaid], 
+[TODO-AdjustmentOversToXML].[EmailId] AS [EmailId], 
+[TODO-AdjustmentOversToXML].[FileTypeId] AS [FileTypeId], 
+[TODO-AdjustmentOversToXML].[InvoiceDate] AS [InvoiceDate], 
+[TODO-AdjustmentOversToXML].[Subject] AS [Subject], 
+[TODO-AdjustmentOversToXML].[EmailDate] AS [EmailDate], 
+[TODO-AdjustmentOversToXML].[AlreadyExecuted] AS [AlreadyExecuted], 
+[TODO-AdjustmentOversToXML].[Vendor] AS [Vendor], 
+[TODO-AdjustmentOversToXML].[SourceFile] AS [SourceFile]
+FROM [dbo].[TODO-AdjustmentOversToXML] AS [TODO-AdjustmentOversToXML]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-PreDiscrepancyErrors" EntityType="Self.TODO-PreDiscrepancyErrors" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-PreDiscrepancyErrors].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-PreDiscrepancyErrors].[EntryDataId] AS [EntryDataId], 
+[TODO-PreDiscrepancyErrors].[LineNumber] AS [LineNumber], 
+[TODO-PreDiscrepancyErrors].[ItemNumber] AS [ItemNumber], 
+[TODO-PreDiscrepancyErrors].[Quantity] AS [Quantity], 
+[TODO-PreDiscrepancyErrors].[Units] AS [Units], 
+[TODO-PreDiscrepancyErrors].[ItemDescription] AS [ItemDescription], 
+[TODO-PreDiscrepancyErrors].[Cost] AS [Cost], 
+[TODO-PreDiscrepancyErrors].[QtyAllocated] AS [QtyAllocated], 
+[TODO-PreDiscrepancyErrors].[UnitWeight] AS [UnitWeight], 
+[TODO-PreDiscrepancyErrors].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-PreDiscrepancyErrors].[TariffCode] AS [TariffCode], 
+[TODO-PreDiscrepancyErrors].[Total] AS [Total], 
+[TODO-PreDiscrepancyErrors].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PreDiscrepancyErrors].[InvoiceQty] AS [InvoiceQty], 
+[TODO-PreDiscrepancyErrors].[ReceivedQty] AS [ReceivedQty], 
+[TODO-PreDiscrepancyErrors].[Status] AS [Status], 
+[TODO-PreDiscrepancyErrors].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-PreDiscrepancyErrors].[CNumber] AS [CNumber], 
+[TODO-PreDiscrepancyErrors].[CLineNumber] AS [CLineNumber], 
+[TODO-PreDiscrepancyErrors].[Downloaded] AS [Downloaded], 
+[TODO-PreDiscrepancyErrors].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-PreDiscrepancyErrors].[DutyFreePaid] AS [DutyFreePaid], 
+[TODO-PreDiscrepancyErrors].[Type] AS [Type], 
+[TODO-PreDiscrepancyErrors].[Comment] AS [Comment], 
+[TODO-PreDiscrepancyErrors].[EffectiveDate] AS [EffectiveDate], 
+[TODO-PreDiscrepancyErrors].[Currency] AS [Currency], 
+[TODO-PreDiscrepancyErrors].[IsReconciled] AS [IsReconciled], 
+[TODO-PreDiscrepancyErrors].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PreDiscrepancyErrors].[FileTypeId] AS [FileTypeId], 
+[TODO-PreDiscrepancyErrors].[EmailId] AS [EmailId], 
+[TODO-PreDiscrepancyErrors].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PreDiscrepancyErrors].[InvoiceDate] AS [InvoiceDate], 
+[TODO-PreDiscrepancyErrors].[Subject] AS [Subject], 
+[TODO-PreDiscrepancyErrors].[EmailDate] AS [EmailDate], 
+[TODO-PreDiscrepancyErrors].[PiQuantity] AS [PiQuantity], 
+[TODO-PreDiscrepancyErrors].[ItemQuantity] AS [ItemQuantity]
+FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_EntryDataDetails" Association="Self.FK_AdjustmentOversAllocations_EntryDataDetails">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="AdjustmentOversAllocations" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_xcuda_Item" Association="Self.FK_AdjustmentOversAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AdjustmentOversAllocations" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Self.FK_AsycudaSalesAllocations_EntryDataDetails">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaSalesAllocations_xcuda_Item" Association="Self.FK_AsycudaSalesAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="AdjustmentQS" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AsycudaSalesAllocations" EntityType="Model.AsycudaSalesAllocation" />
+          <EntitySet Name="AsycudaDocumentEntryDatas" EntityType="Model.AsycudaDocumentEntryData" />
+          <EntitySet Name="AsycudaDocumentSetEntryDatas" EntityType="Model.AsycudaDocumentSetEntryData" />
+          <EntitySet Name="AdjustmentExes" EntityType="Model.AdjustmentEx" />
+          <AssociationSet Name="AdjustmentExAsycudaDocumentSetEntryData" Association="Model.AdjustmentExAsycudaDocumentSetEntryData">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryDatas" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentExAsycudaDocumentEntryData" Association="Model.AdjustmentExAsycudaDocumentEntryData">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="AsycudaDocumentEntryData" EntitySet="AsycudaDocumentEntryDatas" />
+          </AssociationSet>
+          <EntitySet Name="AdjustmentOvers" EntityType="Model.AdjustmentOver" />
+          <EntitySet Name="AdjustmentShorts" EntityType="Model.AdjustmentShort" />
+          <AssociationSet Name="AdjustmentExAdjustmentOver" Association="Model.AdjustmentExAdjustmentOver">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentExAdjustmentShort" Association="Model.AdjustmentExAdjustmentShort">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
+          </AssociationSet>
+          <EntitySet Name="EntryDataDetails" EntityType="Model.EntryDataDetail" />
+          <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Model.FK_AsycudaSalesAllocations_EntryDataDetails">
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+            <End Role="AsycudaSalesAllocation" EntitySet="AsycudaSalesAllocations" />
+          </AssociationSet>
+          <EntitySet Name="ShortAllocations" EntityType="Model.ShortAllocation" />
+          <AssociationSet Name="AdjustmentShortAdjustmentShortAllocation" Association="Model.AdjustmentShortAdjustmentShortAllocation">
+            <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
+            <End Role="AdjustmentShortAllocation" EntitySet="ShortAllocations" />
+          </AssociationSet>
+          <EntitySet Name="xcuda_Item" EntityType="Model.xcuda_Item" />
+          <AssociationSet Name="FK_AsycudaSalesAllocations_xcuda_Item" Association="Model.FK_AsycudaSalesAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AsycudaSalesAllocation" EntitySet="AsycudaSalesAllocations" />
+          </AssociationSet>
+          <EntitySet Name="AdjustmentDetails" EntityType="Model.AdjustmentDetail" />
+          <AssociationSet Name="AdjustmentExAdjustmentDetail" Association="Model.AdjustmentExAdjustmentDetail">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Model.AsycudaDocumentItemEntryDataDetail" />
+          <AssociationSet Name="AdjustmentOverAsycudaDocumentItemEntryDataDetail" Association="Model.AdjustmentOverAsycudaDocumentItemEntryDataDetail">
+            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
+            <End Role="AsycudaDocumentItemEntryDataDetail" EntitySet="AsycudaDocumentItemEntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailAdjustmentShort" Association="Model.AdjustmentDetailAdjustmentShort">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailAdjustmentOver" Association="Model.AdjustmentDetailAdjustmentOver">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentShortAsycudaDocumentItemEntryDataDetail" Association="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail">
+            <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
+            <End Role="AsycudaDocumentItemEntryDataDetail" EntitySet="AsycudaDocumentItemEntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailAsycudaDocumentItemEntryDataDetail" Association="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="AsycudaDocumentItemEntryDataDetail" EntitySet="AsycudaDocumentItemEntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailShortAllocation" Association="Model.AdjustmentDetailShortAllocation">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="ShortAllocation" EntitySet="ShortAllocations" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaDocumentItemLastItemCosts" EntityType="Model.AsycudaDocumentItemLastItemCost" />
+          <EntitySet Name="InventoryItemAliasExes" EntityType="Model.InventoryItemAliasEx" />
+          <EntitySet Name="InventoryItemsExes" EntityType="Model.InventoryItemsEx" />
+          <AssociationSet Name="InventoryItemsExInventoryItemAliasEx" Association="Model.InventoryItemsExInventoryItemAliasEx">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAliasExes" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExEntryDataDetail" Association="Model.InventoryItemsExEntryDataDetail">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExAdjustmentOver" Association="Model.InventoryItemsExAdjustmentOver">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
+          </AssociationSet>
+          <EntitySet Name="AdjustmentOversAllocations" EntityType="Model.AdjustmentOversAllocation" />
+          <AssociationSet Name="FK_AdjustmentOversAllocations_EntryDataDetails" Association="Model.FK_AdjustmentOversAllocations_EntryDataDetails">
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+            <End Role="AdjustmentOversAllocation" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_xcuda_Item" Association="Model.FK_AdjustmentOversAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AdjustmentOversAllocation" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <EntitySet Name="SystemDocumentSets" EntityType="Model.SystemDocumentSet" />
+          <AssociationSet Name="SystemDocumentSetAdjustmentDetail" Association="Model.SystemDocumentSetAdjustmentDetail">
+            <End Role="SystemDocumentSet" EntitySet="SystemDocumentSets" />
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+          </AssociationSet>
+          <EntitySet Name="TODO_PreDiscrepancyErrors" EntityType="Model.TODO_PreDiscrepancyErrors" />
+          <EntitySet Name="TODO_AdjustmentOversToXML" EntityType="Model.TODO_AdjustmentOversToXML" />
+          <AssociationSet Name="AdjustmentExEntryDataDetail" Association="Model.AdjustmentExEntryDataDetail">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="AsycudaSalesAllocation">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDataDetailsId" Type="Int32" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="EANumber" Type="Int32" Nullable="false" />
+          <Property Name="SANumber" Type="Int32" Nullable="false" />
+          <Property Name="xEntryItem_Id" Type="Int32" />
+          <NavigationProperty Name="EntryDataDetail" Relationship="Model.FK_AsycudaSalesAllocations_EntryDataDetails" FromRole="AsycudaSalesAllocation" ToRole="EntryDataDetail" />
+          <NavigationProperty Name="xcuda_Item" Relationship="Model.FK_AsycudaSalesAllocations_xcuda_Item" FromRole="AsycudaSalesAllocation" ToRole="xcuda_Item" />
+          <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAsycudaDocumentEntryData" FromRole="AsycudaDocumentEntryData" ToRole="AdjustmentEx" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSetEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAsycudaDocumentSetEntryData" FromRole="AsycudaDocumentSetEntryData" ToRole="AdjustmentEx" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdjustmentEx">
+          <Key>
+            <PropertyRef Name="EntryData_Id" />
+          </Key>
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImportedLines" Type="Int32" />
+          <Property Name="TotalLines" Type="Int32" />
+          <NavigationProperty Name="AsycudaDocumentSets" Relationship="Model.AdjustmentExAsycudaDocumentSetEntryData" FromRole="AdjustmentEx" ToRole="AsycudaDocumentSetEntryData" />
+          <NavigationProperty Name="AsycudaDocuments" Relationship="Model.AdjustmentExAsycudaDocumentEntryData" FromRole="AdjustmentEx" ToRole="AsycudaDocumentEntryData" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentOvers" Relationship="Model.AdjustmentExAdjustmentOver" FromRole="AdjustmentEx" ToRole="AdjustmentOver" />
+          <NavigationProperty Name="AdjustmentShorts" Relationship="Model.AdjustmentExAdjustmentShort" FromRole="AdjustmentEx" ToRole="AdjustmentShort" />
+          <NavigationProperty Name="AdjustmentDetails" Relationship="Model.AdjustmentExAdjustmentDetail" FromRole="AdjustmentEx" ToRole="AdjustmentDetail" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="ImportedTotal" Type="Double" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="Model.AdjustmentExEntryDataDetail" FromRole="AdjustmentEx" ToRole="EntryDataDetail" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="AdjustmentExAsycudaDocumentSetEntryData">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentSetEntryData" Role="AsycudaDocumentSetEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetEntryData">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentExAsycudaDocumentEntryData">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentEntryData" Role="AsycudaDocumentEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentEntryData">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdjustmentOver">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentEx" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentOverAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentOver" ToRole="AsycudaDocumentItemEntryDataDetail" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentDetail" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="AdjustmentOver" ToRole="InventoryItemsEx" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="IsReconciled" Type="Boolean" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdjustmentShort">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="Downloaded" Type="Boolean" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentShort" FromRole="AdjustmentShort" ToRole="AdjustmentEx" />
+          <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentShortAdjustmentShortAllocation" FromRole="AdjustmentShort" ToRole="AdjustmentShortAllocation" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAdjustmentShort" FromRole="AdjustmentShort" ToRole="AdjustmentDetail" />
+          <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentShort" ToRole="AsycudaDocumentItemEntryDataDetail" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="IsReconciled" Type="Boolean" />
+        </EntityType>
+        <Association Name="AdjustmentExAdjustmentOver">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentOver">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentExAdjustmentShort">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentShort">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EntryDataDetail">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="Freight" Type="Double" />
+          <Property Name="Weight" Type="Double" />
+          <Property Name="InternalFreight" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <NavigationProperty Name="AsycudaSalesAllocations" Relationship="Model.FK_AsycudaSalesAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AsycudaSalesAllocation" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="IsReconciled" Type="Boolean" />
+          <Property Name="TaxAmount" Type="Double" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="EntryDataDetail" ToRole="InventoryItemsEx" />
+          <Property Name="LastCost" Type="Double" />
+          <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AdjustmentOversAllocation" />
+          <Property Name="TotalCost" Type="Double" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="60" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExEntryDataDetail" FromRole="EntryDataDetail" ToRole="AdjustmentEx" />
+        </EntityType>
+        <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.AsycudaSalesAllocation" Role="AsycudaSalesAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShortAllocation">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" />
+          <Property Name="TotalValue" Type="Double" Nullable="false" />
+          <Property Name="AllocatedValue" Type="Double" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="xLineNumber" Type="Int32" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="SalesQuantity" Type="Double" Nullable="false" />
+          <Property Name="SalesQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="pQuantity" Type="Double" />
+          <Property Name="pQtyAllocated" Type="Double" />
+          <Property Name="PiQuantity" Type="Double" />
+          <Property Name="SalesFactor" Type="Double" />
+          <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="xQuantity" Type="Double" />
+          <Property Name="pReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="pLineNumber" Type="Int32" />
+          <Property Name="xASYCUDA_Id" Type="Int32" />
+          <Property Name="pASYCUDA_Id" Type="Int32" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="Total_CIF_itm" Type="Double" />
+          <Property Name="DutyLiability" Type="Double" />
+          <Property Name="pIsAssessed" Type="Boolean" />
+          <Property Name="DoNotAllocateSales" Type="Boolean" />
+          <Property Name="DoNotAllocatePreviousEntry" Type="Boolean" />
+          <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SANumber" Type="Int32" Nullable="false" />
+          <Property Name="xReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Invalid" Type="Boolean" />
+          <Property Name="pExpiryDate" Type="DateTime" Precision="7" />
+          <Property Name="pTariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="pItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentShort" Relationship="Model.AdjustmentShortAdjustmentShortAllocation" FromRole="AdjustmentShortAllocation" ToRole="AdjustmentShort" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="ShortAllocation" ToRole="AdjustmentDetail" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesLineNumber" Type="Int32" />
+          <Property Name="pPrecision1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="AdjustmentShortAdjustmentShortAllocation">
+          <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
+          <End Type="Model.ShortAllocation" Role="AdjustmentShortAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentShort">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentShortAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="xcuda_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Amount_deducted_from_licence" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity_deducted_from_licence" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="Licence_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Free_text_1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="Free_text_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataDetailsId" Type="Int32" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="IsAssessed" Type="Boolean" />
+          <Property Name="DPQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="DFQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="AttributeOnlyAllocation" Type="Boolean" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="DoNotEX" Type="Boolean" />
+          <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
+          <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesFactor" Type="Double" Nullable="false" />
+          <NavigationProperty Name="AsycudaSalesAllocations" Relationship="Model.FK_AsycudaSalesAllocations_xcuda_Item" FromRole="xcuda_Item" ToRole="AsycudaSalesAllocation" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="xcuda_Item" ToRole="AdjustmentOversAllocation" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
+          <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
+          <End Type="Model.AsycudaSalesAllocation" Role="AsycudaSalesAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocation">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdjustmentDetail">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total" Type="Double" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="Downloaded" Type="Boolean" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentDetail" FromRole="AdjustmentDetail" ToRole="AdjustmentEx" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentShorts" Relationship="Model.AdjustmentDetailAdjustmentShort" FromRole="AdjustmentDetail" ToRole="AdjustmentShort" />
+          <NavigationProperty Name="AdjustmentOvers" Relationship="Model.AdjustmentDetailAdjustmentOver" FromRole="AdjustmentDetail" ToRole="AdjustmentOver" />
+          <Property Name="IsReconciled" Type="Boolean" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentDetail" ToRole="AsycudaDocumentItemEntryDataDetail" />
+          <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="AdjustmentDetail" ToRole="ShortAllocation" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SystemDocumentSet" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="AdjustmentDetail" ToRole="SystemDocumentSet" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCLineNumber" Type="Int32" />
+          <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="AdjustmentExAdjustmentDetail">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentDetail">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaDocumentItemEntryDataDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="key" Type="String" MaxLength="101" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentOver" Relationship="Model.AdjustmentOverAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentOver" />
+          <NavigationProperty Name="AdjustmentShort" Relationship="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentShort" />
+          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentDetail" />
+          <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Asycuda_id" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" Nullable="false" />
+        </EntityType>
+        <Association Name="AdjustmentOverAsycudaDocumentItemEntryDataDetail">
+          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentItemEntryDataDetail" Role="AsycudaDocumentItemEntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentOver">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItemEntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentDetailAdjustmentShort">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentShort">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentDetailAdjustmentOver">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOver">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentShortAsycudaDocumentItemEntryDataDetail">
+          <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentItemEntryDataDetail" Role="AsycudaDocumentItemEntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentShort">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItemEntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentDetailAsycudaDocumentItemEntryDataDetail">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentItemEntryDataDetail" Role="AsycudaDocumentItemEntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItemEntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentDetailShortAllocation">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.ShortAllocation" Role="ShortAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="ShortAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaDocumentItemLastItemCost">
+          <Key>
+            <PropertyRef Name="applicationsettingsid" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="assessmentdate" />
+          </Key>
+          <Property Name="applicationsettingsid" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LocalItemCost" Type="Double" />
+          <Property Name="assessmentdate" Type="DateTime" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+            <PropertyRef Name="AliasItemId" />
+          </Key>
+          <Property Name="AliasId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemAliasEx" ToRole="InventoryItemsEx" />
+          <Property Name="AliasItemId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SuppQty" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItemAliasExes" Relationship="Model.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemsEx" ToRole="InventoryItemAliasEx" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="InventoryItemsEx" ToRole="EntryDataDetail" />
+          <NavigationProperty Name="AdjustmentOvers" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="InventoryItemsEx" ToRole="AdjustmentOver" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="InventoryItemsExInventoryItemAliasEx">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.InventoryItemAliasEx" Role="InventoryItemAliasEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="InventoryItemAliasEx">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExEntryDataDetail">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="EntryDataDetail">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExAdjustmentOver">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="AdjustmentOver">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdjustmentOversAllocation">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <NavigationProperty Name="EntryDataDetail" Relationship="Model.FK_AdjustmentOversAllocations_EntryDataDetails" FromRole="AdjustmentOversAllocation" ToRole="EntryDataDetail" />
+          <NavigationProperty Name="xcuda_Item" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="AdjustmentOversAllocation" ToRole="xcuda_Item" />
+          <Property Name="Asycuda_Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AdjustmentOversAllocations_EntryDataDetails">
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.AdjustmentOversAllocation" Role="AdjustmentOversAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdjustmentOversAllocations_xcuda_Item">
+          <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.AdjustmentOversAllocation" Role="AdjustmentOversAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocation">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SystemDocumentSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AdjustmentDetails" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="SystemDocumentSet" ToRole="AdjustmentDetail" />
+        </EntityType>
+        <Association Name="SystemDocumentSetAdjustmentDetail">
+          <End Type="Model.SystemDocumentSet" Role="SystemDocumentSet" Multiplicity="1" />
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemDocumentSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdjustmentDetail">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TODO_PreDiscrepancyErrors">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total" Type="Double" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="Downloaded" Type="Boolean" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="IsReconciled" Type="Boolean" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <Property Name="PiQuantity" Type="Double" />
+          <Property Name="ItemQuantity" Type="Double" />
+        </EntityType>
+        <EntityType Name="TODO_AdjustmentOversToXML">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="EntryData_Id" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" />
+          <Property Name="QtyAllocated" Type="Double" />
+          <Property Name="UnitWeight" Type="Double" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <Property Name="AlreadyExecuted" Type="Int32" Nullable="false" />
+          <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="AdjustmentExEntryDataDetail">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="EntryDataDetail">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="AdjustmentQS">
+          <EntitySetMapping Name="AsycudaSalesAllocations">
+            <EntityTypeMapping TypeName="Model.AsycudaSalesAllocation">
+              <MappingFragment StoreEntitySet="AsycudaSalesAllocations">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="xStatus" ColumnName="xStatus" />
+                <ScalarProperty Name="xEntryItem_Id" ColumnName="xEntryItem_Id" />
+                <ScalarProperty Name="SANumber" ColumnName="SANumber" />
+                <ScalarProperty Name="EANumber" ColumnName="EANumber" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentEntryDatas">
+            <EntityTypeMapping TypeName="Model.AsycudaDocumentEntryData">
+              <MappingFragment StoreEntitySet="AsycudaDocumentEntryData">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSetEntryDatas">
+            <EntityTypeMapping TypeName="Model.AsycudaDocumentSetEntryData">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSetEntryData">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentExes">
+            <EntityTypeMapping TypeName="Model.AdjustmentEx">
+              <MappingFragment StoreEntitySet="AdjustmentEx">
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TotalLines" ColumnName="TotalLines" />
+                <ScalarProperty Name="ImportedLines" ColumnName="ImportedLines" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentOvers">
+            <EntityTypeMapping TypeName="Model.AdjustmentOver">
+              <MappingFragment StoreEntitySet="AdjustmentOvers">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentShorts">
+            <EntityTypeMapping TypeName="Model.AdjustmentShort">
+              <MappingFragment StoreEntitySet="AdjustmentShorts">
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntryDataDetails">
+            <EntityTypeMapping TypeName="Model.EntryDataDetail">
+              <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="InternalFreight" ColumnName="InternalFreight" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Freight" ColumnName="Freight" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShortAllocations">
+            <EntityTypeMapping TypeName="Model.ShortAllocation">
+              <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="pPrecision1" ColumnName="pPrecision1" />
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="xStatus" ColumnName="xStatus" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="pItemNumber" ColumnName="pItemNumber" />
+                <ScalarProperty Name="pTariffCode" ColumnName="pTariffCode" />
+                <ScalarProperty Name="pExpiryDate" ColumnName="pExpiryDate" />
+                <ScalarProperty Name="Invalid" ColumnName="Invalid" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="xReferenceNumber" ColumnName="xReferenceNumber" />
+                <ScalarProperty Name="SANumber" ColumnName="SANumber" />
+                <ScalarProperty Name="WarehouseError" ColumnName="WarehouseError" />
+                <ScalarProperty Name="DoNotAllocatePreviousEntry" ColumnName="DoNotAllocatePreviousEntry" />
+                <ScalarProperty Name="DoNotAllocateSales" ColumnName="DoNotAllocateSales" />
+                <ScalarProperty Name="pIsAssessed" ColumnName="pIsAssessed" />
+                <ScalarProperty Name="DutyLiability" ColumnName="DutyLiability" />
+                <ScalarProperty Name="Total_CIF_itm" ColumnName="Total_CIF_itm" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="pASYCUDA_Id" ColumnName="pASYCUDA_Id" />
+                <ScalarProperty Name="xASYCUDA_Id" ColumnName="xASYCUDA_Id" />
+                <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
+                <ScalarProperty Name="pReferenceNumber" ColumnName="pReferenceNumber" />
+                <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
+                <ScalarProperty Name="xRegistrationDate" ColumnName="xRegistrationDate" />
+                <ScalarProperty Name="xCNumber" ColumnName="xCNumber" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="PiQuantity" ColumnName="PiQuantity" />
+                <ScalarProperty Name="pQtyAllocated" ColumnName="pQtyAllocated" />
+                <ScalarProperty Name="pQuantity" ColumnName="pQuantity" />
+                <ScalarProperty Name="pRegistrationDate" ColumnName="pRegistrationDate" />
+                <ScalarProperty Name="pCNumber" ColumnName="pCNumber" />
+                <ScalarProperty Name="xBond_Item_Id" ColumnName="xBond_Item_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="SalesQtyAllocated" ColumnName="SalesQtyAllocated" />
+                <ScalarProperty Name="SalesQuantity" ColumnName="SalesQuantity" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="xLineNumber" ColumnName="xLineNumber" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AllocatedValue" ColumnName="AllocatedValue" />
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Item">
+            <EntityTypeMapping TypeName="Model.xcuda_Item">
+              <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="xWarehouseError" ColumnName="xWarehouseError" />
+                <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
+                <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
+                <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="WarehouseError" ColumnName="WarehouseError" />
+                <ScalarProperty Name="ImportComplete" ColumnName="ImportComplete" />
+                <ScalarProperty Name="DoNotEX" ColumnName="DoNotEX" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="AttributeOnlyAllocation" ColumnName="AttributeOnlyAllocation" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="DFQtyAllocated" ColumnName="DFQtyAllocated" />
+                <ScalarProperty Name="DPQtyAllocated" ColumnName="DPQtyAllocated" />
+                <ScalarProperty Name="IsAssessed" ColumnName="IsAssessed" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="Free_text_2" ColumnName="Free_text_2" />
+                <ScalarProperty Name="Free_text_1" ColumnName="Free_text_1" />
+                <ScalarProperty Name="Licence_number" ColumnName="Licence_number" />
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="Quantity_deducted_from_licence" ColumnName="Quantity_deducted_from_licence" />
+                <ScalarProperty Name="Amount_deducted_from_licence" ColumnName="Amount_deducted_from_licence" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentDetails">
+            <EntityTypeMapping TypeName="Model.AdjustmentDetail">
+              <MappingFragment StoreEntitySet="AdjustmentDetails">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
+                <ScalarProperty Name="PreviousCLineNumber" ColumnName="PreviousCLineNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
+            <EntityTypeMapping TypeName="Model.AsycudaDocumentItemEntryDataDetail">
+              <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
+                <ScalarProperty Name="Asycuda_id" ColumnName="Asycuda_id" />
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="ImportComplete" ColumnName="ImportComplete" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentItemLastItemCosts">
+            <EntityTypeMapping TypeName="Model.AsycudaDocumentItemLastItemCost">
+              <MappingFragment StoreEntitySet="AsycudaDocumentItemLastItemCost">
+                <ScalarProperty Name="assessmentdate" ColumnName="assessmentdate" />
+                <ScalarProperty Name="LocalItemCost" ColumnName="LocalItemCost" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="applicationsettingsid" ColumnName="applicationsettingsid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemAliasExes">
+            <EntityTypeMapping TypeName="Model.InventoryItemAliasEx">
+              <MappingFragment StoreEntitySet="InventoryItemAliasEx">
+                <ScalarProperty Name="AliasItemId" ColumnName="AliasItemId" />
+                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemsExes">
+            <EntityTypeMapping TypeName="Model.InventoryItemsEx">
+              <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
+                <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentOversAllocations">
+            <EntityTypeMapping TypeName="Model.AdjustmentOversAllocation">
+              <MappingFragment StoreEntitySet="AdjustmentOversAllocations">
+                <ScalarProperty Name="Asycuda_Id" ColumnName="Asycuda_Id" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemDocumentSets">
+            <EntityTypeMapping TypeName="Model.SystemDocumentSet">
+              <MappingFragment StoreEntitySet="SystemDocumentSets">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_PreDiscrepancyErrors">
+            <EntityTypeMapping TypeName="Model.TODO_PreDiscrepancyErrors">
+              <MappingFragment StoreEntitySet="TODO-PreDiscrepancyErrors">
+                <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+                <ScalarProperty Name="PiQuantity" ColumnName="PiQuantity" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_AdjustmentOversToXML">
+            <EntityTypeMapping TypeName="Model.TODO_AdjustmentOversToXML">
+              <MappingFragment StoreEntitySet="TODO-AdjustmentOversToXML">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
+                <ScalarProperty Name="AlreadyExecuted" ColumnName="AlreadyExecuted" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

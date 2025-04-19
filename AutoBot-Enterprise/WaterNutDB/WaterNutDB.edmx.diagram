@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f32200512a8740a58b3d2ed4e56b5dcb" Name="xcuda" ZoomLevel="88" >
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.AsycudaDocumentSet" Width="1.5" PointX="1.375" PointY="45.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.Customs_Procedure" Width="1.5" PointX="1.375" PointY="42.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.Document_Type" Width="2.125" PointX="1.75" PointY="66.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.ExportTemplate" Width="1.5" PointX="1.375" PointY="34.625" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.InventoryItems" Width="1.5" PointX="5.875" PointY="111.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.Licences" Width="1.5" PointX="3.625" PointY="47.875" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffCategory" Width="1.5" PointX="1.375" PointY="111.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffCodes" Width="1.5" PointX="3.625" PointY="110.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffSupUnitLkps" Width="1.5" PointX="3.625" PointY="115.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Assessment" Width="1.5" PointX="5.875" PointY="39.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Assessment_notice" Width="1.5" PointX="3.625" PointY="13.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_ASYCUDA" Width="2.125" PointX="0.75" PointY="54.625" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Attached_documents" Width="1.5" PointX="5.875" PointY="58" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Border_information" Width="1.5" PointX="8.125" PointY="102.125" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Border_office" Width="1.5" PointX="5.875" PointY="96.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Container" Width="1.5" PointX="3.625" PointY="21.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Declarant" Width="1.5" PointX="3.625" PointY="25.625" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Delivery_terms" Width="1.5" PointX="5.875" PointY="99.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Departure_arrival_information" Width="1.5" PointX="8.125" PointY="105.125" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Export_release" Width="1.5" PointX="3.625" PointY="28.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Financial" Width="1.5" PointX="3.625" PointY="32.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Financial_Amounts" Width="1.5" PointX="5.875" PointY="31.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Financial_Guarantee" Width="1.5" PointX="5.875" PointY="34.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Global_taxes" Width="1.5" PointX="3.625" PointY="37" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Goods_description" Width="1.5" PointX="5.875" PointY="61.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_HScode" Width="1.5" PointX="8.125" PointY="72.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Identification" Width="1.5" PointX="3.625" PointY="44" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Item" Width="1.5" PointX="3.625" PointY="59.125" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Manifest_reference_number" Width="1.5" PointX="5.25" PointY="39.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Means_of_transport" Width="1.5" PointX="5.875" PointY="103.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Nbers" Width="1.5" PointX="5.875" PointY="82.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Office_segment" Width="1.5" PointX="5.875" PointY="41.875" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Packages" Width="1.5" PointX="5.875" PointY="64" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Place_of_loading" Width="1.5" PointX="5.875" PointY="107.875" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Previous_doc" Width="1.5" PointX="5.875" PointY="67.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Principal" Width="1.5" PointX="5.875" PointY="89.125" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Property" Width="1.5" PointX="3.625" PointY="82.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_receipt" Width="1.5" PointX="5.875" PointY="44.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Registration" Width="1.5" PointX="5.875" PointY="46.875" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Seals" Width="1.5" PointX="5.875" PointY="91.375" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Signature" Width="1.5" PointX="5.875" PointY="94" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Supplementary_unit" Width="1.5" PointX="8.125" PointY="75.625" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Suppliers_documents" Width="1.5" PointX="3.625" PointY="76.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Suppliers_link" Width="1.5" PointX="5.875" PointY="69.625" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Tarification" Width="1.5" PointX="5.875" PointY="72.25" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Taxation" Width="1.5" PointX="5.875" PointY="78.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Taxation_line" Width="1.5" PointX="8.125" PointY="78.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Transit" Width="1.5" PointX="3.625" PointY="89.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Transport" Width="1.5" PointX="3.625" PointY="101.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Type" Width="1.5" PointX="5.875" PointY="49.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Warehouse" Width="1.5" PointX="3.625" PointY="106.125" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_ExportTemplate" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Licences_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Customs_ProcedureDocumentType" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_TariffCategoryTariffSupUnitLkp" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Assessment" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Assessment_notice" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Container" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Declarant" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Export_release" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Financial" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Global_taxes" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Identification" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Item" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Property" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Suppliers_documents" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Transit" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Transport" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Warehouse" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Attached_documents" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Means_of_transport_Border_information" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transport_Border_office" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transport_Delivery_terms" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Means_of_transport_Departure_arrival_information" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Financialxcuda_Financial_Amounts" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Financialxcuda_Financial_Guarantee" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Goods_description" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Tarification_HScode" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Manifest_reference_number" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Office_segment" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_receipt" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Registration" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Type" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Packages" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Previous_doc" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Suppliers_link" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Tarification" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Item_Taxation" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transport_Means_of_transport" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Property_Nbers" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transport_Place_of_loading" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transit_Principal" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transit_Seals" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Transit_Signature" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Tarification_Supplementary_unit" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Taxation_Taxation_line" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.xcuda_Inventory_Item1" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Transit_Destination" Width="1.5" PointX="5.875" PointY="86.375" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Transit_Destination_xcuda_Transit" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_ASYCUDA_ExtendedProperties" Width="1.5" PointX="3.625" PointY="52.5" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_PreviousItem" Width="1.5" PointX="8.875" PointY="57.375" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_PreviousItem" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_PreviousItem_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.xcuda_Inventory_Item" />
+        </Diagram>
+      <Diagram DiagramId="b567f2678d3d49a3818d4cb1141ba6eb" Name="WaterNut" ZoomLevel="74" >
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.InventoryItems" Width="1.5" PointX="9.75" PointY="4.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Item" Width="2" PointX="11.625" PointY="1.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_ASYCUDA" Width="1.5" PointX="6.5" PointY="2.25" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Item" />
+        </Diagram>
+      <Diagram DiagramId="15d94d10c68b48d9900e58b56cde41e1" Name="Diagram1" ZoomLevel="100" >
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Item" Width="2.75" PointX="5.75" PointY="0.625" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

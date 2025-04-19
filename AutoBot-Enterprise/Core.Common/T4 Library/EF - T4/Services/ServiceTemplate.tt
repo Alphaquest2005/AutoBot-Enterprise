@@ -1,0 +1,1465 @@
+﻿<#@ import namespace="System.Collections.Generic" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ServiceTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+        public string projectName;
+		public MetadataTools ef;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault().Name;
+
+            var orderByLst = new Dictionary<string, string>();
+
+            foreach (var property in entity.Properties.Where(x=> x.MetadataProperties.Any(z => z.Name.Contains("OrderByProperty"))))
+            {
+                var rawProperty =
+                    property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("OrderByProperty"));
+                    orderByLst.Add(property.Name, ((XElement) rawProperty.Value).Value);
+            }
+
+
+#>
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.ServiceModel;
+using System.Threading.Tasks;
+//using System.Transactions;
+using TrackableEntities;
+using TrackableEntities.Common;
+using System.Linq.Dynamic;
+using System.ComponentModel.Composition;
+using <#=container.Name#>.Business.Entities;
+using Core.Common.Contracts;
+using Core.Common.Business.Services;
+using TrackableEntities.EF6;
+using System.Data.Entity;
+using System.Linq;
+using <#=projectName #>.Interfaces;
+
+namespace <#=container.Name#>.Business.Services
+{
+   [Export (typeof(I<#=entity.Name#>Service))]
+   [Export(typeof(IBusinessService))]
+   [PartCreationPolicy(CreationPolicy.NonShared)]
+   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
+                    ConcurrencyMode = ConcurrencyMode.Multiple)]
+   
+    public partial class <#=entity.Name#>Service : I<#=entity.Name#>Service, IDisposable
+    {
+        //private readonly <#=container.Name#>Context dbContext;
+
+        public bool StartTracking { get; set; }
+
+        public <#=entity.Name#>Service()
+        {
+            try
+            {
+                // dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking};
+                StartTracking = false;
+             }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>(List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+            //using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                                   //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
+               // {
+                  using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                  {
+				    var set = AddIncludes(includesLst, dbContext);
+                    IEnumerable<<#=entity.Name#>> entities = await set.AsNoTracking().ToListAsync()
+													       .ConfigureAwait(continueOnCapturedContext: false);
+                           //scope.Complete();
+                            if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                            return entities;
+                   }
+                //}
+             }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+
+        public async Task<<#="I" + entity.Name#>> Get<#=entity.Name#>ByKey(string <#= entity.KeyMembers.FirstOrDefault().Name #>, List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+			   if(string.IsNullOrEmpty(<#= entity.KeyMembers.FirstOrDefault().Name #>))return null; 
+              using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+              {
+                <#+WriteStringToIdType(entity.KeyMembers.FirstOrDefault() as EdmProperty); #>
+				var set = AddIncludes(includesLst, dbContext);
+                <#=entity.Name#> entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i).ConfigureAwait(continueOnCapturedContext: false);
+                if(tracking && entity != null) entity.StartTracking();
+                return entity;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+
+		 public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#="I" + entity.Name#>>();
+					var set = AddIncludes(includesLst, dbContext);
+                    if (exp == "All")
+                    {
+						var entities = await set.AsNoTracking().ToListAsync()
+											.ConfigureAwait(continueOnCapturedContext: false);
+
+                        if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                        return entities; 
+                    }
+					else
+					{
+						var entities = await set.AsNoTracking().Where(exp)
+											.ToListAsync() 
+											.ConfigureAwait(continueOnCapturedContext: false);
+                        if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                        return entities; 
+											
+					}
+					
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		 public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<<#="I" + entity.Name#>>();
+					var set = AddIncludes(includesLst, dbContext);
+                    if (expLst.FirstOrDefault() == "All")
+                    {
+						var entities = await set.AsNoTracking().ToListAsync()
+											.ConfigureAwait(continueOnCapturedContext: false); 
+                        if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                        return entities; 
+                    }
+					else
+					{
+						set = AddWheres(expLst, set);
+						var entities = await set.AsNoTracking().ToListAsync() 
+										.ConfigureAwait(continueOnCapturedContext: false);
+                        if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                        return entities; 
+											
+					}
+					
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#="I" + entity.Name#>>();
+
+                    if (exp == "All" && navExp.Count == 0)
+                    {
+                        var aentities = await AddIncludes(includesLst, dbContext)
+												.ToListAsync()
+												.ConfigureAwait(continueOnCapturedContext: false);
+                        if(tracking) aentities.AsParallel().ForAll(x => x.StartTracking());
+                        return aentities; 
+                    }
+<#+if (entity.NavigationProperties.Any())
+{ #>
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+<#+ 
+            foreach (var navProperty in entity.NavigationProperties)
+            {
+                var epn = "";
+                var ep =
+                    navProperty.ToEndMember.GetEntityType()
+                        .NavigationProperties.FirstOrDefault(
+                            x =>
+                                x.ToEndMember.GetEntityType().Name ==
+                                (entity.BaseType == null ? "I" + entity.Name : entity.BaseType.Name));
+                if (ep != null)
+                    epn = ep.Name;
+                #>
+                            case "<#= navProperty.Name #>":
+                                return
+                                    await
+                                        GetWhere<<#=navProperty.ToEndMember.GetEntityType().Name #>>(dbContext, exp, itm.Value, "<#=epn #>", "<#=
+    navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many ? "SelectMany" : "Select"
+    #>", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+<#+
+            }
+ #>
+                        }
+
+                    }
+<#+ 
+} 
+#>
+					var set = AddIncludes(includesLst, dbContext);
+                    var entities = await set.AsNoTracking().Where(exp)
+									.ToListAsync()
+									.ConfigureAwait(continueOnCapturedContext: false);
+                    if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                        return entities; 
+
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+
+                var res = new ConcurrentQueue<List<<#=entity.Name#>>>();
+
+
+
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#="I" + entity.Name#>>();
+
+
+                var batchSize = 500;
+                var batches = Convert.ToInt32(totalrow / batchSize);
+
+                if (totalrow % batchSize > 0) batches += 1;
+                var exceptions = new ConcurrentQueue<Exception>();
+                Parallel.For(0, batches,
+                   new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
+                    bat =>
+                    //  for (int bat = 0; bat < batches; bat++)
+                    {
+                        try
+                        {
+                            using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                            {
+                                dbContext.Configuration.AutoDetectChangesEnabled = false;
+                                //dbContext.Configuration.LazyLoadingEnabled = true;
+                                var set = AddIncludes(includesLst, dbContext);
+                                IQueryable<<#=entity.Name#>> dset;
+                                if (exp == "All")
+                                {
+                                    dset = set.OrderBy(x => x.<#= entity.KeyMembers.FirstOrDefault().Name #>);
+                                }
+                                else
+                                {
+                                    dset = set.OrderBy(x => x.<#= entity.KeyMembers.FirstOrDefault().Name #>).Where(exp);
+                                }
+
+                                var lst = dset
+                                    .Skip(bat * batchSize)
+                                    .Take(batchSize)
+                                    .ToList();
+                                res.Enqueue(lst);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            exceptions.Enqueue(ex);
+                        }
+                    }
+                    );
+                if (exceptions.Count > 0) throw new AggregateException(exceptions);
+    
+                var entities = res.SelectMany(x => x.ToList());
+                if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                return entities; 
+
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
+            }
+        }
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
+        {
+            try
+            {
+
+                var res = new ConcurrentQueue<List<<#=entity.Name#>>>();
+
+
+
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<<#="I" + entity.Name#>>();
+
+
+                var batchSize = 500;
+                var batches = Convert.ToInt32(totalrow / batchSize);
+
+                if (totalrow % batchSize > 0) batches += 1;
+                var exceptions = new ConcurrentQueue<Exception>();
+                Parallel.For(0, batches,
+                   new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
+                    bat =>
+                    //  for (int bat = 0; bat < batches; bat++)
+                    {
+                        try
+                        {
+                            using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                            {
+                                dbContext.Configuration.AutoDetectChangesEnabled = false;
+                                //dbContext.Configuration.LazyLoadingEnabled = true;
+                                var set = AddIncludes(includesLst, dbContext);
+                                IQueryable<<#=entity.Name#>> dset;
+                                if (expLst.FirstOrDefault() == "All")
+                                {
+                                    dset = set.OrderBy(x => x.<#= entity.KeyMembers.FirstOrDefault().Name #>);
+                                }
+                                else
+                                {
+                                    set = AddWheres(expLst, set);
+                                    dset = set.OrderBy(x => x.<#= entity.KeyMembers.FirstOrDefault().Name #>);
+                                }
+
+                                var lst = dset
+                                    .Skip(bat * batchSize)
+                                    .Take(batchSize)
+                                    .ToList();
+                                res.Enqueue(lst);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            exceptions.Enqueue(ex);
+                        }
+                    }
+                    );
+                if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                var entities = res.SelectMany(x => x.ToList());
+                if(tracking) entities.AsParallel().ForAll(x => x.StartTracking());
+                return entities; 
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+
+        public async Task<<#="I" + entity.Name#>> Update<#=entity.Name#>(<#="I" + entity.Name#> entity)
+        { 
+            using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+              {
+                try
+                {   
+                     var res = (<#=entity.Name#>) entity;
+                    if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
+                    
+                    dbContext.ApplyChanges(res);
+                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    res.AcceptChanges();
+                    return res;      
+
+                   // var entitychanges = entity.ChangeTracker.GetChanges();
+                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
+                   // {
+                   //     dbContext.ApplyChanges(entitychanges);
+                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
+                   //     entity.AcceptChanges();     
+                   // }
+                   // return entity;        
+                }
+                catch (DbUpdateConcurrencyException dce)
+                {
+                    // Get failed entry
+                    foreach (var itm in dce.Entries)
+                    {
+                        if(itm.State != EntityState.Added)
+                         {
+                            var dv = itm.GetDatabaseValues();
+                            if(dv != null) itm.OriginalValues.SetValues(dv);
+                        }
+                    }
+                }
+                catch (OptimisticConcurrencyException oce)
+                {
+                    var context = ((IObjectContextAdapter)dbContext).ObjectContext;
+
+                    foreach (var entry in oce.StateEntries)
+                    {
+                        context.Refresh(System.Data.Entity.Core.Objects.RefreshMode.StoreWins, entry.Entity);
+                    }
+                }   
+                catch (DbUpdateException e)
+                {
+                    
+                   // Debugger.Break();
+                    SqlException s = e.InnerException.InnerException as SqlException;
+                    if (s != null && s.Number == 2627)
+                    {
+                         
+                    }
+                    else
+                    {
+                        Debugger.Break();
+                        throw;
+                    }
+                }             
+                catch (Exception updateEx)
+                {
+                    if (
+                        updateEx.Message.Contains(
+                            "The changes to the database were committed successfully, " +
+                            "but an error occurred while updating the object context"))
+                        return entity;
+
+                    System.Diagnostics.Debugger.Break();
+                    //throw new FaultException(updateEx.Message);
+                        var fault = new ValidationFault
+                                    {
+                                        Result = false,
+                                        Message = updateEx.Message,
+                                        Description = updateEx.StackTrace
+                                    };
+                        throw new FaultException<ValidationFault>(fault);
+                }
+            }
+           return entity;
+        }
+
+        public async Task<<#="I" + entity.Name#>> Create<#=entity.Name#>(<#="I" + entity.Name#> entity)
+        {
+            try
+            {
+                var res = (<#=entity.Name#>) entity;
+              using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+              {
+                dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>.Add(res);
+                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                res.AcceptChanges();
+                return res;
+              }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+        public async Task<bool> Delete<#=entity.Name#>(string <#= entity.KeyMembers.FirstOrDefault().Name #>)
+        {
+            try
+            {
+              using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+              {
+                <#+WriteStringToIdType(entity.KeyMembers.FirstOrDefault() as EdmProperty); #>
+                <#=entity.Name#> entity = await dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + ">()")#>
+													.SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i)
+													.ConfigureAwait(continueOnCapturedContext: false);
+                if (entity == null)
+                    return false;
+
+                    dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>.Attach(entity);
+                    dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>.Remove(entity);
+                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    return true;
+              }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		// Virtural list Implementation
+
+         public async Task<int> CountByExpressionLst(List<string> expLst)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    var set = (IQueryable<<#=entity.Name#>>)dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>; 
+                    if (expLst.FirstOrDefault() == "All")
+                    {
+                        return await set.AsNoTracking().CountAsync()
+                                            .ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                    else
+                    {
+                        set = AddWheres(expLst, set);
+                        return await set.AsNoTracking().CountAsync()
+                                        .ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                    
+                }
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		public async Task<int> Count(string exp)
+        {
+            try
+            {
+                using (<#=container.Name#>Context dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (exp == "All")
+                    {
+                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+                                    .AsNoTracking()
+									.CountAsync()
+									.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                    else
+                    {
+                        
+                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+									.AsNoTracking()
+                                    .Where(exp)
+									.CountAsync()
+									.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                }
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+        
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRange(int startIndex, int count, string exp)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#="I" + entity.Name#>>();
+                    if (exp == "All")
+                    {
+                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+										.AsNoTracking()
+                                        .OrderBy(y => y.<#=entity.KeyMembers[0].Name#>)
+										.Skip(startIndex)
+										.Take(count)
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                    else
+                    {
+                        
+                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.<#=entity.KeyMembers[0].Name#>)
+										.Skip(startIndex)
+										.Take(count)
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+                }
+            }
+            catch (Exception updateEx)
+            {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if (exp == "All" && navExp.Count == 0)
+                    {
+                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+										.AsNoTracking()
+                                        .CountAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+<#+if (entity.NavigationProperties.Any())
+{ #>
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+<#+ 
+            foreach (var navProperty in entity.NavigationProperties)
+            {
+                var epn = "";
+                var ep =
+                    navProperty.ToEndMember.GetEntityType()
+                        .NavigationProperties.FirstOrDefault(
+                            x =>
+                                x.ToEndMember.GetEntityType().Name ==
+                                (entity.BaseType == null ? "I" + entity.Name : entity.BaseType.Name));
+                if (ep != null)
+                    epn = ep.Name;
+                #>
+                            case "<#= navProperty.Name #>":
+                                return await CountWhere<<#=navProperty.ToEndMember.GetEntityType().Name #>>(dbContext, exp, itm.Value, "<#=epn #>", "<#=
+    navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many ? "SelectMany" : "Select"
+    #>")
+											.ConfigureAwait(continueOnCapturedContext: false);
+<#+
+            }
+#>
+						}
+                    }
+<#+ 
+} 
+#>
+                    return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>.Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+											.AsNoTracking()
+                                            .CountAsync()
+											.ConfigureAwait(continueOnCapturedContext: false);
+                }
+                
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		private static async Task<int> CountWhere<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp, string rel) where T : class
+        {
+              switch (rel)
+		    {
+		        case "SelectMany":
+                    return await CountWhereSelectMany<T>(dbContext, exp, navExp, navProp)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		            
+                default:
+                    return await CountWhereSelect<T>(dbContext, exp, navExp, navProp)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		    }
+        }
+
+		private static async Task<int> CountWhereSelectMany<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp) where T : class
+        {
+			try
+			{
+            return await dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .SelectMany(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                .OrderBy("<#=entity.KeyMembers[0].Name#>")
+                .CountAsync()
+				.ConfigureAwait(continueOnCapturedContext: false);
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		private static async Task<int> CountWhereSelect<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp) where T : class
+        {
+			try
+			{
+            return await dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .Select(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                .OrderBy("<#=entity.KeyMembers[0].Name#>")
+                .CountAsync()
+				.ConfigureAwait(continueOnCapturedContext: false);
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		  public async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+        {
+            try
+            {
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<<#="I" + entity.Name#>>();
+                    var set = AddIncludes(includeLst, dbContext);
+
+                    if (exp == "All" && navExp.Count == 0)
+                    {
+                       
+                        return await set
+									.AsNoTracking()
+                                    <#+ WriteOrderBy(orderByLst); #> 
+                                    .Skip(startIndex)
+                                    .Take(count)
+									.ToListAsync()
+									.ConfigureAwait(continueOnCapturedContext: false);
+                    }
+<#+if (entity.NavigationProperties.Any())
+{ #>
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+<#+ 
+            foreach (var navProperty in entity.NavigationProperties)
+            {
+                var epn = "";
+                var ep =
+                    navProperty.ToEndMember.GetEntityType()
+                        .NavigationProperties.FirstOrDefault(
+                            x =>
+                                x.ToEndMember.GetEntityType().Name ==
+                                (entity.BaseType == null ? "I" + entity.Name : entity.BaseType.Name));
+                if (ep != null)
+                    epn = ep.Name;
+                #>
+                            case "<#= navProperty.Name #>":
+                                return
+                                    await
+                                        LoadRangeWhere<<#=navProperty.ToEndMember.GetEntityType().Name #>>(startIndex, count, dbContext, exp, itm.Value, "<#=epn #>", "<#=
+    navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many ? "SelectMany" : "Select"
+    #>")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+<#+
+            }
+ #>                          
+							default:
+                                throw new ArgumentException("No Navigation property found for " + itm.Key);
+						}
+
+                    }
+<#+ 
+} 
+#>
+                    return await set//dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+								.AsNoTracking()
+                                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+								<#+ WriteOrderBy(orderByLst); #> 
+                                .Skip(startIndex)
+                                .Take(count)
+								.ToListAsync()
+								.ConfigureAwait(continueOnCapturedContext: false);
+
+
+                }
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		private static async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeWhere<T>(int startIndex, int count,
+            <#=container.Name#>Context dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
+        {
+             switch (rel)
+		    {
+		        case "SelectMany":
+                    return await LoadRangeSelectMany<T>(startIndex, count, dbContext, exp, navExp, navProp, includeLst)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		            
+                default:
+                    return await LoadRangeSelect<T>(startIndex, count, dbContext, exp, navExp, navProp, includeLst)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		    }
+        }
+
+		private static async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeSelectMany<T>(int startIndex, int count,
+            <#=container.Name#>Context dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+        {
+			try
+			{
+            var set = dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .SelectMany(navProp).OfType<<#="I" + entity.Name#>>();
+    
+            if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
+
+            return await set
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                <#+ WriteOrderBy(orderByLst); #> 
+                .Skip(startIndex)
+                .Take(count)
+                .ToListAsync()
+				.ConfigureAwait(continueOnCapturedContext: false);
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		private static async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeSelect<T>(int startIndex, int count,
+            <#=container.Name#>Context dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+        {
+			try
+			{
+              var set = dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .Select(navProp).OfType<<#="I" + entity.Name#>>();
+
+               if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
+                
+               return await set
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                <#+ WriteOrderBy(orderByLst); #> 
+                .Skip(startIndex)
+                .Take(count)
+                .ToListAsync()
+				.ConfigureAwait(continueOnCapturedContext: false);
+							 }
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+        private static async Task<IEnumerable<<#="I" + entity.Name#>>> GetWhere<T>(<#=container.Name#>Context dbContext,
+            string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
+        {
+			try
+			{
+			    switch (rel)
+				{
+					case "SelectMany":
+						return await GetWhereSelectMany<T>(dbContext, exp, navExp, navProp, includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+						
+					default:
+						return await GetWhereSelect<T>(dbContext, exp, navExp, navProp, includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+				}
+			
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		private static async Task<IEnumerable<<#="I" + entity.Name#>>> GetWhereSelectMany<T>(<#=container.Name#>Context dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+        {
+			try
+			{
+
+			if (includesLst == null)
+			{
+				return await dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<<#="I" + entity.Name#>>()
+							.Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
+							.Distinct()
+							.ToListAsync()
+							.ConfigureAwait(continueOnCapturedContext: false);
+			}
+
+			var set = (DbQuery<<#=entity.Name#>>)dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .SelectMany(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
+                .Distinct();
+
+			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
+
+            return await set.ToListAsync()
+							.ConfigureAwait(continueOnCapturedContext: false);
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		private static async Task<IEnumerable<<#="I" + entity.Name#>>> GetWhereSelect<T>(<#=container.Name#>Context dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+        {
+			try
+			{
+
+			if (includesLst == null)
+			{
+				return await dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<<#="I" + entity.Name#>>()
+							.Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
+							.Distinct()
+							.ToListAsync()
+							.ConfigureAwait(continueOnCapturedContext: false);
+			}
+
+			var set = (DbQuery<<#=entity.Name#>>)dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .Select(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
+                .Distinct();
+
+			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
+
+            return await set.ToListAsync()
+							.ConfigureAwait(continueOnCapturedContext: false);
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		<#+ 
+	 
+	    var ens = entity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id"));//  && entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+			//&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)
+
+		foreach (var p in ens)
+        {
+ #>
+	        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entity.Name#>By<#= p.Name #>(string <#= p.Name #>, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+              {
+                <#+WriteStringToIdType(p); #>
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<<#="I" + entity.Name#>> entities = await set//dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>
+<#+
+        foreach (var navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+            {
+                if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+                {    
+ #>                                                    // .Include(x => x.<#=navProperty.Name #>)									  
+<#+
+                }
+            }
+#>                                      .AsNoTracking()
+                                        .Where(x => x.<#= p.Name #>.ToString() == <#= p.Name #>.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ <#+ 
+		}
+  #>
+
+		public decimal SumField(string whereExp, string field)
+         {
+             try
+             {
+                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                 {
+					decimal res = 0;
+                     if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
+                     if (whereExp == "All")
+                     {
+                          res = Convert.ToDecimal(dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>.AsNoTracking().Sum(field));
+                     }
+                     else
+                     {
+                         res = Convert.ToDecimal(dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>.AsNoTracking().Where(whereExp).Sum(field));
+                     }
+                     
+                     return res;
+                 }
+             }
+             catch (Exception updateEx)
+             {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+             }
+         }
+
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                {
+                    if (exp == "All" && navExp.Count == 0)
+                    {
+                        return Convert.ToDecimal(dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>
+										.AsNoTracking()
+                                        .Sum(field)??0);
+                    }
+<#+if (entity.NavigationProperties.Any())
+{ #>
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+<#+ 
+            foreach (var navProperty in entity.NavigationProperties)
+            {
+                var epn = "";
+                var ep =
+                    navProperty.ToEndMember.GetEntityType()
+                        .NavigationProperties.FirstOrDefault(
+                            x =>
+                                x.ToEndMember.GetEntityType().Name ==
+                                (entity.BaseType == null ? "I" + entity.Name : entity.BaseType.Name));
+                if (ep != null)
+                    epn = ep.Name;
+                #>
+                            case "<#= navProperty.Name #>":
+                                return await SumWhere<<#=navProperty.ToEndMember.GetEntityType().Name #>>(dbContext, exp, itm.Value, "<#=epn #>", field, "<#=
+    navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many ? "SelectMany" : "Select"
+    #>")
+											.ConfigureAwait(continueOnCapturedContext: false);
+<#+
+            }
+#>
+						}
+                    }
+<#+ 
+} 
+#>
+                    return Convert.ToDecimal(dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + "I" + entity.Name + ">()")#>.Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+											.AsNoTracking()
+                                            .Sum(field)??0);
+                }
+                
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                var fault = new ValidationFault
+                {
+                    Result = false,
+                    Message = updateEx.Message,
+                    Description = updateEx.StackTrace
+                };
+                throw new FaultException<ValidationFault>(fault);
+            }
+        }
+
+		private static async Task<decimal> SumWhere<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
+        {
+              switch (rel)
+		    {
+		        case "SelectMany":
+                    return await SumWhereSelectMany<T>(dbContext, exp, navExp, navProp, field)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		        default:
+                    return await SumWhereSelect<T>(dbContext, exp, navExp, navProp, field)
+									.ConfigureAwait(continueOnCapturedContext: false);
+		    }
+        }
+
+		private static async Task<decimal> SumWhereSelectMany<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp, string field) where T : class
+        {
+			try
+			{
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .SelectMany(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                .OrderBy("<#=entity.KeyMembers[0].Name#>")
+                .Sum(field));
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+		private static async Task<decimal> SumWhereSelect<T>(<#=container.Name#>Context dbContext, string exp, string navExp, string navProp, string field) where T : class
+        {
+			try
+			{
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
+                .Where(navExp)
+                .Select(navProp).OfType<<#="I" + entity.Name#>>()
+                .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                .Distinct()
+                .OrderBy("<#=entity.KeyMembers[0].Name#>")
+                .Sum(field));
+			}
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+        }
+
+
+
+		 public string MinField(string whereExp, string field)
+         {
+             try
+             {
+                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
+                 {
+					string res = "";
+                     if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
+                     if (whereExp == "All")
+                     {
+                          res = Convert.ToString(dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>.AsNoTracking().Min(field));
+                     }
+                     else
+                     {
+                         res = Convert.ToString(dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>.AsNoTracking().Where(whereExp).Min(field));
+                     }
+                     
+                     return res;
+                 }
+             }
+             catch (Exception updateEx)
+             {
+                    System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+             }
+         }
+
+		 
+		private static IQueryable<<#=entity.Name#>> AddIncludes(IEnumerable<string> includesLst, <#=container.Name#>Context dbContext)
+       {
+		 try
+			{
+			   if (includesLst == null) includesLst = new List<string>();
+			   var set =(DbQuery<<#=entity.Name#>>) dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + "I" + entity.Name + ">()")#>; 
+			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
+                                .Aggregate(set, (current, itm) => current.Include(itm));
+			   return set;
+			 }
+			catch (Exception)
+			{
+				Debugger.Break();
+				throw;
+			}
+       }
+	   private IQueryable<<#=entity.Name#>> AddWheres(List<string> expLst, IQueryable<<#=entity.Name#>> set)
+        {
+            try
+            {
+                return expLst.Where(x => !string.IsNullOrEmpty(x))
+                             .Aggregate(set, (current, itm) => current.Where(itm));
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+          
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+               // var dispose = dbContext as IDisposable;
+             ////   if (dispose != null)
+            //    {
+           //         dbContext.Dispose();
+           //     }
+            }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+
+        }
+
+    }
+}
+
+
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+
+
+        private void WriteOrderBy(Dictionary<string, string> orderByLst)
+        {
+            if (orderByLst.Count > 0)
+            {
+                foreach (var fld in orderByLst)
+                {
+                    if (fld.Value.Contains("Asc"))
+                    {
+#>
+.OrderBy(y => y.<#=fld.Key #>)
+<#+
+                    }
+        if (fld.Value.Contains("Desc"))
+        {
+#>  
+.OrderByDescending(y => y.<#=fld.Key #>)
+<#+
+        }
+                }
+            }
+            else
+            {
+#>
+.OrderBy(y => y.<#=entity.KeyMembers[0].Name #>)
+<#+
+            }
+
+        }
+
+        void WriteStringToIdType(EdmProperty p)
+        {
+
+            var typeUsage = p.TypeUsage.EdmType.Name;
+
+                // Fix-up spatial types for EF6
+                if (//efHost.EntityFrameworkVersion >= new Version(6, 0) && 
+                    typeUsage.StartsWith("System.Data.Spatial."))
+                {
+                    typeUsage = typeUsage.Replace(
+                        "System.Data.Spatial.",
+                        "System.Data.Entity.Spatial.");
+                }
+            if(typeUsage != "String")
+            {
+ #>
+var i = Convert.ToInt32(<#= p.Name #>);
+<#+
+            }
+                else
+            {
+#>
+var i = <#= p.Name #>;
+<#+
+            }
+
+        }
+        
+    }
+
+#>

@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--<Import Project="..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.2.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.3.8.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{93BD2EC8-C215-47BF-8A8E-34A27BD55E67}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoBotUtilities</RootNamespace>
+    <AssemblyName>AutoBotUtilities</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common">
+      <HintPath>..\WaterNut\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ADJUtils.cs" />
+    <Compile Include="AllocateSalesUtils.cs" />
+    <Compile Include="AssessedEntryInfo.cs" />
+    <Compile Include="BlandRiderCreator.cs" />
+    <Compile Include="C71Utils.cs" />
+    <Compile Include="ImportAllAsycudaDocumentsInDataFolderUtils.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="CreateEX9Utils.cs" />
+    <Compile Include="CSV\CSVUtilities.cs" />
+    <Compile Include="DiscpancyExecData.cs" />
+    <Compile Include="DiscrepancyPreExecutionReport.cs" />
+    <Compile Include="DISUtils.cs" />
+    <Compile Include="DocumentUtils.cs" />
+    <Compile Include="EmailSalesErrorsUtils.cs" />
+    <Compile Include="EntryDocSetUtils.cs" />
+    <Compile Include="Ex9SalesReportUtils.cs" />
+    <Compile Include="EX9Utils.cs" />
+    <Compile Include="ExportDocSetSalesReportUtils.cs" />
+    <Compile Include="FileUtils.cs" />
+    <Compile Include="ImportUtils.cs" />
+    <Compile Include="ImportWarehouseErrors.cs" />
+    <Compile Include="IncompleteSupplier.cs" />
+    <Compile Include="LICUtils.cs" />
+    <Compile Include="PDFCreator.cs" />
+    <Compile Include="PDFUtils.cs" />
+    <Compile Include="POCreator.cs" />
+    <Compile Include="POUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="SalesUtils.cs" />
+    <Compile Include="SessionsUtils.cs" />
+    <Compile Include="ShipmentExtensions.cs" />
+    <Compile Include="ShipmentUtils.cs" />
+    <Compile Include="SubmitDiscrepanciesErrorReport.cs" />
+    <Compile Include="SubmitEntryData.cs" />
+    <Compile Include="SubmitSalesToCustomsUtils.cs" />
+    <Compile Include="SubmitSalesXmlToCustomsUtils.cs" />
+    <Compile Include="UpdateInvoice.cs" />
+    <Compile Include="Utils.BlankLicenseDescription.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Utils.SaleReportLine.cs" />
+    <Compile Include="Utils.UnClassifiedItem.cs" />
+    <Compile Include="XLSXProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AsycudaWorld421\AsycudaWorld421.csproj">
+      <Project>{0426f0e8-f84c-46d2-aa56-759eba752269}</Project>
+      <Name>AsycudaWorld421</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0DD350C7-3CBE-4791-A9B5-332BF3F1B756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4D734EAC-E84B-40A2-9726-D17263B0FF4A}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj">
+      <Project>{5e51c8c3-9bf4-4c13-ad00-7094ffb83ad6}</Project>
+      <Name>EmailDownloader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
+      <Project>{523FBF1E-BB4F-435A-9A9E-63DE49CD721D}</Project>
+      <Name>pdf-ocr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Linq.Dynamic\System.Linq.Dynamic.csproj">
+      <Project>{17C0D5DE-C72D-4A06-A12C-445EBCF3B9EA}</Project>
+      <Name>System.Linq.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
+      <Project>{978b7943-bd11-41eb-91c9-59a09c6f0ecc}</Project>
+      <Name>WaterNut.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj">
+      <Project>{02885f55-31e7-48fb-9944-df99540f3270}</Project>
+      <Name>WaterNut.Business.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj">
+      <Project>{367497E0-90A4-47BF-B740-717D8769710C}</Project>
+      <Name>WaterNut.Client.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj">
+      <Project>{E16CFFE7-8F60-41A8-8895-7CB73FE09399}</Project>
+      <Name>WaterNut.Client.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
+      <Project>{92EB0CBF-4018-427B-AA8B-13B088650DB8}</Project>
+      <Name>WaterNut.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xlsxWriter\xlsxWriter.csproj">
+      <Project>{d906b53e-5d68-4ff3-a2bc-b1c808474160}</Project>
+      <Name>xlsxWriter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EntityFramework">
+      <Version>6.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="ExcelDataReader.DataSet">
+      <Version>3.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="itext7">
+      <Version>9.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="itext7.bouncy-castle-adapter">
+      <Version>9.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="itext7.bouncy-castle-fips-adapter">
+      <Version>9.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="MailKit">
+      <Version>4.11.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging">
+      <Version>9.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="morelinq">
+      <Version>4.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="MSFT.ParallelExtensionsExtras">
+      <Version>1.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="PicoXLSX">
+      <Version>3.4.2</Version>
+    </PackageReference>
+    <PackageReference Include="Portable.BouncyCastle">
+      <Version>1.9.0</Version>
+    </PackageReference>
+    <PackageReference Include="SimpleMvvmToolkit">
+      <Version>5.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.AppContext">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tracing">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common">
+      <Version>9.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Formats.Asn1">
+      <Version>9.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization.Calendars">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression.ZipFile">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq.Expressions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Primitives">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Sockets">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ObjectModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.ResourceManager">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>6.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Extensions">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Handles">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.CodePages">
+      <Version>9.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>9.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Timer">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="Tesseract.Drawing">
+      <Version>5.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="TesserNet.System.Drawing">
+      <Version>0.8.0</Version>
+    </PackageReference>
+    <PackageReference Include="Z.EntityFramework.Extensions">
+      <Version>8.102.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
+    <Content Include="SQLBlackBox\AdhocChange.sql" />
+    <Content Include="SQLBlackBox\AdjustFileGrowth.sql" />
+    <Content Include="SQLBlackBox\CallHighImpactIndexProc.txt" />
+    <Content Include="SQLBlackBox\CleanBackupHistory.sql" />
+    <Content Include="SQLBlackBox\CreateHighImpactFinal.sql" />
+    <Content Include="SQLBlackBox\dropIndexDupes.sql" />
+    <Content Include="SQLBlackBox\IndexUsageStatistics.txt" />
+    <Content Include="SQLBlackBox\IterateOverDatabases.txt" />
+    <Content Include="SQLBlackBox\RemoveBBIndexesFinal.sql" />
+    <Content Include="SQLBlackBox\RemoveUnusedIndexes.sql" />
+    <Content Include="SQLBlackBox\SmatIndexRebuild.sql" />
+    <Content Include="SQLBlackBox\UpdateStats.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

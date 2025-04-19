@@ -1,0 +1,87 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class SummaryGridListViewCSTPL : CSharpTemplate
+{
+        public string conTextName;
+        public string projectName;
+        public string  mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public List<EntityType> entityCollection;
+        public CodeGenerationTools code;
+
+	public override string TransformText()
+        {
+            //base.TransformText();
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace <#=projectName #>.<#=conTextName#>.Views
+{
+	/// <summary>
+	/// Interaction logic for <#=mainEntity#>SummaryList.xaml
+	/// </summary>
+	public partial class <#=conTextName#>SummaryView : UserControl
+	{
+		public <#=conTextName#>SummaryView()
+		{
+			this.InitializeComponent();
+			
+			// Insert code required on object creation below this point.
+		}
+        private void BringIntoView(object sender, MouseEventArgs e)
+        {
+            BringIntoView(sender);
+            e.Handled = true;
+        }
+
+        private void BringIntoView(object sender)
+        {
+            if (typeof(Expander).IsInstanceOfType(sender))
+            {
+<#=mainEntity#>slider.BringIntoView(((FrameworkElement)sender) as Expander);
+            }
+            else
+            {
+Expander p = ((FrameworkElement)sender).Parent as Expander;
+//  p.IsExpanded = true;
+p.UpdateLayout();
+<#=mainEntity#>slider.BringIntoView(p);
+            }
+        }
+ <#+
+  foreach (EntityType entity in entityCollection)
+    {
+         if(entity.Abstract) continue;
+ #>   
+        private void GoTo<#=code.Escape(entity)#>(object sender, MouseButtonEventArgs e)
+        {
+            <#=mainEntity#>slider.BringIntoView("<#=code.Escape(entity)#>ListEXP");
+            e.Handled = true;
+        }
+
+<#+
+    }
+ #>        
+        
+	}
+}
+		
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

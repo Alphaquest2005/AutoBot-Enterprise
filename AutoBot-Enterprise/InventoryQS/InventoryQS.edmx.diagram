@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e2735aa59b1a49de9973f4ea77f3079b" Name="Diagram1">
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCategory" Width="2" PointX="4.625" PointY="4" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCodes" Width="2.125" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffSupUnitLkps" Width="3.125" PointX="0.875" PointY="5.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCodes_TariffCategory" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemsEx" Width="2" PointX="4.375" PointY="0.5" />
+        <AssociationConnector Association="WaterNutDBModel.TariffCodesInventoryItemsEx" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" Width="2.125" PointX="7.375" PointY="0.625" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCategoryCodeSuppUnit" Width="3.5" PointX="3.75" PointY="8.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCategoryCodeSuppUnit_TariffCategory" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

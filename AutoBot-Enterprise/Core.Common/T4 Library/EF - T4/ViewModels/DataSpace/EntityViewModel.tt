@@ -1,0 +1,80 @@
+﻿
+<#@ import namespace="Core.Common.Data.Contracts" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly name="C:\Prism\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+    public class EntityViewModelTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public EntityType mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        public bool CrudOps;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+
+            EntitySet dset = container.BaseEntitySets.OfType<EntitySet>().FirstOrDefault(x => x.ElementType.Name == ((EntityType)mainEntity.BaseType != null?mainEntity.BaseType:mainEntity).Name);
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+
+
+#>
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Linq;
+//using SimpleMvvmToolkit;
+using TrackableEntities;
+using System;
+using <#=conTextName #>.Business.Entities;
+using <#=conTextName #>.Business.Services;
+using <#=projectName #>.Interfaces;
+
+
+
+
+namespace <#=projectName #>.DataSpace.<#=conTextName #>.DataModels
+{
+	public partial class <#=code.Escape(mainEntity) #>DataModel_AutoGen 
+	{
+        private static readonly <#=code.Escape(mainEntity) #>DataModel_AutoGen instance;
+        static <#=code.Escape(mainEntity) #>DataModel_AutoGen()
+        {
+            instance = new <#=code.Escape(mainEntity) #>DataModel_AutoGen();
+        }
+
+        public static  <#=code.Escape(mainEntity) #>DataModel_AutoGen Instance
+        {
+            get { return instance; }
+        }
+
+       //Search Entities 
+        public async Task<IEnumerable<I<#=mainEntity.Name #>>> Search<#=mainEntity.Name #>(List<string> lst, List<string> includeLst = null )
+        {
+            using (var ctx = new <#=mainEntity.Name #>Service())
+            {
+                return await ctx.Get<#=dset.Name#>ByExpressionLst(lst, includeLst).ConfigureAwait(false);
+            }
+        }
+
+    }
+}
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+    }
+#>

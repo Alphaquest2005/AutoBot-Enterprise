@@ -1,0 +1,27 @@
+<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\QuerySpaceViewModels.tt"#>
+<#	CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\AllocationQS\AllocationQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );   
+
+	CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\DocumentQS\DocumentQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );   
+
+	CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\EntryDataQS\EntryDataQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );   
+
+	CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\InventoryQS\InventoryQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );   
+
+	CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );     
+
+    CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\SalesDataQS\SalesDataQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj" );           
+#>

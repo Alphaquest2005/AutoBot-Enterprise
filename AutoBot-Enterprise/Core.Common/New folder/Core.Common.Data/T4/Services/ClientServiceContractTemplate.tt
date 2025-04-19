@@ -1,0 +1,54 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientServiceContractTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault().Name;
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using Core.Common.Contracts;
+using <#=container.Name#>.Client.DTO;
+
+namespace InvManager.Client.Contracts
+{
+    [ServiceContract]
+    public interface I<#=entity.Name#>Service : IClientService
+    {
+        [OperationContract]
+        Task<IEnumerable<<#=entity.Name#>DTO>> Get<#=entitySet#>();
+
+        [OperationContract]
+        Task<<#=entity.Name#>DTO> Get<#=entity.Name#>(string id);
+
+        [OperationContract]
+        Task<<#=entity.Name#>DTO> Update<#=entity.Name#>(<#=entity.Name#>DTO entity);
+
+        [OperationContract]
+        Task<<#=entity.Name#>DTO> Create<#=entity.Name#>(<#=entity.Name#>DTO entity);
+
+        [OperationContract]
+        Task<bool> Delete<#=entity.Name#>(string id);
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

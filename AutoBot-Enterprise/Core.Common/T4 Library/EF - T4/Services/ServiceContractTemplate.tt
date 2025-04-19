@@ -1,0 +1,145 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ServiceContractTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+        public string projectName;
+		public MetadataTools ef;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            var baseentity = GetBaseEntity(entity);
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == baseentity.Name).FirstOrDefault().Name;
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using TrackableEntities.EF6;
+using Core.Common.Contracts;
+using <#=container.Name #>.Business.Entities;
+using Core.Common.Business.Services;
+using <#=projectName #>.Interfaces;
+
+namespace <#=container.Name #>.Business.Services
+{
+    [ServiceContract (Namespace="http://www.insight-software.com/<#=projectName #>")]
+    public partial interface I<#=entity.Name#>Service : IBusinessService
+    {
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#= "I" + entity.Name#>>> Get<#=entitySet#>(List<string> includesLst = null, bool tracking = true);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<<#="I" + entity.Name#>> Get<#=entity.Name#>ByKey(string id, List<string> includesLst = null, bool tracking = true);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet#>ByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet#>ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+		Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionNav(string exp,
+            Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatchExpressionLst(List<string> exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<<#="I" + entity.Name#>> Update<#=entity.Name#>(<#="I" + entity.Name#> entity);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<<#="I" + entity.Name#>> Create<#=entity.Name#>(<#="I" + entity.Name#> entity);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<bool> Delete<#=entity.Name#>(string id);
+	
+		//Virtural list implementation
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<int> CountByExpressionLst(List<string> expLst);
+    
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<int> Count(string exp);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<int> CountNav(string exp, Dictionary<string, string> navExp);
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> LoadRange(int startIndex, int count, string exp);
+
+
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+		Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+		decimal SumField(string whereExp, string field);
+        
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field);
+
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+		string MinField(string whereExp, string field);
+
+		<#+ 
+	 
+	    var ens = entity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id"));//  && entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+			//&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)
+
+		foreach (var p in ens)
+        {
+ #>
+		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entity.Name#>By<#= p.Name #>(string <#= p.Name #>, List<string> includesLst = null);
+  <#+ 
+		}
+  #>
+
+
+
+
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

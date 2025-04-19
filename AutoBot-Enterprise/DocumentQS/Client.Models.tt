@@ -1,0 +1,10 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ClientModels.tt" #>
+<#
+    CreateClientModels( "WaterNut", @"DocumentQS.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj"); 
+    
+#>

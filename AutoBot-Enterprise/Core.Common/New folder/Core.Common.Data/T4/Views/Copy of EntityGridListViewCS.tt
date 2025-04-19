@@ -1,0 +1,45 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ output extension=".cs"#>
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateEntityGridListViewCS(string contextName, EntityType mainEntity, string mainEntitySet, EntityContainer container, EntityContainer COREcontainer, MetadataTools ef, CodeGenerationTools code, EntityFrameworkTemplateFileManager fileManager )
+    {	
+       
+       //CodeGenerationTools code = new CodeGenerationTools(this);
+       
+	  fileManager.StartNewFile(code.Escape(mainEntity) + "GridListViewCS.xaml.cs");
+#>
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace InvManager.Views
+{
+	/// <summary>
+	/// Interaction logic for <#=mainEntitySet#>.xaml
+	/// </summary>
+	public partial class <#=mainEntitySet#>List : UserControl
+	{
+		public <#=mainEntitySet#>List()
+		{
+			this.InitializeComponent();
+			// 
+			// Insert code required on object creation below this point.
+		}
+
+        private void SetCurrentItem(object sender, MouseEventArgs e)
+        {
+             
+            <#=mainEntity.Name#>Grd.SelectedItem = (sender as FrameworkElement).DataContext;
+       
+        }
+	}
+}
+		
+		<#+
+        fileManager.EndBlock();
+	}	
+#>

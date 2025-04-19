@@ -1,0 +1,70 @@
+<#@ template language="C#" debug="True" #>
+<#@ output extension="cs" #>
+<#@ include file="T4Toolbox.tt" #>
+<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ import namespace="System.Text" #>
+
+<#+
+    public static string AddSpacesToSentence(string Text, bool preserveAcronyms)
+    {
+            if (string.IsNullOrWhiteSpace(Text))
+               return string.Empty;
+            StringBuilder newText = new StringBuilder(Text.Length * 2);
+            newText.Append(Text[0]);
+            for (int i = 1; i < Text.Length; i++)
+            {
+                if (char.IsUpper(Text[i]))
+                    if ((Text[i - 1] != ' ' && !char.IsUpper(Text[i - 1])) ||
+                        (preserveAcronyms && char.IsUpper(Text[i - 1]) && 
+                         i < Text.Length - 1 && !char.IsUpper(Text[i + 1])))
+                        newText.Append(' ');
+                newText.Append(Text[i]);
+            }
+            return newText.ToString();
+    }
+    public static string AddSpacesToSentence(string Text)
+    {
+        return AddSpacesToSentence(Text, false);
+    }
+
+    public static EntityType GetBaseEntity(EntityType entity)
+    {
+         EntityType baseentity = entity;
+        while (baseentity.BaseType != null)
+        {
+            baseentity = baseentity.BaseType as EntityType;
+        } 
+        return baseentity;
+    }
+
+
+      public static string GetBaseEntities(EntityType entity)
+    {
+         EntityType baseentity = entity;
+        StringBuilder res = new StringBuilder();
+        while (baseentity.BaseType != null)
+        {
+            baseentity = baseentity.BaseType as EntityType;
+            res.Append("I" + baseentity.Name + ",");
+        } 
+        return res.ToString(0,res.Length - 1);
+    }
+
+    public static List<NavigationProperty> GetNavigationPropertyList(EntityType entity)
+    {
+        var nplst = entity.NavigationProperties.Where(
+                np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);
+
+        if (entity.BaseType != null)
+        {
+            var basenpLst = ((EntityType)entity.BaseType).NavigationProperties.Where(
+                np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);
+            nplst = nplst.Except(basenpLst);
+        }
+
+        return nplst.ToList();
+    }
+
+ #>

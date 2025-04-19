@@ -1,0 +1,713 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{367497E0-90A4-47BF-B740-717D8769710C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNut.Client.Entities</RootNamespace>
+    <AssemblyName>WaterNut.Client.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-Common, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-WPF, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="TrackableEntities.Client, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackableEntities.Client.2.5.7\lib\net45\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrackableEntities.Common.2.5.7\lib\portable40-net40+sl5+win8+wp8+wpa81\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseEntity.cs" />
+    <Compile Include="Custom Entities\AllocationQS\AsycudaDocumentItem.cs" />
+    <Compile Include="Custom Entities\AllocationQS\AsycudaSalesAllocationsEX.cs" />
+    <Compile Include="Custom Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Custom Entities\CoreEntities\Document_Type.cs" />
+    <Compile Include="Custom Entities\CoreEntities\AsycudaDocumentItem.cs" />
+    <Compile Include="Custom Entities\EntryDataQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Custom Entities\EntryDataQS\EntryDataEx.cs" />
+    <Compile Include="Custom Entities\InventoryQS\InventoryItem.cs" />
+    <Compile Include="Custom Entities\OverShortQS\OverShortDetailEx.cs" />
+    <Compile Include="Custom Entities\PreviousDocumentQS\PreviousDocumentItem.cs" />
+    <Compile Include="Custom Entities\SalesDataQS\SalesData.cs" />
+    <Compile Include="Custom Entities\WaterNut\DocumentCT.cs" />
+    <Compile Include="Custom Interface Implementation\DocumentDS\AsycudaDocumentSet.cs" />
+    <Compile Include="Custom Interface Implementation\DocumentDS\xcuda_ASYCUDA.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AdjustmentDetail.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AdjustmentEx.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AdjustmentOver.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AdjustmentOversAllocation.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AdjustmentShort.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\AsycudaSalesAllocation.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\EntryDataDetail.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\InventoryItemAliasEx.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\xcuda_Item.cs" />
+    <Compile Include="Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
+    <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ActionDocSetLogs.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Actions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ApplicationSettings.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AttachmentLog.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Contacts.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\EmailFileTypes.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Emails.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\InfoMappingRegEx.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\InventoryItemAliasX.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\InventoryItemX.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\SessionActions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\SessionSchedule.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_C71ToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_Error_DuplicateEntry.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_Error_IncompleteImport.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_Error_IncompleteItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_Allocations.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs" />
+    <Compile Include="Generated Client Entities\CounterPointQS\CounterPointPODetails.cs" />
+    <Compile Include="Generated Client Entities\CounterPointQS\CounterPointPOs.cs" />
+    <Compile Include="Generated Client Entities\CounterPointQS\CounterPointSales.cs" />
+    <Compile Include="Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\ContainerEx.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\EmptyFullCode.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\EntryData.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\EntryDataEx.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\PackageType.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\TariffCategory.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\TariffCodes.cs" />
+    <Compile Include="Generated Client Entities\InventoryQS\TariffSupUnitLkps.cs" />
+    <Compile Include="Generated Client Entities\OCR\ChildParts.cs" />
+    <Compile Include="Generated Client Entities\OCR\End.cs" />
+    <Compile Include="Generated Client Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
+    <Compile Include="Generated Client Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Client Entities\OCR\Parts.cs" />
+    <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
+    <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
+    <Compile Include="Generated Client Entities\OCR\RegularExpressions.cs" />
+    <Compile Include="Generated Client Entities\OCR\Start.cs" />
+    <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs" />
+    <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs" />
+    <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\SalesData.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\SalesDataAllocations.cs" />
+    <Compile Include="Generated Client Entities\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AdjustmentDetail.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AdjustmentEx.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AdjustmentOver.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AdjustmentOversAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AdjustmentShort.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\AsycudaSalesAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\EntryDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemAliasEx.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Actions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ApplicationSettings.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AttachmentLog.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Emails.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\InfoMappingRegEx.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemX.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\SessionActions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\SessionSchedule.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_C71ToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_Error_DuplicateEntry.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_Error_IncompleteImport.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_Error_IncompleteItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_Allocations.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedShorts.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\xcuda_Supplementary_unit.cs" />
+    <Compile Include="Generated Constructors Models\CounterPointQS\CounterPointPODetails.cs" />
+    <Compile Include="Generated Constructors Models\CounterPointQS\CounterPointPOs.cs" />
+    <Compile Include="Generated Constructors Models\CounterPointQS\CounterPointSales.cs" />
+    <Compile Include="Generated Constructors Models\CounterPointQS\CounterPointSalesDetails.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\ContainerEx.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\EmptyFullCode.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\EntryData.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\EntryDataEx.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\PackageType.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\TariffCategory.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\TariffCodes.cs" />
+    <Compile Include="Generated Constructors Models\InventoryQS\TariffSupUnitLkps.cs" />
+    <Compile Include="Generated Constructors Models\OCR\ChildParts.cs" />
+    <Compile Include="Generated Constructors Models\OCR\End.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Fields.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Parts.cs" />
+    <Compile Include="Generated Constructors Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
+    <Compile Include="Generated Constructors Models\OCR\RegularExpressions.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Start.cs" />
+    <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousDocument.cs" />
+    <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
+    <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousItemsEx.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\SalesData.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\SalesDataAllocations.cs" />
+    <Compile Include="Generated Constructors Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AdjustmentDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AdjustmentEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AdjustmentOver.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AdjustmentOversAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AdjustmentShort.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\AsycudaSalesAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\EntryDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemAliasEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMappingRegEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_DuplicateEntry.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteImport.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_Allocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPOs.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSales.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSalesDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\PackageType.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCategory.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCodes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\ChildParts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Start.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocument.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousItemsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataAllocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated Interface Implementation\CoreEntities\IDocumentItem\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated Interface Implementation\CoreEntities\IDocument\AsycudaDocument.cs" />
+    <Compile Include="Generated Interface Implementation\CoreEntities\IWeightItem\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated Interface Implementation\EntryDataQS\IEntryDataDetail\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AdjustmentDetail.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AdjustmentEx.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AdjustmentOver.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AdjustmentOversAllocation.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AdjustmentShort.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\AsycudaSalesAllocation.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\EntryDataDetail.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\InventoryItemAliasEx.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\xcuda_Item.cs" />
+    <Compile Include="Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ActionDocSetLogs.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Actions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AttachmentLog.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Contacts.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Emails.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMappingRegEx.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemAliasX.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemX.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\SessionActions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\SessionSchedule.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_C71ToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_Error_DuplicateEntry.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteImport.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_Allocations.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedShorts.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\xcuda_Supplementary_unit.cs" />
+    <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointPODetails.cs" />
+    <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointPOs.cs" />
+    <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointSales.cs" />
+    <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointSalesDetails.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\ContainerEx.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\EmptyFullCode.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryDataEx.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\PackageType.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\EntryDataDetailsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\InventoryItemsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\TariffCategory.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\TariffCodes.cs" />
+    <Compile Include="Generated MyNavProp Models\InventoryQS\TariffSupUnitLkps.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\ChildParts.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\End.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Fields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\RegularExpressions.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Start.cs" />
+    <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocument.cs" />
+    <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
+    <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousItemsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\AsycudaDocumentSetEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\SalesData.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\SalesDataAllocations.cs" />
+    <Compile Include="Generated MyNavProp Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj">
+      <Project>{658bb505-087e-48b0-9adc-b227367af83c}</Project>
+      <Name>WaterNut.Client.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
+      <Project>{c05bd1be-cb99-451e-845d-077243489c5b}</Project>
+      <Name>WaterNut.Client.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Services\WaterNut.Client.Services.csproj">
+      <Project>{ec5d3b67-8bec-4678-a876-ed6ecbbfe59a}</Project>
+      <Name>WaterNut.Client.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

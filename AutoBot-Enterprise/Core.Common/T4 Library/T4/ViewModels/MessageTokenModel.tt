@@ -1,0 +1,83 @@
+﻿
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+    public class MessageTokenTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public EntityContainer container; 
+        public List<EntityType> entityCollection; 
+        public EntityContainer COREcontainer;
+        public List<EntityType> COREentityCollection;
+        
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+       
+            CodeGenerationTools code = new CodeGenerationTools(this);
+       
+           
+#>
+
+
+namespace <#=projectName #>.<#=conTextName #>
+{
+    public partial class MessageToken
+    {
+
+<#+
+            foreach (EntitySetBase eSet in container.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet))
+            {
+                if(container.Name != COREcontainer.Name &&  COREcontainer.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet).FirstOrDefault(x=>x.Name == eSet.Name)!= null) continue;
+ #>   
+            public const string <#=eSet.Name#>Changed = "<#=eSet.Name#>Changed";
+			public const string <#=eSet.Name#>Deleted = "<#=eSet.Name#>Deleted";
+			public const string <#=eSet.Name#>Created = "<#=eSet.Name#>Created";
+			public const string <#=eSet.Name#>Updated = "<#=eSet.Name#>Updated";
+<#+
+            }
+ #>  
+
+<#+
+            foreach (EntityType dEntity in entityCollection.Where(x => x.BaseType != null))
+            {
+                EntityType dBaseEntity = dEntity.BaseType as EntityType;
+                if(container.Name != COREcontainer.Name && COREcontainer.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet).FirstOrDefault(x=>x.Name == dBaseEntity.Name)!= null) continue;
+#>
+           public const string <#=                dEntity.Name#>Changed = "<#=                dEntity.Name#>Changed";
+<#+
+            }
+#> 
+
+<#+
+            foreach (EntityType mainEntity in entityCollection)
+            {
+                if(container.Name != COREcontainer.Name && COREentityCollection.FirstOrDefault(x=>x.Name == mainEntity.Name) != null) continue;
+ #>   
+           public const string Current<#=                code.Escape(mainEntity)#>Changed = "Current<#=                code.Escape(mainEntity)#>Changed";
+<#+
+            }
+ #>    
+
+<#+
+            foreach (EntityType mainEntity in entityCollection)
+            {
+                if(container.Name != COREcontainer.Name && COREentityCollection.FirstOrDefault(x=>x.Name == mainEntity.Name) != null) continue;
+ #>   
+           public const string Current<#=code.Escape(mainEntity)#>IDChanged = "OnCurrent<#=code.Escape(mainEntity)#>IDChanged";
+<#+
+            }
+ #>      
+    }
+}		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }	
+    }
+#>

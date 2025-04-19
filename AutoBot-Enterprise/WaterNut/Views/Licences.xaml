@@ -1,0 +1,34 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+	x:Class="WaterNut.Views.Licences"
+	d:DesignWidth="640" d:DesignHeight="480">
+	<UserControl.Resources>
+		
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutRoot" >
+		<TextBlock HorizontalAlignment="Left" Height="32.766" Margin="8.838,14.011,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333" Text="Document Licences"/>
+        <DataGrid HorizontalAlignment="Left" Height="399.2" Margin="0,80.8,0,0" VerticalAlignment="Top" Width="640" AutoGenerateColumns="False" ItemsSource="{Binding CurrentAsycudaDocument.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Licences}" GridLinesVisibility="None" RowHeight="30" AlternatingRowBackground="#FFE8F3F9" FontSize="16" Foreground="#FF35448F">
+			<DataGrid.Columns>
+				<DataGridTextColumn Binding="{Binding Year}" Header="Year"/>
+				<DataGridTextColumn Binding="{Binding LicenceNumber}" Header="LicenceNumber"/>				
+				<DataGridTextColumn Binding="{Binding Quantity}" Header="Quantity"/>
+				<DataGridTextColumn Binding="{Binding QtyAllocated}" Header="QtyAllocated"/>
+				<DataGridTextColumn Binding="{Binding TariffCateoryCode}" Header="TariffCateoryCode"/>
+				<DataGridTextColumn Binding="{Binding Id}" Header="Id"/>
+				<DataGridTextColumn Binding="{Binding LicenceNumber}" Header="LicenceNumber"/>
+				<DataGridTextColumn Binding="{Binding QtyAllocated}" Header="QtyAllocated"/>
+				<DataGridTextColumn Binding="{Binding Quantity}" Header="Quantity"/>
+				<DataGridTextColumn Binding="{Binding TariffCateoryCode}" Header="TariffCateoryCode"/>
+				<DataGridTextColumn Binding="{Binding Year}" Header="Year"/>
+				
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

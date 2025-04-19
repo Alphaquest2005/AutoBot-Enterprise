@@ -1,0 +1,179 @@
+﻿<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListViewCS.tt" once="true"#>		
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListView.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryView.tt" once="true"#>		
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryViewCS.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsView.tt" once="true"#>		
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsViewCS.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListView.tt" once="true"#>		
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListViewCS.tt" once="true"#>	
+				
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateViews(string projectName , string inputFile, string coreEdmx, string outputProject )
+    {	
+        EntityType MainEntity = null;
+        string MainEntitySet = "";
+        EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+     
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string namespaceName = code.VsNamespaceSuggestion();
+
+         MainEntity = code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=>x.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true).FirstOrDefault();
+         
+
+        if(MainEntity != null)
+        {
+            MainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(MainEntity)).FirstOrDefault().Name;
+        }
+            SummaryViewTPL sv = new SummaryViewTPL();
+            sv.conTextName = code.Escape(container);
+            sv.projectName = projectName;
+            sv.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            sv.mainEntitySet = MainEntitySet;
+            sv.container = container;
+            sv.code = code;
+            sv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            sv.Output.Project = outputProject;
+            sv.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryView.xaml";
+            sv.Render();
+
+            SummaryViewCSTPL sc = new SummaryViewCSTPL();
+            sc.conTextName = code.Escape(container);
+            sc.projectName = projectName;
+            sc.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            sc.mainEntitySet = MainEntitySet;
+            sc.container = container;
+            sc.code = code;
+            sc.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            sc.Output.Project = outputProject;
+            sc.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryView.xaml.cs";
+            sc.Render();
+
+            SummaryListViewTPL slv = new SummaryListViewTPL();
+            slv.conTextName = code.Escape(container);
+            slv.projectName = projectName;
+            slv.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            slv.mainEntitySet = MainEntitySet;
+            slv.container = container;
+            slv.code = code;
+            slv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            slv.Output.Project = outputProject;
+            slv.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryListView.xaml";
+            slv.Render();
+
+            SummaryListViewCSTPL slc = new SummaryListViewCSTPL();
+            slc.conTextName = code.Escape(container);
+            slc.projectName = projectName;
+            slc.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            slc.mainEntitySet = MainEntitySet;
+            slc.container = container;
+            slc.code = code;
+            slc.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            slc.Output.Project = outputProject;
+            slc.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryListView.xaml.cs";
+            slc.Render();
+
+            SummaryDetailsViewTPL sdv = new SummaryDetailsViewTPL();
+            sdv.conTextName = code.Escape(container);
+            sdv.projectName = projectName;
+            sdv.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            sdv.mainEntitySet = MainEntitySet;
+            sdv.container = container;
+            sdv.code = code;
+            sdv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            sdv.Output.Project = outputProject;
+            sdv.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryDetailsView.xaml";
+            sdv.Render();
+
+            SummaryDetailsViewCSTPL sdc = new SummaryDetailsViewCSTPL();
+            sdc.conTextName = code.Escape(container);
+            sdc.projectName = projectName;
+            sdc.mainEntity = MainEntity != null?MainEntity.Name:"null";
+            sdc.mainEntitySet = MainEntitySet;
+            sdc.container = container;
+            sdc.code = code;
+            sdc.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            sdc.Output.Project = outputProject;
+            sdc.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(container) + "SummaryDetailsView.xaml.cs";
+            sdc.Render();
+       
+
+        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+        {
+            if(container.Name != COREcontainer.Name && code.GetItemsToGenerate<EntityType>(COREItemCollection).FirstOrDefault(x=> x.Name == entity.Name)!=null)continue;
+            
+            if(entity.Abstract) continue;
+
+            EntityGridListViewTPL gv = new EntityGridListViewTPL();
+            gv.conTextName = code.Escape(container);
+            
+            gv.mainEntity = entity;
+            gv.mainEntitySet =container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(entity)).FirstOrDefault().Name;
+            gv.container = container;
+            gv.projectName = projectName;
+            gv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            gv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            gv.COREcontainer =COREcontainer;
+            gv.ef =ef;
+            gv.code =code;
+            gv.fileManager =fileManager;
+            gv.Output.Project = outputProject;
+            gv.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(entity) + "GridListView.xaml";
+            gv.Render();
+          
+            EntityGridListViewCSTPL gc = new EntityGridListViewCSTPL();
+            gc.conTextName = code.Escape(container);
+            gc.projectName = projectName;
+            gc.mainEntity = entity;
+            gc.mainEntitySet =container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(entity)).FirstOrDefault().Name;
+            gc.container = container;
+            gc.COREcontainer =COREcontainer;
+            gc.ef =ef;
+            gc.code =code;
+            gc.fileManager =fileManager;
+            gc.Output.Project = outputProject;
+            gc.Output.File = @"Views\Generated Views\QuerySpace\" + code.Escape(container) + @"\" + code.Escape(entity) + "GridListView.xaml.cs";
+            gc.Render();
+            //CreateEntityGridListView(code.Escape(container),
+                              //entity,            
+                              //container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == entity).FirstOrDefault().Name,
+                              //container,
+                              //COREcontainer,
+                              //ef,
+                              //code,
+                              //fileManager);
+        
+            
+           
+        }
+
+      // fileManager.Process(true); 
+        
+#>
+<#+
+	}	
+#>

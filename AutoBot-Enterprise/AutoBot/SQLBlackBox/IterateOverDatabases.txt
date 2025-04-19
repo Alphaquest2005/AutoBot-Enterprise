@@ -1,0 +1,94 @@
+using System;
+using System.IO;
+using System.Data.SqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+namespace SQL_Iterator
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string server = @"MWEST5510\SQL01";
+            string userid = "Jim";
+            string password = "Peloton";
+            string database = "";
+            string cncStr = @"Server=" + server + ";Database=" + database + ";User Id=" + userid + ";Password = " + password + "; ";
+            SqlConnection nConn = new SqlConnection(cncStr);
+            List<string> Databases = GetDatabaseList(cncStr);
+            String script = File.ReadAllText(@"C:\BB\SmatIndexRebuild.sql");
+            SqlCommand myCommand = new SqlCommand(script, nConn);
+            int i = 0;
+            try
+            {
+                foreach (string db in Databases)
+                {
+                    try
+                    {
+                        database = db;
+                        ++i;
+                      
+                        cncStr = @"Server=" + server + ";Database=" + database + ";User Id=" + userid + ";Password = " + password + "; ";
+                        nConn = new SqlConnection(cncStr);
+                        myCommand = new SqlCommand(script, nConn);
+                        nConn.Open();
+                        myCommand.CommandTimeout = 0;
+                        int aa = myCommand.ExecuteNonQuery();
+                        myCommand.CommandTimeout = 0;
+                        nConn.Close();
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error in Db: " + database + "\nError Statement:" + ex.Message);
+                    }
+                    finally
+                    {
+                        nConn.Close();
+                       // Console.WriteLine("----------------------------------------------------------");
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+       
+        }
+        public static List<string> GetDatabaseList(string cncstr)
+        {
+            List<string> list = new List<string>();
+            try
+            {
+                // Open connection to the database
+                string conString = cncstr;
+                using (SqlConnection con = new SqlConnection(conString))
+                {
+                    con.Open();
+                    // Set up a command with the given query and associate
+                    // this with the current connection.
+                    using (SqlCommand cmd = new SqlCommand("SELECT name from sys.databases where name <> 'master' and name <> 'model' and name <> 'msdb' and name <> 'tempdb' and name not like '%Training%'", con))
+                    {
+                        using (IDataReader dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                list.Add(dr[0].ToString());
+                            }
+                        }
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro: " + ex.Message);
+                return null;
+            }
+        }
+
+    }
+}

@@ -1,0 +1,166 @@
+﻿
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ output extension=".cs"#>
+<#+ 
+public class ObjectContextTPL : CSharpTemplate
+{
+      
+        public string inputFile = "";
+        public string coreEdmx = "";
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+             
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string Namespace = container.Name + ".Business.Entities"; //code.VsNamespaceSuggestion();
+#>            
+
+
+using System.Data.Entity;
+using CoreEntities.Business.Entities;
+using System.Data.Entity.Infrastructure;
+using <#= Namespace + ".Mapping"#>;
+using WaterNut.Data;
+using System.Data.Entity.Core.Objects;
+using TrackableEntities;
+
+
+namespace <#= Namespace #>
+{
+    [DbConfigurationType(typeof(DBConfiguration))] 
+    public partial class <#=container.Name #>Context : DbContext
+    {
+        static <#= container.Name #>Context()
+        {
+            var x = typeof(System.Data.Entity.SqlServer.SqlProviderServices);
+            Database.SetInitializer<<#= container.Name #>Context>(null);
+        }
+
+        public <#= container.Name #>Context()
+            : base("Name=<#= container.Name #>")
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+               // Get the ObjectContext related to this DbContext
+            var objectContext = (this as IObjectContextAdapter).ObjectContext;
+
+            // Sets the command timeout for all the commands
+            objectContext.CommandTimeout = 120;
+
+            objectContext.ObjectMaterialized += ObjectContext_OnObjectMaterialized;
+        }
+        
+        public bool StartTracking { get; set; }
+
+        private void ObjectContext_OnObjectMaterialized(object sender, ObjectMaterializedEventArgs e)
+        {
+            if (StartTracking == true) ((dynamic)e.Entity).StartTracking();
+        }
+
+<#+
+    foreach (var set in container.BaseEntitySets.OfType<EntitySet>())
+    {
+#>
+        public DbSet<<#= set.ElementType.Name #>> <#= set.Name #> { get; set; }
+     
+<#+
+    }
+#>
+
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+<#+
+    foreach (var set in container.BaseEntitySets.OfType<EntitySet>())
+    {
+#>
+            modelBuilder.Configurations.Add(new <#= set.ElementType.Name #>Map());
+         
+<#+
+    }
+#>
+
+<#+
+    foreach (var entity in code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=> x.BaseType != null).OrderBy(e => e.Name))
+    {
+                var set = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == entity.BaseType.Name).FirstOrDefault();
+#>
+            modelBuilder.Configurations.Add(new <#= entity.Name #>Map());
+      
+<#+
+    }
+#>
+
+<#+
+    foreach (var entity in code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=> x.BaseType != null).OrderBy(e => e.Name))//
+    {
+        EntityType baseentity = GetBaseEntity(entity);
+                var set = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == baseentity.Name).FirstOrDefault();
+#>
+            modelBuilder.Entity<<#=entity.Name#>>().ToTable("<#=set.Name#>_<#=entity.Name#>");
+      
+<#+
+    }
+#>
+
+<#+
+    foreach (var entity in code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=> x.Abstract == true).OrderBy(e => e.Name))//
+    {
+                var set = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == entity.Name).FirstOrDefault();
+#>
+            modelBuilder.Entity<<#=entity.Name#>>().ToTable("<#=set.Name#>");
+      
+<#+
+    }
+#>
+
+<#+
+    if(container.Name != COREcontainer.Name)
+            {
+                foreach (var entity in code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name))
+                {      
+                    if(code.GetItemsToGenerate<EntityType>(ItemCollection).FirstOrDefault(x=> x.Name == entity.Name) != null) continue;
+#>
+            modelBuilder.Ignore<<#=entity.Name#>>();
+<#+
+
+                }
+            }
+#>
+			OnModelCreatingExtentsion(modelBuilder);
+
+        }
+		partial void OnModelCreatingExtentsion(DbModelBuilder modelBuilder);
+    }
+}
+
+ 	
+<#+
+        return this.GenerationEnvironment.ToString();
+
+	}	
+#>
+
+
+<#+
+	}	
+#>

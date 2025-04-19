@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="morelinq" Version="4.4.0" />
+    <PackageReference Include="PdfPig" Version="0.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBot\AutoBotUtilities.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj" />
+    <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj" />
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj" />
+    <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,48 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#= this.Host.ResolveParameterValue("-", "-", "projects") #>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\Repository.tt" #>
+<#
+
+
+    RepositoryTPL sv = new RepositoryTPL();            
+    
+
+    sv.CreateRepositories("WaterNut","AllocationQS",
+					 this.Host.ResolvePath(@"..\AllocationQS\AllocationQS.edmx"),                     
+                     this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+		sv.CreateRepositories("WaterNut","CounterPointQS",
+			this.Host.ResolvePath(@"..\CounterPointQS\CounterPointQS.edmx"),            
+            this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+		sv.CreateRepositories("WaterNut","CoreEntities",
+					this.Host.ResolvePath(@"..\CoreEntities\CoreEntities.edmx"),                   
+                    this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+    sv.CreateRepositories("WaterNut","OCR",
+					this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx"),                   
+                    this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+	sv.CreateRepositories("WaterNut","EntryDataQS",
+					 this.Host.ResolvePath(@"..\EntryDataQS\EntryDataQS.edmx"),                     
+                     this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+	sv.CreateRepositories("WaterNut","InventoryQS",
+					 this.Host.ResolvePath(@"..\InventoryQS\InventoryQS.edmx"),                    
+                    this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );   
+
+	sv.CreateRepositories("WaterNut","PreviousDocumentQS",
+					 this.Host.ResolvePath(@"..\PreviousDocumentQS\PreviousDocumentQS.edmx"),                    
+                     this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );     
+
+   sv.CreateRepositories("WaterNut","SalesDataQS",
+				     this.Host.ResolvePath(@"..\SalesDataQS\SalesDataQS.edmx"),                     
+                     this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );
+   sv.CreateRepositories("WaterNut","SalesDataQS",
+				     this.Host.ResolvePath(@"..\AdjustmentQS\AdjustmentQS.edmx"),                     
+                     this.Host.ResolvePath(@"..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj") );
+  
+
+#>

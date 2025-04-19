@@ -1,0 +1,102 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\ClientModels.tt" #>
+<#
+	
+    CreateClientModels("WaterNut",
+                        @"..\AllocationQS\AllocationQS.edmx",  
+					 @"..\AllocationQS\AllocationQS.edmx",  
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+
+	CreateClientModels("WaterNut",@"..\CounterPointQS\CounterPointQS.edmx",  
+			@"..\CoreEntities\CoreEntities.edmx",          
+             @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+
+	CreateClientModels("WaterNut",@"..\CoreEntities\CoreEntities.edmx",   
+					@"..\CoreEntities\CoreEntities.edmx",                
+                     @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+	CreateClientModels("WaterNut",@"..\CoreEntities\OCR.edmx",   
+					@"..\CoreEntities\CoreEntities.edmx",                
+                     @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+	CreateClientModels("WaterNut",
+					 @"..\EntryDataQS\EntryDataQS.edmx",    
+					 @"..\CoreEntities\CoreEntities.edmx",                 
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+
+	CreateClientModels("WaterNut",
+					 @"..\InventoryQS\InventoryQS.edmx",
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+
+	CreateClientModels("WaterNut",
+					 @"..\PreviousDocumentQS\PreviousDocumentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                   
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );     
+
+   CreateClientModels("WaterNut",
+				     @"..\SalesDataQS\SalesDataQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
+       
+           CreateClientModels("WaterNut",
+				     @"..\AdjustmentQS\AdjustmentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
+
+
+
+//////////////////////////////////////////Data space///////////////////////////////////////
+
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\AllocationDS\AllocationDS.edmx",
+					//@"..\AllocationDS\AllocationDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\DocumentDS\DocumentDS.edmx",
+					 //@"..\DocumentDS\DocumentDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\DocumentItemDS\DocumentItemDS.edmx",
+					 //@"..\DocumentItemDS\DocumentItemDS.edmx",
+                     //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\EntryDataDS\EntryDataDS.edmx",
+					//@"..\EntryDataDS\EntryDataDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\InventoryDS\InventoryDS.edmx",
+					//@"..\InventoryDS\InventoryDS.edmx",
+                           //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj");   
+//
+	//CreateClientModels("WaterNut",
+                     //@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+					//@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );     
+//
+    //CreateClientModels("WaterNut",
+                     //@"..\QuickBooksDS\QuickBooksDS.edmx",
+					//@"..\QuickBooksDS\QuickBooksDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );  
+#>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfSchduleControl", "WpfSchduleControl\WpfSchduleControl.csproj", "{AB21E753-41C4-4641-BF6C-5D3F090B1FA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFScheduleDemo", "WPFScheduleDemo\WPFScheduleDemo.csproj", "{A8520F72-BAE0-40CC-BFF7-679108112DAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Windows.Forms.Calendar", "..\..\..\..\Users\Alphaquest\Downloads\System_Windows_Forms_Calendar_003 (1)\System.Windows.Forms.Calendar\System.Windows.Forms.Calendar\System.Windows.Forms.Calendar.csproj", "{25649F08-3046-4891-ADB8-7EA787B57063}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB21E753-41C4-4641-BF6C-5D3F090B1FA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB21E753-41C4-4641-BF6C-5D3F090B1FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB21E753-41C4-4641-BF6C-5D3F090B1FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB21E753-41C4-4641-BF6C-5D3F090B1FA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8520F72-BAE0-40CC-BFF7-679108112DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8520F72-BAE0-40CC-BFF7-679108112DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8520F72-BAE0-40CC-BFF7-679108112DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8520F72-BAE0-40CC-BFF7-679108112DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25649F08-3046-4891-ADB8-7EA787B57063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25649F08-3046-4891-ADB8-7EA787B57063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25649F08-3046-4891-ADB8-7EA787B57063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25649F08-3046-4891-ADB8-7EA787B57063}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

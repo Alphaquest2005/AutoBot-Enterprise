@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EC5D3B67-8BEC-4678-A876-ED6ECBBFE59A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNut.Client.Services</RootNamespace>
+    <AssemblyName>WaterNut.Client.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Serialize.Linq, Version=4.0.167.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serialize.Linq.4.0.167\lib\net48\Serialize.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.ComponentModel.DataAnnotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdjustmentQS\AdjustmentDetailClient.cs" />
+    <Compile Include="AdjustmentQS\AdjustmentExClient.cs" />
+    <Compile Include="AdjustmentQS\AdjustmentOverClient.cs" />
+    <Compile Include="AdjustmentQS\AdjustmentOversAllocationClient.cs" />
+    <Compile Include="AdjustmentQS\AdjustmentShortClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaDocumentItemLastItemCostClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaDocumentSetEntryDataClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaSalesAllocationClient.cs" />
+    <Compile Include="AdjustmentQS\EntryDataDetailClient.cs" />
+    <Compile Include="AdjustmentQS\InventoryItemAliasExClient.cs" />
+    <Compile Include="AdjustmentQS\InventoryItemsExClient.cs" />
+    <Compile Include="AdjustmentQS\ShortAllocationClient.cs" />
+    <Compile Include="AdjustmentQS\SystemDocumentSetClient.cs" />
+    <Compile Include="AdjustmentQS\TODO_AdjustmentOversToXMLClient.cs" />
+    <Compile Include="AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs" />
+    <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
+    <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />
+    <Compile Include="AllocationQS\AllocationsTestCasClient.cs" />
+    <Compile Include="AllocationQS\AsycudaSalesAllocationsExClient.cs" />
+    <Compile Include="AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs" />
+    <Compile Include="ClientService.cs" />
+    <Compile Include="CoreEntities\ActionDocSetLogsClient.cs" />
+    <Compile Include="CoreEntities\ActionsClient.cs" />
+    <Compile Include="CoreEntities\ApplicationSettingsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentBasicInfoClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentItemClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetAttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetC71Client.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetEntryDataExClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocument_AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaItemBasicInfoClient.cs" />
+    <Compile Include="CoreEntities\AttachmentLogClient.cs" />
+    <Compile Include="CoreEntities\AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\CancelledEntriesLstClient.cs" />
+    <Compile Include="CoreEntities\ContactsClient.cs" />
+    <Compile Include="CoreEntities\CustomsOperationsClient.cs" />
+    <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
+    <Compile Include="CoreEntities\Customs_ProcedureInOutClient.cs" />
+    <Compile Include="CoreEntities\DeclarantClient.cs" />
+    <Compile Include="CoreEntities\Document_TypeClient.cs" />
+    <Compile Include="CoreEntities\EmailAttachmentsClient.cs" />
+    <Compile Include="CoreEntities\EmailFileTypesClient.cs" />
+    <Compile Include="CoreEntities\EmailInfoMappingsClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingActionsClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingRexExsClient.cs" />
+    <Compile Include="CoreEntities\EmailsClient.cs" />
+    <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
+    <Compile Include="CoreEntities\ExpiredEntriesLstClient.cs" />
+    <Compile Include="CoreEntities\FileGroupsClient.cs" />
+    <Compile Include="CoreEntities\FileImporterInfoClient.cs" />
+    <Compile Include="CoreEntities\FileTypeActionsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeMappingRegExsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeMappingsValuesClient.cs" />
+    <Compile Include="CoreEntities\FileTypeReplaceRegexClient.cs" />
+    <Compile Include="CoreEntities\FileTypesClient.cs" />
+    <Compile Include="CoreEntities\ImportActionsClient.cs" />
+    <Compile Include="CoreEntities\InfoMappingClient.cs" />
+    <Compile Include="CoreEntities\InfoMappingRegExClient.cs" />
+    <Compile Include="CoreEntities\InventoryItemAliasXClient.cs" />
+    <Compile Include="CoreEntities\InventoryItemXClient.cs" />
+    <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
+    <Compile Include="CoreEntities\ParametersClient.cs" />
+    <Compile Include="CoreEntities\ParameterSetClient.cs" />
+    <Compile Include="CoreEntities\ParameterSetParametersClient.cs" />
+    <Compile Include="CoreEntities\SessionActionsClient.cs" />
+    <Compile Include="CoreEntities\SessionScheduleClient.cs" />
+    <Compile Include="CoreEntities\SessionsClient.cs" />
+    <Compile Include="CoreEntities\SubItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_AdjustmentsAlreadyXMLedClient.cs" />
+    <Compile Include="CoreEntities\TODO_AssessDiscrepancyEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_C71ToCreateClient.cs" />
+    <Compile Include="CoreEntities\TODO_C71ToXMLClient.cs" />
+    <Compile Include="CoreEntities\TODO_CreateDiscrepancyEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_CreateEx9Client.cs" />
+    <Compile Include="CoreEntities\TODO_DeleteDocumentSetClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepanciesAlreadyXMLedClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepanciesErrorsClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepanciesExecutionReportClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepanciesToAssessClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepancyPreExecutionReportClient.cs" />
+    <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />
+    <Compile Include="CoreEntities\TODO_EntriesExpiringNextMonthClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_DuplicateEntryClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_IncompleteImportClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_IncompleteItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AllocationsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AsycudaEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AsycudaLinesClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_ByItemNumberClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_EntryDataDetailsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ImportCompleteEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_LicenceAvailableQtyClient.cs" />
+    <Compile Include="CoreEntities\TODO_LicenseToXMLClient.cs" />
+    <Compile Include="CoreEntities\TODO_LICToAssessClient.cs" />
+    <Compile Include="CoreEntities\TODO_LICToCreateClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetToAssessClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetToAssessErrorsClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />
+    <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitEntryCIFClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitInadequatePackagesClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitIncompleteEntryDataClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitIncompleteSupplierInfoClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitMissingInvoicePDFsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitPOInfoClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitSalesToCustomsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitUnclassifiedItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />
+    <Compile Include="CoreEntities\TODO_TotalAdjustmentsToProcessClient.cs" />
+    <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
+    <Compile Include="CoreEntities\TODO_UnallocatedShortsClient.cs" />
+    <Compile Include="CoreEntities\xcuda_Supplementary_unitClient.cs" />
+    <Compile Include="CounterPointQS\CounterPointPODetailsClient.cs" />
+    <Compile Include="CounterPointQS\CounterPointPOsClient.cs" />
+    <Compile Include="CounterPointQS\CounterPointSalesClient.cs" />
+    <Compile Include="CounterPointQS\CounterPointSalesDetailsClient.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverClient.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortClient.cs" />
+    <Compile Include="Custom Services\AllocationQS\AsycudaSalesAllocationsExClient.cs" />
+    <Compile Include="Custom Services\AllocationQS\AllocationsClient.cs" />
+    <Compile Include="Custom Services\CoreEntities\AsycudaDocumentItemClient.cs" />
+    <Compile Include="Custom Services\CoreEntities\SystemClient.cs" />
+    <Compile Include="Custom Services\CoreEntities\DocumentSetClient.cs" />
+    <Compile Include="Custom Services\CoreEntities\AsycudaDocumentClient.cs" />
+    <Compile Include="Custom Services\CounterPointQS\CounterPointPOsClient.cs" />
+    <Compile Include="Custom Services\CounterPointQS\CounterPointSalesClient.cs" />
+    <Compile Include="Custom Services\EntryDataQS\ContainerExClient.cs" />
+    <Compile Include="Custom Services\EntryDataQS\EntryDataDetailsExClient.cs" />
+    <Compile Include="Custom Services\EntryDataQS\EntryDataExClient.cs" />
+    <Compile Include="Custom Services\InventoryQS\InventoryItemsEXClient.cs" />
+    <Compile Include="Custom Services\SalesDataQS\SalesDataClient.cs" />
+    <Compile Include="Custom Services\SalesDataQS\SalesDataDetailClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentEntryDataLineClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />
+    <Compile Include="EntryDataQS\EmptyFullCodeClient.cs" />
+    <Compile Include="EntryDataQS\EntryDataClient.cs" />
+    <Compile Include="EntryDataQS\EntryDataDetailsExClient.cs" />
+    <Compile Include="EntryDataQS\EntryDataExClient.cs" />
+    <Compile Include="EntryDataQS\InventoryItemsExClient.cs" />
+    <Compile Include="EntryDataQS\PackageTypeClient.cs" />
+    <Compile Include="InventoryQS\EntryDataDetailsExClient.cs" />
+    <Compile Include="InventoryQS\InventoryItemsExClient.cs" />
+    <Compile Include="InventoryQS\TariffCategoryClient.cs" />
+    <Compile Include="InventoryQS\TariffCategoryCodeSuppUnitClient.cs" />
+    <Compile Include="InventoryQS\TariffCodesClient.cs" />
+    <Compile Include="InventoryQS\TariffSupUnitLkpsClient.cs" />
+    <Compile Include="OCR\ChildPartsClient.cs" />
+    <Compile Include="OCR\EndClient.cs" />
+    <Compile Include="OCR\FieldFormatRegExClient.cs" />
+    <Compile Include="OCR\FieldsClient.cs" />
+    <Compile Include="OCR\ImportErrorsClient.cs" />
+    <Compile Include="OCR\InvoiceIdentificatonRegExClient.cs" />
+    <Compile Include="OCR\InvoiceRegExClient.cs" />
+    <Compile Include="OCR\InvoicesClient.cs" />
+    <Compile Include="OCR\LinesClient.cs" />
+    <Compile Include="OCR\OCR_FailedFieldsClient.cs" />
+    <Compile Include="OCR\OCR_FailedLinesClient.cs" />
+    <Compile Include="OCR\OCR_FieldMappingsClient.cs" />
+    <Compile Include="OCR\OCR_FieldValueClient.cs" />
+    <Compile Include="OCR\OCR_PartLineFieldsClient.cs" />
+    <Compile Include="OCR\PartsClient.cs" />
+    <Compile Include="OCR\PartTypesClient.cs" />
+    <Compile Include="OCR\RecuringPartClient.cs" />
+    <Compile Include="OCR\RegularExpressionsClient.cs" />
+    <Compile Include="OCR\StartClient.cs" />
+    <Compile Include="PreviousDocumentQS\PreviousDocumentClient.cs" />
+    <Compile Include="PreviousDocumentQS\PreviousDocumentItemClient.cs" />
+    <Compile Include="PreviousDocumentQS\PreviousItemsExClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SalesDataQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="SalesDataQS\AsycudaDocumentSetEntryDataClient.cs" />
+    <Compile Include="SalesDataQS\AsycudaDocumentSetEntryDataDetailsClient.cs" />
+    <Compile Include="SalesDataQS\SalesDataAllocationsClient.cs" />
+    <Compile Include="SalesDataQS\SalesDataClient.cs" />
+    <Compile Include="SalesDataQS\SalesDataDetailClient.cs" />
+    <Compile Include="ServiceFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj">
+      <Project>{658bb505-087e-48b0-9adc-b227367af83c}</Project>
+      <Name>WaterNut.Client.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
+      <Project>{c05bd1be-cb99-451e-845d-077243489c5b}</Project>
+      <Name>WaterNut.Client.DTO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Custom Services\DocumentDS\" />
+    <Folder Include="Custom Services\DocumentItemDS\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

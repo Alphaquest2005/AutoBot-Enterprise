@@ -11,7 +11,8 @@
     <AssemblyName>Core.Common</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers> <!-- Trying multiple RIDs -->
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+    <!-- Trying multiple RIDs -->
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">
     </SolutionDir>
     <TargetFrameworkProfile />
@@ -158,7 +159,7 @@
       <Version>15.0.4795.1001</Version>
     </PackageReference>
     <PackageReference Include="System.Composition">
-      <Version>9.0.3</Version>
+      <Version>9.0.4</Version>
     </PackageReference>
     <PackageReference Include="YamlDotNet">
       <Version>16.3.0</Version>

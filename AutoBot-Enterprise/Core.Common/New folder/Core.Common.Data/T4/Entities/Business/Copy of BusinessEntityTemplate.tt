@@ -1,0 +1,467 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class BusinessEntityTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public CodeGenerationTools code;
+        public MetadataLoader loader;
+        public CodeRegion region;
+        public MetadataTools ef;
+
+        public string inputFile;
+        public MetadataWorkspace metadataWorkspace;
+        public bool allMetadataLoaded;
+        public EdmItemCollection ItemCollection;
+        public OriginalValueMembers originalValueMembers;
+        public string namespaceName;
+        public EntityContainer container;
+
+        public MetadataWorkspace COREmetadataWorkspace;
+        public bool COREallMetadataLoaded;
+        public EdmItemCollection COREItemCollection;
+        public EntityContainer COREcontainer;
+
+ 
+       
+        
+        
+
+        public override string TransformText()
+        {
+            base.TransformText();
+           
+#>
+
+<#+         
+            WriteHeader();
+            bool isCoreEntity = COREcontainer.Name != container.Name && code.GetItemsToGenerate<EntityType>(COREItemCollection).FirstOrDefault(x=> x.Name == entity.Name) != null;
+            BeginNamespace(namespaceName, code);
+            if(!isCoreEntity) WriteEntityTypeSerializationInfo(entity, ItemCollection, code, ef);
+#>
+<#=            Accessibility.ForType(entity)#> <#=            code.SpaceAfter(code.AbstractOption(entity))#>partial class <#=            code.Escape(entity)#><#+
+            if(!isCoreEntity)
+            {
+            #>
+<#=                code.StringBefore(" : ", code.GetTypeName(entity.BaseType))#><#=                entity.BaseType == null ? ": BaseEntity<"+ code.Escape(entity) +">, IEntityWithKey " : ", "#>
+
+<#+
+            }
+#> 
+{
+
+
+<#+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+    if(!isCoreEntity)
+        {
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+            region.Begin("Simple Properties");
+
+            foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == entity))
+            {
+#>
+
+    [DataMember]
+    <#=        Accessibility.ForProperty(edmProperty)#> <#=        code.GetTypeName(edmProperty.TypeUsage)#> <#=        code.Escape(edmProperty)#>{<#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get; <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set;}        
+    
+<#+
+            }
+            region.End();
+
+            region.Begin("Complex Properties");
+
+            foreach(EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == entity))
+            {
+#>
+
+    [DataMember]
+    <#=        Accessibility.ForProperty(edmProperty)#> <#=        code.GetTypeName(edmProperty.TypeUsage)#> <#=        code.Escape(edmProperty)#>
+    {
+        <#=        code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get
+        {
+            if (!<#=        InitializedTrackingField(edmProperty, code)#> && <#=        code.FieldName(edmProperty)#> == null)
+            {
+                <#=        code.FieldName(edmProperty)#> = new <#=        code.GetTypeName(edmProperty.TypeUsage)#>();
+                ((INotifyComplexPropertyChanging)<#=        code.FieldName(edmProperty)#>).ComplexPropertyChanging += Handle<#=        edmProperty.Name#>Changing;
+            }
+            <#=        InitializedTrackingField(edmProperty, code)#> = true;
+            return <#=        code.FieldName(edmProperty)#>;
+        }
+        <#=        code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set
+        {
+            <#=        InitializedTrackingField(edmProperty, code)#> = true;
+            if (!Equals(<#=        code.FieldName(edmProperty)#>, value))
+            {
+                if (<#=        code.FieldName(edmProperty)#> != null)
+                {
+                    ((INotifyComplexPropertyChanging)<#=        code.FieldName(edmProperty)#>).ComplexPropertyChanging -= Handle<#=        edmProperty.Name#>Changing;
+                }
+
+                Handle<#=        edmProperty.Name#>Changing(this, null);
+                <#=        code.FieldName(edmProperty)#> = value;
+                OnPropertyChanged("<#=        edmProperty.Name#>");
+
+                if (value != null)
+                {
+                    ((INotifyComplexPropertyChanging)<#=        code.FieldName(edmProperty)#>).ComplexPropertyChanging += Handle<#=        edmProperty.Name#>Changing;
+                }
+            }
+        }
+    }
+    private <#=        code.GetTypeName(edmProperty.TypeUsage)#> <#=        code.FieldName(edmProperty)#>;
+    private bool <#=        InitializedTrackingField(edmProperty, code)#>;
+<#+
+            }
+
+            region.End();
+ //////////////////////////////////////////////////////////////////////////////////////////////
+        }
+        
+///////////////////////////////////////////////////////////////////////////////////////////////
+    region.Begin("Navigation Properties");
+
+    foreach (NavigationProperty navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+    {
+        NavigationProperty inverse = ef.Inverse(navProperty);
+        if (inverse != null &&  !IsReadWriteAccessibleProperty(inverse))
+        {
+            inverse = null;
+        }
+#>
+
+    [DataMember]
+<#+
+        if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+        {
+#>
+    <#=Accessibility.ForReadOnlyProperty(navProperty)#> List<<#=code.GetTypeName(navProperty.ToEndMember.GetEntityType())#>> <#=code.Escape(navProperty)#>
+    {
+        get
+        {
+            if (<#=code.FieldName(navProperty)#> == null)
+            {
+                <#=code.FieldName(navProperty)#> = new List<<#=code.GetTypeName(navProperty.ToEndMember.GetEntityType())#>>();              
+            }
+            return <#=code.FieldName(navProperty)#>;
+        }
+        set
+        {  
+                <#=code.FieldName(navProperty)#> = value;           
+        }
+    }
+    private List<<#=code.GetTypeName(navProperty.ToEndMember.GetEntityType())#>> <#=code.FieldName(navProperty)#>;
+<#+
+        }
+        else
+        {
+#>
+    <#=Accessibility.ForProperty(navProperty)#> <#=code.GetTypeName(navProperty.ToEndMember.GetEntityType())#> <#=code.Escape(navProperty)#>
+    {
+        <#=code.SpaceAfter(Accessibility.ForGetter(navProperty))#>get { return <#=code.FieldName(navProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(navProperty))#>set
+        {
+            if (!ReferenceEquals(<#=code.FieldName(navProperty)#>, value))
+            {
+                <#=code.FieldName(navProperty)#> = value;
+            }
+        }
+    }
+    private <#=code.GetTypeName(navProperty.ToEndMember.GetEntityType())#> <#=code.FieldName(navProperty)#>;
+<#+
+        }
+    }
+    region.End();
+
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            if(!isCoreEntity)
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                if(entity.BaseType == null)
+                {
+                    region.Begin("IEntityWithKey Implementation");
+#>
+	[DataMember]
+	public EntityKey EntityKey
+	{
+		get
+		{
+			return _entityKey;
+		}
+		set
+		{
+			if (_entityKey != value)
+			{
+				_entityKey = value;				
+			}
+		}
+	}
+	private EntityKey _entityKey;
+<#+
+                    region.End();
+                }
+                //////////////////////////////////////////////////////////////
+            }
+            ///////////////////////////////////////////////////////////////
+#>
+}
+<#+
+            EndNamespace(namespaceName);
+#>
+
+
+
+
+
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+
+
+
+
+        void WriteHeader()
+        {
+            // fileManager.StartHeader();
+#>
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated from a template.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.Serialization;
+using Core.Common.Data;
+
+using Core.Common.Contracts;
+using System.Data.Entity.Core.Objects.DataClasses;
+using System.Data.Entity.Core;
+
+
+<#+
+            // fileManager.EndBlock();
+        }
+
+        void BeginNamespace(string namespaceName, CodeGenerationTools code)
+        {
+            CodeRegion region = new CodeRegion(this);
+            if (!String.IsNullOrEmpty(namespaceName))
+            {
+#>
+namespace <#=                code.EscapeNamespace(namespaceName)#>.Business.Entities
+{
+<#+
+                PushIndent(CodeRegion.GetIndent(1));
+            }
+        }
+
+        void EndNamespace(string namespaceName)
+        {
+            if (!String.IsNullOrEmpty(namespaceName))
+            {
+                PopIndent();
+#>
+}
+<#+
+            }
+        }
+
+        bool IsReadWriteAccessibleProperty(EdmMember member)
+        {
+            string setter = Accessibility.ForWriteOnlyProperty(member);
+            string getter = Accessibility.ForReadOnlyProperty(member);
+
+            return getter != "private" && getter != "protected" && setter != "private" && setter != "protected";
+        }
+
+        string InitializedTrackingField(EdmProperty property, CodeGenerationTools code)
+        {
+            string namePart = property.Name + "Initialized";
+            if (code.CamelCaseFields)
+            {
+                namePart = code.CamelCase(namePart);
+            }
+            return "_" + namePart;
+        }
+
+        void WriteEntityTypeSerializationInfo(EntityType type, ItemCollection itemCollection, CodeGenerationTools code, MetadataTools tools)
+        {
+#>
+[DataContract(IsReference = true)]
+<#+
+            foreach(EntityType subtype in tools.GetSubtypesOf(type, itemCollection, true))
+            {
+#>
+[KnownType(typeof(<#=                code.GetTypeName(subtype)#>))]
+<#+
+            }
+            List<EntityType> knownNavPropertyTypes = new List<EntityType>();
+            foreach(NavigationProperty navProperty in type.NavigationProperties.Where(np => np.DeclaringType == type))
+            {
+                EntityType navPropertyType = navProperty.ToEndMember.GetEntityType();
+                if(!knownNavPropertyTypes.Contains(navPropertyType))
+                {
+                    knownNavPropertyTypes.Add(navPropertyType);
+                }
+            }
+            foreach(EntityType knownNavPropertyType in knownNavPropertyTypes)
+            {
+#>
+[KnownType(typeof(<#=                code.GetTypeName(knownNavPropertyType)#>))]
+<#+
+            }
+
+            List<EdmType> knownSimplePropertyTypes = new List<EdmType>();
+
+            AddSimplePropertiesKnownTypes(type, knownSimplePropertyTypes, code, tools);
+            foreach(EdmType complexType in type.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == type).Select(p => p.TypeUsage.EdmType))
+            {
+                AddSimplePropertiesKnownTypes((ComplexType)complexType, knownSimplePropertyTypes, code, tools);
+            }
+
+            foreach(EdmType knownSimplePropertyType in knownSimplePropertyTypes)
+            {
+#>
+[KnownType(typeof(<#=                code.GetTypeName(knownSimplePropertyType)#>))]
+<#+
+            }
+        }
+
+        void AddSimplePropertiesKnownTypes(StructuralType type, List<EdmType> knownSimplePropertyTypes, CodeGenerationTools code, MetadataTools tools)
+        {
+            foreach(EdmProperty edmProperty in type.Members.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == type))
+            {
+                EdmType propertyType = edmProperty.TypeUsage.EdmType;
+                if (tools.UnderlyingClrType(propertyType) == typeof(DateTimeOffset) &&
+                    !knownSimplePropertyTypes.Contains(propertyType))
+                {
+                    knownSimplePropertyTypes.Add(propertyType);
+                }
+            }
+            foreach(EdmProperty edmProperty in type.Members.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == type))
+            {
+                AddSimplePropertiesKnownTypes((ComplexType)edmProperty.TypeUsage.EdmType, knownSimplePropertyTypes, code, tools);
+            }
+        }
+
+        bool IsSaveReference(MetadataTools tools, NavigationProperty navProperty)
+        {
+            return !IsForeignKeyOrIdentifyingRelationship(tools, navProperty) &&
+                navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many &&         // Target is a reference
+                navProperty.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.One;          // Source is nullable (i.e. not a PK)
+        }
+
+        string CreateFixupMethodName(RelationshipEndMember endMember)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "Fixup{0}_{1}_{2}Keys", endMember.DeclaringType.NamespaceName.Replace(".", "_"), endMember.DeclaringType.Name, endMember.Name);
+        }
+
+        string CreateKeyNameVariable(string keyName)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "{0}KeyName", keyName);
+        }
+
+        string CreateReferenceValueLookupKey(AssociationEndMember endMember, string keyName)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "Navigate({0}.{1}).{2}", endMember.DeclaringType.FullName, endMember.Name, keyName);
+        }
+
+        string CreateReferenceValueLookupKey(NavigationProperty navProp, string keyName)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "{0}.{1}", navProp.Name, keyName);
+        }
+
+        void WriteCustomObservableCollection()
+        {
+#>
+
+// An System.Collections.ObjectModel.ObservableCollection that raises
+// individual item removal notifications on clear and prevents adding duplicates.
+[CollectionDataContract]
+public class TrackableCollection<T> : ObservableCollection<T>
+{
+    protected override void ClearItems()
+    {
+        new List<T>(this).ForEach(t => Remove(t));
+    }
+
+    protected override void InsertItem(int index, T item)
+    {
+        if (!this.Contains(item))
+        {
+            base.InsertItem(index, item);
+        }
+    }
+}
+<#+
+        }
+#>
+
+<#+
+
+        // True if the association for the specified navigation property is an identifying relationship or a foreign key relationship.
+        private bool IsForeignKeyOrIdentifyingRelationship(MetadataTools tools, NavigationProperty navProperty)
+        {
+            if (tools == null)
+            {
+                throw new ArgumentNullException("tools");
+            }
+
+            if (navProperty == null)
+            {
+                throw new ArgumentNullException("navProperty");
+            }
+
+            return IsForeignKeyOrIdentifyingRelationship(tools, (AssociationType)navProperty.RelationshipType);
+        }
+
+        // True if the specified association is an identifying relationship or a foreign key relationship.
+        private bool IsForeignKeyOrIdentifyingRelationship(MetadataTools tools, AssociationType association)
+        {
+            if (tools == null)
+            {
+                throw new ArgumentNullException("tools");
+            }
+
+            if (association == null)
+            {
+                throw new ArgumentNullException("association");
+            }
+
+            return association.IsForeignKey || tools.IsIdentifyingRelationship(association);
+        }
+
+        private void DefineMetadata()
+        {
+            TemplateMetadata[MetadataConstants.TT_TEMPLATE_NAME] = "CSharpSelfTracking.Types";
+            TemplateMetadata[MetadataConstants.TT_TEMPLATE_VERSION] = "5.0";
+        }
+
+
+       
+    }
+
+
+
+
+		
+#>
+
+

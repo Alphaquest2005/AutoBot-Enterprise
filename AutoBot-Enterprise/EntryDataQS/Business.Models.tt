@@ -1,0 +1,8 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\BusinessModels.tt" #>
+<#
+    CreateBusinessModels(@"EntryDataQS.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"); 
+#>

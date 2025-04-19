@@ -1,0 +1,387 @@
+﻿<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq"#>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ import namespace="System.Runtime.CompilerServices" #>
+<#@ import namespace="System.Security.Cryptography.X509Certificates" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class IIdentifibleEntityTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public string conTextName;
+        public string projectName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => x.MetadataProperties.Where(z => z.Name.Contains("EntityNameProperty") && z.Value.ToString().Contains(">True<")).Any() == true).ToList();
+#>
+using System.Linq;
+using <#=COREcontainer.Name #>.Client.Entities;
+using <#=COREcontainer.Name #>.Client.Services;
+//using <#=projectName #>.Client.Services;
+using <#=conTextName #>.Client.Services;
+
+using System;
+
+namespace <#=conTextName#>.Client.Entities
+{
+    public partial class <#=mainEntity.Name#>
+    {
+<#+
+          if(ens.Any() == true)
+            {
+#>
+        
+            partial void IIdentifiableEntityStartUp()
+            {
+               PropertyChanged += UpdateEntityName;        
+            }
+          
+
+<#+ 
+           } 
+#>       
+       #region IIdentifiable Entities
+        public override string EntityId
+        {
+            get
+            {
+                return this.<#=mainEntity.KeyMembers.FirstOrDefault()#>.ToString();//this.<#=mainEntity.KeyMembers.FirstOrDefault()#> == null?"0":			
+            }
+            set
+            {
+                this.<#=mainEntity.KeyMembers.FirstOrDefault()#> = Convert.To<#=ef.UnderlyingClrType(mainEntity.KeyMembers.FirstOrDefault().TypeUsage.EdmType).ToString().Replace("System.","") #>(value);
+            }
+        }
+<#+
+         if(ens.Any() == true)
+            {
+string elst = "";
+string pname = "";
+string pn = "";
+int t = 0;
+foreach (EdmProperty p in ens)
+{
+    var navprop = mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(p)).FirstOrDefault();
+    t += 1;
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(string))
+    {
+        pn = "this." + (navprop == null?p.Name:navprop.Name);
+      elst = elst + pn + (t < ens.Count? ",":"");
+    }
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && p.Name.EndsWith("Id"))
+    {
+        string pnn = (navprop == null?p.Name.Substring(0,p.Name.Length - 2):navprop.Name);
+        pn =   "(this." + pnn + @" == null?"""":this." + pnn + ".EntityName)";
+        elst = elst + pnn + (t < ens.Count? ",":"");
+    }
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && !p.Name.EndsWith("Id"))
+    {
+        pn = "(this." + (navprop == null?p.Name:navprop.Name) + ".ToString())";
+        elst = elst + pn + (t < ens.Count? ",":"");
+    }
+    pname = pname + (t > 1? "+\" \"+":"") + pn  ;
+    
+}
+            
+
+ #>
+       
+
+        void UpdateEntityName(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if ("<#=elst.Replace(".EntityName","") #>".Contains(e.PropertyName))
+            NotifyPropertyChanged("EntityName");
+
+           
+        }
+
+        public override string EntityName
+        {
+            get
+            {
+                return <#=pname#>;
+            }
+            set
+            {
+<#+
+                if(ens.Count() > 1)
+                {
+ #>
+            string[] vals = value.Split(',');
+<#+             }
+ #>
+<#+
+int v = 0;
+//foreach( string p in pname.Split(' '))
+//{
+  //  string ppe = p.Replace("+","").Replace("\"", "").Replace(".EntityName","");
+foreach (EdmProperty p in ens)
+{
+#>               
+<#+
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(string))
+    {
+#>   
+       <#=(ens.Count() == 1?"":"if (vals.Length > " + v + ")")#> <#=p.Name#> = <#=(ens.Count() == 1?"value":"vals[" + v + "]")#>;
+<#+
+    }
+ #>
+<#+
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && !p.Name.EndsWith("Id"))
+    {
+#>   
+        if (string.IsNullOrEmpty(<#=(ens.Count() == 1?"value":"vals[" + v + "]")#>))
+         {
+                    <#=p.Name#> = 0;
+         } 
+        else
+         {     
+        <#=p.Name#> = Convert.ToInt32(<#=(ens.Count() == 1?"value":"vals[" + v + "]")#>);
+          }
+<#+
+    }
+ #>
+<#+ 
+    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && p.Name.EndsWith("Id"))
+    {
+        string ppe = p.Name.Substring(0,p.Name.Length - 2);
+        var navprop = mainEntity.NavigationProperties.FirstOrDefault(np => np.GetDependentProperties().Contains(p));
+        EntityType navEntity;
+        if (navprop == null)
+        {
+            navEntity =
+                COREentityCollection.FirstOrDefault(x => x.Name == ppe );
+        }
+        else
+        {
+           navEntity = navprop.ToEndMember.GetEntityType();
+        }
+ #>   
+    
+            if (this.<#=(navprop == null?ppe:navprop.Name)#> != null)
+            {
+               <#=(ens.Count() == 1?"":"if(vals.Length >=" + (v + 1) + ")")#> this.<#=(navprop == null?ppe:navprop.Name)#>.EntityName = <#=(ens.Count() == 1?"value":"vals[" + v + "]")#>;      
+            }
+            else
+            {       
+                             
+                   <#=(ens.Count() == 1?"":"if(vals.Length >=" + (v + 1) + ")")#> this.<#=(navprop == null?ppe:navprop.Name)#> =(<#=(navprop == null?ppe:navEntity.Name)#>) new <#=(navprop == null?ppe:navEntity.Name)#>().CreateEntityFromString(<#=(ens.Count() == 1?"value":"vals[" + v + "]")#>) ;
+                    if (this.<#=(navprop == null?ppe:navprop.Name)#> != null)this.<#=p.Name #> = this.<#=(navprop == null?ppe:navprop.Name)#>.<#=(navEntity == null?p.Name:navEntity.KeyMembers.FirstOrDefault().Name) #>;
+                
+            }    
+<#+
+}
+#> 
+<#+        
+
+    v += 1;
+}
+           #>
+            }
+
+        }
+
+
+<#+
+            }#>
+
+<#+
+             if(mainEntity.Abstract == false)
+            {
+               Dictionary<string, EntityType> plst = new Dictionary<string,EntityType>();
+                plst = mainEntity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).ToDictionary(x => x.Name , x=> x.ToEndMember.GetEntityType());
+                if(plst.Any()) WritePropertyEntityName(plst);
+                plst = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  && mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false).ToDictionary( x=> x.Name.Substring(0,x.Name.Length - 2) , x=> COREentityCollection.FirstOrDefault(z => z.Name == x.Name.Substring(0,x.Name.Length - 2)));
+                if(plst.Any()) WritePropertyEntityName(plst);
+            }
+#>
+
+
+
+         #endregion
+    }
+   
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+#>
+<#+
+    void WritePropertyEntityName(Dictionary<string, EntityType> plst)
+    {
+        foreach (var navprop in plst)//mainEntity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
+        {
+            if(navprop.Value == null) continue;
+                string mEntity = navprop.Key;
+                var nprop = mainEntity.NavigationProperties.FirstOrDefault(x=> x.Name == mEntity);
+                string nPropField = mEntity + "Id";
+                EntityType entity = navprop.Value;
+				 PrimitiveType pEdmType = null;
+                if(nprop != null)
+                {
+                    var p = nprop.FromEndMember.GetEntityType().KeyMembers;
+                    if(p != null)
+                    {
+                        nPropField = p[0].Name; 
+						pEdmType = (PrimitiveType) p[0].TypeUsage.EdmType;
+                    }
+                    else
+                    {
+                          nPropField = entity.KeyMembers[0].Name;
+						  pEdmType = (PrimitiveType) entity.KeyMembers[0].TypeUsage.EdmType;
+                    }
+                }
+                else
+                {
+                    var xdf = entity.Properties.FirstOrDefault(x => x.Name == nPropField);
+                    if (xdf != null)
+                    {
+                        pEdmType = (PrimitiveType) xdf.TypeUsage.EdmType;
+                    }
+                    else
+                    {
+                        if(entity != null)
+                        pEdmType = (PrimitiveType) entity.KeyMembers[0].TypeUsage.EdmType;
+                    }
+                }
+            
+                if(pEdmType == null) continue;
+                //if(entity.BaseType != null)mEntity = (entity.BaseType as EntityType).Name;
+                if(mEntity == mainEntity.Name) continue;
+                var CSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault();
+            bool notInContainer = CSet == null;
+                 string cSet = "";      
+
+                if(CSet == null) 
+                {
+                    //if(entity.BaseType == null)
+                    //{
+                        CSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault();
+                        if(CSet != null) cSet = CSet.Name;
+
+                    //}
+                    //else
+                    //{
+                        //cSet = entity.Name;
+                    //}
+                }
+                else
+                {
+                    cSet = CSet.Name;
+                }                       
+                if(entity.BaseType == null)
+                {
+                    cSet = CSet.Name;
+                }
+                else
+                {
+                  if(cSet == "")
+                 cSet = entity.Name;  
+                }
+            
+            
+ #>
+        public string <#=mEntity#>EntityName
+        {
+            get
+            {
+<#+             if (notInContainer)
+{ #> 
+                if(this.<#=mEntity #> == null) Update<#=mEntity #>();
+<#+ }
+ #>
+                return this.<#=mEntity#> == null ? "" : this.<#=mEntity#>.EntityName;
+            }
+            set
+            {
+                <#+ //if (this.ChangeTracker.ChangeTrackingEnabled == false) return;
+				
+				
+				#>
+                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (<#=entity.Name#>Client ctx = new <#=entity.Name#>Client())
+                    {
+                        var dto = ctx.Get<#=cSet#>().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.<#=mEntity#> = (<#=entity.Name #>)new <#=entity.Name#>().CreateEntityFromString(value);
+							
+							this.<#=nPropField#> = Convert.To<#=pEdmType.ClrEquivalentType.ToString().Replace("System.","")#>(this.<#=mEntity#>.<#=entity.KeyMembers[0].Name#>);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("Add<#=mEntity #>");
+                        }
+                        else
+                        {
+                            var obj = new <#=entity.Name#>(dto);
+                           if (this.<#=mEntity#> == null || this.<#=mEntity#>.EntityId != obj.EntityId) this.<#=mEntity#> = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+<#+         
+        } 
+    }       
+ #>
+
+
+
+<#+
+ void WriteStringToIdType(EdmProperty p)
+        {
+
+            var typeUsage = p.TypeUsage.EdmType.Name;
+
+                // Fix-up spatial types for EF6
+                if (//efHost.EntityFrameworkVersion >= new Version(6, 0) && 
+                    typeUsage.StartsWith("System.Data.Spatial."))
+                {
+                    typeUsage = typeUsage.Replace(
+                        "System.Data.Spatial.",
+                        "System.Data.Entity.Spatial.");
+                }
+            if(typeUsage != "String")
+            {
+ #>
+var i = <#= p.Name #>;
+<#+
+            }
+                else
+            {
+#>
+var i = Convert.ToInt32(<#= p.Name #>);
+<#+
+            }
+
+        }
+        
+    
+#>
+
+<#+
+	}	
+#>

@@ -1,0 +1,187 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class IIdentifibleEntityTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public string contextName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => x.MetadataProperties.Where(z => z.Name.Contains("EntityNameProperty") && z.Value.ToString().Contains(">True<")).Any() == true).ToList();
+#>
+using System.Linq;
+using CoreEntities.Business.Entities;
+using Core.Common.Data.Contracts;
+using System;
+
+namespace <#=contextName#>.Business.Entities
+{
+    public partial class <#=mainEntity.Name#>DTO: IIdentifiableEntity
+    {
+<#+
+          if(ens.Any() == true)
+            {
+#>
+        
+                    
+
+<#+ 
+           } 
+#>       
+       #region IIdentifiable Entities
+        public override string EntityId
+        {
+            get
+            {
+                return this.<#=mainEntity.KeyMembers.FirstOrDefault()#>.ToString();
+            }
+            set
+            {
+                this.<#=mainEntity.KeyMembers.FirstOrDefault()#> = Convert.To<#=ef.UnderlyingClrType(mainEntity.KeyMembers.FirstOrDefault().TypeUsage.EdmType).ToString().Replace("System.","") #>(value);
+            }
+        }
+<#+
+         if(ens.Any() == true)
+            {
+                string elst = "";
+                string pname = "";
+                string pn = "";
+                int t = 0;
+                foreach (EdmProperty p in ens)
+                {
+                    var navprop = mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(p)).FirstOrDefault();
+                    t += 1;
+                    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(string))
+                    {
+                        pn = "this." + (navprop == null?p.Name:navprop.Name);
+                        elst = elst + pn + (t < ens.Count? ",":"");
+                    }
+                    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && p.Name.EndsWith("Id"))
+                    {
+                        string pnn = (navprop == null?p.Name.Substring(0,p.Name.Length - 2):navprop.Name);
+                        pn =   "(this." + pnn + @" == null?"""":this." + pnn + ".EntityName)";
+                        elst = elst + pnn + (t < ens.Count? ",":"");
+                       
+                    }
+                    if(ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int) && !p.Name.EndsWith("Id"))
+                    {
+                        pn = "(this." + (navprop == null?p.Name:navprop.Name) + ".ToString())";
+                        elst = elst + pn + (t < ens.Count? ",":"");
+                    }
+                    pname = pname + (t > 1? " + \" \" + ":"") + pn  ;
+    
+                }
+            
+           
+ #>
+       
+
+        
+
+        public override string EntityName
+        {
+            get
+            {
+                return <#=pname#>;
+            }  
+            set 
+            {
+            }          
+        }
+
+<#+            
+        } 
+#>
+
+<#+
+             //if(mainEntity.Abstract == false)
+            //{
+                //Dictionary<string, EntityType> plst = new Dictionary<string,EntityType>();
+                //plst = mainEntity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).ToDictionary(x => x.Name , x=> x.ToEndMember.GetEntityType());
+                //WritePropertyEntityName(plst);
+                //plst = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  && mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false).ToDictionary( x=> x.Name.Substring(0,x.Name.Length - 2) , x=> entityCollection.FirstOrDefault(z => z.Name == x.Name.Substring(0,x.Name.Length - 2)));
+                //WritePropertyEntityName(plst);
+            //}
+#>
+
+
+
+         #endregion
+    }
+   
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+#>
+<#+
+    void WritePropertyEntityName(Dictionary<string, EntityType> plst)
+    {
+        foreach (var navprop in plst)
+        {
+           if(navprop.Value == null) continue;
+                string mEntity = navprop.Key;
+                EntityType entity = navprop.Value;
+                //if(entity.BaseType != null)mEntity = (entity.BaseType as EntityType).Name;
+                if(mEntity == mainEntity.Name) continue;
+                var CSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault();
+                string cSet = "";
+                if(CSet == null) 
+                {
+                    //if(entity.BaseType == null)
+                    //{
+                        CSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault();
+                        if(CSet != null) cSet = CSet.Name;
+
+                    //}
+                    //else
+                    //{
+                        //cSet = entity.Name;
+                    //}
+                }
+                if(entity.BaseType == null)
+                {
+                    cSet = CSet.Name;
+                }
+                else
+                {
+                  if(cSet == "")
+                  cSet = entity.Name;  
+                }
+            
+            
+ #>
+        public string <#=mEntity#>EntityName
+        {
+            get
+            {
+                return this.<#=mEntity#> == null ? "" : this.<#=mEntity#>.EntityName;
+            }
+            set 
+            {
+            } 
+            
+
+      }
+<#+         
+        } 
+    }       
+ #>
+
+<#+
+	}	
+#>
+

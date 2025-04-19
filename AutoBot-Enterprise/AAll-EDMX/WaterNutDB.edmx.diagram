@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="edf3a027c4184728a39136da69cb13a6" Name="Diagram1" ZoomLevel="80">
+        <EntityTypeShape EntityType="WaterNutDBModel.ActionDocSetLog" Width="1.5" PointX="9" PointY="151.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Action" Width="1.5" PointX="3.75" PointY="6.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AdjustmentComment" Width="1.5" PointX="12.75" PointY="22.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AdjustmentOversAllocation" Width="1.5" PointX="11.25" PointY="110.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSetting" Width="1.5" PointX="1.5" PointY="46" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSettings_Declarants" Width="1.5" PointX="3.75" PointY="43.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument_Attachments" Width="1.5" PointX="3" PointY="111.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryData" Width="1.5" PointX="3" PointY="108.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet" Width="1.5" PointX="3.75" PointY="141.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" Width="1.5" PointX="3.75" PointY="9.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryData" Width="1.5" PointX="9" PointY="118.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaLkpLst" Width="1.5" PointX="9.75" PointY="25.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocation" Width="1.5" PointX="14.25" PointY="110.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocations_ExpectedSales" Width="1.5" PointX="17.75" PointY="26.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSearchList" Width="1.5" PointX="20.75" PointY="27.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AttachmentCode" Width="1.5" PointX="9.5" PointY="154.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AttachmentLog" Width="1.5" PointX="6" PointY="7.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Attachment" Width="1.5" PointX="0.75" PointY="99.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.BondType" Width="1.5" PointX="1.5" PointY="42.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CancelledEntriesLst" Width="1.5" PointX="20.75" PointY="21.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Consignee" Width="1.5" PointX="25.75" PointY="14.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Contact" Width="1.5" PointX="4.5" PointY="104.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Container" Width="1.5" PointX="6" PointY="151.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CurrencyRate" Width="1.5" PointX="9.75" PointY="27.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="1.5" PointX="1.5" PointY="142.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_ProcedureInOut" Width="1.5" PointX="3.75" PointY="160.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperation" Width="1.5" PointX="1.5" PointY="151.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CustomsProcedureEntryDataType" Width="1.5" PointX="8.75" PointY="125.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CustomsProcedureRequiredAttachment" Width="1.5" PointX="11.75" PointY="153.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="1.5" PointY="149" />
+        <EntityTypeShape EntityType="WaterNutDBModel.DocumentsCancelledList" Width="1.5" PointX="5.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.DocumentsList" Width="1.5" PointX="7.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailAttachment" Width="1.5" PointX="6.75" PointY="104.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailFileType" Width="1.5" PointX="8" PointY="84.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailInfoMapping" Width="1.5" PointX="9" PointY="50.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="1.5" PointX="3.75" PointY="46.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMappingAction" Width="1.5" PointX="6" PointY="47.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMappingRexEx" Width="1.5" PointX="6" PointY="50.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Email" Width="1.5" PointX="1.5" PointY="115.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmptyFullCode" Width="1.5" PointX="9.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="1.5" PointX="0.75" PointY="88.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_Adjustments" Width="1.5" PointX="3" PointY="33.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_DocumentType" Width="1.5" PointX="3" PointY="154.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_Invoices" Width="1.5" PointX="3" PointY="133.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_OpeningStock" Width="1.5" PointX="3" PointY="85.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_PurchaseOrders" Width="1.5" PointX="15.75" PointY="23.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_Sales" Width="1.5" PointX="3" PointY="37.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetail" Width="1.5" PointX="9" PointY="133.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails_SupportingDetails" Width="1.5" PointX="11.25" PointY="139.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataFile" Width="1.5" PointX="22.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryData_Summary" Width="1.5" PointX="3" PointY="71.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataType" Width="1.5" PointX="1.5" PointY="103.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItem" Width="1.5" PointX="11.25" PointY="95" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Event" Width="1.5" PointX="8.25" PointY="21.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="24.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ExportTemplate" Width="1.5" PointX="3.75" PointY="114.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileFormat" Width="1.5" PointX="26.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileGroup" Width="1.5" PointX="1.5" PointY="130.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeAction" Width="1.5" PointX="6.75" PointY="119.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeContact" Width="1.5" PointX="6.75" PointY="122.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingRegEx" Width="1.5" PointX="6" PointY="128.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMapping" Width="1.5" PointX="3.75" PointY="126.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingsValue" Width="1.5" PointX="6" PointY="126.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeReplaceRegex" Width="1.5" PointX="3.75" PointY="122.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileType" Width="1.5" PointX="1.5" PointY="119.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypes_FileImporterInfo" Width="1.5" PointX="1.5" PointY="128.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.History_Allocations" Width="1.5" PointX="25" PointY="19.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.History_Batches" Width="1.5" PointX="22.75" PointY="24.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.History_Batch_Issues" Width="1.5" PointX="25" PointY="29.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ImportAction" Width="1.5" PointX="3.75" PointY="157.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ImportError" Width="1.5" PointX="6" PointY="10.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InfoMapping" Width="1.5" PointX="3.75" PointY="53.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InfoMappingRegEx" Width="1.5" PointX="6" PointY="53.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryAsycudaMapping" Width="1.5" PointX="11.25" PointY="120.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlia" Width="1.5" PointX="9" PointY="145.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItem" Width="1.5" PointX="6.75" PointY="135.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_DoNotMap" Width="1.5" PointX="9" PointY="148.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_Lumped" Width="1.5" PointX="9" PointY="143.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_NonStock" Width="1.5" PointX="9" PointY="130.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_NonStockLst" Width="1.5" PointX="27.75" PointY="7.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemSource" Width="1.5" PointX="16" PointY="137.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryMapping" Width="1.5" PointX="3.75" PointY="40.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryMapping_ViaCNumber" Width="1.5" PointX="27.75" PointY="10.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventorySource" Width="1.5" PointX="13.75" PointY="123.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ItemHistory" Width="1.5" PointX="27.75" PointY="13.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Licence" Width="1.5" PointX="6" PointY="143.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.LicenceTariffCode" Width="1.5" PointX="20.75" PointY="13.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FailedFields" Width="1.5" PointX="10.5" PointY="22.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FailedLines" Width="1.5" PointX="8.25" PointY="18.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_ChildPart" Width="1.5" PointX="3" PointY="26.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_End" Width="1.5" PointX="6" PointY="15.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldFormatRegEx" Width="1.5" PointX="3" PointY="22.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldMappings" Width="1.5" PointX="3.75" PointY="150.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_Fields" Width="1.5" PointX="5.25" PointY="24.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldValue" Width="1.5" PointX="7.5" PointY="25.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx" Width="1.5" PointX="6" PointY="21.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceRegEx" Width="1.5" PointX="6" PointY="18.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_Invoices" Width="1.5" PointX="1.5" PointY="9" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_Lines" Width="1.5" PointX="3" PointY="17.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_Parts" Width="1.5" PointX="0.75" PointY="13" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_PartTypes" Width="1.5" PointX="1.5" PointY="6.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_RecuringPart" Width="1.5" PointX="3" PointY="29.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_RegularExpressions" Width="1.5" PointX="0.75" PointY="17.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_Start" Width="1.5" PointX="3" PointY="14.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PackageType" Width="1.5" PointX="27.75" PointY="18.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Parameter" Width="1.5" PointX="20.75" PointY="18.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ParameterSet" Width="1.5" PointX="20.75" PointY="15.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ParameterSetParameter" Width="1.5" PointX="23" PointY="15.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SessionAction" Width="1.5" PointX="6" PointY="4.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Session" Width="1.5" PointX="3.75" PointY="163.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SessionSchedule" Width="1.5" PointX="23" PointY="89.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShimentBLCharge" Width="1.5" PointX="15" PointY="48.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Shipment" Width="1.5" PointX="12.75" PointY="15.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="1.5" PointX="15" PointY="16.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedFreight" Width="1.5" PointX="18" PointY="13.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedInvoice" Width="1.5" PointX="15" PointY="19.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedManifest" Width="1.5" PointX="15" PointY="13.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="18" PointY="16.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedRider" Width="1.5" PointX="18" PointY="19.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachment" Width="1.5" PointX="15" PointY="57.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentBL" Width="1.5" PointX="12.75" PointY="27.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentBLDetail" Width="1.5" PointX="15" PointY="51" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentConsignee" Width="1.5" PointX="17.75" PointY="9.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentConsigneeAlias" Width="1.5" PointX="20" PointY="8" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentConsigneeSetting" Width="1.5" PointX="20" PointY="10.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentFreight" Width="1.5" PointX="15.75" PointY="9" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentFreightDetail" Width="1.5" PointX="18" PointY="43.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoice" Width="1.5" PointX="12.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceBLManualMatch" Width="1.5" PointX="27.75" PointY="21.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetail" Width="1.5" PointX="15" PointY="39.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetails_Volume" Width="1.5" PointX="17.25" PointY="40.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceExtraInfo" Width="1.5" PointX="15" PointY="33.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOManualMatch" Width="1.5" PointX="27.75" PointY="24.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOs" Width="1.5" PointX="18" PointY="30.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceRiderDetail" Width="1.5" PointX="20.25" PointY="35.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceRiderManualMatch" Width="1.5" PointX="27.75" PointY="27.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentManifest" Width="1.5" PointX="12.75" PointY="6.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentManifestDetail" Width="1.5" PointX="15" PointY="44.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentRider" Width="1.5" PointX="15.75" PointY="27.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentRiderDetail" Width="1.5" PointX="18" PointY="34" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SubItem" Width="1.5" PointX="11.25" PointY="122.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SupplierItemDescription" Width="1.5" PointX="5.75" PointY="30.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SupplierItemDescriptionRegEx" Width="1.5" PointX="8" PointY="29.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Supplier" Width="1.5" PointX="1.5" PointY="79.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.sysdiagram" Width="1.5" PointX="27.75" PointY="30.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSet" Width="1.5" PointX="6" PointY="149.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCategory" Width="1.5" PointX="2.25" PointY="136.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCategoryCodeSuppUnit" Width="1.5" PointX="5.5" PointY="133.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCategoryDefaultKeyWord" Width="1.5" PointX="28.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCodeRequiredAttachment" Width="1.5" PointX="15.75" PointY="145" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffCode" Width="1.5" PointX="4.5" PointY="135.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffKeyWord" Width="1.5" PointX="7.75" PointY="92.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TariffSupUnitLkp" Width="1.5" PointX="3.25" PointY="237.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TarrifKeyWordCategory" Width="1.5" PointX="4.5" PointY="233.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.VolumeUnit" Width="1.5" PointX="29.75" PointY="7.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.WarehouseInfo" Width="1.5" PointX="18" PointY="23.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.WeightCalculationMethod" Width="1.5" PointX="1.5" PointY="40.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xBondAllocation" Width="1.5" PointX="16.5" PointY="111" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Buyer_segment" Width="1.5" PointX="11" PointY="47" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Declarant_segment" Width="1.5" PointX="11" PointY="41.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Identification_segment" Width="1.5" PointX="8.75" PointY="42.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Item" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Seller_segment" Width="1.5" PointX="11" PointY="44.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Value_declaration_form" Width="1.5" PointX="6.5" PointY="44" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xC71_Value_declaration_form_Registered" Width="1.5" PointX="8.75" PointY="53.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Assessment" Width="1.5" PointX="5.25" PointY="70.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Assessment_notice" Width="1.5" PointX="3" PointY="195.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_ASYCUDA" Width="1.5" PointX="0.75" PointY="109.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties" Width="1.5" PointX="6" PointY="108.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attached_documents" Width="1.5" PointX="11.25" PointY="148.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attachments" Width="1.5" PointX="13.5" PointY="149.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Border_information" Width="1.5" PointX="7.5" PointY="228" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Border_office" Width="1.5" PointX="5.25" PointY="220.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Consignee" Width="1.5" PointX="5.25" PointY="85.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Container" Width="1.5" PointX="3" PointY="93.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Country" Width="1.5" PointX="5.25" PointY="66.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Declarant" Width="1.5" PointX="3" PointY="100.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Delivery_terms" Width="1.5" PointX="5.25" PointY="231" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Departure_arrival_information" Width="1.5" PointX="7.5" PointY="225.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Destination" Width="1.5" PointX="7.5" PointY="65.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Export" Width="1.5" PointX="7.5" PointY="67.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Export_release" Width="1.5" PointX="3" PointY="192.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Exporter" Width="1.5" PointX="5.25" PointY="88.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Financial" Width="1.5" PointX="3" PointY="60.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Financial_Amounts" Width="1.5" PointX="5.25" PointY="62.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Financial_Guarantee" Width="1.5" PointX="5.25" PointY="59.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Forms" Width="1.5" PointX="5.25" PointY="207.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_General_information" Width="1.5" PointX="3" PointY="66.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Global_taxes" Width="1.5" PointX="3" PointY="217.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Goods_description" Width="1.5" PointX="11.25" PointY="92.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_deduction" Width="1.5" PointX="5.25" PointY="183.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_external_freight" Width="1.5" PointX="5.25" PointY="189.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_insurance" Width="1.5" PointX="5.25" PointY="171.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_internal_freight" Width="1.5" PointX="5.25" PointY="174.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_Invoice" Width="1.5" PointX="5.25" PointY="180.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_other_cost" Width="1.5" PointX="5.25" PointY="177.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_HScode" Width="1.5" PointX="13.5" PointY="96.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="1.5" PointX="3" PointY="75.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="1.5" PointX="9" PointY="107.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_deduction" Width="1.5" PointX="13.5" PointY="137.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_external_freight" Width="1.5" PointX="13.5" PointY="131.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_insurance" Width="1.5" PointX="13.5" PointY="145.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_internal_freight" Width="1.5" PointX="13.5" PointY="134.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item_Invoice" Width="1.5" PointX="13.5" PointY="128.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_other_cost" Width="1.5" PointX="13.5" PointY="140.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_ItemEntryDataDetails" Width="1.5" PointX="11.25" PointY="114.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Market_valuer" Width="1.5" PointX="13.5" PointY="143.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Means_of_transport" Width="1.5" PointX="5.25" PointY="226.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Nbers" Width="1.5" PointX="5.25" PointY="210.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Office_segment" Width="1.5" PointX="5.25" PointY="78" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Packages" Width="1.5" PointX="11.25" PointY="107" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Place_of_loading" Width="1.5" PointX="5.25" PointY="223" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Previous_doc" Width="1.5" PointX="11.25" PointY="89.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_PreviousItem" Width="1.5" PointX="14.25" PointY="115.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Principal" Width="1.5" PointX="5.25" PointY="205.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Property" Width="1.5" PointX="3" PointY="208.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_receipt" Width="1.5" PointX="5.25" PointY="73" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Registration" Width="1.5" PointX="5.25" PointY="80.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Seals" Width="1.5" PointX="5.25" PointY="197.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Signature" Width="1.5" PointX="5.25" PointY="202.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Supplementary_unit" Width="1.5" PointX="13.5" PointY="100.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Suppliers_documents" Width="1.5" PointX="3" PointY="213" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Suppliers_link" Width="1.5" PointX="11.25" PointY="101" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Tarification" Width="1.5" PointX="11.25" PointY="97.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Taxation" Width="1.5" PointX="11.25" PointY="86" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Taxation_line" Width="1.5" PointX="13.5" PointY="86.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Total" Width="1.5" PointX="5.25" PointY="186.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Traders" Width="1.5" PointX="3" PointY="88.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Traders_Financial" Width="1.5" PointX="5.25" PointY="90.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Transit" Width="1.5" PointX="3" PointY="201" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Transit_Destination" Width="1.5" PointX="5.25" PointY="200.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Transport" Width="1.5" PointX="3" PointY="225.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Type" Width="1.5" PointX="5.25" PointY="75.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Valuation" Width="1.5" PointX="3" PointY="178.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Valuation_item" Width="1.5" PointX="11.25" PointY="135" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Warehouse" Width="1.5" PointX="3" PointY="83.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Weight" Width="1.5" PointX="5.25" PointY="169" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Weight_itm" Width="1.5" PointX="13.5" PointY="125.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_General_segment" Width="1.5" PointX="3.75" PointY="244.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_Lic_item_segment" Width="1.5" PointX="3.75" PointY="240.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_License" Width="1.5" PointX="1.5" PointY="157" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_License_Registered" Width="1.5" PointX="3.75" PointY="50.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xSalesDetail" Width="1.5" PointX="25" PointY="8.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xSalesFile" Width="1.5" PointX="22.75" PointY="9.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaWarehouseData" Width="1.5" PointX="29.75" PointY="10.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Reports_POSvsAsycudaData" Width="1.5" PointX="9.75" PointY="36.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Sales____to_OPS___Overs" Width="1.5" PointX="29.75" PointY="18.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Sales____to_OPS___Shorts" Width="1.5" PointX="29.75" PointY="22.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.sales_Errors____to_OPS___Overs" Width="1.5" PointX="29.75" PointY="26.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOManualMatches_Bkp" Width="1.5" PointX="14.75" PointY="36.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.shipping_Discrepancies_April_October_2019_for_budget_fromkim" Width="1.5" PointX="26.75" PointY="36.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ActionDocSetLogs_Actions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ActionDocSetLogs_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_Actions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeActions_Actions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SessionActions_Actions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AdjustmentOversAllocations_EntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AdjustmentOversAllocations_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AdjustmentOversAllocations_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ApplicationSettings_BondTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ApplicationSettings_WeightCalculationMethods" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ExportTemplate_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryMapping_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffKeyWords_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xC71_Value_declaration_form_Registered_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xLIC_License_Registered_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentEntryData_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Container_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Licences_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ImportErrors_AsycudaDocumentSet_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_EntryData" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_EntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xBondAllocations_AsycudaSalesAllocations" />
+        <AssociationConnector Association="WaterNutDBModel.FK_CustomsProcedureRequiredAttachments_AttachmentCodes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCodeRequiredAttachments_AttachmentCodes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailAttachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_BondTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeContacts_Contacts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_CustomsProcedureEntryDataType_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_CustomsProcedureRequiredAttachments_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_CustomsProcedureEntryDataType_EntryDataType" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailAttachments_Emails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailFileTypes_EmailMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailFileTypes_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailInfoMappings_EmailMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailInfoMappings_InfoMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_EmailMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Emails1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Adjustments_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_DocumentType_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_EntryDataType" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_FileTypes1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Invoices_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_OpeningStock_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_PurchaseOrders_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Sales_EntryData1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_EntryData" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Summary_EntryData" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_EntryData_PurchaseOrders" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoicePOs_EntryData_PurchaseOrders" />
+        <AssociationConnector Association="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ItemEntryDataDetails_EntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Item_EntryDataType" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Events_SessionActions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileGroups" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeActions_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeContacts_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappings_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingsValues_FileTypeMappings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeReplaceRegex_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ImportActions_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldMappings_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Invoices_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_History_Allocations_History_Batches" />
+        <AssociationConnector Association="WaterNutDBModel.FK_History_Batch_Issues_History_Batches" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedLines_ImportErrors" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InfoMappingRegEx_InfoMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryAsycudaMapping_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_TariffCodes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_DoNotMap_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_Lumped_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemSource_InventorySources" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_FailedLines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_ChildPart_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_ChildPart_OCR_Parts1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_Parameters" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SessionSchedule_ParameterSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SessionActions_Sessions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SessionSchedule_Sessions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShimentBLCharges_ShipmentBL1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedBL_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedFreight_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedInvoices_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedManifest_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedRider_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachments_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedBL_ShipmentBL1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedFreight_ShipmentFreight" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedInvoices_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedManifest_ShipmentManifest" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedRider_ShipmentRider" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentBLDetails_ShipmentBL1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentConsigneeAliases_ShipmentConsignee" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentConsigneeSettings_ShipmentConsignee" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SubItems_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SupplierItemDescriptionRegEx_SupplierItemDescription" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCategoryCodeSuppUnit_TariffCategory" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCodes_TariffCategory" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TarrifKeyWordCategory_TariffCategory" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffCodeRequiredAttachments_TariffCodes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_TariffKeyWords_TariffCodes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xBondAllocations_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.Identification_segment_Buyer_segment" />
+        <AssociationConnector Association="WaterNutDBModel.Identification_segment_Declarant_segment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xC71_Identification_segment_xC71_Value_declaration_form" />
+        <AssociationConnector Association="WaterNutDBModel.Identification_segment_Seller_segment" />
+        <AssociationConnector Association="WaterNutDBModel.Value_declaration_form_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xC71_RegisteredValuation_xC71_Value_declaration_form" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Assessment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Assessment_notice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Container" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Declarant" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Export_release" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Financial" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_General_information" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Global_taxes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Identification" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_PreviousItem" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Property" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Suppliers_documents" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Transit" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Transport" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Warehouse" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Traders_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Attached_documents" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Means_of_transport_Border_information" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transport_Border_office" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Traders_Consignee" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Country_xcuda_General_information" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Destination_xcuda_Country" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Export_xcuda_Country" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transport_Delivery_terms" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Means_of_transport_Departure_arrival_information" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Traders_Exporter" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Financialxcuda_Financial_Amounts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Financialxcuda_Financial_Guarantee" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Forms_xcuda_Property" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Goods_description" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_deduction_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_external_freight_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_insurance_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_internal_freight_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_Invoice_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_other_cost_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Tarification_HScode" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Office_segment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_receipt" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Packages" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Previous_doc" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Suppliers_link" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Tarification" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Taxation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Valuation_item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ItemEntryDataDetails_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_PreviousItem_xcuda_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_item_deduction" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_item_external_freight" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_item_insurance" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_item_internal_freight" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_Item_Invoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_item_other_cost" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_Market_valuer" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transport_Means_of_transport" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Property_Nbers" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transport_Place_of_loading" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transit_Principal" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transit_Seals" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Transit_Signature" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Tarification_Supplementary_unit" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Taxation_Taxation_line" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Total_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Traders_Financial" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Transit_Destination_xcuda_Transit" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Weight_xcuda_Valuation" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Valuation_item_Weight_itm" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xLIC_General_segment_xLIC_License" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xLIC_RegisteredLicense_xLIC_License" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" />
+        <AssociationConnector Association="WaterNutDBModel.EntryDataDetails_Allocations" />
+        <AssociationConnector Association="WaterNutDBModel.xcuda_Inventory_Item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Consignees" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Shipment_Consignees" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentBL_Consignees" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentManifest_Consignees" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

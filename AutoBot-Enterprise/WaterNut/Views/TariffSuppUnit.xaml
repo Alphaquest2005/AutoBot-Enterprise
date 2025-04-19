@@ -1,0 +1,27 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:QS="clr-namespace:WaterNut.QuerySpace.InventoryQS.ViewModels"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+	x:Class="WaterNut.Views.TariffSuppUnit"
+	d:DesignWidth="640" d:DesignHeight="480">
+	<UserControl.Resources>
+        <x:Static Member="QS:TariffSuppUnitModel.Instance" x:Key="TariffSuppUnitModelDataSource" />
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource TariffSuppUnitModelDataSource}}">
+        <DataGrid x:Name="SuppGrd" HorizontalAlignment="Left" Height="387.407" Margin="0,61.993,0,0" VerticalAlignment="Top" Width="640" AutoGenerateColumns="False" ItemsSource="{Binding TariffSupUnitLkps}" GridLinesVisibility="None" AlternatingRowBackground="#FFD5DFE8" RowHeight="25" RowEditEnding="DataGrid_RowEditEnding_1" InitializingNewItem="DataGrid_InitializingNewItem_1" SelectionChanged="SuppGrd_SelectionChanged" Background="#7FF0F0F0">
+			<DataGrid.Columns>
+				
+				<DataGridTextColumn Binding="{Binding Data.SuppUnitCode2}" Width="100" Header="Supp Unit Code2"/>
+                <DataGridTextColumn Binding="{Binding Data.SuppUnitName2}" Header="Supp Unit Name2"/>
+                <DataGridTextColumn Binding="{Binding Data.TariffCategoryCode}" Header="Tariff Category Code"/>
+			</DataGrid.Columns>
+		</DataGrid>
+		<TextBlock HorizontalAlignment="Left" Height="32.766" Margin="8.838,14.011,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333"><Run Text="Tariff Category Supplementary Units"/><LineBreak/><Run/></TextBlock>
+        <TextBlock x:Name="ViewAllTxt" HorizontalAlignment="Left" Height="26" Margin="555,31.4,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown_1"/>
+    </Grid>
+</UserControl>

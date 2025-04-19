@@ -1,0 +1,51 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class EntityConstructorTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string conTextName;
+        public string projectName;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+           
+#>
+
+using <#=conTextName#>.Client.DTO;
+using TrackableEntities.Client;
+using <#=projectName #>.Interfaces.Client;
+
+namespace <#=conTextName#>.Client.Entities
+{
+
+    public partial class <#=mainEntity.Name#> 
+    {
+       public <#=mainEntity.Name#>()
+        {
+            this.DTO = new DTO.<#=mainEntity.Name#>();//{TrackingState = TrackableEntities.TrackingState.Added}
+            _changeTracker = new ChangeTrackingCollection<I<#=mainEntity.Name#>>(this.DTO);
+
+            CustomClassStartUp();
+            MyNavPropStartUp();
+            IIdentifiableEntityStartUp();
+            AutoGenStartUp();
+        }
+    partial void CustomClassStartUp();
+    partial void AutoGenStartUp();
+    partial void MyNavPropStartUp();
+    partial void IIdentifiableEntityStartUp();
+   
+    }
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

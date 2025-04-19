@@ -1,0 +1,45 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#= this.Host.ResolveParameterValue("-", "-", "projects") #>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\ObjectContexts.tt" #>
+<#
+    var clst = new List<string>()
+    {
+            "AllocationQS",
+            "CounterPointQS",
+            "CoreEntities",
+            "EntryDataQS",
+            "InventoryQS",
+            "PreviousDocumentQS",
+            "SalesDataQS",
+            "AdjustmentQS",
+            "AllocationDS",
+            "DocumentDS",
+            "DocumentItemDS",
+            "EntryDataDS",
+            "InventoryDS",
+            "PreviousDocumentDS",
+            "QuickBooksDS",
+            "ValuationDS",
+            "LicenseDS",
+    };
+    foreach (var conTextname in clst)
+    {
+
+        ObjectContextTPL sv = new ObjectContextTPL();
+        sv.inputFile = this.Host.ResolvePath(@"..\" + conTextname + @"\" + conTextname + ".edmx");
+        sv.coreEdmx = this.Host.ResolvePath(@"..\" + conTextname + @"\" + conTextname + @".edmx");
+        sv.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        sv.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\ObjectContexts\" + conTextname + ".Context.cs");
+        sv.Render();
+    }
+
+    ObjectContextTPL ov = new ObjectContextTPL();
+        ov.inputFile = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.coreEdmx = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        ov.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\ObjectContexts\OCR.Context.cs");
+        ov.Render();
+    
+#>

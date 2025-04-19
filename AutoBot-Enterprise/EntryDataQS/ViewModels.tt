@@ -1,0 +1,8 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\QuerySpaceViewModels.tt"#>
+<#
+    CreateViewModels("WaterNut",@"C:\prism\WaterNut - Enterprise\EntryDataQS\EntryDataQS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\WaterNut\WaterNut.csproj", true, false  );          
+#>

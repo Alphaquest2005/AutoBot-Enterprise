@@ -1,0 +1,488 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WaterNutModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="xLIC_General_segment">
+          <Key>
+            <PropertyRef Name="General_segment_Id" />
+          </Key>
+          <Property Name="Arrival_date" Type="nvarchar" MaxLength="255" />
+          <Property Name="Application_date" Type="nvarchar" MaxLength="255" />
+          <Property Name="Expiry_date" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importation_date" Type="nvarchar" MaxLength="255" />
+          <Property Name="General_segment_Id" Type="int" Nullable="false" />
+          <Property Name="Importer_cellphone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_country_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importer_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="Owner_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_email" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importer_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importer_contact" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_telephone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importer_telephone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_country_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter_cellphone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Importer_email" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="xLIC_Lic_item_segment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Commodity_code" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Quantity_requested" Type="float" Nullable="false" />
+          <Property Name="Origin" Type="nvarchar" MaxLength="255" />
+          <Property Name="Unit_of_measurement" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quantity_to_approve" Type="float" Nullable="false" />
+          <Property Name="LicenseId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xLIC_License">
+          <Key>
+            <PropertyRef Name="LicenseId" />
+          </Key>
+          <Property Name="LicenseId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xLIC_License_Registered">
+          <Key>
+            <PropertyRef Name="LicenseId" />
+          </Key>
+          <Property Name="LicenseId" Type="int" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-LicenceAvailableQty">
+          <Key>
+            
+            
+            
+            
+            
+            
+            <PropertyRef Name="SegmentId" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="8" />
+          <Property Name="Origin" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quantity_to_approve" Type="float" Nullable="false" />
+          <Property Name="Application_date" Type="date" />
+          <Property Name="Importation_date" Type="date" />
+          <Property Name="Key" Type="nvarchar" MaxLength="55" />
+          <Property Name="Balance" Type="float" Nullable="false" />
+          <Property Name="LicenseId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="SegmentId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-LICToCreate">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="DocumentsCount" Type="int" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="LicenseLines" Type="int" />
+          <Property Name="TotalCIF" Type="float" />
+          <Property Name="QtyLicensesRequired" Type="int" />
+        </EntityType>
+        <Association Name="FK_xLIC_General_segment_xLIC_License">
+          <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xLIC_General_segment" Type="Self.xLIC_General_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_License">
+              <PropertyRef Name="LicenseId" />
+            </Principal>
+            <Dependent Role="xLIC_General_segment">
+              <PropertyRef Name="General_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xLIC_Lic_item_segment_xLIC_License">
+          <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xLIC_Lic_item_segment" Type="Self.xLIC_Lic_item_segment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_License">
+              <PropertyRef Name="LicenseId" />
+            </Principal>
+            <Dependent Role="xLIC_Lic_item_segment">
+              <PropertyRef Name="LicenseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xLIC_RegisteredLicense_xLIC_License">
+          <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xLIC_License_Registered" Type="Self.xLIC_License_Registered" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_License">
+              <PropertyRef Name="LicenseId" />
+            </Principal>
+            <Dependent Role="xLIC_License_Registered">
+              <PropertyRef Name="LicenseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WaterNutModelStoreContainer">
+          <EntitySet Name="xLIC_General_segment" EntityType="Self.xLIC_General_segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xLIC_Lic_item_segment" EntityType="Self.xLIC_Lic_item_segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xLIC_License" EntityType="Self.xLIC_License" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xLIC_License_Registered" EntityType="Self.xLIC_License_Registered" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TODO-LicenceAvailableQty" EntityType="Self.TODO-LicenceAvailableQty" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-LicenceAvailableQty].[RegistrationNumber] AS [RegistrationNumber], 
+[TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
+[TODO-LicenceAvailableQty].[Origin] AS [Origin], 
+[TODO-LicenceAvailableQty].[Quantity_to_approve] AS [Quantity_to_approve], 
+[TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
+[TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
+[TODO-LicenceAvailableQty].[Key] AS [Key], 
+[TODO-LicenceAvailableQty].[Balance] AS [Balance], 
+[TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
+[TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
+[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference], 
+[TODO-LicenceAvailableQty].[SegmentId] AS [SegmentId]
+FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-LICToCreate" EntityType="Self.TODO-LICToCreate" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-LICToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-LICToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LICToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-LICToCreate].[Currency_Code] AS [Currency_Code], 
+[TODO-LICToCreate].[Manifest_Number] AS [Manifest_Number], 
+[TODO-LICToCreate].[BLNumber] AS [BLNumber], 
+[TODO-LICToCreate].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-LICToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-LICToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-LICToCreate].[TotalInvoices] AS [TotalInvoices], 
+[TODO-LICToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-LICToCreate].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
+[TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
+[TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired]
+FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_xLIC_General_segment_xLIC_License" Association="Self.FK_xLIC_General_segment_xLIC_License">
+            <End Role="xLIC_License" EntitySet="xLIC_License" />
+            <End Role="xLIC_General_segment" EntitySet="xLIC_General_segment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xLIC_Lic_item_segment_xLIC_License" Association="Self.FK_xLIC_Lic_item_segment_xLIC_License">
+            <End Role="xLIC_License" EntitySet="xLIC_License" />
+            <End Role="xLIC_Lic_item_segment" EntitySet="xLIC_Lic_item_segment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xLIC_RegisteredLicense_xLIC_License" Association="Self.FK_xLIC_RegisteredLicense_xLIC_License">
+            <End Role="xLIC_License" EntitySet="xLIC_License" />
+            <End Role="xLIC_License_Registered" EntitySet="xLIC_License_Registered" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WaterNutDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="LicenseDS" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="xLIC_General_segment" EntityType="WaterNutDBModel.xLIC_General_segment" />
+          <EntitySet Name="xLIC_Lic_item_segment" EntityType="WaterNutDBModel.xLIC_Lic_item_segment" />
+          <EntitySet Name="xLIC_License" EntityType="WaterNutDBModel.xLIC_License" />
+          <AssociationSet Name="FK_xLIC_General_segment_xLIC_License" Association="WaterNutDBModel.FK_xLIC_General_segment_xLIC_License">
+            <End Role="xLIC_License" EntitySet="xLIC_License" />
+            <End Role="xLIC_General_segment" EntitySet="xLIC_General_segment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xLIC_Lic_item_segment_xLIC_License" Association="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License">
+            <End Role="xLIC_License" EntitySet="xLIC_License" />
+            <End Role="xLIC_Lic_item_segment" EntitySet="xLIC_Lic_item_segment" />
+          </AssociationSet>
+          <EntitySet Name="TODO_LICToCreate" EntityType="WaterNutDBModel.TODO_LICToCreate" />
+          <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
+          <AssociationSet Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty" Association="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
+            <End Role="xLIC_Lic_item_segment" EntitySet="xLIC_Lic_item_segment" />
+            <End Role="TODO_LicenceAvailableQty" EntitySet="TODO_LicenceAvailableQty" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="xLIC_General_segment">
+          <Key>
+            <PropertyRef Name="General_segment_Id" />
+          </Key>
+          <Property Name="Arrival_date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Application_date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Expiry_date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Importation_date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="General_segment_Id" Type="Int32" Nullable="false" />
+          <Property Name="Importer_cellphone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_country_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Importer_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Owner_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Importer_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Importer_contact" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_telephone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Importer_telephone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_country_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_cellphone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xLIC_License" Relationship="WaterNutDBModel.FK_xLIC_General_segment_xLIC_License" FromRole="xLIC_General_segment" ToRole="xLIC_License" />
+          <Property Name="Importer_email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="xLIC_Lic_item_segment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Commodity_code" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="Quantity_requested" Type="Double" Nullable="false" />
+          <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Unit_of_measurement" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity_to_approve" Type="Double" Nullable="false" />
+          <Property Name="LicenseId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="xLIC_License" Relationship="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" FromRole="xLIC_Lic_item_segment" ToRole="xLIC_License" />
+          <NavigationProperty Name="TODO_LicenceAvailableQty" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="xLIC_Lic_item_segment" ToRole="TODO_LicenceAvailableQty" />
+        </EntityType>
+        <EntityType Name="xLIC_License">
+          <Key>
+            <PropertyRef Name="LicenseId" />
+          </Key>
+          <Property Name="LicenseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="xLIC_General_segment" Relationship="WaterNutDBModel.FK_xLIC_General_segment_xLIC_License" FromRole="xLIC_License" ToRole="xLIC_General_segment" />
+          <NavigationProperty Name="xLIC_Lic_item_segment" Relationship="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" FromRole="xLIC_License" ToRole="xLIC_Lic_item_segment" />
+        </EntityType>
+        <Association Name="FK_xLIC_General_segment_xLIC_License">
+          <End Type="WaterNutDBModel.xLIC_License" Role="xLIC_License" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xLIC_General_segment" Role="xLIC_General_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_License">
+              <PropertyRef Name="LicenseId" />
+            </Principal>
+            <Dependent Role="xLIC_General_segment">
+              <PropertyRef Name="General_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xLIC_Lic_item_segment_xLIC_License">
+          <End Type="WaterNutDBModel.xLIC_License" Role="xLIC_License" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xLIC_Lic_item_segment" Role="xLIC_Lic_item_segment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_License">
+              <PropertyRef Name="LicenseId" />
+            </Principal>
+            <Dependent Role="xLIC_Lic_item_segment">
+              <PropertyRef Name="LicenseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Registered" BaseType="WaterNutDBModel.xLIC_License">
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TODO_LICToCreate">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="DocumentsCount" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="LicenseLines" Type="Int32" />
+          <Property Name="TotalCIF" Type="Double" />
+          <Property Name="QtyLicensesRequired" Type="Int32" />
+        </EntityType>
+        <EntityType Name="TODO_LicenceAvailableQty">
+          <Key>
+            <PropertyRef Name="SegmentId" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Application_date" Type="DateTime" Precision="0" />
+          <Property Name="Importation_date" Type="DateTime" Precision="0" />
+          <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="Balance" Type="Double" Nullable="false" />
+          <Property Name="LicenseId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xLIC_Lic_item_segment" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="TODO_LicenceAvailableQty" ToRole="xLIC_Lic_item_segment" />
+          <Property Name="SegmentId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="Double" Nullable="false" />
+        </EntityType>
+        <Association Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
+          <End Type="WaterNutDBModel.xLIC_Lic_item_segment" Role="xLIC_Lic_item_segment" Multiplicity="1" />
+          <End Type="WaterNutDBModel.TODO_LicenceAvailableQty" Role="TODO_LicenceAvailableQty" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_Lic_item_segment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TODO_LicenceAvailableQty">
+              <PropertyRef Name="SegmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WaterNutModelStoreContainer" CdmEntityContainer="LicenseDS">
+          <EntitySetMapping Name="xLIC_General_segment">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xLIC_General_segment">
+              <MappingFragment StoreEntitySet="xLIC_General_segment">
+                <ScalarProperty Name="Importer_email" ColumnName="Importer_email" />
+                <ScalarProperty Name="Exporter_cellphone" ColumnName="Exporter_cellphone" />
+                <ScalarProperty Name="Exporter_country_name" ColumnName="Exporter_country_name" />
+                <ScalarProperty Name="Importer_telephone" ColumnName="Importer_telephone" />
+                <ScalarProperty Name="Exporter_telephone" ColumnName="Exporter_telephone" />
+                <ScalarProperty Name="Exporter_name" ColumnName="Exporter_name" />
+                <ScalarProperty Name="Importer_contact" ColumnName="Importer_contact" />
+                <ScalarProperty Name="Importer_name" ColumnName="Importer_name" />
+                <ScalarProperty Name="Exporter_email" ColumnName="Exporter_email" />
+                <ScalarProperty Name="Owner_code" ColumnName="Owner_code" />
+                <ScalarProperty Name="Importer_code" ColumnName="Importer_code" />
+                <ScalarProperty Name="Exporter_country_code" ColumnName="Exporter_country_code" />
+                <ScalarProperty Name="Exporter_address" ColumnName="Exporter_address" />
+                <ScalarProperty Name="Importer_cellphone" ColumnName="Importer_cellphone" />
+                <ScalarProperty Name="General_segment_Id" ColumnName="General_segment_Id" />
+                <ScalarProperty Name="Importation_date" ColumnName="Importation_date" />
+                <ScalarProperty Name="Expiry_date" ColumnName="Expiry_date" />
+                <ScalarProperty Name="Application_date" ColumnName="Application_date" />
+                <ScalarProperty Name="Arrival_date" ColumnName="Arrival_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xLIC_Lic_item_segment">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xLIC_Lic_item_segment">
+              <MappingFragment StoreEntitySet="xLIC_Lic_item_segment">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+                <ScalarProperty Name="Quantity_to_approve" ColumnName="Quantity_to_approve" />
+                <ScalarProperty Name="Unit_of_measurement" ColumnName="Unit_of_measurement" />
+                <ScalarProperty Name="Origin" ColumnName="Origin" />
+                <ScalarProperty Name="Quantity_requested" ColumnName="Quantity_requested" />
+                <ScalarProperty Name="Commodity_code" ColumnName="Commodity_code" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xLIC_License">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.xLIC_License)">
+              <MappingFragment StoreEntitySet="xLIC_License">
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Registered)">
+              <MappingFragment StoreEntitySet="xLIC_License_Registered">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_LICToCreate">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LICToCreate">
+              <MappingFragment StoreEntitySet="TODO-LICToCreate">
+                <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
+                <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
+                <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
+                <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_LicenceAvailableQty">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
+              <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
+                <ScalarProperty Name="Quantity_to_approve" ColumnName="Quantity_to_approve" />
+                <ScalarProperty Name="SegmentId" ColumnName="SegmentId" />
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Importation_date" ColumnName="Importation_date" />
+                <ScalarProperty Name="Application_date" ColumnName="Application_date" />
+                <ScalarProperty Name="Origin" ColumnName="Origin" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

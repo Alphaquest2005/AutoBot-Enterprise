@@ -1,0 +1,65 @@
+﻿
+<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ViewModels\QuerySpace\MessageTokenModel.tt" once="true"#>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+        
+        public void CreateMessageTokens(string projectName, string inputFile, string coreEdmx, string outputProject)
+        {
+            
+	
+            EntityType MainEntity = null ;
+            string MainEntitySet = "";
+            string coreInputFile= coreEdmx;
+            
+
+       
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+            MetadataLoader loader = new MetadataLoader(this);
+            CodeRegion region = new CodeRegion(this, 1);
+            MetadataTools ef = new MetadataTools(this);
+
+       
+            MetadataWorkspace metadataWorkspace = null;
+            bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+            EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+     
+            string namespaceName = code.VsNamespaceSuggestion();
+
+            EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            MetadataWorkspace COREmetadataWorkspace = null;
+            bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreInputFile, out COREmetadataWorkspace);
+            EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+            EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+          
+
+                MessageTokenTPL mv = new MessageTokenTPL();
+                mv.projectName = projectName;
+                mv.conTextName = code.Escape(container);
+                mv.container = container;
+                mv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+                mv.COREcontainer = COREcontainer;
+                mv.COREentityCollection =
+                    code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+                mv.Output.Project = outputProject;
+                mv.Output.File = @"ViewModels\Generated Models\QuerySpace\" + code.Escape(container) + @"\" +
+                                 "MessageToken.cs";
+                mv.Render();
+            
+
+#>
+<#+
+        }
+
+    #>

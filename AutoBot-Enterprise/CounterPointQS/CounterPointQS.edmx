@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WaterNutDB-Enterprise.dbo.CounterPointPODetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CounterPointPODetails">
+          <Key>
+            <PropertyRef Name="PO_NO" />
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="PO_NO" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="SEQ_NO" Type="int" Nullable="false" />
+          <Property Name="ITEM_NO" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ORD_QTY" Type="numeric" Precision="15" Scale="4" Nullable="false" />
+          <Property Name="ORD_UNIT" Type="varchar" MaxLength="15" />
+          <Property Name="ITEM_DESCR" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ORD_COST" Type="numeric" Precision="15" Scale="4" Nullable="false" />
+          <Property Name="UNIT_WEIGHT" Type="numeric" Precision="15" Scale="4" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WaterNutDB-Enterprise.dbo.CounterPointPOs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CounterPointPOs">
+          <Key>
+            <PropertyRef Name="PO_NO" />
+            
+            
+          </Key>
+          <Property Name="PO_NO" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="DATE" Type="datetime" Nullable="false" />
+          <Property Name="LIN_CNT" Type="int" Nullable="false" />
+          <Property Name="Downloaded" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WaterNutDB-Enterprise.dbo.CounterPointSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CounterPointSales">
+          <Key>
+            
+            <PropertyRef Name="INVNO" />
+          </Key>
+          <Property Name="INVNO" Type="varchar" MaxLength="66" Nullable="false" />
+          <Property Name="DATE" Type="datetime" />
+          <Property Name="TAX_AMT" Type="numeric" Precision="15" Scale="2" Nullable="false" />
+          <Property Name="CUSTOMER NAME" Type="varchar" MaxLength="81" />
+          <Property Name="LIN_CNT" Type="int" />
+          <Property Name="Downloaded" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WaterNutDB-Enterprise.dbo.CounterPointSalesDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CounterPointSalesDetails">
+          <Key>
+            
+            <PropertyRef Name="INVNO" />
+          </Key>
+          <Property Name="INVNO" Type="varchar" MaxLength="66" Nullable="false" />
+          <Property Name="SEQ_NO" Type="int" />
+          <Property Name="ITEM_NO" Type="varchar" MaxLength="20" />
+          <Property Name="ITEM_DESCR" Type="varchar" MaxLength="50" />
+          <Property Name="QUANTITY" Type="numeric" Precision="15" Scale="4" />
+          <Property Name="COST" Type="money" />
+          <Property Name="ACCT NO" Type="varchar" MaxLength="15" />
+          <Property Name="CUSTOMER NAME" Type="varchar" MaxLength="81" />
+          <Property Name="DATE" Type="datetime" />
+          <Property Name="TAX_AMT" Type="numeric" Precision="15" Scale="2" Nullable="false" />
+          <Property Name="UNIT_WEIGHT" Type="numeric" Precision="15" Scale="4" />
+          <Property Name="QTY_UNIT" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityContainer Name="WaterNutDBModelStoreContainer">
+          <EntitySet Name="CounterPointPODetails" EntityType="Self.CounterPointPODetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[CounterPointPODetails].[PO_NO] AS [PO_NO], 
+[CounterPointPODetails].[SEQ_NO] AS [SEQ_NO], 
+[CounterPointPODetails].[ITEM_NO] AS [ITEM_NO], 
+[CounterPointPODetails].[ORD_QTY] AS [ORD_QTY], 
+[CounterPointPODetails].[ORD_UNIT] AS [ORD_UNIT], 
+[CounterPointPODetails].[ITEM_DESCR] AS [ITEM_DESCR], 
+[CounterPointPODetails].[ORD_COST] AS [ORD_COST], 
+[CounterPointPODetails].[UNIT_WEIGHT] AS [UNIT_WEIGHT]
+FROM [dbo].[CounterPointPODetails] AS [CounterPointPODetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="CounterPointPOs" EntityType="Self.CounterPointPOs" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[CounterPointPOs].[PO_NO] AS [PO_NO], 
+[CounterPointPOs].[DATE] AS [DATE], 
+[CounterPointPOs].[LIN_CNT] AS [LIN_CNT], 
+[CounterPointPOs].[Downloaded] AS [Downloaded]
+FROM [dbo].[CounterPointPOs] AS [CounterPointPOs]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="CounterPointSales" EntityType="Self.CounterPointSales" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[CounterPointSales].[INVNO] AS [INVNO], 
+[CounterPointSales].[DATE] AS [DATE], 
+[CounterPointSales].[TAX_AMT] AS [TAX_AMT], 
+[CounterPointSales].[CUSTOMER NAME] AS [CUSTOMER NAME], 
+[CounterPointSales].[LIN_CNT] AS [LIN_CNT], 
+[CounterPointSales].[Downloaded] AS [Downloaded]
+FROM [dbo].[CounterPointSales] AS [CounterPointSales]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="CounterPointSalesDetails" EntityType="Self.CounterPointSalesDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[CounterPointSalesDetails].[INVNO] AS [INVNO], 
+[CounterPointSalesDetails].[SEQ_NO] AS [SEQ_NO], 
+[CounterPointSalesDetails].[ITEM_NO] AS [ITEM_NO], 
+[CounterPointSalesDetails].[ITEM_DESCR] AS [ITEM_DESCR], 
+[CounterPointSalesDetails].[QUANTITY] AS [QUANTITY], 
+[CounterPointSalesDetails].[COST] AS [COST], 
+[CounterPointSalesDetails].[ACCT NO] AS [ACCT NO], 
+[CounterPointSalesDetails].[CUSTOMER NAME] AS [CUSTOMER NAME], 
+[CounterPointSalesDetails].[DATE] AS [DATE], 
+[CounterPointSalesDetails].[TAX_AMT] AS [TAX_AMT], 
+[CounterPointSalesDetails].[UNIT_WEIGHT] AS [UNIT_WEIGHT], 
+[CounterPointSalesDetails].[QTY_UNIT] AS [QTY_UNIT]
+FROM [dbo].[CounterPointSalesDetails] AS [CounterPointSalesDetails]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WaterNutDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CounterPointQS" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="CounterPointPODetails" EntityType="WaterNutDBModel.CounterPointPODetails" />
+          <EntitySet Name="CounterPointPOs" EntityType="WaterNutDBModel.CounterPointPOs" />
+          <EntitySet Name="CounterPointSales" EntityType="WaterNutDBModel.CounterPointSales" />
+          <EntitySet Name="CounterPointSalesDetails" EntityType="WaterNutDBModel.CounterPointSalesDetails" />
+        </EntityContainer>
+        <EntityType Name="CounterPointPODetails">
+          <Key>
+            <PropertyRef Name="PO_NO" />
+          </Key>
+          <Property Name="PO_NO" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="SEQ_NO" Type="Int32" Nullable="false" />
+          <Property Name="ITEM_NO" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="ORD_QTY" Type="Decimal" Nullable="false" Precision="15" Scale="4" />
+          <Property Name="ORD_UNIT" Type="String" MaxLength="15" Unicode="false" FixedLength="false" />
+          <Property Name="ITEM_DESCR" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="ORD_COST" Type="Decimal" Nullable="false" Precision="15" Scale="4" />
+          <Property Name="UNIT_WEIGHT" Type="Decimal" Precision="15" Scale="4" />
+        </EntityType>
+        <EntityType Name="CounterPointPOs">
+          <Key>
+            <PropertyRef Name="PurchaseOrderNo" />
+          </Key>
+          <Property Name="PurchaseOrderNo" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">PurchaseOrderNo</a:DisplayNameProperty></Property>
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">Date</a:DisplayNameProperty></Property>
+          <Property Name="LineNumber" Type="Int32" Nullable="false"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">LineNumber</a:DisplayNameProperty></Property>
+          <Property Name="Downloaded" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CounterPointSales">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+          </Key>
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="66" Unicode="false" FixedLength="false"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">InvoiceNo</a:DisplayNameProperty></Property>
+          <Property Name="Date" Type="DateTime" Precision="3"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">Date</a:DisplayNameProperty></Property>
+          <Property Name="TAX_AMT" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="CustomerName" Type="String" MaxLength="81" Unicode="false" FixedLength="false"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">CustomerName</a:DisplayNameProperty></Property>
+          <Property Name="LineNumber" Type="Int32"><a:DisplayNameProperty xmlns:a="http://schemas.tempuri.com/DisplayNameProperty">LineNumber</a:DisplayNameProperty></Property>
+          <Property Name="Downloaded" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CounterPointSalesDetails">
+          <Key>
+            <PropertyRef Name="INVNO" />
+          </Key>
+          <Property Name="INVNO" Type="String" Nullable="false" MaxLength="66" Unicode="false" FixedLength="false" />
+          <Property Name="SEQ_NO" Type="Int32" />
+          <Property Name="ITEM_NO" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="ITEM_DESCR" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="QUANTITY" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="COST" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ACCT_NO" Type="String" MaxLength="15" Unicode="false" FixedLength="false" />
+          <Property Name="CUSTOMER_NAME" Type="String" MaxLength="81" Unicode="false" FixedLength="false" />
+          <Property Name="DATE" Type="DateTime" Precision="3" />
+          <Property Name="TAX_AMT" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="UNIT_WEIGHT" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="QTY_UNIT" Type="String" MaxLength="15" Unicode="false" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WaterNutDBModelStoreContainer" CdmEntityContainer="CounterPointQS">
+          <EntitySetMapping Name="CounterPointPODetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CounterPointPODetails">
+              <MappingFragment StoreEntitySet="CounterPointPODetails">
+                <ScalarProperty Name="PO_NO" ColumnName="PO_NO" />
+                <ScalarProperty Name="SEQ_NO" ColumnName="SEQ_NO" />
+                <ScalarProperty Name="ITEM_NO" ColumnName="ITEM_NO" />
+                <ScalarProperty Name="ORD_QTY" ColumnName="ORD_QTY" />
+                <ScalarProperty Name="ORD_UNIT" ColumnName="ORD_UNIT" />
+                <ScalarProperty Name="ITEM_DESCR" ColumnName="ITEM_DESCR" />
+                <ScalarProperty Name="ORD_COST" ColumnName="ORD_COST" />
+                <ScalarProperty Name="UNIT_WEIGHT" ColumnName="UNIT_WEIGHT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CounterPointPOs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CounterPointPOs">
+              <MappingFragment StoreEntitySet="CounterPointPOs">
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="PurchaseOrderNo" ColumnName="PO_NO" />
+                <ScalarProperty Name="Date" ColumnName="DATE" />
+                <ScalarProperty Name="LineNumber" ColumnName="LIN_CNT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CounterPointSales">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CounterPointSales">
+              <MappingFragment StoreEntitySet="CounterPointSales">
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="INVNO" />
+                <ScalarProperty Name="Date" ColumnName="DATE" />
+                <ScalarProperty Name="TAX_AMT" ColumnName="TAX_AMT" />
+                <ScalarProperty Name="CustomerName" ColumnName="CUSTOMER NAME" />
+                <ScalarProperty Name="LineNumber" ColumnName="LIN_CNT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CounterPointSalesDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CounterPointSalesDetails">
+              <MappingFragment StoreEntitySet="CounterPointSalesDetails">
+                <ScalarProperty Name="INVNO" ColumnName="INVNO" />
+                <ScalarProperty Name="SEQ_NO" ColumnName="SEQ_NO" />
+                <ScalarProperty Name="ITEM_NO" ColumnName="ITEM_NO" />
+                <ScalarProperty Name="ITEM_DESCR" ColumnName="ITEM_DESCR" />
+                <ScalarProperty Name="QUANTITY" ColumnName="QUANTITY" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="ACCT_NO" ColumnName="ACCT NO" />
+                <ScalarProperty Name="CUSTOMER_NAME" ColumnName="CUSTOMER NAME" />
+                <ScalarProperty Name="DATE" ColumnName="DATE" />
+                <ScalarProperty Name="TAX_AMT" ColumnName="TAX_AMT" />
+                <ScalarProperty Name="UNIT_WEIGHT" ColumnName="UNIT_WEIGHT" />
+                <ScalarProperty Name="QTY_UNIT" ColumnName="QTY_UNIT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

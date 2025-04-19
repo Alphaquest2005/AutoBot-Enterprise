@@ -1,0 +1,121 @@
+﻿
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+    public class SummaryViewModelTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public string MainEntity; 
+        public string mainEntitySet; 
+                
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+#>
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ComponentModel;
+using <#=conTextName #>.Client.Entities;
+using SimpleMvvmToolkit;
+
+
+namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
+{
+    public partial class <#=MainEntity#>SummaryListViewModel : ViewModelBase<<#=MainEntity#>SummaryListViewModel>
+	{
+        private static readonly <#=MainEntity#>SummaryListViewModel _instance;
+         static <#=MainEntity#>SummaryListViewModel()
+        {
+            _instance = new <#=MainEntity#>SummaryListViewModel();
+        }
+
+        public static <#=MainEntity#>SummaryListViewModel Instance
+        {
+            get { return _instance; }
+        }
+
+		private <#=            MainEntity#>SummaryListViewModel()
+		{
+<#+
+        if(MainEntity == "some shit")//////////////////////////////disable code
+        {
+ #>
+
+           try
+           {
+               if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return; 
+               RegisterToReceiveMessages<<#=            MainEntity#>>(MessageToken.Current<#=            MainEntity#>Changed, OnCurrent<#=            MainEntity#>Changed);
+               RegisterToReceiveMessages(MessageToken.<#=            mainEntitySet#>Changed, On<#=            mainEntitySet#>Changed);
+               OnCreated();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+		}
+
+        partial void OnCreated();
+        
+
+        private void OnCurrent<#=            MainEntity#>Changed(object sender, NotificationEventArgs<<#=            MainEntity#>> e)
+        {
+           
+            NotifyPropertyChanged(x =>this.Current<#=            MainEntity#>);
+        }       
+
+        private void On<#=            mainEntitySet#>Changed(object sender, NotificationEventArgs e)
+        {
+
+            NotifyPropertyChanged(x => this.<#=            mainEntitySet#>);
+        }  
+
+        ObservableCollection<<#=            MainEntity#>> <#=            MainEntity#>lst = new ObservableCollection<<#=            MainEntity#>>();
+        private void Filter<#=            mainEntitySet#>()
+        {
+            try
+            {
+<#=            mainEntitySet#> = new ObservableCollection<<#=            MainEntity#>>(<#=            MainEntity#>lst.Where(x => x.EntityName.ToUpper().Contains(<#=            MainEntity#>Filter.ToUpper()) == true));           
+            }
+            catch (Exception)
+            {
+
+				throw;
+            }
+             
+        }   
+
+        string _<#=            MainEntity#>Filter = "";
+        public string <#=            MainEntity#>Filter
+        {
+            get
+            {
+return _<#=            MainEntity#>Filter;
+            }
+            set
+            {
+_<#=            MainEntity#>Filter = value;
+               // OnStaticPropertyChanged("<#=            MainEntity#>s");
+Filter<#=            mainEntitySet#>();
+NotifyPropertyChanged(x => this.<#=            mainEntitySet#>);
+            }    
+	
+<#+
+        }
+ #>
+
+        }
+	}
+}
+		
+		
+<#+
+          return this.GenerationEnvironment.ToString();
+        }
+    }	
+#>

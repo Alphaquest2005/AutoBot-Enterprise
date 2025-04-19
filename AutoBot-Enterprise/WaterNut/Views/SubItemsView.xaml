@@ -1,0 +1,51 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+	xmlns:viewModels="clr-namespace:WaterNut.QuerySpace.CoreEntities.ViewModels"
+	xmlns:dataVirtualization="clr-namespace:Core.Common.UI.DataVirtualization;assembly=Core.Common.UI"
+	xmlns:qsv="clr-namespace:WaterNut.QuerySpace.EntryDataQS.ViewModels"
+	x:Class="WaterNut.Views.SubItemsView"
+	d:DesignWidth="640" d:DesignHeight="480">
+    <UserControl.Resources>
+        <x:Static Member="viewModels:SubItemsModelQS.Instance" x:Key="SubItemsModelDataSource" />
+        <Style TargetType="ListBoxItem">
+            <Setter Property="dataVirtualization:VirtualListItemBase.AutoLoad" Value="true" />
+        </Style>
+        <DataTemplate x:Key="SubItemsTemplate">
+            <Grid Height="65" Width="675">
+                <TextBlock Text="{Binding Data.ItemNumber}" HorizontalAlignment="Left" Height="30" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Data.ItemDescription}" HorizontalAlignment="Left" Height="45" Margin="175,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="285"/>
+                <TextBlock Text="{Binding Data.Quantity}" HorizontalAlignment="Left" Height="30" Margin="480,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                <TextBlock Text="{Binding Data.QtyAllocated}" HorizontalAlignment="Left" Height="30" Margin="585,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource SubItemsModelDataSource}}">
+        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="209" FontSize="21.333" Text="Sub Items"/>
+        <ListBox x:Name="ItemLst" 
+            VirtualizingStackPanel.IsVirtualizing="True"
+            VirtualizingStackPanel.VirtualizationMode="Recycling"
+            ScrollViewer.IsDeferredScrollingEnabled="True" 
+            dataVirtualization:VirtualListLoadingIndicator.IsAttached="True"
+            SelectedItem="{Binding Source={x:Static qsv:BaseViewModel.Instance}, Path=VCurrentEntryDataEx}" 
+            ItemTemplate="{DynamicResource SubItemsTemplate}" 
+            ItemsSource="{Binding SubItems}" SelectionChanged="ItemList_SelectionChanged" SelectionMode="Multiple"
+            HorizontalAlignment="Stretch" Height="335" Margin="0,145,0,0" VerticalAlignment="Top" Width="Auto" Style="{DynamicResource AlphaListBoxStyle}"  />
+        <TextBlock Text="{Binding SubItems.Count, StringFormat=0 Filtered Results}" HorizontalAlignment="Left" Height="24" Margin="200,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+        <TextBlock Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Left" Height="24" Margin="511,19,0,0" TextWrapping="Wrap" Text="Send to Excel &#xE1A5;" VerticalAlignment="Top" Width="121" FontSize="16" FontFamily="Segoe UI Symbol" MouseLeftButtonDown="Send2Excel" Visibility="{Binding CurrentApplicationSettings.AllowExportToExcel}"/>
+        <TextBlock HorizontalAlignment="Left" Height="23" Margin="10,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="116" FontSize="16" Text="Item Number" TextAlignment="Center"/>
+        <TextBox Text="{Binding ItemNumberFilter, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="23" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="130" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="23" Margin="160,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" FontSize="16" Text="Item Description" TextAlignment="Center"/>
+        <TextBox Text="{Binding ItemDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="23" Margin="160,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="270" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBlock Text="{Binding SelectedTotal, StringFormat=Total \{0:c\}, IsAsync=True}" HorizontalAlignment="Left" Height="24" Margin="429,446,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+        <TextBlock x:Name="ImportSubItemsTxt" HorizontalAlignment="Left" Height="22" Margin="511,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="119" FontSize="14" Text="Import SubItems" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="ImportSI"/>
+        <TextBlock x:Name="DeselectTxt" HorizontalAlignment="Left" Height="22" Margin="127,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="92" FontSize="16" Text="De-Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="DeselectTxt_MouseLeftButtonDown"/>
+        <TextBlock x:Name="SelectTxt" HorizontalAlignment="Left" Height="22" Margin="252,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" FontSize="16" Text="Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="SelectTxt_MouseLeftButtonDown"/>
+        <CheckBox x:Name="MultiSelectChk" HorizontalAlignment="Left" Height="26" Margin="15,116,0,0" VerticalAlignment="Top" Width="107" Content="MultiSelect" IsChecked="False" />
+    </Grid>
+</UserControl>

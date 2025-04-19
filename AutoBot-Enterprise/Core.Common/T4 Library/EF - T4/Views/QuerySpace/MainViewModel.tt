@@ -1,0 +1,62 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class MainViewModelTPL : CSharpTemplate
+{
+        public string projectName;
+        public List<string> containers;
+
+	public override string TransformText()
+        {
+           
+#>
+using CoreEntities.Client.Entities;
+using CoreEntities.Client.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using SimpleMvvmToolkit;
+
+namespace <#=projectName#>.QuerySpace.CoreEntities.ViewModels
+{
+    public class MainViewModel : ViewModelBase<MainViewModel>
+    {
+         private static readonly MainViewModel instance;
+         static MainViewModel()
+        {
+            instance = new MainViewModel();
+        }
+
+         public static MainViewModel Instance
+        {
+            get { return instance; }
+        }
+
+        public MainViewModel()
+        {
+            try
+            {
+                Thread.Sleep(3000);
+                using (var ctx = new ApplicationSettingRepository())
+                {
+                    BaseViewModel.Instance.CurrentApplicationSetting = ctx.ApplicationSettings().Result.FirstOrDefault(x => x.Description == "<#=projectName#>");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

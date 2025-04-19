@@ -1,0 +1,21 @@
+﻿<ProjectConfiguration>
+  <Settings>
+    <HiddenComponentWarnings>
+      <Value>LongTestTimesWithoutParallelExecution</Value>
+    </HiddenComponentWarnings>
+    <IgnoredTests>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.DoAutoMatchTest.CanDoAutoMatchAllPerformance</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.PDFUtilsTests.CanImportShipmentInvoice</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.DoAutoMatchTest.CanDoAutoMatch</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.AllocationsTests.AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber</TestName>
+      </NamedTestSelector>
+    </IgnoredTests>
+  </Settings>
+</ProjectConfiguration>

@@ -1,0 +1,101 @@
+﻿
+<#@ output extension=".cs"#>
+
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainView.tt" #>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainViewCS.tt" #>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainViewModel.tt" #>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindow.tt" #>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindowCS.tt" #>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindowViewModel.tt" #>	
+
+	
+
+				
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+
+  void CreateMainView(string projectName , string[] inputFiles, string viewProject, string viewModelProject  )
+    {	
+        EntityType MainEntity = null;
+        string MainEntitySet = "";
+        EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+        
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+
+		List<string> containers = new List<string>();
+
+		foreach(var edmx in inputFiles)
+		{
+
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(edmx, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+		
+			containers.Add(container.Name);
+		
+        }
+
+		MainViewTPL mv = new MainViewTPL();
+            mv.containers = containers;
+            mv.projectName = projectName;
+            mv.Output.Project = viewProject;
+            mv.Output.File = @"Views\Generated Views\QuerySpace\MainView_AutoGen.xaml";
+            mv.Render();
+
+		MainViewCSTPL mc = new MainViewCSTPL();
+            mc.containers = containers;
+            mc.projectName = projectName;
+            mc.Output.Project = viewProject;
+            mc.Output.File = @"Views\Generated Views\QuerySpace\MainView_AutoGen.xaml.cs";
+            mc.Render();
+
+		MainViewModelTPL mm = new MainViewModelTPL();
+            mm.containers = containers;
+            mm.projectName = projectName;
+            mm.Output.Project = viewModelProject;
+            mm.Output.File = @"ViewModels\Generated Models\QuerySpace\MainViewModel.cs";
+            mm.Render();
+
+		MainWindowTPL mw = new MainWindowTPL();
+            mw.containers = containers;
+            mw.projectName = projectName;
+            mw.Output.Project = viewProject;
+            mw.Output.File = @"Views\Generated Views\QuerySpace\MainWindow_AutoGen.xaml";
+            mw.Render();
+
+		MainWindowCSTPL mwc = new MainWindowCSTPL();
+            mwc.containers = containers;
+            mwc.projectName = projectName;
+            mwc.Output.Project = viewProject;
+            mwc.Output.File = @"Views\Generated Views\QuerySpace\MainWindow_AutoGen.xaml.cs";
+            mwc.Render();
+
+		MainWindowModelTPL mwm = new MainWindowModelTPL();
+            mwm.containers = containers;
+            mwm.projectName = projectName;
+            mwm.Output.Project = viewModelProject;
+            mwm.Output.File = @"ViewModels\Generated Models\QuerySpace\MainWindowModel.cs";
+            mwm.Render();		
+
+
+#>
+
+
+
+
+<#+
+	}	
+#>

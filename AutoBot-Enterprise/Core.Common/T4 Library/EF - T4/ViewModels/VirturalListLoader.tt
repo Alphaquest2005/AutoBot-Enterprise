@@ -1,0 +1,61 @@
+﻿
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+    public class VirturalListLoaderTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public string MainEntity; 
+        public string mainEntitySet; 
+                
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+#>
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Core.Common.UI.DataVirtualization;
+using <#=conTextName #>.Client.Repositories;
+using <#=conTextName #>.Client.Entities;
+
+
+
+namespace <#=projectName #>.<#=conTextName #>.ViewModels
+{
+    public partial class <#=MainEntity#>VirturalListLoader : IVirtualListLoader<<#=MainEntity#>>
+	{
+		public bool CanSort
+        {
+            get
+            {
+                return false;
+            }
+        }
+        
+        public string FilterExpression = null;
+        public IList<<#=MainEntity#>> LoadRange(int startIndex, int count, SortDescriptionCollection sortDescriptions, out int overallCount)
+        {
+            using (<#=MainEntity#>Repository ctx = new <#=MainEntity#>Repository())
+            {
+                var r = ctx.LoadRange(startIndex, count, FilterExpression, out overallCount);
+                return r.ToList();
+            }
+        }
+	}
+}
+		
+		
+<#+
+          return this.GenerationEnvironment.ToString();
+        }
+    }	
+#>

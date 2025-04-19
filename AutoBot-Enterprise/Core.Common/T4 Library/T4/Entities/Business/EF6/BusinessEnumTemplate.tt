@@ -1,0 +1,108 @@
+﻿<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ Assembly Name="System.Data" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class DataLayerEnumTPL : CSharpTemplate
+    {
+      public EntityType entity; 
+        public CodeGenerationTools code;
+        public MetadataLoader loader;
+        public CodeRegion region;
+        public MetadataTools ef;
+
+        public Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmProperty>>> propertyToColumnMapping ;
+        public Dictionary<AssociationType, Tuple<EntitySet, Dictionary<RelationshipEndMember, Dictionary<EdmMember, string>>>> manyToManyMappings;
+        public Dictionary<EntityType, Dictionary<EntityType, Dictionary<EdmProperty, string>>> tphMappings;
+
+        public MetadataWorkspace metadataWorkspace;
+        public bool allMetadataLoaded;
+       
+      
+        public string namespaceName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+
+        private string columnId = "Id";
+        private string columnName = "Name";
+        string connectionString = @"data source=MINIJOE\SQLDEVELOPER2022;initial catalog=AutoBot-EnterpriseDB;password=pa$$word;user=sa;";
+
+ 
+       
+        
+        
+
+        public override string TransformText()
+        {
+            base.TransformText();
+       
+#>
+
+
+
+namespace <#= namespaceName #>
+{
+    /// <summary>
+    /// <#= entity.Name #> auto generated enumeration
+    /// </summary>
+    ///[GeneratedCode("TextTemplatingFileGenerator", "10")]
+    public enum <#= entity.Name #>
+    {
+<#+
+
+         var rentity= entity;
+     if(propertyToColumnMapping.Keys.Contains(rentity) == false && entity.BaseType != null )
+                rentity = (EntityType)entity.BaseType;
+                // rentity = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(entity)).FirstOrDefault().ElementType;
+                var entityPropertyToColumnMapping = propertyToColumnMapping.First(z => z.Key.FullName == rentity.FullName).Value;  
+
+
+
+    SqlConnection conn = new SqlConnection(connectionString);
+    string command = string.Format("select {0}, {1} from [{2}] order by {0}", columnId, columnName, entityPropertyToColumnMapping.Item1.Name);
+    SqlCommand comm = new SqlCommand(command, conn);
+
+    conn.Open();
+
+    SqlDataReader reader = comm.ExecuteReader();
+    bool loop = reader.Read();
+
+    while(loop)
+    {
+#>      
+        <#= Pascalize(reader[columnName]) #> = <#= reader[columnId] #><#+ loop = reader.Read(); #><#= loop ? ",\r\n" : string.Empty #>
+<#+
+    }
+#>  }
+}
+
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>
+
+<#+
+    private static string Pascalize(object value)
+    {
+        Regex rx = new Regex(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
+        return rx.Replace(value.ToString(), m => m.Groups["first"].ToString().ToUpper() + m.Groups["reminder"].ToString().ToLower());
+    }
+
+    private string GetSubNamespace()
+    {
+        Regex rx = new Regex(@"(?:.+Services\s)");
+        string path = Path.GetDirectoryName(Host.TemplateFile);
+        return rx.Replace(path, string.Empty).Replace("\\", ".");
+    }
+#>

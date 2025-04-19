@@ -1,0 +1,697 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{72DA08B8-03CE-4289-BB9D-D92FD1F84ABE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNutDB</RootNamespace>
+    <AssemblyName>WaterNutDB</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationSettings.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationSettings_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSet.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSetPreviousDocuments.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSetPreviousDocuments_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSetPreviousEntries.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSetPreviousEntries_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaDocumentSet_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaEntries.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaEntries_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaSalesAllocations.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaSalesAllocations_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointPODetails.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointPODetails_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointPOs.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointPOs_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointSales.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointSalesDetails.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointSalesDetails_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CounterPointSales_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Customs_Procedure.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Customs_Procedure_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Document_Type.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Document_Type_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntryData.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntryDataDetails.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntryDataDetails_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntryData_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplate.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExportTemplate_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItems.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItems_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Licences.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Licences_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model1.Entities.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model1.Mapping.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OpeningStock.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OpeningStock_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseOrders.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseOrders_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sales.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sales_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition1_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition2_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams1_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams2_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams_Result.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubItems.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubItems_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagrams.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagrams_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffCategory.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffCategory_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffCodes.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffCodes_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffSupUnitLkps.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TariffSupUnitLkps_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WaterNutDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WaterNutDB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Assessment.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Assessment_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Assessment_notice.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Assessment_notice_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_ASYCUDA.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_ASYCUDA_ExtendedProperties.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_ASYCUDA_ExtendedProperties_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_ASYCUDA_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Attached_documents.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Attached_documents_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Border_information.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Border_information_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Border_office.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Border_office_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Consignee.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Consignee_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Container.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Container_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Country.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Country_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Declarant.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Declarant_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Delivery_terms.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Delivery_terms_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Departure_arrival_information.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Departure_arrival_information_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Destination.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Destination_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Export.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Exporter.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Exporter_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Export_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Export_release.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Export_release_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial_Amounts.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial_Amounts_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial_Guarantee.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial_Guarantee_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Financial_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Forms.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Forms_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_General_information.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_General_information_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Global_taxes.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Global_taxes_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Goods_description.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Goods_description_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_deduction.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_deduction_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_external_freight.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_external_freight_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_insurance.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_insurance_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_internal_freight.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_internal_freight_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_Invoice.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_Invoice_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_other_cost.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Gs_other_cost_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_HScode.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_HScode_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Identification.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Identification_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Item.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_deduction.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_deduction_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_external_freight.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_external_freight_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_insurance.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_insurance_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_internal_freight.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_internal_freight_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Item_Invoice.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Item_Invoice_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Item_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_other_cost.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_item_other_cost_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Market_valuer.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Market_valuer_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Means_of_transport.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Means_of_transport_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Nbers.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Nbers_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Office_segment.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Office_segment_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Packages.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Packages_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Place_of_loading.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Place_of_loading_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_PreviousItem.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_PreviousItem_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Previous_doc.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Previous_doc_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Principal.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Principal_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Property.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Property_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_receipt.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_receipt_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Registration.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Registration_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Seals.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Seals_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Signature.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Signature_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Supplementary_unit.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Supplementary_unit_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Suppliers_documents.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Suppliers_documents_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Suppliers_link.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Suppliers_link_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Tarification.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Tarification_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Taxation.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Taxation_line.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Taxation_line_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Taxation_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Total.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Total_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Traders.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Traders_Financial.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Traders_Financial_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Traders_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transit.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transit_Destination.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transit_Destination_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transit_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transport.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Transport_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Type.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Type_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Valuation.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Valuation_item.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Valuation_item_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Valuation_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Warehouse.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Warehouse_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Weight.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Weight_itm.cs">
+      <DependentUpon>Model1.Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Weight_itm_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xcuda_Weight_Mapping.cs">
+      <DependentUpon>Model1.Mapping.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="WaterNutDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>WaterNutDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="App.Config" />
+    <None Include="Model1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+      <DependentUpon>WaterNutDB.edmx</DependentUpon>
+    </None>
+    <None Include="Model1.Entities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.Entities.cs</LastGenOutput>
+      <DependentUpon>WaterNutDB.edmx</DependentUpon>
+    </None>
+    <None Include="Model1.Mapping.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.Mapping.cs</LastGenOutput>
+      <DependentUpon>WaterNutDB.edmx</DependentUpon>
+    </None>
+    <None Include="WaterNutDB.edmx.diagram">
+      <DependentUpon>WaterNutDB.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

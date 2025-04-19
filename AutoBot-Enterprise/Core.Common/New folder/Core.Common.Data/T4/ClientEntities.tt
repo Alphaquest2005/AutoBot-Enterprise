@@ -1,0 +1,159 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Entities\Client\ClientEntityTemplateDTO.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Entities\Client\ClientEntityTemplate.tt" once="true"#>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateClientEntities(string inputFile)
+    {	
+        //string MainEntity = "Employee";
+        //string MainEntitySet = "Employees";
+        
+
+        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        OriginalValueMembers originalValueMembers = new OriginalValueMembers(allMetadataLoaded, metadataWorkspace, ef);
+     
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(@"C:\Prism Projects\Quick Inventory Manager\CoreEntities\CoreEntities.edmx", out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string namespaceName = code.VsNamespaceSuggestion();
+
+           
+
+        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+        {
+            ClientEntityDTOTPL ce = new ClientEntityDTOTPL();     
+            ce.entity = entity;
+            ce.code = code;
+            ce.loader = loader;
+            ce.region = region;
+            ce.ef = ef;
+
+            ce.inputFile = inputFile;
+            ce.metadataWorkspace = metadataWorkspace;
+            ce.allMetadataLoaded = allMetadataLoaded;
+            ce.ItemCollection = ItemCollection;
+            ce.originalValueMembers = originalValueMembers;
+            ce.namespaceName = namespaceName;
+            ce.container = container;
+
+            ce.COREmetadataWorkspace = COREmetadataWorkspace;
+            ce.COREallMetadataLoaded = COREallMetadataLoaded;
+            ce.COREItemCollection = COREItemCollection;
+            ce.COREcontainer = COREcontainer;
+            ce.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.DTO\InvManager.Client.DTO.csproj";
+            ce.Output.File =  container.Name + @"\" + entity.Name + "DTO.cs";
+            ce.Render();    
+       
+            ClientEntityTPL c = new ClientEntityTPL();     
+            c.entity = entity;
+            c.code = code;
+            c.loader = loader;
+            c.region = region;
+            c.ef = ef;
+
+            c.inputFile = inputFile;
+            c.metadataWorkspace = metadataWorkspace;
+            c.allMetadataLoaded = allMetadataLoaded;
+            c.ItemCollection = ItemCollection;
+            c.originalValueMembers = originalValueMembers;
+            c.namespaceName = namespaceName;
+            c.container = container;
+
+            c.COREmetadataWorkspace = COREmetadataWorkspace;
+            c.COREallMetadataLoaded = COREallMetadataLoaded;
+            c.COREItemCollection = COREItemCollection;
+            c.COREcontainer = COREcontainer;
+            c.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.Entities\InvManager.Client.Entities.csproj";
+            c.Output.File =  @"Generated Entities\" + container.Name + @"\" + entity.Name + ".cs";
+            c.Render();   
+
+
+        }
+
+    }
+        
+#>
+
+
+<#+
+
+private void DefineMetadata()
+{
+    TemplateMetadata[MetadataConstants.TT_TEMPLATE_NAME] = "CSharpSelfTracking.Types";
+    TemplateMetadata[MetadataConstants.TT_TEMPLATE_VERSION] = "5.0";
+}
+
+// Set recordRequiredOriginalValuesOnly to false in the OriginalValueMembers constructor in order to always record all original values
+public class OriginalValueMembers
+{
+    private readonly HashSet<EdmProperty> _concurrencyMembers;
+
+    public OriginalValueMembers(bool recordRequiredOriginalValuesOnly, MetadataWorkspace metadataWorkspace, MetadataTools metadataTools)
+    {
+        if (recordRequiredOriginalValuesOnly)
+        {
+            try
+            {
+                _concurrencyMembers = new HashSet<EdmProperty>();
+                foreach (EntityContainer container in metadataWorkspace.GetItems<EntityContainer>(DataSpace.CSpace))
+                {
+                    ILookup<EntityType, EntityType> directSubTypeLookup = metadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).ToLookup(e => (EntityType)e.BaseType);
+                    foreach (EntitySetBase eSet in container.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet))
+                    {
+                        List<EntityType> subTypes = new List<EntityType>();
+                        GetSubtypes(directSubTypeLookup, (EntityType)eSet.ElementType, subTypes);
+                        foreach (EntityType eType in subTypes)
+                        {
+                            foreach (EdmProperty member in metadataWorkspace.GetRelevantMembersForUpdate(eSet, eType, false))
+                            {
+                                _concurrencyMembers.Add(member);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // If any exceptions occur, fall back to always recording original values for all properties
+                _concurrencyMembers = null;
+            }
+        }
+    }
+
+    public bool IsOriginalValueMember(EdmProperty edmProperty)
+    {
+        return _concurrencyMembers == null || _concurrencyMembers.Contains(edmProperty);
+    }
+
+    private static void GetSubtypes(ILookup<EntityType, EntityType> lookup, EntityType eType, List<EntityType> subTypes)
+    {
+        subTypes.Add(eType);
+        foreach (EntityType subType in lookup[eType])
+        {
+            GetSubtypes(lookup, subType, subTypes);
+        }
+    }
+}
+#>
+

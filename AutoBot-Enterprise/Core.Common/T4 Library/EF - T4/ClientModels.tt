@@ -1,0 +1,163 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\IIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\CreateEntityFromStringTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\DTOCreateEntityFromStringTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\DTOIIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\MyNavPropTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\DTOMyNavPropTemplate.tt" once="true"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Models\Client\EntityConstructorTemplate.tt" once="true"#>
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateClientModels(string projectName ,string inputFile, string coreEdmx, string outputProject, string dtoProject, bool createEntitFromString)
+    {	
+        //string MainEntity = "Employee";
+        //string MainEntitySet = "Employees";
+        
+
+        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+     
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string namespaceName = code.VsNamespaceSuggestion();
+
+
+      try
+      {
+
+
+          foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+          {
+              // if(entity.Abstract == true) continue;
+              IIdentifibleEntityTPL sv = new IIdentifibleEntityTPL();
+              sv.mainEntity = entity;
+              sv.projectName = projectName;
+              sv.mainEntitySet =
+                  container.BaseEntitySets.OfType<EntitySet>()
+                      .Where(x => x.ElementType == GetBaseEntity(entity))
+                      .FirstOrDefault()
+                      .Name;
+              sv.conTextName = container.Name;
+              sv.container = container;
+              sv.COREcontainer = COREcontainer;
+              sv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+              sv.COREentityCollection =
+                  code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+              sv.ef = ef;
+              sv.Output.Project = outputProject;
+              sv.Output.File = @"Generated IIdentitfiableEntity Models\" + container.Name + @"\" + entity.Name + ".cs";
+              sv.Render();
+
+
+              IIdentifibleEntityDTOTPL dv = new IIdentifibleEntityDTOTPL();
+              dv.mainEntity = entity;
+              dv.projectName = projectName;
+              dv.mainEntitySet =
+                  container.BaseEntitySets.OfType<EntitySet>()
+                      .Where(x => x.ElementType == GetBaseEntity(entity))
+                      .FirstOrDefault()
+                      .Name;
+              dv.conTextName = container.Name;
+              dv.container = container;
+              dv.COREcontainer = COREcontainer;
+              dv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+              dv.COREentityCollection =
+                  code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+              dv.ef = ef;
+              dv.Output.Project = dtoProject;
+              dv.Output.File = @"Generated IIdentitfiableEntity Models\" + container.Name + @"\" + entity.Name + ".cs";
+              dv.Render();
+
+              IMyNavPropDTOTPL dnv = new IMyNavPropDTOTPL();
+              dnv.mainEntity = entity;
+              dnv.conTextName = container.Name;
+              dnv.projectName = projectName;
+              dnv.container = container;
+              dnv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+              dnv.COREcontainer = COREcontainer;
+              dnv.COREentityCollection =
+                  code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+              dnv.ef = ef;
+              dnv.code = code;
+              dnv.Output.Project = dtoProject;
+              dnv.Output.File = @"Generated MyNavProp Models\" + container.Name + @"\" + entity.Name + ".cs";
+              dnv.Render();
+
+
+              EntityConstructorTPL mc = new EntityConstructorTPL();
+              mc.mainEntity = entity;
+              mc.conTextName = container.Name;
+              mc.projectName = projectName;
+              mc.Output.Project = outputProject;
+              mc.Output.File = @"Generated Constructors Models\" + container.Name + @"\" + entity.Name + ".cs";
+              mc.Render();
+
+              IMyNavPropTPL nv = new IMyNavPropTPL();
+              nv.mainEntity = entity;
+              nv.conTextName = container.Name;
+              nv.projectName = projectName;
+              nv.container = container;
+              nv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+              nv.COREcontainer = COREcontainer;
+              nv.COREentityCollection =
+                  code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+              nv.ef = ef;
+              nv.code = code;
+              nv.Output.Project = outputProject;
+              nv.Output.File = @"Generated MyNavProp Models\" + container.Name + @"\" + entity.Name + ".cs";
+              nv.Render();
+
+              if (createEntitFromString == true)
+              {
+                  CreateEntityFromStringTPL es = new CreateEntityFromStringTPL();
+                  es.mainEntity = entity;
+                  es.mainEntitySet =
+                      container.BaseEntitySets.OfType<EntitySet>()
+                          .Where(x => x.ElementType == GetBaseEntity(entity))
+                          .FirstOrDefault()
+                          .Name;
+                  es.conTextName = container.Name;
+                  es.projectName = projectName;
+                  es.container = container;
+                  es.COREcontainer = COREcontainer;
+                  es.entityCollection =
+                      code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+                  es.COREentityCollection =
+                      code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+                  es.ef = ef;
+                  es.Output.Project = outputProject;
+                  es.Output.File = @"Generated CreateEntityFromString\" + container.Name + @"\" + entity.Name + ".cs";
+                  es.Render();
+              }
+
+          }
+      }
+      catch (Exception)
+      {
+
+          throw;
+      }
+
+    }
+        
+#>

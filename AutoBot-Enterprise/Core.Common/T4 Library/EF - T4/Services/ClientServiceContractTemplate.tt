@@ -1,0 +1,117 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientServiceContractTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+        public string projectName;
+		public MetadataTools ef;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            var baseentity = GetBaseEntity(entity);
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == baseentity.Name).FirstOrDefault().Name;//GetBaseEntity(entity).Name
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using Core.Common.Contracts;
+using <#=container.Name#>.Client.DTO;
+using <#=projectName #>.Interfaces.Client;
+
+namespace <#=container.Name #>.Client.Contracts
+{
+    [ServiceContract (Namespace="http://www.insight-software.com/<#=projectName #>")]
+    public partial interface I<#=entity.Name#>Service : IClientService
+    {
+        [OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet#>(List<string> includesLst = null);
+
+        [OperationContract]
+        Task<<#="I" + entity.Name#>> Get<#=entity.Name#>ByKey(string id, List<string> includesLst = null);
+
+		[OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet#>ByExpression(string exp, List<string> includesLst = null);
+
+		[OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet#>ByExpressionLst(List<string> expLst, List<string> includesLst = null);
+
+		[OperationContract]
+		Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionNav(string exp,
+														 Dictionary<string, string> navExp, List<string> includesLst = null);        
+        [OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatch(string exp,
+                                                                        int totalrow, List<string> includesLst = null);
+        [OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatchExpressionLst(List<string> expLst,
+                                                                        int totalrow, List<string> includesLst = null);
+
+		[OperationContract]
+        Task<<#="I" + entity.Name#>> Update<#=entity.Name#>(<#="I" + entity.Name#> entity);
+
+        [OperationContract]
+        Task<<#="I" + entity.Name#>> Create<#=entity.Name#>(<#="I" + entity.Name#> entity);
+
+        [OperationContract]
+        Task<bool> Delete<#=entity.Name#>(string id);
+
+		// Virtural List Implementation
+
+        [OperationContract]
+        Task<int> CountByExpressionLst(List<string> expLst);
+    
+		[OperationContract]
+        Task<int> Count(string exp);
+
+		[OperationContract]
+        Task<int> CountNav(string exp, Dictionary<string, string> navExp);
+
+        [OperationContract]
+        Task<IEnumerable<<#="I" + entity.Name#>>> LoadRange(int startIndex, int count, string exp);
+
+		[OperationContract]
+		Task<IEnumerable<<#="I" + entity.Name#>>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
+
+		[OperationContract]
+		decimal SumField(string whereExp, string field);
+        
+        [OperationContract]
+        Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field);
+
+		[OperationContract]
+		string MinField(string whereExp, string field);
+
+		<#+ 
+	 
+	    var ens = entity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id"));//  && entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+			//&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)
+
+		foreach (var p in ens)
+        {
+ #>
+		[OperationContract]
+		Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entity.Name#>By<#= p.Name #>(string <#= p.Name #>, List<string> includesLst = null);
+        
+  <#+ 
+		}
+  #>
+		
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

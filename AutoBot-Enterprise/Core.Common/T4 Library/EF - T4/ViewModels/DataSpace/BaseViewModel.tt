@@ -1,0 +1,90 @@
+﻿<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+    public class BaseViewTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public EntityContainer container; 
+        public List<EntityType> entityCollection; 
+        public EntityContainer COREcontainer;
+        public List<EntityType> COREentityCollection;
+        
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+            MetadataTools ef = new MetadataTools(this);
+       
+	   
+#>
+
+using <#=conTextName#>.Business.Entities;
+using <#=conTextName#>.Business.Services;
+
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using <#=projectName #>.Interfaces;
+
+
+//using <#=projectName #>.Client.Repositories;
+
+
+
+namespace <#=projectName #>.DataSpace.<#=conTextName#>.DataModels
+{
+	 public partial class BaseDataModel 
+	{
+        private static readonly BaseDataModel instance;
+        static BaseDataModel()
+        {
+            instance = new BaseDataModel();
+        }
+
+        public static  BaseDataModel Instance
+        {
+            get { return instance; }
+        }
+
+       //Search Entities
+<#+ foreach (var entity in entityCollection)
+{
+    if (entity.Abstract == true) continue;
+        EntitySet dset = container.BaseEntitySets.OfType<EntitySet>().FirstOrDefault(x => x.ElementType.Name == ((EntityType)entity.BaseType == null?entity:entity.BaseType).Name);
+
+#>   
+        public async Task<IEnumerable<I<#=entity.Name#>>> Search<#=entity.Name#>(List<string> lst, List<string> includeLst = null )
+        {
+            using (var ctx = new <#=entity.Name#>Service())
+            {
+                return await ctx.Get<#=dset.Name#>ByExpressionLst(lst, includeLst).ConfigureAwait(false);
+            }
+        }
+
+        public async Task Save<#=entity.Name#>(<#=entity.Name#> i)
+        {
+            if (i == null) return;
+            using (var ctx = new <#=entity.Name#>Service())
+            {
+                await ctx.Update<#=entity.Name#>(i).ConfigureAwait(false);
+            }
+        }
+<#+ } #>   
+    
+
+    }		
+}
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+    }	
+#>

@@ -1,0 +1,705 @@
+﻿
+<#@ import namespace="Core.Common.Data.Contracts" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ assembly name="C:\Prism\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
+<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+        public class EntityViewModelTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public EntityType mainEntity; 
+        public EntityType MainEntity; 
+        public string mainEntitySet; 
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+		public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+            public bool viewCurrent;
+        
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+       
+       CodeGenerationTools code = new CodeGenerationTools(this);
+       
+	   
+#>
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Schedulers;
+using SimpleMvvmToolkit;
+using System;
+using System.Windows;
+using System.Windows.Data;
+using System.Text;
+using Core.Common.UI.DataVirtualization;
+using System.Collections.Generic;
+using Core.Common.UI;
+using Core.Common.Converters;
+
+using <#=conTextName #>.Client.Entities;
+using <#=conTextName #>.Client.Repositories;
+//using <#=projectName #>.Client.Repositories;
+<#+
+ if (COREcontainer.Name != container.Name)
+ {
+#>        
+using <#=COREcontainer.Name #>.Client.Entities;
+<#+ } #>
+
+
+namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
+{
+    
+	public partial class <#=code.Escape(mainEntity)#>ViewModel_AutoGen : ViewModelBase<<#=code.Escape(mainEntity)#>ViewModel_AutoGen>
+	{
+
+       private static readonly <#=code.Escape(mainEntity)#>ViewModel_AutoGen instance;
+       static <#=code.Escape(mainEntity)#>ViewModel_AutoGen()
+        {
+            instance = new <#=code.Escape(mainEntity)#>ViewModel_AutoGen();
+        }
+
+       public static <#=code.Escape(mainEntity)#>ViewModel_AutoGen Instance
+        {
+            get { return instance; }
+        }
+
+       private readonly object lockObject = new object();
+<#+     
+        var mlst= mainEntity.NavigationProperties;
+        //var mlst= mainEntity.NavigationProperties.Where(np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);
+       var nplst= mainEntity.NavigationProperties.Where(np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many);               
+#>  
+  
+
+        public <#=code.Escape(mainEntity)#>ViewModel_AutoGen()
+        {
+          
+            RegisterToReceiveMessages<<#=code.Escape(mainEntity)#>>(MessageToken.Current<#=code.Escape(mainEntity)#>Changed, OnCurrent<#=code.Escape(mainEntity)#>Changed);
+            RegisterToReceiveMessages(MessageToken.<#=mainEntitySet#>Changed, On<#=code.Escape(mainEntitySet)#>Changed);
+			RegisterToReceiveMessages(MessageToken.<#=mainEntitySet#>FilterExpressionChanged, On<#=mainEntitySet#>FilterExpressionChanged);
+
+<#+ 
+        if(nplst.Any() == true)
+        {
+
+		    // var ens = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  
+			//							&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int));//&& mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)
+			//  foreach(var p in ens)
+			//  {
+					foreach (var npe in nplst.Select(x=> new {mEntity = ((EntityType)x.ToEndMember.GetEntityType()), navprop = x}).Distinct())                
+					{
+						var mEntity= npe.mEntity;
+						if(mainEntity.Name != mEntity.Name)
+						{
+ #> 
+			RegisterToReceiveMessages<<#=mEntity.Name#>>(MessageToken.Current<#=mEntity.Name#>Changed, OnCurrent<#=npe.navprop.Name#>Changed);
+<#+    
+						 }
+					}
+			//}
+        }
+ #>
+
+ 			// Recieve messages for Core Current Entities Changed
+<#+
+          //  foreach (var entity in entityCollection)
+           // {
+         //           if(entity.Abstract == true) continue; 
+            
+                var ens = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")
+                                                           && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof (int)
+                                                           &&
+                                                           mainEntity.NavigationProperties.Where(
+                                                               np => np.GetDependentProperties().Contains(x)).Any() ==
+                                                           false);
+            if (container.Name != COREcontainer.Name)
+             {
+                foreach (var p in ens)
+                {
+                    EntityType pEntity =
+                        COREentityCollection.FirstOrDefault(x => x.Name == p.Name.Substring(0, p.Name.Length - 2));
+                    if (pEntity == null) continue;
+#>
+                        RegisterToReceiveMessages<<#=pEntity.Name #>>(CoreEntities.MessageToken.Current<#=pEntity.Name #>Changed, OnCurrent<#=pEntity.Name #>Changed);
+<#+
+                }
+            }
+            //	}
+#> 
+
+			<#=mainEntitySet#> = new VirtualList<<#=code.Escape(mainEntity)#>>(vloader);
+			<#=mainEntitySet#>.LoadingStateChanged += <#=mainEntitySet#>_LoadingStateChanged;
+            BindingOperations.EnableCollectionSynchronization(<#=mainEntitySet#>, lockObject);
+			
+<#+
+		if(mainEntity.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true)
+		{
+ #>
+			vloader.FilterExpression = "All";
+ <#+ 
+		}
+ #>
+            OnCreated();        
+            OnTotals();
+        }
+
+        partial void OnCreated();
+        partial void OnTotals();
+
+		private VirtualList<<#=code.Escape(mainEntity)#>> _<#=mainEntitySet#> = null;
+        public VirtualList<<#=code.Escape(mainEntity)#>> <#=mainEntitySet#>
+        {
+            get
+            {
+                return _<#=mainEntitySet#>;
+            }
+            set
+            {
+                _<#=mainEntitySet#> = value;
+            }
+        }
+
+		 private void On<#=mainEntitySet#>FilterExpressionChanged(object sender, NotificationEventArgs e)
+        {
+			<#=mainEntitySet#>.Refresh();
+            Selected<#=mainEntitySet#>.Clear();
+            NotifyPropertyChanged(x => Selected<#=mainEntitySet#>);
+            BeginSendMessage(MessageToken.Selected<#=mainEntitySet#>Changed, new NotificationEventArgs(MessageToken.Selected<#=mainEntitySet#>Changed));
+        }
+
+		void <#=mainEntitySet#>_LoadingStateChanged(object sender, EventArgs e)
+        {
+            switch (<#=mainEntitySet#>.LoadingState)
+            {
+                case QueuedBackgroundWorkerState.Processing:
+                    StatusModel.Timer("Getting Data...");
+                    break;
+                case QueuedBackgroundWorkerState.Standby: 
+                    StatusModel.StopStatusUpdate();
+                    NotifyPropertyChanged(x => <#=mainEntitySet#>);
+                    break;
+                case QueuedBackgroundWorkerState.StoppedByError:
+                    StatusModel.Error("<#=mainEntitySet#> | Error occured..." + <#=mainEntitySet#>.LastLoadingError.Message);
+                    NotifyPropertyChanged(x => <#=mainEntitySet#>);
+                    break;
+            }
+           
+        }
+
+		
+		public readonly <#=mainEntity.Name#>VirturalListLoader vloader = new <#=mainEntity.Name#>VirturalListLoader();
+
+		private ObservableCollection<<#=mainEntity.Name#>> _selected<#=mainEntitySet#> = new ObservableCollection<<#=mainEntity.Name#>>();
+        public ObservableCollection<<#=mainEntity.Name#>> Selected<#=mainEntitySet#>
+        {
+            get
+            {
+                return _selected<#=mainEntitySet#>;
+            }
+            set
+            {
+                _selected<#=mainEntitySet#> = value;
+				BeginSendMessage(MessageToken.Selected<#=mainEntitySet#>Changed,
+                                    new NotificationEventArgs(MessageToken.Selected<#=mainEntitySet#>Changed));
+				 NotifyPropertyChanged(x => Selected<#=mainEntitySet#>);
+            }
+        }
+
+        internal void OnCurrent<#=code.Escape(mainEntity)#>Changed(object sender, NotificationEventArgs<<#=code.Escape(mainEntity)#>> e)
+        {
+            if(BaseViewModel.Instance.Current<#=code.Escape(mainEntity)#> != null) BaseViewModel.Instance.Current<#=code.Escape(mainEntity)#>.PropertyChanged += Current<#=code.Escape(mainEntity)#>__propertyChanged;
+           // NotifyPropertyChanged(x => this.Current<#=code.Escape(mainEntity)#>);
+        }   
+
+            void Current<#=code.Escape(mainEntity)#>__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+                {
+<#+
+           if(mainEntity.Abstract == false)
+            {
+                
+                Dictionary<string, EntityType> plst = new Dictionary<string,EntityType>();
+                plst = mainEntity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).ToDictionary(x => x.Name , x=> x.ToEndMember.GetEntityType());
+                WritePropertyEntityName(plst, mainEntity, container,  COREcontainer,  code);
+                plst = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  && mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false && COREentityCollection.FirstOrDefault(z => z.Name == x.Name.Substring(0,x.Name.Length - 2)) != null).ToDictionary( x=> x.Name.Substring(0,x.Name.Length - 2) , x=> entityCollection.FirstOrDefault(z => z.Name == x.Name.Substring(0,x.Name.Length - 2)));
+                WritePropertyEntityName(plst, mainEntity, container,  COREcontainer,  code);
+            }
+#>
+                 } 
+<#+ 
+         //   if(mainEntity.BaseType == null)
+           // {
+#>
+        internal void On<#=mainEntitySet#>Changed(object sender, NotificationEventArgs e)
+        {
+            _<#=mainEntitySet#>.Refresh();
+			NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
+        }   
+<#+
+            //}
+ #>
+
+
+ <#+ 
+        if(nplst.Any() == true)
+        {
+
+		   
+					foreach (var npe in nplst.Select(x=> new {mEntity = ((EntityType)x.ToEndMember.GetEntityType()), navprop = x}).Distinct())                
+					{
+						var mEntity= npe.mEntity;
+						if(mainEntity.Name != mEntity.Name)
+						{
+ #>	
+		 internal void OnCurrent<#=npe.navprop.Name#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(mEntity)#>> e)
+			{
+			if(ViewCurrent<#=npe.navprop.Name#> == false) return;
+			if (e.Data == null || e.Data.<#=mEntity.KeyMembers[0].Name#> == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+<#+
+            if (npe.navprop.GetDependentProperties().FirstOrDefault() != null)
+            {
+                if (ef.UnderlyingClrType(npe.navprop.GetDependentProperties().FirstOrDefault().TypeUsage.EdmType) ==
+                    typeof (string))
+                {
+                    #>				
+				vloader.FilterExpression = string.Format("<#=npe.navprop.GetDependentProperties().FirstOrDefault() #> == \"{0}\"", e.Data.<#=mEntity.KeyMembers[0].Name #>.ToString());
+<#+
+                }
+                else
+                {
+                    #>
+				vloader.FilterExpression = string.Format("<#=npe.navprop.GetDependentProperties().FirstOrDefault() #> == {0}", e.Data.<#=mEntity.KeyMembers[0].Name #>.ToString());
+ <#+
+                }
+            }
+ #>
+                }
+
+				<#=mainEntitySet#>.Refresh();
+				NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
+                // SendMessage(MessageToken.<#=mainEntitySet#>Changed, new NotificationEventArgs(MessageToken.<#=mainEntitySet#>Changed));
+                <#+if(MainEntity != null && mainEntity.Name != MainEntity.Name)
+                        {#>                          
+                BaseViewModel.Instance.Current<#=mainEntity.Name #> = null;
+<#+                        }#>
+			}
+<#+    
+						 }
+					}			
+        }
+ #>
+
+  			// Core Current Entities Changed
+			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+<#+
+            EntityType[] ets = null;
+			//foreach (var entity in entityCollection)
+           // {
+             //       if(entity.Abstract == true) continue; 
+				//	var ens = entity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  
+				//										&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  
+				//										&& entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+				    foreach (var p in ens)
+					{
+						 EntityType pEntity = COREentityCollection.FirstOrDefault(x=> x.Name == p.Name.Substring(0,p.Name.Length - 2));
+						if(pEntity == null) continue;
+						
+#>
+                internal void OnCurrent<#=code.Escape(pEntity)#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(pEntity)#>> e)
+				{
+				if (e.Data == null || e.Data.<#=pEntity.KeyMembers[0].Name#> == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("<#=p.Name#> == {0}", e.Data.<#=pEntity.KeyMembers[0].Name#>.ToString());
+                }
+					
+                    <#=mainEntitySet#>.Refresh();
+					NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
+				}
+<#+
+					}
+			//}
+#>  
+// Filtering Each Field except IDs
+<#+ 
+        if(nplst.Any() == true)
+        {
+
+		    // var ens = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  
+			//							&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int));//&& mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)
+			//  foreach(var p in ens)
+			//  {
+					foreach (var npe in nplst.Select(x=> new {mEntity = ((EntityType)x.ToEndMember.GetEntityType()), navprop = x}).Distinct())                
+					{
+						var mEntity= npe.mEntity;
+						if(mainEntity.Name != mEntity.Name)
+						{
+ #> 	
+		 bool _viewCurrent<#=npe.navprop.Name#> = <#=viewCurrent.ToString().ToLower()#>;
+         public bool ViewCurrent<#=npe.navprop.Name#>
+         {
+             get
+             {
+                 return _viewCurrent<#=npe.navprop.Name#>;
+             }
+             set
+             {
+                 _viewCurrent<#=npe.navprop.Name#> = value;
+                 NotifyPropertyChanged(x => x.ViewCurrent<#=npe.navprop.Name#>);
+             }
+         }
+<#+    
+						 }
+					}
+			//}
+        }
+ #>
+		public void ViewAll()
+        {
+			vloader.FilterExpression = "All";
+			vloader.ClearNavigationExpression();
+			_<#=mainEntitySet#>.Refresh();
+			NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
+		}
+
+		public async Task SelectAll()
+        {
+            IEnumerable<<#=mainEntity.Name#>> lst = null;
+            using (var ctx = new <#=mainEntity.Name#>Repository())
+            {
+                lst = await ctx.Get<#=mainEntitySet#>ByExpressionNav(vloader.FilterExpression, vloader.NavigationExpression).ConfigureAwait(continueOnCapturedContext: false);
+            }
+            Selected<#=mainEntitySet#> = new ObservableCollection<<#=mainEntity.Name#>>(lst);
+        }
+
+<#+
+	foreach( var p in mainEntity.Properties.Where(x => (x.Name.EndsWith("Id")== false) || (x.Name.EndsWith("Id")== true && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string))))
+	{
+			var typeUsage = code.Escape(p.TypeUsage);
+			string displayName = "";
+
+	    if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof (byte[])) continue;
+
+              //  var disprop = p.MetadataProperties.FirstOrDefault(z => z.Name.Contains("DisplayNameProperty"));
+              //  if(disprop != null)
+              //  {
+              //      displayName = ((XElement)disprop.Value).Value;
+             //   }
+             //   else
+             //   {
+                    displayName = p.Name;
+             //   }
+	    
+            //displayName = displayName.Replace(" ", "").Replace(".", "").Replace("#","");
+
+			 if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(DateTime))
+                {
+#> 
+		private <#=ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","")#>? _start<#=displayName#>Filter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public <#=ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","")#>? Start<#=displayName#>Filter
+        {
+            get
+            {
+                return _start<#=displayName#>Filter;
+            }
+            set
+            {
+                _start<#=displayName#>Filter = value;
+				NotifyPropertyChanged(x => Start<#=displayName#>Filter);
+                FilterData();
+                
+            }
+        }	
+
+		private <#=ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","")#>? _end<#=displayName#>Filter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public <#=ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","")#>? End<#=displayName#>Filter
+        {
+            get
+            {
+                return _end<#=displayName#>Filter;
+            }
+            set
+            {
+                _end<#=displayName#>Filter = value;
+				NotifyPropertyChanged(x => End<#=displayName#>Filter);
+                FilterData();
+                
+            }
+        }
+<#+	
+		}	
+#> 
+
+		private <#=(typeUsage == "string"? typeUsage :ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","") + "?")#> <#=code.FieldName(p)#>Filter;
+        public <#=(typeUsage == "string"? typeUsage :ef.UnderlyingClrType(p.TypeUsage.EdmType).ToString().Replace("System.","") + "?")#> <#=displayName#>Filter
+        {
+            get
+            {
+                return <#=code.FieldName(p)#>Filter;
+            }
+            set
+            {
+                <#=code.FieldName(p)#>Filter = value;
+				NotifyPropertyChanged(x => <#=displayName#>Filter);
+                FilterData();
+                
+            }
+        }	
+
+<#+	
+		
+	}	
+#> 
+		internal bool DisableBaseFilterData = false;
+        public virtual void FilterData()
+	    {
+	        FilterData(null);
+	    }
+		public void FilterData(StringBuilder res = null)
+		{
+		    if (DisableBaseFilterData) return;
+			if(res == null) res = GetAutoPropertyFilterString();
+			if (res.Length == 0 && vloader.NavigationExpression.Count != 0) res.Append("&& All");					
+			if (res.Length > 0)
+            {
+                vloader.FilterExpression = res.ToString().Trim().Substring(2).Trim();
+            }
+            else
+            {
+                 if (vloader.FilterExpression != "All") vloader.FilterExpression = null;
+            }
+
+			<#=mainEntitySet#>.Refresh();
+			NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
+		}		  
+
+
+
+		internal virtual StringBuilder GetAutoPropertyFilterString()
+		{
+		var res = new StringBuilder();
+<#+
+	foreach( var p in mainEntity.Properties.Where(x => (x.Name.EndsWith("Id")== false) || (x.Name.EndsWith("Id")== true && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string))))
+	{
+			var typeUsage = code.Escape(p.TypeUsage);
+			string displayName = "";
+               // var disprop = p.MetadataProperties.FirstOrDefault(z => z.Name.Contains("DisplayNameProperty"));
+               // if(disprop != null)
+               // {
+                //    displayName = ((XElement)disprop.Value).Value;
+               // }
+              //  else
+              //  {
+                    displayName = p.Name;
+              //  }	
+			;
+#> 
+
+<#+
+		 if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(DateTime))
+                {#> 
+
+				if (Convert.ToDateTime(Start<#=displayName#>Filter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(End<#=displayName#>Filter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(Start<#=displayName#>Filter).Date != DateTime.MinValue)
+						{
+							if(Start<#=displayName#>Filter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(End<#=displayName#>Filter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("<#=p.Name#> >= \"{0}\"",  Convert.ToDateTime(Start<#=displayName#>Filter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(End<#=displayName#>Filter).Date != DateTime.MinValue)
+						{
+							if(End<#=displayName#>Filter.HasValue)
+								res.Append(" && " + string.Format("<#=p.Name#> <= \"{0}\"",  Convert.ToDateTime(End<#=displayName#>Filter).Date.AddHours(23).ToString("MM/dd/yyyy")));
+						}
+
+				if (Convert.ToDateTime(Start<#=displayName#>Filter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(End<#=displayName#>Filter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(<#=code.FieldName(p)#>Filter).Date != DateTime.MinValue)
+						{
+							if(<#=displayName#>Filter.HasValue)
+								res.Append(" && " + string.Format("<#=p.Name#> == \"{0}\"",  Convert.ToDateTime(<#=displayName#>Filter).Date.ToString("MM/dd/yyyy")));
+						}
+<#+
+				}#><#+
+		 if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(int)|| ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(double)||ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(float)||ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(decimal))
+                {
+#>					if(<#=displayName#>Filter.HasValue)
+						res.Append(" && " + string.Format("<#=p.Name#> == {0}",  <#=displayName#>Filter.ToString()));<#+
+				}#>
+				<#+
+		 if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(string))
+                {
+#>					if(string.IsNullOrEmpty(<#=displayName#>Filter) == false)
+						res.Append(" && " + string.Format("<#=p.Name#>.Contains(\"{0}\")",  <#=displayName#>Filter));						
+<#+
+				}#>
+<#+
+		 if (ef.UnderlyingClrType(p.TypeUsage.EdmType) == typeof(bool))
+                {
+#>					if(<#=displayName#>Filter.HasValue)
+						res.Append(" && " + string.Format("<#=p.Name#> == {0}",  <#=displayName#>Filter));						
+<#+
+				}#>
+<#+
+	}	
+#>
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+		}
+
+// Send to Excel Implementation
+
+
+        public async Task Send2Excel()
+        {
+			IEnumerable<<#=mainEntity.Name#>> lst = null;
+            using (var ctx = new <#=mainEntity.Name#>Repository())
+            {
+                lst = await ctx.Get<#=mainEntitySet#>ByExpressionNav(vloader.FilterExpression, vloader.NavigationExpression).ConfigureAwait(continueOnCapturedContext: false);
+            }
+             if (lst == null || !lst.Any()) 
+              {
+                   MessageBox.Show("No Data to Send to Excel");
+                   return;
+               }
+            var s = new ExportToExcel<<#=mainEntity.Name#>ExcelLine, List<<#=mainEntity.Name#>ExcelLine>>
+            {
+                dataToPrint = lst.Select(x => new <#=mainEntity.Name#>ExcelLine
+                {
+<#+
+		var pplst = mainEntity.Properties.Where(x => (x.Name.EndsWith("Id")== false) || (x.Name.EndsWith("Id")== true && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string)));
+		foreach( var p in pplst)
+	{
+			var typeUsage = code.Escape(p.TypeUsage);
+			string displayName = "";
+                //var disprop = p.MetadataProperties.FirstOrDefault(z => z.Name.Contains("DisplayNameProperty"));
+                //if(disprop != null)
+                //{
+                    //displayName = ((XElement)disprop.Value).Value;
+                //}
+                //else
+                //{
+                    displayName = p.Name;
+                ////}	
+#> 
+                    <#=displayName#> = x.<#=p.Name#> <#=p == pplst.LastOrDefault()?"":","#>
+                    
+<#+
+	}
+#>
+                }).ToList()
+            };
+            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+            {
+               await Task.Factory.StartNew(s.GenerateReport, CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+            }
+        }
+
+        public class <#=mainEntity.Name#>ExcelLine
+        {
+		<#+
+		foreach( var p in mainEntity.Properties.Where(x => (x.Name.EndsWith("Id")== false) || (x.Name.EndsWith("Id")== true && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string))))
+	{
+			var typeUsage = code.Escape(p.TypeUsage);
+			string displayName = "";
+                //var disprop = p.MetadataProperties.FirstOrDefault(z => z.Name.Contains("DisplayNameProperty"));
+                //if(disprop != null)
+                //{
+                    //displayName = ((XElement)disprop.Value).Value;
+                //}
+                //else
+                //{
+                    displayName = p.Name;
+                //}	
+#> 
+                    public <#=typeUsage#> <#=displayName#> { get; set; } 
+                    
+<#+
+	}
+#>
+        }
+
+		
+    }
+}
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }	
+#>
+
+<#+
+        void WritePropertyEntityName(Dictionary<string, EntityType> plst, EntityType mainEntity, EntityContainer container, EntityContainer COREcontainer, CodeGenerationTools code)
+        {
+            foreach (var navprop in plst)              
+            {
+                if(navprop.Value == null) continue;
+                string mEntity = navprop.Key;
+                EntityType entity = navprop.Value;
+                //if(entity.BaseType != null)mEntity = (entity.BaseType as EntityType).Name;
+                if(mEntity == mainEntity.Name) continue;
+                var CSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault();
+                string cSet = "";
+                if(CSet == null) 
+                {
+                    //if(entity.BaseType == null)
+                    //{
+                        CSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault();
+                        if(CSet != null) cSet = CSet.Name;
+
+                    //}
+                    //else
+                    //{
+                        //cSet = entity.Name;
+                    //}
+                }
+                if(entity.BaseType == null)
+                {
+                    cSet = CSet.Name;
+                }
+                else
+                {
+                    // take out because not working here if(cSet == "")
+                  cSet = entity.Name;  
+                }
+            
+               
+                       
+ #>
+                    //if (e.PropertyName == "Add<#=mEntity#>")
+                   // {
+                   //    if(<#=(cSet)#>.Contains(Current<#=code.Escape(mainEntity)#>.<#=mEntity#>) == false) <#=cSet#>.Add(Current<#=code.Escape(mainEntity)#>.<#=                mEntity#>);
+                    //}
+<#+
+            }
+        }
+    }
+#>
+
+

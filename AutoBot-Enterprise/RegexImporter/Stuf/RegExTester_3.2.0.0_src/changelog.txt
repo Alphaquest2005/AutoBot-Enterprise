@@ -1,0 +1,26 @@
+﻿3.2.0.0 / 2011-04-06 / by Pablo Osés
+New features: Detection of multiple captures inside a capture group
+Minor changes: Code janitoring, Credits update in About Window
+
+3.1.1.0 / 2010-02-25 / by Eric Lebetsamer
+New features: Export to CSV
+
+3.1.0.0 / 2009-04-28 / by Pablo Osés
+New features: RegEx.Replace(), Context menu icons, C# Code snippet copy, RichTextBoxes WordWrap, Execution time, Mono compatible
+Bug fixes: Label Typos, New SuspendLayout techniques and a lot of code re-engineering
+
+3.0.0.0 / 2008-03-05 / by Pablo Osés
+New features: Asynchronous execution, Copy Feature enhanced, Test Textbox context menu and Find functions
+
+2.0.1.0 / 2008-03-03 / by Pablo Osés
+New features: RegEx Cheat-Sheet 
+Bug fixes: Multiline behavior, performance issues and results list click event.
+    
+2.0.0.0 / 2008-03-02 / by Pablo Osés
+New features: Group names, window maximize, Hot Keys, Indented Input, Culture Invariant, Resizeable Panels.
+
+1.0.0.3 / 2006-xx-xx / by Kurt Griffiths
+New features: Copy and window resize
+
+1.0.0.3 / 2003-xx-xx / by Davide Mauri
+Original version

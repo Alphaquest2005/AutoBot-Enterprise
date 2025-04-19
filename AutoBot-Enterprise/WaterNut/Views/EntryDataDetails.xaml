@@ -1,0 +1,93 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:qs="clr-namespace:WaterNut.QuerySpace.EntryDataQS.ViewModels"
+    xmlns:virtual="clr-namespace:Core.Common.UI.DataVirtualization;assembly=Core.Common.UI"
+    xmlns:qsEntryDataEntities="clr-namespace:EntryDataQS.Client.Entities;assembly=WaterNut.Client.Entities"
+	mc:Ignorable="d"
+    xmlns:converters="clr-namespace:WaterNut.Converters"
+    xmlns:validation="clr-namespace:Core.Common.UI.Validation;assembly=Core.Common.UI"
+    xmlns:coreEntities="clr-namespace:WaterNut.QuerySpace.CoreEntities.ViewModels"
+    x:Class="WaterNut.Views.EntryDataDetailsView" Height="518.209" Width="807.2">
+    <UserControl.Resources>
+        <x:Static Member="qs:EntryDataDetailsModel.Instance" x:Key="EntryDataDetailsModelDataSource" />
+        <Style TargetType="ListBoxItem">
+            <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
+        </Style>
+        <converters:NotBoolConverter x:Key="NotBoolConverter" />
+
+        <DataTemplate x:Key="EntryDataDetailTemplate" DataType="{x:Type qsEntryDataEntities:EntryDataDetailsEx}">
+            <Grid Width="861" Height="42" >
+                <!--<TextBlock Text="{Binding mLineNumber}" Margin="10,13,0,11.36" HorizontalAlignment="Left" Width="46"/>-->
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.CNumber, Mode=OneWay}" Margin="752,1,0,23" HorizontalAlignment="Left" Width="99" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Cost, StringFormat=c, Mode=OneWay}" Margin="444,28,0,-3.64" HorizontalAlignment="Left" Width="45"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.ItemDescription, Mode=OneWay}" Margin="190,10,0,9" HorizontalAlignment="Left" Width="210" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.ItemNumber, Mode=OneWay}" Margin="80,13,0,12" HorizontalAlignment="Left" Width="85" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Quantity, StringFormat=0, Mode=OneWay}" Margin="444,8,0,14.36" HorizontalAlignment="Left" Width="45" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.TariffCode,TargetNullValue='Mapp tariff to use', Mode=OneWay}" Margin="675,1,0,24" HorizontalAlignment="Left" Width="69" TextWrapping="Wrap" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Units, Mode=OneWay}" Margin="518,10,0,15" HorizontalAlignment="Left" Width="46" FontSize="14"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.CLineNumber, Mode=OneWay}" Margin="675,23,0,2" HorizontalAlignment="Left" Width="72" VerticalAlignment="Top" FontSize="14"/>
+                <TextBlock x:Name="AddItemtoAdocTxt" IsEnabled="{Binding Data.Downloaded,Converter={StaticResource NotBoolConverter}, Mode=OneWay}" HorizontalAlignment="Left" Height="35" Margin="579,5,0,0" VerticalAlignment="Top" Width="57" Text="Add To Asy. Doc." Style="{DynamicResource TextButtonStyle}" TextWrapping="Wrap" MouseLeftButtonUp="AddItemtoAdocTxt_MouseLeftButtonUp"/>
+                <CheckBox IsChecked="{Binding Data.DoNotAllocate}" HorizontalAlignment="Left" Height="21" Margin="752,23,0,-2" VerticalAlignment="Top" Width="104" Content="Do not Allocate" Checked="CheckBox_Checked"/>
+                <Rectangle HorizontalAlignment="Left" Height="41" Margin="0,1,0,0" Stroke="{x:Null}" VerticalAlignment="Top" Width="15">
+                    <Rectangle.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="White" Offset="0.011"/>
+                            <GradientStop Color="#FF5872AB" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.LineNumber, Mode=OneWay}" Margin="20,13,0,12" HorizontalAlignment="Left" Width="31" FontSize="14" FontWeight="Bold"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource EntryDataDetailsModelDataSource}}">
+        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176" FontSize="21.333" Text="Entry Data Details"/>
+        <ListBox SelectedItem="{Binding Source={x:Static qs:BaseViewModel.Instance}, Path=VCurrentEntryDataDetailsEx}" 
+                 ItemTemplate="{DynamicResource EntryDataDetailTemplate}" 
+                 ItemsSource="{Binding EntryDataDetailsExes}" 
+                 SelectionChanged="ItemList_SelectionChanged" 
+                 SelectionMode="Multiple" x:Name="ItemLst"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.IsDeferredScrollingEnabled="True" 
+                 virtual:VirtualListLoadingIndicator.IsAttached="True"
+                 HorizontalAlignment="Stretch" Height="195" Margin="2,192,-2,0" VerticalAlignment="Top" Width="Auto" Style="{DynamicResource AlphaListBoxStyle}" />
+        <TextBlock HorizontalAlignment="Left" Height="26" Margin="583,164,0,0" TextWrapping="Wrap" Text="Add to Asy. Doc." VerticalAlignment="Top" Width="126" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="AddItemtoAdocTxt_MouseLeftButtonUp" />
+        <CheckBox x:Name="MultiSelectChk" HorizontalAlignment="Left" Height="26" Margin="231,164,0,0" VerticalAlignment="Top" Width="126" Content="MultiSelect" IsChecked="False"/>
+        <TextBlock x:Name="DeselectTxt" HorizontalAlignment="Left" Height="22" Margin="378,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="98" FontSize="16" Text="De-Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="DeselectTxt_MouseLeftButtonDown"/>
+        <TextBlock x:Name="SelectTxt" HorizontalAlignment="Left" Height="22" Margin="500,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="67" FontSize="16" Text="Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="SelectTxt_MouseLeftButtonDown"/>
+        <CheckBox IsChecked="{Binding ZeroPriceItems}"  HorizontalAlignment="Left" Height="23" Margin="96,55,0,0" VerticalAlignment="Top" Width="129" Content="View Zero Price Items&#xD;&#xA;"/>
+        <Grid DataContext="{Binding Source={x:Static qs:BaseViewModel.Instance}, Path=CurrentEntryDataDetailsEx}" HorizontalAlignment="Left" Height="52" Margin="0,399,0,0" VerticalAlignment="Top" Width="807" Background="#4CFFFFFF">
+            <TextBox Text="{Binding Cost,UpdateSourceTrigger=PropertyChanged}" Margin="507,8,0,0" HorizontalAlignment="Left" Width="82" VerticalAlignment="Top" Height="32"/>
+            <TextBox Text="{Binding ItemDescription,UpdateSourceTrigger=PropertyChanged}" Margin="102,8,0,0" HorizontalAlignment="Left" Width="252" VerticalAlignment="Top" Height="32"/>
+            <TextBox Text="{Binding ItemNumber,UpdateSourceTrigger=PropertyChanged}" Margin="11.879,8,0,0" HorizontalAlignment="Left" Width="85" VerticalAlignment="Top" Height="32"/>
+            <TextBox Text="{Binding Quantity,UpdateSourceTrigger=PropertyChanged}" Margin="363,8,0,0" HorizontalAlignment="Left" Width="63" Height="32" VerticalAlignment="Top"/>
+            <TextBox Text="{Binding Units,UpdateSourceTrigger=PropertyChanged}" Margin="436,8,0,0" HorizontalAlignment="Left" Width="63" VerticalAlignment="Top" Height="32"/>
+
+            <TextBlock x:Name="NewItemTxt"  HorizontalAlignment="Left" Height="18" Margin="740,4,0,0" VerticalAlignment="Top" Width="46" Style="{DynamicResource TextButtonStyle}" TextWrapping="Wrap" MouseLeftButtonDown="NewItm" TextAlignment="Center" FontSize="16"><Run Text="New"/><LineBreak/><Run/></TextBlock>
+            <CheckBox IsChecked="{Binding DoNotAllocate}" HorizontalAlignment="Left" Height="26" Margin="608,15,0,0" VerticalAlignment="Top" Width="104" Content="Do not Allocate"/>
+            <TextBlock x:Name="SaveItemTxt_Copy"  HorizontalAlignment="Left" Height="18" Margin="740,26,0,0" VerticalAlignment="Top" Width="46" Style="{DynamicResource TextButtonStyle}" TextWrapping="Wrap" MouseLeftButtonDown="SaveItm" TextAlignment="Center" FontSize="16"><Run Text="Save"/><LineBreak/><Run/></TextBlock>
+        </Grid>
+        <TextBox Text="{Binding ItemNumberFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="27,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        <TextBox Text="{Binding ItemDescriptionFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="113,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="211" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBox Text="{validation:ValidationBinding Path=CostFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="415,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="84" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBox Text="{Binding TariffCodeFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="519,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="25" Margin="24,84,0,0" TextWrapping="Wrap" Text="Item #" VerticalAlignment="Top" Width="84" TextAlignment="Center" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Height="25" Margin="113,84,0,0" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" Width="203" TextAlignment="Center" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Height="25" Margin="321,85,0,0" TextWrapping="Wrap" Text="Qty" VerticalAlignment="Top" Width="85" TextAlignment="Center" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Height="25" Margin="415,80,0,0" TextWrapping="Wrap" Text="Cost" VerticalAlignment="Top" Width="84" TextAlignment="Center" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Height="25" Margin="519,80,0,0" TextWrapping="Wrap" Text="TariffCode" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="16"/>
+        <TextBox Text="{Binding QuantityFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="335,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="67" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <CheckBox IsChecked="{Binding ViewDocData}"  HorizontalAlignment="Left" Height="23" Margin="429,55,0,0" VerticalAlignment="Top" Width="141" Content="View Document Items"/>
+        <TextBlock Text="{Binding EntryDataDetailsExes.Count, StringFormat=0 Filtered Results}" HorizontalAlignment="Left" Height="24" Margin="221,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+        <TextBlock Text="{Binding TotalTotal, StringFormat=\{0:c\}}" HorizontalAlignment="Left" Height="24" Margin="650,471,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="147" FontSize="20" Foreground="#FFE4E453"/>
+        <CheckBox IsChecked="{Binding ViewAll}"  HorizontalAlignment="Left" Height="23" Margin="583,55,0,0" VerticalAlignment="Top" Width="104" Content="View All" />
+        <TextBlock Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Left" Height="24" Margin="591,14,0,0" TextWrapping="Wrap" Text="Send to Excel &#xE1A5;" VerticalAlignment="Top" Width="121" FontSize="16" FontFamily="Segoe UI Symbol" MouseLeftButtonDown="Send2Excel" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowExportToExcel}"/>
+        <CheckBox IsChecked="{Binding NullItems}"  HorizontalAlignment="Left" Height="23" Margin="244,55,0,0" VerticalAlignment="Top" Width="162" Content="View Null Inventory Items"/>
+        <TextBlock Text="{Binding SelectedTotal, StringFormat=\{0:c\} Of}" HorizontalAlignment="Left" Height="24" Margin="498,471,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="147" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+    </Grid>
+</UserControl>

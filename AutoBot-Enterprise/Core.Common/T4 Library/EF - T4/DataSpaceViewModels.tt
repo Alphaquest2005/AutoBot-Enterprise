@@ -1,0 +1,139 @@
+﻿
+<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ViewModels\DataSpace\EntityViewModel.tt" once="true"#>	
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ViewModels\DataSpace\BaseViewModel.tt" once="true"#>
+					
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+        
+        public void CreateViewModels(string projectName, string inputFile, string coreEdmx, string outputProject)
+        {
+            
+	
+            EntityType MainEntity = null ;
+            string MainEntitySet = "";
+            string coreInputFile= coreEdmx;
+            
+
+       
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+            MetadataLoader loader = new MetadataLoader(this);
+            CodeRegion region = new CodeRegion(this, 1);
+            MetadataTools ef = new MetadataTools(this);
+
+       
+            MetadataWorkspace metadataWorkspace = null;
+            bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+            EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+           // EdmItemCollection storeCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.SSpace);
+            
+            
+     
+            string namespaceName = code.VsNamespaceSuggestion();
+
+            EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            MetadataWorkspace COREmetadataWorkspace = null;
+            bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreInputFile, out COREmetadataWorkspace);
+            EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+            EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            MainEntity = code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=>x.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true).FirstOrDefault();
+         
+
+            if(MainEntity != null)
+            {
+                MainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(MainEntity)).FirstOrDefault().Name;
+               
+                //SummaryViewModelTPL sv = new SummaryViewModelTPL();
+                 //sv.projectName = projectName;
+                //sv.conTextName = code.Escape(container);
+                //sv.MainEntity = MainEntity.Name;
+                //sv.mainEntitySet = MainEntitySet;                
+                //sv.Output.Project = outputProject;
+                //sv.Output.File = @"Generated Models\DataSpace\" + code.Escape(container) + @"\" + MainEntity.Name + "SummaryListViewModel.cs";
+                //sv.Render();
+            }
+            else
+            {
+                //SummaryViewModelTPL sv = new SummaryViewModelTPL();
+                //sv.conTextName = code.Escape(container);
+                //sv.projectName = projectName;
+                //sv.MainEntity = "";
+                //sv.mainEntitySet = "";                
+                //sv.Output.Project = outputProject;
+                //sv.Output.File = @"Generated Models\DataSpace\" + code.Escape(container) + @"\" + "SummaryListViewModel.cs";
+                //sv.Render();
+            }
+            foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+            {
+                if(container.Name != COREcontainer.Name && code.GetItemsToGenerate<EntityType>(COREItemCollection).FirstOrDefault(x=> x.Name == entity.Name)!=null)continue;
+                if(entity.Abstract) continue;
+
+                List<EntityType> allEntityCollection = new List<EntityType>();
+                allEntityCollection.AddRange(code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList());
+                allEntityCollection.AddRange(code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList());
+
+               EntityViewModelTPL ev = new EntityViewModelTPL();
+                ev.conTextName = code.Escape(container);
+                ev.projectName = projectName;
+                ev.mainEntity = entity;
+               // ev.CrudOps = CrudOps;
+                if(entity.BaseType == null)
+                    {
+                        ev.mainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(entity)).FirstOrDefault().Name;
+                    }
+                    else
+                    {
+                         ev.mainEntitySet = entity.Name;
+                    }
+                ev.container = container;
+                ev.COREcontainer = COREcontainer;
+                ev.entityCollection = allEntityCollection;
+				ev.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+                ev.ef = ef;
+                ev.Output.Project = outputProject;
+                ev.Output.File = @"Generated Models\DataSpace\" + code.Escape(container) + @"\" + entity.Name + "DataModel.cs";
+                ev.Render();
+
+
+                
+            }
+
+            BaseViewTPL bv = new BaseViewTPL();
+            bv.projectName = projectName;
+            bv.conTextName = code.Escape(container);
+            bv.container = container;
+            bv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            bv.COREcontainer = COREcontainer;
+            bv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            bv.Output.Project = outputProject;
+            bv.Output.File = @"Generated Models\DataSpace\" + code.Escape(container) + @"\" + "BaseDataModel.cs";
+            bv.Render();
+    
+//
+            //MessageTokenTPL mv = new MessageTokenTPL();
+            //mv.projectName = projectName;
+            //mv.conTextName = code.Escape(container);
+            //mv.container = container;
+            //mv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            //mv.COREcontainer = COREcontainer;
+            //mv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            //mv.Output.Project = outputProject;
+            //mv.Output.File = @"Generated Models\DataSpace\" + code.Escape(container) + @"\" +  "MessageToken.cs";
+            //mv.Render();
+
+               
+#>
+<#+
+        }
+
+    #>

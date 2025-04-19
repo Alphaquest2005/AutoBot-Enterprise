@@ -1,0 +1,133 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\QuerySpaceViewModels.tt" #>
+<#
+   
+        CreateViewModels("WaterNut",@"..\InventoryQS\InventoryQS.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false );   
+
+            CreateViewModels("WaterNut",@"..\AllocationQS\AllocationQS.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+
+			CreateViewModels("WaterNut",@"..\EntryDataQS\EntryDataQS.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+
+    			CreateViewModels("WaterNut",@"..\AdjustmentQS\AdjustmentQS.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+
+    CreateViewModels("WaterNut",@"..\PreviousDocumentQS\PreviousDocumentQS.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+    CreateViewModels("WaterNut",@"..\CoreEntities\CoreEntities.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+        CreateViewModels("WaterNut",@"..\CoreEntities\OCR.edmx",
+                     @"..\CoreEntities\CoreEntities.edmx",
+                     @"..\WaterNut\AutoWaterNut.csproj", false, false ); 
+
+    //CreateServices("WaterNut", @"..\AllocationQS\AllocationQS.edmx",
+						   //@"..\AllocationQS\AllocationQS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+		//CreateServices("WaterNut", @"..\CounterPointQS\CounterPointQS.edmx",            
+            //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                            //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+		//CreateServices("WaterNut",@"..\CoreEntities\CoreEntities.edmx",                   
+                    //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+	//CreateServices("WaterNut",@"..\EntryDataQS\EntryDataQS.edmx",                     
+                     //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+	//CreateServices("WaterNut",@"..\InventoryQS\InventoryQS.edmx",                    
+                     //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );   
+//
+	//CreateServices("WaterNut",@"..\PreviousDocumentQS\PreviousDocumentQS.edmx",                    
+                     //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );     
+//
+   //CreateServices("WaterNut",@"..\SalesDataQS\SalesDataQS.edmx",                     
+                     //@"..\CoreEntities\CoreEntities.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+//
+     //CreateServices("WaterNut",@"..\AdjustmentQS\AdjustmentQS.edmx",                     
+                     //@"..\AdjustmentQS\AdjustmentQS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+//
+////////////////////////////////////////////Data space///////////////////////////////////////
+//
+//
+	//CreateServices("WaterNut",@"..\AllocationDS\AllocationDS.edmx",
+                     //@"..\AllocationDS\AllocationDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"..\DocumentDS\DocumentDS.edmx",
+                     //@"..\DocumentDS\DocumentDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"..\DocumentItemDS\DocumentItemDS.edmx",
+                     //@"..\DocumentItemDS\DocumentItemDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );   
+//
+	//CreateServices("WaterNut",@"..\EntryDataDS\EntryDataDS.edmx",
+                     //@"..\EntryDataDS\EntryDataDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"..\InventoryDS\InventoryDS.edmx",
+                     //@"..\InventoryDS\InventoryDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );   
+//
+	//CreateServices("WaterNut",@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                    //@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );     
+//
+    //CreateServices("WaterNut",@"..\QuickBooksDS\QuickBooksDS.edmx",
+                     //@"..\QuickBooksDS\QuickBooksDS.edmx",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );  
+#>

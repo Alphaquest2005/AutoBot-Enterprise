@@ -1,0 +1,9 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ClientEntities.tt" #>
+<#
+    CreateClientEntities("WaterNut", @"PreviousDocumentDS.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj"); 
+#>

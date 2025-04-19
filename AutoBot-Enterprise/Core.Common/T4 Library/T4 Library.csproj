@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{016C6E07-934E-4C1F-AF81-08124EC3B8C9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>T4_Library</RootNamespace>
+    <AssemblyName>T4 Library</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\WaterNut - Enterprise\</SolutionDir>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="T4\Utilities\Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Backup code\navigation per property.tt" />
+    <None Include="packages.config" />
+    <None Include="T4\BusinessEntities.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\BusinessModels.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ClientEntities.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ClientModels.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\DomainInterface\EntityInterfaceTemplate.tt" />
+    <None Include="T4\Entities\Business\EF6\BusinessEntityROMappingsTemplate.tt" />
+    <None Include="T4\MainView.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Models\Business\EntityTrackableTemplate.tt" />
+    <None Include="T4\Models\Client\DTOCreateEntityFromStringTemplate.tt" />
+    <None Include="T4\QuerySpaceMessageToken.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\QuerySpaceViews.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\DataSpaceViewModels.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\QuerySpaceViewModels.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\DomainInterface.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\DbContextMappings.tt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="T4\DomainInterface\DomainInterfaceTemplate.tt" />
+    <None Include="T4\Entities\Business\EF6\BusinessEntityMappingsTemplate.tt" />
+    <None Include="T4\Entities\Business\EF6\BusinessEntityTemplate.tt" />
+    <None Include="T4\Entities\Client\ClientEntityTemplate.tt" />
+    <None Include="T4\Entities\Client\ClientEntityTemplateDTO.tt" />
+    <None Include="T4\EntityFramework\Entities.tt" />
+    <None Include="T4\EntityFramework\GetTypeName.tt" />
+    <None Include="T4\Iterator\Iterator.tt">
+      <LastGenOutput>Iterator.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Iterator\IteratorExtensions.tt" />
+    <None Include="T4\Models\Business\EntityConstructorTemplate.tt" />
+    <None Include="T4\Models\Business\IEntityWithKeyTemplate.tt" />
+    <None Include="T4\Models\Business\IIdentifiableEntityTemplate.tt" />
+    <None Include="T4\Models\Business\MainEntityModel.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Models\Business\MyNavPropTemplate.tt" />
+    <None Include="T4\Models\Client\CreateEntityFromStringTemplate.tt" />
+    <None Include="T4\Models\Client\DTOIIdentifiableEntityTemplate.tt" />
+    <None Include="T4\Models\Client\DTOMyNavPropTemplate.tt" />
+    <None Include="T4\Models\Client\EntityConstructorTemplate.tt" />
+    <None Include="T4\Models\Client\IIdentifiableEntityTemplate.tt" />
+    <None Include="T4\Models\Client\MainEntityModel.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Models\Client\MyNavPropTemplate.tt" />
+    <None Include="T4\ObjectContexts.tt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="T4\Repositories\--BusinessRepository.tt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="T4\Repositories\ClientEntityRepositoryTemplate.tt" />
+    <None Include="T4\Repositories\ClientRepository.tt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="T4\Repository.tt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="T4\Services.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Services\ClientServiceContractTemplate.tt" />
+    <None Include="T4\Services\ClientServiceTemplate.tt" />
+    <None Include="T4\Services\ServiceContractTemplate.tt" />
+    <None Include="T4\Services\ServiceTemplate.tt" />
+    <None Include="T4\Utilities\Utils.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Utils.cs</LastGenOutput>
+      <LastOutputs>.\Utils.cs</LastOutputs>
+    </None>
+    <None Include="T4\old callers\ViewModels.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\BaseViewModel.tt">
+      <LastGenOutput>BaseViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\CrudOps.tt">
+      <LastGenOutput>EntityViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\EntityViewModel.tt">
+      <LastGenOutput>EntityViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\MessageTokenModel.tt">
+      <LastGenOutput>MessageTokenModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\DataSpace\BaseViewModel.tt">
+      <LastGenOutput>BaseViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\DataSpace\EntityViewModel.tt">
+      <LastGenOutput>EntityViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\DataSpace\--MessageTokenModel.tt">
+      <LastGenOutput>MessageTokenModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\DataSpace\--SummaryListViewModel.tt">
+      <LastGenOutput>SummaryListViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\BaseViewModel.tt">
+      <LastGenOutput>BaseViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\EntityViewModel.tt">
+      <LastGenOutput>EntityViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\MessageTokenModel.tt">
+      <LastGenOutput>MessageTokenModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\Totals.tt" />
+    <None Include="T4\ViewModels\QuerySpace\SummaryListViewModel.tt">
+      <LastGenOutput>SummaryListViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\QuerySpace\VirturalListLoader.tt" />
+    <None Include="T4\ViewModels\SummaryListViewModel.tt">
+      <LastGenOutput>SummaryListViewModel.cs</LastGenOutput>
+    </None>
+    <None Include="T4\ViewModels\VirturalListLoader.tt" />
+    <None Include="T4\old callers\Views.tt">
+      <LastGenOutput>ViewModels1.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\EntityGridListView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\EntityGridListViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainViewModel.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainWindowViewModel.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainWindow.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainWindowCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\MainView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\EntityGridListView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\EntityGridListViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\SummaryView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\QuerySpace\SummaryViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\SummaryGridListView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+    <None Include="T4\Views\SummaryGridListViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Views\QuerySpace\SummaryDetailsView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Views\QuerySpace\SummaryDetailsViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Views\QuerySpace\SummaryListView.tt">
+      <LastGenOutput>EntityGridListView.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Views\QuerySpace\SummaryListViewCS.tt">
+      <LastGenOutput>EntityGridListViewCS.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\DomainInterface\DomainClientEntityInterfaceTemplate.tt" />
+    <None Include="T4\DomainInterface\DomainEntityInterfaceTemplate.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Entities\Business\EF6\BusinessEnumTemplate.tt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

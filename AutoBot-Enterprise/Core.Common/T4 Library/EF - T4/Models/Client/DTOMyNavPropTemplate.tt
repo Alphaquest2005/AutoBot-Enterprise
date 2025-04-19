@@ -1,0 +1,90 @@
+﻿<#@ import namespace="System.Collections.Generic" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class IMyNavPropDTOTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string conTextName;
+         public string projectName;
+        public EntityContainer container;
+        public List<EntityType> entityCollection;
+        public EntityContainer COREcontainer;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        public CodeGenerationTools code;
+        
+        
+
+	public override string TransformText()
+        {
+            if(mainEntity.BaseType != null) return "//See Base Type";
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id")  && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)  && mainEntity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+#>
+using CoreEntities;
+using CoreEntities.Client.DTO;
+//using <#=projectName #>.Client.DTO;
+using System.Linq;
+
+namespace <#=conTextName#>.Client.DTO
+{
+    public partial class <#=mainEntity.Name#>
+    {
+       #region MyNavProp Entities
+
+<#+
+             if(ens.Any() == true)
+            {
+            foreach(EdmProperty p in ens)
+                {
+                    EntityType pEntity = COREentityCollection.FirstOrDefault(x=> x.Name == p.Name.Substring(0,p.Name.Length - 2));
+                    if(pEntity == null) continue;
+                    string pField= code.FieldName(p).Substring(0,code.FieldName(p).Length - 2);
+                     var cSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (pEntity.BaseType == null?pEntity.Name:pEntity.BaseType.Name)).FirstOrDefault();
+                   if(cSet == null) continue;// || pEntity.Name == mainEntity.Name
+                    string pSet = cSet == null? pEntity.Name: cSet.Name;
+                   
+
+#>
+        <#=pEntity.Name #> <#=pField #> = null;
+
+        public <#=pEntity.Name #> <#=pEntity.Name #>
+        {
+            get
+            {
+                return <#=pField #>;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    <#=pField #> = value;
+
+                    <#=p.Name #> = <#=pField #>.<#=pEntity.KeyMembers[0].Name #>;
+
+                    NotifyPropertyChanged("<#=pEntity.Name #>");
+                }
+            }
+
+        }
+ <#+             }
+ #>       
+
+        
+<#+ 
+           }
+ 
+#> 
+ #endregion
+    }
+   
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}
+#>

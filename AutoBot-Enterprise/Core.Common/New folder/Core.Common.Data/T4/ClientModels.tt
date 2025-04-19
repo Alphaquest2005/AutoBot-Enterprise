@@ -1,0 +1,110 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Models\Client\IIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Models\Client\DTOIIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Models\Client\MyNavPropTemplate.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Models\Client\DTOMyNavPropTemplate.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Models\Client\EntityConstructorTemplate.tt" once="true"#>
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateClientModels(string inputFile)
+    {	
+        //string MainEntity = "Employee";
+        //string MainEntitySet = "Employees";
+        
+
+        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+     
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(@"C:\Prism Projects\Quick Inventory Manager\CoreEntities\CoreEntities.edmx", out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string namespaceName = code.VsNamespaceSuggestion();
+
+           
+
+        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+        {
+            IIdentifibleEntityTPL sv = new IIdentifibleEntityTPL();           
+            sv.mainEntity = entity;
+            sv.mainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == (entity.BaseType == null?entity:entity.BaseType)).FirstOrDefault().Name;
+            sv.contextName = container.Name;
+            sv.container = container;
+            sv.COREcontainer = COREcontainer;
+            sv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            sv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            sv.ef = ef;
+            sv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.Entities\InvManager.Client.Entities.csproj";
+            sv.Output.File = @"Generated IIdentitfiableEntity Models\" + entity.Name + ".cs";
+            sv.Render();
+
+
+            DTOIIdentifibleEntityTPL dv = new DTOIIdentifibleEntityTPL();           
+            dv.mainEntity = entity;
+            dv.mainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == (entity.BaseType == null?entity:entity.BaseType)).FirstOrDefault().Name;
+            dv.contextName = container.Name;
+            dv.container = container;
+            dv.COREcontainer = COREcontainer;
+            dv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            dv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            dv.ef = ef;
+            dv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.DTO\InvManager.Client.DTO.csproj";
+            dv.Output.File =    @"Generated IIdentitfiableEntity Models\" + container.Name + @"\" + entity.Name + "DTO.cs";
+            dv.Render();
+
+            DTOIMyNavPropTPL dnv = new DTOIMyNavPropTPL();  
+            dnv.mainEntity = entity;
+            dnv.contextName = container.Name;
+            dnv.container = container;
+            dnv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            dnv.COREcontainer = COREcontainer;
+            dnv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            dnv.ef = ef;
+            dnv.code = code;
+            dnv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.DTO\InvManager.Client.DTO.csproj";
+            dnv.Output.File = @"Generated MyNavProp Models\" + container.Name + @"\" + entity.Name + "DTO.cs";
+            dnv.Render();
+
+
+            EntityConstructorTPL mc = new EntityConstructorTPL();           
+            mc.mainEntity = entity;
+            mc.contextName = container.Name;
+            mc.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.Entities\InvManager.Client.Entities.csproj";
+            mc.Output.File = @"Generated Constructors Models\" + entity.Name + ".cs";
+            mc.Render();
+
+            IMyNavPropTPL nv = new IMyNavPropTPL();  
+            nv.mainEntity = entity;
+            nv.contextName = container.Name;
+            nv.container = container;
+            nv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            nv.COREcontainer = COREcontainer;
+            nv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            nv.ef = ef;
+            nv.code = code;
+            nv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.Entities\InvManager.Client.Entities.csproj";
+            nv.Output.File = @"Generated MyNavProp Models\" + entity.Name + ".cs";
+            nv.Render();
+
+        }
+
+    }
+        
+#>

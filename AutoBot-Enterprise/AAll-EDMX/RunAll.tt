@@ -1,0 +1,104 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Threading.Tasks" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ include file="..\Core.Common\T4 Library\T4\BusinessEntities.tt" #>
+//<#
+//
+//
+    //string[] strs = new string[] {  @"EF6\AllBusinessEntities.tt",
+                                    //@"EF6\AllBusinessMappings.tt",@"EF6\AllClientEntities.tt","AllBusinessModels.tt", "AllClientModels.tt"
+                                    //, "AllDomainInterface.tt", "AllMapping.tt", "AllObjectContext.tt", "AllRepository.tt", "AllServices.tt",
+                                    //"AllViewModels.tt"
+                                 //};
+//
+   //
+//
+    //Parallel.ForEach (strs, file => 
+        //{
+        //Engine engine = new Engine();
+        //string templateText = File.ReadAllText(Host.ResolvePath(@"..\AAll-EDMX\" + file));
+        //string output = engine.ProcessTemplate(templateText, Host);
+        //});
+              //
+//#>
+
+<#
+
+    CreateBusinessEntities("WaterNut", @"..\AllocationQS\AllocationQS.edmx",  
+					 @"..\AllocationQS\AllocationQS.edmx",  
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut", @"..\CounterPointQS\CounterPointQS.edmx",  
+			@"..\CoreEntities\CoreEntities.edmx",          
+             @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",@"..\CoreEntities\CoreEntities.edmx",   
+					@"..\CoreEntities\CoreEntities.edmx",                
+                     @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"..\EntryDataQS\EntryDataQS.edmx",    
+					 @"..\CoreEntities\CoreEntities.edmx",                 
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"..\InventoryQS\InventoryQS.edmx",
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"..\PreviousDocumentQS\PreviousDocumentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                   
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );     
+
+   CreateBusinessEntities("WaterNut",
+				     @"..\SalesDataQS\SalesDataQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );
+       CreateBusinessEntities("WaterNut",
+				     @"..\AdjustmentQS\AdjustmentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );
+
+   
+//////////////////////////////////////////Data space///////////////////////////////////////
+
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\AllocationDS\AllocationDS.edmx",
+					@"..\AllocationDS\AllocationDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\DocumentDS\DocumentDS.edmx",
+					 @"..\DocumentDS\DocumentDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\DocumentItemDS\DocumentItemDS.edmx",
+					 @"..\DocumentItemDS\DocumentItemDS.edmx",
+                     @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\EntryDataDS\EntryDataDS.edmx",
+					@"..\EntryDataDS\EntryDataDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\InventoryDS\InventoryDS.edmx",
+					@"..\InventoryDS\InventoryDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+					@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );     
+
+    CreateBusinessEntities("WaterNut",
+                     @"..\QuickBooksDS\QuickBooksDS.edmx",
+					@"..\QuickBooksDS\QuickBooksDS.edmx",
+                      @"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );  
+#>

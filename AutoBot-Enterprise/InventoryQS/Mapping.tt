@@ -1,0 +1,15 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\DbContextMappings.tt" #>
+<#
+    string conTextname = "InventoryQS";
+   
+    DbContextMappingsTPL sv = new DbContextMappingsTPL();            
+             sv.inputFile = @"C:\Prism\WaterNut - Enterprise\" + conTextname + @"\" + conTextname +".edmx";
+             sv.coreEdmx = @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx";
+             sv.outputProject = @"C:\Prism\WaterNut - Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+             sv.Output.Project = @"C:\Prism\WaterNut - Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+             sv.Output.File = @"DbContextMappings\" + conTextname + ".Mappings.cs";
+             sv.Render();
+#>

@@ -1,0 +1,50 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class EntityConstructorTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string conTextName;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+           
+#>
+		namespace <#=conTextName#>.Business.Entities
+{
+    public partial class <#=mainEntity.Name#>
+    {
+       public <#=mainEntity.Name#>()
+        {
+            CustomClassStartUp();
+            MyNavPropStartUp();
+            SetupProperties();
+            IIdentifiableEntityStartUp();
+            AutoGenStartUp();  
+            TrackableStartUp();
+        }
+
+      public <#=mainEntity.Name#>(bool start) : this()
+       {
+          if(start) StartTracking();
+       }
+    partial void SetupProperties();
+    partial void AutoGenStartUp();
+    partial void CustomClassStartUp();
+    partial void MyNavPropStartUp();
+    partial void IIdentifiableEntityStartUp();
+    partial void TrackableStartUp();
+   
+    }
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

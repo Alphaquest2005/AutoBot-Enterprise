@@ -1,0 +1,43 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:QS="clr-namespace:WaterNut.QuerySpace.InventoryQS.ViewModels"
+    xmlns:virtual="clr-namespace:Core.Common.UI.DataVirtualization;assembly=Core.Common.UI"
+    xmlns:QSInventoryEntities="clr-namespace:InventoryQS.Client.Entities;assembly=WaterNut.Client.Entities"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+	x:Class="WaterNut.Views.TariffCategory"
+	d:DesignWidth="640" d:DesignHeight="480">
+	<UserControl.Resources>
+        <x:Static Member="QS:TariffCategoryModel.Instance" x:Key="TariffCategoryModelDataSource" />
+        <Style TargetType="ListBoxItem">
+            <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
+        </Style>
+		<DataTemplate x:Key="InventoryItemTemplate" DataType="{x:Type QSInventoryEntities:TariffCategory}">
+			<Grid Height="67" Width="611">
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Description, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="160,0,0,0" FontSize="12" Width="352" Height="67" TextWrapping="Wrap"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.TariffCategoryCode, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Height="31.781" Width="136.641" FontSize="16" FontWeight="Bold"/>
+                <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.ParentTariffCategoryCode, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="517,10,0,0" Height="32" Width="84" FontSize="17.333"/>
+                <CheckBox IsChecked="{Binding Data.LicenseRequired}" HorizontalAlignment="Left" Height="25" Margin="496,42,0,0" VerticalAlignment="Top" Width="115" Content="License Required"/>
+            </Grid>
+		</DataTemplate>
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource TariffCategoryModelDataSource}}">
+		<TextBlock HorizontalAlignment="Left" Height="32.766" Margin="8.838,14.011,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333"><Run Text="Tariff Categories"/><LineBreak/><Run/></TextBlock>
+        <ListBox HorizontalAlignment="Left" Height="307" Margin="-1,173,-10,0" VerticalAlignment="Top" Width="651" 
+                 SelectedItem="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=VCurrentTariffCategory, Mode=OneWayToSource}" 
+                 ItemTemplate="{DynamicResource InventoryItemTemplate}" 
+                 ItemsSource="{Binding TariffCategory}"  Style="{DynamicResource AlphaListBoxStyle}" />
+		<TextBlock HorizontalAlignment="Left" Height="33" Margin="10,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" Text="Tariff Category Code" TextAlignment="Center"/>
+		<TextBlock HorizontalAlignment="Left" Height="33" Margin="169,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" FontSize="16" Text="Description" TextAlignment="Center"/>
+		<TextBlock HorizontalAlignment="Left" Height="33" Margin="481,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" Text="Parent Cat. Codes" TextAlignment="Center"/>
+        <TextBox Text="{Binding TariffCategoryCodeFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="10,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}"  PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBox Text="{Binding DescriptionFilter, UpdateSourceTrigger=Explicit}" Background="#4CFFFFFF" HorizontalAlignment="Left" Height="33" Margin="169,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="307" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}"  PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBox Text="{Binding ParentTariffCategoryCodeFilter, UpdateSourceTrigger=Explicit}" Background="#4CFFFFFF" HorizontalAlignment="Left" Height="29" Margin="481,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="26" Margin="555,142,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="ViewAll"/>
+        <CheckBox IsChecked="{Binding LicenseRequiredFilter}" HorizontalAlignment="Left" Height="25" Margin="481,119,0,0" VerticalAlignment="Top" Width="149" Content="License Required"/>
+    </Grid>
+</UserControl>

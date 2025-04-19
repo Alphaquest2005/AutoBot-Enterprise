@@ -1,0 +1,27 @@
+﻿
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Repositories\ClientRepository.tt"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ output extension=".cs"#>
+<#+ 
+    public class RepositoryTPL : CSharpTemplate
+    {
+                     
+        public void CreateRepositories(string projectName, string conTextname,string inputFile,  string outputProject)
+        {
+
+
+           
+            ClientRepositoryTPL cr = new ClientRepositoryTPL();            
+             cr.inputFile = inputFile;
+            cr.projectName = projectName;
+			 cr.outputProject = outputProject;
+             cr.Output.Project = outputProject;
+
+             cr.Output.File = @"Generated Repositories\" + conTextname + "Repository.cs";
+             cr.Render();
+
+        }
+
+    }
+#>

@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{658BB505-087E-48B0-9ADC-B227367AF83C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNut.Client.Contracts</RootNamespace>
+    <AssemblyName>WaterNut.Client.Contracts</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <!-- Added RuntimeIdentifier -->
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdjustmentQS\IAdjustmentDetailService.cs" />
+    <Compile Include="AdjustmentQS\IAdjustmentExService.cs" />
+    <Compile Include="AdjustmentQS\IAdjustmentOversAllocationService.cs" />
+    <Compile Include="AdjustmentQS\IAdjustmentOverService.cs" />
+    <Compile Include="AdjustmentQS\IAdjustmentShortService.cs" />
+    <Compile Include="AdjustmentQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="AdjustmentQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="AdjustmentQS\IAsycudaDocumentItemLastItemCostService.cs" />
+    <Compile Include="AdjustmentQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="AdjustmentQS\IAsycudaSalesAllocationService.cs" />
+    <Compile Include="AdjustmentQS\IEntryDataDetailService.cs" />
+    <Compile Include="AdjustmentQS\IInventoryItemAliasExService.cs" />
+    <Compile Include="AdjustmentQS\IInventoryItemsExService.cs" />
+    <Compile Include="AdjustmentQS\IShortAllocationService.cs" />
+    <Compile Include="AdjustmentQS\ISystemDocumentSetService.cs" />
+    <Compile Include="AdjustmentQS\ITODO_AdjustmentOversToXMLService.cs" />
+    <Compile Include="AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
+    <Compile Include="AdjustmentQS\Ixcuda_ItemService.cs" />
+    <Compile Include="AllocationQS\IAdjustmentShortAllocationService.cs" />
+    <Compile Include="AllocationQS\IAllocationsTestCasService.cs" />
+    <Compile Include="AllocationQS\IAsycudaSalesAllocationsExService.cs" />
+    <Compile Include="AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
+    <Compile Include="CoreEntities\IActionDocSetLogsService.cs" />
+    <Compile Include="CoreEntities\IActionsService.cs" />
+    <Compile Include="CoreEntities\IApplicationSettingsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentBasicInfoService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentItemService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetAttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetC71Service.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetEntryDataExService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetExService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaItemBasicInfoService.cs" />
+    <Compile Include="CoreEntities\IAttachmentLogService.cs" />
+    <Compile Include="CoreEntities\IAttachmentsService.cs" />
+    <Compile Include="CoreEntities\ICancelledEntriesLstService.cs" />
+    <Compile Include="CoreEntities\IConsigneesService.cs" />
+    <Compile Include="CoreEntities\IContactsService.cs" />
+    <Compile Include="CoreEntities\ICustomsOperationsService.cs" />
+    <Compile Include="CoreEntities\ICustoms_ProcedureInOutService.cs" />
+    <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />
+    <Compile Include="CoreEntities\IDeclarantService.cs" />
+    <Compile Include="CoreEntities\IDocument_TypeService.cs" />
+    <Compile Include="CoreEntities\IEmailAttachmentsService.cs" />
+    <Compile Include="CoreEntities\IEmailFileTypesService.cs" />
+    <Compile Include="CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingActionsService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingRexExsService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingService.cs" />
+    <Compile Include="CoreEntities\IEmailsService.cs" />
+    <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
+    <Compile Include="CoreEntities\IExpiredEntriesLstService.cs" />
+    <Compile Include="CoreEntities\IFileGroupsService.cs" />
+    <Compile Include="CoreEntities\IFileImporterInfoService.cs" />
+    <Compile Include="CoreEntities\IFileTypeActionsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingRegExsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingsValuesService.cs" />
+    <Compile Include="CoreEntities\IFileTypeReplaceRegexService.cs" />
+    <Compile Include="CoreEntities\IFileTypesService.cs" />
+    <Compile Include="CoreEntities\IImportActionsService.cs" />
+    <Compile Include="CoreEntities\IInfoMappingRegExService.cs" />
+    <Compile Include="CoreEntities\IInfoMappingService.cs" />
+    <Compile Include="CoreEntities\IInventoryItemAliasXService.cs" />
+    <Compile Include="CoreEntities\IInventoryItemXService.cs" />
+    <Compile Include="CoreEntities\ILicenceSummaryService.cs" />
+    <Compile Include="CoreEntities\IParameterSetParametersService.cs" />
+    <Compile Include="CoreEntities\IParameterSetService.cs" />
+    <Compile Include="CoreEntities\IParametersService.cs" />
+    <Compile Include="CoreEntities\ISessionActionsService.cs" />
+    <Compile Include="CoreEntities\ISessionScheduleService.cs" />
+    <Compile Include="CoreEntities\ISessionsService.cs" />
+    <Compile Include="CoreEntities\ISubItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs" />
+    <Compile Include="CoreEntities\ITODO_C71ToCreateService.cs" />
+    <Compile Include="CoreEntities\ITODO_C71ToXMLService.cs" />
+    <Compile Include="CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
+    <Compile Include="CoreEntities\ITODO_CreateEx9Service.cs" />
+    <Compile Include="CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesExecutionReportService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
+    <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
+    <Compile Include="CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_IncompleteImportService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ImportCompleteEntriesService.cs" />
+    <Compile Include="CoreEntities\ITODO_LicenceAvailableQtyService.cs" />
+    <Compile Include="CoreEntities\ITODO_LicenseToXMLService.cs" />
+    <Compile Include="CoreEntities\ITODO_LICToAssessService.cs" />
+    <Compile Include="CoreEntities\ITODO_LICToCreateService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetToAssessErrorsService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetToAssessService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />
+    <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
+    <Compile Include="CoreEntities\IToDo_POToXML_RecreateService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitEntryCIFService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitPOInfoService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitSalesToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs" />
+    <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
+    <Compile Include="CoreEntities\ITODO_UnallocatedShortsService.cs" />
+    <Compile Include="CoreEntities\Ixcuda_Supplementary_unitService.cs" />
+    <Compile Include="CounterPointQS\ICounterPointPODetailsService.cs" />
+    <Compile Include="CounterPointQS\ICounterPointPOsService.cs" />
+    <Compile Include="CounterPointQS\ICounterPointSalesDetailsService.cs" />
+    <Compile Include="CounterPointQS\ICounterPointSalesService.cs" />
+    <Compile Include="Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
+    <Compile Include="Custom Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
+    <Compile Include="Custom Contracts\AllocationQS\IAllocationsService.cs" />
+    <Compile Include="Custom Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
+    <Compile Include="Custom Contracts\CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="Custom Contracts\CoreEntities\ISystemService.cs" />
+    <Compile Include="Custom Contracts\CoreEntities\IDocumentSetService.cs" />
+    <Compile Include="Custom Contracts\CounterPointQS\ICounterPointPOsService.cs" />
+    <Compile Include="Custom Contracts\CounterPointQS\ICounterPointSalesService.cs" />
+    <Compile Include="Custom Contracts\EntryDataQS\IContainerExService.cs" />
+    <Compile Include="Custom Contracts\EntryDataQS\IEntryDataExService.cs" />
+    <Compile Include="Custom Contracts\InventoryQS\IInventoryItemsEXService.cs" />
+    <Compile Include="Custom Contracts\SalesDataQS\ISalesDataDetailService.cs" />
+    <Compile Include="Custom Contracts\SalesDataQS\ISalesDataService.cs" />
+    <Compile Include="Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentEntryDataLineService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="EntryDataQS\IEmptyFullCodeService.cs" />
+    <Compile Include="EntryDataQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="EntryDataQS\IEntryDataExService.cs" />
+    <Compile Include="EntryDataQS\IEntryDataService.cs" />
+    <Compile Include="EntryDataQS\IInventoryItemsExService.cs" />
+    <Compile Include="EntryDataQS\IPackageTypeService.cs" />
+    <Compile Include="InventoryQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="InventoryQS\IInventoryItemsExService.cs" />
+    <Compile Include="InventoryQS\ITariffCategoryCodeSuppUnitService.cs" />
+    <Compile Include="InventoryQS\ITariffCategoryService.cs" />
+    <Compile Include="InventoryQS\ITariffCodesService.cs" />
+    <Compile Include="InventoryQS\ITariffSupUnitLkpsService.cs" />
+    <Compile Include="OCR\IChildPartsService.cs" />
+    <Compile Include="OCR\IEndService.cs" />
+    <Compile Include="OCR\IFieldFormatRegExService.cs" />
+    <Compile Include="OCR\IFieldsService.cs" />
+    <Compile Include="OCR\IImportErrorsService.cs" />
+    <Compile Include="OCR\IInvoiceIdentificatonRegExService.cs" />
+    <Compile Include="OCR\IInvoiceRegExService.cs" />
+    <Compile Include="OCR\IInvoicesService.cs" />
+    <Compile Include="OCR\ILinesService.cs" />
+    <Compile Include="OCR\IOCR_FailedFieldsService.cs" />
+    <Compile Include="OCR\IOCR_FailedLinesService.cs" />
+    <Compile Include="OCR\IOCR_FieldMappingsService.cs" />
+    <Compile Include="OCR\IOCR_FieldValueService.cs" />
+    <Compile Include="OCR\IOCR_PartLineFieldsService.cs" />
+    <Compile Include="OCR\IPartsService.cs" />
+    <Compile Include="OCR\IPartTypesService.cs" />
+    <Compile Include="OCR\IRecuringPartService.cs" />
+    <Compile Include="OCR\IRegularExpressionsService.cs" />
+    <Compile Include="OCR\IStartService.cs" />
+    <Compile Include="PreviousDocumentQS\IPreviousDocumentItemService.cs" />
+    <Compile Include="PreviousDocumentQS\IPreviousDocumentService.cs" />
+    <Compile Include="PreviousDocumentQS\IPreviousItemsExService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SalesDataQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="SalesDataQS\IAsycudaDocumentSetEntryDataDetailsService.cs" />
+    <Compile Include="SalesDataQS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="SalesDataQS\ISalesDataAllocationsService.cs" />
+    <Compile Include="SalesDataQS\ISalesDataDetailService.cs" />
+    <Compile Include="SalesDataQS\ISalesDataService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
+      <Project>{c05bd1be-cb99-451e-845d-077243489c5b}</Project>
+      <Name>WaterNut.Client.DTO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Serialize.Linq">
+      <Version>4.0.167</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

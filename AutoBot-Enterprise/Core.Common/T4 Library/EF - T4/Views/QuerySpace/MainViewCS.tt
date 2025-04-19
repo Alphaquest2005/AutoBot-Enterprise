@@ -1,0 +1,81 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class MainViewCSTPL : CSharpTemplate
+{
+        public string projectName;
+        public List<string> containers;
+
+	public override string TransformText()
+        {
+           
+#>
+
+using Core.Common.UI;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+
+namespace <#=projectName#>.QuerySpace.Views
+{
+	public partial class MainView_AutoGen : UserControl
+	{
+		public MainView_AutoGen()
+		{
+            try
+            {
+                // Required to initialize variables
+                InitializeComponent();
+                BaseViewModel.Slider = this.slider;
+                BaseViewModel.Slider.MoveTo("<#=containers.FirstOrDefault()#>EXP");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+		}
+
+        private void BackBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsMouseOver == true)
+            {
+                BaseViewModel.Slider.MoveToPreviousCtl();
+            }
+        }
+
+        private void BringIntoView(object sender, MouseEventArgs e)
+        {
+            BringIntoView(sender);
+        }
+
+        private static void BringIntoView(object sender)
+        {
+            if (typeof(Expander).IsInstanceOfType(sender))
+            {
+                BaseViewModel.Slider.BringIntoView(((FrameworkElement)sender) as Expander);
+            }
+            else
+            {
+                Expander p = ((FrameworkElement)sender).Parent as Expander;
+                //  p.IsExpanded = true;
+                p.UpdateLayout();
+                BaseViewModel.Slider.BringIntoView(p);
+            }
+        }
+	}
+}
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

@@ -1,0 +1,73 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientServiceTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault().Name;
+
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using <#=container.Name#>.Client.DTO;
+using InvManager.Client.Contracts;
+using Core.Common.Contracts;
+using System.ComponentModel.Composition;
+
+
+namespace InvManager.Client.Services
+{
+    [Export (typeof(<#=entity.Name#>Client))]
+    [Export (typeof(I<#=entity.Name#>Service))]
+    [Export(typeof(IClientService))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class <#=entity.Name#>Client :  ClientService<I<#=entity.Name#>Service>, I<#=entity.Name#>Service
+    {
+        
+        public Task<IEnumerable<<#=entity.Name#>DTO>> Get<#=entitySet #>()
+        {
+            return Channel.Get<#=entitySet #>();
+        }
+
+        public Task<<#=entity.Name#>DTO> Get<#=entity.Name#>(string id)
+        {
+            return Channel.Get<#=entity.Name#>(id);
+        }
+
+        public Task<<#=entity.Name#>DTO> Update<#=entity.Name#>(<#=entity.Name#>DTO entity)
+        {
+           return Channel.Update<#=entity.Name#>(entity);
+        }
+
+        public Task<<#=entity.Name#>DTO> Create<#=entity.Name#>(<#=entity.Name#>DTO entity)
+        {
+           return Channel.Create<#=entity.Name#>(entity);
+        }
+
+        public Task<bool> Delete<#=entity.Name#>(string id)
+        {
+            return Channel.Delete<#=entity.Name#>(id);
+        }
+        
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

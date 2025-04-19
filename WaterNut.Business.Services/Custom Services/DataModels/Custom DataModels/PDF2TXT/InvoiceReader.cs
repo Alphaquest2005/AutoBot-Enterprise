@@ -356,33 +356,7 @@ namespace WaterNut.DataSpace
                 return txt;
             });
 
-            //var sparsOsdTextTask = Task.Run(() =>
-            //{
-            //    var txt = "------------------------------------------SparseTextOsd-------------------------\r\n";
-            //    txt += new PdfOcr().Ocr(file, PageSegMode.SparseTextOsd);
-            //    return txt;
-            //});
 
-            //var SingleWordTextTask = Task.Run(() =>
-            //{
-            //    var txt = "------------------------------------------SingleWord-------------------------\r\n";
-            //    txt += new PdfOcr().Ocr(file, PageSegMode.SingleWord);
-            //    return txt;
-            //});
-
-            //var OsdOnlyTextTask = Task.Run(() =>
-            //{
-            //    var txt = "------------------------------------------OsdOnly-------------------------\r\n";
-            //    txt += new PdfOcr().Ocr(file, PageSegMode.OsdOnly);
-            //    return txt;
-            //});
-
-            //var RawLineTextTask = Task.Run(() =>
-            //{
-            //    var txt = "------------------------------------------RawLine-------------------------\r\n";
-            //    txt += new PdfOcr().Ocr(file, PageSegMode.RawLine);
-            //    return txt;
-            //});
 
             await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false); //RawLineTextTask, OsdOnlyTextTask, SingleWordTextTask, sparsOsdTextTask
 
@@ -407,13 +381,7 @@ namespace WaterNut.DataSpace
                         // Either extract based on order in the underlying document with newlines and spaces.
                         var text = ContentOrderTextExtractor.GetText(page);
                         sb.AppendLine(text);
-                        // // Or based on grouping letters into words.
-                        // var otherText = string.Join(" ", page.GetWords());
 
-                        // // Or the raw text of the page's content stream.
-                        // var rawText = page.Text;
-
-                        //// Console.WriteLine(text);
                     }
 
                 }

@@ -1,0 +1,114 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ output extension=".cs"#>
+<#+ 
+public class ObjectContextTPL : CSharpTemplate
+{
+      
+        public string inputFile = "";
+        public string coreEdmx = "";
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+             
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string Namespace = container.Name + ".Business.Entities"; //code.VsNamespaceSuggestion();
+#>            
+
+
+using System.Data.Entity;
+using CoreEntities.Business.Entities;
+using <#= Namespace + ".Mapping"#>;
+
+namespace <#= Namespace #>
+{
+    public partial class <#=container.Name #>Context : DbContext
+    {
+        static <#= container.Name #>Context()
+        {
+            var x = typeof(System.Data.Entity.SqlServer.SqlProviderServices);
+            Database.SetInitializer<<#= container.Name #>Context>(null);
+        }
+
+        public <#= container.Name #>Context()
+            : base("Name=<#= container.Name #>")
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+        }
+
+<#+
+    foreach (var set in container.BaseEntitySets.OfType<EntitySet>())
+    {
+#>
+        public DbSet<<#= set.ElementType.Name #>DTO> <#= set.Name #> { get; set; }
+<#+
+    }
+#>
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+<#+
+    foreach (var set in container.BaseEntitySets.OfType<EntitySet>())
+    {
+#>
+            modelBuilder.Configurations.Add(new <#= set.ElementType.Name #>Map());
+<#+
+    }
+#>
+<#+
+    foreach (var entity in code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=> x.BaseType != null).OrderBy(e => e.Name))
+    {
+                var set = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == entity.BaseType.Name).FirstOrDefault();
+#>
+            modelBuilder.Entity<<#=entity.Name#>DTO>().ToTable("<#=set.Name#>_<#=entity.Name#>");
+<#+
+    }
+#>
+<#+
+    if(container.Name != COREcontainer.Name)
+            {
+                foreach (var entity in code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name))
+                {                    
+#>
+            modelBuilder.Ignore<<#=entity.Name#>DTO>();
+<#+
+
+                }
+            }
+#>
+
+
+        }
+    }
+}
+
+ 	
+<#+
+        return this.GenerationEnvironment.ToString();
+
+	}	
+#>
+
+
+<#+
+	}	
+#>

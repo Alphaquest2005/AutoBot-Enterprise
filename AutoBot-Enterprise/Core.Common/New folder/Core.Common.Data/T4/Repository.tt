@@ -1,0 +1,31 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Repositories\--BusinessRepository.tt"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Repositories\ClientRepository.tt"#>
+<#@ output extension=".cs"#>
+<#+ 
+    public class RepositoryTPL : CSharpTemplate
+    {
+                     
+        public void CreateRepositories(string contextname)
+        {
+
+
+            
+            //BusinessRepositoryTPL sv = new BusinessRepositoryTPL();            
+             //sv.inputFile = @"C:\Prism Projects\Quick Inventory Manager\" + contextname + @"\" + contextname +".edmx";
+             //sv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Data\InvManager.Data.csproj";
+             //sv.Output.File = @"Repositories\" + contextname + "Repository.cs";
+             //sv.Render();
+
+           
+            ClientRepositoryTPL cr = new ClientRepositoryTPL();            
+             cr.inputFile = @"C:\Prism Projects\Quick Inventory Manager\" + contextname + @"\" + contextname +".edmx";
+             cr.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager.Client.Repositories\InvManager.Client.Repositories.csproj";
+             cr.Output.File =  contextname + "Repository.cs";
+             cr.Render();
+
+        }
+
+    }
+#>

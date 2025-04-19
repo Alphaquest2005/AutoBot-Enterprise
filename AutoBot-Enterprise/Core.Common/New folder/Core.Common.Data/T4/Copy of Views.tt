@@ -1,0 +1,69 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Views\EntityGridListViewCS.tt" once="true"#>		
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\Views\EntityGridListView.tt" once="true"#>	
+				
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateViews(string inputFile)
+    {	
+        string MainEntity = "Employee";
+        string MainEntitySet = "Employees";
+        EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+     
+        MetadataWorkspace COREmetadataWorkspace = null;
+        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(@"C:\Prism Projects\Quick Inventory Manager\CoreEntities\CoreEntities.edmx", out COREmetadataWorkspace);
+        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+        string namespaceName = code.VsNamespaceSuggestion();
+
+        
+
+        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+        {
+           CreateEntityGridListViewCS(code.Escape(container),
+              entity,            
+              container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == entity).FirstOrDefault().Name,
+              container,
+              COREcontainer,
+              ef,
+              code,
+              fileManager); 
+
+            CreateEntityGridListView(code.Escape(container),
+              entity,            
+              container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == entity).FirstOrDefault().Name,
+              container,
+              COREcontainer,
+              ef,
+              code,
+              fileManager);
+        
+            
+           
+        }
+
+       fileManager.Process(true); 
+        
+#>
+<#+
+	}	
+#>

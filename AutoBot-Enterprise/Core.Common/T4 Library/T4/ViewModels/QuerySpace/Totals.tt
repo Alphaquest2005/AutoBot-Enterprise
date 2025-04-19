@@ -1,0 +1,129 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class DisplayTotalsTPL : CSharpTemplate
+{
+      
+        public EntityType mainEntity; 
+        public string mainEntitySet;
+        public string conTextName;
+        public string projectName;
+
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x=> x.MetadataProperties.Where(z => z.Name.Contains("DisplayTotalsProperty") && z.Value.ToString().Contains("True")).ToList().Any());
+            if(ens.Any() == false) return this.GenerationEnvironment.ToString();
+#>
+using System;
+using System.Linq;
+using <#=conTextName#>.Client.Repositories;
+
+namespace <#=projectName#>.QuerySpace.<#=conTextName#>.ViewModels
+{
+    public partial class <#=mainEntity.Name#>ViewModel_AutoGen
+    {
+<#+
+          if(ens.Any() == true)
+            {
+#>    
+       #region Totals
+
+        partial void OnTotals()
+        {
+            RegisterToReceiveMessages<string>(MessageToken.<#=mainEntitySet#>FilterExpressionChanged,
+                                                On<#=mainEntitySet#>FilterExpressionChangetals);
+            RegisterToReceiveMessages(MessageToken.Selected<#=mainEntitySet#>Changed,
+                                                OnSelected<#=mainEntitySet#>Changetals);
+        }
+
+        private void OnSelected<#=mainEntitySet#>Changetals(object sender, SimpleMvvmToolkit.NotificationEventArgs e)
+        {
+            SetSelectetal();
+        }
+<#+
+            foreach(EdmProperty p in ens)
+                {       
+#>
+        private decimal _Total<#=p.Name#> = 0;
+        public decimal Total<#=p.Name#> 
+        {
+            get { return _Total<#=p.Name#> ; }
+            set
+            {
+                _Total<#=p.Name#> = value;
+                NotifyPropertyChanged(x => x.Total<#=p.Name#> );
+            }
+        }
+
+		private decimal _Selected<#=p.Name#> = 0;
+        public decimal Selected<#=p.Name#> 
+        {
+            get { return _Selected<#=p.Name#> ; }
+            set
+            {
+                _Selected<#=p.Name#> = value;
+                NotifyPropertyChanged(x => x.Selected<#=p.Name#> );
+            }
+        }
+        
+ <#+             }
+ #>        
+
+        private async void On<#=mainEntitySet#>FilterExpressionChangetals(object sender, SimpleMvvmToolkit.NotificationEventArgs<string> e)
+        {
+            using (var ctx = new <#=mainEntity.Name#>Repository())
+            {
+<#+
+            foreach(EdmProperty p in ens)
+                {       
+#>
+                Total<#=p.Name#> = await ctx.SumNav(e.Data, vloader.NavigationExpression, "<#=p.Name#>").ConfigureAwait(false);
+ <#+             }
+ #> 
+                
+            }
+        }        
+
+        private void SetSelectetal()
+        {
+            var lst = Selected<#=mainEntitySet#>.Where(x => x != null).ToList();
+            if (!lst.Any())
+            {
+<#+
+            foreach(EdmProperty p in ens)
+                {       
+#>
+               Selected<#=p.Name#> = 0;
+ <#+             }
+ #> 
+            }
+            else
+            {
+<#+
+            foreach(EdmProperty p in ens)
+                {       
+#>
+               Selected<#=p.Name#> = Convert.ToDecimal(lst.Sum(x => x.<#=p.Name#>));
+ <#+             }
+ #> 
+            }
+        }      
+
+         #endregion
+<#+ 
+           } 
+#> 
+    }
+   
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

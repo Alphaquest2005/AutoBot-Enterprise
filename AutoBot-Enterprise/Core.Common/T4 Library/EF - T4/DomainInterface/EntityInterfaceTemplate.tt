@@ -1,0 +1,207 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ assembly name="System.Data.Entity" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class EntityImplementationTPL : CSharpTemplate
+    {
+        public EntityType entity;
+        public EntityContainer container;
+        public string projectName;
+        public MetadataTools ef;
+        public CodeGenerationTools code;
+        public string interfaceName;
+        public string ModelType;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            string entitySet =
+                container.BaseEntitySets.OfType<EntitySet>()
+                    .Where(x => x.ElementType.Name == (entity.BaseType == null ? entity.Name : GetBaseEntity(entity).Name))
+                    .FirstOrDefault()
+                    .Name;
+
+
+
+
+#>
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using <#=projectName #>.Interfaces;
+
+
+
+namespace <#=container.Name #>.<#=ModelType #>.Entities
+{
+		public partial class <#=entity.Name #>: <#=(!string.IsNullOrEmpty(interfaceName) ? interfaceName : "") #> //<#=container.Name #>
+		{  // please don't expect properties here, they are implict, only multilayer will appear here
+<#+
+            //var entityTrail = new List<string>();
+           // entityTrail.Add(entity.Name);
+          
+                WriteImp(entity,null, new List<string>(), new List<string>());    
+           
+            
+           // entityTrail.Remove(entity.Name);
+#>          
+        }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+
+        public void WriteImp(EntityType entity, NavigationProperty navProp, List<string> processedEntities, List<string> entityTrail)
+        {
+           
+            if (entityTrail.Count == 0)
+            {
+                entityTrail.Add("this");
+            }
+            else
+            {
+                entityTrail.Add(navProp == null?entity.Name:navProp.Name);
+            }
+
+             var etrail = new StringBuilder();
+                    etrail = entityTrail.Aggregate(etrail, (current, str) => current.Append(str + "."));
+                    //etrail.Remove(etrail.Length - 1, 1);
+
+            foreach (
+                var property in
+                    entity.Properties.Where(
+                        x => x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsProperty")) != null))
+            {
+                var rawProperty =
+                    property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsProperty"));
+                if (rawProperty == null) continue;
+                string i = ((XElement) rawProperty.Value).Value;
+                var typeUsage = code.Escape(property.TypeUsage);
+                PrimitiveType edmType = (PrimitiveType) property.TypeUsage.EdmType;
+                if (!string.IsNullOrEmpty(i))
+                {
+                    string[] propertyList = i.Split(',');
+                    string rawIProperty = propertyList.FirstOrDefault(x => x.Contains(interfaceName));
+                    if (string.IsNullOrEmpty(rawIProperty)) continue;
+                    string iProperty = rawIProperty.Trim();
+                    iProperty = iProperty.Substring(iProperty.LastIndexOf('.') + 1);
+                    if (entityTrail.Count == 1 && entity.Properties.FirstOrDefault(x => x.Name == iProperty) != null) continue;
+                    
+#>
+                 [IgnoreDataMember]
+                 [NotMapped]
+                 public <#=
+    (property.Nullable == true && edmType.ClrEquivalentType.ToString().Replace("System.", "") != "String"
+        ? edmType.ClrEquivalentType.ToString().Replace("System.", "") + "?"
+        : edmType.ClrEquivalentType.ToString().Replace("System.", "")) #> <#=iProperty #> 
+                {
+                    get{ return <#=etrail + property.Name#>; }                
+                    set { <#=etrail + property.Name #> = value;}
+                }
+                <#+
+                }
+            }
+#><#+	
+			foreach (
+			    var navprop in
+			        entity.NavigationProperties.Where(
+			            x => x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsNavigationProperty")) != null))
+			{
+			    var rawNavPropName =
+			        navprop.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsNavigationProperty"));
+			    string i = ((XElement) rawNavPropName.Value).Value;
+			    if (string.IsNullOrEmpty(i)) continue;
+
+
+			    string[] navPropLst = i.Split(',');
+			    string rNavPropName = navPropLst.FirstOrDefault(x => x.Contains(interfaceName));
+			    if (string.IsNullOrEmpty(rNavPropName)) continue;
+                
+			    string iNavPropName = rNavPropName.Trim();
+
+			    var eip =
+			        navprop.ToEndMember.GetEntityType()
+			            .MetadataProperties.FirstOrDefault(x => x.Name.Contains("DomainInterfaceProperty"));
+			    string ei = null;
+			    if (eip != null)
+			    {
+			        ei = ((XElement) eip.Value).Value;
+			    }
+			    var typeUsage = code.Escape(navprop.TypeUsage);
+			    var edmType = navprop.TypeUsage.EdmType;
+			    if (!string.IsNullOrEmpty(i))
+			    {
+			        var navPropType = (navprop.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many
+			            ? "List<" + (ei != null ? ei : "I" + edmType.Name) + ">" //
+			            : (ei != null ? ei : "I" + edmType.Name));
+			        if (navprop.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+			        {
+			            #>            <#=navPropType #> <#=iNavPropName #> 
+                {
+                    get{
+<#+
+			            var rts = new StringBuilder();
+			            foreach (var s in entityTrail)
+			            {
+			                
+			                rts.Append(s);#>                          if(<#=rts.ToString()#> == null) return null;
+<#+ rts.Append(".");
+			            }
+ #> 
+                        return new List<<#=(ei ?? "I" + edmType.Name) #>>(<#=etrail + navprop.Name #>.Select(x=> x as <#=(ei ?? "I" + edmType.Name)#>)); }   //             
+                    set { <#=etrail + navprop.Name #> = new List< <#=navprop.ToEndMember.GetEntityType().Name #>>(value.Select(x => x as  <#=navprop.ToEndMember.GetEntityType().Name #>));}
+                }
+  <#+
+			        }
+                    else
+                        {
+ #>              <#=navPropType #> <#=iNavPropName #> 
+                 {
+                    get{ return (<#=etrail + navprop.Name #> as <#=(ei ?? "I" + edmType.Name) #>); }                
+                    set { <#=etrail + navprop.Name #> = value as  <#=navprop.ToEndMember.GetEntityType().Name #>;}
+                  }
+<#+
+
+			        }
+
+			    }
+
+			   
+
+			}
+            processedEntities.Add(entity.Name);
+            
+            foreach (var navprop in entity.NavigationProperties.Where(x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many))
+            {
+                var navEntity = navprop.ToEndMember.GetEntityType();
+                if(processedEntities.Contains(navEntity.Name)) continue;
+                var n = navEntity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("DomainInterfaceProperty"));
+                if (n != null)
+                {
+                    string ni = ((XElement) n.Value).Value;
+			        if(ni.Contains(interfaceName)) continue; 
+                }
+
+                WriteImp(navEntity, navprop, processedEntities, entityTrail);
+            }
+            entityTrail.Remove(entity.Name);
+
+		#><#+
+        }
+		
+#><#+
+        
+    }
+
+#>
