@@ -1,27 +1,95 @@
-// Added using directive
+using System.Collections.Generic; // Added
+using System.Linq; // Added
+using System.Threading.Tasks; // Added
+using Serilog; // Added
+using System; // Added
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class PipelineRunner<TContext>
     {
-        private readonly IEnumerable<IPipelineStep<TContext>> _steps;
+        // Add a static logger instance for this generic class
+        private static readonly ILogger _logger = Log.ForContext<PipelineRunner<TContext>>();
 
-        public PipelineRunner(IEnumerable<IPipelineStep<TContext>> steps)
+        private readonly IReadOnlyList<IPipelineStep<TContext>> _steps; // Use IReadOnlyList for count and indexer
+        private readonly string _pipelineName; // Optional: Add a name for better logging
+
+        // Modified constructor to accept an optional pipeline name and materialize steps
+        public PipelineRunner(IEnumerable<IPipelineStep<TContext>> steps, string pipelineName = "Unnamed Pipeline")
         {
-            _steps = steps;
+            // Use ToList() to materialize the steps, prevent multiple enumerations, and get an accurate count.
+            _steps = steps?.ToList() ?? new List<IPipelineStep<TContext>>();
+            _pipelineName = pipelineName;
+             _logger.Debug("{PipelineName} runner initialized with {StepCount} steps.", _pipelineName, _steps.Count);
+             if (_steps.Count == 0) // Use Count property after ToList()
+             {
+                 _logger.Warning("{PipelineName} runner initialized with zero steps.", _pipelineName);
+             }
         }
 
         public async Task<bool> Run(TContext context)
         {
-            foreach (var step in _steps)
-            {
-                if (!await step.Execute(context).ConfigureAwait(false))
-                {
-                    // Stop the pipeline if a step returns false
-                    return false;
-                }
-            }
-            return true; // Indicate pipeline completed successfully
+             // Try to get a meaningful identifier from the context if possible
+             // For now, logging generic start/end.
+             _logger.Information("Starting execution of {PipelineName}.", _pipelineName);
+             int stepCounter = 0;
+             bool continuePipeline = true;
+
+             // Null check context
+             if (context == null)
+             {
+                  _logger.Error("{PipelineName} cannot run with a null context.", _pipelineName);
+                  return false;
+             }
+
+             foreach (var step in _steps)
+             {
+                 stepCounter++;
+                 string stepName = step?.GetType().Name ?? $"Unnamed Step {stepCounter}"; // Get step name safely
+                 _logger.Information("Executing Step {StepNumber}/{TotalSteps} ({StepName}) in {PipelineName}.",
+                    stepCounter, _steps.Count, stepName, _pipelineName); // Use Count property
+
+                 if (step == null)
+                 {
+                      _logger.Warning("Skipping null step at position {StepNumber} in {PipelineName}.", stepCounter, _pipelineName);
+                      continue; // Skip null steps
+                 }
+
+                 try
+                 {
+                     // Individual steps should handle their own detailed logging
+                     bool stepResult = await step.Execute(context).ConfigureAwait(false);
+
+                     if (!stepResult)
+                     {
+                          _logger.Warning("Step {StepNumber} ({StepName}) in {PipelineName} returned false. Stopping pipeline execution.",
+                             stepCounter, stepName, _pipelineName);
+                         continuePipeline = false;
+                         break; // Stop the pipeline if a step returns false
+                     }
+                     else
+                     {
+                          _logger.Information("Step {StepNumber} ({StepName}) in {PipelineName} completed successfully.",
+                             stepCounter, stepName, _pipelineName);
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                      _logger.Error(ex, "Error executing Step {StepNumber} ({StepName}) in {PipelineName}. Stopping pipeline execution.",
+                         stepCounter, stepName, _pipelineName);
+                      continuePipeline = false;
+                      break; // Stop pipeline on unhandled exception in a step
+                 }
+             }
+
+             if (continuePipeline)
+             {
+                  _logger.Information("{PipelineName} completed all {StepCount} steps successfully.", _pipelineName, _steps.Count); // Use Count property
+             } else {
+                  _logger.Warning("{PipelineName} execution stopped prematurely after Step {StepNumber}.", _pipelineName, stepCounter);
+             }
+
+             return continuePipeline; // Return true if all steps succeeded, false otherwise
         }
     }
 }

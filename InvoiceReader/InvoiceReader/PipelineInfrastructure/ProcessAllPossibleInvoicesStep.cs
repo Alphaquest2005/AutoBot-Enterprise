@@ -1,65 +1,139 @@
+using System.Collections.Generic; // Added
+using System.Linq; // Added
+using System.Threading.Tasks; // Added
+using Serilog; // Added
+using System; // Added
+using OCR.Business.Entities; // Added for Invoice
+using System.Text; // Added for StringBuilder copy if needed
+
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class ProcessAllPossibleInvoicesStep : IPipelineStep<InvoiceProcessingContext>
     {
+        // Add a static logger instance for this class
+        private static readonly ILogger _logger = Log.ForContext<ProcessAllPossibleInvoicesStep>();
+
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            if (context.PossibleInvoices == null)
+            string filePath = context?.FilePath ?? "Unknown";
+            _logger.Debug("Executing ProcessAllPossibleInvoicesStep for File: {FilePath}", filePath);
+
+            // Null check context
+            if (context == null)
             {
-                Console.WriteLine(
-                    $"[OCR DEBUG] Pipeline Step: No possible invoices found. Skipping template processing.");
-                return true; // Not an error if no possible invoices
+                 _logger.Error("ProcessAllPossibleInvoicesStep executed with null context.");
+                 return false;
             }
 
-            var possibleInvoicesList = context.PossibleInvoices.ToList();
+            // Use Any() for potentially better performance and null safety
+            if (context.PossibleInvoices == null || !context.PossibleInvoices.Any())
+            {
+                 _logger.Information("No possible invoices found in context for File: {FilePath}. Skipping template processing loop.", filePath);
+                 return true; // Not an error if no possible invoices
+            }
 
-            await ProcessInvoiceTemplatesAsync(context, possibleInvoicesList).ConfigureAwait(false);
+            var possibleInvoicesList = context.PossibleInvoices.ToList(); // Materialize the list
+             _logger.Information("Found {Count} possible invoice templates to process for File: {FilePath}", possibleInvoicesList.Count, filePath);
 
-            return LogInvoiceProcessingCompletion();
+            try
+            {
+                // ProcessInvoiceTemplatesAsync handles its own logging
+                await ProcessInvoiceTemplatesAsync(context, possibleInvoicesList).ConfigureAwait(false);
+
+                // LogInvoiceProcessingCompletion handles its own logging
+                return LogInvoiceProcessingCompletion(filePath); // Pass context
+            }
+            catch (Exception ex)
+            {
+                 _logger.Error(ex, "Error during ProcessAllPossibleInvoicesStep loop for File: {FilePath}", filePath);
+                 return false; // Indicate failure of this step
+            }
         }
 
-        private static bool LogInvoiceProcessingCompletion()
+        // Added filePath for context
+        private static bool LogInvoiceProcessingCompletion(string filePath)
         {
-            Console.WriteLine(
-                $"[OCR DEBUG] Pipeline Step: Finished processing all possible invoices.");
-
-            return true; // Indicate that this step completed its iteration
+             _logger.Information("Finished processing loop for all possible invoices for File: {FilePath}.", filePath);
+            return true; // Indicate that this step completed its iteration (individual template results are in context.Imports)
         }
 
-        private static async Task ProcessInvoiceTemplatesAsync(InvoiceProcessingContext context, List<Invoice> possibleInvoicesList)
+        private static async Task ProcessInvoiceTemplatesAsync(InvoiceProcessingContext originalContext, List<Invoice> possibleInvoicesList)
         {
+             string filePath = originalContext?.FilePath ?? "Unknown";
+             _logger.Debug("Starting ProcessInvoiceTemplatesAsync loop for File: {FilePath}", filePath);
+
             for (int i = 0; i < possibleInvoicesList.Count; i++)
             {
                 var template = possibleInvoicesList[i];
                 bool isLastTemplate = (i == possibleInvoicesList.Count - 1);
+                int currentStepNum = i + 1;
+                int totalSteps = possibleInvoicesList.Count;
+
+                // Safe access to template details for logging
+                string templateName = template?.OcrInvoices?.Name ?? "Unknown Template Name";
+                int? templateId = template?.OcrInvoices?.Id;
+
+                 _logger.Information("Processing Template {CurrentStep}/{TotalSteps}: Name: '{TemplateName}', ID: {TemplateId}, IsLast: {IsLast} for File: {FilePath}",
+                    currentStepNum, totalSteps, templateName, templateId, isLastTemplate, filePath);
+
+                // Null check template before proceeding
+                if (template == null || template.OcrInvoices == null)
+                {
+                     _logger.Warning("Skipping processing for Template {CurrentStep}/{TotalSteps} because template or OcrInvoices is null.", currentStepNum, totalSteps);
+                     continue; // Skip to the next template
+                }
 
                 // Create a new context for each template processing pipeline to avoid interference
-                // Copy necessary properties from the original context
+                 _logger.Debug("Creating new template-specific context for Template ID: {TemplateId}", templateId);
                 var templateContext = new InvoiceProcessingContext
                 {
-                    FilePath = context.FilePath,
-                    FileTypeId = context.FileTypeId,
-                    EmailId = context.EmailId,
-                    OverWriteExisting = context.OverWriteExisting,
-                    DocSet = context.DocSet,
-                    FileType = context.FileType,
-                    Client = context.Client,
-                    PdfText = context.PdfText, // Pass the original PdfText
-                    Template = template, // Pass the current template
-                    Templates = context.Templates, // Pass the list of all templates
-                    PossibleInvoices = context.PossibleInvoices, // Pass the list of possible invoices
-                    Imports = context.Imports // Pass the shared Imports dictionary
+                    // Copy properties carefully
+                    FilePath = originalContext.FilePath,
+                    FileTypeId = originalContext.FileTypeId,
+                    EmailId = originalContext.EmailId,
+                    OverWriteExisting = originalContext.OverWriteExisting,
+                    DocSet = originalContext.DocSet, // Reference copy - assuming read-only or shared state is ok
+                    FileType = originalContext.FileType, // Reference copy - assuming read-only
+                    Client = originalContext.Client, // Reference copy - assuming read-only
+                    // PdfText is StringBuilder - reference copy. Sub-pipeline should ideally only read it.
+                    // If sub-pipeline modifies PdfText, need a deep copy: new StringBuilder(originalContext.PdfText.ToString())
+                    PdfText = originalContext.PdfText,
+                    Template = template, // The specific template for this run
+                    Templates = originalContext.Templates, // Reference copy - assuming read-only
+                    PossibleInvoices = originalContext.PossibleInvoices, // Reference copy - assuming read-only
+                    Imports = originalContext.Imports, // SHARED dictionary - intended for mutation
+                    FormattedPdfText = originalContext.FormattedPdfText, // Reference copy (string is immutable)
+                    // ImportStatus will default to 'Failed' (0) or be set by the sub-pipeline
+                    // Other properties (Error, FailedLines, etc.) start null/empty
                 };
+                 _logger.Verbose("Template-specific context created for Template ID: {TemplateId}", templateId);
 
-                Console.WriteLine(
-                    $"[OCR DEBUG] Pipeline Step: Running InvoiceProcessingPipeline for template '{template.OcrInvoices.Name}' (ID: {template.OcrInvoices.Id}).");
-
+                 _logger.Information("Running sub-pipeline (InvoiceProcessingPipeline) for Template ID: {TemplateId}, File: {FilePath}", templateId, filePath);
+                 // Pass the specific pipeline name for better context in logs
                 var invoiceProcessingPipeline = new InvoiceProcessingPipeline(templateContext, isLastTemplate);
-                await invoiceProcessingPipeline.RunPipeline().ConfigureAwait(false);
-
-                // The result of the sub-pipeline (success or failure for this template)
-                // is reflected in templateContext.ImportStatus and added to context.Imports
+                try
+                {
+                    // Run the sub-pipeline; it handles its own internal logging
+                    await invoiceProcessingPipeline.RunPipeline().ConfigureAwait(false);
+                     _logger.Information("Sub-pipeline finished for Template ID: {TemplateId}, File: {FilePath}. Final Status in sub-context: {ImportStatus}",
+                        templateId, filePath, templateContext.ImportStatus);
+                    // The result (success/failure) for this template is now in templateContext.ImportStatus
+                    // and potentially updated originalContext.Imports dictionary.
+                }
+                catch (Exception ex)
+                {
+                     // Log error specific to this template's pipeline run
+                     _logger.Error(ex, "Error running sub-pipeline for Template ID: {TemplateId}, File: {FilePath}", templateId, filePath);
+                     // Optionally update the shared Imports dictionary to reflect this failure
+                     if (originalContext.Imports != null && templateId.HasValue)
+                     {
+                         // Ensure thread-safety if Imports could be modified concurrently (though likely not in this loop structure)
+                         originalContext.Imports[templateId.Value.ToString()] = (filePath, $"Sub-pipeline failed: {ex.Message}", ImportStatus.Failed);
+                          _logger.Warning("Updated shared Imports dictionary to reflect sub-pipeline failure for Template ID: {TemplateId}", templateId);
+                     }
+                }
             }
+             _logger.Debug("Finished ProcessInvoiceTemplatesAsync loop for File: {FilePath}", filePath);
         }
     }
 }

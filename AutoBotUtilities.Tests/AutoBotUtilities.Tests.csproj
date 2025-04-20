@@ -76,6 +76,10 @@
     <None Include="Test Data\TestInvoice.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- Add appsettings.json -->
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -94,6 +98,17 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <!-- Added Serilog Configuration Packages -->
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" /> <!-- Downgraded for net48 -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" /> <!-- Match dependency -->
+    <!-- End Added Packages -->
+    <!-- Added Serilog Enrichers -->
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <!-- End Added Enrichers -->
     <PackageReference Include="System.Text.Json" Version="9.0.4" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageReference Include="System.ValueTuple" Version="4.6.1" />
