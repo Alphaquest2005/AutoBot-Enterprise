@@ -1,8 +1,7 @@
-using System.Linq;
-using System.Threading.Tasks;
-using System.IO; // Needed for FileInfo
-using System.Collections.Generic; // Needed for List<Line>
-using OCR.Business.Entities; // Assuming Line is defined here
+// Needed for FileInfo
+// Needed for List<Line>
+
+// Assuming Line is defined here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -33,7 +32,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             context.EmailBody = body;
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Constructed email body.");
 
             return true; // Indicate success

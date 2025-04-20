@@ -1,9 +1,4 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using MoreLinq;
-using OCR.Business.Entities;
+﻿using OCR.Business.Entities;
 
 namespace WaterNut.DataSpace
 {
@@ -23,7 +18,7 @@ namespace WaterNut.DataSpace
         public Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>>();
         //public bool MultiLine => OCR_Lines.MultiLine;
 
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields => this.Values
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields => Values
             .Where(x => x.Value.Any(z => z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
             .SelectMany(x => x.Value.ToList())
             .DistinctBy(x => x.Key.fields.Id)

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WaterNut.Business.Services.Utils; // Assuming this is needed for _template.Read
+// Assuming this is needed for _template.Read
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -16,12 +14,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             // Assuming Read method returns List<dynamic>
             context.CsvLines = context.Template.Read(context.FormattedPdfText);
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: _template.Read returned {context.CsvLines?.Count ?? 0} data structures.");
 
             if (context.CsvLines != null && context.CsvLines.Count > 0 && context.CsvLines[0] is List<IDictionary<string, object>> list)
             {
-                System.Console.WriteLine(
+                Console.WriteLine(
                     $"[OCR DEBUG] Pipeline Step: First data structure contains {list.Count} items.");
             }
              if (context.Template.Success == false)

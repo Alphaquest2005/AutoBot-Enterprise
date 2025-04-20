@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using CoreEntities.Business.Entities; // Assuming Invoice is defined here
+// Assuming Invoice is defined here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -22,7 +20,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     if (!doc.Keys.Contains("Name")) doc.Add("Name", context.Template.OcrInvoices.Name);
                 }
 
-             System.Console.WriteLine(
+             Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Added Name and Supplier information.");
 
 

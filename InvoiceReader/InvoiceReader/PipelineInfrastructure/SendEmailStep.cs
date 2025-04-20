@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-using EmailDownloader; // Needed for EmailDownloader.EmailDownloader and Client
-using System.IO; // Needed for file paths
+// Needed for EmailDownloader.EmailDownloader and Client
+
+// Needed for file paths
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -18,7 +18,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             EmailDownloader.EmailDownloader.SendEmail(context.Client, null, "Invoice Template Not found!",
                 EmailDownloader.EmailDownloader.GetContacts("Developer"), context.EmailBody, new[] { context.FilePath, context.TxtFile });
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Sent email for file '{context.FilePath}'.");
 
             return true; // Indicate success

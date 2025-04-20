@@ -33,7 +33,7 @@ public partial class Invoice
 
             AddMissingRequiredFieldValues();
 
-            if (!this.Lines.SelectMany(x => x.Values.Values).Any()) return new List<dynamic>();//!Success
+            if (!Lines.SelectMany(x => x.Values.Values).Any()) return new List<dynamic>();//!Success
 
 
 

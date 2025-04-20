@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WaterNut.Business.Services.Utils; // Assuming PipelineRunner is here
+// Assuming PipelineRunner is here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -26,7 +24,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             var emailPipelineRunner = new PipelineRunner<InvoiceProcessingContext>(emailPipelineSteps);
             bool success = await emailPipelineRunner.Run(_context).ConfigureAwait(false);
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] CreateEmailPipeline: Finished. Success: {success}.");
 
             return success; // Indicate if the email pipeline completed successfully

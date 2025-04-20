@@ -1,6 +1,3 @@
-using System.IO;
-using System.Threading.Tasks;
-
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class WriteFormattedTextFileStep : IPipelineStep<InvoiceProcessingContext>
@@ -20,7 +17,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
            context.TxtFile = txtFile; // Set TxtFile in context
 
-           System.Console.WriteLine(
+           Console.WriteLine(
                $"[OCR DEBUG] Pipeline Step: Wrote formatted text to {txtFile}.");
 
            // The original method returned the file path, but pipeline steps return bool

@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CoreEntities.Business.Entities; // Assuming Invoice and related entities are here
-using OCR.Business.Entities; // Assuming OCR_Lines and Fields are here
-using DocumentDS.Business.Entities; // Assuming AsycudaDocumentSet is here
-using EmailDownloader; // Assuming Client is here
-using WaterNut.Business.Services.Utils; // Assuming InvoiceProcessingUtils and FileTypeManager are here
+// Assuming Invoice and related entities are here
+// Assuming OCR_Lines and Fields are here
+// Assuming AsycudaDocumentSet is here
+// Assuming Client is here
+
+// Assuming InvoiceProcessingUtils and FileTypeManager are here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -65,7 +62,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 return true; // Indicate that error handling (including email) was attempted
             }
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Handled error state.");
 
             return false; // Indicate that the error state did not lead to a successful import

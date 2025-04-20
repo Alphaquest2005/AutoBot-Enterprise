@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WaterNut.Business.Services.Utils; // Assuming PipelineRunner is here
-using WaterNut.DataSpace; // Assuming ImportStatus is here
+// Assuming PipelineRunner is here
+
+// Assuming ImportStatus is here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -30,7 +29,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             if (!initialRunSuccess || _context.CsvLines == null || _context.CsvLines.Count < 1 || _context.Template.Success == false)
             {
-                System.Console.WriteLine(
+                Console.WriteLine(
                     $"[OCR DEBUG] Pipeline: Initial steps failed or read returned no lines or template success is false. Entering Error State Pipeline.");
                 // Error handling pipeline
                 var errorSteps = new List<IPipelineStep<InvoiceProcessingContext>>
@@ -44,7 +43,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
             else
             {
-                System.Console.WriteLine(
+                Console.WriteLine(
                     $"[OCR DEBUG] Pipeline: Initial steps successful. Proceeding with Success State Pipeline.");
                 // Success handling pipeline
                 var successSteps = new List<IPipelineStep<InvoiceProcessingContext>>

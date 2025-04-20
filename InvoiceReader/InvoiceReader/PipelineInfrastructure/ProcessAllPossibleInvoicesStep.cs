@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class ProcessAllPossibleInvoicesStep : IPipelineStep<InvoiceProcessingContext>
@@ -10,7 +6,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             if (context.PossibleInvoices == null)
             {
-                System.Console.WriteLine(
+                Console.WriteLine(
                     $"[OCR DEBUG] Pipeline Step: No possible invoices found. Skipping template processing.");
                 return true; // Not an error if no possible invoices
             }
@@ -40,7 +36,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     Imports = context.Imports // Pass the shared Imports dictionary
                 };
 
-                System.Console.WriteLine(
+                Console.WriteLine(
                     $"[OCR DEBUG] Pipeline Step: Running InvoiceProcessingPipeline for template '{template.OcrInvoices.Name}' (ID: {template.OcrInvoices.Id}).");
 
                 var invoiceProcessingPipeline = new InvoiceProcessingPipeline(templateContext, isLastTemplate);
@@ -50,7 +46,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 // is reflected in templateContext.ImportStatus and added to context.Imports
             }
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Finished processing all possible invoices.");
 
             return true; // Indicate that this step completed its iteration

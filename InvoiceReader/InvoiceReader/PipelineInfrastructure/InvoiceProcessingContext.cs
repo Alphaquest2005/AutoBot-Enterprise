@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Text;
 using CoreEntities.Business.Entities;
-using OCR.Business.Entities;
-using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure

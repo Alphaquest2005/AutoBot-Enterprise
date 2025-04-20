@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using WaterNut.Business.Services.Utils; // Assuming this is needed for _template.Format
+// Assuming this is needed for _template.Format
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -18,7 +17,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
 
             context.FormattedPdfText = context.Template.Format(context.PdfText.ToString());
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: PDF text formatted using template {context.Template.OcrInvoices.Id}.");
 
             return true; // Indicate success

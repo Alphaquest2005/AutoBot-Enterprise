@@ -1,9 +1,4 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using MoreLinq;
+﻿using System.Text;
 using OCR.Business.Entities;
 
 
@@ -36,7 +31,7 @@ namespace WaterNut.DataSpace
         public bool Success => AllRequiredFieldsFilled() && NoFailedLines() && AllChildPartsSucceded();
 
         private bool AllRequiredFieldsFilled() => Lines.All(x => !x.Values.SelectMany(z => z.Value).Any(z => z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value?.ToString())));
-        private bool NoFailedLines() => !this.FailedLines.Any();
+        private bool NoFailedLines() => !FailedLines.Any();
         private bool AllChildPartsSucceded() => ChildParts.All(x => x.Success);
 
         public List<Line> FailedLines => Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.IsRequired && z.FieldValue?.Value == null) && x.Values.Count == 0)

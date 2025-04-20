@@ -12,7 +12,7 @@ public static partial class InvoiceProcessingUtils
     {
         using (var ctx = new CoreEntitiesContext())
         {
-            var newAttachment = new CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments(true)
+            var newAttachment = new AsycudaDocumentSet_Attachments(true)
             {
                 TrackingState = TrackingState.Added,
                 AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,

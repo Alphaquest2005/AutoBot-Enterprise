@@ -1,5 +1,4 @@
 ﻿using CoreEntities.Business.Entities;
-using WaterNut.Business.Services.Utils;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using WaterNut.DataSpace.PipelineInfrastructure; // Added using directive
 
@@ -14,7 +13,7 @@ public partial class InvoiceReader
         Console.WriteLine(
             $"[OCR DEBUG] InvoiceReader.Import: Starting import for file '{file}', FileTypeId: {fileTypeId}, EmailId: '{emailId}'");
 
-        var context = new PipelineInfrastructure.InvoiceProcessingContext
+        var context = new InvoiceProcessingContext
         {
             FilePath = file,
             FileTypeId = fileTypeId,
@@ -26,17 +25,17 @@ public partial class InvoiceReader
         };
 
         // Define the main pipeline steps
-        var mainPipelineSteps = new List<IPipelineStep<PipelineInfrastructure.InvoiceProcessingContext>>
+        var mainPipelineSteps = new List<IPipelineStep<InvoiceProcessingContext>>
         {
-            new PipelineInfrastructure.GetPdfTextStep(),
-            new PipelineInfrastructure.GetTemplatesStep(),
-            new PipelineInfrastructure.GetPossibleInvoicesStep(),
-            new PipelineInfrastructure.ProcessAllPossibleInvoicesStep(), // This step runs the sub-pipeline for each invoice
-            new PipelineInfrastructure.ReturnImportsStep() // This step determines overall success and is the last step
+            new GetPdfTextStep(),
+            new GetTemplatesStep(),
+            new GetPossibleInvoicesStep(),
+            new ProcessAllPossibleInvoicesStep(), // This step runs the sub-pipeline for each invoice
+            new ReturnImportsStep() // This step determines overall success and is the last step
         };
 
         // Create and run the main pipeline
-        var mainPipelineRunner = new PipelineInfrastructure.PipelineRunner<PipelineInfrastructure.InvoiceProcessingContext>(mainPipelineSteps);
+        var mainPipelineRunner = new PipelineRunner<InvoiceProcessingContext>(mainPipelineSteps);
         bool overallSuccess = await mainPipelineRunner.Run(context).ConfigureAwait(false);
 
         Console.WriteLine(

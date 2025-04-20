@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using OCR.Business.Entities;
-using System.Threading.Tasks; // Added using directive
-using System.Text; // Added using directive
+// Added using directive
+// Added using directive
 using System.Text.RegularExpressions; // Added using directive
 
 namespace WaterNut.DataSpace.PipelineInfrastructure

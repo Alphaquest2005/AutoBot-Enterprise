@@ -1,12 +1,5 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Core.Common.Extensions;
+﻿using Core.Common.Extensions;
 using EntryDataDS.Business.Entities;
-using MoreLinq;
-using OCR.Business.Entities;
 using Invoices = OCR.Business.Entities.Invoices;
 using MoreEnumerable = MoreLinq.MoreEnumerable;
 

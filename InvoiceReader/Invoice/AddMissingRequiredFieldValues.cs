@@ -6,7 +6,7 @@ public partial class Invoice
 {
     private void AddMissingRequiredFieldValues()
     {
-        var requiredFieldsList = this.Lines.SelectMany(x => x.OCR_Lines.Fields)
+        var requiredFieldsList = Lines.SelectMany(x => x.OCR_Lines.Fields)
             .Where(z => z.IsRequired && !string.IsNullOrEmpty(z.FieldValue?.Value)).ToList();
         var instances = Lines.SelectMany(x => x.Values)
             .Where(x => x.Key.section == "Single")
@@ -15,7 +15,7 @@ public partial class Invoice
             .ToList();
         foreach (var field in requiredFieldsList)
         {
-            var lines = this.Lines.Where(x => LineHasField(x, field)
+            var lines = Lines.Where(x => LineHasField(x, field)
                                               && ValueContainsRequiredField(x, field)
                                               && ValueForAllInstances(x, instances)
             ).ToList();

@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CoreEntities.Business.Entities; // Assuming Invoice and related entities are here
-using OCR.Business.Entities; // Assuming OCR_Lines and Fields are here
+// Assuming Invoice and related entities are here
+
+// Assuming OCR_Lines and Fields are here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -29,7 +26,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 }
             }
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Added missing required field values.");
 
             return true; // Indicate success

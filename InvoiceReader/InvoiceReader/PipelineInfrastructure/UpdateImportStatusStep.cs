@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using WaterNut.Business.Services.Utils; // Assuming FileTypeManager is here
-using WaterNut.DataSpace; // Assuming ImportStatus is here
+
+// Assuming ImportStatus is here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -37,7 +37,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     break;
             }
 
-            System.Console.WriteLine(
+            Console.WriteLine(
                 $"[OCR DEBUG] Pipeline Step: Updated import status to {importStatus}.");
 
             // This step always succeeds in updating the status if it reaches here
