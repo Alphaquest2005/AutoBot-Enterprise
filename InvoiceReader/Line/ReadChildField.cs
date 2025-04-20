@@ -17,150 +17,178 @@ public partial class Line
     private void ReadChildField(Fields childField, Dictionary<(Fields fields, int instance), string> values,
         string strValue)
     {
+        string methodName = nameof(ReadChildField);
         int? lineId = this.OCR_Lines?.Id; // For logging context
         int? childFieldId = childField?.Id;
         string childFieldName = childField?.Field ?? "UnknownChildField";
-        _logger.Verbose("Entering ReadChildField for LineId: {LineId}, ChildFieldId: {ChildFieldId} ('{ChildFieldName}') based on ParentValue: '{ParentValue}'",
-            lineId, childFieldId, childFieldName, strValue);
+        _logger.Verbose("Entering {MethodName} for LineId: {LineId}, ChildFieldId: {ChildFieldId} ('{ChildFieldName}') based on ParentValue: '{ParentValue}'",
+            methodName, lineId, childFieldId, childFieldName, strValue);
 
-        // Null checks for critical inputs
+        // --- Input Validation ---
         if (childField?.Lines?.RegularExpressions == null)
         {
-             _logger.Warning("Cannot read child field {ChildFieldId}: ChildField, Lines, or RegularExpressions is null.", childFieldId);
-             return;
+            _logger.Warning("{MethodName}: Cannot read child field {ChildFieldId}: ChildField, Lines, or RegularExpressions is null. Exiting.", methodName, childFieldId);
+            _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} due to null ChildField/Lines/Regex.", methodName, childFieldId);
+            return;
         }
-         if (values == null)
-         {
-              _logger.Error("Cannot read child field {ChildFieldId}: values dictionary is null.", childFieldId);
-              return;
-         }
-          if (strValue == null) // Check parent value
-         {
-              _logger.Warning("Cannot read child field {ChildFieldId}: Input string value (strValue from parent) is null.", childFieldId);
-              return;
-         }
+        if (values == null)
+        {
+            _logger.Error("{MethodName}: Cannot read child field {ChildFieldId}: values dictionary is null. Exiting.", methodName, childFieldId);
+            _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} due to null values dictionary.", methodName, childFieldId);
+            return;
+        }
+        if (strValue == null) // Check parent value
+        {
+            _logger.Warning("{MethodName}: Cannot read child field {ChildFieldId}: Input string value (strValue from parent) is null. Exiting.", methodName, childFieldId);
+            _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} due to null parent value.", methodName, childFieldId);
+            return;
+        }
+        _logger.Verbose("{MethodName}: Input validation passed for ChildFieldId: {ChildFieldId}.", methodName, childFieldId);
 
 
         try
         {
+            // --- Regex Matching on Parent Value ---
             string pattern = childField.Lines.RegularExpressions.RegEx;
             if (string.IsNullOrEmpty(pattern))
             {
-                 _logger.Warning("ChildField {ChildFieldId} regex pattern is null or empty. Skipping match.", childFieldId);
-                 return;
+                _logger.Warning("{MethodName}: ChildField {ChildFieldId} regex pattern is null or empty. Skipping match.", methodName, childFieldId);
+                _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} due to null/empty pattern.", methodName, childFieldId);
+                return;
             }
 
-            // Determine RegexOptions based on child field's Lines settings
-            bool isMultiLine = childField.Lines.RegularExpressions.MultiLine ?? false; // Default to false
+            bool isMultiLine = childField.Lines.RegularExpressions.MultiLine ?? false;
             RegexOptions options = (isMultiLine ? RegexOptions.Multiline : RegexOptions.Singleline) |
                                   RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
-             _logger.Verbose("Attempting Regex.Match for ChildFieldId: {ChildFieldId}, Pattern: '{Pattern}', Options: {Options}", childFieldId, pattern, options);
-             // Execute regex match with timeout
-             Match match = Regex.Match(strValue.Trim(), pattern, options, RegexTimeout);
+            _logger.Verbose("{MethodName}: Attempting Regex.Match for ChildFieldId: {ChildFieldId}, Pattern: '{Pattern}', Options: {Options} on ParentValue: '{ParentValue}'", methodName, childFieldId, pattern, options, strValue.Trim());
+            Match match = Regex.Match(strValue.Trim(), pattern, options, RegexTimeout);
 
             if (!match.Success)
             {
-                 _logger.Verbose("No regex match found for ChildFieldId: {ChildFieldId}. Exiting ReadChildField.", childFieldId);
-                 return; // No match, nothing to process
+                _logger.Verbose("{MethodName}: No regex match found for ChildFieldId: {ChildFieldId}. Exiting.", methodName, childFieldId);
+                _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} (No Match).", methodName, childFieldId);
+                return; // No match, nothing to process
             }
-             _logger.Debug("Regex match successful for ChildFieldId: {ChildFieldId}.", childFieldId);
+            _logger.Debug("{MethodName}: Regex match successful for ChildFieldId: {ChildFieldId}.", methodName, childFieldId);
 
-             // Iterate through the fields defined within the child field's Lines object
-             if (childField.Lines.Fields == null)
-             {
-                  _logger.Warning("ChildFieldId: {ChildFieldId} has null Fields collection within its Lines object. Cannot extract values.", childFieldId);
-                  return;
-             }
+            // --- Process Inner Fields defined in ChildField.Lines.Fields ---
+            if (childField.Lines.Fields == null)
+            {
+                _logger.Warning("{MethodName}: ChildFieldId: {ChildFieldId} has null Fields collection within its Lines object. Cannot extract values.", methodName, childFieldId);
+                _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId} due to null inner Fields collection.", methodName, childFieldId);
+                return;
+            }
 
-             foreach (var field in childField.Lines.Fields.Where(f => f != null)) // Safe iteration
-             {
-                 int? innerFieldId = field.Id;
-                 string innerFieldName = field.Field ?? "UnknownInnerField";
-                  _logger.Verbose("Processing Inner FieldId: {InnerFieldId} ('{InnerFieldName}') for ChildFieldId: {ChildFieldId}", innerFieldId, innerFieldName, childFieldId);
+            _logger.Verbose("{MethodName}: Processing {Count} inner fields for ChildFieldId: {ChildFieldId}...", methodName, childField.Lines.Fields.Count, childFieldId);
+            int innerFieldIndex = 0;
+            foreach (var field in childField.Lines.Fields.Where(f => f != null)) // Safe iteration
+            {
+                innerFieldIndex++;
+                int? innerFieldId = field.Id;
+                string innerFieldName = field.Field ?? "UnknownInnerField";
+                _logger.Verbose("{MethodName}: Processing Inner Field {Index}/{Total} (Id: {InnerFieldId}, Name: '{InnerFieldName}') for ChildFieldId: {ChildFieldId}",
+                    methodName, innerFieldIndex, childField.Lines.Fields.Count, innerFieldId, innerFieldName, childFieldId);
 
-                 // Determine initial value (override or group match)
-                 string initialValue = field.FieldValue?.Value?.Trim();
-                 bool usedOverride = initialValue != null;
-                 if (!usedOverride)
-                 {
-                     // Use field.Key (the regex group name) to extract value
-                     initialValue = match.Groups.ContainsKey(field.Key) ? match.Groups[field.Key]?.Value?.Trim() : null;
-                      _logger.Verbose("InnerFieldId: {InnerFieldId} - Using Regex Group '{GroupKey}'. Initial Value: '{InitialValue}'", innerFieldId, field.Key, initialValue);
-                 } else {
-                      _logger.Verbose("InnerFieldId: {InnerFieldId} - Using FieldValue override. Initial Value: '{InitialValue}'", innerFieldId, initialValue);
-                 }
+                // --- Determine Initial Value ---
+                string initialValue = field.FieldValue?.Value?.Trim();
+                bool usedOverride = initialValue != null;
+                if (!usedOverride)
+                {
+                    string groupKey = field.Key;
+                    if (match.Groups.ContainsKey(groupKey))
+                    {
+                        initialValue = match.Groups[groupKey]?.Value?.Trim();
+                        _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - Using Regex Group '{GroupKey}'. Initial Value: '{InitialValue}'", methodName, innerFieldId, groupKey, initialValue);
+                    }
+                    else
+                    {
+                        initialValue = null;
+                        _logger.Warning("{MethodName}: InnerFieldId: {InnerFieldId} - Regex Group Key '{GroupKey}' not found in match. Initial Value set to null.", methodName, innerFieldId, groupKey);
+                    }
+                }
+                else
+                {
+                    _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - Using FieldValue override. Initial Value: '{InitialValue}'", methodName, innerFieldId, initialValue);
+                }
 
-                 // Apply formatting regex
-                 string formattedValue = initialValue;
-                 if (field.FormatRegEx != null && formattedValue != null)
-                 {
-                      _logger.Verbose("InnerFieldId: {InnerFieldId} - Applying {Count} format regex patterns.", innerFieldId, field.FormatRegEx.Count);
-                      foreach (var reg in field.FormatRegEx.OrderBy(x => x?.Id ?? int.MaxValue)) // Safe ordering
-                      {
-                          string fmtPattern = reg?.RegEx?.RegEx;
-                          string fmtReplacement = reg?.ReplacementRegEx?.RegEx ?? string.Empty;
-                          int fmtRegId = reg?.Id ?? -1;
+                // --- Apply Formatting Regex ---
+                string formattedValue = initialValue;
+                if (field.FormatRegEx != null && formattedValue != null)
+                {
+                    _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - Applying {Count} format regex patterns to value '{CurrentValue}'...", methodName, innerFieldId, field.FormatRegEx.Count, formattedValue);
+                    int formatIndex = 0;
+                    foreach (var reg in field.FormatRegEx.OrderBy(x => x?.Id ?? int.MaxValue))
+                    {
+                        formatIndex++;
+                        string fmtPattern = reg?.RegEx?.RegEx;
+                        string fmtReplacement = reg?.ReplacementRegEx?.RegEx ?? string.Empty;
+                        int fmtRegId = reg?.Id ?? -1;
 
-                          if (reg?.RegEx == null || string.IsNullOrEmpty(fmtPattern)) {
-                               _logger.Warning("Skipping null/empty format pattern for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}", fmtRegId, innerFieldId);
-                               continue;
-                          }
-                           if (reg.ReplacementRegEx == null) {
-                                _logger.Warning("Format ReplacementRegEx is null for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Replacement is empty string.", fmtRegId, innerFieldId);
-                           }
+                        if (reg?.RegEx == null || string.IsNullOrEmpty(fmtPattern))
+                        {
+                            _logger.Warning("{MethodName}: Skipping null/empty format pattern {Index}/{Total} (FormatRegId: {FormatRegId}) for InnerFieldId: {InnerFieldId}", methodName, formatIndex, field.FormatRegEx.Count, fmtRegId, innerFieldId);
+                            continue;
+                        }
+                        if (reg.ReplacementRegEx == null)
+                        {
+                            _logger.Warning("{MethodName}: Format ReplacementRegEx is null for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Replacement is empty string.", methodName, fmtRegId, innerFieldId);
+                        }
 
-                           _logger.Verbose("Applying FormatRegId: {FormatRegId} - Pattern: '{Pattern}', Replacement: '{Replacement}'", fmtRegId, fmtPattern, fmtReplacement);
-                           try
-                           {
-                               // Use parent line's multiline setting for format regex? Original code did this.
-                               bool parentIsMultiLine = this.OCR_Lines?.RegularExpressions?.MultiLine ?? false;
-                               RegexOptions fmtOptions = (parentIsMultiLine ? RegexOptions.Multiline : RegexOptions.Singleline) |
-                                                         RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
-                               formattedValue = Regex.Replace(formattedValue, fmtPattern, fmtReplacement, fmtOptions, RegexTimeout).Trim();
-                                _logger.Verbose("Value after FormatRegId {FormatRegId}: '{FormattedValue}'", fmtRegId, formattedValue);
-                           }
-                           catch (RegexMatchTimeoutException timeoutEx) {
-                                _logger.Error(timeoutEx, "Regex format replace timed out (>{TimeoutSeconds}s) for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Skipping.", RegexTimeout.TotalSeconds, fmtRegId, innerFieldId);
-                           }
-                           catch (ArgumentException argEx) { // Catch invalid regex patterns
-                                _logger.Error(argEx, "Invalid format regex pattern for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Skipping.", fmtRegId, innerFieldId);
-                           }
-                           catch (Exception formatEx) {
-                                _logger.Error(formatEx, "Error applying format regex FormatRegId: {FormatRegId} for InnerFieldId: {InnerFieldId}. Skipping.", fmtRegId, innerFieldId);
-                           }
-                      }
-                 } else if (formattedValue == null) {
-                      _logger.Verbose("InnerFieldId: {InnerFieldId} - Initial value was null, skipping formatting.", innerFieldId);
-                 } else {
-                      _logger.Verbose("InnerFieldId: {InnerFieldId} - No format regex patterns found.", innerFieldId);
-                 }
+                        _logger.Verbose("{MethodName}: Applying Format {Index}/{Total} (Id: {FormatRegId}) - Pattern: '{Pattern}', Replacement: '{Replacement}'", methodName, formatIndex, field.FormatRegEx.Count, fmtRegId, fmtPattern, fmtReplacement);
+                        try
+                        {
+                            // Use parent line's multiline setting?
+                            bool parentIsMultiLine = this.OCR_Lines?.RegularExpressions?.MultiLine ?? false;
+                            RegexOptions fmtOptions = (parentIsMultiLine ? RegexOptions.Multiline : RegexOptions.Singleline) |
+                                                      RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
+                            string valueBeforeFormat = formattedValue;
+                            formattedValue = Regex.Replace(formattedValue, fmtPattern, fmtReplacement, fmtOptions, RegexTimeout).Trim();
+                            _logger.Verbose("{MethodName}: Value after FormatRegId {FormatRegId}: '{FormattedValue}' (was: '{OriginalValue}')", methodName, fmtRegId, formattedValue, valueBeforeFormat);
+                        }
+                        catch (RegexMatchTimeoutException timeoutEx) { _logger.Error(timeoutEx, "{MethodName}: Regex format replace timed out (>{TimeoutSeconds}s) for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Skipping.", methodName, RegexTimeout.TotalSeconds, fmtRegId, innerFieldId); }
+                        catch (ArgumentException argEx) { _logger.Error(argEx, "{MethodName}: Invalid format regex pattern for FormatRegId: {FormatRegId}, InnerFieldId: {InnerFieldId}. Skipping.", methodName, fmtRegId, innerFieldId); }
+                        catch (Exception formatEx) { _logger.Error(formatEx, "{MethodName}: Error applying format regex FormatRegId: {FormatRegId} for InnerFieldId: {InnerFieldId}. Skipping.", methodName, fmtRegId, innerFieldId); }
+                    }
+                    _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - Finished applying format regex patterns. Final formatted value: '{FinalValue}'", methodName, innerFieldId, formattedValue);
+                }
+                else if (formattedValue == null)
+                {
+                    _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - Initial value was null, skipping formatting.", methodName, innerFieldId);
+                }
+                else
+                {
+                    _logger.Verbose("{MethodName}: InnerFieldId: {InnerFieldId} - No format regex patterns found.", methodName, innerFieldId);
+                }
 
 
-                 // Add to dictionary if value is not empty, always using instance 1 as per original code
-                 if (!string.IsNullOrEmpty(formattedValue))
-                 {
-                     // Use the inner field ('field') and hardcoded instance 1 for the key
-                     var valueKey = (field, 1);
-                      _logger.Verbose("Adding/Updating value for InnerFieldId: {InnerFieldId}, Instance: 1. Value: '{Value}'", innerFieldId, formattedValue);
-                      // Use AddOrUpdate semantics - if key exists, update; otherwise, add.
-                      values[valueKey] = formattedValue.Trim(); // Trim final value
-                 } else {
-                      _logger.Verbose("Skipping InnerFieldId: {InnerFieldId} because formatted value is null or empty.", innerFieldId);
-                 }
-             } // End foreach inner field
+                // --- Store Value ---
+                if (!string.IsNullOrEmpty(formattedValue))
+                {
+                    // Use the inner field ('field') and hardcoded instance 1 for the key
+                    var valueKey = (field, 1);
+                    _logger.Verbose("{MethodName}: Adding/Updating value for InnerFieldId: {InnerFieldId}, Instance: 1. Value: '{Value}'", methodName, innerFieldId, formattedValue);
+                    values[valueKey] = formattedValue.Trim(); // Add or update
+                }
+                else
+                {
+                    _logger.Verbose("{MethodName}: Skipping InnerFieldId: {InnerFieldId} because formatted value is null or empty.", methodName, innerFieldId);
+                }
+                _logger.Verbose("{MethodName}: Finished processing Inner FieldId: {InnerFieldId}", methodName, innerFieldId);
+            } // End foreach inner field
+            _logger.Verbose("{MethodName}: Finished processing inner fields for ChildFieldId: {ChildFieldId}.", methodName, childFieldId);
         }
         catch (RegexMatchTimeoutException timeoutEx)
         {
-             _logger.Error(timeoutEx, "Regex match timed out (>{TimeoutSeconds}s) during ReadChildField for ChildFieldId: {ChildFieldId}, Pattern: '{Pattern}'",
-                RegexTimeout.TotalSeconds, childFieldId, childField?.Lines?.RegularExpressions?.RegEx ?? "Unknown");
-             // Don't throw, just log and exit method for this child field
+            _logger.Error(timeoutEx, "{MethodName}: Regex match timed out (>{TimeoutSeconds}s) for ChildFieldId: {ChildFieldId}, Pattern: '{Pattern}'",
+               methodName, RegexTimeout.TotalSeconds, childFieldId, childField?.Lines?.RegularExpressions?.RegEx ?? "Unknown");
+            // Don't throw, just log and exit method for this child field
         }
         catch (Exception e)
         {
-             _logger.Error(e, "Error during ReadChildField for ChildFieldId: {ChildFieldId} ('{ChildFieldName}')", childFieldId, childFieldName);
-             // Don't re-throw, allow processing of other fields/lines to continue if possible
+            _logger.Error(e, "{MethodName}: Unhandled exception for ChildFieldId: {ChildFieldId} ('{ChildFieldName}')", methodName, childFieldId, childFieldName);
+            // Don't re-throw
         }
-         _logger.Verbose("Exiting ReadChildField for ChildFieldId: {ChildFieldId}", childFieldId);
+        _logger.Verbose("Exiting {MethodName} for ChildFieldId: {ChildFieldId}", methodName, childFieldId);
     }
 }

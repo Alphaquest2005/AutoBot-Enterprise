@@ -15,82 +15,92 @@ public partial class Line
 
     public bool Read(string line, int lineNumber, string section, int instance)
     {
+        string methodName = nameof(Read);
         int? lineId = this.OCR_Lines?.Id;
-        _logger.Debug("Entering Line.Read for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
-            lineId, lineNumber, section, instance);
+        _logger.Verbose("Entering {MethodName} for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input line length: {Length}",
+            methodName, lineId, lineNumber, section, instance, line?.Length ?? 0);
 
-        // Null checks
+        // --- Input Validation ---
         if (line == null)
         {
-             _logger.Warning("Line.Read called with null line text for LineId: {LineId}. Returning false.", lineId);
-             return false;
+            _logger.Warning("{MethodName}: Called with null line text for LineId: {LineId}. Returning false.", methodName, lineId);
+            _logger.Verbose("Exiting {MethodName} for LineId: {LineId} due to null line text.", methodName, lineId);
+            return false;
         }
-         // Safe check for OCR_Lines and RegularExpressions
-         if (this.OCR_Lines?.RegularExpressions == null)
-         {
-              _logger.Warning("Line.Read called with null OCR_Lines or RegularExpressions for LineId: {LineId}. Cannot match. Returning false.", lineId);
-              return false;
-         }
+        if (this.OCR_Lines?.RegularExpressions == null)
+        {
+            _logger.Warning("{MethodName}: Called with null OCR_Lines or RegularExpressions for LineId: {LineId}. Cannot match. Returning false.", methodName, lineId);
+            _logger.Verbose("Exiting {MethodName} for LineId: {LineId} due to null OCR_Lines/RegularExpressions.", methodName, lineId);
+            return false;
+        }
+        string pattern = this.OCR_Lines.RegularExpressions.RegEx;
+        if (string.IsNullOrEmpty(pattern))
+        {
+            _logger.Warning("{MethodName}: Regex pattern is null or empty for LineId: {LineId}. Returning false.", methodName, lineId);
+            _logger.Verbose("Exiting {MethodName} for LineId: {LineId} due to null/empty pattern.", methodName, lineId);
+            return false;
+        }
+        _logger.Verbose("{MethodName}: Input validation passed for LineId: {LineId}.", methodName, lineId);
 
+        bool success = false; // Default to false
         try
         {
-            string pattern = this.OCR_Lines.RegularExpressions.RegEx;
-            if (string.IsNullOrEmpty(pattern))
-            {
-                 _logger.Warning("Line.Read: Regex pattern is null or empty for LineId: {LineId}. Returning false.", lineId);
-                 return false;
-            }
-
-            // Determine RegexOptions based on OCR_Lines settings safely
-            bool isMultiLine = this.OCR_Lines.RegularExpressions.MultiLine ?? false; // Default to false if null
+            // --- Regex Matching ---
+            bool isMultiLine = this.OCR_Lines.RegularExpressions.MultiLine ?? false;
             RegexOptions options = (isMultiLine ? RegexOptions.Multiline : RegexOptions.Singleline) |
                                   RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
-             _logger.Verbose("Attempting Regex.Matches for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}", lineId, pattern, options);
-             // Execute regex match with timeout
-             MatchCollection matches = Regex.Matches(line, pattern, options, RegexTimeout); // Use defined timeout
+            _logger.Verbose("{MethodName}: Attempting Regex.Matches for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}", methodName, lineId, pattern, options);
+            MatchCollection matches = Regex.Matches(line, pattern, options, RegexTimeout); // Use defined timeout
+            _logger.Debug("{MethodName}: Regex.Matches found {MatchCount} matches for LineId: {LineId}", methodName, matches.Count, lineId);
 
-             _logger.Debug("Regex.Matches found {MatchCount} matches for LineId: {LineId}", matches.Count, lineId);
             if (matches.Count == 0)
             {
-                 _logger.Verbose("No regex matches found for LineId: {LineId}. Returning false.", lineId);
-                 return false; // No matches, nothing to process
+                _logger.Verbose("{MethodName}: No regex matches found for LineId: {LineId}. Returning false.", methodName, lineId);
+                _logger.Verbose("Exiting {MethodName} for LineId: {LineId} (No Matches). Returning false.", methodName, lineId);
+                return false; // No matches, nothing to process
             }
 
-            // Initialize dictionary to store formatted values for this line/instance
+            // --- Value Formatting ---
             var values = new Dictionary<(Fields Fields, int Instance), string>();
-
-            _logger.Debug("Calling FormatValues for LineId: {LineId}, Instance: {Instance}", lineId, instance);
-            // FormatValues handles its own logging
+            _logger.Verbose("{MethodName}: Calling FormatValues for LineId: {LineId}, Instance: {Instance} with {MatchCount} matches...", methodName, lineId, instance, matches.Count);
+            // FormatValues should handle its own logging
             FormatValues(instance, matches, values);
-            _logger.Debug("Finished FormatValues for LineId: {LineId}, Instance: {Instance}. Found {ValueCount} values.", lineId, instance, values.Count);
+            _logger.Debug("{MethodName}: Finished FormatValues for LineId: {LineId}, Instance: {Instance}. Extracted {ValueCount} values.", methodName, lineId, instance, values.Count);
 
-            // Save the extracted and formatted values only if FormatValues produced something
+            // --- Value Saving ---
             if (values.Any())
             {
-                _logger.Debug("Calling SaveLineValues for LineId: {LineId}, Instance: {Instance}", lineId, instance);
-                // SaveLineValues handles its own logging
+                _logger.Verbose("{MethodName}: Calling SaveLineValues for LineId: {LineId}, Instance: {Instance} with {ValueCount} values...", methodName, lineId, instance, values.Count);
+                // SaveLineValues should handle its own logging
                 SaveLineValues(lineNumber, section, instance, values);
-                _logger.Debug("Finished SaveLineValues for LineId: {LineId}, Instance: {Instance}", lineId, instance);
-            } else {
-                 _logger.Warning("No values extracted/formatted by FormatValues for LineId: {LineId}, Instance: {Instance}. Skipping SaveLineValues.", lineId, instance);
+                _logger.Debug("{MethodName}: Finished SaveLineValues for LineId: {LineId}, Instance: {Instance}", methodName, lineId, instance);
+            }
+            else
+            {
+                _logger.Warning("{MethodName}: No values extracted/formatted by FormatValues for LineId: {LineId}, Instance: {Instance}. Skipping SaveLineValues.", methodName, lineId, instance);
             }
 
-             _logger.Information("Line.Read completed successfully for LineId: {LineId}, Instance: {Instance}. Found {MatchCount} matches and processed {ValueCount} values.",
-                lineId, instance, matches.Count, values.Count);
-            return true; // Indicate successful read and processing for this line/instance
+            _logger.Information("{MethodName}: Completed successfully for LineId: {LineId}, Instance: {Instance}. Found {MatchCount} matches and processed {ValueCount} values.",
+               methodName, lineId, instance, matches.Count, values.Count);
+            success = true; // Mark as successful
         }
         catch (RegexMatchTimeoutException timeoutEx)
         {
-             _logger.Error(timeoutEx, "Regex match timed out (>{TimeoutSeconds}s) during Line.Read for LineId: {LineId}, Pattern: '{Pattern}'",
-                RegexTimeout.TotalSeconds, lineId, this.OCR_Lines?.RegularExpressions?.RegEx ?? "Unknown");
-             return false; // Treat timeout as failure for this line read
+            _logger.Error(timeoutEx, "{MethodName}: Regex match timed out (>{TimeoutSeconds}s) for LineId: {LineId}, Pattern: '{Pattern}'",
+               methodName, RegexTimeout.TotalSeconds, lineId, pattern);
+            success = false; // Treat timeout as failure
         }
         catch (Exception e)
         {
-             _logger.Error(e, "Error during Line.Read for LineId: {LineId}, LineNumber: {LineNumber}", lineId, lineNumber);
-             throw; // Re-throw original exception
+            _logger.Error(e, "{MethodName}: Unhandled exception for LineId: {LineId}, LineNumber: {LineNumber}", methodName, lineId, lineNumber);
+            success = false; // Treat other exceptions as failure for this read attempt
+            // Consider if re-throwing is appropriate depending on overall error handling strategy
+            // throw;
         }
+
+        _logger.Verbose("Exiting {MethodName} for LineId: {LineId}. Returning {SuccessFlag}", methodName, lineId, success);
+        return success;
     }
 
      // Assuming FormatValues and SaveLineValues exist in other partial class parts

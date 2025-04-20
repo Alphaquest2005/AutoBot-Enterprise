@@ -24,66 +24,75 @@ namespace WaterNut.DataSpace
 
         public Part(Parts part)
         {
+            string methodName = nameof(Part) + " Constructor";
             int? partId = part?.Id;
-            _logger.Debug("Constructing Part object for OCR_Part Id: {PartId}", partId);
+            _logger.Verbose("Entering {MethodName} for OCR_Part Id: {PartId}", methodName, partId);
 
+            // --- Input Validation ---
             if (part == null)
             {
-                 _logger.Error("Part constructor called with null OCR_Part object. Cannot initialize.");
-                 throw new ArgumentNullException(nameof(part), "OCR_Part object cannot be null.");
+                _logger.Error("{MethodName}: Called with null OCR_Part object. Cannot initialize.", methodName);
+                _logger.Verbose("Exiting {MethodName} due to null input.", methodName);
+                throw new ArgumentNullException(nameof(part), "OCR_Part object cannot be null.");
             }
 
             OCR_Part = part;
-             _logger.Verbose("Assigned OCR_Part (Id: {PartId}) to Part property.", partId);
+            _logger.Verbose("{MethodName}: Assigned OCR_Part (Id: {PartId}) to Part property.", methodName, partId);
 
-            // Safely calculate counts
+            // --- Calculate Counts ---
             StartCount = part.Start?.Count() ?? 0;
             EndCount = part.End?.Count() ?? 0;
-             _logger.Verbose("PartId: {PartId} - StartCondition Count: {StartCount}, EndCondition Count: {EndCount}", partId, StartCount, EndCount);
+            _logger.Verbose("{MethodName}: PartId: {PartId} - StartCondition Count: {StartCount}, EndCondition Count: {EndCount}", methodName, partId, StartCount, EndCount);
 
-            // Initialize ChildParts safely
+            // --- Initialize ChildParts ---
+            _logger.Verbose("{MethodName}: Initializing ChildParts for PartId: {PartId}...", methodName, partId);
             try
             {
-                 _logger.Debug("Initializing ChildParts for PartId: {PartId}", partId);
-                 // Use null-conditional operator and null-coalescing operator for concise safe initialization
-                 ChildParts = part.ParentParts?
-                                 .Where(pp => pp?.ChildPart != null) // Safe check
-                                 .Select(x => {
-                                      _logger.Verbose("Creating child Part for OCR_Part Id: {ChildPartId}", x.ChildPart.Id);
-                                      return new Part(x.ChildPart); // Recursive constructor call
-                                      })
-                                 .ToList() ?? new List<Part>(); // Default to empty list if ParentParts is null
-                  _logger.Information("Initialized PartId: {PartId} with {ChildCount} ChildParts.", partId, ChildParts.Count);
+                ChildParts = part.ParentParts?
+                                .Where(pp => pp?.ChildPart != null) // Safe check
+                                .Select(x => {
+                                    _logger.Verbose("{MethodName}: Creating child Part for OCR_Part Id: {ChildPartId} (Parent: {ParentPartId})", methodName, x.ChildPart.Id, partId);
+                                    return new Part(x.ChildPart); // Recursive constructor call
+                                    })
+                                .ToList() ?? new List<Part>();
+                _logger.Information("{MethodName}: Initialized PartId: {PartId} with {ChildCount} ChildParts.", methodName, partId, ChildParts.Count);
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex, "Error initializing ChildParts for PartId: {PartId}", partId);
-                 ChildParts = new List<Part>(); // Ensure collection is not null
+                _logger.Error(ex, "{MethodName}: Error initializing ChildParts for PartId: {PartId}", methodName, partId);
+                ChildParts = new List<Part>(); // Ensure collection is not null
+                _logger.Warning("{MethodName}: ChildParts collection set to empty list due to initialization error for PartId: {PartId}.", methodName, partId);
             }
+            _logger.Verbose("{MethodName}: Finished initializing ChildParts for PartId: {PartId}.", methodName, partId);
 
-            // Initialize Lines safely
+
+            // --- Initialize Lines ---
+            _logger.Verbose("{MethodName}: Initializing Lines for PartId: {PartId}...", methodName, partId);
             try
             {
-                 _logger.Debug("Initializing Lines for PartId: {PartId}", partId);
-                 // Use null-conditional and null-coalescing operators
-                 Lines = part.Lines?
-                             .Where(x => x != null && (x.IsActive ?? true)) // Safe check for line and IsActive
-                             .Select(x => {
-                                  _logger.Verbose("Creating Line object for OCR_Lines Id: {LineId}", x.Id);
-                                  return new Line(x); // Line constructor handles logging
-                                  })
-                             .ToList() ?? new List<Line>(); // Default to empty list if Lines is null
-                  _logger.Information("Initialized PartId: {PartId} with {LineCount} active Lines.", partId, Lines.Count);
+                Lines = part.Lines?
+                            .Where(x => x != null && (x.IsActive ?? true)) // Safe check for line and IsActive
+                            .Select(x => {
+                                _logger.Verbose("{MethodName}: Creating Line object for OCR_Lines Id: {LineId} (Parent: {ParentPartId})", methodName, x.Id, partId);
+                                return new Line(x); // Line constructor handles logging
+                                })
+                            .ToList() ?? new List<Line>();
+                _logger.Information("{MethodName}: Initialized PartId: {PartId} with {LineCount} active Lines.", methodName, partId, Lines.Count);
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex, "Error initializing Lines for PartId: {PartId}", partId);
-                 Lines = new List<Line>(); // Ensure collection is not null
+                _logger.Error(ex, "{MethodName}: Error initializing Lines for PartId: {PartId}", methodName, partId);
+                Lines = new List<Line>(); // Ensure collection is not null
+                _logger.Warning("{MethodName}: Lines collection set to empty list due to initialization error for PartId: {PartId}.", methodName, partId);
             }
+            _logger.Verbose("{MethodName}: Finished initializing Lines for PartId: {PartId}.", methodName, partId);
 
 
-            lastLineRead = 0; // Initial state
-             _logger.Debug("Finished constructing Part object for PartId: {PartId}", partId);
+            // --- Set Initial State ---
+            lastLineRead = 0;
+            _logger.Verbose("{MethodName}: Initialized lastLineRead to 0 for PartId: {PartId}.", methodName, partId);
+
+            _logger.Information("Exiting {MethodName} successfully for PartId: {PartId}", methodName, partId);
         }
 
         public List<Part> ChildParts { get; } // Changed to readonly after constructor assignment
@@ -92,125 +101,8 @@ namespace WaterNut.DataSpace
         private int StartCount { get; }
 
         // Added logging to property getters
-        public bool Success
-        {
-             get {
-                  int? partId = this.OCR_Part?.Id;
-                  _logger.Verbose("Evaluating Success property for PartId: {PartId}", partId);
-                  // Call helper methods which now contain logging
-                  bool result = AllRequiredFieldsFilled() && NoFailedLines() && AllChildPartsSucceded();
-                  _logger.Verbose("Success evaluation result for PartId: {PartId}: {Result}", partId, result);
-                  return result;
-             }
-        }
 
-        private bool AllRequiredFieldsFilled()
-        {
-             // This property relies on FailedFields logic. Let's log the check here.
-             bool hasNoFailedRequiredFields = !this.FailedFields.Any(); // Access FailedFields property
-             _logger.Verbose("Evaluating AllRequiredFieldsFilled for PartId: {PartId}. Result (based on FailedFields): {Result}", this.OCR_Part?.Id, hasNoFailedRequiredFields);
-             return hasNoFailedRequiredFields;
-        }
-        private bool NoFailedLines()
-        {
-             bool noFailed = !this.FailedLines.Any(); // Access FailedLines property which has logging
-             _logger.Verbose("Evaluating NoFailedLines for PartId: {PartId}. Result: {Result}", this.OCR_Part?.Id, noFailed);
-             return noFailed;
-        }
-        private bool AllChildPartsSucceded()
-        {
-             // Added null check for ChildParts collection
-             bool allSucceeded = this.ChildParts?.All(x => x != null && x.Success) ?? true; // Default to true if ChildParts is null
-             _logger.Verbose("Evaluating AllChildPartsSucceded for PartId: {PartId}. Child Count: {Count}, Result: {Result}", this.OCR_Part?.Id, this.ChildParts?.Count ?? 0, allSucceeded);
-             return allSucceeded;
-        }
-
-        public List<Line> FailedLines
-        {
-             get {
-                  int? partId = this.OCR_Part?.Id;
-                  _logger.Verbose("Evaluating FailedLines property for PartId: {PartId}", partId);
-                  List<Line> failed = null;
-                  try
-                  {
-                       // Added null checks and safe navigation
-                       var directFailed = this.Lines?
-                                            .Where(x => x?.OCR_Lines?.Fields != null && // Safe checks
-                                                        x.OCR_Lines.Fields.Any(z => z != null && z.IsRequired && z.FieldValue?.Value == null) &&
-                                                        (x.Values == null || !x.Values.Any())) // Check Values null/empty
-                                            .ToList() ?? new List<Line>();
-
-                       var childFailed = this.ChildParts?
-                                            .Where(cp => cp != null) // Safe check
-                                            .SelectMany(x => x.FailedLines ?? Enumerable.Empty<Line>()) // Access property recursively, handle null
-                                            .ToList() ?? new List<Line>();
-
-                       failed = directFailed.Union(childFailed).ToList(); // Combine direct and child failures
-                        _logger.Verbose("Found {Count} total failed lines (direct + child) for PartId: {PartId}", failed.Count, partId);
-                  }
-                  catch (Exception ex)
-                  {
-                       _logger.Error(ex, "Error evaluating FailedLines property for PartId: {PartId}", partId);
-                       failed = new List<Line>(); // Return empty list on error
-                  }
-                  return failed;
-             }
-        }
-
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields
-        {
-             get {
-                  int? partId = this.OCR_Part?.Id;
-                  _logger.Verbose("Evaluating FailedFields property for PartId: {PartId}", partId);
-                  List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> failed = null;
-                  try
-                  {
-                       // Added null checks and safe navigation
-                       failed = this.Lines?
-                                    .Where(l => l != null) // Safe check
-                                    .SelectMany(x => x.FailedFields ?? Enumerable.Empty<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>>()) // Access property, handle null
-                                    .ToList()
-                                    ?? new List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Default if Lines is null
-                        _logger.Verbose("Found {Count} groups of failed fields from direct lines for PartId: {PartId}", failed.Count, partId);
-                  }
-                  catch (Exception ex)
-                  {
-                       _logger.Error(ex, "Error evaluating FailedFields property for PartId: {PartId}", partId);
-                       failed = new List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Return empty list on error
-                  }
-                  return failed;
-             }
-        }
-        public List<Line> AllLines
-        {
-             get {
-                  int? partId = this.OCR_Part?.Id;
-                  _logger.Verbose("Evaluating AllLines property for PartId: {PartId}", partId);
-                  List<Line> all = null;
-                  try
-                  {
-                       // Added null checks and safe navigation
-                       var directLines = this.Lines ?? new List<Line>();
-                       var childLines = this.ChildParts?
-                                          .Where(cp => cp != null) // Safe check
-                                          .SelectMany(x => x.AllLines ?? Enumerable.Empty<Line>()) // Access property recursively, handle null
-                                          .ToList() ?? new List<Line>();
-
-                       all = directLines.Union(childLines)
-                                        .DistinctBy(x => x?.OCR_Lines?.Id) // Safe DistinctBy
-                                        .Where(l => l != null) // Filter nulls post-distinct
-                                        .ToList();
-                        _logger.Verbose("Found {Count} total distinct lines (direct + child) for PartId: {PartId}", all.Count, partId);
-                  }
-                  catch (Exception ex)
-                  {
-                       _logger.Error(ex, "Error evaluating AllLines property for PartId: {PartId}", partId);
-                       all = new List<Line>(); // Return empty list on error
-                  }
-                  return all;
-             }
-        }
-        public bool WasStarted => _startlines?.Any() ?? false; // Safe check
+        public bool WasStarted => _startlines?.Any() ?? false; // Safe check - Simple property, extensive logging likely overkill
 
         private int lastLineRead = 0;
         private int _instance = 1; // Internal instance counter

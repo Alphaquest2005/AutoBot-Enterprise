@@ -11,6 +11,7 @@ using WaterNut.DataSpace; // For FileTypes enum? Check namespace
 using AutoBot; // For PDFUtils if namespace is AutoBot
 using Microsoft.Extensions.Configuration; // Added for config builder & SetBasePath
 using Serilog; // Added for logging
+using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
 
 
 namespace AutoBotUtilities.Tests
@@ -39,6 +40,7 @@ namespace AutoBotUtilities.Tests
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
                     .WriteTo.Console() // Console Sink
+                    .WriteTo.NUnit()   // Add NUnit Sink
                     .WriteTo.File(logFilePath, // File Sink
                         rollingInterval: RollingInterval.Day,
                         retainedFileCountLimit: 3,

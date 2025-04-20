@@ -103,6 +103,7 @@ public partial class Invoice
 
     private static dynamic GetValue(KeyValuePair<(Fields fields, int instance), string> f)
     {
+        string methodName = "static " + nameof(GetValue);
         // Extract details for logging, handle nulls safely
         int? fieldId = f.Key.fields?.Id;
         string fieldName = f.Key.fields?.Field ?? "UnknownField";
@@ -110,140 +111,148 @@ public partial class Invoice
         string rawValue = f.Value;
         int instance = f.Key.instance;
 
-        _logger.Verbose("Entering static GetValue for FieldId: {FieldId} ('{FieldName}'), Instance: {Instance}, DataType: {DataType}, RawValue: '{RawValue}'",
-            fieldId, fieldName, instance, dataType, rawValue);
+        _logger.Verbose("Entering {MethodName} for FieldId: {FieldId} ('{FieldName}'), Instance: {Instance}, DataType: {DataType}, RawValue: '{RawValue}'",
+            methodName, fieldId, fieldName, instance, dataType, rawValue);
+
+        dynamic result = null; // Initialize result
 
         try
         {
-            // Check fields null again just in case (though caller should prevent this)
+            // --- Input Validation ---
             if (f.Key.fields == null)
             {
-                 _logger.Warning("Static GetValue called with null fields in Key. Returning null.");
-                 return null;
+                _logger.Warning("{MethodName}: Called with null fields in Key for FieldId: {FieldId}. Returning null.", methodName, fieldId);
+                _logger.Verbose("Exiting {MethodName} for FieldId: {FieldId} (Null Fields). Returning null.", methodName, fieldId);
+                return null;
             }
-             // Check raw value null - null might be valid for some types, handle in switch
-             if (rawValue == null)
-             {
-                  _logger.Warning("Static GetValue called with null raw value for FieldId: {FieldId}. Handling based on DataType.", fieldId);
-                  // Allow switch to handle null based on type (e.g., string is ok, numeric/date might fail or return default)
-             }
+            if (rawValue == null)
+            {
+                _logger.Warning("{MethodName}: Called with null raw value for FieldId: {FieldId}. Handling based on DataType.", methodName, fieldId);
+                // Allow switch to handle null based on type
+            }
 
-
-            dynamic result = null;
+            // --- Type Conversion ---
+            _logger.Verbose("{MethodName}: Performing conversion based on DataType: {DataType}", methodName, dataType);
             switch (dataType)
             {
                 case "String":
-                    _logger.Verbose("DataType is String. Returning value (null if input was null).");
+                    _logger.Verbose("{MethodName}: DataType is String. Returning raw value.", methodName);
                     result = rawValue; // Handles null input correctly
                     break;
+
                 case "Numeric":
                 case "Number":
-                    _logger.Verbose("DataType is Numeric/Number. Attempting to parse.");
-                    if (rawValue == null) {
-                         _logger.Warning("Cannot parse null value as Numeric/Number for Field: {FieldName}. Returning 0.", fieldName);
-                         result = (double)0; // Or return null if appropriate for numeric type
-                         break;
-                    }
-                    // Clean the value more robustly
-                    var val = Regex.Replace(rawValue, @"[$\s,]", "").Trim(); // Remove $, whitespace, commas
-                    if (string.IsNullOrEmpty(val)) val = "0"; // Treat empty as 0 after cleaning
-
-                    // Use NumberStyles.Any to handle various formats like currency, decimals, signs
-                    if (double.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out double num)) // Use InvariantCulture
+                    _logger.Verbose("{MethodName}: DataType is Numeric/Number. Attempting to parse.", methodName);
+                    if (rawValue == null)
                     {
-                        _logger.Verbose("Successfully parsed as double: {Value}", num);
-                        result = num;
+                        _logger.Warning("{MethodName}: Cannot parse null value as Numeric/Number for Field: {FieldName}. Returning default 0.", methodName, fieldName);
+                        result = (double)0; // Default value
                     }
                     else
                     {
-                         string errorMsg = $"{fieldName} cannot convert to {dataType} for Value:'{rawValue}' (Cleaned:'{val}')";
-                         _logger.Error(errorMsg);
-                         // Original code threw exception, maintaining that behavior
-                         throw new ApplicationException(errorMsg);
+                        var cleanedValue = Regex.Replace(rawValue, @"[$\s,]", "").Trim(); // Remove $, whitespace, commas
+                        _logger.Verbose("{MethodName}: Cleaned numeric value: '{CleanedValue}' (from '{RawValue}')", methodName, cleanedValue, rawValue);
+                        if (string.IsNullOrEmpty(cleanedValue))
+                        {
+                            _logger.Warning("{MethodName}: Cleaned numeric value is empty for Field: {FieldName}. Returning default 0.", methodName, fieldName);
+                            cleanedValue = "0"; // Treat empty as 0 after cleaning
+                        }
+
+                        if (double.TryParse(cleanedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double num))
+                        {
+                            _logger.Verbose("{MethodName}: Successfully parsed as double: {Value}", methodName, num);
+                            result = num;
+                        }
+                        else
+                        {
+                            string errorMsg = $"{fieldName} cannot convert to {dataType} for Value:'{rawValue}' (Cleaned:'{cleanedValue}')";
+                            _logger.Error("{MethodName}: {ErrorMessage}", methodName, errorMsg);
+                            throw new ApplicationException(errorMsg); // Maintain original behavior
+                        }
                     }
                     break;
 
                 case "Date":
-                     _logger.Verbose("DataType is Date. Attempting DateTime.TryParse.");
-                     if (rawValue == null) {
-                          _logger.Warning("Cannot parse null value as Date for Field: {FieldName}. Returning DateTime.MinValue.", fieldName);
-                          result = DateTime.MinValue; // Consistent with original fallback
-                          break;
-                     }
-                    // Use InvariantCulture and allow default styles, Trim the value
-                    if (DateTime.TryParse(rawValue.Trim(), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+                    _logger.Verbose("{MethodName}: DataType is Date. Attempting DateTime.TryParse.", methodName);
+                    if (rawValue == null)
                     {
-                         _logger.Verbose("Successfully parsed as DateTime: {Value}", date);
-                         result = date;
+                        _logger.Warning("{MethodName}: Cannot parse null value as Date for Field: {FieldName}. Returning DateTime.MinValue.", methodName, fieldName);
+                        result = DateTime.MinValue; // Consistent with original fallback
                     }
                     else
                     {
-                         // Original code returned MinValue, maintaining that behavior
-                         _logger.Warning("Could not parse '{RawValue}' as standard DateTime for Field: {FieldName}. Returning DateTime.MinValue.", rawValue, fieldName);
-                         result = DateTime.MinValue;
+                        string trimmedDate = rawValue.Trim();
+                        if (DateTime.TryParse(trimmedDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+                        {
+                            _logger.Verbose("{MethodName}: Successfully parsed as DateTime: {Value}", methodName, date);
+                            result = date;
+                        }
+                        else
+                        {
+                            _logger.Warning("{MethodName}: Could not parse '{RawValue}' as standard DateTime for Field: {FieldName}. Returning DateTime.MinValue.", methodName, rawValue, fieldName);
+                            result = DateTime.MinValue; // Maintain original behavior
+                        }
                     }
                     break;
+
                 case "English Date":
-                     _logger.Verbose("DataType is English Date. Attempting DateTime.TryParseExact with multiple formats.");
-                      if (rawValue == null) {
-                          string errorMsgNull = $"{fieldName} cannot convert null value to {dataType}.";
-                          _logger.Error(errorMsgNull);
-                          throw new ApplicationException(errorMsgNull); // Throw for null on required parse
-                     }
-                     // Added more formats, including common US and ISO formats, and variations with/without leading zeros
-                     var formatStrings = new List<string>()
-                     {
-                         // Common variations of dd/MM/yyyy
+                    _logger.Verbose("{MethodName}: DataType is English Date. Attempting DateTime.TryParseExact with multiple formats.", methodName);
+                    if (rawValue == null)
+                    {
+                        string errorMsgNull = $"{fieldName} cannot convert null value to {dataType}.";
+                        _logger.Error("{MethodName}: {ErrorMessage}", methodName, errorMsgNull);
+                        throw new ApplicationException(errorMsgNull); // Maintain original behavior
+                    }
+
+                    var formatStrings = new List<string>() { /* ... formats ... */
                          "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy",
-                         // Common variations of MM/dd/yyyy (US)
                          "MM/dd/yyyy", "M/dd/yyyy", "MM/d/yyyy", "M/d/yyyy",
-                         // ISO format
                          "yyyy-MM-dd", "yyyy-M-d",
-                         // Common variations with dots
                          "dd.MM.yyyy", "d.M.yyyy",
-                         // Common variations with month names
                          "MMMM d, yyyy", "MMM d, yyyy", "MMMM d yyyy", "MMM d yyyy",
                          "d MMMM yyyy", "d MMM yyyy",
-                         // Month/Year only (if applicable)
-                         "M/yyyy", "MM/yyyy"
-                     };
-                     bool parsed = false;
-                     string trimmedValue = rawValue.Trim(); // Trim once
-                     foreach (String formatString in formatStrings)
-                     {
-                         // Use InvariantCulture for consistency
-                         if (DateTime.TryParseExact(trimmedValue, formatString, CultureInfo.InvariantCulture,
-                                 DateTimeStyles.None,
-                                 out DateTime edate))
-                         {
-                              _logger.Verbose("Successfully parsed as English Date using format '{Format}': {Value}", formatString, edate);
-                              result = edate;
-                              parsed = true;
-                              break; // Exit loop on first successful parse
-                         }
-                     }
+                         "M/yyyy", "MM/yyyy" };
+                    bool parsed = false;
+                    string trimmedValue = rawValue.Trim();
+                    _logger.Verbose("{MethodName}: Attempting to parse '{TrimmedValue}' using {FormatCount} formats.", methodName, trimmedValue, formatStrings.Count);
 
-                     if (!parsed)
-                     {
-                          string errorMsg = $"{fieldName} cannot convert to {dataType} for Value:'{rawValue}' using specified formats.";
-                          _logger.Error(errorMsg);
-                          // Original code threw exception, maintaining that behavior
-                          throw new ApplicationException(errorMsg);
-                     }
+                    foreach (String formatString in formatStrings)
+                    {
+                        if (DateTime.TryParseExact(trimmedValue, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime edate))
+                        {
+                            _logger.Verbose("{MethodName}: Successfully parsed as English Date using format '{Format}': {Value}", methodName, formatString, edate);
+                            result = edate;
+                            parsed = true;
+                            break; // Exit loop on success
+                        }
+                        else
+                        {
+                             _logger.Verbose("{MethodName}: Failed to parse using format '{Format}'.", methodName, formatString);
+                        }
+                    }
+
+                    if (!parsed)
+                    {
+                        string errorMsg = $"{fieldName} cannot convert to {dataType} for Value:'{rawValue}' using specified formats.";
+                        _logger.Error("{MethodName}: {ErrorMessage}", methodName, errorMsg);
+                        throw new ApplicationException(errorMsg); // Maintain original behavior
+                    }
                     break;
+
                 default:
-                     _logger.Warning("Unknown DataType '{DataType}' for Field: {FieldName}. Returning raw string value.", dataType, fieldName);
-                     result = rawValue;
+                    _logger.Warning("{MethodName}: Unknown DataType '{DataType}' for Field: {FieldName}. Returning raw string value.", methodName, dataType, fieldName);
+                    result = rawValue;
                     break;
             }
-             _logger.Verbose("Exiting static GetValue for FieldId: {FieldId}. Returning value: {ResultValue} (Type: {ResultType})", fieldId, result, result?.GetType().Name ?? "null");
-             return result;
+            _logger.Verbose("Exiting {MethodName} for FieldId: {FieldId}. Returning value: {ResultValue} (Type: {ResultType})", methodName, fieldId, result, result?.GetType().Name ?? "null");
+            return result;
         }
         catch (Exception e)
         {
-             // Log exception before re-throwing
-             _logger.Error(e, "Error during static GetValue conversion for FieldId: {FieldId} ('{FieldName}'), RawValue: '{RawValue}'", fieldId, fieldName, rawValue);
-             throw; // Re-throw original exception
+            // Log exception before re-throwing
+            _logger.Error(e, "{MethodName}: Unhandled exception during conversion for FieldId: {FieldId} ('{FieldName}'), RawValue: '{RawValue}'", methodName, fieldId, fieldName, rawValue);
+            _logger.Verbose("Exiting {MethodName} for FieldId: {FieldId} due to exception.", methodName, fieldId);
+            throw; // Re-throw original exception
         }
     }
 }

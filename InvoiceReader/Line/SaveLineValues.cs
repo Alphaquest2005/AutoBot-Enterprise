@@ -14,76 +14,97 @@ public partial class Line
     private void SaveLineValues(int lineNumber, string section, int instance,
         Dictionary<(Fields Fields, int Instance), string> values)
     {
+        string methodName = nameof(SaveLineValues);
         int? lineId = this.OCR_Lines?.Id; // For logging context
-        _logger.Debug("Entering SaveLineValues for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input Value Count: {ValueCount}",
-            lineId, lineNumber, section, instance, values?.Count ?? 0);
+        _logger.Verbose("Entering {MethodName} for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input Value Count: {ValueCount}",
+            methodName, lineId, lineNumber, section, instance, values?.Count ?? 0);
 
-        // Null checks
+        // --- Input Validation ---
         if (values == null || !values.Any())
         {
-             _logger.Warning("SaveLineValues called with null or empty values dictionary for LineId: {LineId}, Instance: {Instance}. Nothing to save.", lineId, instance);
-             return;
+            _logger.Warning("{MethodName}: Called with null or empty values dictionary for LineId: {LineId}, Instance: {Instance}. Nothing to save.", methodName, lineId, instance);
+            _logger.Verbose("Exiting {MethodName} for LineId: {LineId} (Null/Empty Input Values).", methodName, lineId);
+            return;
         }
-         // Ensure the main Values dictionary is initialized (should be by property initializer)
-         if (this.Values == null)
-         {
-              _logger.Error("SaveLineValues cannot proceed: Main 'Values' dictionary is null for LineId: {LineId}.", lineId);
-              // Cannot recover from this state here as Values is likely readonly after init.
-              return;
-         }
+        if (this.Values == null)
+        {
+            // This should ideally not happen if the property initializer works correctly.
+            _logger.Error("{MethodName}: Cannot proceed: Main 'Values' dictionary (this.Values) is null for LineId: {LineId}. This indicates an initialization issue.", methodName, lineId);
+            _logger.Verbose("Exiting {MethodName} for LineId: {LineId} (Null Main Values Dictionary).", methodName, lineId);
+            return;
+        }
+        _logger.Verbose("{MethodName}: Input validation passed for LineId: {LineId}.", methodName, lineId);
 
 
-        var key = (lineNumber, section);
+        var key = (lineNumber, section); // Key for the outer dictionary
         try
         {
-            // Check if key exists before adding/updating using TryGetValue for efficiency
+            // --- Check if Line/Section Key Exists ---
             if (Values.TryGetValue(key, out var existingInnerDict))
             {
-                 _logger.Verbose("Key ({LineNumber}, {Section}) already exists. Merging/Overwriting values for LineId: {LineId}, Instance: {Instance}",
-                    lineNumber, section, lineId, instance);
+                _logger.Verbose("{MethodName}: Key ({LineNumber}, {Section}) already exists. Merging/Overwriting values for LineId: {LineId}, Instance: {Instance}",
+                   methodName, lineNumber, section, lineId, instance);
 
-                 // Check if the existing inner dictionary is null (shouldn't happen if initialized correctly)
-                 if (existingInnerDict == null)
-                 {
-                      _logger.Error("Existing inner dictionary for Key ({LineNumber}, {Section}) is null! Cannot merge. Re-initializing.", lineNumber, section);
-                      existingInnerDict = new Dictionary<(Fields fields, int instance), string>();
-                      Values[key] = existingInnerDict; // Assign the new dictionary back
-                 }
+                // --- Ensure Inner Dictionary Exists ---
+                if (existingInnerDict == null)
+                {
+                    // This is unexpected if the outer dictionary contains the key. Log an error and fix.
+                    _logger.Error("{MethodName}: Existing inner dictionary for Key ({LineNumber}, {Section}) is null! This should not happen. Re-initializing.", methodName, lineNumber, section);
+                    existingInnerDict = new Dictionary<(Fields fields, int instance), string>();
+                    Values[key] = existingInnerDict; // Assign the new dictionary back
+                }
 
-                 // Merge new values with existing ones for the same line/section
-                 foreach (var kvp in values)
-                 {
-                     // The key in the input 'values' dictionary already contains the correct (Field, Instance) tuple.
-                     var valueKey = kvp.Key;
+                // --- Merge/Overwrite Values in Inner Dictionary ---
+                _logger.Verbose("{MethodName}: Merging {Count} new values into existing inner dictionary for Key ({LineNumber}, {Section})...", methodName, values.Count, lineNumber, section);
+                int mergedCount = 0;
+                int addedCount = 0;
+                foreach (var kvp in values)
+                {
+                    var valueKey = kvp.Key; // (Field, Instance) tuple
+                    string newValue = kvp.Value;
+                    int? fieldId = valueKey.Fields?.Id; // Safe access for logging
 
-                     // Use indexer for AddOrUpdate semantics
-                     if (existingInnerDict.ContainsKey(valueKey))
-                     {
-                          _logger.Warning("Duplicate Field/Instance Key ({FieldId}, {ValueInstance}) found for section Key ({LineNumber}, {Section}). Overwriting existing value '{ExistingValue}' with '{NewValue}'.",
-                             valueKey.Fields?.Id, valueKey.Instance, lineNumber, section, existingInnerDict[valueKey], kvp.Value);
-                     } else {
-                          _logger.Verbose("Adding new Field/Instance Key: ({FieldId}, {ValueInstance}) to existing section Key: ({LineNumber}, {Section})",
-                             valueKey.Fields?.Id, valueKey.Instance, lineNumber, section);
-                     }
-                     existingInnerDict[valueKey] = kvp.Value; // Add or overwrite
-                 }
-                  _logger.Debug("Finished merging values for existing Key ({LineNumber}, {Section}). Inner dictionary now has {Count} items.",
-                     lineNumber, section, existingInnerDict.Count);
+                    if (existingInnerDict.ContainsKey(valueKey))
+                    {
+                        // Log overwrite clearly
+                        _logger.Warning("{MethodName}: Duplicate Field/Instance Key ({FieldId}, {ValueInstance}) found for section Key ({LineNumber}, {Section}). Overwriting existing value '{ExistingValue}' with '{NewValue}'.",
+                           methodName, fieldId, valueKey.Instance, lineNumber, section, existingInnerDict[valueKey], newValue);
+                        existingInnerDict[valueKey] = newValue; // Overwrite
+                        mergedCount++;
+                    }
+                    else
+                    {
+                        _logger.Verbose("{MethodName}: Adding new Field/Instance Key: ({FieldId}, {ValueInstance}) with Value: '{NewValue}' to existing section Key: ({LineNumber}, {Section})",
+                           methodName, fieldId, valueKey.Instance, newValue, lineNumber, section);
+                        existingInnerDict.Add(valueKey, newValue); // Add new
+                        addedCount++;
+                    }
+                }
+                _logger.Debug("{MethodName}: Finished merging values for existing Key ({LineNumber}, {Section}). Added: {AddedCount}, Merged/Overwritten: {MergedCount}. Inner dictionary now has {TotalCount} items.",
+                   methodName, lineNumber, section, addedCount, mergedCount, existingInnerDict.Count);
             }
-            else // Key doesn't exist, add the whole inner dictionary
+            else // Key doesn't exist, add the new inner dictionary
             {
-                 _logger.Verbose("Key ({LineNumber}, {Section}) does not exist. Adding new inner dictionary with {Count} values.",
-                    lineNumber, section, values.Count);
-                 Values.Add(key, values);
+                _logger.Verbose("{MethodName}: Key ({LineNumber}, {Section}) does not exist. Adding new inner dictionary with {Count} values.",
+                   methodName, lineNumber, section, values.Count);
+                // Log the values being added for the first time
+                foreach(var kvp in values) {
+                     _logger.Verbose("{MethodName}: Adding Initial Field/Instance Key: ({FieldId}, {ValueInstance}), Value: '{NewValue}' for new section Key: ({LineNumber}, {Section})",
+                           methodName, kvp.Key.Fields?.Id, kvp.Key.Instance, kvp.Value, lineNumber, section);
+                }
+                Values.Add(key, values); // Add the dictionary passed in
             }
-             _logger.Debug("Finished SaveLineValues for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
-                lineId, lineNumber, section, instance);
+            _logger.Information("{MethodName}: Completed successfully for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
+               methodName, lineId, lineNumber, section, instance);
         }
         catch (Exception ex)
         {
-             _logger.Error(ex, "Error during SaveLineValues for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
-                lineId, lineNumber, section, instance);
-             // Decide if exception should be propagated
+            _logger.Error(ex, "{MethodName}: Unhandled exception for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
+               methodName, lineId, lineNumber, section, instance);
+            // Decide if exception should be propagated based on overall error handling strategy
+            // throw;
         }
+        _logger.Verbose("Exiting {MethodName} for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}",
+            methodName, lineId, lineNumber, section, instance);
     }
 }

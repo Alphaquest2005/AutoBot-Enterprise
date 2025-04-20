@@ -15,19 +15,6 @@ public partial class Invoice
     // private static readonly ILogger _logger = Log.ForContext<Invoice>();
 
     // Overload for string input - simply splits and calls the main Read method
-    public List<dynamic> Read(string text)
-    {
-        int? invoiceId = this.OcrInvoices?.Id;
-        _logger.Debug("Entering Read(string) for InvoiceId: {InvoiceId}. Input text length: {Length}", invoiceId, text?.Length ?? 0);
-        if (text == null)
-        {
-             _logger.Warning("Read(string) called with null text for InvoiceId: {InvoiceId}. Returning empty list structure.", invoiceId);
-             // Return expected structure but empty
-             return new List<dynamic> { new List<IDictionary<string, object>>() };
-        }
-        // Split lines and call the primary Read method
-        return Read(text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
-    }
 
     // Primary Read method accepting list of lines
     public List<dynamic> Read(List<string> text)
@@ -35,118 +22,138 @@ public partial class Invoice
         int? invoiceId = this.OcrInvoices?.Id;
         string invoiceName = this.OcrInvoices?.Name ?? "Unknown";
         int inputLineCount = text?.Count ?? 0;
-        _logger.Information("Starting Read(List<string>) for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'. Received {LineCount} lines.",
-            invoiceId, invoiceName, inputLineCount);
+        string methodName = nameof(Read) + "(List<string>)";
+        _logger.Information("Entering {MethodName} for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'. Received {LineCount} lines.",
+            methodName, invoiceId, invoiceName, inputLineCount);
 
-        // Null check input list
+        // --- Input Validation ---
         if (text == null)
         {
-             _logger.Error("Read(List<string>) called with null text list for InvoiceId: {InvoiceId}. Cannot proceed.", invoiceId);
-             // Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-             return new List<dynamic> { new List<IDictionary<string, object>>() };
+            _logger.Error("{MethodName}: Called with null text list for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.", methodName, invoiceId);
+            var emptyResult = new List<dynamic> { new List<IDictionary<string, object>>() };
+            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to null text list.", methodName, invoiceId);
+            return emptyResult;
         }
-         // Check if Parts collection is initialized
-         if (this.Parts == null)
-         {
-              _logger.Error("Invoice Parts collection is null for InvoiceId: {InvoiceId}. Cannot proceed with Read.", invoiceId);
-              // Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-              return new List<dynamic> { new List<IDictionary<string, object>>() };
-         }
+        if (this.Parts == null)
+        {
+            _logger.Error("{MethodName}: Invoice Parts collection is null for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.", methodName, invoiceId);
+            var emptyResult = new List<dynamic> { new List<IDictionary<string, object>>() };
+            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to null Parts collection.", methodName, invoiceId);
+            return emptyResult;
+        }
+        _logger.Verbose("{MethodName}: Input validation passed for InvoiceId: {InvoiceId}.", methodName, invoiceId);
 
-
+        // --- Main Processing ---
+        List<dynamic> finalResult = new List<dynamic> { new List<IDictionary<string, object>>() }; // Default empty structure
         try
         {
             var lineCount = 0;
             var section = ""; // Current section name
-            _logger.Debug("Iterating through {LineCount} input text lines...", inputLineCount);
+            _logger.Debug("{MethodName}: Starting iteration through {LineCount} input text lines for InvoiceId: {InvoiceId}...", methodName, inputLineCount, invoiceId);
+
+            // --- Line Iteration ---
             foreach (var lineText in text)
             {
                 lineCount++;
                 string previousSection = section; // Store previous section for logging change
 
                 // Determine current section based on predefined markers
-                // Use safe navigation and OrdinalIgnoreCase
-                Sections.Where(s => lineText != null && s.Value != null && lineText.Contains(s.Value, StringComparison.OrdinalIgnoreCase))
-                        .ForEach(s => section = s.Key); // Using Core.Common.Extensions.ForEach
-
-                if (section != previousSection)
+                string detectedSectionKey = Sections.FirstOrDefault(s => lineText != null && s.Value != null && lineText.Contains(s.Value, StringComparison.OrdinalIgnoreCase)).Key;
+                if (detectedSectionKey != null)
                 {
-                     _logger.Verbose("Line {LineNum}: Section changed from '{PreviousSection}' to '{CurrentSection}'. Line Text: '{LineText}'", lineCount, previousSection, section, lineText);
-                } else {
-                     _logger.Verbose("Line {LineNum}: Processing line in section '{CurrentSection}'. Line Text: '{LineText}'", lineCount, section, lineText);
+                    section = detectedSectionKey;
                 }
+                // Log section for every line
+                _logger.Verbose("{MethodName}: Line {LineNum}/{TotalLines}: Section='{CurrentSection}'. Text='{LineText}'", methodName, lineCount, inputLineCount, section, lineText);
 
 
-                // Create InvoiceLine object (assuming constructor is simple)
-                var iLine = new List<InvoiceLine>(){ new InvoiceLine(lineText, lineCount) };
+                // Create InvoiceLine object
+                var iLine = new List<InvoiceLine>() { new InvoiceLine(lineText, lineCount) };
+                _logger.Verbose("{MethodName}: Line {LineNum}: Created InvoiceLine object.", methodName, lineCount);
 
                 // Call Read on each Part
-                _logger.Verbose("Calling Part.Read for {PartCount} parts for Line {LineNum}.", this.Parts.Count, lineCount);
-                Parts.ForEach(x => { // Using Core.Common.Extensions.ForEach
-                    if (x != null) {
-                        // Part.Read should handle its own detailed logging
-                        x.Read(iLine, section);
-                    } else {
-                         _logger.Warning("Skipping null Part object during Read iteration for Line {LineNum}.", lineCount);
+                _logger.Verbose("{MethodName}: Line {LineNum}: Calling Part.Read for {PartCount} parts.", methodName, lineCount, this.Parts.Count);
+                Parts.ForEach(part => { // Using Core.Common.Extensions.ForEach
+                    if (part != null)
+                    {
+                        // Explicitly qualify Part type due to potential namespace conflicts (CS0436 warning)
+                        int? partId = ((WaterNut.DataSpace.Part)part).OCR_Part?.Id;
+                        _logger.Verbose("{MethodName}: Line {LineNum}: Calling Read() on PartId: {PartId}...", methodName, lineCount, partId);
+                        // Part.Read should handle its own detailed logging (entry/exit/logic)
+                        part.Read(iLine, section);
+                        _logger.Verbose("{MethodName}: Line {LineNum}: Finished Read() on PartId: {PartId}.", methodName, lineCount, partId);
+                    }
+                    else
+                    {
+                        _logger.Warning("{MethodName}: Line {LineNum}: Skipping null Part object during Read iteration.", methodName, lineCount);
                     }
                 });
             }
-             _logger.Debug("Finished iterating through text lines.");
+            _logger.Debug("{MethodName}: Finished iterating through {LineCount} text lines for InvoiceId: {InvoiceId}.", methodName, inputLineCount, invoiceId);
 
-            _logger.Debug("Calling AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}", invoiceId);
-            AddMissingRequiredFieldValues(); // Handles its own logging
-            _logger.Debug("Finished AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}", invoiceId);
+            // --- Post-Iteration Processing ---
+            _logger.Debug("{MethodName}: Calling AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}...", methodName, invoiceId);
+            AddMissingRequiredFieldValues(); // Assumes this method handles its own logging
+            _logger.Debug("{MethodName}: Finished AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}.", methodName, invoiceId);
 
-            // Check if any values were extracted at all using the Lines property (which has logging)
+            // Check if any values were extracted (using the Lines property which has logging)
+            _logger.Verbose("{MethodName}: Checking if any lines were extracted via Lines property access...", methodName);
             if (!Lines.Any()) // Accessing Lines property triggers its getter logic and logging
             {
-                 _logger.Warning("No values found in any lines after processing for InvoiceId: {InvoiceId}. Returning empty list structure.", invoiceId);
-                 // Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-                 return new List<dynamic> { new List<IDictionary<string, object>>() };
+                _logger.Warning("{MethodName}: No values found in any lines after processing for InvoiceId: {InvoiceId}. Returning empty list structure.", methodName, invoiceId);
+                // finalResult is already the empty structure
+                _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} because no lines were extracted.", methodName, invoiceId);
+                return finalResult;
             }
+            _logger.Verbose("{MethodName}: Lines property indicates values were extracted.", methodName);
 
-            _logger.Debug("Calling SetPartLineValues for {PartCount} top-level parts to assemble results for InvoiceId: {InvoiceId}", this.Parts.Count, invoiceId);
-            // Assemble results by calling SetPartLineValues for each top-level part
-            var ores = Parts.Select(x =>
+
+            // --- Result Assembly ---
+            _logger.Debug("{MethodName}: Calling SetPartLineValues for {PartCount} top-level parts to assemble results for InvoiceId: {InvoiceId}...", methodName, this.Parts.Count, invoiceId);
+            var ores = Parts.Select(part =>
+            {
+                if (part == null)
                 {
-                    if (x == null) {
-                         _logger.Warning("Skipping null Part during final result assembly.");
-                         return new List<IDictionary<string, object>>(); // Return empty list for null part
-                    }
-                    // Pass null for top-level calls, indicating no instance filtering yet
-                    // SetPartLineValues should handle its own logging
-                    var lst = SetPartLineValues(x, null);
-                    return lst;
+                    _logger.Warning("{MethodName}: Skipping null Part during final result assembly.", methodName);
+                    return new List<IDictionary<string, object>>(); // Return empty list for null part
                 }
-            ).ToList();
-             _logger.Debug("Finished calling SetPartLineValues for all parts.");
+                // Explicitly qualify Part type due to potential namespace conflicts (CS0436 warning)
+                int? partId = ((WaterNut.DataSpace.Part)part).OCR_Part?.Id;
+                _logger.Verbose("{MethodName}: Calling SetPartLineValues for top-level PartId: {PartId} (Instance: null)...", methodName, partId);
+                // Pass null for top-level calls, indicating no instance filtering yet
+                // SetPartLineValues should handle its own logging
+                var partResultList = SetPartLineValues(part, null);
+                _logger.Verbose("{MethodName}: Finished SetPartLineValues for PartId: {PartId}. Returned {Count} items.", methodName, partId, partResultList?.Count ?? 0);
+                return partResultList;
+            }).ToList();
+            _logger.Debug("{MethodName}: Finished calling SetPartLineValues for all {PartCount} top-level parts. Raw result list count: {OresCount}", methodName, this.Parts.Count, ores.Count);
 
             // Flatten the results from all parts safely
             var finalResultList = ores.SelectMany(x => x ?? Enumerable.Empty<IDictionary<string, object>>()) // Safe SelectMany
                                       .Where(d => d != null) // Filter out potential null dictionaries
                                       .ToList();
+            _logger.Debug("{MethodName}: Flattened results. Final instance count: {FinalCount}", methodName, finalResultList.Count);
+
 
             if (!finalResultList.Any())
             {
-                 _logger.Warning("No instances assembled after SetPartLineValues for InvoiceId: {InvoiceId}. Returning empty list structure.", invoiceId);
-                 // Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-                 // Return the expected structure but with an empty inner list
-                 return new List<dynamic> { new List<IDictionary<string, object>>() };
+                _logger.Warning("{MethodName}: No instances assembled after SetPartLineValues for InvoiceId: {InvoiceId}. Returning empty list structure.", methodName, invoiceId);
+                // finalResult is already the empty structure
+                _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} because no instances were assembled.", methodName, invoiceId);
+                return finalResult;
             }
-_logger.Information("Finished Read for InvoiceId: {InvoiceId}. Returning {InstanceCount} assembled instances.", invoiceId, finalResultList.Count);
-// Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-// It will be evaluated based on Part success when accessed.
 
-
-
-            // Return the list of instances, wrapped in List<dynamic> as expected by the caller.
-            return new List<dynamic> { finalResultList };
+            // --- Success ---
+            finalResult = new List<dynamic> { finalResultList }; // Wrap the final list
+            _logger.Information("Exiting {MethodName} successfully for InvoiceId: {InvoiceId}. Returning {InstanceCount} assembled instances.", methodName, invoiceId, finalResultList.Count);
+            return finalResult;
         }
         catch (Exception e)
         {
-             _logger.Error(e, "Error during Read(List<string>) for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'", invoiceId, invoiceName);
-             // Success property is on WaterNut.DataSpace.Invoice, not OCR.Business.Entities.Invoices
-             throw; // Re-throw original exception
+            _logger.Error(e, "{MethodName}: Unhandled exception during processing for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'.", methodName, invoiceId, invoiceName);
+            // Success property evaluation happens later based on Part success.
+            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to exception.", methodName, invoiceId);
+            throw; // Re-throw original exception to signal failure
         }
     }
 
