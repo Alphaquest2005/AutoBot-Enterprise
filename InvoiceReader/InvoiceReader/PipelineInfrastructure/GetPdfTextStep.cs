@@ -53,6 +53,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 // Append results (handles logging internally)
                 AppendPdfTextResults(context, pdftxt, ripTask, singleColumnTask, sparseTextTask);
                 _logger.Debug("Finished appending PDF text results for File: {FilePath}. Total Length: {Length}", filePath, pdftxt.Length);
+                _logger.Verbose("Extracted PDF Text (first 500 chars): {PdfText}", pdftxt.ToString().Substring(0, Math.Min(pdftxt.Length, 500))); // Log a portion of the text
 
                  _logger.Debug("Finished executing GetPdfTextStep successfully for File: {FilePath}", filePath);
                 return true; // Indicate success
@@ -68,6 +69,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  // Attempt to append any successful results before indicating failure
                  _logger.Warning("Attempting to append results from potentially successful tasks after failure for File: {FilePath}", filePath);
                  AppendPdfTextResults(context, pdftxt, ripTask, singleColumnTask, sparseTextTask, logErrors: true); // Log errors during append
+                 _logger.Verbose("Partial Extracted PDF Text after failure (first 500 chars): {PdfText}", pdftxt.ToString().Substring(0, Math.Min(pdftxt.Length, 500))); // Log a portion of the text
                  return false; // Indicate failure
             }
             catch (Exception ex) // Catch any other unexpected errors

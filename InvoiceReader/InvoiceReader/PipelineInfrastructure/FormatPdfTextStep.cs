@@ -52,6 +52,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 // Assuming Format is a synchronous method
                 context.FormattedPdfText = context.Template.Format(pdfTextString);
                 _logger.Verbose("Formatted PdfText Length: {Length}", context.FormattedPdfText?.Length ?? 0);
+                if (!string.IsNullOrEmpty(context.FormattedPdfText))
+                {
+                    _logger.Verbose("Formatted PdfText (first 500 chars): {FormattedText}", context.FormattedPdfText.Substring(0, Math.Min(context.FormattedPdfText.Length, 500))); // Log a portion of the text
+                }
+
 
                 // Log success (replaces LogFormattedPdfText)
                 _logger.Information("PDF text formatted using TemplateId: {TemplateId} for File: {FilePath}.", templateId, filePath);

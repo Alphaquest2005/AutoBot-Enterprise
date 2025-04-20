@@ -71,21 +71,33 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         })
                     .ToList();
 
-                context.PossibleInvoices = possibleInvoices;
-                _logger.Information("Found {PossibleInvoiceCount} possible invoice(s) out of {TotalTemplateCount} templates for File: {FilePath}",
-                    possibleInvoices.Count, totalTemplateCount, filePath);
+                 context.PossibleInvoices = possibleInvoices;
+                 _logger.Information("Found {PossibleInvoiceCount} possible invoice(s) out of {TotalTemplateCount} templates for File: {FilePath}",
+                     possibleInvoices.Count, totalTemplateCount, filePath);
 
-                 _logger.Debug("Finished executing GetPossibleInvoicesStep successfully for File: {FilePath}", filePath);
-                return true; // Indicate success
-            }
-            catch (Exception ex)
-            {
-                 _logger.Error(ex, "Error during GetPossibleInvoicesStep processing templates for File: {FilePath}", filePath);
-                 context.PossibleInvoices = new List<Invoice>(); // Ensure PossibleInvoices is initialized even on error
-                 return false; // Indicate failure
-            }
-        }
+                 // Log the names and IDs of the found possible invoices
+                 if (possibleInvoices.Any())
+                 {
+                     var invoiceDetails = possibleInvoices.Select(inv => new { Name = inv.OcrInvoices?.Name, Id = inv.OcrInvoices?.Id }).ToList();
+                     _logger.Information("Details of possible invoices found for File: {FilePath}: {@InvoiceDetails}", filePath, invoiceDetails);
+                 }
+                 else
+                 {
+                     _logger.Information("No possible invoices found for File: {FilePath}.", filePath);
+                 }
 
-        // Added filePath parameter for logging context
-    }
-}
+
+                  _logger.Debug("Finished executing GetPossibleInvoicesStep successfully for File: {FilePath}", filePath);
+                 return true; // Indicate success
+             }
+             catch (Exception ex)
+             {
+                  _logger.Error(ex, "Error during GetPossibleInvoicesStep processing templates for File: {FilePath}", filePath);
+                  context.PossibleInvoices = new List<Invoice>(); // Ensure PossibleInvoices is initialized even on error
+                  return false; // Indicate failure
+             }
+         }
+
+         // Added filePath parameter for logging context
+     }
+ }

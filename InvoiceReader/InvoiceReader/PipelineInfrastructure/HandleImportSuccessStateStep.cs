@@ -18,7 +18,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             string filePath = context?.FilePath ?? "Unknown";
             int? templateId = context?.Template?.OcrInvoices?.Id; // Safe access
-            _logger.Debug("Executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+            _logger.Information("Executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+            _logger.Verbose("Context details at start of HandleImportSuccessStateStep: {@Context}", context); // Log context details
 
             // Null check context first
             if (context == null)
@@ -27,12 +28,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  return false;
             }
 
-            if (IsRequiredDataMissing(context)) // Handles its own logging
+            bool requiredDataMissing = IsRequiredDataMissing(context); // Handles its own logging
+            _logger.Debug("IsRequiredDataMissing check result: {Result}", requiredDataMissing);
+            if (requiredDataMissing)
             {
                  _logger.Warning("HandleImportSuccessStateStep cannot proceed due to missing required data in context for File: {FilePath}", filePath);
                  return false; // Step fails if required data is missing
             }
 
+            bool stepResult = false; // Initialize step result
             try
             {
                 _logger.Debug("Resolving file type for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
@@ -52,6 +56,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      _logger.Error("CreateDataFile returned null. Cannot proceed with data file processing for File: {FilePath}", filePath);
                      return false;
                 }
+                _logger.Verbose("Created DataFile details: {@DataFile}", dataFile); // Log DataFile details
 
                 _logger.Information("Starting DataFileProcessor for File: {FilePath}, FileTypeId: {FileTypeId}", filePath, fileType.Id);
                 // Assuming DataFileProcessor().Process is synchronous or its async nature is handled internally
@@ -62,17 +67,23 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 _logger.Information("DataFileProcessor finished for File: {FilePath}. Success: {ProcessResult}", filePath, processResult);
 
                 // LogImportProcessingOutcome handles its own logging
-                return LogImportProcessingOutcome(processResult, filePath); // Pass context
+                stepResult = LogImportProcessingOutcome(processResult, filePath); // Pass context
             }
             catch (Exception ex)
             {
                  _logger.Error(ex, "Error during HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
-                 return false; // Indicate failure
+                 stepResult = false; // Indicate failure
             }
+            finally
+            {
+                _logger.Information("Finished executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}. Result: {Result}", filePath, templateId, stepResult);
+            }
+            return stepResult;
         }
 
         private static bool IsRequiredDataMissing(InvoiceProcessingContext context)
         {
+             _logger.Debug("Entering IsRequiredDataMissing check.");
              _logger.Verbose("Checking for missing required data in context for success state.");
              // Check each property and log which one is missing if any
              // Context null check happens in Execute
@@ -85,12 +96,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              if (string.IsNullOrEmpty(context.FilePath)) { _logger.Warning("Missing required data for success state: FilePath is null or empty."); return true; }
              if (string.IsNullOrEmpty(context.EmailId)) { _logger.Warning("Missing required data for success state: EmailId is null or empty."); return true; }
 
-             _logger.Verbose("No missing required data found in context for success state.");
+             _logger.Debug("Exiting IsRequiredDataMissing check. Result: False (No missing data).");
              return false; // All required data is present
         }
 
         private static FileTypes ResolveFileType(InvoiceProcessingContext context)
         {
+             _logger.Debug("Entering ResolveFileType.");
              // Context and Template null checks happen in caller
              int? templateId = context.Template.OcrInvoices?.Id; // Null check done by caller
              int originalFileTypeId = context.FileType.Id; // Null check done by caller
@@ -112,7 +124,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                       fileType = FileTypeManager.GetFileType(templateFileTypeId);
                       if (fileType == null)
                       {
-                           _logger.Error("FileTypeManager.Instance.GetFileType returned null for FileTypeId: {FileTypeId}. Using original context FileType.", templateFileTypeId);
+                           _logger.Error("FileTypeManager.GetFileType returned null for FileTypeId: {FileTypeId}. Using original context FileType.", templateFileTypeId);
                            fileType = context.FileType; // Fallback to original if manager fails
                       } else {
                            // Removed .Name as it doesn't exist on FileTypes
@@ -121,18 +133,20 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                   }
                   catch (Exception ex)
                   {
-                       _logger.Error(ex, "Error calling FileTypeManager.Instance.GetFileType for FileTypeId: {FileTypeId}. Using original context FileType.", templateFileTypeId);
+                       _logger.Error(ex, "Error calling FileTypeManager.GetFileType for FileTypeId: {FileTypeId}. Using original context FileType.", templateFileTypeId);
                        fileType = context.FileType; // Fallback on error
                   }
              } else {
                   _logger.Debug("Using original FileType from context (Id: {FileTypeId}).", originalFileTypeId);
              }
+             _logger.Debug("Exiting ResolveFileType. Resolved FileType Id: {FileTypeId}", fileType?.Id);
              return fileType;
         }
 
         // Added filePath for context
         private static bool LogImportProcessingOutcome(bool processResult, string filePath)
         {
+             _logger.Debug("Entering LogImportProcessingOutcome for File: {FilePath}. ProcessResult: {ProcessResult}", filePath, processResult);
              // Replace Console.WriteLine
              if (processResult)
              {
@@ -142,15 +156,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              {
                   _logger.Error("DataFileProcessor failed for File: {FilePath}.", filePath);
              }
-
+             _logger.Debug("Exiting LogImportProcessingOutcome for File: {FilePath}. Returning: {ProcessResult}", filePath, processResult);
             return processResult; // Indicate success based on the result of DataFileProcessor().Process
         }
 
         private static DataFile CreateDataFile(InvoiceProcessingContext context, FileTypes fileType)
         {
              string filePath = context?.FilePath ?? "Unknown";
-             _logger.Debug("Creating DataFile object for File: {FilePath}, FileTypeId: {FileTypeId}", filePath, fileType?.Id ?? -1);
+             _logger.Debug("Entering CreateDataFile for File: {FilePath}, FileTypeId: {FileTypeId}", filePath, fileType?.Id ?? -1);
              // Null checks for context properties used here happen in IsRequiredDataMissing
+             DataFile dataFile = null;
              try
              {
                  // Ensure DocSet is not null before accessing its properties if needed by DataFile constructor
@@ -159,17 +174,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      return null;
                  }
 
-                 var dataFile = new DataFile(fileType, context.DocSet, context.OverWriteExisting,
+                 dataFile = new DataFile(fileType, context.DocSet, context.OverWriteExisting,
                                                    context.EmailId,
                                                    context.FilePath, context.CsvLines);
                   _logger.Verbose("DataFile object created successfully for File: {FilePath}", filePath);
-                 return dataFile;
              }
              catch (Exception ex)
              {
                   _logger.Error(ex, "Error creating DataFile object for File: {FilePath}", filePath);
-                  return null;
+                  dataFile = null;
              }
+             _logger.Debug("Exiting CreateDataFile for File: {FilePath}. DataFile is null: {IsDataFileNull}", filePath, dataFile == null);
+             return dataFile;
         }
     }
 }

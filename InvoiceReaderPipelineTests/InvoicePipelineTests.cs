@@ -128,10 +128,10 @@ namespace InvoiceReaderPipelineTests
                 foreach (var fileType in fileTypes)
                 {
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
-                    _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
+                    _logger.Debug("Calling InvoiceReader.InvoiceReader.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                     // Assuming PDFUtils is static
                     await InvoiceReader.InvoiceReader.ImportPDF([new FileInfo(testFile)], fileType).ConfigureAwait(false); // Removed .Instance
-                    _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
+                    _logger.Debug("InvoiceReader.InvoiceReader.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 
                     _logger.Debug("Verifying import results in database...");
@@ -139,19 +139,22 @@ namespace InvoiceReaderPipelineTests
                     {
                         _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '114-7827932-2029910'");
                         bool invoiceExists = ctx.ShipmentInvoice.Any(x => x.InvoiceNo == "114-7827932-2029910");
+                        _logger.Verbose("ShipmentInvoice with InvoiceNo '114-7827932-2029910' exists: {Exists}", invoiceExists);
                         Assert.That(invoiceExists, Is.True, "ShipmentInvoice '114-7827932-2029910' not created.");
-                        _logger.Verbose("ShipmentInvoice found: {Exists}", invoiceExists);
+
 
                         _logger.Verbose("Checking for ShipmentInvoiceDetails count > 2 for InvoiceNo '114-7827932-2029910'");
                         int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "114-7827932-2029910");
+                        _logger.Verbose("ShipmentInvoiceDetails count for InvoiceNo '114-7827932-2029910': {Count}", detailCount);
                         Assert.That(detailCount > 2, Is.True, $"Expected > 2 ShipmentInvoiceDetails, but found {detailCount}.");
-                        _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
+
 
                         _logger.Information("Import successful for FileType {FileTypeId}. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
                            fileType.Id, ctx.ShipmentInvoice.Count(), ctx.ShipmentInvoiceDetails.Count());
                     }
                 }
 
+                _logger.Information("CanImportAmazonMultiSectionInvoice_WithLogging test completed successfully.");
                 Assert.That(true);
             }
             catch (Exception e)
