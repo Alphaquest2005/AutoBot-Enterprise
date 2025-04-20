@@ -108,6 +108,7 @@
     <!-- Added Serilog Enrichers -->
     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.NUnit" Version="1.0.3" />
     <!-- End Added Enrichers -->
     <PackageReference Include="System.Text.Json" Version="9.0.4" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />

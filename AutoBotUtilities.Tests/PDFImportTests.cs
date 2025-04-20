@@ -40,7 +40,7 @@ namespace AutoBotUtilities.Tests
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
                     .WriteTo.Console() // Console Sink
-                    .WriteTo.NUnit()   // Add NUnit Sink
+                   // .WriteTo.NUnit()   // Add NUnit Sink
                     .WriteTo.File(logFilePath, // File Sink
                         rollingInterval: RollingInterval.Day,
                         retainedFileCountLimit: 3,
@@ -170,76 +170,7 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-        // New test based on CanImportAmazonMultiSectionInvoice
-        [Test]
-        public async Task CanImportAmazonMultiSectionInvoice_WithLogging()
-        {
-             _logger.Information("Starting CanImportAmazonMultiSectionInvoice_WithLogging test.");
-            try
-            {
-                var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
-                 _logger.Information("Test File: {FilePath}", testFile);
-
-                if (!File.Exists(testFile))
-                {
-                     _logger.Warning("Test file not found: {FilePath}. Skipping test.", testFile);
-                     Assert.Warn($"Test file not found: {testFile}");
-                     return;
-                }
-
-                 _logger.Debug("Getting importable file types for PDF.");
-                 // Assuming FileTypeManager is static
-                 var fileTypes = FileTypeManager // Removed .Instance
-                     .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
-                     .OfType<CoreEntities.Business.Entities.FileTypes>() // Ensure correct type
-                     .Where(x => x.Description == "Unknown")
-                     .ToList();
-                 _logger.Debug("Found {Count} 'Unknown' PDF file types.", fileTypes.Count);
-
-                if (!fileTypes.Any())
-                {
-                     _logger.Warning("No suitable 'Unknown' PDF FileType found for: {FilePath}. Skipping test.", testFile);
-                     Assert.Warn($"No suitable PDF FileType found for: {testFile}");
-                     return;
-                }
-
-                foreach (var fileType in fileTypes)
-                {
-                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
-                     _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
-                     // Assuming PDFUtils is static
-                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
-                     _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
-
-
-                     _logger.Debug("Verifying import results in database...");
-                     using (var ctx = new EntryDataDSContext())
-                     {
-                          _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '114-7827932-2029910'");
-                          bool invoiceExists = ctx.ShipmentInvoice.Any(x => x.InvoiceNo == "114-7827932-2029910");
-                          Assert.That(invoiceExists, Is.True, "ShipmentInvoice '114-7827932-2029910' not created.");
-                          _logger.Verbose("ShipmentInvoice found: {Exists}", invoiceExists);
-
-                          _logger.Verbose("Checking for ShipmentInvoiceDetails count > 2 for InvoiceNo '114-7827932-2029910'");
-                          int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "114-7827932-2029910");
-                          Assert.That(detailCount > 2, Is.True, $"Expected > 2 ShipmentInvoiceDetails, but found {detailCount}.");
-                          _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
-
-                          _logger.Information("Import successful for FileType {FileTypeId}. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
-                             fileType.Id, ctx.ShipmentInvoice.Count(), ctx.ShipmentInvoiceDetails.Count());
-                     }
-                }
-
-                Assert.That(true);
-            }
-            catch (Exception e)
-            {
-                 _logger.Error(e, "ERROR in CanImportAmazonMultiSectionInvoice_WithLogging");
-                 Assert.Fail($"Test failed with exception: {e.Message}");
-            }
-             _logger.Information("Finished CanImportAmazonMultiSectionInvoice_WithLogging test.");
-        }
-
+       
 
         [Test]
         public async Task CanImportSheinMultiInvoice()
