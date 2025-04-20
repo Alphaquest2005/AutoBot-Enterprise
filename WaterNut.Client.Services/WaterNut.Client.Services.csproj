@@ -22,7 +22,7 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;win</RuntimeIdentifiers>
     <!-- Added RuntimeIdentifier -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

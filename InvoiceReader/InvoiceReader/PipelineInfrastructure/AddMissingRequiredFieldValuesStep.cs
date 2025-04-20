@@ -1,32 +1,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreEntities.Business.Entities;
-using OCR.Business.Entities;
-using WaterNut.Business.Services.Utils;
-using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using System.Threading.Tasks;
-using System.Text;
-using DocumentDS.Business.Entities;
-using System.IO;
-using WaterNut.DataSpace;
+using CoreEntities.Business.Entities; // Assuming Invoice and related entities are here
+using OCR.Business.Entities; // Assuming OCR_Lines and Fields are here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    public partial class ProcessInvoiceTemplateStep : IPipelineStep<InvoiceProcessingContext>
+    public class AddMissingRequiredFieldValuesStep : IPipelineStep<InvoiceProcessingContext>
     {
-        private static void AddMissingRequiredFieldValues(WaterNut.DataSpace.Invoice tmp, List<dynamic> csvLines)
+        public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            var requiredFieldsList = tmp.Lines.SelectMany(x => x.OCR_Lines.Fields)
+            if (context.Template == null || context.CsvLines == null)
+            {
+                // Required data is missing
+                return false;
+            }
+
+            // Logic from the original AddMissingRequiredFieldValues method
+            var requiredFieldsList = context.Template.Lines.SelectMany(x => x.OCR_Lines.Fields)
                 .Where(z => z.IsRequired && !string.IsNullOrEmpty(z.FieldValue?.Value)).ToList();
             foreach (var field in requiredFieldsList)
             {
-                foreach (var doc in ((List<IDictionary<string, object>>)csvLines.First()).Where(doc =>
+                foreach (var doc in ((List<IDictionary<string, object>>)context.CsvLines.First()).Where(doc =>
                              !doc.Keys.Contains(field.Field)))
                 {
                     doc.Add(field.Field, field.FieldValue.Value);
                 }
             }
+
+            System.Console.WriteLine(
+                $"[OCR DEBUG] Pipeline Step: Added missing required field values.");
+
+            return true; // Indicate success
         }
     }
 }

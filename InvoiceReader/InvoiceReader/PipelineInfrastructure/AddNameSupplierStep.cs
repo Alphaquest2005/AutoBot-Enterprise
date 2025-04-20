@@ -1,28 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using CoreEntities.Business.Entities;
-using OCR.Business.Entities;
-using WaterNut.Business.Services.Utils;
-using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using System.Threading.Tasks;
-using System.Text;
-using DocumentDS.Business.Entities;
-using System.IO;
-using WaterNut.DataSpace;
+using System.Collections.Generic;
+using CoreEntities.Business.Entities; // Assuming Invoice is defined here
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    public partial class ProcessInvoiceTemplateStep : IPipelineStep<InvoiceProcessingContext>
+    public class AddNameSupplierStep : IPipelineStep<InvoiceProcessingContext>
     {
-        private static void AddNameSupplier(WaterNut.DataSpace.Invoice tmp, List<dynamic> csvLines)
+        public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            if (csvLines.Count == 1 && !tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
-                foreach (var doc in ((List<IDictionary<string, object>>)csvLines.First()))
+            if (context.Template == null || context.CsvLines == null)
+            {
+                // Required data is missing
+                return false;
+            }
+
+            // The original AddNameSupplier method logic is implemented here
+            if(context.CsvLines.Count == 1 && !context.Template.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
+                foreach (var doc in ((List<IDictionary<string, object>>) context.CsvLines.First()))
                 {
-                    if (!doc.Keys.Contains("SupplierCode")) doc.Add("SupplierCode", tmp.OcrInvoices.Name);
-                    if (!doc.Keys.Contains("Name")) doc.Add("Name", tmp.OcrInvoices.Name);
+                    if (!doc.Keys.Contains("SupplierCode")) doc.Add("SupplierCode", context.Template.OcrInvoices.Name);
+                    if (!doc.Keys.Contains("Name")) doc.Add("Name", context.Template.OcrInvoices.Name);
                 }
+
+             System.Console.WriteLine(
+                $"[OCR DEBUG] Pipeline Step: Added Name and Supplier information.");
+
+
+            return true; // Indicate success
         }
     }
 }

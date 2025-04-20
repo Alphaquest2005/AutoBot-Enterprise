@@ -22,7 +22,7 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers> <!-- Added RuntimeIdentifier -->
+    <RuntimeIdentifiers>win-x64;win</RuntimeIdentifiers> <!-- Added RuntimeIdentifier -->
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
