@@ -9,16 +9,25 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Assuming _template is available in the context or passed in somehow
             // For now, I will assume it's available in the context for simplicity
             // A more robust solution might involve passing it in the constructor or a dedicated property
-            if (context.Template == null)
+            if (context.Template != null)
+            {
+                context.FormattedPdfText = context.Template.Format(context.PdfText.ToString());
+
+                return LogFormattedPdfText(context);
+            }
+            else
             {
                 // Handle the case where the template is not available
                 // This might involve logging an error or returning false
                 return false;
             }
+            
+        }
 
-            context.FormattedPdfText = context.Template.Format(context.PdfText.ToString());
+        private static bool LogFormattedPdfText(InvoiceProcessingContext context)
+        {
             Console.WriteLine(
-                $"[OCR DEBUG] Pipeline Step: PDF text formatted using template {context.Template.OcrInvoices.Id}.");
+                            $"[OCR DEBUG] Pipeline Step: PDF text formatted using template {context.Template.OcrInvoices.Id}.");
 
             return true; // Indicate success
         }

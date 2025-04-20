@@ -13,6 +13,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             var possibleInvoicesList = context.PossibleInvoices.ToList();
 
+            await ProcessInvoiceTemplatesAsync(context, possibleInvoicesList).ConfigureAwait(false);
+
+            return LogInvoiceProcessingCompletion();
+        }
+
+        private static bool LogInvoiceProcessingCompletion()
+        {
+            Console.WriteLine(
+                $"[OCR DEBUG] Pipeline Step: Finished processing all possible invoices.");
+
+            return true; // Indicate that this step completed its iteration
+        }
+
+        private static async Task ProcessInvoiceTemplatesAsync(InvoiceProcessingContext context, List<Invoice> possibleInvoicesList)
+        {
             for (int i = 0; i < possibleInvoicesList.Count; i++)
             {
                 var template = possibleInvoicesList[i];
@@ -45,11 +60,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 // The result of the sub-pipeline (success or failure for this template)
                 // is reflected in templateContext.ImportStatus and added to context.Imports
             }
-
-            Console.WriteLine(
-                $"[OCR DEBUG] Pipeline Step: Finished processing all possible invoices.");
-
-            return true; // Indicate that this step completed its iteration
         }
     }
 }

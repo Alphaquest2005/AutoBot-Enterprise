@@ -13,6 +13,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             Console.WriteLine($"[OCR DEBUG] Pipeline Step: Getting templates.");
 
+            // Need to convert List<Invoice> to IEnumerable<OcrInvoices> if necessary
+            // Assuming Invoice and OcrInvoices are compatible or a mapping is needed.
+            // For now, assuming direct assignment is possible or will be handled later.
+            context.Templates = await GetInvoiceTemplatesAsync().ConfigureAwait(false);; // Assuming casting is possible
+
+            return true; // Indicate success
+        }
+
+        private static async Task<List<Invoice>> GetInvoiceTemplatesAsync()
+        {
             List<Invoice> templates;
             using (var ctx = new OCRContext()) // Assuming OCRContext is accessible
             {
@@ -37,19 +47,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     .Where(x => x.IsActive)
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) // Assuming BaseDataModel is accessible
-                    // .Where(filter) // Need to determine how to handle the filter in the pipeline context
+                                                                                                         // .Where(filter) // Need to determine how to handle the filter in the pipeline context
                     .ToListAsync() // Changed to ToListAsync for async execution
                     .ConfigureAwait(false);
 
                 templates = ocrInvoices.Select(x => new Invoice(x)).ToList(); // Added conversion to Invoice
             }
 
-            // Need to convert List<Invoice> to IEnumerable<OcrInvoices> if necessary
-            // Assuming Invoice and OcrInvoices are compatible or a mapping is needed.
-            // For now, assuming direct assignment is possible or will be handled later.
-            context.Templates = templates; // Assuming casting is possible
-
-            return true; // Indicate success
+            return templates;
         }
     }
 }

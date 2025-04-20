@@ -9,6 +9,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         private static List<AsycudaDocumentSet_Attachments> GetDocSetAttachments(string file, AsycudaDocumentSet docSet)
         {
+            return GetAttachmentsByFilePath(file, docSet);
+        }
+
+        private static List<AsycudaDocumentSet_Attachments> GetAttachmentsByFilePath(string file, AsycudaDocumentSet docSet)
+        {
             using (var ctx = new CoreEntitiesContext())
             {
                 var docSetAttachments = ctx.AsycudaDocumentSet_Attachments

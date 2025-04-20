@@ -17,36 +17,26 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> RunPipeline()
         {
-            // Initial steps: Format and Read
-            var initialSteps = new List<IPipelineStep<InvoiceProcessingContext>>
-            {
-                new FormatPdfTextStep(),
-                new ReadFormattedTextStep()
-            };
+            List<IPipelineStep<InvoiceProcessingContext>> initialSteps = InitializePipelineSteps();
 
-            var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps);
-            bool initialRunSuccess = await initialRunner.Run(_context).ConfigureAwait(false);
+            bool initialRunSuccess = await RunInitialPipelineSteps(initialSteps).ConfigureAwait(false);
 
-            if (!initialRunSuccess || _context.CsvLines == null || _context.CsvLines.Count < 1 || _context.Template.Success == false)
+            if (IsInitialRunUnsuccessful(initialRunSuccess))
             {
-                Console.WriteLine(
-                    $"[OCR DEBUG] Pipeline: Initial steps failed or read returned no lines or template success is false. Entering Error State Pipeline.");
-                // Error handling pipeline
-                var errorSteps = new List<IPipelineStep<InvoiceProcessingContext>>
-                {
-                    new HandleErrorStateStep(_isLastTemplate),
-                    new UpdateImportStatusStep() // Update status after error handling
-                };
-                var errorRunner = new PipelineRunner<InvoiceProcessingContext>(errorSteps);
-                await errorRunner.Run(_context).ConfigureAwait(false);
-                return _context.ImportStatus != ImportStatus.Failed; // Continue if not completely failed
+                return await ProcessErrorPipeline().ConfigureAwait(false);
             }
             else
             {
-                Console.WriteLine(
-                    $"[OCR DEBUG] Pipeline: Initial steps successful. Proceeding with Success State Pipeline.");
-                // Success handling pipeline
-                var successSteps = new List<IPipelineStep<InvoiceProcessingContext>>
+                return await ProcessSuccessfulSteps().ConfigureAwait(false);
+            }
+        }
+
+        private async Task<bool> ProcessSuccessfulSteps()
+        {
+            Console.WriteLine(
+                                $"[OCR DEBUG] Pipeline: Initial steps successful. Proceeding with Success State Pipeline.");
+            // Success handling pipeline
+            var successSteps = new List<IPipelineStep<InvoiceProcessingContext>>
                 {
                     new AddNameSupplierStep(),
                     new AddMissingRequiredFieldValuesStep(),
@@ -54,10 +44,46 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     new HandleImportSuccessStateStep(),
                     new UpdateImportStatusStep() // Update status after success handling
                 };
-                var successRunner = new PipelineRunner<InvoiceProcessingContext>(successSteps);
-                await successRunner.Run(_context).ConfigureAwait(false);
-                return _context.ImportStatus == ImportStatus.Success || _context.ImportStatus == ImportStatus.HasErrors; // Indicate success if not completely failed
-            }
+            var successRunner = new PipelineRunner<InvoiceProcessingContext>(successSteps);
+            await successRunner.Run(_context).ConfigureAwait(false);
+            return _context.ImportStatus == ImportStatus.Success || _context.ImportStatus == ImportStatus.HasErrors; // Indicate success if not completely failed
+        }
+
+        private async Task<bool> ProcessErrorPipeline()
+        {
+            Console.WriteLine(
+                $"[OCR DEBUG] Pipeline: Initial steps failed or read returned no lines or template success is false. Entering Error State Pipeline.");
+            // Error handling pipeline
+            var errorSteps = new List<IPipelineStep<InvoiceProcessingContext>>
+                {
+                    new HandleErrorStateStep(_isLastTemplate),
+                    new UpdateImportStatusStep() // Update status after error handling
+                };
+            var errorRunner = new PipelineRunner<InvoiceProcessingContext>(errorSteps);
+            await errorRunner.Run(_context).ConfigureAwait(false);
+            return _context.ImportStatus != ImportStatus.Failed; // Continue if not completely failed
+        }
+
+        private bool IsInitialRunUnsuccessful(bool initialRunSuccess)
+        {
+            return !initialRunSuccess || _context.CsvLines == null || _context.CsvLines.Count < 1 || _context.Template.Success == false;
+        }
+
+        private async Task<bool> RunInitialPipelineSteps(List<IPipelineStep<InvoiceProcessingContext>> initialSteps)
+        {
+            var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps);
+            bool initialRunSuccess = await initialRunner.Run(_context).ConfigureAwait(false);
+            return initialRunSuccess;
+        }
+
+        private static List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineSteps()
+        {
+            // Initial steps: Format and Read
+            return new List<IPipelineStep<InvoiceProcessingContext>>
+            {
+                new FormatPdfTextStep(),
+                new ReadFormattedTextStep()
+            };
         }
     }
 }

@@ -8,17 +8,42 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            if (context.Template == null || string.IsNullOrEmpty(context.FilePath) || context.Imports == null /*|| context.ImportStatus == null*/) // Need to figure out how ImportStatus is passed
+            if (!IsImportDataValid(context)) // Need to figure out how ImportStatus is passed
             {
-                // Required data is missing
-                return false;
+                var importStatus = ProcessImportFile(context);
+                return LogImportStatusUpdate(importStatus);
             }
+            else
+            {
+                // Handle the case where required data is missing
+                // This might involve logging an error or returning false
+                Console.WriteLine(
+                    $"[OCR DEBUG] Pipeline Step: Required data is missing for import status update.");
+                     // Required data is missing
+                return false;
+            }          
+        }
 
-            // Assuming ImportStatus is available in the context based on previous steps
-            ImportStatus importStatus = context.ImportStatus; // This property needs to be added to the context
+        private static bool IsImportDataValid(InvoiceProcessingContext context)
+        {
+            return context.Template == null || string.IsNullOrEmpty(context.FilePath) || context.Imports == null /*|| context.ImportStatus == null*/;
+        }
+
+        private static bool LogImportStatusUpdate(ImportStatus importStatus)
+        {
+            Console.WriteLine(
+                $"[OCR DEBUG] Pipeline Step: Updated import status to {importStatus}.");
+
+            // This step always succeeds in updating the status if it reaches here
+            return true;
+        }
+
+        private static ImportStatus ProcessImportFile(InvoiceProcessingContext context)
+        {
 
             var fileDescription = FileTypeManager.GetFileType(context.Template.OcrInvoices.FileTypeId).Description;
-
+            // Assuming ImportStatus is available in the context based on previous steps
+            ImportStatus importStatus = context.ImportStatus; // This property needs to be added to the context
             switch (importStatus)
             {
                 case ImportStatus.Success:
@@ -37,11 +62,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     break;
             }
 
-            Console.WriteLine(
-                $"[OCR DEBUG] Pipeline Step: Updated import status to {importStatus}.");
-
-            // This step always succeeds in updating the status if it reaches here
-            return true;
+            return importStatus;
         }
     }
 }

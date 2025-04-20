@@ -14,39 +14,65 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
             Console.WriteLine($"[OCR DEBUG] Pipeline Step: Getting PDF text for file '{context.FilePath}'");
-            
+
             StringBuilder pdftxt = new StringBuilder();
 
-            var ripTask = Task.Run(() =>
+            Task<string> ripTask, singleColumnTask, sparseTextTask;
+            SetupPdfTextExtraction(context, out ripTask, out singleColumnTask, out sparseTextTask);
+
+            await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false);
+
+            AppendPdfTextResults(context, pdftxt, ripTask, singleColumnTask, sparseTextTask);
+
+            return true; // Indicate success
+        }
+
+        private static void SetupPdfTextExtraction(InvoiceProcessingContext context, out Task<string> ripTask, out Task<string> singleColumnTask, out Task<string> sparseTextTask)
+        {
+            ripTask = GetRippedTextAsync(context);
+            singleColumnTask = GetSingleColumnPdfText(context);
+            sparseTextTask = GetPdfSparseTextAsync(context);
+        }
+
+        private static void AppendPdfTextResults(InvoiceProcessingContext context, StringBuilder pdftxt, Task<string> ripTask, Task<string> singleColumnTask, Task<string> sparseTextTask)
+        {
+            pdftxt.AppendLine(singleColumnTask.Result);
+            pdftxt.AppendLine(sparseTextTask.Result);
+            pdftxt.AppendLine(ripTask.Result);
+
+            context.PdfText = pdftxt;
+        }
+
+        private static Task<string> GetPdfSparseTextAsync(InvoiceProcessingContext context)
+        {
+            return Task.Run(() =>
             {
-                var txt = "------------------------------------------Ripped Text-------------------------\r\n";
-                txt += PdfPigText(context.FilePath); // Now PdfPigText is in this class
+                var txt = "------------------------------------------SparseText-------------------------\r\n";
+                txt += new PdfOcr().Ocr(context.FilePath, PageSegMode.SparseText);
                 return txt;
             });
+        }
 
-            var singleColumnTask = Task.Run(() =>
+        private static Task<string> GetSingleColumnPdfText(InvoiceProcessingContext context)
+        {
+            return Task.Run(() =>
             {
                 var txt =
                     "------------------------------------------Single Column-------------------------\r\n";
                 txt += new PdfOcr().Ocr(context.FilePath, PageSegMode.SingleColumn);
                 return txt;
             });
+        }
 
-            var sparseTextTask = Task.Run(() =>
+        private static Task<string> GetRippedTextAsync(InvoiceProcessingContext context)
+        {
+            var ripTask = Task.Run(() =>
             {
-                var txt = "------------------------------------------SparseText-------------------------\r\n";
-                txt += new PdfOcr().Ocr(context.FilePath, PageSegMode.SparseText);
+                var txt = "------------------------------------------Ripped Text-------------------------\r\n";
+                txt += PdfPigText(context.FilePath); // Now PdfPigText is in this class
                 return txt;
             });
-
-            await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false);
-
-            pdftxt.AppendLine(singleColumnTask.Result);
-            pdftxt.AppendLine(sparseTextTask.Result);
-            pdftxt.AppendLine(ripTask.Result);
-
-            context.PdfText = pdftxt;
-            return true; // Indicate success
+            return ripTask;
         }
 
         private static string PdfPigText(string file)

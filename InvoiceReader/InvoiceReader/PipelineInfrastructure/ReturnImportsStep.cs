@@ -6,8 +6,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            Console.WriteLine(
-                $"[OCR DEBUG] Pipeline Step: Finalizing import process.");
+            Console.WriteLine($"[OCR DEBUG] Pipeline Step: Finalizing import process.");
 
             // Determine overall success based on the ImportStatus of processed files
             bool overallSuccess = context.Imports != null &&
