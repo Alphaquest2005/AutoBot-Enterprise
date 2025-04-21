@@ -45,6 +45,29 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 _logger.Debug("Starting data extraction using template for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
+                // Log the FormattedPdfText
+                _logger.Verbose("FormattedPdfText:\n{FormattedPdfText}", context.FormattedPdfText);
+
+                // Log regex patterns for lines in the template
+                if (context.Template?.OcrInvoices?.Parts != null)
+                {
+                    _logger.Verbose("Template Regex Patterns:");
+                    foreach (var part in context.Template.OcrInvoices.Parts)
+                    {
+                        if (part.Lines != null)
+                        {
+                            foreach (var line in part.Lines)
+                            {
+                                if (line.RegularExpressions != null)
+                                {
+                                    _logger.Verbose("  PartId: {PartId}, Line: {LineName}, Regex: {RegexPattern}",
+                                        part.Id, line.Name ?? "Unknown", line.RegularExpressions.RegEx);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // 1. Split the input text into lines
                 var textLines = context.FormattedPdfText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
                 _logger.Verbose("Split FormattedPdfText into {LineCount} lines.", textLines.Count);

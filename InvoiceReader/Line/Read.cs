@@ -20,7 +20,9 @@ namespace WaterNut.DataSpace
             string lineName = this.OCR_Lines?.Name ?? "Unknown";
             _logger.Verbose(
                 "Entering {MethodName} for LineId: {LineId}, Name: '{LineName}', LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input line length: {Length}. Input line content (first 100 chars): '{LineContent}'",
-                methodName, lineId, lineName, lineNumber, section, instance, line?.Length ?? 0, line?.Substring(0, Math.Min(line.Length, 100)) ?? "");
+                methodName, lineId, lineName, lineNumber, section, instance, line?.Length ?? 0, line != null ? line.Substring(0, Math.Min(line.Length, 100)) : "null");
+
+            _logger.Verbose("{MethodName}: LineId: {LineId} - Checking if OCR_Lines is null.", methodName, lineId);
 
             // --- Input Validation ---
             _logger.Verbose("{MethodName}: LineId: {LineId} - Starting input validation.", methodName, lineId);
@@ -32,6 +34,7 @@ namespace WaterNut.DataSpace
                 return false;
             }
 
+            _logger.Verbose("{MethodName}: LineId: {LineId} - Checking if RegularExpressions is null.", methodName, lineId);
             if (this.OCR_Lines?.RegularExpressions == null)
             {
                 _logger.Warning(
@@ -41,6 +44,8 @@ namespace WaterNut.DataSpace
                     methodName, lineId);
                 return false;
             }
+
+            _logger.Verbose("{MethodName}: LineId: {LineId} - Checking if pattern is null or empty.", methodName, lineId);
 
             string pattern = this.OCR_Lines.RegularExpressions.RegEx;
             if (string.IsNullOrEmpty(pattern))
@@ -64,32 +69,33 @@ namespace WaterNut.DataSpace
                                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
                 _logger.Verbose(
-                    "{MethodName}: Attempting Regex.Matches for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}",
+                    "{MethodName}: Attempting Regex.Match for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}",
                     methodName, lineId, pattern, options);
-                MatchCollection matches = Regex.Matches(line, pattern, options, RegexTimeout); // Use defined timeout
-                _logger.Debug("{MethodName}: Regex.Matches found {MatchCount} matches for LineId: {LineId}", methodName,
-                    matches.Count, lineId);
+                Match match = Regex.Match(line, pattern, options, RegexTimeout); // Use defined timeout, get single match
+                _logger.Debug("{MethodName}: Regex.Match result for LineId: {LineId}: {MatchSuccess}", methodName,
+                    lineId, match.Success);
 
-                if (matches.Count == 0)
+                if (!match.Success)
                 {
-                    _logger.Verbose("{MethodName}: No regex matches found for LineId: {LineId}. Returning false.",
+                    _logger.Verbose("{MethodName}: No regex match found for LineId: {LineId}. Returning false.",
                         methodName, lineId);
-                    _logger.Verbose("Exiting {MethodName} for LineId: {LineId} (No Matches). Returning false.",
+                    _logger.Verbose("Exiting {MethodName} for LineId: {LineId} (No Match). Returning false.",
                         methodName, lineId);
-                    return false; // No matches, nothing to process
+                    return false; // No match, nothing to process
                 }
 
-                // Log details of each match
-                for (int i = 0; i < matches.Count; i++)
+                // Log details of the single match and its groups
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Match found: '{MatchValue}' at position {MatchPosition}",
+                    methodName, lineId, match.Value, match.Index);
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Captured Groups:", methodName, lineId);
+                foreach (Group group in match.Groups)
                 {
-                    _logger.Verbose("{MethodName}: LineId: {LineId} - Match {MatchIndex}: '{MatchValue}' at position {MatchPosition}",
-                        methodName, lineId, i, matches[i].Value, matches[i].Index);
-                    // Optionally log group details if needed for debugging specific patterns
-                    // foreach (Group group in matches[i].Groups)
-                    // {
-                    //     _logger.Verbose("{MethodName}: LineId: {LineId} - Match {MatchIndex} - Group '{GroupName}': '{GroupValue}'",
-                    //         methodName, lineId, i, group.Name, group.Value);
-                    // }
+                    // Only log named groups or the whole match if no named groups
+                    if (group.Name != "0") // Group "0" is the whole match
+                    {
+                         _logger.Verbose("{MethodName}: LineId: {LineId} - Group '{GroupName}': '{GroupValue}' (Success: {GroupSuccess})",
+                             methodName, lineId, group.Name, group.Value, group.Success);
+                    }
                 }
                 _logger.Verbose("{MethodName}: LineId: {LineId} - Finished Regex Matching.", methodName, lineId);
 
@@ -97,10 +103,10 @@ namespace WaterNut.DataSpace
                 _logger.Verbose("{MethodName}: LineId: {LineId} - Starting Value Formatting.", methodName, lineId);
                 var values = new Dictionary<(Fields Fields, int Instance), string>();
                 _logger.Verbose(
-                    "{MethodName}: Calling FormatValues for LineId: {LineId}, Instance: {Instance} with {MatchCount} matches...",
-                    methodName, lineId, instance, matches.Count);
+                    "{MethodName}: Calling FormatValues for LineId: {LineId}, Instance: {Instance} with single match...",
+                    methodName, lineId, instance);
                 // FormatValues should handle its own logging
-                FormatValues(instance, matches, values);
+                FormatValues(instance, match, values); // Pass the single match
                 _logger.Debug(
                     "{MethodName}: Finished FormatValues for LineId: {LineId}, Instance: {Instance}. Extracted {ValueCount} values.",
                     methodName, lineId, instance, values.Count);
@@ -136,7 +142,7 @@ namespace WaterNut.DataSpace
 
                 _logger.Information(
                     "{MethodName}: Completed successfully for LineId: {LineId}, Instance: {Instance}. Found {MatchCount} matches and processed {ValueCount} values.",
-                    methodName, lineId, instance, matches.Count, values.Count);
+                    methodName, lineId, instance, match.Success ? 1 : 0, values.Count); // Use match.Success ? 1 : 0
                 success = true; // Mark as successful
             }
             catch (RegexMatchTimeoutException timeoutEx)
