@@ -17,11 +17,13 @@ namespace WaterNut.DataSpace
         {
             string methodName = nameof(Read);
             int? lineId = this.OCR_Lines?.Id;
+            string lineName = this.OCR_Lines?.Name ?? "Unknown";
             _logger.Verbose(
-                "Entering {MethodName} for LineId: {LineId}, LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input line length: {Length}",
-                methodName, lineId, lineNumber, section, instance, line?.Length ?? 0);
+                "Entering {MethodName} for LineId: {LineId}, Name: '{LineName}', LineNumber: {LineNumber}, Section: '{Section}', Instance: {Instance}. Input line length: {Length}. Input line content (first 100 chars): '{LineContent}'",
+                methodName, lineId, lineName, lineNumber, section, instance, line?.Length ?? 0, line?.Substring(0, Math.Min(line.Length, 100)) ?? "");
 
             // --- Input Validation ---
+            _logger.Verbose("{MethodName}: LineId: {LineId} - Starting input validation.", methodName, lineId);
             if (line == null)
             {
                 _logger.Warning("{MethodName}: Called with null line text for LineId: {LineId}. Returning false.",
@@ -50,12 +52,13 @@ namespace WaterNut.DataSpace
                 return false;
             }
 
-            _logger.Verbose("{MethodName}: Input validation passed for LineId: {LineId}.", methodName, lineId);
+            _logger.Verbose("{MethodName}: Input validation passed for LineId: {LineId}. Pattern: '{Pattern}'", methodName, lineId, pattern);
 
             bool success = false; // Default to false
             try
             {
                 // --- Regex Matching ---
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Starting Regex Matching.", methodName, lineId);
                 bool isMultiLine = this.OCR_Lines.RegularExpressions.MultiLine ?? false;
                 RegexOptions options = (isMultiLine ? RegexOptions.Multiline : RegexOptions.Singleline) |
                                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
@@ -76,7 +79,22 @@ namespace WaterNut.DataSpace
                     return false; // No matches, nothing to process
                 }
 
+                // Log details of each match
+                for (int i = 0; i < matches.Count; i++)
+                {
+                    _logger.Verbose("{MethodName}: LineId: {LineId} - Match {MatchIndex}: '{MatchValue}' at position {MatchPosition}",
+                        methodName, lineId, i, matches[i].Value, matches[i].Index);
+                    // Optionally log group details if needed for debugging specific patterns
+                    // foreach (Group group in matches[i].Groups)
+                    // {
+                    //     _logger.Verbose("{MethodName}: LineId: {LineId} - Match {MatchIndex} - Group '{GroupName}': '{GroupValue}'",
+                    //         methodName, lineId, i, group.Name, group.Value);
+                    // }
+                }
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Finished Regex Matching.", methodName, lineId);
+
                 // --- Value Formatting ---
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Starting Value Formatting.", methodName, lineId);
                 var values = new Dictionary<(Fields Fields, int Instance), string>();
                 _logger.Verbose(
                     "{MethodName}: Calling FormatValues for LineId: {LineId}, Instance: {Instance} with {MatchCount} matches...",
@@ -86,8 +104,17 @@ namespace WaterNut.DataSpace
                 _logger.Debug(
                     "{MethodName}: Finished FormatValues for LineId: {LineId}, Instance: {Instance}. Extracted {ValueCount} values.",
                     methodName, lineId, instance, values.Count);
+                // Log extracted values
+                foreach (var kvp in values)
+                {
+                    _logger.Verbose("{MethodName}: LineId: {LineId} - Extracted Value: FieldId={FieldId}, Instance={Instance}, Value='{Value}'",
+                        methodName, lineId, kvp.Key.Fields?.Id ?? -1, kvp.Key.Instance, kvp.Value);
+                }
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Finished Value Formatting.", methodName, lineId);
+
 
                 // --- Value Saving ---
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Starting Value Saving.", methodName, lineId);
                 if (values.Any())
                 {
                     _logger.Verbose(
@@ -104,6 +131,8 @@ namespace WaterNut.DataSpace
                         "{MethodName}: No values extracted/formatted by FormatValues for LineId: {LineId}, Instance: {Instance}. Skipping SaveLineValues.",
                         methodName, lineId, instance);
                 }
+                _logger.Verbose("{MethodName}: LineId: {LineId} - Finished Value Saving.", methodName, lineId);
+
 
                 _logger.Information(
                     "{MethodName}: Completed successfully for LineId: {LineId}, Instance: {Instance}. Found {MatchCount} matches and processed {ValueCount} values.",

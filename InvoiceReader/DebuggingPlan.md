@@ -31,7 +31,7 @@ After assigning the `matchedTemplate` (which is of type `OCR.Business.Entities.I
 *   `OCR.Business.Entities.Invoices`: This type represents the invoice template configuration as stored in the database. It contains properties defining regex rules, structure (parts, lines, fields), etc. This is the type now being assigned to `context.Template`.
 *   `WaterNut.DataSpace.Invoice`: This was likely a domain model or wrapper class used in the original `PDF2TXT` code. It contained methods like `Format` and `Read` that performed operations using the underlying OCR template data. The original pipeline steps were designed to call these methods on this wrapper type.
 
-The refactoring of the pipeline involved changing `InvoiceProcessingContext.Template` to directly hold the `OCR.Business.Entities.Invoices` database entity, removing the intermediate `WaterNut.DataSpace.Invoice` wrapper. This requires updating the pipeline steps to work directly with the `OCR.Business.Entities.Invoices` object.
+The refactoring of the pipeline involved changing `InvoiceProcessingContext.Template` to directly hold the `OCR.Business.Entities.Invoices` database entity. The `WaterNut.DataSpace.Invoice`, `Part`, and `Line` classes act as domain model wrappers around the `OCR.Business.Entities` database entities for use within the domain and pipeline logic. This requires updating the pipeline steps to correctly utilize these domain models.
 
 **Current State:**
 *   The assignment of the matched template to `context.Template` in `InvoiceReader.cs` is fixed.
@@ -40,11 +40,23 @@ The refactoring of the pipeline involved changing `InvoiceProcessingContext.Temp
 *   Started fixing compilation errors:
     *   Modified `InvoiceReader\InvoiceReader\PipelineInfrastructure\InvoiceProcessingPipeline.IsInitialRunUnsuccessful.cs` to remove the check for `Template.Success` and incorrect `OcrInvoices` access, as these were based on the old type.
     *   Modified `InvoiceReader\InvoiceReader\PipelineInfrastructure\FormatPdfTextStep.cs` to remove incorrect `OcrInvoices` access and the call to the non-existent `Format` method. Replaced the `Format` call with a placeholder comment, indicating that the actual formatting logic needs to be implemented here using the `OCR.Business.Entities.Invoices` template data.
+*   Added comprehensive logging to `InvoiceReader\Part\Read.cs` to trace the execution flow and variable states within the `Read` method. Encountered initial issues with applying the diff due to a hidden character and a malformed diff block, which were subsequently resolved.
 
 **Next Steps:**
-1.  Continue addressing compilation errors in other pipeline step files.
-2.  Focus on `ReadFormattedTextStep.cs` next, as it's crucial for extracting data using the template and has related errors.
-3.  Implement the actual text formatting logic in `FormatPdfTextStep.cs` and the data reading logic in `ReadFormattedTextStep.cs` using the properties available on the `OCR.Business.Entities.Invoices` object, referencing the original `WaterNut.Business.Services\Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs` file for guidance on the original logic.
-4.  Rebuild the project after each set of changes to check for remaining errors.
-5.  Once compilation errors are resolved, run the test and analyze the logs to identify any further bugs in the pipeline execution or data extraction.
-6.  Add more detailed logging within the pipeline steps as needed to pinpoint issues.
+1.  Add comprehensive logging to `InvoiceReader\Line\Read.cs` to trace the execution flow and variable states within its `Read` method.
+2.  Continue addressing compilation errors in other pipeline step files.
+3.  Focus on `ReadFormattedTextStep.cs` next, as it's crucial for extracting data using the template and has related errors.
+4.  Implement the actual text formatting logic in `FormatPdfTextStep.cs` and the data reading logic in `ReadFormattedTextStep.cs` using the properties available on the `OCR.Business.Entities.Invoices` object, referencing the original `WaterNut.Business.Services\Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs` file for guidance on the original logic.
+5.  **Clean, Restore, and Rebuild the Solution:**
+    Use the following command from the project root (`c:\Insight Software\AutoBot-Enterprise`) to clean, restore NuGet packages, and rebuild the entire solution:
+    ```powershell
+    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" AutoBot-Enterprise.sln /t:Clean,Restore,Rebuild /p:Configuration=Debug /p:Platform=x64
+    ```
+6.  **Run the Specific Test:**
+    Once the solution is rebuilt successfully, run the `CanImportAmazonMultiSectionInvoice_WithLogging` test using `vstest.console.exe`. Replace `InvoiceReaderPipelineTests.dll` with the actual test assembly path if different.
+    ```powershell
+    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" ".\InvoiceReaderPipelineTests\bin\x64\Debug\net48\InvoiceReaderPipelineTests.dll" /TestCaseFilter:"FullyQualifiedName=InvoiceReaderPipelineTests.InvoicePipelineTests.CanImportAmazonMultiSectionInvoice_WithLogging" "/Logger:console;verbosity=detailed"
+    ```
+7.  Analyze the test output and the logs generated by the updated `InvoiceProcessingContext` and the added logging in `Part.Read` and `Line.Read` to identify the bug.
+8.  Add more detailed logging within the pipeline steps as needed to pinpoint issues.
+9.  Repeat steps 1-8 as necessary until the bug is resolved.

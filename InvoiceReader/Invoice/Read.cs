@@ -69,6 +69,10 @@ namespace WaterNut.DataSpace
                     lineCount++;
                     string previousSection = section; // Store previous section for logging change
 
+                    _logger.Verbose(
+                        "{MethodName}: Processing Line {LineNum}/{TotalLines}. Text: '{LineText}'",
+                        methodName, lineCount, inputLineCount, lineText);
+
                     // Determine current section based on predefined markers
                     string detectedSectionKey = Sections.FirstOrDefault(s =>
                         lineText != null && s.Value != null &&
@@ -76,12 +80,17 @@ namespace WaterNut.DataSpace
                     if (detectedSectionKey != null)
                     {
                         section = detectedSectionKey;
+                        if (section != previousSection)
+                        {
+                            _logger.Debug(
+                                "{MethodName}: Line {LineNum}: Section changed from '{PreviousSection}' to '{CurrentSection}'.",
+                                methodName, lineCount, previousSection, section);
+                        }
                     }
 
-                    // Log section for every line
                     _logger.Verbose(
-                        "{MethodName}: Line {LineNum}/{TotalLines}: Section='{CurrentSection}'. Text='{LineText}'",
-                        methodName, lineCount, inputLineCount, section, lineText);
+                        "{MethodName}: Line {LineNum}: Current Section='{CurrentSection}'.",
+                        methodName, lineCount, section);
 
 
                     // Create InvoiceLine object
@@ -89,8 +98,8 @@ namespace WaterNut.DataSpace
                     _logger.Verbose("{MethodName}: Line {LineNum}: Created InvoiceLine object.", methodName, lineCount);
 
                     // Call Read on each Part
-                    _logger.Verbose("{MethodName}: Line {LineNum}: Calling Part.Read for {PartCount} parts.",
-                        methodName, lineCount, this.Parts.Count);
+                    _logger.Verbose("{MethodName}: Line {LineNum}: Calling Part.Read for {PartCount} parts with section '{CurrentSection}'.",
+                        methodName, lineCount, this.Parts.Count, section);
                     Parts.ForEach(part =>
                     {
                         // Using Core.Common.Extensions.ForEach
@@ -98,8 +107,8 @@ namespace WaterNut.DataSpace
                         {
                             // Explicitly qualify Part type due to potential namespace conflicts (CS0436 warning)
                             int? partId = ((WaterNut.DataSpace.Part)part).OCR_Part?.Id;
-                            _logger.Verbose("{MethodName}: Line {LineNum}: Calling Read() on PartId: {PartId}...",
-                                methodName, lineCount, partId);
+                            _logger.Verbose("{MethodName}: Line {LineNum}: Calling Read() on PartId: {PartId} with section '{CurrentSection}'...",
+                                methodName, lineCount, partId, section);
                             // Part.Read should handle its own detailed logging (entry/exit/logic)
                             part.Read(iLine, section);
                             _logger.Verbose("{MethodName}: Line {LineNum}: Finished Read() on PartId: {PartId}.",
