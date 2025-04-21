@@ -104,17 +104,26 @@ namespace InvoiceReaderPipelineTests
                 var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
+                _logger.Debug("Checking if test file exists at: {FilePath}", testFile);
                 if (!File.Exists(testFile))
                 {
                     _logger.Warning("Test file not found: {FilePath}. Skipping test.", testFile);
                     Assert.Warn($"Test file not found: {testFile}");
                     return;
                 }
+                else
+                {
+                    _logger.Debug("Test file found at: {FilePath}", testFile);
+                }
 
                 _logger.Debug("Getting importable file types for PDF.");
                 // Assuming FileTypeManager is static
-                var fileTypes = FileTypeManager // Removed .Instance
-                    .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                _logger.Debug("Calling FileTypeManager.GetImportableFileType with EntryType: {EntryType}, FileFormat: {FileFormat}, FilePath: {FilePath}",
+                    FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
+                var rawFileTypes = FileTypeManager // Removed .Instance
+                    .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
+                _logger.Debug("FileTypeManager.GetImportableFileType returned {Count} raw file types.", rawFileTypes.Count());
+                var fileTypes = rawFileTypes
                     .OfType<CoreEntities.Business.Entities.FileTypes>() // Ensure correct type
                     .Where(x => x.Description == "Unknown")
                     .ToList();
@@ -132,27 +141,77 @@ namespace InvoiceReaderPipelineTests
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                     _logger.Debug("Calling InvoiceReader.InvoiceReader.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                     // Assuming PDFUtils is static
-                    await InvoiceReader.InvoiceReader.ImportPDF(new[] {new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
-                    _logger.Debug("InvoiceReader.InvoiceReader.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
-
-
-                    _logger.Debug("Verifying import results in database...");
-                    using (var ctx = new EntryDataDSContext())
+                    _logger.Information("Calling InvoiceReader.InvoiceReader.ImportPDF with file: {FilePath} and FileType ID: {FileTypeId}", testFile, fileType.Id);
+                    try
                     {
-                        _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '114-7827932-2029910'");
-                        bool invoiceExists = ctx.ShipmentInvoice.Any(x => x.InvoiceNo == "114-7827932-2029910");
-                        _logger.Verbose("ShipmentInvoice with InvoiceNo '114-7827932-2029910' exists: {Exists}", invoiceExists);
-                        Assert.That(invoiceExists, Is.True, "ShipmentInvoice '114-7827932-2029910' not created.");
+                        await InvoiceReader.InvoiceReader.ImportPDF(new[] {new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
+                        _logger.Information("InvoiceReader.InvoiceReader.ImportPDF completed successfully for FileType ID: {FileTypeId}", fileType.Id);
+                    }
+                    catch (Exception importEx)
+                    {
+                        _logger.Error(importEx, "Error during InvoiceReader.InvoiceReader.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
+                        // Depending on the expected behavior, you might want to re-throw or handle this differently
+                        throw; // Re-throw to fail the test if import fails
+                    }
 
+                    _logger.Information("Verifying import results in database for FileType ID: {FileTypeId}...", fileType.Id);
+                    try
+                    {
+                        _logger.Debug("Creating database context (EntryDataDSContext)...");
+                        using (var ctx = new EntryDataDSContext())
+                        {
+                            _logger.Debug("Database context created successfully.");
 
-                        _logger.Verbose("Checking for ShipmentInvoiceDetails count > 2 for InvoiceNo '114-7827932-2029910'");
-                        int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "114-7827932-2029910");
-                        _logger.Verbose("ShipmentInvoiceDetails count for InvoiceNo '114-7827932-2029910': {Count}", detailCount);
-                        Assert.That(detailCount > 2, Is.True, $"Expected > 2 ShipmentInvoiceDetails, but found {detailCount}.");
+                            _logger.Information("--- Database Verification Start ---");
+                            _logger.Debug("Target InvoiceNo: '114-7827932-2029910'");
 
+                            _logger.Debug("Querying database: Checking existence of ShipmentInvoice with InvoiceNo '114-7827932-2029910'.");
+                            bool invoiceExists = false;
+                            try
+                            {
+                                invoiceExists = ctx.ShipmentInvoice.Any(x => x.InvoiceNo == "114-7827932-2029910");
+                                _logger.Information("Database query result: ShipmentInvoice '114-7827932-2029910' exists = {Exists}", invoiceExists);
+                            }
+                            catch (Exception queryEx)
+                            {
+                                _logger.Error(queryEx, "Database query failed while checking for ShipmentInvoice existence.");
+                                throw; // Re-throw to fail the test
+                            }
+                            _logger.Debug("Assertion: Checking if invoiceExists is True.");
+                            Assert.That(invoiceExists, Is.True, "ASSERT FAILED: ShipmentInvoice '114-7827932-2029910' was not found in the database after import.");
+                            _logger.Debug("Assertion passed: ShipmentInvoice '114-7827932-2029910' exists.");
 
-                        _logger.Information("Import successful for FileType {FileTypeId}. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
-                           fileType.Id, ctx.ShipmentInvoice.Count(), ctx.ShipmentInvoiceDetails.Count());
+                            _logger.Debug("Querying database: Counting ShipmentInvoiceDetails for InvoiceNo '114-7827932-2029910'.");
+                            int detailCount = -1; // Initialize to indicate query hasn't run or failed
+                            try
+                            {
+                                detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "114-7827932-2029910");
+                                _logger.Information("Database query result: Found {Count} ShipmentInvoiceDetails for InvoiceNo '114-7827932-2029910'.", detailCount);
+                            }
+                            catch (Exception queryEx)
+                            {
+                                _logger.Error(queryEx, "Database query failed while counting ShipmentInvoiceDetails.");
+                                throw; // Re-throw to fail the test
+                            }
+                            _logger.Debug("Assertion: Checking if detailCount ({Count}) is greater than 2.", detailCount);
+                            Assert.That(detailCount > 2, Is.True, $"ASSERT FAILED: Expected more than 2 ShipmentInvoiceDetails for InvoiceNo '114-7827932-2029910', but found {detailCount}.");
+                            _logger.Debug("Assertion passed: ShipmentInvoiceDetails count ({Count}) is greater than 2.", detailCount);
+
+                            _logger.Debug("Querying database: Counting total ShipmentInvoices.");
+                            int totalInvoices = ctx.ShipmentInvoice.Count();
+                            _logger.Debug("Querying database: Counting total ShipmentInvoiceDetails.");
+                            int totalDetails = ctx.ShipmentInvoiceDetails.Count();
+
+                            _logger.Information("Import verification successful for FileType {FileTypeId}. Overall DB state - Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
+                               fileType.Id, totalInvoices, totalDetails);
+                            _logger.Information("--- Database Verification End ---");
+                        }
+                        _logger.Debug("Database context disposed successfully.");
+                    }
+                    catch (Exception dbEx)
+                    {
+                        _logger.Error(dbEx, "Error during database verification for FileType ID: {FileTypeId}", fileType.Id);
+                        throw; // Re-throw to fail the test if DB check fails
                     }
                 }
 
