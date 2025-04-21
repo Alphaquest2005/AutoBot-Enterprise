@@ -30,6 +30,7 @@ namespace InvoiceReaderPipelineTests
                     .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Override specific namespaces
                     .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
                     .MinimumLevel.Override("InvoiceReaderPipelineTests", Serilog.Events.LogEventLevel.Verbose) // Ensure test utilities logs are captured
+                    .MinimumLevel.Override("WaterNut.DataSpace.PipelineInfrastructure.PipelineRunner", Serilog.Events.LogEventLevel.Verbose) // Explicitly set level for PipelineRunner
                     .Enrich.FromLogContext() // Enrichers
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
@@ -79,6 +80,16 @@ namespace InvoiceReaderPipelineTests
             _logger.Debug("Applying test application settings (3) and clearing database.");
             try
             {
+                // Explicitly clear tables for this test fixture
+                _logger.Debug("Explicitly clearing ShipmentInvoice and ShipmentInvoiceDetails tables.");
+                using (var ctx = new EntryDataDSContext())
+                {
+                    // Clear details first due to potential foreign key constraints
+                    ctx.Database.ExecuteSqlCommand("DELETE FROM ShipmentInvoiceDetails");
+                    _logger.Debug("ShipmentInvoiceDetails table cleared.");
+                    ctx.Database.ExecuteSqlCommand("DELETE FROM ShipmentInvoice");
+                    _logger.Debug("ShipmentInvoice table cleared.");
+                }
                 _logger.Debug("Test setup complete.");
             }
             catch (Exception ex)

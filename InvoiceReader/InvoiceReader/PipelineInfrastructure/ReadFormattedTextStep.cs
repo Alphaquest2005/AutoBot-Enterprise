@@ -19,7 +19,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
             string filePath = context?.FilePath ?? "Unknown";
-            int? templateId = context?.Template?.OcrInvoices?.Id; // Safe access
+            int? templateId = context?.Template?.OcrInvoices?.Id; // Access Id through OcrInvoices
             _logger.Debug("Executing ReadFormattedTextStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
             // Null checks
@@ -42,23 +42,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             try
             {
                 _logger.Debug("Extracting CsvLines using Template.Read for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
-                ExtractCsvLines(context); // Handles its own logging
+                // Assuming Template.Read exists and populates context.CsvLines
+                context.CsvLines = context.Template.Read(context.FormattedPdfText); // Call the Read method on the template object
                 _logger.Debug("CsvLines extraction finished for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
-                // Check if extraction failed (indicated by null CsvLines)
-                if (context.CsvLines == null)
+                // Check if extraction failed (indicated by null or empty CsvLines)
+                if (context.CsvLines == null || !context.CsvLines.Any())
                 {
-                    _logger.Warning("CsvLines is null after extraction attempt for File: {FilePath}, TemplateId: {TemplateId}. Step fails.", filePath, templateId);
+                    _logger.Warning("CsvLines is null or empty after extraction attempt for File: {FilePath}, TemplateId: {TemplateId}. Step fails.", filePath, templateId);
                     return false;
                 }
 
-                _logger.Debug("Processing extracted CsvData for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
-                ProcessCsvDataExtraction(context); // Handles its own logging
-                _logger.Debug("CsvData processing finished for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                // Assuming the success of the read operation is now determined by the presence of CsvLines
+                bool success = true; // If we reached here, extraction was considered successful
 
-                _logger.Debug("Validating Template.Success flag for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
-                bool success = ValidateTemplateSuccess(context); // Handles its own logging
-                _logger.Information("ReadFormattedTextStep finished for File: {FilePath}, TemplateId: {TemplateId}. Step Success: {Success}", filePath, templateId, success);
+                _logger.Information("ReadFormattedTextStep finished for File: {FilePath}, TemplateId: {TemplateId}. Step Success: {Success}.", filePath, templateId, success);
                 return success;
             }
             catch (Exception ex)
@@ -70,7 +68,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        // Returns true if extraction was *attempted* and CsvLines[0] *is* the expected list type, false otherwise.
-        // Outputs the extracted list (or null) via the out parameter.
+        // Removed helper methods ExtractCsvLines, ProcessCsvDataExtraction, and ValidateTemplateSuccess
     }
 }

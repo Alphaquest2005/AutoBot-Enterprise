@@ -16,7 +16,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public FileTypes FileType { get; set; }
         public EmailDownloader.Client Client { get; set; }
         public StringBuilder PdfText { get; set; }
-        public Invoice Template { get; set; } // Added Template property
+        public Invoice Template { get; set; } // Reverted Template property type to WaterNut.DataSpace.Invoice
         public string FormattedPdfText { get; set; } // Added FormattedPdfText property
         public List<dynamic> CsvLines { get; set; } // Added CsvLines property
         public ImportStatus ImportStatus { get; set; } // Added ImportStatus property

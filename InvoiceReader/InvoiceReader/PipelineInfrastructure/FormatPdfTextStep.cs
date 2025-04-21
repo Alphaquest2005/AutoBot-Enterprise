@@ -28,25 +28,19 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  _logger.Warning("Skipping FormatPdfTextStep: Template is null for File: {FilePath}", filePath);
                  return false;
             }
-             // Check Template.OcrInvoices as well, as it's used later
-             if (context.Template.OcrInvoices == null)
-             {
-                 _logger.Warning("Skipping FormatPdfTextStep: Template.OcrInvoices is null for File: {FilePath}", filePath);
-                 return false;
-             }
             if (context.PdfText == null)
             {
                  _logger.Warning("Skipping FormatPdfTextStep: PdfText (StringBuilder) is null for File: {FilePath}", filePath);
                  return false;
             }
 
-            int templateId = context.Template.OcrInvoices.Id; // Already checked OcrInvoices is not null
+            int templateId = context.Template?.OcrInvoices?.Id ?? 0; // Access Id through OcrInvoices
             _logger.Debug("Formatting PDF text using TemplateId: {TemplateId} for File: {FilePath}", templateId, filePath);
             _logger.Verbose("Original PdfText Length: {Length}", context.PdfText.Length);
 
             try
             {
-                // Assuming Template.Format exists and takes/returns string
+                // Assuming Template.Format exists and takes/returns string on the WaterNut.DataSpace.Invoice type
                 string pdfTextString = context.PdfText.ToString();
                 _logger.Verbose("Calling Template.Format for TemplateId: {TemplateId}", templateId);
                 // Assuming Format is a synchronous method
@@ -57,8 +51,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     _logger.Verbose("Formatted PdfText (first 500 chars): {FormattedText}", context.FormattedPdfText.Substring(0, Math.Min(context.FormattedPdfText.Length, 500))); // Log a portion of the text
                 }
 
-
-                // Log success (replaces LogFormattedPdfText)
+                // Log success
                 _logger.Information("PDF text formatted using TemplateId: {TemplateId} for File: {FilePath}.", templateId, filePath);
 
                 _logger.Debug("Finished executing FormatPdfTextStep successfully for File: {FilePath}", filePath);

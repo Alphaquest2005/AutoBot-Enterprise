@@ -42,12 +42,17 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                   return false;
              }
 
+             _logger.Verbose("Entering steps loop for {PipelineName}.", _pipelineName); // Add log before loop
              foreach (var step in _steps)
              {
+                 _logger.Verbose("Start of loop iteration {StepNumber} in {PipelineName}.", stepCounter + 1, _pipelineName); // Log start of iteration
                  stepCounter++;
+                 _logger.Verbose("Incremented stepCounter to {StepNumber}.", stepCounter); // Log counter increment
+
+                 // Simplify logging first to rule out issues
+                 _logger.Verbose("Attempting to get step name for step {StepNumber} in {PipelineName}.", stepCounter, _pipelineName); // Log before getting name
                  string stepName = step?.GetType().Name ?? $"Unnamed Step {stepCounter}"; // Get step name safely
-                 _logger.Information("Executing Step {StepNumber}/{TotalSteps} ({StepName}) in {PipelineName}.",
-                    stepCounter, _steps.Count, stepName, _pipelineName); // Use Count property
+                 _logger.Verbose("Got step name: {StepName}.", stepName); // Log after getting name
 
                  if (step == null)
                  {
@@ -55,10 +60,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                       continue; // Skip null steps
                  }
 
+                 _logger.Verbose("Step is not null. Proceeding to try block for {StepName}.", stepName); // Log before try block
                  try
                  {
+                     _logger.Verbose("Inside TRY block for step {StepName} in {PipelineName}.", stepName, _pipelineName); // Add log inside try
                      // Individual steps should handle their own detailed logging
+                     _logger.Verbose("Executing step {StepName}...", stepName); // Log before execution
                      bool stepResult = await step.Execute(context).ConfigureAwait(false);
+                     _logger.Verbose("Step {StepName} execution completed with result: {StepResult}.", stepName, stepResult); // Log after execution
+
+                     if (!stepResult)
 
                      if (!stepResult)
                      {

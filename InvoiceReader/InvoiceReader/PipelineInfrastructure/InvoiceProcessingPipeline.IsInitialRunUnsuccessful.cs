@@ -33,15 +33,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 return true;
             }
 
-            // Check Template and Success property safely
-            bool templateSuccess = _context.Template?.Success ?? false; // Default to false if Template is null
-            if (!templateSuccess)
-            {
-                _logger.Warning(
-                    "Initial run considered unsuccessful: Template.Success is false (or Template is null). TemplateId: {TemplateId}",
-                    _context.Template?.OcrInvoices?.Id);
-                return true;
-            }
+            // The success of the initial steps (including text formatting and reading)
+            // is already captured by initialRunSuccess and the check for CsvLines.
+            // The check for Template.Success is based on the old data model and is removed.
 
             _logger.Debug("Initial run conditions met for success path for File: {FilePath}", filePath);
             return false; // All conditions passed, initial run was successful enough

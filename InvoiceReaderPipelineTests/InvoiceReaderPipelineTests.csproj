@@ -42,4 +42,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\WaterNut.Business.Services\SQLBlackBox\**\*.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

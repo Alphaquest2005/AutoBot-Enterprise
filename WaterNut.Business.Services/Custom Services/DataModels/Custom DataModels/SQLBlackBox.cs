@@ -34,37 +34,50 @@ namespace WaterNut.DataSpace
 
 
 
-                        String script = File.ReadAllText($@"SQLBlackBox\{sName}.sql");
-                        SqlCommand myCommand = new SqlCommand(script, nConn);
-                        int i = 0;
-                        //foreach (string db in Databases)
-                        //{
-                            try
-                            {
-                                //var database = db;
-                                
-                                ++i;
+                        try
+                        {
+                            String script = File.ReadAllText($@"SQLBlackBox\{sName}.sql");
+                            SqlCommand myCommand = new SqlCommand(script, nConn);
+                            int i = 0;
+                            //foreach (string db in Databases)
+                            //{
+                                try
+                                {
+                                    //var database = db;
+                                    
+                                    ++i;
 
-                                //cncStr = cncStr.Replace(oDatabase, db);
-                                nConn = new SqlConnection(cncStr);
-                                myCommand = new SqlCommand(script, nConn);
-                                nConn.Open();
-                                myCommand.CommandTimeout = 0;
-                                int aa = myCommand.ExecuteNonQuery();
-                                myCommand.CommandTimeout = 0;
-                                nConn.Close();
+                                    //cncStr = cncStr.Replace(oDatabase, db);
+                                    nConn = new SqlConnection(cncStr);
+                                    myCommand = new SqlCommand(script, nConn);
+                                    nConn.Open();
+                                    myCommand.CommandTimeout = 0;
+                                    int aa = myCommand.ExecuteNonQuery();
+                                    myCommand.CommandTimeout = 0;
+                                    nConn.Close();
 
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("Error in Db: " + oDatabase + "\nError Statement:" + ex.Message);
-                            }
-                            finally
-                            {
-                                nConn.Close();
-                                // Console.WriteLine("----------------------------------------------------------");
-                            }
-                     //   }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Error in Db: " + oDatabase + "\nError Statement:" + ex.Message);
+                                }
+                                finally
+                                {
+                                    nConn.Close();
+                                    // Console.WriteLine("----------------------------------------------------------");
+                                }
+                           // }
+                        }
+                        catch (System.IO.DirectoryNotFoundException ex)
+                        {
+                            // Log a warning if the SQL script directory is not found
+                            Console.WriteLine($"WARNING: SQL script directory not found. Skipping SQL script execution for '{sName}'. Error: {ex.Message}");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Re-throw other exceptions
+                            throw;
+                        }
 
                     }
 
