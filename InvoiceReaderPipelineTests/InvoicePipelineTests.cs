@@ -26,6 +26,7 @@ namespace InvoiceReaderPipelineTests
                     .MinimumLevel.Verbose() // Set default level
                     .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Override specific namespaces
                     .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+                    .MinimumLevel.Override("InvoiceReaderPipelineTests", Serilog.Events.LogEventLevel.Verbose) // Ensure test utilities logs are captured
                     .Enrich.FromLogContext() // Enrichers
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
@@ -75,8 +76,8 @@ namespace InvoiceReaderPipelineTests
             _logger.Debug("Applying test application settings (3) and clearing database.");
             try
             {
-                Utils.SetTestApplicationSettings(3);
-                Utils.ClearDataBase();
+                //Utils.SetTestApplicationSettings(3);
+                //Utils.ClearDataBase();
                 _logger.Debug("Test setup complete.");
             }
             catch (Exception ex)

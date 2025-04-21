@@ -15,6 +15,7 @@ using SalesDataQS.Business.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration; // Added for ConfigurationManager
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -92,12 +93,18 @@ namespace AutoBot
 
 
     public static void SetCurrentApplicationSettings(int id)
+    {
+        // Explicitly load the connection string from configuration
+        string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString;
+
+        // Add logging to show the connection string being used
+        Console.WriteLine($"[DEBUG] Using connection string: {connectionString}");
+
+        using (var ctx = new CoreEntitiesContext())
         {
-            using (var ctx = new CoreEntitiesContext() { })
-            {
 
 
-                var appSetting = ctx.ApplicationSettings.AsNoTracking()
+            var appSetting = ctx.ApplicationSettings.AsNoTracking()
                     .Include(x => x.FileTypes)
                     .Include(x => x.Declarants)
                     .Include("FileTypes.FileTypeContacts.Contacts")
