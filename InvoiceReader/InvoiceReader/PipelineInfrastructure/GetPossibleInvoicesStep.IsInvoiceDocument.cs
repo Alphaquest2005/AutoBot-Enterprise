@@ -1,7 +1,9 @@
+using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using OCR.Business.Entities;
 
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+namespace WaterNut.DataSpace.PipelineInfrastructure{
 
 public partial class GetPossibleInvoicesStep
 {
@@ -83,4 +85,5 @@ public partial class GetPossibleInvoicesStep
             invoiceId, filePath);
         return false; // No match found
     }
+}
 }

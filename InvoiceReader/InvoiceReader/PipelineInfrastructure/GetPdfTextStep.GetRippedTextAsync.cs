@@ -1,33 +1,38 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System;
+using System.Threading.Tasks;
 
-public partial class GetPdfTextStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static Task<string> GetRippedTextAsync(InvoiceProcessingContext context)
+    public partial class GetPdfTextStep
     {
-        string filePath = context.FilePath;
-        _logger.Debug("Starting Ripped Text (PdfPig) task for File: {FilePath}", filePath);
-        var ripTask = Task.Run(() =>
+        private static Task<string> GetRippedTextAsync(InvoiceProcessingContext context)
         {
-            // PdfPigText handles its own try/catch and logging, returns error string on failure
-            var txt = "------------------------------------------Ripped Text-------------------------\r\n";
-            _logger.Verbose("Calling PdfPigText for File: {FilePath}", filePath);
-            string rippedResult = PdfPigText(filePath);
-            txt += rippedResult;
-
-            // Check if PdfPigText returned an error message and throw if it did
-            if (rippedResult.StartsWith("Error reading Ripped Text (PdfPig):", StringComparison.Ordinal))
+            string filePath = context.FilePath;
+            _logger.Debug("Starting Ripped Text (PdfPig) task for File: {FilePath}", filePath);
+            var ripTask = Task.Run(() =>
             {
-                _logger.Warning("Ripped Text (PdfPig) task failed internally for File: {FilePath}. Throwing exception.",
-                    filePath);
-                // Throw an exception so Task.WhenAll catches it in AggregateException
-                throw new Exception($"PdfPig text extraction failed for {filePath}. See previous logs.");
-            }
+                // PdfPigText handles its own try/catch and logging, returns error string on failure
+                var txt = "------------------------------------------Ripped Text-------------------------\r\n";
+                _logger.Verbose("Calling PdfPigText for File: {FilePath}", filePath);
+                string rippedResult = PdfPigText(filePath);
+                txt += rippedResult;
 
-            _logger.Information(
-                "Ripped Text (PdfPig) task completed successfully for File: {FilePath}. Result Length: {Length}",
-                filePath, rippedResult.Length);
-            return txt;
-        });
-        return ripTask;
+                // Check if PdfPigText returned an error message and throw if it did
+                if (rippedResult.StartsWith("Error reading Ripped Text (PdfPig):", StringComparison.Ordinal))
+                {
+                    _logger.Warning(
+                        "Ripped Text (PdfPig) task failed internally for File: {FilePath}. Throwing exception.",
+                        filePath);
+                    // Throw an exception so Task.WhenAll catches it in AggregateException
+                    throw new Exception($"PdfPig text extraction failed for {filePath}. See previous logs.");
+                }
+
+                _logger.Information(
+                    "Ripped Text (PdfPig) task completed successfully for File: {FilePath}. Result Length: {Length}",
+                    filePath, rippedResult.Length);
+                return txt;
+            });
+            return ripTask;
+        }
     }
 }

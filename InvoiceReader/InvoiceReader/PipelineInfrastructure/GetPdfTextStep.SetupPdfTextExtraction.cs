@@ -1,13 +1,16 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System.Threading.Tasks;
 
-public partial class GetPdfTextStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static void SetupPdfTextExtraction(InvoiceProcessingContext context, out Task<string> ripTask,
-        out Task<string> singleColumnTask, out Task<string> sparseTextTask)
+    public partial class GetPdfTextStep
     {
-        // Logging happens within the async methods themselves
-        ripTask = GetRippedTextAsync(context);
-        singleColumnTask = GetSingleColumnPdfText(context);
-        sparseTextTask = GetPdfSparseTextAsync(context);
+        private static void SetupPdfTextExtraction(InvoiceProcessingContext context, out Task<string> ripTask,
+            out Task<string> singleColumnTask, out Task<string> sparseTextTask)
+        {
+            // Logging happens within the async methods themselves
+            ripTask = GetRippedTextAsync(context);
+            singleColumnTask = GetSingleColumnPdfText(context);
+            sparseTextTask = GetPdfSparseTextAsync(context);
+        }
     }
 }

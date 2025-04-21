@@ -1,41 +1,47 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System.Collections.Generic;
+using System.Linq;
 
-public partial class ReadFormattedTextStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static void ProcessCsvDataExtraction(InvoiceProcessingContext context)
+    public partial class ReadFormattedTextStep
     {
-        string filePath = context?.FilePath ?? "Unknown";
-        int? templateId = context?.Template?.OcrInvoices?.Id;
-        _logger.Verbose("Starting ProcessCsvDataExtraction for File: {FilePath}, TemplateId: {TemplateId}", filePath,
-            templateId);
-
-        // Check if CsvLines is valid before trying to extract data
-        if (context.CsvLines == null || !context.CsvLines.Any())
+        private static void ProcessCsvDataExtraction(InvoiceProcessingContext context)
         {
-            _logger.Warning(
-                "Cannot process CSV data: CsvLines is null or empty for File: {FilePath}, TemplateId: {TemplateId}",
-                filePath, templateId);
-            return; // Nothing to process
-        }
+            string filePath = context?.FilePath ?? "Unknown";
+            int? templateId = context?.Template?.OcrInvoices?.Id;
+            _logger.Verbose("Starting ProcessCsvDataExtraction for File: {FilePath}, TemplateId: {TemplateId}",
+                filePath,
+                templateId);
 
-        List<IDictionary<string, object>> list = null;
-        bool extractionSuccess = ExtractCsvData(context, out list); // Handles its own logging
+            // Check if CsvLines is valid before trying to extract data
+            if (context.CsvLines == null || !context.CsvLines.Any())
+            {
+                _logger.Warning(
+                    "Cannot process CSV data: CsvLines is null or empty for File: {FilePath}, TemplateId: {TemplateId}",
+                    filePath, templateId);
+                return; // Nothing to process
+            }
 
-        if (extractionSuccess && list != null)
-        {
-            _logger.Information(
-                "Successfully extracted first data structure (List<IDictionary<string, object>>) with {Count} items for File: {FilePath}, TemplateId: {TemplateId}",
-                list.Count, filePath, templateId);
-        }
-        else
-        {
-            // Logging for failure happens within ExtractCsvData
-            _logger.Warning(
-                "Failed to extract first data structure as List<IDictionary<string, object>> for File: {FilePath}, TemplateId: {TemplateId}",
-                filePath, templateId);
-        }
+            List<IDictionary<string, object>> list = null;
+            bool extractionSuccess = ExtractCsvData(context, out list); // Handles its own logging
 
-        _logger.Verbose("Finished ProcessCsvDataExtraction for File: {FilePath}, TemplateId: {TemplateId}", filePath,
-            templateId);
+            if (extractionSuccess && list != null)
+            {
+                _logger.Information(
+                    "Successfully extracted first data structure (List<IDictionary<string, object>>) with {Count} items for File: {FilePath}, TemplateId: {TemplateId}",
+                    list.Count, filePath, templateId);
+            }
+            else
+            {
+                // Logging for failure happens within ExtractCsvData
+                _logger.Warning(
+                    "Failed to extract first data structure as List<IDictionary<string, object>> for File: {FilePath}, TemplateId: {TemplateId}",
+                    filePath, templateId);
+            }
+
+            _logger.Verbose("Finished ProcessCsvDataExtraction for File: {FilePath}, TemplateId: {TemplateId}",
+                filePath,
+                templateId);
+        }
     }
 }

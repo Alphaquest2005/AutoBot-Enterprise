@@ -2,10 +2,12 @@
 using CoreEntities.Business.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaterNut.DataSpace;
+using WaterNut.DataSpace.PipelineInfrastructure;
 using WaterNut.DataSpace.PipelineInfrastructure;
 using Utils = AutoBot.Utils;
 
@@ -56,7 +58,7 @@ namespace InvoiceReader
 
                 if (!context.Imports.Values.Any())
                 {
-                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                    var res2 = await PDFUtils.ImportPDFDeepSeek(new FileInfo[] { file }, fileType).ConfigureAwait(false);
                     success.AddRange((IEnumerable<KeyValuePair<string, (string file, string, ImportStatus Success)>>)res2);
                 }
                 else
@@ -66,7 +68,7 @@ namespace InvoiceReader
                         fails
                             .ForEach(async x =>
                             {
-                                var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                                var res2 = await PDFUtils.ImportPDFDeepSeek(new FileInfo[] { file }, fileType).ConfigureAwait(false);
                                 success.AddRange((IEnumerable<KeyValuePair<string, (string file, string, ImportStatus Success)>>)res2);
                             });
                     else

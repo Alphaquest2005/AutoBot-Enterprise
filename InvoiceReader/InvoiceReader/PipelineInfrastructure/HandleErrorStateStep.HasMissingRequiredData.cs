@@ -1,55 +1,56 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
-
-public partial class HandleErrorStateStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static bool HasMissingRequiredData(InvoiceProcessingContext context)
+    public partial class HandleErrorStateStep
     {
-        _logger.Verbose("Checking for missing required data in context.");
-        // Check each property and log which one is missing if any
-        // Context null check happens in Execute
-        if (context.Template == null)
+        private static bool HasMissingRequiredData(InvoiceProcessingContext context)
         {
-            _logger.Warning("Missing required data: Template is null.");
-            return true;
-        }
+            _logger.Verbose("Checking for missing required data in context.");
+            // Check each property and log which one is missing if any
+            // Context null check happens in Execute
+            if (context.Template == null)
+            {
+                _logger.Warning("Missing required data: Template is null.");
+                return true;
+            }
 
-        if (context.CsvLines == null)
-        {
-            _logger.Warning("Missing required data: CsvLines is null.");
-            return true;
-        }
+            if (context.CsvLines == null)
+            {
+                _logger.Warning("Missing required data: CsvLines is null.");
+                return true;
+            }
 
-        if (context.DocSet == null)
-        {
-            _logger.Warning("Missing required data: DocSet is null.");
-            return true;
-        }
+            if (context.DocSet == null)
+            {
+                _logger.Warning("Missing required data: DocSet is null.");
+                return true;
+            }
 
-        if (context.Client == null)
-        {
-            _logger.Warning("Missing required data: Client is null.");
-            return true;
-        }
+            if (context.Client == null)
+            {
+                _logger.Warning("Missing required data: Client is null.");
+                return true;
+            }
 
-        if (string.IsNullOrEmpty(context.FilePath))
-        {
-            _logger.Warning("Missing required data: FilePath is null or empty.");
-            return true;
-        }
+            if (string.IsNullOrEmpty(context.FilePath))
+            {
+                _logger.Warning("Missing required data: FilePath is null or empty.");
+                return true;
+            }
 
-        if (string.IsNullOrEmpty(context.EmailId))
-        {
-            _logger.Warning("Missing required data: EmailId is null or empty.");
-            return true;
-        }
+            if (string.IsNullOrEmpty(context.EmailId))
+            {
+                _logger.Warning("Missing required data: EmailId is null or empty.");
+                return true;
+            }
 
-        if (string.IsNullOrEmpty(context.FormattedPdfText))
-        {
-            _logger.Warning("Missing required data: FormattedPdfText is null or empty.");
-            return true;
-        }
+            if (string.IsNullOrEmpty(context.FormattedPdfText))
+            {
+                _logger.Warning("Missing required data: FormattedPdfText is null or empty.");
+                return true;
+            }
 
-        _logger.Verbose("No missing required data found in context.");
-        return false; // All required data is present
+            _logger.Verbose("No missing required data found in context.");
+            return false; // All required data is present
+        }
     }
 }

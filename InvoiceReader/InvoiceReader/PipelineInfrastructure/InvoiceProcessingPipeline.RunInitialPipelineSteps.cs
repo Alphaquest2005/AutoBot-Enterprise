@@ -1,25 +1,32 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public partial class InvoiceProcessingPipeline
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private async Task<bool> RunInitialPipelineSteps(List<IPipelineStep<InvoiceProcessingContext>> initialSteps)
+
+
+    public partial class InvoiceProcessingPipeline
     {
-        string filePath = _context?.FilePath ?? "Unknown";
-        _logger.Debug("Starting RunInitialPipelineSteps for File: {FilePath}", filePath);
-        try
+        private async Task<bool> RunInitialPipelineSteps(List<IPipelineStep<InvoiceProcessingContext>> initialSteps)
         {
-            // Pass pipeline name to runner constructor
-            var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps, "Initial Pipeline");
-            _logger.Verbose("Initial PipelineRunner created.");
-            // Assuming PipelineRunner internally logs start/end of each step and handles context updates
-            bool initialRunSuccess = await initialRunner.Run(_context).ConfigureAwait(false);
-            _logger.Debug("Initial PipelineRunner finished. Overall Success: {Success}", initialRunSuccess);
-            return initialRunSuccess;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "Error during RunInitialPipelineSteps for File: {FilePath}", filePath);
-            return false; // Indicate failure of initial steps
+            string filePath = _context?.FilePath ?? "Unknown";
+            _logger.Debug("Starting RunInitialPipelineSteps for File: {FilePath}", filePath);
+            try
+            {
+                // Pass pipeline name to runner constructor
+                var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps, "Initial Pipeline");
+                _logger.Verbose("Initial PipelineRunner created.");
+                // Assuming PipelineRunner internally logs start/end of each step and handles context updates
+                bool initialRunSuccess = await initialRunner.Run(_context).ConfigureAwait(false);
+                _logger.Debug("Initial PipelineRunner finished. Overall Success: {Success}", initialRunSuccess);
+                return initialRunSuccess;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during RunInitialPipelineSteps for File: {FilePath}", filePath);
+                return false; // Indicate failure of initial steps
+            }
         }
     }
 }

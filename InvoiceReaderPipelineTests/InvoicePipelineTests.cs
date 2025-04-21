@@ -1,9 +1,12 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using EntryDataDS.Business.Entities;
 using Serilog;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
-
-
+using NUnit.Framework;
 
 namespace InvoiceReaderPipelineTests
 {
@@ -76,8 +79,6 @@ namespace InvoiceReaderPipelineTests
             _logger.Debug("Applying test application settings (3) and clearing database.");
             try
             {
-                //Utils.SetTestApplicationSettings(3);
-                //Utils.ClearDataBase();
                 _logger.Debug("Test setup complete.");
             }
             catch (Exception ex)
@@ -131,7 +132,7 @@ namespace InvoiceReaderPipelineTests
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                     _logger.Debug("Calling InvoiceReader.InvoiceReader.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                     // Assuming PDFUtils is static
-                    await InvoiceReader.InvoiceReader.ImportPDF([new FileInfo(testFile)], fileType).ConfigureAwait(false); // Removed .Instance
+                    await InvoiceReader.InvoiceReader.ImportPDF(new[] {new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
                     _logger.Debug("InvoiceReader.InvoiceReader.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 

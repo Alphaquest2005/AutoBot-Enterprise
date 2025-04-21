@@ -1,5 +1,9 @@
+using System.Threading.Tasks;
 using WaterNut.Business.Services.Utils; // Assuming FileTypeManager is here
-using WaterNut.DataSpace; // Added for ImportStatus enum
+using WaterNut.DataSpace;
+using WaterNut.DataSpace.PipelineInfrastructure;
+
+ // Added for ImportStatus enum
 using System.Threading.Tasks; // Added
 using Serilog; // Added
 using System; // Added

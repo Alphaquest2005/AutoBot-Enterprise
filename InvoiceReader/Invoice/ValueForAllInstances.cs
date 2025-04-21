@@ -1,11 +1,16 @@
-﻿namespace WaterNut.DataSpace;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-public partial class Invoice
+namespace WaterNut.DataSpace
 {
-    private static bool ValueForAllInstances(Line x, List<(int Instance, int LineNumber)> instances)
+    public partial class Invoice
     {
-        var lst = instances.Select(x => x.Instance).ToList();
-        return x.Values.SelectMany(z => z.Value.Keys.Select(k => k.instance)).Distinct().ToList().Union(lst).Count() ==
-               lst.Count();
+        private static bool ValueForAllInstances(Line line, List<(int Instance, int LineNumber)> instances)
+        {
+            var lst = instances.Select(x => x.Instance).ToList();
+            return line.Values.SelectMany(z => z.Value.Keys.Select(k => k.instance)).Distinct().ToList().Union(lst)
+                       .Count() ==
+                   lst.Count();
+        }
     }
 }

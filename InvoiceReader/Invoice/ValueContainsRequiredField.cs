@@ -1,11 +1,13 @@
-﻿using OCR.Business.Entities;
+﻿using System.Linq;
+using OCR.Business.Entities;
 
-namespace WaterNut.DataSpace;
-
-public partial class Invoice
+namespace WaterNut.DataSpace
 {
-    private static bool ValueContainsRequiredField(Line x, Fields field)
+    public partial class Invoice
     {
-        return x.Values.All(v => v.Value.Keys.Any(k => k.fields == field));
+        private static bool ValueContainsRequiredField(Line x, Fields field)
+        {
+            return x.Values.All(v => v.Value.Keys.Any(k => k.fields == field));
+        }
     }
 }

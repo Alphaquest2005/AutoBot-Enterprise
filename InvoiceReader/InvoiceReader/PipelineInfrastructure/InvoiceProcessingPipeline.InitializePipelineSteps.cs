@@ -1,17 +1,20 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System.Collections.Generic;
 
-public partial class InvoiceProcessingPipeline
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineSteps()
+    public partial class InvoiceProcessingPipeline
     {
-        _logger.Debug("Initializing initial pipeline steps (FormatPdfTextStep, ReadFormattedTextStep).");
-        // Initial steps: Format and Read
-        var steps = new List<IPipelineStep<InvoiceProcessingContext>>
+        private static List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineSteps()
         {
-            new FormatPdfTextStep(),
-            new ReadFormattedTextStep() // Assuming this step exists
-        };
-        _logger.Verbose("Initial pipeline steps created. Count: {Count}", steps.Count);
-        return steps;
+            _logger.Debug("Initializing initial pipeline steps (FormatPdfTextStep, ReadFormattedTextStep).");
+            // Initial steps: Format and Read
+            var steps = new List<IPipelineStep<InvoiceProcessingContext>>
+            {
+                new FormatPdfTextStep(),
+                new ReadFormattedTextStep() // Assuming this step exists
+            };
+            _logger.Verbose("Initial pipeline steps created. Count: {Count}", steps.Count);
+            return steps;
+        }
     }
 }

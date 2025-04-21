@@ -4,7 +4,10 @@ using System.Linq; // Added
 using System.Threading.Tasks; // Added
 using Serilog; // Added
 using System; // Added
-using WaterNut.DataSpace; // Added for ImportStatus enum
+using WaterNut.DataSpace;
+using WaterNut.DataSpace.PipelineInfrastructure;
+
+ // Added for ImportStatus enum
 using System.Collections.Generic; // Added for Dictionary
 
 namespace WaterNut.DataSpace.PipelineInfrastructure

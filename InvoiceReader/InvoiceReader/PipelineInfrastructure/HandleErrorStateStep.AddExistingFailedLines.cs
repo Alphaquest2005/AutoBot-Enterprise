@@ -1,39 +1,47 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public partial class HandleErrorStateStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static void AddExistingFailedLines(InvoiceProcessingContext context, List<Line> failedlines)
+
+    public partial class HandleErrorStateStep
     {
-        int? templateId = context?.Template?.OcrInvoices?.Id;
-        _logger.Verbose("Adding existing failed lines from template parts for TemplateId: {TemplateId}", templateId);
-        // Null checks
-        if (context?.Template?.Parts == null || failedlines == null)
+        private static void AddExistingFailedLines(InvoiceProcessingContext context, List<Line> failedlines)
         {
-            _logger.Warning(
-                "Cannot add existing failed lines: Template.Parts or target failedlines list is null for TemplateId: {TemplateId}",
+            int? templateId = context?.Template?.OcrInvoices?.Id;
+            _logger.Verbose("Adding existing failed lines from template parts for TemplateId: {TemplateId}",
                 templateId);
-            return;
-        }
-
-        try
-        {
-            var existingFailed = context.Template.Parts
-                .Where(part => part?.FailedLines != null) // Check part and FailedLines are not null
-                .SelectMany(z => z.FailedLines)
-                .Where(line => line != null) // Ensure individual lines are not null
-                .ToList();
-
-            int countAdded = existingFailed.Count;
-            _logger.Verbose("Found {Count} existing failed lines in Template Parts to add for TemplateId: {TemplateId}",
-                countAdded, templateId);
-            if (countAdded > 0)
+            // Null checks
+            if (context?.Template?.Parts == null || failedlines == null)
             {
-                failedlines.AddRange(existingFailed);
+                _logger.Warning(
+                    "Cannot add existing failed lines: Template.Parts or target failedlines list is null for TemplateId: {TemplateId}",
+                    templateId);
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "Error adding existing failed lines for TemplateId: {TemplateId}", templateId);
+
+            try
+            {
+                var existingFailed = context.Template.Parts
+                    .Where(part => part?.FailedLines != null) // Check part and FailedLines are not null
+                    .SelectMany(z => z.FailedLines)
+                    .Where(line => line != null) // Ensure individual lines are not null
+                    .ToList();
+
+                int countAdded = existingFailed.Count;
+                _logger.Verbose(
+                    "Found {Count} existing failed lines in Template Parts to add for TemplateId: {TemplateId}",
+                    countAdded, templateId);
+                if (countAdded > 0)
+                {
+                    failedlines.AddRange(existingFailed);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error adding existing failed lines for TemplateId: {TemplateId}", templateId);
+            }
         }
     }
 }

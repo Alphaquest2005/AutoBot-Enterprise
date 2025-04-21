@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using CoreEntities.Business.Entities;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;

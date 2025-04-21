@@ -1,21 +1,25 @@
-﻿namespace WaterNut.DataSpace;
+﻿using System.Linq;
 
-public partial class Part
+namespace WaterNut.DataSpace
 {
-    private bool NoFailedLines()
+
+    public partial class Part
     {
-        int? partId = this.OCR_Part?.Id;
-        string methodName = nameof(NoFailedLines);
-        _logger.Verbose("Entering {MethodName} for PartId: {PartId}", methodName, partId);
+        private bool NoFailedLines()
+        {
+            int? partId = this.OCR_Part?.Id;
+            string methodName = nameof(NoFailedLines);
+            _logger.Verbose("Entering {MethodName} for PartId: {PartId}", methodName, partId);
 
-        // Access FailedLines property which has its own logging
-        var failedLinesList = this.FailedLines;
-        bool noFailed = !failedLinesList.Any();
-        _logger.Verbose(
-            "{MethodName}: Evaluation result for PartId: {PartId}: {Result} (Based on FailedLines count: {Count})",
-            methodName, partId, noFailed, failedLinesList.Count);
+            // Access FailedLines property which has its own logging
+            var failedLinesList = this.FailedLines;
+            bool noFailed = !failedLinesList.Any();
+            _logger.Verbose(
+                "{MethodName}: Evaluation result for PartId: {PartId}: {Result} (Based on FailedLines count: {Count})",
+                methodName, partId, noFailed, failedLinesList.Count);
 
-        _logger.Verbose("Exiting {MethodName} for PartId: {PartId}", methodName, partId);
-        return noFailed;
+            _logger.Verbose("Exiting {MethodName} for PartId: {PartId}", methodName, partId);
+            return noFailed;
+        }
     }
 }

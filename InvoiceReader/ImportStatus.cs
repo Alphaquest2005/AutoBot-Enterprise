@@ -1,11 +1,12 @@
-﻿namespace WaterNut.DataSpace;
-
-public enum ImportStatus
+﻿namespace WaterNut.DataSpace
 {
-    Failed,
-    Success,
-    HasErrors
+    public enum ImportStatus
+    {
+        Failed,
+        Success,
+        HasErrors
 
+    }
 }
 
 

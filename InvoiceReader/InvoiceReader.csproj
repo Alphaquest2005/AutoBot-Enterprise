@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="morelinq" Version="4.4.0" />
     <PackageReference Include="PdfPig" Version="0.1.10" />
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" /> <!-- Adjust version if needed -->
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" /> <!-- Adjust version if needed -->
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" /> <!-- Adjust version if needed -->
   </ItemGroup>

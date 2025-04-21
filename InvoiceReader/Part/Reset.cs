@@ -4,55 +4,66 @@ using System.Linq; // Added for Any()
 using Core.Common.Extensions; // Added for ForEach
 using System.Collections.Generic; // Added for List<>
 
-namespace WaterNut.DataSpace;
-
-public partial class Part
+namespace WaterNut.DataSpace
 {
-    // Assuming _logger exists from another partial part
-    // private static readonly ILogger _logger = Log.ForContext<Part>();
 
-    public void Reset()
+    public partial class Part
     {
-        int? partId = this.OCR_Part?.Id; // Safe access for logging
-        _logger.Information("Entering Part.Reset for PartId: {PartId}", partId);
+        // Assuming _logger exists from another partial part
+        // private static readonly ILogger _logger = Log.ForContext<Part>();
 
-        try
+        public void Reset()
         {
-            _logger.Debug("PartId: {PartId} - Calling ResetInternalState.", partId);
-            ResetInternalState(); // Assuming this handles its own logging
+            int? partId = this.OCR_Part?.Id; // Safe access for logging
+            _logger.Information("Entering Part.Reset for PartId: {PartId}", partId);
 
-            _logger.Debug("PartId: {PartId} - Resetting _instance to 1 (was {PreviousValue}).", partId, _instance);
-            _instance = 1;
-
-            _logger.Debug("PartId: {PartId} - Resetting _lastProcessedParentInstance to 0 (was {PreviousValue}).", partId, _lastProcessedParentInstance);
-            _lastProcessedParentInstance = 0;
-
-            // Recursively reset child parts safely
-            if (ChildParts != null && ChildParts.Any())
+            try
             {
-                 _logger.Debug("PartId: {PartId} - Recursively calling Reset() on {Count} child parts.", partId, ChildParts.Count);
-                 ChildParts.ForEach(child => { // Use ForEach extension
-                    if (child != null)
+                _logger.Debug("PartId: {PartId} - Calling ResetInternalState.", partId);
+                ResetInternalState(); // Assuming this handles its own logging
+
+                _logger.Debug("PartId: {PartId} - Resetting _instance to 1 (was {PreviousValue}).", partId, _instance);
+                _instance = 1;
+
+                _logger.Debug("PartId: {PartId} - Resetting _lastProcessedParentInstance to 0 (was {PreviousValue}).",
+                    partId, _lastProcessedParentInstance);
+                _lastProcessedParentInstance = 0;
+
+                // Recursively reset child parts safely
+                if (ChildParts != null && ChildParts.Any())
+                {
+                    _logger.Debug("PartId: {PartId} - Recursively calling Reset() on {Count} child parts.", partId,
+                        ChildParts.Count);
+                    ChildParts.ForEach(child =>
                     {
-                         // Child Reset handles its own logging
-                         child.Reset();
-                    } else {
-                         _logger.Warning("Skipping Reset() call on null child part for Parent PartId: {ParentPartId}", partId);
-                    }
-                 });
-            } else {
-                 _logger.Debug("PartId: {PartId} - No child parts to reset.", partId);
+                        // Use ForEach extension
+                        if (child != null)
+                        {
+                            // Child Reset handles its own logging
+                            child.Reset();
+                        }
+                        else
+                        {
+                            _logger.Warning(
+                                "Skipping Reset() call on null child part for Parent PartId: {ParentPartId}", partId);
+                        }
+                    });
+                }
+                else
+                {
+                    _logger.Debug("PartId: {PartId} - No child parts to reset.", partId);
+                }
+
+                _logger.Information("Finished Part.Reset for PartId: {PartId}", partId);
             }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during Part.Reset for PartId: {PartId}", partId);
+                // Decide if exception should be propagated
+            }
+        }
 
-             _logger.Information("Finished Part.Reset for PartId: {PartId}", partId);
-        }
-        catch (Exception ex)
-        {
-             _logger.Error(ex, "Error during Part.Reset for PartId: {PartId}", partId);
-             // Decide if exception should be propagated
-        }
+        // Assuming ResetInternalState exists in another partial class part
+        // private void ResetInternalState() { ... }
     }
-
-     // Assuming ResetInternalState exists in another partial class part
-     // private void ResetInternalState() { ... }
 }

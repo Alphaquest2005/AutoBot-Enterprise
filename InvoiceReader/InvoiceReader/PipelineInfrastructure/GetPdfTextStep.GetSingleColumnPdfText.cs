@@ -1,31 +1,34 @@
+using System;
+using System.Threading.Tasks;
 using pdf_ocr;
 using Tesseract;
 
-namespace WaterNut.DataSpace.PipelineInfrastructure;
-
-public partial class GetPdfTextStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static Task<string> GetSingleColumnPdfText(InvoiceProcessingContext context)
+    public partial class GetPdfTextStep
     {
-        string filePath = context.FilePath;
-        _logger.Debug("Starting Single Column OCR task for File: {FilePath}", filePath);
-        return Task.Run(() =>
+        private static Task<string> GetSingleColumnPdfText(InvoiceProcessingContext context)
         {
-            try
+            string filePath = context.FilePath;
+            _logger.Debug("Starting Single Column OCR task for File: {FilePath}", filePath);
+            return Task.Run(() =>
             {
-                var txt = "------------------------------------------Single Column-------------------------\r\n";
-                _logger.Verbose("Executing PdfOcr().Ocr with SingleColumn for File: {FilePath}", filePath);
-                txt += new PdfOcr().Ocr(filePath, PageSegMode.SingleColumn);
-                _logger.Information(
-                    "Single Column OCR task completed successfully for File: {FilePath}. Result Length: {Length}",
-                    filePath, txt.Length);
-                return txt;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error during Single Column OCR task for File: {FilePath}", filePath);
-                throw; // Re-throw the exception
-            }
-        });
+                try
+                {
+                    var txt = "------------------------------------------Single Column-------------------------\r\n";
+                    _logger.Verbose("Executing PdfOcr().Ocr with SingleColumn for File: {FilePath}", filePath);
+                    txt += new PdfOcr().Ocr(filePath, PageSegMode.SingleColumn);
+                    _logger.Information(
+                        "Single Column OCR task completed successfully for File: {FilePath}. Result Length: {Length}",
+                        filePath, txt.Length);
+                    return txt;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error during Single Column OCR task for File: {FilePath}", filePath);
+                    throw; // Re-throw the exception
+                }
+            });
+        }
     }
 }

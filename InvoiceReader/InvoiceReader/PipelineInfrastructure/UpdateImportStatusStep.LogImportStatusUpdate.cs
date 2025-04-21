@@ -1,12 +1,14 @@
-namespace WaterNut.DataSpace.PipelineInfrastructure;
-
-public partial class UpdateImportStatusStep
+namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    private static bool LogImportStatusUpdate(ImportStatus importStatus, string filePath, int? templateId)
+    public partial class UpdateImportStatusStep
     {
-        _logger.Information("Import status processed as {ImportStatus} for File: {FilePath}, TemplateId: {TemplateId}",
-            importStatus, filePath, templateId);
-        // This step's success depends only on reaching this point after processing, not the status itself.
-        return true;
+        private static bool LogImportStatusUpdate(ImportStatus importStatus, string filePath, int? templateId)
+        {
+            _logger.Information(
+                "Import status processed as {ImportStatus} for File: {FilePath}, TemplateId: {TemplateId}",
+                importStatus, filePath, templateId);
+            // This step's success depends only on reaching this point after processing, not the status itself.
+            return true;
+        }
     }
 }
