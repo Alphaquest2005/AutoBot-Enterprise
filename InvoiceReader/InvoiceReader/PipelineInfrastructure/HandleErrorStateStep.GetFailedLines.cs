@@ -8,14 +8,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static List<Line> GetFailedLines(InvoiceProcessingContext context)
+        private static List<Line> GetFailedLines(Invoice template)
         {
-            int? templateId = context?.Template?.OcrInvoices?.Id;
+            int? templateId = template?.OcrInvoices?.Id;
             _logger.Verbose(
                 "Getting initially failed lines (FailedFields or Missing Required Values) for TemplateId: {TemplateId}",
                 templateId);
             // Null check
-            if (context?.Template?.Lines == null)
+            if (template?.Lines == null)
             {
                 _logger.Warning("Cannot get failed lines: Template.Lines is null for TemplateId: {TemplateId}",
                     templateId);
@@ -24,7 +24,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             try
             {
-                var failed = context.Template.Lines
+                var failed = template.Lines
                     .Where(line => line?.OCR_Lines != null) // Ensure line and OCR_Lines not null
                     .DistinctBy(x => x.OCR_Lines.Id) // Requires MoreLinq or equivalent implementation
                     .Where(z =>

@@ -66,6 +66,9 @@ namespace WaterNut.DataSpace
                     .ToList();
                 _logger.Verbose("{MethodName}: Found {Count} initial instances for PartId: {PartId}: [{Instances}]",
                     methodName, instancesToProcess.Count, partId, string.Join(",", instancesToProcess));
+                // Log the instances to process
+                _logger.Verbose("{MethodName}: PartId: {PartId}, FilterInstance: {FilterInstance} - Instances to process: {@Instances}",
+                    methodName, partId, filterInstanceStr, instancesToProcess);
 
                 // --- Check Children if Filtering and Parent has no data for instance ---
                 if (filterInstance.HasValue && !instancesToProcess.Any())
@@ -227,6 +230,9 @@ namespace WaterNut.DataSpace
                     _logger.Verbose(
                         "{MethodName}: Instance: {Instance} - Finished processing sections for parent data.",
                         methodName, currentInstance);
+                    // Log the parentItem after populating parent fields
+                    _logger.Verbose("{MethodName}: Instance: {Instance} - Parent item after processing parent fields: {@ParentItem}",
+                        methodName, currentInstance, parentItem);
 
 
                     // --- Process Child Parts ---
@@ -257,25 +263,47 @@ namespace WaterNut.DataSpace
                             _logger.Verbose(
                                 "{MethodName}: Instance: {Instance} - Recursively calling {MethodName} for ChildPartId: {ChildPartId} (FilterInstance=null)...",
                                 methodName, currentInstance, methodName, childPartId);
-                            var allChildItemsForPart = SetPartLineValues(childPart, null); // Recursive call
+                            // Pass the current parent instance to the recursive call to filter child processing
+                            var allChildItemsForPart = SetPartLineValues(childPart, currentInstance); // Recursive call
                             _logger.Verbose(
                                 "{MethodName}: Instance: {Instance} - Recursive call finished for ChildPartId: {ChildPartId}. Received {TotalChildItems} total items.",
                                 methodName, currentInstance, childPartId, allChildItemsForPart?.Count ?? 0);
+                            // Log the result of the recursive call
+                            _logger.Verbose("{MethodName}: Instance: {Instance} - Recursive call result for ChildPartId: {ChildPartId}: {@ChildItems}",
+                                methodName, currentInstance, childPartId, allChildItemsForPart);
 
 
-                            // --- Filter Recursive Results ---
+                            // --- Filter Recursive Results (Adjusted for Recurring Children) ---
+                            bool isRecurringChild = childPart.OCR_Part?.RecuringPart != null && !childPart.OCR_Part.RecuringPart.IsComposite;
                             _logger.Verbose(
-                                "{MethodName}: Instance: {Instance} - Filtering {TotalChildItems} recursive results for ChildPartId: {ChildPartId} to match parent instance.",
-                                methodName, currentInstance, allChildItemsForPart?.Count ?? 0, childPartId);
-                            var rawChildItems = allChildItemsForPart?
-                                .Where(item => item != null &&
-                                               item.TryGetValue("Instance", out var instObj) &&
-                                               instObj is int inst &&
-                                               inst == currentInstance)
-                                .ToList() ?? new List<IDictionary<string, object>>();
-                            _logger.Verbose(
-                                "{MethodName}: Instance: {Instance} - Found {FilteredChildCount} items matching parent instance for ChildPartId: {ChildPartId}.",
-                                methodName, currentInstance, rawChildItems.Count, childPartId);
+                                "{MethodName}: Instance: {Instance} - Processing {TotalChildItems} recursive results for ChildPartId: {ChildPartId}. IsRecurringChild: {IsRecurringChild}",
+                                methodName, currentInstance, allChildItemsForPart?.Count ?? 0, childPartId, isRecurringChild);
+
+                            var rawChildItems = new List<IDictionary<string, object>>();
+                            if (allChildItemsForPart != null)
+                            {
+                                if (isRecurringChild)
+                                {
+                                    // For recurring children, take all items returned by the recursive call
+                                    rawChildItems = allChildItemsForPart.Where(item => item != null).ToList();
+                                    _logger.Verbose(
+                                        "{MethodName}: Instance: {Instance} - ChildPartId: {ChildPartId} is recurring. Including all {Count} items from recursive call.",
+                                        methodName, currentInstance, childPartId, rawChildItems.Count);
+                                }
+                                else
+                                {
+                                    // For non-recurring children, filter by parent instance (original logic)
+                                    rawChildItems = allChildItemsForPart
+                                        .Where(item => item != null &&
+                                                       item.TryGetValue("Instance", out var instObj) &&
+                                                       instObj is int inst &&
+                                                       inst == currentInstance)
+                                        .ToList();
+                                    _logger.Verbose(
+                                        "{MethodName}: Instance: {Instance} - ChildPartId: {ChildPartId} is NOT recurring. Found {Count} items matching parent instance.",
+                                        methodName, currentInstance, childPartId, rawChildItems.Count);
+                                }
+                            }
 
                             if (!rawChildItems.Any())
                             {
@@ -321,6 +349,9 @@ namespace WaterNut.DataSpace
                                 "{MethodName}: PartId: {PartId}, Instance: {Instance}: ChildPartId: {ChildPartId} - Raw items: {RawCount}, Deduplicated items: {DedupCount} (using positional index).",
                                 methodName, partId, currentInstance, childPartId, rawChildItems.Count,
                                 deduplicatedChildItems.Count);
+                            // Log the deduplicated child items
+                            _logger.Verbose("{MethodName}: Instance: {Instance} - Deduplicated child items for ChildPartId: {ChildPartId}: {@DedupItems}",
+                                methodName, currentInstance, childPartId, deduplicatedChildItems);
 
                             // --- Attach Deduplicated Child List ---
                             var entityTypeField = childPart.AllLines.FirstOrDefault()?
@@ -397,6 +428,9 @@ namespace WaterNut.DataSpace
                 _logger.Information(
                     "Exiting {MethodName} successfully for PartId: {PartId}. Returning {ItemCount} items.", methodName,
                     partId, finalPartItems.Count);
+                // Log the finalPartItems before returning
+                _logger.Verbose("{MethodName}: PartId: {PartId} - Final items before returning: {@FinalItems}",
+                    methodName, partId, finalPartItems);
                 return finalPartItems;
             }
             catch (Exception e)

@@ -8,6 +8,7 @@ using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using NUnit.Framework;
 
+
 namespace InvoiceReaderPipelineTests
 {
     public class InvoicePipelineTests
@@ -34,8 +35,7 @@ namespace InvoiceReaderPipelineTests
                     .Enrich.FromLogContext() // Enrichers
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
-                    .WriteTo.Console() // Console Sink
-                                       // .WriteTo.NUnit()   // Add NUnit Sink
+                    .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}") // Console Sink - Added output template
                     .WriteTo.File(logFilePath, // File Sink
                         rollingInterval: RollingInterval.Day,
                         retainedFileCountLimit: 3,
@@ -80,6 +80,11 @@ namespace InvoiceReaderPipelineTests
             _logger.Debug("Applying test application settings (3) and clearing database.");
             try
             {
+                // Apply test application settings
+                _logger.Debug("Applying test application settings (3).");
+                
+                _logger.Debug("Test application settings applied.");
+
                 // Explicitly clear tables for this test fixture
                 _logger.Debug("Explicitly clearing ShipmentInvoice and ShipmentInvoiceDetails tables.");
                 using (var ctx = new EntryDataDSContext())
@@ -107,8 +112,10 @@ namespace InvoiceReaderPipelineTests
 
         // New test based on CanImportAmazonMultiSectionInvoice
         [Test]
+
         public async Task CanImportAmazonMultiSectionInvoice_WithLogging()
         {
+            Console.SetOut(TestContext.Progress);
             _logger.Information("Starting CanImportAmazonMultiSectionInvoice_WithLogging test.");
             try
             {
@@ -131,6 +138,10 @@ namespace InvoiceReaderPipelineTests
                 // Assuming FileTypeManager is static
                 _logger.Debug("Calling FileTypeManager.GetImportableFileType with EntryType: {EntryType}, FileFormat: {FileFormat}, FilePath: {FilePath}",
                     FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
+                _logger.Debug("Getting importable file types for PDF.");
+                // Assuming FileTypeManager is static
+                _logger.Debug("Calling FileTypeManager.GetImportableFileType with EntryType: {EntryType}, FileFormat: {FileFormat}, FilePath: {FilePath}",
+                    FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
                 var rawFileTypes = FileTypeManager // Removed .Instance
                     .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
                 _logger.Debug("FileTypeManager.GetImportableFileType returned {Count} raw file types.", rawFileTypes.Count());
@@ -140,7 +151,7 @@ namespace InvoiceReaderPipelineTests
                     .ToList();
                 _logger.Debug("Found {Count} 'Unknown' PDF file types.", fileTypes.Count);
 
-                if (!fileTypes.Any())
+                if (!fileTypes.Any()) // Commented out as it depends on fileTypes
                 {
                     _logger.Warning("No suitable 'Unknown' PDF FileType found for: {FilePath}. Skipping test.", testFile);
                     Assert.Warn($"No suitable PDF FileType found for: {testFile}");

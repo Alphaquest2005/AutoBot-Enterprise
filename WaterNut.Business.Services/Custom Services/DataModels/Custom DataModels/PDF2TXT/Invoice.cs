@@ -49,57 +49,79 @@ namespace WaterNut.DataSpace
             {
 
 
-                var lineCount = 0;
-                var section = "";
-                foreach (var line in text)
-                {
-                    
-                    Sections.ForEach(s =>
-                    {
-                        if (line.Contains(s.Value)) section = s.Key;
-                    });
-
-                    lineCount += 1;
-                    var iLine = new List<InvoiceLine>(){ new InvoiceLine(line, lineCount) };
-                    Parts.ForEach(x => x.Read(iLine, section)); // Part.Read will log its own entry
-                }
+                ExtractValues(text);
 
                 AddMissingRequiredFieldValues();
 
-                if (!this.Lines.SelectMany(x => x.Values.Values).Any()) return new List<dynamic>();//!Success
+                if (ProcessValues(out var finalResultList, out var list)) return list;
 
-
-
-                var ores = Parts.Select(x =>
-                    {
-                        // Pass null for top-level calls, indicating no instance filtering yet
-                        var lst = SetPartLineValues(x, null);
-                        return lst;
-                    }
-                ).ToList();
-
-                
-                // ores contains results from SetPartLineValues for each top-level part.
-                // Each item in ores is a List<IDictionary<string, object>> representing instances found for that part.
-                var finalResultList = ores.SelectMany(x => x.ToList()).ToList(); // This should now be a list of correctly formed invoice instances.
-
-                if (!finalResultList.Any())
-                {
-                    Console.WriteLine($"[OCR DEBUG] Invoice.Read: No instances found for Invoice ID {OcrInvoices.Id}. Returning empty list structure.");
-                    // Return the expected structure but with an empty inner list
-                    return new List<dynamic> { new List<IDictionary<string, object>>() };
-                }
-
-                Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Returning {finalResultList.Count} assembled instances.");
-
-                // Return the list of instances, wrapped in List<dynamic> as expected by the caller.
-                // The caller expects `csvLines.First()` to be the `List<IDictionary<string, object>>`
-                return new List<dynamic> { finalResultList };
+                return ReturnFinalResults(finalResultList);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private List<dynamic> ReturnFinalResults(List<IDictionary<string, object>> finalResultList)
+        {
+            if (!finalResultList.Any())
+            {
+                Console.WriteLine($"[OCR DEBUG] Invoice.Read: No instances found for Invoice ID {OcrInvoices.Id}. Returning empty list structure.");
+                // Return the expected structure but with an empty inner list
+                return new List<dynamic> { new List<IDictionary<string, object>>() };
+            }
+
+            Console.WriteLine($"[OCR DEBUG] Invoice.Read: Finished read for Invoice ID {OcrInvoices.Id}. Returning {finalResultList.Count} assembled instances.");
+
+            // Return the list of instances, wrapped in List<dynamic> as expected by the caller.
+            // The caller expects `csvLines.First()` to be the `List<IDictionary<string, object>>`
+            return new List<dynamic> { finalResultList };
+        }
+
+        private bool ProcessValues(out List<IDictionary<string, object>> finalResultList, out List<dynamic> list)
+        {
+            list = new List<dynamic>();
+            finalResultList = new List<IDictionary<string, object>>();
+            if (!this.Lines.SelectMany(x => x.Values.Values).Any())
+            {
+                
+                return true;
+            }
+
+
+
+            var ores = Parts.Select(x =>
+                {
+                    // Pass null for top-level calls, indicating no instance filtering yet
+                    var lst = SetPartLineValues(x, null);
+                    return lst;
+                }
+            ).ToList();
+
+                
+            // ores contains results from SetPartLineValues for each top-level part.
+            // Each item in ores is a List<IDictionary<string, object>> representing instances found for that part.
+            finalResultList = ores.SelectMany(x => x.ToList()).ToList();
+            return false;
+        }
+
+        private void ExtractValues(List<string> text)
+        {
+            var lineCount = 0;
+            var section = "";
+            foreach (var line in text)
+            {
+                    
+                Sections.ForEach(s =>
+                {
+                    if (line.Contains(s.Value)) section = s.Key;
+                });
+
+                lineCount += 1;
+                var iLine = new List<InvoiceLine>(){ new InvoiceLine(line, lineCount) };
+                Parts.ForEach(x => x.Read(iLine, section)); // Part.Read will log its own entry
             }
         }
 
@@ -181,7 +203,8 @@ namespace WaterNut.DataSpace
                 // Child parts are processed recursively *within* the instance loop below.
 
                 // 2. Determine the instances to process for THIS part based on the filter
-                var instancesToProcess = part.Lines
+                // Determine the instances to process for THIS part based on the filter, including instances from child parts
+                var instancesToProcess = part.Lines.Union(part.ChildParts.SelectMany(cp => cp.Lines)) // Include lines from child parts
                     .SelectMany(line => line.Values.SelectMany(v => v.Value.Keys))
                     .Where(k => !filterInstance.HasValue || k.instance == filterInstance.Value)
                     .Select(k => k.instance)

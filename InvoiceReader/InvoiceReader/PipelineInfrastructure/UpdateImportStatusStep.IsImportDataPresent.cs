@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class UpdateImportStatusStep
@@ -7,18 +9,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Verbose("Checking if required data is present for import status update.");
             // Check each property and log which one is missing if any
             // Context null check happens in Execute
-            if (context.Template == null)
+            if (!context.Templates.Any())
             {
                 _logger.Warning("Required data missing for status update: Template is null.");
                 return false;
             }
 
             // Check Template.OcrInvoices as it's used later
-            if (context.Template.OcrInvoices == null)
-            {
-                _logger.Warning("Required data missing for status update: Template.OcrInvoices is null.");
-                return false;
-            }
+            context.Templates.Where(x => x.OcrInvoices == null)
+                .Select<Invoice, object>(x =>
+                {
+                    _logger.Warning("Required data missing for status update: {x.OcrInvoices.Name}.OcrInvoices is null.");
+                    return null;
+
+                });
+            
 
             if (string.IsNullOrEmpty(context.FilePath))
             {

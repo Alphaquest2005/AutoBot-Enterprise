@@ -23,10 +23,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              _logger.Debug("Executing ConstructEmailBodyStep for File: {FilePath}", context.FilePath);
 
             // Check for required context properties
-            if (string.IsNullOrEmpty(context.Error) || context.FileInfo == null || string.IsNullOrEmpty(context.TxtFile))
+            if (string.IsNullOrEmpty(context.Error) || context.FileInfo == null || string.IsNullOrEmpty(context.TextFilePath))
             {
-                 _logger.Warning("Skipping ConstructEmailBodyStep due to missing Error, FileInfo, or TxtFile for File: {FilePath}. Error Null/Empty: {IsErrorNull}, FileInfo Null: {IsFileInfoNull}, TxtFile Null/Empty: {IsTxtFileNull}",
-                    context.FilePath, string.IsNullOrEmpty(context.Error), context.FileInfo == null, string.IsNullOrEmpty(context.TxtFile));
+                 _logger.Warning("Skipping ConstructEmailBodyStep due to missing Error, FileInfo, or TextFilePath for File: {FilePath}. Error Null/Empty: {IsErrorNull}, FileInfo Null: {IsFileInfoNull}, TextFilePath Null/Empty: {IsTxtFileNull}",
+                    context.FilePath, string.IsNullOrEmpty(context.Error), context.FileInfo == null, string.IsNullOrEmpty(context.TextFilePath));
                 return false; // Required data is missing
             }
 

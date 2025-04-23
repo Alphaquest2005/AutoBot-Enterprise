@@ -8,12 +8,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static List<Line> GetDistinctRequiredLines(InvoiceProcessingContext context)
+        private static List<Line> GetDistinctRequiredLines(Invoice context)
         {
-            int? templateId = context?.Template?.OcrInvoices?.Id;
+
+            int? templateId = context?.OcrInvoices?.Id;
             _logger.Verbose("Getting distinct required lines for TemplateId: {TemplateId}", templateId);
             // Null check
-            if (context?.Template?.Lines == null)
+            if (context?.Lines == null)
             {
                 _logger.Warning(
                     "Cannot get distinct required lines: Template.Lines is null for TemplateId: {TemplateId}",
@@ -23,7 +24,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             try
             {
-                var requiredLines = context.Template.Lines
+                var requiredLines = context.Lines
                     .Where(line => line?.OCR_Lines?.Fields != null) // Ensure line, OCR_Lines, and Fields are not null
                     .DistinctBy(x => x.OCR_Lines.Id) // Requires MoreLinq or equivalent implementation
                     .Where(z => z.OCR_Lines.Fields.Any(f =>

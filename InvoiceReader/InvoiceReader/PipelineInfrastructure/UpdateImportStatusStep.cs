@@ -21,29 +21,31 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
             string filePath = context?.FilePath ?? "Unknown";
-            int? templateId = context?.Template?.OcrInvoices?.Id; // Safe access
+            var res = false;
+            foreach (var template in context.Templates)
+            {
+                
+          
+            int? templateId = template?.OcrInvoices?.Id; // Safe access
             _logger.Debug("Executing UpdateImportStatusStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
-            // Null check context first
-            if (context == null)
-            {
-                 _logger.Error("UpdateImportStatusStep executed with null context.");
-                 return false;
-            }
-
+           
             // Corrected logic: Check if required data is PRESENT, not missing
             if (IsImportDataPresent(context)) // Handles its own logging
             {
                 _logger.Debug("Required data is present. Processing import status update for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
                 ImportStatus finalStatus = ProcessImportFile(context); // Handles its own logging
                 // LogImportStatusUpdate handles its own logging
-                return LogImportStatusUpdate(finalStatus, filePath, templateId); // Pass context
+                res = LogImportStatusUpdate(finalStatus, filePath, templateId); // Pass context
             }
             else
             {
                  _logger.Warning("UpdateImportStatusStep cannot proceed due to missing required data in context for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
-                 return false; // Indicate failure as required data is missing
+                 res = false; // Indicate failure as required data is missing
             }
+            }
+
+            return res;
         }
 
         // Renamed and corrected logic: Returns true if data needed for this step is PRESENT

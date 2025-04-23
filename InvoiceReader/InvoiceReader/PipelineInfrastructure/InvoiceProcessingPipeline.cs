@@ -23,9 +23,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _isLastTemplate = isLastTemplate;
              // Log initialization with context details
              string filePath = _context?.FilePath ?? "Unknown";
-             int? templateId = _context?.Template?.OcrInvoices?.Id; // Template might be null initially
-             _logger.Debug("InvoiceProcessingPipeline initialized for File: {FilePath}, IsLastTemplate: {IsLastTemplate}, Initial TemplateId: {TemplateId}",
-                filePath, _isLastTemplate, templateId);
+             _logger.Debug("InvoiceProcessingPipeline initialized for File: {FilePath}, IsLastTemplate: {IsLastTemplate}",
+                filePath, _isLastTemplate);
         }
     }
 }

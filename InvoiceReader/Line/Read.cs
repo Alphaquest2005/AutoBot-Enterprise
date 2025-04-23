@@ -69,8 +69,8 @@ namespace WaterNut.DataSpace
                                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
                 _logger.Verbose(
-                    "{MethodName}: Attempting Regex.Match for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}",
-                    methodName, lineId, pattern, options);
+                    "{MethodName}: Attempting Regex.Match for LineId: {LineId}, Pattern: '{Pattern}', Options: {Options}. Input line (first 100 chars): '{LineContent}'",
+                    methodName, lineId, pattern, options, line != null ? line.Substring(0, Math.Min(line.Length, 100)) : "null");
                 Match match = Regex.Match(line, pattern, options, RegexTimeout); // Use defined timeout, get single match
                 _logger.Debug("{MethodName}: Regex.Match result for LineId: {LineId}: {MatchSuccess}", methodName,
                     lineId, match.Success);
@@ -106,6 +106,9 @@ namespace WaterNut.DataSpace
                     "{MethodName}: Calling FormatValues for LineId: {LineId}, Instance: {Instance} with single match...",
                     methodName, lineId, instance);
                 // FormatValues should handle its own logging
+                _logger.Verbose(
+                    "{MethodName}: Passing match to FormatValues for LineId: {LineId}, Instance: {Instance}. Match Value: '{MatchValue}'",
+                    methodName, lineId, instance, match.Value);
                 FormatValues(instance, match, values); // Pass the single match
                 _logger.Debug(
                     "{MethodName}: Finished FormatValues for LineId: {LineId}, Instance: {Instance}. Extracted {ValueCount} values.",

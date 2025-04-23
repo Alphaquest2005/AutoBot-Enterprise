@@ -19,6 +19,7 @@ namespace WaterNut.DataSpace
         private readonly List<InvoiceLine> _endlines = new List<InvoiceLine>();
         private readonly List<InvoiceLine> _lines = new List<InvoiceLine>(); // Holds ALL lines passed to this part within its current parent context
         private readonly StringBuilder _instanceLinesTxt = new StringBuilder(); // Text buffer specific to the current instance being processed
+        private List<IDictionary<string, object>> _values = new List<IDictionary<string, object>>(); // Stores extracted values for this part
 
         public Parts OCR_Part { get; } // Make readonly after constructor
 
@@ -108,6 +109,9 @@ namespace WaterNut.DataSpace
         private int _instance = 1; // Internal instance counter
         private int _lastProcessedParentInstance = 0; // Track the last parent instance processed by this child
         private int _currentInstanceStartLineNumber = -1; // Track the line number where the current instance started
+
+        // Add a public property to expose the _values field for logging/debugging
+        public List<IDictionary<string, object>> Values => _values;
 
         // FindStart now returns the triggering InvoiceLine or null
         // Takes the lines relevant to the current instance buffer as input

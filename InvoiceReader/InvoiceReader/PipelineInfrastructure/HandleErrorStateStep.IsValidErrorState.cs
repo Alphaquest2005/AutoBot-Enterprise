@@ -5,15 +5,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class HandleErrorStateStep
     {
-        private static bool IsValidErrorState(InvoiceProcessingContext context, List<Line> failedlines)
+        private static bool IsValidErrorState(Invoice template, List<Line> failedlines)
         {
-            int? templateId = context?.Template?.OcrInvoices?.Id;
-            string filePath = context?.FilePath ?? "Unknown";
+            int? templateId = template.OcrInvoices?.Id;
+            string filePath = _context?.FilePath ?? "Unknown";
             _logger.Debug("Checking IsValidErrorState for File: {FilePath}, TemplateId: {TemplateId}", filePath,
                 templateId);
 
             // Perform null checks early
-            if (context?.Template?.Lines == null || context?.Template?.Parts == null || failedlines == null)
+            if (template?.Lines == null || template?.Parts == null || failedlines == null)
             {
                 _logger.Warning(
                     "IsValidErrorState check cannot proceed due to null Template.Lines, Template.Parts, or failedlines list for File: {FilePath}, TemplateId: {TemplateId}",
@@ -28,14 +28,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 failedlines.Count);
             if (!hasFailedLines) return false; // Short-circuit if no failed lines
 
-            bool lessThanTotalLines = failedlines.Count < context.Template.Lines.Count;
+            bool lessThanTotalLines = failedlines.Count < template.Lines.Count;
             _logger.Verbose(
                 "Condition [IsValidErrorState]: Failed Lines Count ({FailedCount}) < Template Lines Count ({TemplateCount})? {Result}",
-                failedlines.Count, context.Template.Lines.Count, lessThanTotalLines);
+                failedlines.Count, template.Lines.Count, lessThanTotalLines);
             if (!lessThanTotalLines) return false; // Short-circuit
 
             // Safely check Parts conditions
-            var firstPart = context.Template.Parts.FirstOrDefault();
+            var firstPart = template.Parts.FirstOrDefault();
             bool firstPartStartedOrNoStart = false;
             if (firstPart != null)
             {
@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
             // Ensure Lines and Values are not null before checking Any()
-            bool hasAnyValues = context.Template.Lines
+            bool hasAnyValues = template.Lines
                 .Where(l => l?.Values != null) // Check line and Values not null
                 .SelectMany(x => x.Values.Values) // Select the values from the dictionary
                 .Any(); // Check if any values exist across all lines

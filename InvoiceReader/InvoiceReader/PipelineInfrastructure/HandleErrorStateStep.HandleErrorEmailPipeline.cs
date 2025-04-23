@@ -6,47 +6,47 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class HandleErrorStateStep
     {
-        private static async Task<bool> HandleErrorEmailPipeline(InvoiceProcessingContext context)
+        private static async Task<bool> HandleErrorEmailPipeline(Invoice template, string filePath)
         {
-            string filePath = context?.FilePath ?? "Unknown";
+             filePath = filePath ?? "Unknown";
             _logger.Information("Starting HandleErrorEmailPipeline for File: {FilePath}", filePath);
 
-            // Populate FileInfo and TxtFile in context for email pipeline
+            // Populate FileInfo and TextFilePath in template for email pipeline
             try
             {
                 _logger.Debug("Creating FileInfo for File: {FilePath}", filePath);
-                context.FileInfo = new FileInfo(filePath); // Can throw if path is invalid
+                
 
-                // Assuming TxtFile was set in a previous step (e.g., WriteFormattedTextFileStep)
-                if (string.IsNullOrEmpty(context.TxtFile))
+                // Assuming TextFilePath was set in a previous step (e.g., WriteFormattedTextFileStep)
+                if (string.IsNullOrEmpty(template.FormattedPdfText))
                 {
                     _logger.Warning(
-                        "TxtFile is missing in context for File: {FilePath}. Email attachment might be incomplete.",
+                        "TextFilePath is missing in template for File: {FilePath}. Email attachment might be incomplete.",
                         filePath);
                     // Decide if this is fatal for the email process
                 }
                 else
                 {
-                    _logger.Debug("Using TxtFile from context: {TxtFile}", context.TxtFile);
+                    _logger.Debug("Using TextFilePath from template: {TextFilePath}", template.FormattedPdfText);
                 }
 
-                // Add FailedLines to context if not already there (needed by CreateEmailPipeline/ConstructEmailBodyStep)
-                if (context.FailedLines == null)
+                // Add FailedLines to template if not already there (needed by CreateEmailPipeline/ConstructEmailBodyStep)
+                if (template.FailedLines == null)
                 {
                     _logger.Warning(
                         "Context.FailedLines is null before calling CreateEmailPipeline. Attempting to populate for File: {FilePath}",
                         filePath);
                     // Re-calculate failed lines specifically for the email body generation
-                    context.FailedLines = GetFailedLines(context); // Use the same logic
-                    AddExistingFailedLines(context, context.FailedLines); // Add existing ones too
+                    template.FailedLines = GetFailedLines(template); // Use the same logic
+                    AddExistingFailedLines(template, template.FailedLines); // Add existing ones too
                     _logger.Information("Populated Context.FailedLines with {Count} lines for email generation.",
-                        context.FailedLines.Count);
+                        template.FailedLines.Count);
                 }
 
 
                 // Create and run the CreateEmailPipeline
                 _logger.Debug("Creating CreateEmailPipeline instance for File: {FilePath}", filePath);
-                var createEmailPipeline = new CreateEmailPipeline(context); // Handles its own logging
+                var createEmailPipeline = new CreateEmailPipeline(_context); // Handles its own logging
 
                 _logger.Information("Running CreateEmailPipeline for File: {FilePath}", filePath);
                 bool emailPipelineSuccess =

@@ -44,7 +44,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error during ProcessSuccessfulSteps for File: {FilePath}", filePath);
-                if (_context != null) _context.ImportStatus = ImportStatus.Failed; // Ensure status reflects failure
+                
                 return false;
             }
         }

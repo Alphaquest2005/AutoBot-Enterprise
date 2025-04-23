@@ -7,7 +7,9 @@ using System.Collections.Generic; // Added
 using System.Linq; // Added
 using Serilog; // Added
 using System; // Added
-using Core.Common; // Added for BetterExpando
+using Core.Common;
+using DocumentDS.Business.Entities;
+using FileTypes = CoreEntities.Business.Entities.FileTypes; // Added for BetterExpando
 
 namespace WaterNut.DataSpace
 {
@@ -19,6 +21,66 @@ namespace WaterNut.DataSpace
         private EntryData EntryData { get; } = new EntryData(); // Simple initialization, no logging needed
         public Invoices OcrInvoices { get; }
         public List<Part> Parts { get; set; } // Set in constructor
+
+        public List<AsycudaDocumentSet> DocSet { get; set; }
+        public string EmailId { get; set; }
+        public bool OverWriteExisting { get; set; }
+        public string FilePath { get; set; }
+
+
+      //  private ImportStatus _importStatus;
+      public ImportStatus ImportStatus // Added ImportStatus property
+      {
+          get
+          {
+              if (this.Parts?.All(x => x != null && x.Success) ?? true) return ImportStatus.Success;
+              if (this.Parts.All(x => x != null && !x.Success)) return ImportStatus.Failed;
+              return ImportStatus.HasErrors;
+
+          }
+      }
+
+      private string _formattedPdfText = string.Empty;
+        public string FormattedPdfText // Added FormattedPdfText property
+        {
+            get => _formattedPdfText;
+            set
+            {
+                if (_formattedPdfText != value)
+                {
+                    _formattedPdfText = value;
+                    _logger.Debug("Template Property Changed: FormattedPdfText. Length = {NewValueLength}", value?.Length ?? 0);
+                }
+            }
+        }
+
+        private List<dynamic> _csvLines;
+        public List<dynamic> CsvLines // Added CsvLines property
+        {
+            get => _csvLines;
+            set
+            {
+                if (_csvLines != value)
+                {
+                    _csvLines = value;
+                    _logger.Debug("Template Property Changed: CsvLines. Count = {NewValueCount}", value?.Count ?? 0);
+                }
+            }
+        }
+
+        private List<Line> _failedLines;
+        public List<Line> FailedLines // Added FailedLines property
+        {
+            get => _failedLines;
+            set
+            {
+                if (_failedLines != value)
+                {
+                    _failedLines = value;
+                    _logger.Debug("Template Property Changed: FailedLines. Count = {NewValueCount}", value?.Count ?? 0);
+                }
+            }
+        }
 
         // Added logging to property getters as they contain logic
         public bool Success
@@ -123,6 +185,21 @@ namespace WaterNut.DataSpace
 
         // MaxLinesCheckedToStart might be logged when it's used, rather than here
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
+
+        private FileTypes _fileType;
+        public FileTypes FileType
+        {
+            get => _fileType;
+            set
+            {
+                if (_fileType != value)
+                {
+                    _fileType = value;
+                    _logger.Debug("Template Property Changed: FileType = {NewValue}", value?.Description ?? "null");
+                }
+            }
+        }
+
 
         // 'table' is used by CreateOrGetDitm - logging added there. Initialization here is simple.
         private static readonly Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();

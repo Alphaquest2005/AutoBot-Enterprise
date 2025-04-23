@@ -16,44 +16,59 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-             // Use FilePath as the identifier
-             _logger.Debug("Executing AddMissingRequiredFieldValuesStep for File: {FilePath}", context.FilePath);
+            // Use FilePath as the identifier
+            _logger.Debug("Executing AddMissingRequiredFieldValuesStep for File: {FilePath}", context.FilePath);
 
-            // Added null checks and Any() for CsvLines
-            if (context.Template != null && context.CsvLines != null && context.CsvLines.Any())
+
+
+            var res = true;
+            foreach (var template in context.Templates)
             {
-                var requiredFieldsList = GetRequiredFieldsWithValues(context);
-                 // Use FilePath as the identifier
-                 _logger.Debug("Found {RequiredFieldCount} required fields with values for File: {FilePath}.", requiredFieldsList.Count, context.FilePath);
 
-                AddRequiredFieldValuesToDocuments(context, requiredFieldsList);
+                // Added null checks and Any() for CsvLines
+                if (template.CsvLines != null && template.CsvLines.Any())
+                {
+                    var requiredFieldsList = GetRequiredFieldsWithValues(context,template);
+                    // Use FilePath as the identifier
+                    _logger.Debug("Found {RequiredFieldCount} required fields with values for File: {FilePath}.",
+                        requiredFieldsList.Count, context.FilePath);
 
-                // Replace Console.WriteLine with Serilog Information log
-                 // Use FilePath as the identifier
-                 _logger.Information("Added missing required field values for File: {FilePath}.", context.FilePath);
+                    AddRequiredFieldValuesToDocuments(context,template, requiredFieldsList);
 
-                 // Use FilePath as the identifier
-                 _logger.Debug("Finished executing AddMissingRequiredFieldValuesStep successfully for File: {FilePath}", context.FilePath);
-                return true; // Indicate success
+                    // Replace Console.WriteLine with Serilog Information log
+                    // Use FilePath as the identifier
+                    _logger.Information("Added missing required field values for File: {FilePath}.", context.FilePath);
+
+                    // Use FilePath as the identifier
+                    _logger.Debug(
+                        "Finished executing AddMissingRequiredFieldValuesStep successfully for File: {FilePath}",
+                        context.FilePath);
+                    return true; // Indicate success
+                }
+
+                // Log a warning if required data is missing
+                // Use FilePath as the identifier
+                _logger.Warning(
+                    "Skipping AddMissingRequiredFieldValuesStep on Template:{template.OcrInvoices.Name} due to missing CsvLines for File: {FilePath}.",
+                    context.FilePath);
             }
-
-            // Log a warning if required data is missing
-             // Use FilePath as the identifier
-             _logger.Warning("Skipping AddMissingRequiredFieldValuesStep due to missing Template or CsvLines for File: {FilePath}.", context.FilePath);
-            return false;
+            return true; // Indicate success
         }
 
-        private void AddRequiredFieldValuesToDocuments(InvoiceProcessingContext context, List<Fields> requiredFieldsList)
+
+
+        private void AddRequiredFieldValuesToDocuments(InvoiceProcessingContext context, Invoice template,
+            List<Fields> requiredFieldsList)
         {
              // Use FilePath as the identifier
              _logger.Debug("Starting to add required field values to documents for File: {FilePath}", context.FilePath);
 
             // Assuming CsvLines is List<object> where the first object is List<IDictionary<string, object>>
             // Need null checks for safety
-            if (context.CsvLines == null || !context.CsvLines.Any() || !(context.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
+            if (template.CsvLines == null || !template.CsvLines.Any() || !(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
             {
                  // Use FilePath as the identifier
-                _logger.Warning("CsvLines is null, empty, or not in the expected format for File: {FilePath}. Cannot add required fields.", context.FilePath);
+                _logger.Warning("CsvLines is null, empty, or not in the expected format for Template:{template} File: {FilePath}. Cannot add required fields.", context.FilePath);
                 return;
             }
 
@@ -84,19 +99,19 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              _logger.Debug("Finished adding required field values to documents for File: {FilePath}", context.FilePath);
         }
 
-        private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context)
+        private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Invoice template)
         {
              // Use FilePath as the identifier
             _logger.Verbose("Getting required fields with values for File: {FilePath}", context.FilePath);
             // Added null check for safety
-            if (context.Template?.Lines == null)
+            if (template?.Lines == null)
             {
                  // Use FilePath as the identifier
                 _logger.Warning("Template or Template.Lines is null in GetRequiredFieldsWithValues for File: {FilePath}. Returning empty list.", context.FilePath);
                 return new List<Fields>();
             }
 
-            var fields = context.Template.Lines
+            var fields = template.Lines
                 .Where(line => line?.OCR_Lines?.Fields != null) // Ensure line and fields are not null
                 .SelectMany(x => x.OCR_Lines.Fields)
                 .Where(z => z != null && z.IsRequired && z.FieldValue != null && !string.IsNullOrEmpty(z.FieldValue.Value)) // Ensure field and FieldValue are not null

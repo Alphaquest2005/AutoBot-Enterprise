@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using CoreEntities.Business.Entities;
@@ -31,7 +32,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public string EmailId { get; set; }
         public bool OverWriteExisting { get; set; }
-        public List<AsycudaDocumentSet> DocSet { get; set; }
+        
 
         private FileTypes _fileType;
         public FileTypes FileType
@@ -50,77 +51,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public EmailDownloader.Client Client { get; set; }
         public StringBuilder PdfText { get; set; }
 
-        private Invoice _template;
-        public Invoice Template // Reverted Template property type to WaterNut.DataSpace.Invoice
-        {
-            get => _template;
-            set
-            {
-                if (_template != value)
-                {
-                    _template = value;
-                    _logger.Debug("Context Property Changed: Template = {NewValue}", value?.OcrInvoices?.Name ?? "null"); // Access Name via OcrInvoices
-                }
-            }
-        }
 
-        private string _formattedPdfText;
-        public string FormattedPdfText // Added FormattedPdfText property
-        {
-            get => _formattedPdfText;
-            set
-            {
-                if (_formattedPdfText != value)
-                {
-                    _formattedPdfText = value;
-                    _logger.Debug("Context Property Changed: FormattedPdfText. Length = {NewValueLength}", value?.Length ?? 0);
-                }
-            }
-        }
 
-        private List<dynamic> _csvLines;
-        public List<dynamic> CsvLines // Added CsvLines property
-        {
-            get => _csvLines;
-            set
-            {
-                if (_csvLines != value)
-                {
-                    _csvLines = value;
-                    _logger.Debug("Context Property Changed: CsvLines. Count = {NewValueCount}", value?.Count ?? 0);
-                }
-            }
-        }
 
-        private ImportStatus _importStatus;
-        public ImportStatus ImportStatus // Added ImportStatus property
-        {
-            get => _importStatus;
-            set
-            {
-                if (_importStatus != value)
-                {
-                    _importStatus = value;
-                    _logger.Debug("Context Property Changed: ImportStatus = {NewValue}", value);
-                }
-            }
-        }
 
-        public IEnumerable<Invoice> Templates { get; set; }
 
-        private IEnumerable<Invoice> _possibleInvoices;
-        public IEnumerable<Invoice> PossibleInvoices
-        {
-            get => _possibleInvoices;
-            set
-            {
-                if (_possibleInvoices != value)
-                {
-                    _possibleInvoices = value;
-                    _logger.Debug("Context Property Changed: PossibleInvoices. Count = {NewValueCount}", value?.Count() ?? 0); // Use Count() for IEnumerable
-                }
-            }
-        }
+
+
+        public IEnumerable<Invoice> Templates { get; set; } = Enumerable.Empty<Invoice>();
+
+
 
         public Dictionary<string, (string file, string, ImportStatus Success)> Imports { get; set; } = new Dictionary<string, (string file, string, ImportStatus Success)>();
 
@@ -138,23 +78,38 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private List<Line> _failedLines;
-        public List<Line> FailedLines // Added FailedLines property
-        {
-            get => _failedLines;
-            set
-            {
-                if (_failedLines != value)
-                {
-                    _failedLines = value;
-                    _logger.Debug("Context Property Changed: FailedLines. Count = {NewValueCount}", value?.Count ?? 0);
-                }
-            }
-        }
+
 
         public FileInfo FileInfo { get; set; } // Added FileInfo property
-        public string TxtFile { get; set; } // Added TxtFile property
+        public string TextFilePath { get; set; } // Added TextFilePath property
         public string EmailBody { get; set; } // Added EmailBody property
+
+        public List<Line> FailedLines
+        {
+            get { return this.Templates.SelectMany(x => x.FailedLines ?? x.Parts.SelectMany(z => z.FailedLines).ToList()).ToList(); }
+        }
+
+        public ImportStatus ImportStatus
+        {
+            get
+            {
+                var res = this.Templates.Select(x => x.ImportStatus).ToList();
+                if (res.Count == 0)
+                {
+                    return ImportStatus.Failed;
+                }
+
+                var status = res.FirstOrDefault();
+                foreach (var item in res)
+                {
+                    if (item != status)
+                    {
+                        return ImportStatus.Failed;
+                    }
+                }
+                return status;
+            }
+        }
         // Add properties to hold results from each step
     }
 }

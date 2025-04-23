@@ -52,7 +52,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
                  // Filter out null or empty file paths before attaching
-                 var attachments = new[] { context.FilePath, context.TxtFile }
+                 var attachments = new[] { context.FilePath, context.TextFilePath }
                                      .Where(f => !string.IsNullOrEmpty(f))
                                      .ToArray();
                  _logger.Verbose("Email Subject: {Subject}, Body Length: {BodyLength}, Attachments: {Attachments}",
@@ -89,10 +89,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Context null check happens in Execute
              if (context.Client == null) { _logger.Warning("Missing required data for SendEmail: Client is null."); return true; }
              if (string.IsNullOrEmpty(context.EmailBody)) { _logger.Warning("Missing required data for SendEmail: EmailBody is null or empty."); return true; }
-             // FilePath and TxtFile are used as attachments, but maybe sending without them is acceptable?
+             // FilePath and TextFilePath are used as attachments, but maybe sending without them is acceptable?
              // Let's only require Client and EmailBody for now, attachments are optional.
              // if (string.IsNullOrEmpty(context.FilePath)) { _logger.Warning("Missing required data for SendEmail: FilePath is null or empty."); return true; }
-             // if (string.IsNullOrEmpty(context.TxtFile)) { _logger.Warning("Missing required data for SendEmail: TxtFile is null or empty."); return true; }
+             // if (string.IsNullOrEmpty(context.TextFilePath)) { _logger.Warning("Missing required data for SendEmail: TextFilePath is null or empty."); return true; }
 
              _logger.Verbose("No missing required data found for sending email (Client, EmailBody).");
              return false; // All strictly required data is present

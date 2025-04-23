@@ -9,6 +9,8 @@ using Core.Common;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.PipelineInfrastructure;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
+using Microsoft.Office.Interop.Excel;
 
 namespace InvoiceReader.PipelineInfrastructure
 {
@@ -37,35 +39,33 @@ namespace InvoiceReader.PipelineInfrastructure
                             _logger.Information("Loading templates from database: {Database} on server: {Server} for file: {FilePath}",
                                 ctx.Database.Connection.Database, ctx.Database.Connection.DataSource, filePath);
 
-                            // Always try to load Amazon template if file appears to be Amazon
-                            if (filePath != null && filePath.ToLower().Contains("amazon"))
-                            {
-                                _logger.Information("Querying for Amazon template (ID:5)");
-                                var amazonQuery = ctx.Invoices
-                                    .Include(x => x.Parts)
-                                    .Include(x => x.Parts.Select(p => p.Lines))
-                                    .Where(x => x.Id == 5 && x.IsActive);
-                                
-                                _logger.Debug("Amazon template query: {Query}", amazonQuery.ToString());
-                                
-                                var amazonTemplate = await amazonQuery.FirstOrDefaultAsync().ConfigureAwait(false);
-
-                                if (amazonTemplate != null)
-                                {
-                                    context.Templates = new List<Invoice> { new Invoice(amazonTemplate) };
-                                    _logger.Information("Found Amazon template (ID:5) with {PartCount} parts", amazonTemplate.Parts?.Count ?? 0);
-                                    return true;
-                                }
-                                _logger.Warning("Amazon template (ID:5) not found or inactive - checking database for any active templates");
-                            }
-
+                            
                             // Load all active templates
                             _logger.Information("Querying for all active templates");
                             var activeTemplatesQuery = ctx.Invoices
                                 .Include(x => x.Parts)
-                                .Include(x => x.Parts.Select(p => p.Lines))
-                                .Where(x => x.IsActive);
-                            
+                                .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                                .Include("RegEx.RegEx")
+                                .Include("RegEx.ReplacementRegEx")
+                                .Include("Parts.RecuringPart")
+                                .Include("Parts.Start.RegularExpressions")
+                                .Include("Parts.End.RegularExpressions")
+                                .Include("Parts.PartTypes")
+                                .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
+                                .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
+                                .Include("Parts.Lines.RegularExpressions")
+                                .Include("Parts.Lines.Fields.FieldValue")
+                                .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                                .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                                .Include("Parts.Lines.Fields.ChildFields.FieldValue")
+                                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
+                                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
+                                .Where(x => x.IsActive)
+                                .Where(x => x.ApplicationSettingsId ==
+                                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                                // .Where(filter) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
+                                
+
                             _logger.Debug("Active templates query: {Query}", activeTemplatesQuery.ToString());
                             
                             var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
@@ -78,7 +78,12 @@ namespace InvoiceReader.PipelineInfrastructure
                                     _logger.Information("- ID: {Id}, Name: {Name}, Parts: {PartCount}, IsActive: {IsActive}",
                                         t.Id, t.Name ?? "null", t.Parts?.Count ?? 0, t.IsActive);
                                 }
-                                context.Templates = templates.Select(x => new Invoice(x)).ToList();
+                                context.Templates = templates.Select(x => new Invoice(x){FileType = context.FileType,
+                                    DocSet = WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
+                                    FilePath = context.FilePath,
+                                    EmailId = context.EmailId,
+
+                                }).ToList();
                                 return true;
                             }
 

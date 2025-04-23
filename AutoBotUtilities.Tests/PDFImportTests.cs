@@ -106,6 +106,7 @@ namespace AutoBotUtilities.Tests
         [Test]
         public async Task CanImportAmazonMultiSectionInvoice()
         {
+            Console.SetOut(TestContext.Progress);
             try
             {
                 var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
