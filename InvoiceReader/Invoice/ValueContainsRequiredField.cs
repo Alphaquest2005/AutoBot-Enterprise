@@ -7,7 +7,7 @@ namespace WaterNut.DataSpace
     {
         private static bool ValueContainsRequiredField(Line x, Fields field)
         {
-            return x.Values.All(v => v.Value.Keys.Any(k => k.fields == field));
+            return x.Values.All(v => v.Value.Keys.Any(k => k.Fields == field));
         }
     }
 }

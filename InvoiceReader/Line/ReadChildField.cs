@@ -15,7 +15,7 @@ namespace WaterNut.DataSpace
         // private static readonly ILogger _logger = Log.ForContext<Line>();
         // private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5);
 
-        private void ReadChildField(Fields childField, Dictionary<(Fields fields, int instance), string> values,
+        private void ReadChildField(Fields childField, Dictionary<(Fields field, string instance), string> values,
             string strValue)
         {
             string methodName = nameof(ReadChildField);
@@ -238,7 +238,7 @@ namespace WaterNut.DataSpace
                     if (!string.IsNullOrEmpty(formattedValue))
                     {
                         // Use the inner field ('field') and hardcoded instance 1 for the key
-                        var valueKey = (field, 1);
+                        (Fields field, string instance) valueKey = (field, "0");
                         _logger.Verbose(
                             "{MethodName}: Adding/Updating value for InnerFieldId: {InnerFieldId}, Instance: 1. Value: '{Value}'",
                             methodName, innerFieldId, formattedValue);

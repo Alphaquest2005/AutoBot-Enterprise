@@ -81,7 +81,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                      var details = line.FailedFields
                                          .Where(dict => dict != null) // Filter out null dictionaries in the list
                                          .SelectMany(dict => dict.Values) // Get all List<KVP<(Fields, int), string>> from dictionary values
-                                         .SelectMany(list => list ?? Enumerable.Empty<KeyValuePair<(Fields fields, int instance), string>>()) // Flatten the lists of KVPs, handling null lists
+                                         .SelectMany(list => list ?? Enumerable.Empty<KeyValuePair<(Fields fields, string instance), string>>()) // Flatten the lists of KVPs, handling null lists
                                          .Where(kvp => kvp.Key.fields != null) // Ensure the 'fields' part of the tuple Key is not null
                                          .Select(kvp =>
                                          {

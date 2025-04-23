@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿﻿using System.Text.RegularExpressions;
 using System.Collections.Generic; // Added
 using System.Linq; // Added
 using System.Text; // Added for StringBuilder
@@ -13,11 +13,11 @@ namespace WaterNut.DataSpace
 
     public partial class Part
     {
-        public void Read(List<InvoiceLine> newlines, string Section, int? parentInstance = null)
+        public void Read(List<InvoiceLine> newlines, string Section, int? parentInstance = 0)
         {
             string methodName = nameof(Read);
             int? partId = this.OCR_Part?.Id;
-            int currentEffectiveInstance = parentInstance ?? _instance;
+            string currentEffectiveInstance = $"{parentInstance}-{_instance}";
             int newLineCount = newlines?.Count ?? 0;
             int firstNewLineNum = newlines?.FirstOrDefault()?.LineNumber ?? -1;
 
@@ -31,9 +31,11 @@ namespace WaterNut.DataSpace
 
                 var linesForThisStep = LinesForThisStep(newlines, methodName, partId);
 
-                ProcessStart(parentInstance, methodName, partId, currentEffectiveInstance);
+                var triggerline = ProcessStart(parentInstance, methodName, partId, currentEffectiveInstance);
 
-                ProcessLine(Section, methodName, partId, currentEffectiveInstance, linesForThisStep);
+                var importLineSuccess = ProcessLine(Section, methodName, partId, currentEffectiveInstance, linesForThisStep, parentInstance);
+
+                PostProcessLine(parentInstance, methodName, partId,triggerline, importLineSuccess) ;
 
                 LogExitingMethod(methodName, partId);
             }
@@ -41,6 +43,18 @@ namespace WaterNut.DataSpace
             {
                 LogUnhandledException(methodName, partId, Section, e);
                 throw;
+            }
+        }
+
+        private void PostProcessLine(int? parentInstance, string methodName, int? partId, InvoiceLine triggerline,
+            bool importLineSuccess)
+        {
+
+            if (parentInstance != null && WasStarted && importLineSuccess &&
+                (OCR_Part.RecuringPart != null && !OCR_Part.RecuringPart.IsComposite))
+            {
+                LogRecurringChildReset(methodName, partId, parentInstance, triggerline);
+                ResetInternalState();
             }
         }
 
@@ -87,8 +101,8 @@ namespace WaterNut.DataSpace
             return linesForThisStep1;
         }
 
-        private void ProcessStart(int? parentInstance, string methodName, int? partId,
-            int currentEffectiveInstance)
+        private InvoiceLine ProcessStart(int? parentInstance, string methodName, int? partId,
+            string currentEffectiveInstance)
         {
             var linesForInstanceBuffer = GetLinesForInstanceBuffer(methodName, partId);
 
@@ -99,19 +113,21 @@ namespace WaterNut.DataSpace
             var justStartedThisCall = JustStartedThisCall(parentInstance, startFound, methodName, partId, triggeringLine);
 
             StartFoundButNotStarted(startFound, justStartedThisCall, triggeringLine, methodName, partId, currentEffectiveInstance);
+            return triggeringLine;
         }
 
-        private void ProcessLine(string Section, string methodName, int? partId, int currentEffectiveInstance,
-            List<InvoiceLine> linesForThisStep)
+        private bool ProcessLine(string Section, string methodName, int? partId, string currentEffectiveInstance,
+            List<InvoiceLine> linesForThisStep, int? parentInstance)
         {
             bool currentlyStarted = _startlines.Any();
+            var importedLineSuccess = false;
             LogMainProcessingBlockConditions(methodName, partId, currentlyStarted, _startlines.Count, StartCount, _endlines.Count, EndCount);
 
             if (currentlyStarted && _startlines.Count >= StartCount && ((_endlines.Count < EndCount && EndCount > 0) || EndCount == 0))
             {
                 LogEnteringMainProcessingBlock(methodName, partId, currentEffectiveInstance);
 
-                if (ChildParts != null)
+                if (ChildParts != null && ChildParts.Any())
                 {
                     LogProcessingChildParts(methodName, partId, ChildParts.Count);
                     int childIndex = 0;
@@ -122,7 +138,7 @@ namespace WaterNut.DataSpace
                         {
                             int? childPartId = childPart.OCR_Part?.Id;
                             LogCallingChildRead(methodName, partId, currentEffectiveInstance, childIndex, ChildParts.Count, childPartId, linesForThisStep.Count);
-                            childPart.Read(new List<InvoiceLine>(linesForThisStep), Section, currentEffectiveInstance);
+                            childPart.Read(new List<InvoiceLine>(linesForThisStep), Section, parentInstance);
                             LogFinishedChildRead(methodName, partId, currentEffectiveInstance, childPartId);
                         }
                         else
@@ -137,7 +153,7 @@ namespace WaterNut.DataSpace
                     LogNoChildPartsToProcess(methodName, partId);
                 }
 
-                if (Lines != null)
+                if (Lines != null && Lines.Any())
                 {
                     LogProcessingOwnLines(methodName, partId, Lines.Count);
                     int lineIndex = 0;
@@ -165,14 +181,22 @@ namespace WaterNut.DataSpace
                             var relevantLines = instanceLines.TakeLast(line.OCR_Lines.RegularExpressions.MaxLines ?? 10).ToList();
                             var lineText = relevantLines.Select(z => z.Line).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
                             LogReadingMultiLine(methodName, partId, currentEffectiveInstance, lineIndex, Lines.Count, lineId, relevantLines.Count);
-                            line.Read(lineText, relevantLines.FirstOrDefault()?.LineNumber ?? linesForThisStep.First().LineNumber, Section, currentEffectiveInstance);
+                            if (line.Read(lineText,
+                                    relevantLines.FirstOrDefault()?.LineNumber ?? linesForThisStep.First().LineNumber,
+                                    Section, currentEffectiveInstance))
+                            {
+                                importedLineSuccess = true; //ResetStartlinesifNoEndsDefined(instanceLines.Count());
+                            }
                             LogLineValuesAfterRead(methodName, partId, currentEffectiveInstance, lineId, line.Values);
                         }
                         else
                         {
                             var lastLineOfStep = linesForThisStep.Last();
                             LogReadingSingleLine(methodName, partId, currentEffectiveInstance, lineIndex, Lines.Count, lineId, lastLineOfStep.LineNumber);
-                            line.Read(lastLineOfStep.Line, lastLineOfStep.LineNumber, Section, currentEffectiveInstance);
+                            if(line.Read(lastLineOfStep.Line, lastLineOfStep.LineNumber, Section, currentEffectiveInstance))
+                            {
+                                importedLineSuccess = true; //ResetStartlinesifNoEndsDefined(1);// 1 last line of step count
+                            }
                             LogLineValuesAfterRead(methodName, partId, currentEffectiveInstance, lineId, line.Values);
                         }
                     });
@@ -189,10 +213,14 @@ namespace WaterNut.DataSpace
             {
                 LogMainProcessingBlockConditionsNotMet(methodName, partId, currentEffectiveInstance, currentlyStarted, _startlines.Count, StartCount, _endlines.Count, EndCount);
             }
+
+            return importedLineSuccess;
         }
 
+  
+
         private void StartFoundButNotStarted(bool startFound, bool justStartedThisCall, InvoiceLine triggeringLine,
-            string methodName, int? partId, int currentEffectiveInstance)
+            string methodName, int? partId, string currentEffectiveInstance)
         {
             if (startFound && !WasStarted && !justStartedThisCall)
             {
@@ -223,8 +251,8 @@ namespace WaterNut.DataSpace
             bool justStartedThisCall = false;
             if (parentInstance != null && startFound && WasStarted && (OCR_Part.RecuringPart != null && !OCR_Part.RecuringPart.IsComposite))
             {
-                LogRecurringChildReset(methodName, partId, parentInstance, triggeringLine);
-                ResetInternalState();
+                //LogRecurringChildReset(methodName, partId, parentInstance, triggeringLine);
+                //ResetInternalState();
                 _lastProcessedParentInstance = parentInstance.Value;
                 LogUpdatedLastProcessedParentInstance(methodName, partId, parentInstance.Value);
 
@@ -246,7 +274,7 @@ namespace WaterNut.DataSpace
         }
 
         private InvoiceLine GetTriggeringLine(List<InvoiceLine> linesForInstanceBuffer, string methodName, int? partId,
-            int currentEffectiveInstance, out bool startFound)
+            string currentEffectiveInstance, out bool startFound)
         {
             var triggeringLine = FindStart(linesForInstanceBuffer);
             startFound = triggeringLine != null;
@@ -302,7 +330,7 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private void LogEnteringMethod(string methodName, int? partId, int currentEffectiveInstance, int? parentInstance, string Section, int newLineCount, int firstNewLineNum)
+        private void LogEnteringMethod(string methodName, int? partId, string currentEffectiveInstance, int? parentInstance, string Section, int newLineCount, int firstNewLineNum)
         {
             _logger.Verbose("Entering {MethodName} for PartId: {PartId}, EffectiveInstance: {EffectiveInstance} (Internal: {InternalInstance}, Parent: {ParentInstance}), Section: '{Section}'. Processing {NewLineCount} new lines starting from LineNumber: {FirstNewLineNum}. Current buffer size: {BufferLineCount}. lastLineRead: {LastLineRead}. WasStarted: {WasStarted}", methodName, partId, currentEffectiveInstance, _instance, parentInstance?.ToString() ?? "N/A", Section, newLineCount, _lines?.Count ?? 0, lastLineRead, WasStarted);
         }
@@ -362,7 +390,7 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: PartId: {PartId} - Instance text buffer rebuilt. Length: {Length}, Line Count: {LineCount}. Content: '{Content}'", methodName, partId, length, lineCount, content);
         }
 
-        private void LogFindStartResult(string methodName, int? partId, int currentEffectiveInstance, bool startFound, InvoiceLine triggeringLine, bool wasStarted)
+        private void LogFindStartResult(string methodName, int? partId, string currentEffectiveInstance, bool startFound, InvoiceLine triggeringLine, bool wasStarted)
         {
             _logger.Information("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - FindStart result: {StartFound} {TriggerLineInfo}. WasStarted (before this call): {WasStarted}", methodName, partId, currentEffectiveInstance, startFound, startFound ? $"(Line: {triggeringLine.LineNumber})" : "", wasStarted);
         }
@@ -387,7 +415,7 @@ namespace WaterNut.DataSpace
             _logger.Warning("{MethodName}: Triggering line text not found in instance buffer after FindStart. Rebuilding buffer with triggering line for PartId: {PartId}, LineNumber: {LineNumber}", methodName, partId, lineNumber);
         }
 
-        private void LogInitialStartDetected(string methodName, int? partId, int lineNumber, int currentEffectiveInstance)
+        private void LogInitialStartDetected(string methodName, int? partId, int lineNumber, string currentEffectiveInstance)
         {
             _logger.Information("{MethodName}: PartId: {PartId} - Detected INITIAL start at LineNumber: {LineNumber} for EffectiveInstance: {EffectiveInstance}", methodName, partId, lineNumber, currentEffectiveInstance);
         }
@@ -402,7 +430,7 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: PartId: {PartId} - Checking Main Processing Block conditions: CurrentlyStarted={CurrentlyStarted}, StartLinesCount={StartCountActual}/{StartCountRequired}, EndLinesCount={EndCountActual}/{EndCountRequired}", methodName, partId, currentlyStarted, startCountActual, startCountRequired, endCountActual, endCountRequired);
         }
 
-        private void LogEnteringMainProcessingBlock(string methodName, int? partId, int currentEffectiveInstance)
+        private void LogEnteringMainProcessingBlock(string methodName, int? partId, string currentEffectiveInstance)
         {
             _logger.Debug("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Conditions met. Entering main processing block.", methodName, partId, currentEffectiveInstance);
         }
@@ -412,12 +440,12 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: PartId: {PartId} - Processing {Count} child parts...", methodName, partId, count);
         }
 
-        private void LogCallingChildRead(string methodName, int? partId, int currentEffectiveInstance, int index, int total, int? childPartId, int lineCount)
+        private void LogCallingChildRead(string methodName, int? partId, string currentEffectiveInstance, int index, int total, int? childPartId, int lineCount)
         {
             _logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Calling Read() on Child Part {Index}/{Total} (Id: {ChildPartId}) with {LineCount} lines, passing ParentInstance: {ParentInstance}.", methodName, partId, currentEffectiveInstance, index, total, childPartId, lineCount, currentEffectiveInstance);
         }
 
-        private void LogFinishedChildRead(string methodName, int? partId, int currentEffectiveInstance, int? childPartId)
+        private void LogFinishedChildRead(string methodName, int? partId, string currentEffectiveInstance, int? childPartId)
         {
             _logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Finished Read() on Child PartId: {ChildPartId}.", methodName, partId, currentEffectiveInstance, childPartId);
         }
@@ -452,17 +480,17 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: Skipping LineId: {LineId} processing as linesForThisStep is empty.", methodName, lineId);
         }
 
-        private void LogReadingMultiLine(string methodName, int? partId, int currentEffectiveInstance, int index, int total, int lineId, int relevantLineCount)
+        private void LogReadingMultiLine(string methodName, int? partId, string currentEffectiveInstance, int index, int total, int lineId, int relevantLineCount)
         {
             _logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Reading multi-line Line {Index}/{Total} (Id: {LineId}) using {RelevantLineCount} lines.", methodName, partId, currentEffectiveInstance, index, total, lineId, relevantLineCount);
         }
 
-        private void LogLineValuesAfterRead(string methodName, int? partId, int currentEffectiveInstance, int lineId, object values)
+        private void LogLineValuesAfterRead(string methodName, int? partId, string currentEffectiveInstance, int lineId, object values)
         {
-            _logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - LineId: {LineId} values after Read: {@LineValues}", methodName, partId, currentEffectiveInstance, lineId, values);
+            //_logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - LineId: {LineId} values after Read: {@LineValues}", methodName, partId, currentEffectiveInstance, lineId, values);
         }
 
-        private void LogReadingSingleLine(string methodName, int? partId, int currentEffectiveInstance, int index, int total, int lineId, int lastLineNum)
+        private void LogReadingSingleLine(string methodName, int? partId, string currentEffectiveInstance, int index, int total, int lineId, int lastLineNum)
         {
             _logger.Verbose("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Reading single-line Line {Index}/{Total} (Id: {LineId}) using last line of step ({LastLineNum}).", methodName, partId, currentEffectiveInstance, index, total, lineId, lastLineNum);
         }
@@ -477,12 +505,12 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: PartId: {PartId} - No own lines to process.", methodName, partId);
         }
 
-        private void LogFinishedMainProcessingBlock(string methodName, int? partId, int currentEffectiveInstance)
+        private void LogFinishedMainProcessingBlock(string methodName, int? partId, string currentEffectiveInstance)
         {
             _logger.Debug("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Finished main processing block.", methodName, partId, currentEffectiveInstance);
         }
 
-        private void LogMainProcessingBlockConditionsNotMet(string methodName, int? partId, int currentEffectiveInstance, bool currentlyStarted, int startCountActual, int startCountRequired, int endCountActual, int endCountRequired)
+        private void LogMainProcessingBlockConditionsNotMet(string methodName, int? partId, string currentEffectiveInstance, bool currentlyStarted, int startCountActual, int startCountRequired, int endCountActual, int endCountRequired)
         {
             _logger.Debug("{MethodName}: PartId: {PartId}, EffectiveInstance: {EffectiveInstance} - Conditions NOT met for main processing block (CurrentlyStarted={CurrentlyStarted}, StartCount={StartCountActual}/{StartCountRequired}, EndCount={EndCountActual}/{EndCountRequired})", methodName, partId, currentEffectiveInstance, currentlyStarted, startCountActual, startCountRequired, endCountActual, endCountRequired);
         }

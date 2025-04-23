@@ -8,7 +8,7 @@ namespace WaterNut.DataSpace
 
     public partial class Part
     {
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, string instance), string>>>> FailedFields
         {
             get
             {
@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace
                 _logger.Verbose("Entering {PropertyName} getter for PartId: {PartId}", propertyName, partId);
                 var finalFailedFields =
                     new List<Dictionary<string,
-                        List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Initialize
+                        List<KeyValuePair<(Fields fields, string instance), string>>>>(); // Initialize
 
                 try
                 {
@@ -29,11 +29,11 @@ namespace WaterNut.DataSpace
                                             .SelectMany(x =>
                                                 x.FailedFields ?? Enumerable
                                                     .Empty<Dictionary<string,
-                                                        List<KeyValuePair<(Fields fields, int instance),
+                                                        List<KeyValuePair<(Fields fields, string instance),
                                                             string>>>>()) // Access property, handle null
                                             .ToList()
                                         ?? new List<Dictionary<string,
-                                            List<KeyValuePair<(Fields fields, int instance),
+                                            List<KeyValuePair<(Fields fields, string instance),
                                                 string>>>>(); // Default if Lines is null
                     _logger.Information(
                         "{PropertyName}: Found {Count} groups of failed fields from direct lines for PartId: {PartId}",
@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace
                         propertyName, partId);
                     finalFailedFields =
                         new List<Dictionary<string,
-                            List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Ensure empty list on error
+                            List<KeyValuePair<(Fields fields, string instance), string>>>>(); // Ensure empty list on error
                 }
 
                 _logger.Verbose("Exiting {PropertyName} getter for PartId: {PartId}", propertyName, partId);

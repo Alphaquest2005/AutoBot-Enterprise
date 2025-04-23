@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         .SelectMany(dict => dict.Values)
                                         .SelectMany(list =>
                                             list ?? Enumerable
-                                                .Empty<KeyValuePair<(Fields fields, int instance), string>>())
+                                                .Empty<KeyValuePair<(Fields fields, string instance), string>>())
                                         .Where(kvp => kvp.Key.fields != null)
                                         .Select(kvp =>
                                         {

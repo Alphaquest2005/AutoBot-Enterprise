@@ -41,7 +41,7 @@ namespace WaterNut.DataSpace
                     .Where(l => l?.Values != null) // Safe navigation
                     .SelectMany(x => x.Values)
                     .Where(x => x.Key.section == "Single" && x.Value != null) // Ensure inner dictionary is not null
-                    .SelectMany(x => x.Value.Keys.Select(k => (Instance: k.instance, LineNumber: x.Key.lineNumber)))
+                    .SelectMany(x => x.Value.Keys.Select(k => (Instance: k.Instance, LineNumber: x.Key.lineNumber)))
                     .DistinctBy(x => x.Instance) // Requires MoreLinq
                     .ToList();
                 _logger.Debug("Found {Count} distinct instances from 'Single' sections for InvoiceId: {InvoiceId}",
@@ -81,9 +81,9 @@ namespace WaterNut.DataSpace
                         // Get instances already present in this line's values safely
                         var lineInstances =
                             line?.Values
-                                ?.SelectMany(z => z.Value?.Keys.Select(k => k.instance) ?? Enumerable.Empty<int>())
+                                ?.SelectMany(z => z.Value?.Keys.Select(k => k.Instance) ?? Enumerable.Empty<string>())
                                 .Distinct().ToList()
-                            ?? new List<int>(); // Safe navigation and default
+                            ?? new List<string>(); // Safe navigation and default
                         _logger.Verbose("LineId: {LineId} already has values for instances: [{Instances}]", lineId,
                             string.Join(",", lineInstances));
 
@@ -121,7 +121,7 @@ namespace WaterNut.DataSpace
                                         _logger.Warning(
                                             "Inner dictionary for Key ({LineNumber}, {Section}) is null for LineId: {LineId}. Initializing.",
                                             instance.LineNumber, "Single", lineId);
-                                        innerDict = new Dictionary<(Fields fields, int instance), string>();
+                                        innerDict = new Dictionary<(Fields fields, string instance), string>();
                                         line.Values[key] = innerDict; // Assign the new dictionary back
                                     }
 
@@ -146,7 +146,7 @@ namespace WaterNut.DataSpace
                                         "Adding new key and inner dictionary for LineId: {LineId}, Key: {Key}, InnerKey: (FieldId:{FieldId}, Instance:{Instance})",
                                         lineId, key, fieldId, instance.Instance);
                                     line.Values.Add(key,
-                                        new Dictionary<(Fields fields, int instance), string>
+                                        new Dictionary<(Fields fields, string instance), string>
                                             { { innerValueKey, valueToAdd } });
                                 }
                             }

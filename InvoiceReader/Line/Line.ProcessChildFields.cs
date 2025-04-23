@@ -6,9 +6,9 @@ namespace WaterNut.DataSpace
 {
     public partial class Line
     {
-        private void ProcessChildFields(int instance, Dictionary<(Fields Fields, int Instance), string> values,
+        private void ProcessChildFields(string instance, Dictionary<(Fields field, string instance), string> values,
             Fields field, string methodName, int? fieldId,
-            (Fields field, int instance) valueKey)
+            (Fields field, string instance) valueKey)
         {
             if (field.ChildFields != null && field.ChildFields.Any())
             {

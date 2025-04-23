@@ -7,9 +7,9 @@ namespace WaterNut.DataSpace
 {
     public partial class Line
     {
-        private bool GetValue(int instance, Dictionary<(Fields Fields, int Instance), string> values, Fields field,
+        private bool GetValue(string instance, Dictionary<(Fields field, string instance), string> values, Fields field,
             string methodName, int? fieldId,
-            string formattedValue, out (Fields field, int instance) valueKey)
+            string formattedValue, out (Fields field, string instance) valueKey)
         {
             valueKey = (field, instance);
             if (values.ContainsKey(valueKey))

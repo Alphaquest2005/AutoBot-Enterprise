@@ -15,8 +15,8 @@ namespace WaterNut.DataSpace
 
         // No logging added to this overload as it primarily calls the static GetValue
         private dynamic GetValue(
-            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> z,
-            (Fields fields, int instance) field)
+            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, string instance), string>> z,
+            (Fields fields, string instance) field)
         {
             // Added null check for inner dictionary
             if (z.Value == null)
@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace
 
         // No logging added to this overload as it primarily calls the static GetValue
         private dynamic GetValueByKey(
-            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> z,
+            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, string instance), string>> z,
             string key)
         {
             // Added null check for inner dictionary
@@ -90,10 +90,10 @@ namespace WaterNut.DataSpace
                     .SelectMany(x => x.Values.Values) // Select inner dictionaries
                     .Where(innerDict => innerDict != null) // Check inner dictionary not null
                     .SelectMany(innerDict => innerDict) // Flatten KeyValuePairs from inner dictionaries
-                    .FirstOrDefault(kvp => kvp.Key.fields?.Field == field); // Safe navigation to Field
+                    .FirstOrDefault(kvp => kvp.Key.Fields?.Field == field); // Safe navigation to Field
 
                 // Check if a KeyValuePair with a non-null fields was found
-                if (f.Key.fields == null)
+                if (f.Key.Fields == null)
                 {
                     _logger.Warning(
                         "Field '{Field}' not found in non-recurring parts for InvoiceId: {InvoiceId}. Returning null.",
@@ -115,7 +115,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static dynamic GetValue(KeyValuePair<(Fields fields, int instance), string> f)
+        private static dynamic GetValue(KeyValuePair<(Fields fields, string instance), string> f)
         {
             string methodName = "static " + nameof(GetValue);
             // Extract details for logging, handle nulls safely
@@ -123,7 +123,7 @@ namespace WaterNut.DataSpace
             string fieldName = f.Key.fields?.Field ?? "UnknownField";
             string dataType = f.Key.fields?.DataType ?? "UnknownDataType";
             string rawValue = f.Value;
-            int instance = f.Key.instance;
+            string instance = f.Key.instance;
 
             _logger.Verbose(
                 "Entering {MethodName} for FieldId: {FieldId} ('{FieldName}'), Instance: {Instance}, DataType: {DataType}, RawValue: '{RawValue}'",

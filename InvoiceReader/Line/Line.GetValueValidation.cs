@@ -6,8 +6,8 @@ namespace WaterNut.DataSpace
 {
     public partial class Line
     {
-        private bool GetValueValidation(int instance, Match match,
-            Dictionary<(Fields Fields, int Instance), string> values, string methodName, out int? lineId)
+        private bool GetValueValidation(string instance, Match match,
+            Dictionary<(Fields field, string instance), string> values, string methodName, out int? lineId)
         {
             lineId = this.OCR_Lines?.Id;
             _logger.Verbose(

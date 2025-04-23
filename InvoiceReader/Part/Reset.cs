@@ -19,40 +19,9 @@ namespace WaterNut.DataSpace
 
             try
             {
-                _logger.Debug("PartId: {PartId} - Calling ResetInternalState.", partId);
-                ResetInternalState(); // Assuming this handles its own logging
-
-                _logger.Debug("PartId: {PartId} - Resetting _instance to 1 (was {PreviousValue}).", partId, _instance);
-                _instance = 1;
-
-                _logger.Debug("PartId: {PartId} - Resetting _lastProcessedParentInstance to 0 (was {PreviousValue}).",
-                    partId, _lastProcessedParentInstance);
-                _lastProcessedParentInstance = 0;
-
-                // Recursively reset child parts safely
-                if (ChildParts != null && ChildParts.Any())
-                {
-                    _logger.Debug("PartId: {PartId} - Recursively calling Reset() on {Count} child parts.", partId,
-                        ChildParts.Count);
-                    ChildParts.ForEach(child =>
-                    {
-                        // Use ForEach extension
-                        if (child != null)
-                        {
-                            // Child Reset handles its own logging
-                            child.Reset();
-                        }
-                        else
-                        {
-                            _logger.Warning(
-                                "Skipping Reset() call on null child part for Parent PartId: {ParentPartId}", partId);
-                        }
-                    });
-                }
-                else
-                {
-                    _logger.Debug("PartId: {PartId} - No child parts to reset.", partId);
-                }
+                ResetInternalStateWithLogging(partId);
+                ResetInstanceFieldsWithLogging(partId);
+                ResetChildPartsWithLogging(partId);
 
                 _logger.Information("Finished Part.Reset for PartId: {PartId}", partId);
             }
@@ -60,6 +29,47 @@ namespace WaterNut.DataSpace
             {
                 _logger.Error(ex, "Error during Part.Reset for PartId: {PartId}", partId);
                 // Decide if exception should be propagated
+            }
+        }
+
+        private void ResetInternalStateWithLogging(int? partId)
+        {
+            _logger.Debug("PartId: {PartId} - Calling ResetInternalState.", partId);
+            ResetInternalState(); // Assuming this handles its own logging
+        }
+
+        private void ResetInstanceFieldsWithLogging(int? partId)
+        {
+            _logger.Debug("PartId: {PartId} - Resetting _instance to 1 (was {PreviousValue}).", partId, _instance);
+            _instance = 1;
+
+            _logger.Debug("PartId: {PartId} - Resetting _lastProcessedParentInstance to 0 (was {PreviousValue}).",
+                partId, _lastProcessedParentInstance);
+            _lastProcessedParentInstance = 0;
+        }
+
+        private void ResetChildPartsWithLogging(int? partId)
+        {
+            if (ChildParts != null && ChildParts.Any())
+            {
+                _logger.Debug("PartId: {PartId} - Recursively calling Reset() on {Count} child parts.", partId,
+                    ChildParts.Count);
+                ChildParts.ForEach(child =>
+                {
+                    if (child != null)
+                    {
+                        child.Reset(); // Child Reset handles its own logging
+                    }
+                    else
+                    {
+                        _logger.Warning(
+                            "Skipping Reset() call on null child part for Parent PartId: {ParentPartId}", partId);
+                    }
+                });
+            }
+            else
+            {
+                _logger.Debug("PartId: {PartId} - No child parts to reset.", partId);
             }
         }
 

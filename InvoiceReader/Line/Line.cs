@@ -41,17 +41,17 @@ namespace WaterNut.DataSpace
         // Modified to accept instance from the calling Part
 
         // Simple initialization, no logging needed here unless creation logic becomes complex
-        public Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>>();
+        public Dictionary<(int lineNumber, string section), Dictionary<(Fields Fields, string Instance), string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<(Fields Fields, string Instance), string>>();
         //public bool MultiLine => OCR_Lines.MultiLine;
 
-        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, string instance), string>>>> FailedFields
         {
             get
             {
                 string propertyName = nameof(FailedFields);
                 int? lineId = this.OCR_Lines?.Id;
                 _logger.Verbose("Entering {PropertyName} getter for LineId: {LineId}", propertyName, lineId);
-                var finalFailedList = new List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Initialize
+                var finalFailedList = new List<Dictionary<string, List<KeyValuePair<(Fields fields, string instance), string>>>>(); // Initialize
 
                 try
                 {
@@ -68,21 +68,21 @@ namespace WaterNut.DataSpace
                     finalFailedList = Values
                         .Where(outerKvp => outerKvp.Value != null) // Ensure inner dictionary is not null
                         .SelectMany(outerKvp => outerKvp.Value // Select KVPs from inner dictionary
-                            .Where(innerKvp => innerKvp.Key.fields != null && // Ensure Fields object is not null
-                                               innerKvp.Key.fields.IsRequired && // Check if required
+                            .Where(innerKvp => innerKvp.Key.Fields != null && // Ensure Fields object is not null
+                                               innerKvp.Key.Fields.IsRequired && // Check if required
                                                string.IsNullOrEmpty(innerKvp.Value)) // Check if value is missing
                             .Select(innerKvp => new // Project to anonymous type for grouping
                             {
-                                Field = innerKvp.Key.fields,
-                                Instance = innerKvp.Key.instance,
+                                Field = innerKvp.Key.Fields,
+                                Instance = innerKvp.Key.Instance,
                                 Value = innerKvp.Value,
-                                GroupKey = $"{innerKvp.Key.fields.Field ?? "NULL"}-{innerKvp.Key.fields.Key ?? "NULL"}" // Grouping key
+                                GroupKey = $"{innerKvp.Key.Fields.Field ?? "NULL"}-{innerKvp.Key.Fields.Key ?? "NULL"}" // Grouping key
                             }))
                         .GroupBy(failedItem => failedItem.GroupKey) // Group by FieldName-FieldKey combo
                         .Select(group => group.ToDictionary( // Create dictionary per group
                             g => group.Key, // CORRECTED: Use group.Key for the dictionary key
                             // Select from the 'group' itself, not the 'g' parameter which represents the key
-                            g => group.Select(item => new KeyValuePair<(Fields fields, int instance), string>((item.Field, item.Instance), item.Value)).ToList() // Value is list of original KVPs
+                            g => group.Select(item => new KeyValuePair<(Fields fields, string instance), string>((item.Field, item.Instance), item.Value)).ToList() // Value is list of original KVPs
                         ))
                         .ToList();
 
@@ -105,7 +105,7 @@ namespace WaterNut.DataSpace
                 catch (Exception ex)
                 {
                     _logger.Error(ex, "{PropertyName}: Unhandled exception during evaluation for LineId: {LineId}. Returning empty list.", propertyName, lineId);
-                    finalFailedList = new List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>>(); // Ensure empty list on error
+                    finalFailedList = new List<Dictionary<string, List<KeyValuePair<(Fields fields, string instance), string>>>>(); // Ensure empty list on error
                 }
 
                 _logger.Verbose("Exiting {PropertyName} getter for LineId: {LineId}", propertyName, lineId);

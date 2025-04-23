@@ -52,7 +52,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         .SelectMany(list =>
                             list ?? Enumerable
                                 .Empty<
-                                    KeyValuePair<(Fields fields, int instance),
+                                    KeyValuePair<(Fields fields, string instance),
                                         string>>()) // Flatten the lists of KVPs, handling null lists
                         .Where(kvp => kvp.Key.fields != null) // Ensure the 'fields' part of the tuple Key is not null
                         .Select(kvp => kvp.Key.fields) // Select the Fields object

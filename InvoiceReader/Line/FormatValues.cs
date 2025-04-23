@@ -13,8 +13,8 @@ namespace WaterNut.DataSpace
         // Logger instance is defined in the main Line.cs partial class file.
         // RegexTimeout constant is defined in the main Line.cs partial class file.
 
-        private void FormatValues(int instance, Match match, // Changed from MatchCollection to Match
-            Dictionary<(Fields Fields, int Instance), string> values)
+        private void FormatValues(string instance, Match match, // Changed from MatchCollection to Match
+            Dictionary<(Fields field, string instance), string> values)
         {
             string methodName = nameof(FormatValues);
             if (GetValueValidation(instance, match, values, methodName, out var lineId)) return;

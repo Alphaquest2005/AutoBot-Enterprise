@@ -15,6 +15,8 @@ namespace WaterNut.DataSpace
 
             try
             {
+                _instance += 1; 
+
                 _logger.Verbose("Clearing _startlines (Count: {Count})", _startlines?.Count ?? 0);
                 _startlines?.Clear(); // Use null-conditional operator for safety
 

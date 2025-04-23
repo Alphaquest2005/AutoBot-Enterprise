@@ -13,7 +13,7 @@ namespace WaterNut.DataSpace
 
         private void ImportByDataType(KeyValuePair<(Fields fields, int instance), string> field,
             IDictionary<string, object> ditm,
-            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> value)
+            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, string instance), string>> value)
         {
             // Extract details for logging, handle nulls safely
             int? fieldId = field.Key.fields?.Id;
