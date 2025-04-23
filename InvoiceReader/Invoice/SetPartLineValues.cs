@@ -82,7 +82,7 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private List<string> DetermineInstancesToProcess(Part currentPart, string filterInstance, int? partId, string methodName)
+        private List<IGrouping<string, string>> DetermineInstancesToProcess(Part currentPart, string filterInstance, int? partId, string methodName)
         {
             _logger.Verbose(
                 "{MethodName}: Determining instances to process for PartId: {PartId}, FilterInstance: {FilterInstance}",
@@ -97,6 +97,7 @@ namespace WaterNut.DataSpace
                 .Select(k => k.instance)
                 .Distinct()
                 .OrderBy(instance => instance)
+                .GroupBy(x => x.Split('-')[0])
                 .ToList();
 
             _logger.Verbose("{MethodName}: Found {Count} initial instances for PartId: {PartId}: [{Instances}]",
@@ -110,7 +111,7 @@ namespace WaterNut.DataSpace
             return instancesToProcess;
         }
 
-        private List<string> CheckChildPartsForInstances(Part currentPart, string filterInstance, int? partId, string methodName)
+        private List<IGrouping<string, string>> CheckChildPartsForInstances(Part currentPart, string filterInstance, int? partId, string methodName)
         {
             _logger.Verbose(
                 "{MethodName}: Checking child parts for FilterInstance: {FilterInstance} as parent PartId: {PartId} has no direct data for it.",
@@ -130,14 +131,16 @@ namespace WaterNut.DataSpace
                 _logger.Information(
                     "{MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<string> { filterInstance };
+                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance }) };
+
+
             }
 
             _logger.Verbose(
                 "{MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
                 methodName, partId, filterInstance);
 
-            return new List<string>();
+            return new List<IGrouping<string, string>>();
         }
 
         private void LogNoInstancesToProcess(int? partId, string filterInstance, string methodName)
@@ -150,7 +153,7 @@ namespace WaterNut.DataSpace
                 methodName, partId);
         }
 
-        private void ProcessInstance(Part currentPart, string currentInstance, int? partId, string methodName, List<IDictionary<string, object>> finalPartItems)
+        private void ProcessInstance(Part currentPart, IGrouping<string, string> currentInstance, int? partId, string methodName, List<IDictionary<string, object>> finalPartItems)
         {
             _logger.Debug("{MethodName}: Starting processing for Instance: {Instance} of PartId: {PartId}",
                 methodName, currentInstance, partId);
@@ -159,9 +162,14 @@ namespace WaterNut.DataSpace
             var parentDitm = (IDictionary<string, object>)parentItem;
             bool parentDataFound = false;
 
-            PopulateParentFields(currentPart, currentInstance, parentDitm, ref parentDataFound, methodName);
+            PopulateParentFields(currentPart, currentInstance.First(), parentDitm, ref parentDataFound, methodName);
 
-            ProcessChildParts(currentPart, currentInstance, parentDitm, ref parentDataFound, partId, methodName);
+            foreach (var childInstance in currentInstance.Skip(1))
+            {
+               ProcessChildParts(currentPart, childInstance, parentDitm, ref parentDataFound, partId, methodName); 
+            }
+
+            
 
             if (parentDataFound)
             {
@@ -314,5 +322,24 @@ namespace WaterNut.DataSpace
                 parentDitm[fieldname] = childItems;
             }
         }
+
+
     }
+}
+
+// Helper class to create a grouping
+public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+{
+    public TKey Key { get; }
+    private readonly IEnumerable<TElement> _elements;
+
+    public Grouping(TKey key, IEnumerable<TElement> elements)
+    {
+        Key = key;
+        _elements = elements;
+    }
+
+    public IEnumerator<TElement> GetEnumerator() => _elements.GetEnumerator();
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 }
