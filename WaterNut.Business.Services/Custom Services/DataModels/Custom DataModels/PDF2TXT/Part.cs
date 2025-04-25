@@ -1,5 +1,5 @@
-﻿﻿#nullable enable
- using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,19 +52,19 @@ namespace WaterNut.DataSpace
         private int _lastProcessedParentInstance = 0; // Track the last parent instance processed by this child
         private int _currentInstanceStartLineNumber = -1; // Track the line number where the current instance started
 
-        public void Read(List<InvoiceLine> newlines, string Section, int? parentInstance = null)
+        public void Read(List<InvoiceLine> newlines, string Section, int textCount, int? parentInstance = null)
         {
             int currentEffectiveInstance = parentInstance ?? _instance;
 
             // HACK: Reset child state if parent instance has advanced
             if (parentInstance.HasValue && parentInstance.Value > _lastProcessedParentInstance)
             {
-                Console.WriteLine($"[OCR DEBUG HACK] Part.Read: Child Part ID {OCR_Part.Id} detected new parent instance ({parentInstance.Value} > {_lastProcessedParentInstance}). Resetting child state.");
+                //Console.WriteLine($"[OCR DEBUG HACK] Part.Read: Child Part ID {OCR_Part.Id} detected new parent instance ({parentInstance.Value} > {_lastProcessedParentInstance}). Resetting child state.");
                 ResetInternalState();
                 _lastProcessedParentInstance = parentInstance.Value;
             }
 
-            Console.WriteLine($"[OCR DEBUG] Part.Read: Entry for Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance} (Internal: {_instance}, Parent: {parentInstance?.ToString() ?? "N/A"}), Section '{Section}'. Processing {newlines.Count} new lines starting from line {newlines.FirstOrDefault()?.LineNumber}. Current buffer size: {_lines.Count}. lastLineRead = {lastLineRead}. WasStarted = {WasStarted}");
+            Console.WriteLine($"[OCR DEBUG] Part.Read: Entry for Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance} (Internal: {_instance}, Parent: {parentInstance?.ToString() ?? "N/A"}), Section '{Section}'. Of total Lines {textCount}, Processing {newlines.Count} new lines starting from line {newlines.FirstOrDefault()?.LineNumber}. Current buffer size: {_lines.Count}. lastLineRead = {lastLineRead}. WasStarted = {WasStarted}");
 
             try
             {
@@ -90,7 +90,7 @@ namespace WaterNut.DataSpace
                 // FindStart returns the triggering line or null
                 var triggeringLine = FindStart(linesForInstanceBuffer); // Pass relevant lines to FindStart
                 bool startFound = triggeringLine != null;
-                Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: FindStart result = {startFound} {(startFound ? $"(Line: {triggeringLine.LineNumber})" : "")}. WasStarted (before processing start) = {WasStarted}");
+                //Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: FindStart result = {startFound} {(startFound ? $"(Line: {triggeringLine.LineNumber})" : "")}. WasStarted (before processing start) = {WasStarted}");
 
                 bool justStartedThisCall = false;
                 // --- End Start Detection ---
@@ -100,20 +100,23 @@ namespace WaterNut.DataSpace
 
                 if (isRecurringChildStartToStart)
                 {
-                    Console.WriteLine($"[OCR DEBUG] Part.Read: PARTIAL Resetting state for RECURRING CHILD Part ID {OCR_Part.Id} (Internal Instance {_instance}) within Parent Instance {parentInstance}. Found subsequent start on line {triggeringLine.LineNumber}.");
+                    //Console.WriteLine($"[OCR DEBUG] Part.Read: PARTIAL Resetting state for RECURRING CHILD Part ID {OCR_Part.Id} (Internal Instance {_instance}) within Parent Instance {parentInstance}. Found subsequent start on line {triggeringLine.LineNumber}.");
                     _startlines.Clear();
                     _endlines.Clear();
                     _instanceLinesTxt.Clear();
                     _currentInstanceStartLineNumber = -1;
 
-                    if (triggeringLine != null && StartCount > 0) {
+                    if (triggeringLine != null && StartCount > 0)
+                    {
                         _startlines.Add(triggeringLine);
                         _currentInstanceStartLineNumber = triggeringLine.LineNumber;
                         _instanceLinesTxt.AppendLine(triggeringLine.Line);
-                        Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as first start line for new recurring child instance.");
+                        //Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as first start line for new recurring child instance.");
                         justStartedThisCall = true;
-                    } else if (StartCount > 0) {
-                         Console.WriteLine($"[OCR DEBUG ERROR] Part.Read: Failed to add start line after recurring child reset (triggeringLine was null or StartCount is 0).");
+                    }
+                    else if (StartCount > 0)
+                    {
+                        //Console.WriteLine($"[OCR DEBUG ERROR] Part.Read: Failed to add start line after recurring child reset (triggeringLine was null or StartCount is 0).");
                     }
                 }
                 // --- End Recurring Child Reset ---
@@ -121,22 +124,27 @@ namespace WaterNut.DataSpace
                 // --- Initial Start Logic ---
                 if (startFound && !WasStarted && !justStartedThisCall)
                 {
-                     if (triggeringLine != null && StartCount > 0) {
+                    if (triggeringLine != null && StartCount > 0)
+                    {
                         _startlines.Add(triggeringLine);
                         _currentInstanceStartLineNumber = triggeringLine.LineNumber;
                         // Ensure buffer has the line
-                        if(_instanceLinesTxt.Length == 0 || !_instanceLinesTxt.ToString().Contains(triggeringLine.Line)) {
+                        if (_instanceLinesTxt.Length == 0 || !_instanceLinesTxt.ToString().Contains(triggeringLine.Line))
+                        {
                             _instanceLinesTxt.Clear();
                             _instanceLinesTxt.AppendLine(triggeringLine.Line);
                         }
-                        Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as INITIAL start line for instance (Effective: {currentEffectiveInstance}).");
+                        //Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as INITIAL start line for instance (Effective: {currentEffectiveInstance}).");
                         justStartedThisCall = true;
-                        if (parentInstance != null) {
-                            Console.WriteLine($"[OCR DEBUG] Part.Read: Child Part ID {OCR_Part.Id}: Detected INITIAL start within parent's context (Parent Instance {parentInstance}). Using parent's effective instance {currentEffectiveInstance}.");
+                        if (parentInstance != null)
+                        {
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: Child Part ID {OCR_Part.Id}: Detected INITIAL start within parent's context (Parent Instance {parentInstance}). Using parent's effective instance {currentEffectiveInstance}.");
                         }
-                     } else if (StartCount > 0) {
-                         Console.WriteLine($"[OCR DEBUG ERROR] Part.Read: Failed to add initial start line (triggeringLine was null or StartCount is 0).");
-                     }
+                    }
+                    else if (StartCount > 0)
+                    {
+                        //Console.WriteLine($"[OCR DEBUG ERROR] Part.Read: Failed to add initial start line (triggeringLine was null or StartCount is 0).");
+                    }
                 }
                 // --- End Initial Start Logic ---
 
@@ -146,8 +154,8 @@ namespace WaterNut.DataSpace
                 {
                     // Process Child Parts
                     ChildParts.ForEach(x => {
-                        Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Calling Read() on Child Part ID {x.OCR_Part.Id} with {linesForThisStep.Count} lines for THIS STEP, passing instance {currentEffectiveInstance}.");
-                        x.Read(new List<InvoiceLine>(linesForThisStep), Section, currentEffectiveInstance);
+                        //Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Calling Read() on Child Part ID {x.OCR_Part.Id} with {linesForThisStep.Count} lines for THIS STEP, passing instance {currentEffectiveInstance}.");
+                        x.Read(new List<InvoiceLine>(linesForThisStep), Section,linesForThisStep.Count, currentEffectiveInstance);
                     });
 
                     // Process Own Lines
@@ -162,12 +170,12 @@ namespace WaterNut.DataSpace
                         {
                             var relevantLines = instanceLines.TakeLast(x.OCR_Lines.RegularExpressions.MaxLines ?? 10).ToList();
                             var lineText = relevantLines.Select(z => z.Line).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
-                            Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Reading multi-line Line ID {x.OCR_Lines.Id}");
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Reading multi-line Line ID {x.OCR_Lines.Id}");
                             x.Read(lineText, relevantLines.FirstOrDefault()?.LineNumber ?? linesForThisStep.First().LineNumber, Section, currentEffectiveInstance);
                         }
                         else
                         {
-                            Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Reading single-line Line ID {x.OCR_Lines.Id}");
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: Reading single-line Line ID {x.OCR_Lines.Id}");
                             x.Read(linesForThisStep.Last().Line, linesForThisStep.Last().LineNumber, Section, currentEffectiveInstance);
                         }
                     });
@@ -178,15 +186,16 @@ namespace WaterNut.DataSpace
                 currentlyStarted = _startlines.Any();
                 if (currentlyStarted && !justStartedThisCall && _startlines.Count() == StartCount && _endlines.Count() < EndCount && EndCount > 0)
                 {
-                     if (OCR_Part.End.Any(z => Regex.Match(_instanceLinesTxt.ToString(), z.RegularExpressions.RegEx,
-                                (z.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline) | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2)).Success))
-                     {
-                         var instanceLines = _lines.Where(l => l.LineNumber >= _currentInstanceStartLineNumber).ToList();
-                         if (instanceLines.Any()) {
+                    if (OCR_Part.End.Any(z => Regex.Match(_instanceLinesTxt.ToString(), z.RegularExpressions.RegEx,
+                               (z.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline) | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2)).Success))
+                    {
+                        var instanceLines = _lines.Where(l => l.LineNumber >= _currentInstanceStartLineNumber).ToList();
+                        if (instanceLines.Any())
+                        {
                             _endlines.Add(instanceLines.Last());
-                             Console.WriteLine($"[OCR DEBUG] Part.Read: Added line {instanceLines.Last().LineNumber} as end line for instance (Effective: {currentEffectiveInstance}).");
-                         }
-                     }
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: Added line {instanceLines.Last().LineNumber} as end line for instance (Effective: {currentEffectiveInstance}).");
+                        }
+                    }
                 }
                 // --- End End Line Detection ---
 
@@ -197,30 +206,34 @@ namespace WaterNut.DataSpace
                 if (isTopLevelRecurringStartToStart)
                 {
                     // Use the triggeringLine captured earlier
-                    Console.WriteLine($"[OCR DEBUG] Part.Read: FULL Resetting state for TOP-LEVEL recurring Part ID {OCR_Part.Id} (Instance {_instance} completed, {_instance + 1} starting). Triggered by line {triggeringLine?.LineNumber}.");
+                    //Console.WriteLine($"[OCR DEBUG] Part.Read: FULL Resetting state for TOP-LEVEL recurring Part ID {OCR_Part.Id} (Instance {_instance} completed, {_instance + 1} starting). Triggered by line {triggeringLine?.LineNumber}.");
 
                     ResetInternalState(); // Full reset
 
                     if (triggeringLine != null && StartCount > 0)
                     {
-                         _startlines.Add(triggeringLine);
-                         _currentInstanceStartLineNumber = triggeringLine.LineNumber;
-                         _instanceLinesTxt.AppendLine(triggeringLine.Line);
-                         Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as first start line for new top-level instance.");
-                    } else if (StartCount > 0) {
-                         Console.WriteLine($"[OCR DEBUG WARNING] Part.Read: Could not determine triggering start line for top-level reset (triggeringLine was null).");
+                        _startlines.Add(triggeringLine);
+                        _currentInstanceStartLineNumber = triggeringLine.LineNumber;
+                        _instanceLinesTxt.AppendLine(triggeringLine.Line);
+                        //Console.WriteLine($"[OCR DEBUG] Part.Read: Added triggering line {triggeringLine.LineNumber} as first start line for new top-level instance.");
+                    }
+                    else if (StartCount > 0)
+                    {
+                        //Console.WriteLine($"[OCR DEBUG WARNING] Part.Read: Could not determine triggering start line for top-level reset (triggeringLine was null).");
                     }
 
                     _instance += 1;
-                    Console.WriteLine($"[OCR DEBUG] Part.Read: Incremented TOP-LEVEL instance counter to {_instance}.");
+                    //Console.WriteLine($"[OCR DEBUG] Part.Read: Incremented TOP-LEVEL instance counter to {_instance}.");
 
                     ChildParts.ForEach(child => {
                         if (child.OCR_Part.RecuringPart != null)
                         {
-                            Console.WriteLine($"[OCR DEBUG] Part.Read: Calling Reset() on RECURRING Child/Grandchild Part ID {child.OCR_Part.Id} from TOP-LEVEL Parent Part ID {OCR_Part.Id}");
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: Calling Reset() on RECURRING Child/Grandchild Part ID {child.OCR_Part.Id} from TOP-LEVEL Parent Part ID {OCR_Part.Id}");
                             child.Reset();
-                        } else {
-                             Console.WriteLine($"[OCR DEBUG] Part.Read: SKIPPING Reset() on NON-RECURRING Child/Grandchild Part ID {child.OCR_Part.Id} from TOP-LEVEL Parent Part ID {OCR_Part.Id}");
+                        }
+                        else
+                        {
+                            //Console.WriteLine($"[OCR DEBUG] Part.Read: SKIPPING Reset() on NON-RECURRING Child/Grandchild Part ID {child.OCR_Part.Id} from TOP-LEVEL Parent Part ID {OCR_Part.Id}");
                         }
                     });
                 }
@@ -229,7 +242,7 @@ namespace WaterNut.DataSpace
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[OCR ERROR] Part.Read: Exception in Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: {e}");
+                //Console.WriteLine($"[OCR ERROR] Part.Read: Exception in Part ID {OCR_Part.Id}, Effective Instance {currentEffectiveInstance}: {e}");
                 // throw;
             }
         }
@@ -251,34 +264,39 @@ namespace WaterNut.DataSpace
                     var textToCheck = (startCondition.RegularExpressions.MultiLine ?? false) == true
                         ? GetLastLine(instanceLines.Trim(), 10)
                         : GetLastLine(instanceLines.Trim(), 1);
-                    
-                  
-                    
+
+
+
                     var options = (startCondition.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline)
                                   | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
                     Match match = null;
-                    try {
-                         match = Regex.Match(textToCheck, startCondition.RegularExpressions.RegEx, options, TimeSpan.FromSeconds(2));
-                    } catch (RegexMatchTimeoutException ex) {
+                    try
+                    {
+                        match = Regex.Match(textToCheck, startCondition.RegularExpressions.RegEx, options, TimeSpan.FromSeconds(2));
+                    }
+                    catch (RegexMatchTimeoutException ex)
+                    {
                         var snippetLength = Math.Min(textToCheck?.Length ?? 0, 200);
                         var inputSnippet = textToCheck?.Substring(0, snippetLength) ?? "[null]";
-                        Console.WriteLine($"[OCR WARNING] Regex Timeout in FindStart: PartID={startCondition?.PartId}, Pattern='{startCondition?.RegularExpressions?.RegEx}', Input Snippet='{inputSnippet}', Error='{ex.Message}'");
+                        //Console.WriteLine($"[OCR WARNING] Regex Timeout in FindStart: PartID={startCondition?.PartId}, Pattern='{startCondition?.RegularExpressions?.RegEx}', Input Snippet='{inputSnippet}', Error='{ex.Message}'");
                         continue;
-                    } catch (Exception e) {
-                         Console.WriteLine($"[OCR ERROR] Regex Error in FindStart: PartID={startCondition?.PartId}, Pattern='{startCondition?.RegularExpressions?.RegEx}': {e}");
-                         continue;
+                    }
+                    catch (Exception e)
+                    {
+                        //Console.WriteLine($"[OCR ERROR] Regex Error in FindStart: PartID={startCondition?.PartId}, Pattern='{startCondition?.RegularExpressions?.RegEx}': {e}");
+                        continue;
                     }
 
                     if (match?.Success ?? false)
                     {
-                        return FindMatch(startCondition.RegularExpressions.RegEx,match, linesInvolved.TakeLast(10).ToList(), false);
+                        return FindMatch(startCondition.RegularExpressions.RegEx, match, linesInvolved.TakeLast(10).ToList(), startCondition.RegularExpressions.MultiLine ?? false);
                     }
                 }
                 return null; // No start condition matched
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[OCR ERROR] Part.FindStart: Exception in Part ID {OCR_Part.Id}: {e}");
+                //Console.WriteLine($"[OCR ERROR] Part.FindStart: Exception in Part ID {OCR_Part.Id}: {e}");
                 return null;
             }
         }
@@ -303,7 +321,7 @@ namespace WaterNut.DataSpace
                 var lineMatch = Regex.Match(line.Line, regexPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2));
                 if (lineMatch.Success)
                 {
-                    Console.WriteLine($"[DEBUG] Exact match on Line {line.LineNumber}: {line.Line}");
+                    //Console.WriteLine($"[DEBUG] Exact match on Line {line.LineNumber}: {line.Line}");
                     return line;
                 }
             }
@@ -313,7 +331,7 @@ namespace WaterNut.DataSpace
             {
                 if (line.Line.Contains(match.Value.Trim()))
                 {
-                    Console.WriteLine($"[DEBUG] Fallback match on Line {line.LineNumber}: {line.Line}");
+                    //Console.WriteLine($"[DEBUG] Fallback match on Line {line.LineNumber}: {line.Line}");
                     return line;
                 }
             }
@@ -326,7 +344,7 @@ namespace WaterNut.DataSpace
                 var lineWithNewline = line.Line + Environment.NewLine;
                 if (matchStartIndex >= currentLength && matchStartIndex < currentLength + lineWithNewline.Length)
                 {
-                    Console.WriteLine($"[WARNING] Used buffer position fallback for Line {line.LineNumber}");
+                    //Console.WriteLine($"[WARNING] Used buffer position fallback for Line {line.LineNumber}");
                     return line;
                 }
                 currentLength += lineWithNewline.Length;
@@ -380,7 +398,7 @@ namespace WaterNut.DataSpace
             var orderedLines = candidateLines.OrderBy(x => x.LineNumber).ToList();
             var reconstructedText = string.Join(Environment.NewLine, orderedLines.Select(x => x.Line));
 
-            return Regex.IsMatch(reconstructedText,regularExpressionsRegEx)
+            return Regex.IsMatch(reconstructedText, regularExpressionsRegEx)
                 ? orderedLines
                 : null;
         }
@@ -405,9 +423,27 @@ namespace WaterNut.DataSpace
                 return startLine;
 
             // Otherwise, reconstruct full match
-            return ReconstructMultiLineMatch(regularExpressionsRegEx, match, linesInvolved, startLine).FirstOrDefault();
+            var matchLines = ReconstructMultiLineMatch(regularExpressionsRegEx, match, linesInvolved, startLine);
+
+            UpdateLinesField(matchLines);
+
+            return matchLines.First();
         }
 
+        /// <summary>
+        /// Updates _lines field with reconstructed match if valid.
+        /// Returns true if update succeeded.
+        /// </summary>
+        public bool UpdateLinesField(List<InvoiceLine>? newLines)
+        {
+            if (newLines == null || newLines.Count == 0)
+                return false;
+
+            _lines.Clear();
+            _lines.AddRange(newLines);
+            Console.WriteLine($"[UPDATED] _lines now contains {newLines.Count} matched lines");
+            return true;
+        }
 
         private static Match IsMatch(string val, Start z) // Kept static IsMatch for potential reuse?
         {
@@ -417,9 +453,9 @@ namespace WaterNut.DataSpace
                               | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
                 return Regex.Match(val, z.RegularExpressions.RegEx, options, TimeSpan.FromSeconds(2));
             }
-             catch (Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine($"[OCR ERROR] IsMatch (Static): Exception for PartID={z?.PartId}, Pattern='{z?.RegularExpressions?.RegEx}': {e}");
+                //Console.WriteLine($"[OCR ERROR] IsMatch (Static): Exception for PartID={z?.PartId}, Pattern='{z?.RegularExpressions?.RegEx}': {e}");
                 return null;
             }
         }
@@ -440,7 +476,7 @@ namespace WaterNut.DataSpace
             _instance = 1;
             _lastProcessedParentInstance = 0;
 
-            Console.WriteLine($"[OCR DEBUG] Part.Reset: FULL Resetting Part ID {OCR_Part.Id}"); 
+            //Console.WriteLine($"[OCR DEBUG] Part.Reset: FULL Resetting Part ID {OCR_Part.Id}"); 
             ChildParts.ForEach(child => child.Reset());
         }
         // Method to get the last line from a string

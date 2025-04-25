@@ -61,7 +61,7 @@ namespace WaterNut.DataSpace
 
                     lineCount += 1;
                     var iLine = new List<InvoiceLine>(){ new InvoiceLine(line, lineCount) };
-                    Parts.ForEach(x => x.Read(iLine, section)); // Part.Read will log its own entry
+                    Parts.ForEach(x => x.Read(iLine, section, text.Count)); // Part.Read will log its own entry
                 }
 
                 AddMissingRequiredFieldValues();
