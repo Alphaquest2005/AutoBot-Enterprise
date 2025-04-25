@@ -18,7 +18,8 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers> <!-- Added RuntimeIdentifiers -->
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+    <!-- Added RuntimeIdentifiers -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -320,7 +321,7 @@
       <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.3</Version>
+      <Version>9.0.4</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.6.2</Version>
