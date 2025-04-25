@@ -376,22 +376,22 @@ namespace WaterNut.DataSpace
             );
 
             var candidateLines = new List<InvoiceLine>();
-            bool startedCollecting = false;
+            
 
             // Scan backward to include all relevant lines
             foreach (var line in linesInvolved.OrderByDescending(x => x.LineNumber))
             {
                 // Start collecting when we hit the start line
-                if (line.LineNumber == startLine.LineNumber)
-                    startedCollecting = true;
+              
 
-                if (startedCollecting)
-                {
+              
                     candidateLines.Add(line);
                     // Stop if we've captured enough lines
                     if (candidateLines.Count >= matchLines.Length + 2)
                         break;
-                }
+                
+                if (line.LineNumber == startLine.LineNumber)
+                    break;
             }
 
             // Reorder lines (original order) and validate
