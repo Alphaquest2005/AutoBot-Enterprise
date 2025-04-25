@@ -164,7 +164,7 @@ namespace WaterNut.DataSpace
 
             PopulateParentFields(currentPart, currentInstance.First(), parentDitm, ref parentDataFound, methodName);
 
-            foreach (var childInstance in currentInstance.Skip(1))
+            foreach (var childInstance in currentInstance)
             {
                ProcessChildParts(currentPart, childInstance, parentDitm, ref parentDataFound, partId, methodName); 
             }

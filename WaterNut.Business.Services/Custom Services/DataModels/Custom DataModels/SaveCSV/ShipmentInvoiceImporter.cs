@@ -58,6 +58,8 @@ namespace WaterNut.DataSpace
             {
                 var invoice = new ShipmentInvoice();
 
+                if (x["InvoiceDetails"] == null) throw new ApplicationException("Invoice Details is null");
+            
                 var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                     .Where(z => z != null)
                     .Where(z => z.ContainsKey("ItemDescription"))

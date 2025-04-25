@@ -18,7 +18,31 @@ namespace InvoiceReader
 {
     public class InvoiceReader
     {
-        private static readonly ILogger _logger = Log.ForContext<InvoiceReader>();
+        private static ILogger _logger = Log.ForContext<InvoiceReader>();
+
+        static InvoiceReader()
+        {
+             string logFilePath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Logs", "AutoBot.log");
+            // Ensure log directory exists
+            Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()// Set default level
+                .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Override specific namespaces
+                .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+                .MinimumLevel.Override("InvoiceReaderPipelineTests", Serilog.Events.LogEventLevel.Verbose) // Ensure test utilities logs are captured
+                .MinimumLevel.Override("WaterNut.DataSpace.PipelineInfrastructure.PipelineRunner", Serilog.Events.LogEventLevel.Verbose) // Explicitly set level for PipelineRunner
+                .Enrich.FromLogContext() // Enrichers
+                //.Enrich.WithMachineName()
+                //.Enrich.WithThreadId()
+                .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}") // Console Sink - Added output template
+                .WriteTo.File(logFilePath, // File Sink
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 3,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+            _logger = Log.ForContext<InvoiceReader>(); // Get logger instance for this class
+        }
 
         public static Client Client { get; set; } = new Client
         {

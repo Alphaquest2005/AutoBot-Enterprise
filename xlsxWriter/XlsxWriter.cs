@@ -1189,7 +1189,7 @@ namespace xlsxWriter
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == "DocumentType").Key.Index,
-                BaseDataModel.Instance.ExportTemplates.First(x => x.Customs_Procedure == BaseDataModel.Instance.Customs_Procedures.First(z => z.IsDefault == true && z.CustomsOperationId == (int)CoreEntities.Business.Enums.CustomsOperations.Import).CustomsProcedure).Customs_Procedure);
+                BaseDataModel.Instance.ExportTemplates.First(x => x.Customs_Procedure == BaseDataModel.Instance.Customs_Procedures.First(z => z.IsDefault == true && z.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation()).CustomsProcedure).Customs_Procedure);
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,

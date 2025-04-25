@@ -174,7 +174,7 @@ namespace WaterNut.DataSpace
                             return;
                         }
 
-                        var instanceLines = _lines.Where(l => l != null && l.LineNumber >= _currentInstanceStartLineNumber).ToList();
+                        var instanceLines = _lines.Where(l => l != null && l.LineNumber >= _currentInstanceStartLineNumber).TakeLast(10).ToList();
 
                         if (line.OCR_Lines.RegularExpressions?.MultiLine == true)
                         {
@@ -284,7 +284,7 @@ namespace WaterNut.DataSpace
 
         private List<InvoiceLine> GetLinesForInstanceBuffer(string methodName, int? partId)
         {
-            var linesForInstanceBuffer = _lines.Where(l => l != null && (_currentInstanceStartLineNumber == -1 || l.LineNumber >= _currentInstanceStartLineNumber)).ToList();
+            var linesForInstanceBuffer = _lines.Where(l => l != null && (_currentInstanceStartLineNumber == -1 || l.LineNumber >= _currentInstanceStartLineNumber)).TakeLast(10).ToList();
             _instanceLinesTxt.Clear();
             linesForInstanceBuffer.ForEach(l => _instanceLinesTxt.AppendLine(l.Line));
             LogInstanceTextBufferRebuilt(methodName, partId, _instanceLinesTxt.Length, linesForInstanceBuffer.Count, _instanceLinesTxt.ToString());

@@ -12,7 +12,7 @@ namespace WaterNut.DataSpace
         // Define logger instance here
         private static readonly ILogger _logger = Log.ForContext<Line>();
         // Define Regex Timeout constant here for use in other partial methods
-        private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(2);
 
         public Lines OCR_Lines { get; }
 
