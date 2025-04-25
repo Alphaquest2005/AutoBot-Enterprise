@@ -16,6 +16,7 @@ using DocumentDS.Business.Entities; // Added for Attachments - Assuming this is 
 using CoreEntities.Business.Entities; // Added for Emails
 using TrackableEntities; // Added for TrackingState
 
+
 namespace AutoBot
 {
     public class FolderProcessor
@@ -134,7 +135,7 @@ namespace AutoBot
                 var fileInfos = new FileInfo[] { new FileInfo(destFileName) };
                 // Assuming PDFUtils and ShipmentUtils are static or accessible
                 // Consider injecting IPdfUtils, IShipmentUtils if refactoring further
-                var res = await PDFUtils.ImportPDF(fileInfos, fileType).ConfigureAwait(false);
+                var res = await InvoiceReader.InvoiceReader.ImportPDF(fileInfos, fileType).ConfigureAwait(false);
                 if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
                 {
                     var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);

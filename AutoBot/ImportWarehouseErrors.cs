@@ -43,7 +43,7 @@ namespace AutoBot
                 if (!attachments.Any()) return;
 
 
-                var imageTxt = InvoiceReader.GetImageTxt(directoryName);
+                var imageTxt = WaterNut.DataSpace.InvoiceReader.GetImageTxt(directoryName);
                 var errorLst = new List<string>();
 
                 foreach (var reg in warehouseRegex)

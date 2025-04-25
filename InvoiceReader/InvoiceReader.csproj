@@ -8,16 +8,17 @@
     <PackageReference Include="morelinq" Version="4.4.0" />
     <PackageReference Include="PdfPig" Version="0.1.10" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" /> <!-- Adjust version if needed -->
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" /> <!-- Adjust version if needed -->
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="TrackableEntities.Client" Version="2.5.7" /> <!-- Adjust version if needed -->
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutoBot\AutoBotUtilities.csproj" />
     <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj" />
     <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj" />
     <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj" />
     <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" />
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj" />
   </ItemGroup>
 
 </Project>

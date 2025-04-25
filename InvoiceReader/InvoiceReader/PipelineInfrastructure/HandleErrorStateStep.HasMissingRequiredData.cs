@@ -15,7 +15,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 return true;
             }
 
-            if (!context.Templates.SelectMany(x => x.CsvLines).Any() )
+            if (context.Templates.Select(x => x.CsvLines).All(x => x == null))
             {
                 _logger.Warning("Missing required data: CsvLines for all templates is Empty.");
                 return true;

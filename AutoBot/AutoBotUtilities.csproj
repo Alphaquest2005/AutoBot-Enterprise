@@ -190,6 +190,10 @@
       <Project>{5e51c8c3-9bf4-4c13-ad00-7094ffb83ad6}</Project>
       <Name>EmailDownloader</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InvoiceReader\InvoiceReader.csproj">
+      <Project>{56dd4b0c-16df-45ad-8aa3-562de997e9e4}</Project>
+      <Name>InvoiceReader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
       <Project>{523FBF1E-BB4F-435A-9A9E-63DE49CD721D}</Project>
       <Name>pdf-ocr</Name>

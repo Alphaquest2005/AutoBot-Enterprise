@@ -7,7 +7,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
 public partial class GetPossibleInvoicesStep
 {
-    private static bool IsInvoiceDocument(Invoices invoice, string fileText, string filePath)
+    public static bool IsInvoiceDocument(Invoices invoice, string fileText, string filePath)
     {
         // Invoice null check happens in caller's Where clause
         int invoiceId = invoice.Id;

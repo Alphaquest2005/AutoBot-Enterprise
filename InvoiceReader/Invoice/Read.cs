@@ -244,6 +244,10 @@ namespace WaterNut.DataSpace
                 ////////////////////////////////
                 ProcessParts(methodName, lineCount, section, iLine);
                 ///////////////////////////////
+                if(lineCount > 30 && Parts.All(x => !x.WasStarted))
+                {
+                    throw new ApplicationException("Failed to import in first 30 lines");
+                }
             }
 
             LogEndIteration(methodName, inputLineCount, invoiceId);

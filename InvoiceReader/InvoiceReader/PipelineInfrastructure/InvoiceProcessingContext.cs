@@ -110,6 +110,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 return status;
             }
         }
+
+        public List<AsycudaDocumentSet> DocSet { get; set; }
         // Add properties to hold results from each step
     }
 }

@@ -79,7 +79,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                         t.Id, t.Name ?? "null", t.Parts?.Count ?? 0, t.IsActive);
                                 }
                                 context.Templates = templates.Select(x => new Invoice(x){FileType = context.FileType,
-                                    DocSet = WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
+                                    DocSet = context.DocSet ?? WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
                                     FilePath = context.FilePath,
                                     EmailId = context.EmailId,
 

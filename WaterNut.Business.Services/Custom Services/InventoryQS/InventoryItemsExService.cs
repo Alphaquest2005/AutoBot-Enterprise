@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using InventoryDS.Business.Entities;
 using InventoryQS.Business.Entities;
+using MoreLinq;
 using Omu.ValueInjecter;
 using WaterNut.Business.Services.Utils;
 
@@ -47,7 +48,8 @@ namespace InventoryQS.Business.Services
         {
             try
             {
-                var itms = await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false);
+                //var itms = await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false);
+                var itms = Itms.DistinctBy(x => x.ItemNumber).ToDictionary(x => x.ItemNumber, x => x);
                 var res = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>();
 
 

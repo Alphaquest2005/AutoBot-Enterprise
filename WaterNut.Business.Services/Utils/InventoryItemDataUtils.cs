@@ -153,11 +153,6 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        private static string GetTariffCodeValue(InventoryData item)
-        {
-            return GetTariffCode(item).Result;
-        }
-
         // Helper to safely get string from dynamic property (might be Task<string> or string)
         private static async Task<string> GetDynamicStringValueAsync(dynamic dynamicValue)
         {

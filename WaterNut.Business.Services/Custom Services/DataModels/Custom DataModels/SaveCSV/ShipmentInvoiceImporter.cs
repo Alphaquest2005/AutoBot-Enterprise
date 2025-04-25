@@ -144,7 +144,10 @@ namespace WaterNut.DataSpace
                             ? Convert.ToInt32(z["SalesFactor"].ToString())
                             : 1;
                         details.LineNumber = z.ContainsKey("Instance")
-                            ? Convert.ToInt32(z["Instance"].ToString().Split('-')[1])
+                            ? Convert.ToInt32(
+                                z["Instance"].ToString().Contains("-") 
+                                ? z["Instance"].ToString().Split('-')[1] 
+                                : z["Instance"].ToString())
                             : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1;
                         details.FileLineNumber = z.ContainsKey("FileLineNumber") ? Convert.ToInt32(z["FileLineNumber"].ToString()) : -1;
                         details.Section = z.ContainsKey("Section") ? z["Section"].ToString() : null;

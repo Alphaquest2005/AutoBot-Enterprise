@@ -95,7 +95,7 @@ namespace AutoBot
                 }
 
                 // Await the async call which returns a Dictionary
-                var importResult = await InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId,
+                var importResult = await InvoiceReader.InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId,
                     true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client).ConfigureAwait(false);
                 // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
 
@@ -108,7 +108,7 @@ namespace AutoBot
                 }
                 else
                 {
-                    var fails = importResult.Values.Where(x => x.Success == ImportStatus.Failed).ToList();
+                    var fails = importResult.Select(x => x.Value).Where(x => x.Success == ImportStatus.Failed).ToList();
                     if(fails.Any())
                         fails
                             .ForEach(async x =>
@@ -293,7 +293,7 @@ namespace AutoBot
                 { { "Invoice", "Shipment Invoice" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
-              var txt = await InvoiceReader.GetPdftxt(file.FullName).ConfigureAwait(false);  
+              var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName).ConfigureAwait(false);  
               var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))

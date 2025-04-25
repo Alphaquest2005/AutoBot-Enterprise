@@ -32,7 +32,7 @@ namespace AutoBot
                 {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
-                {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
+                {"ImportPDF", (ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(fs, ft).GetAwaiter().GetResult() },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
                 {"CreateShipmentEmail", (types, infos) => ShipmentUtils.CreateShipmentEmail(types, infos) },
                 //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 

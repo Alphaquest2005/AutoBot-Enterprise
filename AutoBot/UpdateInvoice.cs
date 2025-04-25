@@ -29,7 +29,7 @@ namespace AutoBot
 
                 foreach (Match cmdinfo in commands)
                 {
-                    if (InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
+                    if (InvoiceReader.InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
                     var cmdName = cmdinfo.Groups["Command"].Value.Trim();
 
                     if (!regExCommands.ContainsKey(cmdName)) continue;
@@ -548,7 +548,7 @@ namespace AutoBot
                     foreach (var pdf in pdfs)
                     {
                         // Await the async call
-                        var str = await InvoiceReader.GetPdftxt(pdf.FullName).ConfigureAwait(false);
+                        var str = await InvoiceReader.InvoiceReader.GetPdftxt(pdf.FullName).ConfigureAwait(false);
                         if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
                     }
                     foreach (var invoice in invoices)
@@ -572,9 +572,9 @@ namespace AutoBot
                                    $"AutoBot" +
                                    $"\r\n" +
                                    $"\r\n" +
-                                   InvoiceReader.CommandsTxt;
+                                   InvoiceReader.InvoiceReader.CommandsTxt;
 
-                        var res = files.Where(x => InvoiceReader.IsInvoiceDocument(invoice, x.Value)).ToList();
+                        var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key)).ToList();
                         
                         res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
