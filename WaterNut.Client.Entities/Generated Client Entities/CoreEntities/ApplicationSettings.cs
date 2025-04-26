@@ -889,6 +889,21 @@ public Nullable<bool> GroupShipmentInvoices
 		}
      
 
+       
+       
+public Nullable<bool> UseAIClassification
+		{ 
+		    get { return this.applicationsettings.UseAIClassification; }
+			set
+			{
+			    if (value == this.applicationsettings.UseAIClassification) return;
+				this.applicationsettings.UseAIClassification = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("UseAIClassification");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

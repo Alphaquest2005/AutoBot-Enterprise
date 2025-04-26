@@ -417,8 +417,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _gross_weight_itmFilter;
-        public Double? Gross_weight_itmFilter
+		private Decimal? _gross_weight_itmFilter;
+        public Decimal? Gross_weight_itmFilter
         {
             get
             {
@@ -435,8 +435,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _net_weight_itmFilter;
-        public Double? Net_weight_itmFilter
+		private Decimal? _net_weight_itmFilter;
+        public Decimal? Net_weight_itmFilter
         {
             get
             {

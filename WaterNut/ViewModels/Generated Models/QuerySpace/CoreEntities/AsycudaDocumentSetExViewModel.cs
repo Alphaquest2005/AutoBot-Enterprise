@@ -514,8 +514,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _totalWeightFilter;
-        public Double? TotalWeightFilter
+		private Decimal? _totalWeightFilter;
+        public Decimal? TotalWeightFilter
         {
             get
             {
@@ -1134,7 +1134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalFreight { get; set; } 
                     
  
-                    public decimal? TotalWeight { get; set; } 
+                    public Nullable<decimal> TotalWeight { get; set; } 
                     
  
                     public Nullable<int> TotalPackages { get; set; } 

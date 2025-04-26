@@ -814,6 +814,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _groupshipmentinvoices;
         [DataMember]
+        public Nullable<bool> UseAIClassification 
+        {
+            get
+            {
+                return _useaiclassification;
+            }
+            set
+            {
+                _useaiclassification = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _useaiclassification;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

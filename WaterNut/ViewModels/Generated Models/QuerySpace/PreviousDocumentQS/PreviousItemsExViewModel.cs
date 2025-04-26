@@ -926,6 +926,24 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }	
 
  
+
+		private string _entryDataTypeFilter;
+        public string EntryDataTypeFilter
+        {
+            get
+            {
+                return _entryDataTypeFilter;
+            }
+            set
+            {
+                _entryDataTypeFilter = value;
+				NotifyPropertyChanged(x => EntryDataTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1117,6 +1135,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1233,7 +1255,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     Prev_reg_year = x.Prev_reg_year ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    EntryDataType = x.EntryDataType 
                     
                 }).ToList()
             };
@@ -1340,6 +1365,9 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     
  
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public string EntryDataType { get; set; } 
                     
         }
 

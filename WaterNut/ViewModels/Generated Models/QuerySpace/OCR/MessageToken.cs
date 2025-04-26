@@ -94,12 +94,6 @@ namespace WaterNut.QuerySpace.OCR
 			public const string OCR_PartLineFieldsDeleted = "OCR_PartLineFieldsDeleted";
 			public const string OCR_PartLineFieldsCreated = "OCR_PartLineFieldsCreated";
 			public const string OCR_PartLineFieldsUpdated = "OCR_PartLineFieldsUpdated";
-			public const string OCRInvoicesFileTypesFilterExpressionChanged = "OCRInvoicesFileTypesFilterExpressionChanged";
-			public const string SelectedOCRInvoicesFileTypesChanged = "SelectedOCRInvoicesFileTypesChanged";
-            public const string OCRInvoicesFileTypesChanged = "OCRInvoicesFileTypesChanged";
-			public const string OCRInvoicesFileTypesDeleted = "OCRInvoicesFileTypesDeleted";
-			public const string OCRInvoicesFileTypesCreated = "OCRInvoicesFileTypesCreated";
-			public const string OCRInvoicesFileTypesUpdated = "OCRInvoicesFileTypesUpdated";
 			public const string PartsFilterExpressionChanged = "PartsFilterExpressionChanged";
 			public const string SelectedPartsChanged = "SelectedPartsChanged";
             public const string PartsChanged = "PartsChanged";
@@ -146,7 +140,6 @@ namespace WaterNut.QuerySpace.OCR
           // public const string OCR_FieldMappingsChanged = "OCR_FieldMappingsChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
           // public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
-          // public const string OCRFileTypesChanged = "OCRFileTypesChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
           // public const string RecuringPartChanged = "RecuringPartChanged";
@@ -182,8 +175,6 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
    
            public const string CurrentOCR_PartLineFieldsChanged = "CurrentOCR_PartLineFieldsChanged";
-   
-           public const string CurrentOCRFileTypesChanged = "CurrentOCRFileTypesChanged";
    
            public const string CurrentPartsChanged = "CurrentPartsChanged";
    
@@ -224,8 +215,6 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
    
            public const string CurrentOCR_PartLineFieldsIDChanged = "OnCurrentOCR_PartLineFieldsIDChanged";
-   
-           public const string CurrentOCRFileTypesIDChanged = "OnCurrentOCRFileTypesIDChanged";
    
            public const string CurrentPartsIDChanged = "OnCurrentPartsIDChanged";
    

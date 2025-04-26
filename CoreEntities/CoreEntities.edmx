@@ -78,6 +78,7 @@
           <Property Name="AllowStressTest" Type="bit" />
           <Property Name="AllocationsOpeningStockDate" Type="datetime2" Precision="7" />
           <Property Name="GroupShipmentInvoices" Type="bit" />
+          <Property Name="UseAIClassification" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -231,6 +232,7 @@
           <Property Name="Document_TypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="NeedsC71" Type="bit" />
         </EntityType>
         <EntityType Name="EmailAttachments">
           <Key>
@@ -4582,7 +4584,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSet" />
           <Property Name="AllowStressTest" Type="Boolean" />
           <Property Name="AllocationsOpeningStockDate" Type="DateTime" Precision="7" />
-          <Property Name="GroupShipmentInvoices" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="GroupShipmentInvoices" Type="Boolean" />
+          <Property Name="UseAIClassification" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4742,6 +4745,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Document_Type" ToRole="Customs_Procedure" />
+          <Property Name="NeedsC71" Type="Boolean" />
         </EntityType>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Type="WaterNutDBModel.Document_Type" Role="Document_Type" Multiplicity="1" />
@@ -7372,6 +7376,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="UseAIClassification" ColumnName="UseAIClassification" />
                 <ScalarProperty Name="GroupShipmentInvoices" ColumnName="GroupShipmentInvoices" />
                 <ScalarProperty Name="AllocationsOpeningStockDate" ColumnName="AllocationsOpeningStockDate" />
                 <ScalarProperty Name="AllowStressTest" ColumnName="AllowStressTest" />
@@ -7553,6 +7558,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="Document_Type">
             <EntityTypeMapping TypeName="WaterNutDBModel.Document_Type">
               <MappingFragment StoreEntitySet="Document_Type">
+                <ScalarProperty Name="NeedsC71" ColumnName="NeedsC71" />
                 <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
                 <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
                 <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />

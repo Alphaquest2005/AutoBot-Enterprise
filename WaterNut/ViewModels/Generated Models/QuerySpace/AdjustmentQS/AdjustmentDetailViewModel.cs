@@ -1031,6 +1031,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _sourceFileFilter;
+        public string SourceFileFilter
+        {
+            get
+            {
+                return _sourceFileFilter;
+            }
+            set
+            {
+                _sourceFileFilter = value;
+				NotifyPropertyChanged(x => SourceFileFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1255,6 +1273,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(VendorFilter) == false)
 						res.Append(" && " + string.Format("Vendor.Contains(\"{0}\")",  VendorFilter));						
+ 
+
+									if(string.IsNullOrEmpty(SourceFileFilter) == false)
+						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1374,7 +1396,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     PreviousCLineNumber = x.PreviousCLineNumber ,
                     
  
-                    Vendor = x.Vendor 
+                    Vendor = x.Vendor ,
+                    
+ 
+                    SourceFile = x.SourceFile 
                     
                 }).ToList()
             };
@@ -1484,6 +1509,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string Vendor { get; set; } 
+                    
+ 
+                    public string SourceFile { get; set; } 
                     
         }
 

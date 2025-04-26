@@ -258,6 +258,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ConsigneesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureInOutViewModel.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXML_RecreateViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitAllXMLToCustomsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesViewModel.cs" />
@@ -447,6 +449,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ConsigneesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureInOutTotals.cs" />
@@ -518,6 +521,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXML_RecreateTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitAllXMLToCustomsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesTotals.cs" />
@@ -564,7 +568,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs" />
@@ -624,6 +627,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ConsigneesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureInOutVirturalListLoader.cs" />
@@ -695,6 +699,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXML_RecreateVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitAllXMLToCustomsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesVirturalListLoader.cs" />

@@ -8,6 +8,7 @@ using InventoryQS.Business.Entities;
 using MoreLinq;
 using Omu.ValueInjecter;
 using WaterNut.Business.Services.Utils;
+using WaterNut.DataSpace;
 
 namespace InventoryQS.Business.Services
 {
@@ -48,8 +49,13 @@ namespace InventoryQS.Business.Services
         {
             try
             {
-                //var itms = await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false);
-                var itms = Itms.DistinctBy(x => x.ItemNumber).ToDictionary(x => x.ItemNumber, x => x);
+                //var 
+                var itms =
+                BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false 
+                    ?await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false)
+                    : Itms.DistinctBy(x => x.ItemNumber).ToDictionary(x => x.ItemNumber, x => x);
+
+
                 var res = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>();
 
 

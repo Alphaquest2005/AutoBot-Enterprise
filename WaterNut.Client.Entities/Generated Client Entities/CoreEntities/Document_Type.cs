@@ -94,6 +94,21 @@ public string Declaration_gen_procedure_code
 		}
      
 
+       
+       
+public Nullable<bool> NeedsC71
+		{ 
+		    get { return this.document_type.NeedsC71; }
+			set
+			{
+			    if (value == this.document_type.NeedsC71) return;
+				this.document_type.NeedsC71 = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("NeedsC71");
+			}
+		}
+     
+
         ObservableCollection<Customs_Procedure> _Customs_Procedure = null;
         public  ObservableCollection<Customs_Procedure> Customs_Procedure
 		{

@@ -206,6 +206,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _needsC71Filter;
+        public Boolean? NeedsC71Filter
+        {
+            get
+            {
+                return _needsC71Filter;
+            }
+            set
+            {
+                _needsC71Filter = value;
+				NotifyPropertyChanged(x => NeedsC71Filter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -242,6 +260,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(Declaration_gen_procedure_codeFilter) == false)
 						res.Append(" && " + string.Format("Declaration_gen_procedure_code.Contains(\"{0}\")",  Declaration_gen_procedure_codeFilter));						
+ 
+
+									if(NeedsC71Filter.HasValue)
+						res.Append(" && " + string.Format("NeedsC71 == {0}",  NeedsC71Filter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -268,7 +290,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Type_of_declaration = x.Type_of_declaration ,
                     
  
-                    Declaration_gen_procedure_code = x.Declaration_gen_procedure_code 
+                    Declaration_gen_procedure_code = x.Declaration_gen_procedure_code ,
+                    
+ 
+                    NeedsC71 = x.NeedsC71 
                     
                 }).ToList()
             };
@@ -285,6 +310,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Declaration_gen_procedure_code { get; set; } 
+                    
+ 
+                    public Nullable<bool> NeedsC71 { get; set; } 
                     
         }
 

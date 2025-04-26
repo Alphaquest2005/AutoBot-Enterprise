@@ -522,7 +522,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     SANumber = x.SANumber ,
                     
  
-                    xStatus = x.Status ,
+                    xStatus = x.xStatus ,
                     
  
                     Comments = x.Comments 

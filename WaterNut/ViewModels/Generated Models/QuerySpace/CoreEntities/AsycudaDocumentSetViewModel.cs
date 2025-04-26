@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 			RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
+ 
+			RegisterToReceiveMessages<Consignees>(MessageToken.CurrentConsigneesChanged, OnCurrentConsigneesChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -146,6 +148,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(Customs_Procedure.Contains(CurrentAsycudaDocumentSet.Customs_Procedure) == false) Customs_Procedure.Add(CurrentAsycudaDocumentSet.Customs_Procedure);
                     //}
+                    //if (e.PropertyName == "AddConsignees")
+                   // {
+                   //    if(Consignees.Contains(CurrentAsycudaDocumentSet.Consignees) == false) Consignees.Add(CurrentAsycudaDocumentSet.Consignees);
+                    //}
                  } 
         internal virtual void OnAsycudaDocumentSetChanged(object sender, NotificationEventArgs e)
         {
@@ -192,6 +198,26 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet = null;
 			}
+	
+		 internal virtual void OnCurrentConsigneesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Consignees> e)
+			{
+			if(ViewCurrentConsignees == false) return;
+			if (e.Data == null || e.Data.ConsigneeName == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				
+				vloader.FilterExpression = string.Format("ConsigneeName == \"{0}\"", e.Data.ConsigneeName.ToString());
+                }
+
+				AsycudaDocumentSet.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocumentSet);
+                // SendMessage(MessageToken.AsycudaDocumentSetChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentSetChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocumentSet = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -224,6 +250,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentCustoms_Procedure = value;
                  NotifyPropertyChanged(x => x.ViewCurrentCustoms_Procedure);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentConsignees = false;
+         public bool ViewCurrentConsignees
+         {
+             get
+             {
+                 return _viewCurrentConsignees;
+             }
+             set
+             {
+                 _viewCurrentConsignees = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentConsignees);
                 FilterData();
              }
          }
@@ -678,6 +719,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _consigneeNameFilter;
+        public string ConsigneeNameFilter
+        {
+            get
+            {
+                return _consigneeNameFilter;
+            }
+            set
+            {
+                _consigneeNameFilter = value;
+				NotifyPropertyChanged(x => ConsigneeNameFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -809,6 +868,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(PackageTypeFilter) == false)
 						res.Append(" && " + string.Format("PackageType.Contains(\"{0}\")",  PackageTypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ConsigneeNameFilter) == false)
+						res.Append(" && " + string.Format("ConsigneeName.Contains(\"{0}\")",  ConsigneeNameFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -895,7 +958,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ExpectedEntries = x.ExpectedEntries ,
                     
  
-                    PackageType = x.PackageType 
+                    PackageType = x.PackageType ,
+                    
+ 
+                    ConsigneeName = x.ConsigneeName 
                     
                 }).ToList()
             };
@@ -972,6 +1038,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string PackageType { get; set; } 
+                    
+ 
+                    public string ConsigneeName { get; set; } 
                     
         }
 

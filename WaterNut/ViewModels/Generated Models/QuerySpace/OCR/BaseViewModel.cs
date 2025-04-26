@@ -491,25 +491,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                 
-                        private  string _currentOCRFileTypesID = "";
-                        public string CurrentOCRFileTypesID
-                        {
-                            get
-                            {
-                                return _currentOCRFileTypesID;
-                            }
-                            set
-                            {
-                                if (_currentOCRFileTypesID != value)
-                                {
-                                    _currentOCRFileTypesID = value;
-                                    if (!string.IsNullOrEmpty(_currentOCRFileTypesID)) BeginSendMessage(MessageToken.CurrentOCRFileTypesIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCRFileTypesIDChanged, _currentOCRFileTypesID));
-                                    NotifyPropertyChanged(x => this.CurrentOCRFileTypesID);  
-                                }
-                            }
-                        }
                         internal async void OnCurrentPartsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (PartsRepository ctx = new PartsRepository())
@@ -1030,7 +1011,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     // all current navigation properties = null
                  CurrentParts = null;
                  CurrentInvoiceRegEx = null;
-                
                  CurrentInvoiceIdentificatonRegEx = null;
    
                 }
@@ -1359,10 +1339,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-
-
-                     
-       
 
 
                      

@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Declaration_gen_procedure_code;
 
+        [DataMember]
+        public Nullable<bool> NeedsC71
+		{ 
+		    get { return _NeedsC71; }
+			set
+			{
+			    if (value == _NeedsC71) return;
+				_NeedsC71 = value;
+				NotifyPropertyChanged();//m => this.NeedsC71
+			}
+		}
+        private Nullable<bool> _NeedsC71;
+
        
         [DataMember]
         public ChangeTrackingCollection<Customs_Procedure> Customs_Procedure

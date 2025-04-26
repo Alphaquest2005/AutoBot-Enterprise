@@ -697,6 +697,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _GroupShipmentInvoices;
 
+        [DataMember]
+        public Nullable<bool> UseAIClassification
+		{ 
+		    get { return _UseAIClassification; }
+			set
+			{
+			    if (value == _UseAIClassification) return;
+				_UseAIClassification = value;
+				NotifyPropertyChanged();//m => this.UseAIClassification
+			}
+		}
+        private Nullable<bool> _UseAIClassification;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

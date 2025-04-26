@@ -787,8 +787,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _totalGrossWeightFilter;
-        public Double? TotalGrossWeightFilter
+		private Decimal? _totalGrossWeightFilter;
+        public Decimal? TotalGrossWeightFilter
         {
             get
             {
@@ -1532,7 +1532,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalCIF { get; set; } 
                     
  
-                    public decimal? TotalGrossWeight { get; set; } 
+                    public Nullable<decimal> TotalGrossWeight { get; set; } 
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 

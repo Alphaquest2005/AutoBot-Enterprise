@@ -65,6 +65,7 @@
               this.Property(t => t.AllowStressTest).HasColumnName("AllowStressTest");
               this.Property(t => t.AllocationsOpeningStockDate).HasColumnName("AllocationsOpeningStockDate");
               this.Property(t => t.GroupShipmentInvoices).HasColumnName("GroupShipmentInvoices");
+              this.Property(t => t.UseAIClassification).HasColumnName("UseAIClassification");
               this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);

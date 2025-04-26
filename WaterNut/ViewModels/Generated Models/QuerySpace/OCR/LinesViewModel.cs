@@ -324,6 +324,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private string _commentsFilter;
+        public string CommentsFilter
+        {
+            get
+            {
+                return _commentsFilter;
+            }
+            set
+            {
+                _commentsFilter = value;
+				NotifyPropertyChanged(x => CommentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -368,6 +386,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(IsActiveFilter.HasValue)
 						res.Append(" && " + string.Format("IsActive == {0}",  IsActiveFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CommentsFilter) == false)
+						res.Append(" && " + string.Format("Comments.Contains(\"{0}\")",  CommentsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -400,7 +422,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     IsColumn = x.IsColumn ,
                     
  
-                    IsActive = x.IsActive 
+                    IsActive = x.IsActive ,
+                    
+ 
+                    Comments = x.Comments 
                     
                 }).ToList()
             };
@@ -423,6 +448,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public Nullable<bool> IsActive { get; set; } 
+                    
+ 
+                    public string Comments { get; set; } 
                     
         }
 

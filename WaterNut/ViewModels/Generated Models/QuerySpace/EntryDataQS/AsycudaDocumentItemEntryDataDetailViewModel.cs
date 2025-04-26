@@ -316,6 +316,60 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _cNumberFilter;
+        public string CNumberFilter
+        {
+            get
+            {
+                return _cNumberFilter;
+            }
+            set
+            {
+                _cNumberFilter = value;
+				NotifyPropertyChanged(x => CNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _lineNumberFilter;
+        public Int32? LineNumberFilter
+        {
+            get
+            {
+                return _lineNumberFilter;
+            }
+            set
+            {
+                _lineNumberFilter = value;
+				NotifyPropertyChanged(x => LineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _customsOperationFilter;
+        public string CustomsOperationFilter
+        {
+            get
+            {
+                return _customsOperationFilter;
+            }
+            set
+            {
+                _customsOperationFilter = value;
+				NotifyPropertyChanged(x => CustomsOperationFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -374,6 +428,17 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
 						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CNumberFilter) == false)
+						res.Append(" && " + string.Format("CNumber.Contains(\"{0}\")",  CNumberFilter));						
+ 
+
+					if(LineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(CustomsOperationFilter) == false)
+						res.Append(" && " + string.Format("CustomsOperation.Contains(\"{0}\")",  CustomsOperationFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -418,7 +483,16 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     Asycuda_id = x.Asycuda_id ,
                     
  
-                    EntryDataType = x.EntryDataType 
+                    EntryDataType = x.EntryDataType ,
+                    
+ 
+                    CNumber = x.CNumber ,
+                    
+ 
+                    LineNumber = x.LineNumber ,
+                    
+ 
+                    CustomsOperation = x.CustomsOperation 
                     
                 }).ToList()
             };
@@ -453,6 +527,15 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string EntryDataType { get; set; } 
+                    
+ 
+                    public string CNumber { get; set; } 
+                    
+ 
+                    public int LineNumber { get; set; } 
+                    
+ 
+                    public string CustomsOperation { get; set; } 
                     
         }
 

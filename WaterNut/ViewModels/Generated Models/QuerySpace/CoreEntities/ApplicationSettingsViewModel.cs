@@ -1117,6 +1117,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _groupShipmentInvoicesFilter;
+        public Boolean? GroupShipmentInvoicesFilter
+        {
+            get
+            {
+                return _groupShipmentInvoicesFilter;
+            }
+            set
+            {
+                _groupShipmentInvoicesFilter = value;
+				NotifyPropertyChanged(x => GroupShipmentInvoicesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _useAIClassificationFilter;
+        public Boolean? UseAIClassificationFilter
+        {
+            get
+            {
+                return _useAIClassificationFilter;
+            }
+            set
+            {
+                _useAIClassificationFilter = value;
+				NotifyPropertyChanged(x => UseAIClassificationFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1389,7 +1425,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(AllocationsOpeningStockDateFilter.HasValue)
 								res.Append(" && " + string.Format("AllocationsOpeningStockDate == \"{0}\"",  Convert.ToDateTime(AllocationsOpeningStockDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(GroupShipmentInvoicesFilter.HasValue)
+						res.Append(" && " + string.Format("GroupShipmentInvoices == {0}",  GroupShipmentInvoicesFilter));						
+ 
+
+									if(UseAIClassificationFilter.HasValue)
+						res.Append(" && " + string.Format("UseAIClassification == {0}",  UseAIClassificationFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1556,7 +1600,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AllowStressTest = x.AllowStressTest ,
                     
  
-                    AllocationsOpeningStockDate = x.AllocationsOpeningStockDate 
+                    AllocationsOpeningStockDate = x.AllocationsOpeningStockDate ,
+                    
+ 
+                    GroupShipmentInvoices = x.GroupShipmentInvoices ,
+                    
+ 
+                    UseAIClassification = x.UseAIClassification 
                     
                 }).ToList()
             };
@@ -1714,6 +1764,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> AllocationsOpeningStockDate { get; set; } 
+                    
+ 
+                    public Nullable<bool> GroupShipmentInvoices { get; set; } 
+                    
+ 
+                    public Nullable<bool> UseAIClassification { get; set; } 
                     
         }
 

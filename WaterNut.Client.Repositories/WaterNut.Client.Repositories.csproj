@@ -162,6 +162,7 @@
     <Compile Include="Generated Repositories\CoreEntities\AttachmentLogRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\CancelledEntriesLstRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ConsigneesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\CustomsOperationsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureInOutRepository.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXML_RecreateRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitAllXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs" />
