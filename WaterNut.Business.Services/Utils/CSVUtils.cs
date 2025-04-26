@@ -442,7 +442,7 @@ namespace WaterNut.Business.Services.Utils
             int drow_no,
             List<object> headerRow, DataRow currentReplicatedHeading)
         {
-            var rlst = headerRow
+            var requiredFieldlst = headerRow
                 .Select(x => x.ToString().ToUpper().Trim())
                 .Intersect(fileType.FileTypeMappings
                     .Where(x => x.Required)
@@ -455,12 +455,13 @@ namespace WaterNut.Business.Services.Utils
                     .Select(z => z.OriginalName.ToUpper().Trim()))
                 .ToList();
 
-            if (((fileType.FileTypeMappings.Any(x => x.Required) && rlst.Any()
-                  && fileType.FileTypeMappings.Where(x => rlst.Contains(x.OriginalName.ToUpper().Trim()) && x.Required).All(x => (headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1  )
+            if (((fileType.FileTypeMappings.Any(x => x.Required) && requiredFieldlst.Any()
+                  && fileType.FileTypeMappings.Where(x => requiredFieldlst.Contains(x.OriginalName.ToUpper().Trim()) && x.Required).All(x => (headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1  )
                                                                                 && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())))
                  ||
-                 (fileType.FileTypeMappings.All(x => !x.Required)
-                  && fileType.FileTypeMappings.Count(x => headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1 
+                  (
+                      //fileType.FileTypeMappings.All(x => !x.Required) && // took out because a subset of required fields can be not required
+                   fileType.FileTypeMappings.Count(x => headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1 
                                                                                && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())) == headerRow.Count()-1) //-1 for linenumber
                  )
                  )

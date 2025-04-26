@@ -34,6 +34,10 @@ namespace WaterNut.DataSpace
                 {
                     var itm = (IDictionary<string, object>)dataFile.Data
                         .FirstOrDefault(); //&& itm.Keys.Contains("EntryDataId")
+
+                    if (itm == null) return false;
+                    if (!itm.ContainsKey("EntryDataId")) return false;
+
                     var entrydataid = itm["EntryDataId"];
 
                     var xeslst = _csvToShipmentInvoiceConverter.ConvertCSVToShipmentInvoice(dataFile.Data);

@@ -327,7 +327,7 @@
       <Version>4.6.3</Version>
     </PackageReference>
     <PackageReference Include="Z.EntityFramework.Extensions">
-      <Version>8.102.3</Version>
+      <Version>8.103.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

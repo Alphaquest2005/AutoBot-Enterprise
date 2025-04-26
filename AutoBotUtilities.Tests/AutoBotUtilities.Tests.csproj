@@ -99,7 +99,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <!-- Added Serilog Configuration Packages -->
-    <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" /> <!-- Downgraded for net48 -->
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" /> <!-- Downgraded for net48 -->
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" /> <!-- Match dependency -->
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" /> <!-- Match dependency -->
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" /> <!-- Match dependency -->
@@ -118,7 +118,7 @@
     <PackageReference Include="TesserNet.System.Drawing" Version="0.8.0" />
     <PackageReference Include="TrackableEntities.Client" Version="2.5.7" />
     <PackageReference Include="TrackableEntities.Common" Version="2.5.7" />
-    <PackageReference Include="Z.EntityFramework.Extensions" Version="8.102.3" />
+    <PackageReference Include="Z.EntityFramework.Extensions" Version="8.103.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 </ItemGroup>
