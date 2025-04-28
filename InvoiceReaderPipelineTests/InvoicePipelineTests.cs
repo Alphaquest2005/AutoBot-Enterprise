@@ -20,8 +20,8 @@ namespace InvoiceReaderPipelineTests
         {
             var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
             var expectedInvoiceNo = "114-7827932-2029910";
-            Func<int, bool> expectedDetailCountAssertion = count => count > 2;
-            string assertionDescription = "more than 2";
+            Func<int, bool> expectedDetailCountAssertion = count => count == 8;
+            string assertionDescription = "equal to 8";
 
             await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription);
         }
@@ -30,9 +30,9 @@ namespace InvoiceReaderPipelineTests
         public async Task CanImportSheinMultiSectionInvoice_WithLogging()
         {
             var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\Shein - multiple invoices for one shipment .pdf";
-            var expectedInvoiceNo = "114-7827932-2029910";
-            Func<int, bool> expectedDetailCountAssertion = count => count > 2;
-            string assertionDescription = "more than 2";
+            var expectedInvoiceNo = "INVUS 20240 7060027 86 676";
+            Func<int, bool> expectedDetailCountAssertion = count => count == 1;
+            string assertionDescription = "equal to 1";
 
             await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription);
         }

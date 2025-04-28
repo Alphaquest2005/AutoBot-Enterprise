@@ -35,7 +35,7 @@ namespace WaterNut.DataSpace
 
                 var triggerline = ProcessStart(parentInstance, methodName, partId, currentEffectiveInstance);
 
-                var importLineSuccess = ProcessLine(Section, methodName, partId, currentEffectiveInstance, linesForThisStep, parentInstance);
+                var importLineSuccess = ProcessLine(Section, methodName, partId, currentEffectiveInstance, linesForThisStep, parentInstance, triggerline);
 
                 PostProcessLine(parentInstance, methodName, partId,triggerline, importLineSuccess) ;
 
@@ -141,7 +141,7 @@ namespace WaterNut.DataSpace
         }
 
         private bool ProcessLine(string Section, string methodName, int? partId, string currentEffectiveInstance,
-            List<InvoiceLine> linesForThisStep, int? parentInstance)
+            List<InvoiceLine> linesForThisStep, int? parentInstance, List<InvoiceLine> triggerLiner)
         {
             bool currentlyStarted = _startlines.Any();
             var importedLineSuccess = false;
@@ -198,7 +198,12 @@ namespace WaterNut.DataSpace
                             return;
                         }
 
-                        var instanceLines = _lines.Where(l => l != null && l.LineNumber >= _currentInstanceStartLineNumber).TakeLast(10).ToList();
+                        var instanceLines = _lines
+                            .Where(l => l != null && l.LineNumber >= _currentInstanceStartLineNumber).TakeLast(10)
+                            .ToList();
+                        if(!instanceLines.Any() && triggerLiner != null && triggerLiner.Any())
+                            instanceLines.AddRange(_linesForInstanceBuffer);// using the instancebuffer lines because startline is also dataline problem
+                       
 
                         if (line.OCR_Lines.RegularExpressions?.MultiLine == true)
                         {

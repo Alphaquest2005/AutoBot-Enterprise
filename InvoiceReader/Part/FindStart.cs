@@ -45,14 +45,14 @@ namespace WaterNut.DataSpace
                 _logger.Error(e, "{MethodName}: Unhandled exception for PartId: {PartId}", methodName, partId);
             }
 
-            _logger.Verbose("Exiting {MethodName} for PartId: {PartId}. Returning LineNumber: {LineNumber}", methodName, partId, resultLine.FirstOrDefault()?.LineNumber ?? -1);
+            _logger.Verbose("Exiting {MethodName} for PartId: {PartId}. Returning LineNumber: {LineNumber}", methodName, partId, resultLine?.FirstOrDefault()?.LineNumber ?? -1);
             return resultLine;
         }
 
         private bool IsImplicitStart(string methodName, int? partId, out List<InvoiceLine> resultLine)
         {
             resultLine = null;
-            if (this.OCR_Part?.Start == null || !this.OCR_Part.Start.Any())
+            if (OCR_Part?.Start == null || !OCR_Part.Start.Any())
             {
                 _logger.Information("{MethodName}: PartId: {PartId} has no start conditions defined. Implicitly started.", methodName, partId);
                 resultLine = new List<InvoiceLine> { new InvoiceLine("", 0) };
@@ -262,23 +262,21 @@ namespace WaterNut.DataSpace
 
             // Backward scan with original logic
             var candidates = new List<InvoiceLine>();
-            foreach (var line in allLines.OrderByDescending(x => x.LineNumber))
+            foreach (var line in allLines.Where(x => !string.IsNullOrEmpty(x.Line)).OrderByDescending(x => x.LineNumber))
             {
-                if (match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x)))
-                    candidates.Add(line);
+                candidates.Add(line);
+                var reconstructedText = string.Join(
+                Environment.NewLine,
+                candidates.OrderBy(x => x.LineNumber).Select(x => x.Line));
 
-                if (candidates.Count >= matchLines.Length + 2) break;
+                var isMatch = Regex.IsMatch(reconstructedText, regexPattern);
+                if (isMatch) return candidates.OrderBy(x => x.LineNumber).ToList();
             }
 
             // Validate
-            var reconstructedText = string.Join(
-                Environment.NewLine,
-                candidates.OrderBy(x => x.LineNumber).Select(x => x.Line)
-            );
-
-            return Regex.IsMatch(reconstructedText, regexPattern)
-                ? candidates.OrderBy(x => x.LineNumber).ToList()
-                : null;
+            //should never happen
+            throw new ApplicationException("regex match not matching should never happen");
+            //return null;
         }
 
         /// <summary>
