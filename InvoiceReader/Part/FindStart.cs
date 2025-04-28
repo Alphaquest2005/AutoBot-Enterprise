@@ -2,7 +2,8 @@
 using System.Collections.Generic; // Added
 using System.Linq; // Added
 using Serilog; // Added
-using System; // Added
+using System;
+using MoreLinq; // Added
 using OCR.Business.Entities; // Added for InvoiceLine
 
 namespace WaterNut.DataSpace
@@ -10,14 +11,14 @@ namespace WaterNut.DataSpace
 
     public partial class Part
     {
-        private InvoiceLine FindStart(List<InvoiceLine> linesInvolved)
+        private List<InvoiceLine> FindStart(List<InvoiceLine> linesInvolved)
         {
             string methodName = nameof(FindStart);
             int? partId = this.OCR_Part?.Id;
             int linesInvolvedCount = linesInvolved?.Count ?? 0;
             _logger.Verbose("Entering {MethodName} for PartId: {PartId}. Lines involved count: {LineCount}", methodName, partId, linesInvolvedCount);
 
-            InvoiceLine resultLine = null;
+            List<InvoiceLine> resultLine = null;
 
             try
             {
@@ -44,17 +45,17 @@ namespace WaterNut.DataSpace
                 _logger.Error(e, "{MethodName}: Unhandled exception for PartId: {PartId}", methodName, partId);
             }
 
-            _logger.Verbose("Exiting {MethodName} for PartId: {PartId}. Returning LineNumber: {LineNumber}", methodName, partId, resultLine?.LineNumber ?? -1);
+            _logger.Verbose("Exiting {MethodName} for PartId: {PartId}. Returning LineNumber: {LineNumber}", methodName, partId, resultLine.FirstOrDefault()?.LineNumber ?? -1);
             return resultLine;
         }
 
-        private bool IsImplicitStart(string methodName, int? partId, out InvoiceLine resultLine)
+        private bool IsImplicitStart(string methodName, int? partId, out List<InvoiceLine> resultLine)
         {
             resultLine = null;
             if (this.OCR_Part?.Start == null || !this.OCR_Part.Start.Any())
             {
                 _logger.Information("{MethodName}: PartId: {PartId} has no start conditions defined. Implicitly started.", methodName, partId);
-                resultLine = new InvoiceLine("", 0);
+                resultLine = new List<InvoiceLine> { new InvoiceLine("", 0) };
                 _logger.Verbose("Exiting {MethodName} for PartId: {PartId} (Implicit Start). Returning dummy line.", methodName, partId);
                 return true;
             }
@@ -85,7 +86,7 @@ namespace WaterNut.DataSpace
             return false;
         }
 
-        private InvoiceLine ProcessStartConditions(string methodName, int? partId, string textToCheck, List<InvoiceLine> linesInvolved)
+        private List<InvoiceLine> ProcessStartConditions(string methodName, int? partId, string textToCheck, List<InvoiceLine> linesInvolved)
         {
             _logger.Debug("{MethodName}: PartId: {PartId} - Iterating through {Count} start conditions.", methodName, partId, this.OCR_Part.Start.Count);
 
@@ -98,10 +99,10 @@ namespace WaterNut.DataSpace
             }
 
             _logger.Debug("{MethodName}: PartId: {PartId} - No start condition matched the text buffer. Returning null.", methodName, partId);
-            return null;
+            return new List<InvoiceLine>();
         }
 
-        private bool TryMatchStartCondition(string methodName, int? partId, string textToCheck, List<InvoiceLine> linesInvolved, dynamic startCondition, out InvoiceLine resultLine)
+        private bool TryMatchStartCondition(string methodName, int? partId, string textToCheck, List<InvoiceLine> linesInvolved, dynamic startCondition, out List<InvoiceLine> resultLine)
         {
             resultLine = null;
             string pattern = startCondition.RegularExpressions.RegEx;
@@ -116,7 +117,7 @@ namespace WaterNut.DataSpace
 
             if (TryMatchBuffer(methodName, partId, textToCheck, pattern, options, out var bufferMatch))
             {
-                resultLine = LocateTriggeringLine(methodName, partId, bufferMatch, linesInvolved, pattern);
+                resultLine = TryFindMatch(bufferMatch,linesInvolved,pattern, startCondition.RegularExpressions.MultiLine == true ? true : false);
                 return true;
             }
 
@@ -158,65 +159,189 @@ namespace WaterNut.DataSpace
             _logger.Warning(ex, "{MethodName}: Regex Timeout (>{Timeout}s) in buffer match: PartId={PartId}, Pattern='{Pattern}', Input Snippet='{InputSnippet}'", methodName, RegexTimeout.TotalSeconds, partId, pattern, inputSnippet);
         }
 
-        private InvoiceLine LocateTriggeringLine(string methodName, int? partId, Match bufferMatch, List<InvoiceLine> linesInvolved, string pattern)
+        //private InvoiceLine LocateTriggeringLine(string methodName, int? partId, Match bufferMatch, List<InvoiceLine> linesInvolved, string pattern)
+        //{
+        //    int matchStartIndex = bufferMatch.Index;
+        //    int currentLength = 0;
+        //    InvoiceLine bestGuessLine = null;
+
+        //    if (linesInvolved != null && linesInvolved.Any())
+        //    {
+        //        foreach (var line in linesInvolved)
+        //        {
+        //            if (line == null) continue;
+
+        //            string currentLineText = line.Line ?? "";
+        //            var lineWithNewline = currentLineText + Environment.NewLine;
+        //            int lineEndIndex = currentLength + lineWithNewline.Length;
+
+        //            if (bestGuessLine == null && matchStartIndex >= currentLength && matchStartIndex < lineEndIndex)
+        //            {
+        //                bestGuessLine = line;
+        //            }
+
+        //            if (TrySingleLineMatch(methodName, partId, line, pattern, out var singleLineMatch))
+        //            {
+        //                return line;
+        //            }
+
+        //            currentLength = lineEndIndex;
+        //        }
+        //    }
+
+        //    return bestGuessLine ?? linesInvolved?.FirstOrDefault();
+        //}
+
+        //private bool TrySingleLineMatch(string methodName, int? partId, InvoiceLine line, string pattern, out Match singleLineMatch)
+        //{
+        //    singleLineMatch = null;
+        //    try
+        //    {
+        //        singleLineMatch = Regex.Match(line.Line ?? "", pattern, RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Singleline, TimeSpan.FromSeconds(1));
+        //        if (singleLineMatch.Success)
+        //        {
+        //            _logger.Information("{MethodName}: PartId: {PartId} - Found start trigger via single-line check on LineNumber: {LineNumber}.", methodName, partId, line.LineNumber);
+        //            return true;
+        //        }
+        //    }
+        //    catch (RegexMatchTimeoutException)
+        //    {
+        //        _logger.Verbose("{MethodName}: Single-line regex check timed out for LineNumber: {LineNumber}", methodName, line.LineNumber);
+        //    }
+        //    catch (ArgumentException argEx)
+        //    {
+        //        _logger.Warning(argEx, "{MethodName}: Invalid Regex Pattern during single-line check for LineNumber: {LineNumber}", methodName, line.LineNumber);
+        //    }
+        //    catch (Exception lineMatchEx)
+        //    {
+        //        _logger.Warning(lineMatchEx, "{MethodName}: Error during single-line regex check for LineNumber: {LineNumber}", methodName, line.LineNumber);
+        //    }
+
+        //    return false;
+        //}
+
+        /// <summary>
+        /// Tries to find a match and optionally updates _lines.
+        /// </summary>
+        public List<InvoiceLine> TryFindMatch(
+            Match match,
+            List<InvoiceLine> allLines,
+            string regexPattern,
+            bool multiLineMode
+        )
         {
-            int matchStartIndex = bufferMatch.Index;
+            if (!match.Success) return new List<InvoiceLine>();
+
+            // Single-line mode
+            if (!multiLineMode)
+                return FindMatchStart(match, allLines, regexPattern);
+
+            // Multi-line mode
+            var matchedLines = ReconstructMultiLineMatch(match, allLines, regexPattern);
+           UpdateLinesField(matchedLines); // Explicit state update
+           return matchedLines;
+        }
+
+        /// <summary>
+        /// Reconstructs all lines involved in a multi-line match.
+        /// Pure function - no side effects.
+        /// </summary>
+        public List<InvoiceLine> ReconstructMultiLineMatch(
+            Match match,
+            List<InvoiceLine> allLines,
+            string regexPattern
+        )
+        {
+            if (!match.Success) return null;
+
+            // Split matched content
+            var matchLines = match.Value.Split(
+                new[] { '\r', '\n' },
+                StringSplitOptions.RemoveEmptyEntries
+            );
+
+            // Backward scan with original logic
+            var candidates = new List<InvoiceLine>();
+            foreach (var line in allLines.OrderByDescending(x => x.LineNumber))
+            {
+                if (match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x)))
+                    candidates.Add(line);
+
+                if (candidates.Count >= matchLines.Length + 2) break;
+            }
+
+            // Validate
+            var reconstructedText = string.Join(
+                Environment.NewLine,
+                candidates.OrderBy(x => x.LineNumber).Select(x => x.Line)
+            );
+
+            return Regex.IsMatch(reconstructedText, regexPattern)
+                ? candidates.OrderBy(x => x.LineNumber).ToList()
+                : null;
+        }
+
+        /// <summary>
+        /// Explicitly updates the _lines field with new values.
+        /// Impure function - has side effects.
+        /// </summary>
+        public bool UpdateLinesField(List<InvoiceLine> newLines)
+        {
+            if (newLines == null || newLines.Count == 0) return false;
+
+            _lines.Clear();
+            _lines.AddRange(newLines);
+            Console.WriteLine($"[STATE] Updated _lines to {newLines.Count} items");
+            return true;
+        }
+
+        /// <summary>
+        /// Finds the line where the match begins (checks content first, then buffer position).
+        /// Pure function - no side effects.
+        /// </summary>
+        public List<InvoiceLine> FindMatchStart(
+            Match match,
+            List<InvoiceLine> linesInvolved,
+            string regexPattern
+        )
+        {
+            if (!match.Success) return null;
+
+            // 1. Check for exact line matches
+            foreach (var line in linesInvolved.TakeLast(10))
+            {
+                if (Regex.IsMatch(line.Line, regexPattern, RegexOptions.IgnoreCase))
+                {
+                    Console.WriteLine($"[MATCH] Exact match on Line {line.LineNumber}");
+                    return new List<InvoiceLine> { line };
+                }
+            }
+
+            // 2. Fallback: Line contains match text
+            foreach (var line in linesInvolved.TakeLast(10))
+            {
+                if (line.Line.Contains(match.Value.Trim()))
+                {
+                    Console.WriteLine($"[MATCH] Partial match on Line {line.LineNumber}");
+                    return new List<InvoiceLine> { line };
+                }
+            }
+
+            // 3. Last resort: Buffer position
             int currentLength = 0;
-            InvoiceLine bestGuessLine = null;
-
-            if (linesInvolved != null && linesInvolved.Any())
+            foreach (var line in linesInvolved)
             {
-                foreach (var line in linesInvolved)
+                var lineLength = line.Line.Length + Environment.NewLine.Length;
+                if (match.Index >= currentLength && match.Index < currentLength + lineLength)
                 {
-                    if (line == null) continue;
-
-                    string currentLineText = line.Line ?? "";
-                    var lineWithNewline = currentLineText + Environment.NewLine;
-                    int lineEndIndex = currentLength + lineWithNewline.Length;
-
-                    if (bestGuessLine == null && matchStartIndex >= currentLength && matchStartIndex < lineEndIndex)
-                    {
-                        bestGuessLine = line;
-                    }
-
-                    if (TrySingleLineMatch(methodName, partId, line, pattern, out var singleLineMatch))
-                    {
-                        return line;
-                    }
-
-                    currentLength = lineEndIndex;
+                    Console.WriteLine($"[WARNING] Used buffer fallback for Line {line.LineNumber}");
+                    return new List<InvoiceLine> { line };
                 }
+                currentLength += lineLength;
             }
 
-            return bestGuessLine ?? linesInvolved?.FirstOrDefault();
+            return null;
         }
 
-        private bool TrySingleLineMatch(string methodName, int? partId, InvoiceLine line, string pattern, out Match singleLineMatch)
-        {
-            singleLineMatch = null;
-            try
-            {
-                singleLineMatch = Regex.Match(line.Line ?? "", pattern, RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Singleline, TimeSpan.FromSeconds(1));
-                if (singleLineMatch.Success)
-                {
-                    _logger.Information("{MethodName}: PartId: {PartId} - Found start trigger via single-line check on LineNumber: {LineNumber}.", methodName, partId, line.LineNumber);
-                    return true;
-                }
-            }
-            catch (RegexMatchTimeoutException)
-            {
-                _logger.Verbose("{MethodName}: Single-line regex check timed out for LineNumber: {LineNumber}", methodName, line.LineNumber);
-            }
-            catch (ArgumentException argEx)
-            {
-                _logger.Warning(argEx, "{MethodName}: Invalid Regex Pattern during single-line check for LineNumber: {LineNumber}", methodName, line.LineNumber);
-            }
-            catch (Exception lineMatchEx)
-            {
-                _logger.Warning(lineMatchEx, "{MethodName}: Error during single-line regex check for LineNumber: {LineNumber}", methodName, line.LineNumber);
-            }
-
-            return false;
-        }
     }
 }

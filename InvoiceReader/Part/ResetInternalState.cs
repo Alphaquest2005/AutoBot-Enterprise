@@ -1,5 +1,6 @@
 ﻿using Serilog; // Added
-using System; // Added
+using System;
+using System.Collections.Generic; // Added
 
 namespace WaterNut.DataSpace
 {
@@ -27,7 +28,7 @@ namespace WaterNut.DataSpace
                 _lines?.Clear(); // Use null-conditional operator
 
                 _logger.Verbose("Clearing _instanceLinesTxt (Length: {Length})", _instanceLinesTxt?.Length ?? 0);
-                _instanceLinesTxt?.Clear(); // Use null-conditional operator
+                SyncInstanceBuffer(new List<InvoiceLine>());// Use null-conditional operator
 
                 _logger.Verbose("Resetting lastLineRead to 0 (was {PreviousValue})", lastLineRead);
                 lastLineRead = 0;

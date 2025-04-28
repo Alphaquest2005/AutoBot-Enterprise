@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿﻿using System.Text;
 using OCR.Business.Entities;
 using System.Collections.Generic; // Added
 using System.Linq; // Added
@@ -39,6 +39,9 @@ namespace WaterNut.DataSpace
             LogCounts(methodName, partId);
 
             ChildParts = InitializeChildParts(part, methodName, partId);
+
+            ParentPart = part.ChildParts.FirstOrDefault()?.ParentPart; // Assuming ChildPart here refers to the parent Parts entity and GetExistingPart is a non-recursive lookup method
+
             Lines = InitializeLines(part, methodName, partId);
 
             lastLineRead = 0;
@@ -46,6 +49,9 @@ namespace WaterNut.DataSpace
 
             _logger.Information("Exiting {MethodName} successfully for PartId: {PartId}", methodName, partId);
         }
+
+        public Parts ParentPart { get; set; }
+
 
         public List<Part> ChildParts { get; }
         public List<Line> Lines { get; }
@@ -60,6 +66,8 @@ namespace WaterNut.DataSpace
         private int _currentInstanceStartLineNumber = -1;
 
         public List<IDictionary<string, object>> Values => _values;
+        public bool? EverStarted { get; set; } = null;
+        public int? Instance  => _instance;
 
         private void LogEnteringConstructor(string methodName, int? partId)
         {

@@ -20,7 +20,7 @@ namespace WaterNut.DataSpace
             try
             {
                 ResetInternalStateWithLogging(partId);
-                ResetInstanceFieldsWithLogging(partId);
+                if(ParentPart != null) ResetInstanceFieldsWithLogging(partId);
                 ResetChildPartsWithLogging(partId);
 
                 _logger.Information("Finished Part.Reset for PartId: {PartId}", partId);
@@ -45,7 +45,7 @@ namespace WaterNut.DataSpace
 
             _logger.Debug("PartId: {PartId} - Resetting _lastProcessedParentInstance to 0 (was {PreviousValue}).",
                 partId, _lastProcessedParentInstance);
-            _lastProcessedParentInstance = 0;
+            //_lastProcessedParentInstance = parent.instance;
         }
 
         private void ResetChildPartsWithLogging(int? partId)

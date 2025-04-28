@@ -49,16 +49,17 @@ namespace WaterNut.DataSpace
             var tasks = itms.Select(x => (IDictionary<string, object>)x)
                 .Where(x => x != null && x.Any())
                 .Select(ProcessInvoiceItem)
+                .Where(x => x != null)
                 .ToList();
 
             var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-            return results.ToList();
+            return results.Where(x => x != null).ToList();
 
             async Task<ShipmentInvoice> ProcessInvoiceItem(IDictionary<string, object> x)
             {
                 var invoice = new ShipmentInvoice();
 
-                if (x["InvoiceDetails"] == null) throw new ApplicationException("Invoice Details is null");
+                if (x["InvoiceDetails"] == null) return null;// throw new ApplicationException("Invoice Details is null");
             
                 var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                     .Where(z => z != null)

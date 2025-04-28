@@ -100,24 +100,30 @@ namespace AutoBot
                 // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
 
 
-
-                if (!importResult.Any())
+                if (BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification != true)
                 {
-                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
-                    success.AddRange(res2);
+                    continue;
                 }
                 else
                 {
-                    var fails = importResult.Select(x => x.Value).Where(x => x.Success == ImportStatus.Failed).ToList();
-                    if(fails.Any())
-                        fails
-                            .ForEach(async x =>
-                            {
-                                var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
-                                success.AddRange(res2);
-                            });
+                    if (!importResult.Any())
+                    {
+                        var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                        success.AddRange(res2);
+                    }
                     else
-                        success.AddRange(importResult);
+                    {
+                        var fails = importResult.Select(x => x.Value).Where(x => x.Success == ImportStatus.Failed).ToList();
+                        if (fails.Any())
+                            fails
+                                .ForEach(async x =>
+                                {
+                                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                                    success.AddRange(res2);
+                                });
+                        else
+                            success.AddRange(importResult);
+                    }
                 }
             }
 

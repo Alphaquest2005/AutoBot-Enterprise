@@ -244,10 +244,7 @@ namespace WaterNut.DataSpace
                 ////////////////////////////////
                 ProcessParts(methodName, lineCount, section, iLine);
                 ///////////////////////////////
-                if(lineCount > 30 && Parts.All(x => !x.WasStarted))
-                {
-                    throw new ApplicationException("Failed to import in first 30 lines");
-                }
+              
             }
 
             LogEndIteration(methodName, inputLineCount, invoiceId);
@@ -276,7 +273,7 @@ namespace WaterNut.DataSpace
             int? partId = ((WaterNut.DataSpace.Part)part).OCR_Part?.Id;
             LogPartReadStart(methodName, lineCount, partId, section);
 
-            part.Read(iLine, section);
+            part.Read(iLine, section, part.Instance);// need to call itself passing its own instance again to set the currenteffectiveinstance
                         
             LogPartReadEnd(methodName, lineCount, partId);
             LogPartValues(methodName, lineCount, partId, ((WaterNut.DataSpace.Part)part).Values);

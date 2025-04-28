@@ -88,15 +88,16 @@ namespace WaterNut.DataSpace
                 "{MethodName}: Determining instances to process for PartId: {PartId}, FilterInstance: {FilterInstance}",
                 methodName, partId, filterInstance?.ToString() ?? "None");
 
-            var instancesToProcess = currentPart.Lines
+            List<IGrouping<string, string>> instancesToProcess = currentPart.Lines
                 .Where(line => line?.Values != null)
                 .SelectMany(line =>
                     line.Values.SelectMany(v =>
                         v.Value?.Keys ?? Enumerable.Empty<(Fields fields, string instance)>()))
-                .Where(k => string.IsNullOrEmpty(filterInstance) || k.instance == filterInstance)
+                .Where(k => string.IsNullOrEmpty(filterInstance?.ToString()) || k.instance == filterInstance?.ToString())
                 .Select(k => k.instance)
                 .Distinct()
-                .OrderBy(instance => instance)
+                .OrderBy(x => int.Parse(x.Split('-')[0]))
+                .ThenBy(x => int.Parse(x.Split('-')[1]))
                 .GroupBy(x => x.Split('-')[0])
                 .ToList();
 
@@ -131,7 +132,7 @@ namespace WaterNut.DataSpace
                 _logger.Information(
                     "{MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance }) };
+                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance.ToString() }) };
 
 
             }

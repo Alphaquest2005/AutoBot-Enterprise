@@ -27,9 +27,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
 
             // Safe check for CsvLines count using Any()
-            if (!_context.Templates.Select(x => x.CsvLines).Any())
+            if (_context.Templates.All(x => x.CsvLines == null || !x.CsvLines.Any()))
             {
-                _logger.Warning("Initial run considered unsuccessful: CsvLines count is 0.");
+                _logger.Warning($"Initial run considered unsuccessful: CsvLines count is 0.");
                 return true;
             }
 
