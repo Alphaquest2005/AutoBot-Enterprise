@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IInvoiceDetailsService))]
+   [Export (typeof(ICategoryTariffsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class InvoiceDetailsService : IInvoiceDetailsService, IDisposable
+    public partial class CategoryTariffsService : ICategoryTariffsService, IDisposable
     {
         //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public InvoiceDetailsService()
+        public CategoryTariffsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetails(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffs(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<InvoiceDetails> entities = set.AsNoTracking().ToList();
+                    IEnumerable<CategoryTariffs> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,16 +97,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<InvoiceDetails> GetInvoiceDetailsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<CategoryTariffs> GetCategoryTariffsByKey(string Category, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Category))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Category;
 				var set = AddIncludes(includesLst, dbContext);
-                InvoiceDetails entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
+                CategoryTariffs entity = set.AsNoTracking().SingleOrDefault(x => x.Category == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetailsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceDetails>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<CategoryTariffs>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetailsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InvoiceDetails>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<CategoryTariffs>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetailsByExpressionNav(string exp,
+		public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceDetails>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<CategoryTariffs>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,34 +229,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "ShipmentInvoiceDetails":
                                 return
                                     await
-                                        GetWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "POItems":
-                                return
-                                    await
-                                        GetWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "InvoiceDetails", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ItemAlias":
-                                return
-                                    await
-                                        GetWhere<ShipmentInvoiceDetailsItemAlias>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Volume":
-                                return
-                                    await
-                                        GetWhere<InvoiceDetailsVolume>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "CategoryTariffs":
-                                return
-                                    await
-                                        GetWhere<CategoryTariffs>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany", includesLst)
+                                        GetWhere<InvoiceDetails>(dbContext, exp, itm.Value, "CategoryTariffs", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -284,17 +260,17 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetailsByBatch(string exp,
+        public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InvoiceDetails>>();
+                var res = new ConcurrentQueue<List<CategoryTariffs>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceDetails>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<CategoryTariffs>();
 
 
                 var batchSize = 500;
@@ -315,14 +291,14 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InvoiceDetails> dset;
+                                IQueryable<CategoryTariffs> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Category);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Category).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -359,17 +335,17 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<InvoiceDetails>> GetShipmentInvoiceDetailsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<CategoryTariffs>> GetCategoryTariffsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InvoiceDetails>>();
+                var res = new ConcurrentQueue<List<CategoryTariffs>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InvoiceDetails>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<CategoryTariffs>();
 
 
                 var batchSize = 500;
@@ -390,15 +366,15 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InvoiceDetails> dset;
+                                IQueryable<CategoryTariffs> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Category);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Category);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -435,13 +411,13 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<InvoiceDetails> UpdateInvoiceDetails(InvoiceDetails entity)
+        public async Task<CategoryTariffs> UpdateCategoryTariffs(CategoryTariffs entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (InvoiceDetails) entity;
+                     var res = (CategoryTariffs) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -508,14 +484,14 @@ namespace EntryDataDS.Business.Services
            return entity;
         }
 
-        public async Task<InvoiceDetails> CreateInvoiceDetails(InvoiceDetails entity)
+        public async Task<CategoryTariffs> CreateCategoryTariffs(CategoryTariffs entity)
         {
             try
             {
-                var res = (InvoiceDetails) entity;
+                var res = (CategoryTariffs) entity;
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.ShipmentInvoiceDetails.Add(res);
+                dbContext.CategoryTariffs.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -535,20 +511,20 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInvoiceDetails(string Id)
+        public async Task<bool> DeleteCategoryTariffs(string Category)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                InvoiceDetails entity = dbContext.ShipmentInvoiceDetails
-													.SingleOrDefault(x => x.Id == i);
+                var i = Category;
+                CategoryTariffs entity = dbContext.CategoryTariffs
+													.SingleOrDefault(x => x.Category == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.ShipmentInvoiceDetails.Attach(entity);
-                    dbContext.ShipmentInvoiceDetails.Remove(entity);
+                    dbContext.CategoryTariffs.Attach(entity);
+                    dbContext.CategoryTariffs.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -567,19 +543,19 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedInvoiceDetails(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedCategoryTariffs(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing InvoiceDetails", lst.Count());
+                StatusModel.StartStatusUpdate("Removing CategoryTariffs", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new InvoiceDetailsService())
+                    using (var ctx = new CategoryTariffsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteInvoiceDetails(item).Wait();
+                            ctx.DeleteCategoryTariffs(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -614,7 +590,7 @@ namespace EntryDataDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<InvoiceDetails>)dbContext.ShipmentInvoiceDetails; 
+                    var set = (IQueryable<CategoryTariffs>)dbContext.CategoryTariffs; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -650,14 +626,14 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.ShipmentInvoiceDetails
+                        return dbContext.CategoryTariffs
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.ShipmentInvoiceDetails
+                        return dbContext.CategoryTariffs
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -678,19 +654,19 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<InvoiceDetails>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<CategoryTariffs>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceDetails>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<CategoryTariffs>();
                     if (exp == "All")
                     {
-                        return dbContext.ShipmentInvoiceDetails
+                        return dbContext.CategoryTariffs
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.Category)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -698,10 +674,10 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return dbContext.ShipmentInvoiceDetails
+                        return dbContext.CategoryTariffs
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.Category)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -732,7 +708,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.ShipmentInvoiceDetails
+                        return dbContext.CategoryTariffs
 										.AsNoTracking()
                                         .Count();
                     }
@@ -740,24 +716,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
-                                return await CountWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "POItems":
-                                return await CountWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "InvoiceDetails", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ItemAlias":
-                                return await CountWhere<ShipmentInvoiceDetailsItemAlias>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Volume":
-                                return await CountWhere<InvoiceDetailsVolume>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "CategoryTariffs":
-                                return await CountWhere<CategoryTariffs>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany")
+                            case "ShipmentInvoiceDetails":
+                                return await CountWhere<InvoiceDetails>(dbContext, exp, itm.Value, "CategoryTariffs", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.ShipmentInvoiceDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return dbContext.CategoryTariffs.Where(exp == "All" || exp == null ? "Category != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -798,10 +762,10 @@ namespace EntryDataDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Category")
                 .Count();
 			}
 			catch (Exception)
@@ -818,10 +782,10 @@ namespace EntryDataDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Category")
                 .Count();
 			}
 			catch (Exception)
@@ -831,7 +795,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<InvoiceDetails>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<CategoryTariffs>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -839,7 +803,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InvoiceDetails>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<CategoryTariffs>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -847,7 +811,7 @@ namespace EntryDataDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.Category)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -857,34 +821,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "ShipmentInvoiceDetails":
                                 return
                                     await
-                                        LoadRangeWhere<ShipmentInvoice>(startIndex, count, dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "POItems":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentInvoicePOItemQueryMatches>(startIndex, count, dbContext, exp, itm.Value, "InvoiceDetails", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ItemAlias":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentInvoiceDetailsItemAlias>(startIndex, count, dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Volume":
-                                return
-                                    await
-                                        LoadRangeWhere<InvoiceDetailsVolume>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "CategoryTariffs":
-                                return
-                                    await
-                                        LoadRangeWhere<CategoryTariffs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoiceDetails", "SelectMany")
+                                        LoadRangeWhere<InvoiceDetails>(startIndex, count, dbContext, exp, itm.Value, "CategoryTariffs", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -893,10 +833,10 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return set//dbContext.ShipmentInvoiceDetails
+                    return set//dbContext.CategoryTariffs
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "Category != null" : exp)
+								.OrderBy(y => y.Category)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -919,7 +859,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<InvoiceDetails>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<CategoryTariffs>> LoadRangeWhere<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -934,7 +874,7 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<InvoiceDetails>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<CategoryTariffs>> LoadRangeSelectMany<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -942,14 +882,14 @@ namespace EntryDataDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InvoiceDetails>();
+                .SelectMany(navProp).OfType<CategoryTariffs>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Category)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -962,7 +902,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InvoiceDetails>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<CategoryTariffs>> LoadRangeSelect<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -970,14 +910,14 @@ namespace EntryDataDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InvoiceDetails>();
+                .Select(navProp).OfType<CategoryTariffs>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Category)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -990,7 +930,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<InvoiceDetails>> GetWhere<T>(EntryDataDSContext dbContext,
+        private static async Task<IEnumerable<CategoryTariffs>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1014,7 +954,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InvoiceDetails>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<CategoryTariffs>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1025,17 +965,17 @@ namespace EntryDataDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<InvoiceDetails>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<CategoryTariffs>()
+							.Where(exp == "All" || exp == null?"Category != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<InvoiceDetails>)dbContext.Set<T>()
+			var set = (DbQuery<CategoryTariffs>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null?"Category != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1049,7 +989,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InvoiceDetails>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<CategoryTariffs>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1060,17 +1000,17 @@ namespace EntryDataDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<InvoiceDetails>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<CategoryTariffs>()
+							.Where(exp == "All" || exp == null?"Category != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<InvoiceDetails>)dbContext.Set<T>()
+			var set = (DbQuery<CategoryTariffs>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null?"Category != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1084,65 +1024,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<InvoiceDetails>> GetInvoiceDetailsByShipmentInvoiceId(string ShipmentInvoiceId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ShipmentInvoiceId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<InvoiceDetails> entities = set//dbContext.ShipmentInvoiceDetails
-                                                    // .Include(x => x.POItems)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.ShipmentInvoiceId.ToString() == ShipmentInvoiceId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<InvoiceDetails>> GetInvoiceDetailsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(InventoryItemId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<InvoiceDetails> entities = set//dbContext.ShipmentInvoiceDetails
-                                                    // .Include(x => x.POItems)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1154,11 +1036,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.ShipmentInvoiceDetails.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.CategoryTariffs.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.ShipmentInvoiceDetails.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.CategoryTariffs.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1186,10 +1068,10 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.ShipmentInvoiceDetails.Any()) return 0;
+                    if (!dbContext.CategoryTariffs.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.ShipmentInvoiceDetails
+                        return Convert.ToDecimal(dbContext.CategoryTariffs
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1197,24 +1079,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
-                                return await SumWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "POItems":
-                                return await SumWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "InvoiceDetails", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ItemAlias":
-                                return await SumWhere<ShipmentInvoiceDetailsItemAlias>(dbContext, exp, itm.Value, "InvoiceDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Volume":
-                                return await SumWhere<InvoiceDetailsVolume>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "CategoryTariffs":
-                                return await SumWhere<CategoryTariffs>(dbContext, exp, itm.Value, "ShipmentInvoiceDetails", field, "SelectMany")
+                            case "ShipmentInvoiceDetails":
+                                return await SumWhere<InvoiceDetails>(dbContext, exp, itm.Value, "CategoryTariffs", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.ShipmentInvoiceDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.CategoryTariffs.Where(exp == "All" || exp == null ? "Category != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1254,10 +1124,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Category")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1274,10 +1144,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InvoiceDetails>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<CategoryTariffs>()
+                .Where(exp == "All" || exp == null ? "Category != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Category")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1300,11 +1170,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.ShipmentInvoiceDetails.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.CategoryTariffs.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.ShipmentInvoiceDetails.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.CategoryTariffs.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1325,12 +1195,12 @@ namespace EntryDataDS.Business.Services
          }
 
 		 
-		private static IQueryable<InvoiceDetails> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
+		private static IQueryable<CategoryTariffs> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<InvoiceDetails>) dbContext.ShipmentInvoiceDetails; 
+			   var set =(DbQuery<CategoryTariffs>) dbContext.CategoryTariffs; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1341,7 +1211,7 @@ namespace EntryDataDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<InvoiceDetails> AddWheres(List<string> expLst, IQueryable<InvoiceDetails> set)
+	   private IQueryable<CategoryTariffs> AddWheres(List<string> expLst, IQueryable<CategoryTariffs> set)
         {
             try
             {

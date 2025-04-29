@@ -413,6 +413,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Attachments.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\CategoryTariffs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Consignees.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\EDDocumentTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\EntryData.cs
@@ -863,6 +864,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\CategoryTariffs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Consignees.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryData.map.cs
@@ -1322,6 +1324,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Attachments.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\CategoryTariffs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Consignees.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\EDDocumentTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\EntryData.cs
@@ -1758,6 +1761,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Attachments.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\CategoryTariffs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Consignees.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\EDDocumentTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\EntryData.cs
@@ -2194,6 +2198,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Attachments.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\CategoryTariffs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Consignees.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\EDDocumentTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\EntryData.cs
@@ -2630,6 +2635,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Attachments.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\CategoryTariffs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Consignees.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\EDDocumentTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\EntryData.cs
@@ -4369,6 +4375,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\CategoryTariffs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Consignees.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryData.map.cs
@@ -5044,6 +5051,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAttachmentsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\ICategoryTariffsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IConsigneesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IEDDocumentTypesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IEntryDataDetailsExService.cs
@@ -5480,6 +5488,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\AsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AttachmentsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\CategoryTariffsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ConsigneesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\EDDocumentTypesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\EntryDataDetailsExService.cs

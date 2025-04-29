@@ -31,6 +31,13 @@
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="CategoryTariffs">
+          <Key>
+            <PropertyRef Name="Category" />
+          </Key>
+          <Property Name="Category" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
+        </EntityType>
         <EntityType Name="Consignees">
           <Key>
             <PropertyRef Name="ConsigneeName" />
@@ -507,6 +514,8 @@
           <Property Name="SalesFactor" Type="float" Nullable="false" />
           <Property Name="Discount" Type="float" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="12" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails-Volume">
           <Key>
@@ -1085,6 +1094,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
             
             
             
+            <PropertyRef Name="CategoryTariffCode" />
           </Key>
           <Property Name="PODetailsId" Type="int" Nullable="false" />
           <Property Name="INVDetailsId" Type="int" Nullable="false" />
@@ -1106,6 +1116,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Property Name="INVInventoryItemId" Type="int" />
           <Property Name="POInventoryItemId" Type="int" Nullable="false" />
           <Property Name="RankNo" Type="int" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="category" Type="nvarchar" MaxLength="50" />
           <Property Name="rn" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1795,6 +1807,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShipmentInvoiceDetails_CategoryTariffs">
+          <End Role="CategoryTariffs" Type="Self.CategoryTariffs" Multiplicity="0..1" />
+          <End Role="ShipmentInvoiceDetails" Type="Self.ShipmentInvoiceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryTariffs">
+              <PropertyRef Name="Category" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetails">
+              <PropertyRef Name="Category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice">
           <End Role="ShipmentInvoice" Type="Self.ShipmentInvoice" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1979,6 +2003,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryTariffs" EntityType="Self.CategoryTariffs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consignees" EntityType="Self.Consignees" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData" EntityType="Self.EntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Adjustments" EntityType="Self.EntryData_Adjustments" Schema="dbo" store:Type="Tables" />
@@ -2297,6 +2322,8 @@ FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches
 [ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
 [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
 [ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo], 
+[ShipmentInvoicePOItemQueryMatches].[CategoryTariffCode] AS [CategoryTariffCode], 
+[ShipmentInvoicePOItemQueryMatches].[category] AS [category], 
 [ShipmentInvoicePOItemQueryMatches].[rn] AS [rn]
 FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
           </EntitySet>
@@ -2556,6 +2583,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_ShipmentFreightDetails_ShipmentFreight" Association="Self.FK_ShipmentFreightDetails_ShipmentFreight">
             <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
             <End Role="ShipmentFreightDetails" EntitySet="ShipmentFreightDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentInvoiceDetails_CategoryTariffs" Association="Self.FK_ShipmentInvoiceDetails_CategoryTariffs">
+            <End Role="CategoryTariffs" EntitySet="CategoryTariffs" />
+            <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_ShipmentInvoiceDetails_ShipmentInvoice" Association="Self.FK_ShipmentInvoiceDetails_ShipmentInvoice">
             <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
@@ -2995,6 +3026,11 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_ShipmentManifest_Consignees" Association="WaterNutDBModel.FK_ShipmentManifest_Consignees">
             <End Role="Consignees" EntitySet="Consignees" />
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+          </AssociationSet>
+          <EntitySet Name="CategoryTariffs" EntityType="WaterNutDBModel.CategoryTariffs" />
+          <AssociationSet Name="FK_ShipmentInvoiceDetails_CategoryTariffs" Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs">
+            <End Role="CategoryTariffs" EntitySet="CategoryTariffs" />
+            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3795,6 +3831,9 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="Volume" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetails_Volume" />
           <Property Name="Discount" Type="Double" />
           <Property Name="TariffCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryTariffCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CategoryTariffs" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs" FromRole="InvoiceDetails" ToRole="CategoryTariffs" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -4477,6 +4516,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Key>
             <PropertyRef Name="PODetailsId" />
             <PropertyRef Name="INVDetailsId" />
+            <PropertyRef Name="CategoryTariffCode" />
           </Key>
           <Property Name="PODetailsId" Type="Int32" Nullable="false" />
           <Property Name="INVDetailsId" Type="Int32" Nullable="false" />
@@ -4501,6 +4541,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Gallons" Type="Double" />
           <Property Name="RankNo" Type="Int32" />
           <Property Name="rn" Type="Int64" />
+          <Property Name="CategoryTariffCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ShipmentAttachedPOs">
           <Key>
@@ -5265,6 +5307,26 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CategoryTariffs">
+          <Key>
+            <PropertyRef Name="Category" />
+          </Key>
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentInvoiceDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs" FromRole="CategoryTariffs" ToRole="InvoiceDetails" />
+        </EntityType>
+        <Association Name="FK_ShipmentInvoiceDetails_CategoryTariffs">
+          <End Type="WaterNutDBModel.CategoryTariffs" Role="CategoryTariffs" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryTariffs">
+              <PropertyRef Name="Category" />
+            </Principal>
+            <Dependent Role="InvoiceDetails">
+              <PropertyRef Name="Category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5774,6 +5836,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoiceDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
               <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
@@ -6019,6 +6083,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoicePOItemQueryMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemQueryMatches">
+                <ScalarProperty Name="Category" ColumnName="category" />
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
                 <ScalarProperty Name="rn" ColumnName="rn" />
                 <ScalarProperty Name="RankNo" ColumnName="RankNo" />
                 <ScalarProperty Name="Gallons" ColumnName="Gallons" />
@@ -6453,6 +6519,14 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="ConsigneeCode" ColumnName="ConsigneeCode" />
                 <ScalarProperty Name="ConsigneeName" ColumnName="ConsigneeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoryTariffs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CategoryTariffs">
+              <MappingFragment StoreEntitySet="CategoryTariffs">
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -1,5 +1,0 @@
-use [AutoBot-EnterpriseDB] EXEC sp_changedbowner 'sa'
-use [ColumbianEmeralds-DiscoveryDB] EXEC sp_changedbowner 'sa'
-use [BudgetMarine-AutoBot] EXEC sp_changedbowner 'sa'
-use [Portage-AutoBot] EXEC sp_changedbowner 'sa'
-use [QuickSales-Enterprise] EXEC sp_changedbowner 'sa'

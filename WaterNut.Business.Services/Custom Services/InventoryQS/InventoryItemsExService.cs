@@ -44,19 +44,21 @@ namespace InventoryQS.Business.Services
         }
 
 
-        public static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>>
+        public static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>>
             ClassifiedItms(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
         {
             try
             {
-                //var 
+                //var
                 var itms =
-                BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false 
-                    ?await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false)
-                    : Itms.DistinctBy(x => x.ItemNumber).ToDictionary(x => x.ItemNumber, x => x);
+                BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false
+                    ? (await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false))
+                        .ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.ItemNumber, kvp.Value.ItemDescription, kvp.Value.TariffCode, kvp.Value.Category, kvp.Value.CategoryTariffCode))
+                    : Itms.DistinctBy(x => x.ItemNumber)
+                        .ToDictionary(x => x.ItemNumber, x => (x.ItemNumber, x.ItemDescription, x.TariffCode, string.Empty, string.Empty));
 
 
-                var res = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)>();
+                var res = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>();
 
 
                 foreach (var itm in itms)
@@ -66,7 +68,7 @@ namespace InventoryQS.Business.Services
                     res.Add(itm.Key,
                         tariffCode == itm.Value.TariffCode
                             ? itm.Value
-                            : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode));
+                            : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode, string.Empty, string.Empty));
                 }
 
 
@@ -109,6 +111,3 @@ namespace InventoryQS.Business.Services
 
     }
 }
-
-
-

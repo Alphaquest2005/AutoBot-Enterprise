@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -189,62 +189,88 @@ namespace xlsxWriter
             var i = workbook.CurrentWorksheet
                 .GetLastRowNumber(); // == 1 ? 1 : workbook.CurrentWorksheet.GetLastRowNumber() + 1;
             var starti = i;
-            foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
+            var groupedItems = shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber).GroupBy(x => x.Category);
+
+            foreach (var categoryGroup in groupedItems)
             {
-                SetValue(workbook, i, header.First(x => x.Key.Column == "InvoiceNo").Key.Index,
-                    shipmentInvoice.InvoiceNo);
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
-                    shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
+                // Write category name
+                SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                    categoryGroup.Key ?? "Uncategorized");
+                i++;
 
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,
-                    shipmentInvoice.PONumber);
+                var categoryGroupStartRow = i;
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                    itm.Cost);
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
-                    itm.ItemDescription);
-                SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
-                    itm.ItemNumber);
-                if (itm.ItemAlias != null)
+                foreach (var itm in categoryGroup)
                 {
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
-                        itm.ItemAlias.POItemCode);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
-                        itm.ItemAlias.POItemDescription);
-                }
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "InvoiceNo").Key.Index,
+                        shipmentInvoice.InvoiceNo);
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
+                        shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
 
-                if (itm.Volume != null && itm.Volume.Units == "Gallons")
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
-                        itm.Quantity * itm.Volume.Quantity);
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,
+                        shipmentInvoice.PONumber);
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
-                    itm.Quantity);
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                    itm.TotalCost);
-                SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
-                    $"=O{i + 1}*K{i + 1}");
-                SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
-                    $"=P{i + 1}-Q{i + 1}");
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                        itm.Cost);
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
+                        itm.ItemDescription);
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
+                        itm.ItemNumber);
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
-                    itm.Units);
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                        itm.Category); // Assuming InvoiceDetail has Category property
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "CategoryTariffCode").Key.Index,
+                        itm.CategoryTariffCode); // Assuming InvoiceDetail has CategoryTariff property
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == "TariffCode").Key.Index, itm.TariffCode);
-
-                if (doRider && i < packageDetails.Count)
-                    foreach (var riderdetail in packageDetails)
+                    if (itm.ItemAlias != null)
                     {
-                        SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
-                            riderdetail.Packages);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                            riderdetail.WarehouseCode);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
+                            itm.ItemAlias.POItemCode);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
+                            itm.ItemAlias.POItemDescription);
                     }
 
-                i++;
+                    if (itm.Volume != null && itm.Volume.Units == "Gallons")
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
+                            itm.Quantity * itm.Volume.Quantity);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
+                        itm.Quantity);
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                        itm.TotalCost);
+                    SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
+                        $"=P{i + 1}*L{i + 1}"); // Cost(P) * Qty(L) -> Total(R)
+                    SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
+                        $"=Q{i + 1}-R{i + 1}"); // TotalCost(Q) - Total(R) -> TotalCost Vs Total(S)
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
+                        itm.Units);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "TariffCode").Key.Index, itm.TariffCode);
+
+                    if (doRider && i < packageDetails.Count)
+                        foreach (var riderdetail in packageDetails)
+                        {
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
+                                riderdetail.Packages);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                                riderdetail.WarehouseCode);
+                        }
+
+                    i++;
+                }
+
+                // Write category sub-total
+                SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                    $"{categoryGroup.Key ?? "Uncategorized"} Total");
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, // Write sub-total under SupplierItemNumber column
+                    $"=SUM({GetOrAddCell(workbook, header, categoryGroupStartRow, "TotalCost").CellAddress}:{GetOrAddCell(workbook, header, i - 1, "TotalCost").CellAddress})");
+                i++; // Skip a line after sub-total
             }
+
 
             WriteSummary(workbook, header, i-1, starti, "TotalCost");
             WriteSummary(workbook, header, i-1, starti, "Total");
@@ -280,109 +306,134 @@ namespace xlsxWriter
                 .Where(x => x.INVItems.Any() || (!x.INVItems.Any() &&
                                                  pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber &&
                                                                           m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)));
-            foreach (var itm in goodDetails)
+            var groupedDetails = goodDetails.GroupBy(x => x.INVItems.FirstOrDefault()?.Category);
+
+            foreach (var categoryGroup in groupedDetails)
             {
-                var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
+                // Write category name
+                SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                    categoryGroup.Key ?? "Uncategorized");
+                i++;
 
-                var invTotalCost = itm.INVItems.Select(x => x.INVTotalCost?? x.INVQuantity * x.INVCost).Sum();
+                var categoryGroupStartRow = i;
 
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
-                    pO.PurchaseOrders.PONumber);
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
-                    pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
-
-               
-
-                //if (isPOTotalCostZero)
-                //{
-                //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.POTotalCost/pOItem.POQuantity : itm.Cost);
-
-                //    SetValue(workbook, i,
-                //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                //        pOItem.POTotalCost);
-                //}
-
-
-                if (isINVTotalCostZero)
+                foreach (var itm in categoryGroup)
                 {
-                    
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                    pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem.INVTotalCost / pOItem.POQuantity : itm.Cost);
+                    var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
+
+                    var invTotalCost = itm.INVItems.Select(x => x.INVTotalCost?? x.INVQuantity * x.INVCost).Sum();
 
                     SetValue(workbook, i,
-                        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                        invTotalCost);
-                }
-                else
-                //if (isPOTotalZero)
-                {
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? itm.Cost : itm.Cost);
-
+                        header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
+                        pO.PurchaseOrders.PONumber);
                     SetValue(workbook, i,
-                        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                        itm.Cost * itm.Quantity);
-                }
+                        header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
+                        pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
 
-                //if (isINVTotalZero)
-                //{
-                //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.INVCost : itm.Cost);
+                   
 
-                //    SetValue(workbook, i,
-                //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                //        pOItem.INVCost * pOItem.INVQuantity);
-                //}
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == "INVTotalCost").Key.Index,
-                    invTotalCost);
+                    //if (isPOTotalCostZero)
+                    //{
+                    //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                    //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.POTotalCost/pOItem.POQuantity : itm.Cost);
 
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == "POTotalCost").Key.Index,
-                    pOItem?.POTotalCost ?? 0);
+                    //    SetValue(workbook, i,
+                    //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                    //        pOItem.POTotalCost);
+                    //}
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
-                    itm.ItemDescription);
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
-                    pOItem?.INVDescription);
 
-                SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
-                    pOItem?.INVItemCode);
-
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
-                    itm.Quantity);
-
-                if (pOItem != null && pOItem.Gallons > 0)
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
-                        itm.Quantity * pOItem.Gallons);
-
-                SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
-                    itm.ItemNumber);
-                
-
-                SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
-                    $"=O{i + 1}*K{i + 1}");
-                SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
-                    $"=P{i + 1}-Q{i + 1}");
-
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
-                    itm.Units);
-                if (doRider && i < packageDetails.Count) //
-                    foreach (var riderdetail in packageDetails)
+                    if (isINVTotalCostZero)
                     {
-                        SetValue(workbook, i + invoiceRow,
-                            header.First(x => x.Key.Column == "Packages").Key.Index,
-                            riderdetail.Packages);
-                        SetValue(workbook, i + invoiceRow,
-                            header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                            riderdetail.WarehouseCode);
+                        
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem.INVTotalCost / pOItem.POQuantity : itm.Cost);
+
+                        SetValue(workbook, i,
+                            header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                            invTotalCost);
+                    }
+                    else
+                    //if (isPOTotalZero)
+                    {
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                            pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? itm.Cost : itm.Cost);
+
+                        SetValue(workbook, i,
+                            header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                            itm.Cost * itm.Quantity);
                     }
 
-                i++;
+                    //if (isINVTotalZero)
+                    //{
+                    //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                    //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.INVCost : itm.Cost);
+
+                    //    SetValue(workbook, i,
+                    //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                    //        pOItem.INVCost * pOItem.INVQuantity);
+                    //}
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == "INVTotalCost").Key.Index,
+                        invTotalCost);
+
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == "POTotalCost").Key.Index,
+                        pOItem?.POTotalCost ?? 0);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
+                        itm.ItemDescription);
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
+                        pOItem?.INVDescription);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
+                        pOItem?.INVItemCode);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                        pOItem?.Category); // Assuming INVItem has Category property
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "CategoryTariff").Key.Index,
+                        pOItem?.CategoryTariffCode); // Assuming INVItem has CategoryTariff property
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
+                        itm.Quantity);
+
+                    if (pOItem != null && pOItem.Gallons > 0)
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
+                            itm.Quantity * pOItem.Gallons);
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
+                        itm.ItemNumber);
+                    
+
+                    SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
+                        $"=P{i + 1}*L{i + 1}"); // Cost(P) * Qty(L) -> Total(R)
+                    SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
+                        $"=Q{i + 1}-R{i + 1}"); // TotalCost(Q) - Total(R) -> TotalCost Vs Total(S)
+
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
+                        itm.Units);
+
+                    if (doRider && i < packageDetails.Count) //
+                        foreach (var riderdetail in packageDetails)
+                        {
+                            SetValue(workbook, i + invoiceRow,
+                                header.First(x => x.Key.Column == "Packages").Key.Index,
+                                riderdetail.Packages);
+                            SetValue(workbook, i + invoiceRow,
+                                header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                                riderdetail.WarehouseCode);
+                        }
+
+                    i++;
+                }
+
+                // Write category sub-total
+                SetValue(workbook, i, header.First(x => x.Key.Column == "Category").Key.Index,
+                    $"{categoryGroup.Key ?? "Uncategorized"} Total");
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, // Write sub-total under SupplierItemNumber column
+                    $"=SUM({GetOrAddCell(workbook, header, categoryGroupStartRow, "TotalCost").CellAddress}:{GetOrAddCell(workbook, header, i - 1, "TotalCost").CellAddress})");
+                i++; // Skip a line after sub-total
             }
 
             /// write out summary

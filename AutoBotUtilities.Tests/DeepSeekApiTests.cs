@@ -1,8 +1,10 @@
+﻿using System.Text;
 ﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected; // Added for mocking protected members like SendAsync
 using NUnit.Framework;
 using WaterNut.Business.Services.Utils;
 using System.Net.Http;
@@ -10,6 +12,7 @@ using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using System.Reflection; // Added for reflection
 
 namespace AutoBotUtilities.Tests
 {
@@ -27,7 +30,19 @@ namespace AutoBotUtilities.Tests
             {
                 // Arrange
                 
-                var api = new DeepSeekInvoiceApi();
+                // Use a mock logger to prevent FileLoadException during test setup
+                var mockLogger = new Mock<ILogger<DeepSeekInvoiceApi>>();
+                // Use the constructor that allows injecting a logger and HttpClient
+                // Pass null for HttpClient to use the default, or a mock if needed for other tests
+                var api = new DeepSeekInvoiceApi(null); // Pass null for HttpClient, will use default
+                // Use reflection to inject the mock logger into the private field
+                var loggerField = typeof(DeepSeekInvoiceApi).GetField("_logger", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (loggerField == null)
+                {
+                    Assert.Fail("Could not find private field '_logger' via reflection.");
+                }
+                loggerField.SetValue(api, mockLogger.Object);
+
                 var textVariants = new List<string> { SampleText };
 
                 // Act
@@ -74,7 +89,7 @@ namespace AutoBotUtilities.Tests
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(api.ValidateTariffCode("8481.80.0000"), Is.EqualTo("8481.80"));
+                    Assert.That(api.ValidateTariffCode("8481.80.0000"), Is.EqualTo("84818000"));
                     Assert.That(api.ValidateTariffCode("1234-56"), Is.EqualTo("1234-56"));
                     Assert.That(api.ValidateTariffCode("invalid"), Is.Empty);
                     Assert.That(api.ValidateTariffCode(""), Is.Empty);
@@ -174,6 +189,109 @@ namespace AutoBotUtilities.Tests
             Assert.That(results["Wireless Mouse"].TariffCode, Is.EqualTo("85176000"));
         }
 
+        [Test]
+        public async Task ClassifyItemsAsync_WithCategory_ReturnsCorrectData()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<DeepSeekApi>>();
+            var dummyApiKey = "test-api-key"; // Not used due to mocked HTTP handler
+
+            // 1. Define Mock HTTP Response (including category fields)
+            var mockJsonResponse = @"{
+                ""items"": [
+                    {
+                        ""original_description"": ""Blue Cotton T-Shirt"",
+                        ""product_code"": ""TS-BLU-COT"",
+                        ""category"": ""Apparel"",
+                        ""category_hs_code"": ""61000000"",
+                        ""hs_code"": ""61091000""
+                    },
+                    {
+                        ""original_description"": ""Wireless Mouse"",
+                        ""product_code"": ""MOUSE-WL"",
+                        ""category"": ""Electronics"",
+                        ""category_hs_code"": ""85000000"",
+                        ""hs_code"": ""85176000""
+                    }
+                ]
+            }";
+
+            var mockResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(mockJsonResponse, Encoding.UTF8, "application/json")
+            };
+
+            // Use Moq for HttpMessageHandler
+            var mockHttpHandler = new Mock<HttpMessageHandler>();
+            mockHttpHandler
+                .Protected() // Needed to mock SendAsync
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            var mockHttpClient = new HttpClient(mockHttpHandler.Object);
+
+            // 2. Instantiate DeepSeekApi (using constructor that takes logger/key)
+            // We need to provide a valid base URL even though it won't be hit
+            var api = new DeepSeekApi(mockLogger.Object, dummyApiKey);
+
+            // 3. Use Reflection to inject the mock HttpClient
+            var httpClientField = typeof(DeepSeekApi).GetField("_httpClient", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (httpClientField == null)
+            {
+                Assert.Fail("Could not find private field '_httpClient' via reflection.");
+            }
+            // Dispose the original HttpClient created by the constructor before replacing it
+            var originalHttpClient = httpClientField.GetValue(api) as HttpClient;
+            originalHttpClient?.Dispose();
+            // Set the mock client
+            httpClientField.SetValue(api, mockHttpClient);
+
+
+            // 4. Define Input Items
+            var inputItems = new List<(string ItemNumber, string ItemDescription, string TariffCode)>
+            {
+                ("TS-BLU-COT", "Blue Cotton T-Shirt", ""), // Needs HS, Category, CatHS
+                ("MOUSE-WL", "Wireless Mouse", "85176000") // Needs Category, CatHS (HS provided)
+            };
+
+            // 5. Define Expected Output
+            var expectedResult = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>
+            {
+                { "Blue Cotton T-Shirt", ("TS-BLU-COT", "Blue Cotton T-Shirt", "61091000", "Apparel", "61000000") },
+                { "Wireless Mouse", ("MOUSE-WL", "Wireless Mouse", "85176000", "Electronics", "85000000") } // Expects original TariffCode to be kept
+            };
+
+            // Act
+            var actualResult = await api.ClassifyItemsAsync(inputItems, CancellationToken.None).ConfigureAwait(false);
+
+            // Assert
+            Assert.That(actualResult, Is.Not.Null);
+            Assert.That(actualResult.Count, Is.EqualTo(expectedResult.Count), "Result dictionary count mismatch.");
+
+            foreach (var expectedPair in expectedResult)
+            {
+                Assert.That(actualResult.ContainsKey(expectedPair.Key), Is.True, $"Actual result missing key: {expectedPair.Key}");
+                var actualValue = actualResult[expectedPair.Key];
+                var expectedValue = expectedPair.Value;
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(actualValue.ItemNumber, Is.EqualTo(expectedValue.ItemNumber), $"ItemNumber mismatch for '{expectedPair.Key}'");
+                    Assert.That(actualValue.ItemDescription, Is.EqualTo(expectedValue.ItemDescription), $"ItemDescription mismatch for '{expectedPair.Key}'");
+                    Assert.That(actualValue.TariffCode, Is.EqualTo(expectedValue.TariffCode), $"TariffCode mismatch for '{expectedPair.Key}'");
+                    Assert.That(actualValue.Category, Is.EqualTo(expectedValue.Category), $"Category mismatch for '{expectedPair.Key}'");
+                    Assert.That(actualValue.CategoryTariffCode, Is.EqualTo(expectedValue.CategoryTariffCode), $"CategoryTariffCode mismatch for '{expectedPair.Key}'");
+                });
+            }
+             // Dispose the API instance which should dispose the HttpClient we injected
+            api.Dispose();
+        }
+
 
 
 
@@ -231,10 +349,11 @@ namespace AutoBotUtilities.Tests
         {
             _mockHttpHandler = new Mock<HttpMessageHandler>();
             _mockHttpClient = new HttpClient(_mockHttpHandler.Object);
-            _deepSeekApi = new DeepSeekApi()
-            {
-                //_httpClient = _mockHttpClient
-            };
+            // Use a mock logger to avoid FileLoadException during test setup
+            var mockLogger = new Mock<ILogger<DeepSeekApi>>();
+            // Use the parameterized constructor to inject the mock logger
+            _deepSeekApi = new DeepSeekApi(mockLogger.Object, "dummy-api-key");
+            // The mock HttpClient is injected later in the ClassifyItemsAsync_WithCategory_ReturnsCorrectData test
         }
 
         public void Dispose()

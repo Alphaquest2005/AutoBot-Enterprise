@@ -1,4 +1,5 @@
-﻿using System;
+﻿﻿using System;
+using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using InventoryQS.Business.Services;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
+using static java.util.Locale;
 
 namespace WaterNut.DataSpace
 {
@@ -101,7 +103,7 @@ namespace WaterNut.DataSpace
                 return invoice;
             }
 
-            List<InvoiceDetails> ProcessInvoiceDetails(IDictionary<string, object> x, Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode)> classifiedItms)
+            List<InvoiceDetails> ProcessInvoiceDetails(IDictionary<string, object> x, Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> classifiedItms)
             {
                 if (!x.ContainsKey("InvoiceDetails"))
                     return new List<InvoiceDetails>();
@@ -120,12 +122,18 @@ namespace WaterNut.DataSpace
                             : (
                                 ItemNumber: z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20) : null,
                                 ItemDescription: z["ItemDescription"].ToString().Truncate(255),
-                                TariffCode: z.ContainsKey("TariffCode") ? z["TariffCode"].ToString().ToUpper().Truncate(20) : null
+                                TariffCode: z.ContainsKey("TariffCode") ? z["TariffCode"].ToString().ToUpper().Truncate(20) : null,
+                                Category: string.Empty,
+                                CategoryTariffCode: string.Empty
                             );
+
+                        var dbCategoryTariffs = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == classifiedItm.Category);
 
                         details.ItemNumber = classifiedItm.ItemNumber;
                         details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
                         details.TariffCode = classifiedItm.TariffCode;
+                        details.Category = dbCategoryTariffs?.Category ?? classifiedItm.Category;
+                        details.CategoryTariffCode = dbCategoryTariffs?.TariffCode ?? classifiedItm.CategoryTariffCode;
                         details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;
                         details.Cost = z.ContainsKey("Cost")
                             ? Convert.ToDouble(z["Cost"].ToString())
@@ -206,6 +214,9 @@ namespace WaterNut.DataSpace
                             invoicePOs[invoice.InvoiceNo]);
                     }
 
+                    // Ensure categories exist before adding the invoice
+                    await EnsureCategoriesExistAsync(ctx, invoice.InvoiceDetails).ConfigureAwait(false);
+
                     var existing = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
                     if (existing != null)
                     {
@@ -216,6 +227,65 @@ namespace WaterNut.DataSpace
                     await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
+        }
+
+        private static async Task EnsureCategoriesExistAsync(EntryDataDSContext ctx, ICollection<InvoiceDetails> details)
+        {
+            if (details == null || !details.Any()) return;
+
+            var categoriesInDetails = details
+                                     .Select(d => new { d.Category, TariffCode = d.CategoryTariffCode})
+                                     .Where(c => !string.IsNullOrEmpty(c.Category))
+                                     .Distinct()
+                                     .ToList();
+
+            if (!categoriesInDetails.Any()) return;
+
+            // Use AsNoTracking for read-only query
+            var dbCategoryTariffsList = await ctx.CategoryTariffs
+                                                .AsNoTracking()
+                                                .ToListAsync().ConfigureAwait(false);
+            var existingCategoriesInDb = dbCategoryTariffsList
+                .Select(ct => new { ct.Category, ct.TariffCode })
+                .Where(ct => categoriesInDetails.Contains(ct))
+                .ToList();
+
+            // Consider categories already added to the context but not saved yet
+            var categoriesInContext = ctx.ChangeTracker.Entries<CategoryTariffs>() // Use plural class name
+                                         .Where(e => e.State == System.Data.Entity.EntityState.Added)
+                                         .Select(e => new {e.Entity.Category, e.Entity.TariffCode})
+                                         .ToList();
+
+            // Manually combine lists to avoid LINQ extension method issues
+            var allExistingCategories = existingCategoriesInDb.ToList();
+            foreach (var cat in categoriesInContext)
+            {
+                if (!allExistingCategories.Contains(cat))
+                {
+                    allExistingCategories.Add(cat);
+                }
+            }
+
+            var missingCategories = categoriesInDetails.Except(allExistingCategories).ToList();
+
+            foreach (var missingCat in missingCategories)
+            {
+                // Find a detail to get the TariffCode (assuming it's consistent for the same category within the invoice)
+                
+                    var newCategoryTariff = new CategoryTariffs // Use plural class name
+                    {
+                        Category = missingCat.Category,
+                        // Use the tariff code from the detail, or a default if null/empty
+                        // Ensure TariffCode is not null if the DB requires it. Let's assume it can be null or use a default.
+                        TariffCode = missingCat.TariffCode // Or "DEFAULT" if required
+                    };
+                    // Add to context, EF will track it
+                    ctx.CategoryTariffs.Add(newCategoryTariff);
+                
+            }
+
+            ctx.SaveChanges();
+            // No need to call SaveChanges here, it will be called later in SaveInvoicePOsAsync
         }
 
 

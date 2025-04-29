@@ -336,6 +336,36 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<long> _rn;
         [DataMember]
+        public string CategoryTariffCode 
+        {
+            get
+            {
+                return _categorytariffcode;
+            }
+            set
+            {
+                _categorytariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _categorytariffcode;
+        [DataMember]
+        public string Category 
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                _category = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _category;
+        [DataMember]
         public InvoiceDetails InvoiceDetails { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

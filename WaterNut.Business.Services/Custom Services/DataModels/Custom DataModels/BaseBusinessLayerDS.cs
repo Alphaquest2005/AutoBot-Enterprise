@@ -164,6 +164,20 @@ namespace WaterNut.DataSpace
             }
         }
 
+        public List<CategoryTariffs> CategoryTariffs
+        {
+            get
+            {
+                if (_categoryTariffs == null)
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        _categoryTariffs = ctx.CategoryTariffs.ToList();
+                    }
+
+                return _categoryTariffs;
+            }
+        }
+
         public static int GetDefaultCustomsOperation()
         {
             return (int)(BaseDataModel.Instance.CurrentApplicationSettings.AllowXBond == "Visible" ? CustomsOperations.Warehouse : CustomsOperations.Import);
@@ -182,7 +196,7 @@ namespace WaterNut.DataSpace
             get { return _saveDocumentCt; }
         }
 
- 
+       
 
 
         public static Client GetClient()
@@ -3744,6 +3758,7 @@ namespace WaterNut.DataSpace
        
         private static readonly bool isDBMem = false;
         private readonly ISaveDocumentCT _saveDocumentCt;
+        private List<CategoryTariffs> _categoryTariffs = null;
 
         public BaseDataModel()
         {

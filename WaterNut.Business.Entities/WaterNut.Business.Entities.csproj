@@ -423,6 +423,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\CategoryTariffs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryData.cs" />
@@ -862,6 +863,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\CategoryTariffs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryData.cs" />
@@ -1298,6 +1300,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\CategoryTariffs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryData.cs" />
@@ -1734,6 +1737,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\CategoryTariffs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryData.cs" />
@@ -2170,6 +2174,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\CategoryTariffs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Consignees.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EDDocumentTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryData.cs" />
@@ -2616,6 +2621,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Attachments.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\CategoryTariffs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Consignees.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryData.map.cs" />

@@ -236,6 +236,36 @@ namespace EntryDataDS.Business.Entities
         }
         string _tariffcode;
         [DataMember]
+        public string Category 
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                _category = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _category;
+        [DataMember]
+        public string CategoryTariffCode 
+        {
+            get
+            {
+                return _categorytariffcode;
+            }
+            set
+            {
+                _categorytariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _categorytariffcode;
+        [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }
@@ -243,6 +273,8 @@ namespace EntryDataDS.Business.Entities
         public ShipmentInvoiceDetailsItemAlias ItemAlias { get; set; }
         [DataMember]
         public InvoiceDetailsVolume Volume { get; set; }
+        [DataMember]
+        public CategoryTariffs CategoryTariffs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

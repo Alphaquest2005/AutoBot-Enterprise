@@ -11,7 +11,7 @@
     {
         public ShipmentInvoicePOItemQueryMatchesMap()
         {                        
-              this.HasKey(t => new {t.PODetailsId, t.INVDetailsId});        
+              this.HasKey(t => new {t.PODetailsId, t.INVDetailsId, t.CategoryTariffCode});        
               this.ToTable("ShipmentInvoicePOItemQueryMatches");
               this.Property(t => t.PODetailsId).HasColumnName("PODetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.INVDetailsId).HasColumnName("INVDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -34,6 +34,8 @@
               this.Property(t => t.Gallons).HasColumnName("Gallons");
               this.Property(t => t.RankNo).HasColumnName("RankNo");
               this.Property(t => t.rn).HasColumnName("rn");
+              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").IsRequired().HasMaxLength(12);
+              this.Property(t => t.Category).HasColumnName("category").HasMaxLength(50);
               this.HasRequired(t => t.InvoiceDetails).WithMany(t =>(ICollection<ShipmentInvoicePOItemQueryMatches>) t.POItems).HasForeignKey(d => d.INVDetailsId);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<ShipmentInvoicePOItemQueryMatches>) t.INVItems).HasForeignKey(d => d.PODetailsId);
              // Tracking Properties

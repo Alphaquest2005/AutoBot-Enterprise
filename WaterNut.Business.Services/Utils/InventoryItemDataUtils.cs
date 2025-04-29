@@ -184,7 +184,7 @@ namespace WaterNut.Business.Services.Utils
         {
             // Use the helper for the description passed to the API as well
             var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
-            var suspectedTariffCode = await new DeepSeekApi().GetTariffCode(description).ConfigureAwait(false);
+            var suspectedTariffCode = await new DeepSeekApi().GetClassificationInfoAsync(description).ConfigureAwait(false);
             return await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
         }
     }
