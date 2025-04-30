@@ -103,6 +103,8 @@ namespace WaterNut.DataSpace
                             : e.EffectiveDate,
                         TaxAmount = e.TaxAmount,
                         VolumeLiters = e.VolumeLiters,
+                        Category = string.IsNullOrEmpty(e.Category) ? null : e.Category,
+                        CategoryTariffCode = string.IsNullOrEmpty(e.CategoryTariffCode) ? null : e.CategoryTariffCode,
                     };
                 })
                 .ToList();

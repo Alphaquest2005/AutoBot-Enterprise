@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
@@ -19,6 +20,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
 
         public List<dynamic> Execute(List<dynamic> lines)
         {
+            try
+            {
+
+           
 
             _importer = new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
             {
@@ -53,13 +58,15 @@ namespace WaterNut.Business.Services.Importers.EntryData
             });
 
             var res = _importer.Execute(new List<InventoryDataItem>());
-            if (res.IsSuccess)
-            {
-                var lst = res.Value.SelectMany(x => x.Data.Data).ToList();
-                return lst;
-            }
+
 
             return lines;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
         }
 

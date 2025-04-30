@@ -710,6 +710,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _UseAIClassification;
 
+        [DataMember]
+        public Nullable<bool> GroupIM4ByCategory
+		{ 
+		    get { return _GroupIM4ByCategory; }
+			set
+			{
+			    if (value == _GroupIM4ByCategory) return;
+				_GroupIM4ByCategory = value;
+				NotifyPropertyChanged();//m => this.GroupIM4ByCategory
+			}
+		}
+        private Nullable<bool> _GroupIM4ByCategory;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

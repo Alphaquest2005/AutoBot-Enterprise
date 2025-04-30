@@ -46,6 +46,8 @@
               this.Property(t => t.EntryDataDetailsKey).HasColumnName("EntryDataDetailsKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(60);
               this.Property(t => t.TotalValue).HasColumnName("TotalValue").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
+              this.Property(t => t.Category).HasColumnName("Category").HasMaxLength(60);
+              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").HasMaxLength(50);
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);

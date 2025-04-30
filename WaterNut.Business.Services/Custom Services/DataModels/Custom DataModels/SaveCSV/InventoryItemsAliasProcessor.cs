@@ -16,25 +16,15 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var inventoryItms = items.SelectMany(x => x.Item.InventoryItems).DistinctBy(x => new {x.ItemAlias, x.ItemNumber})
+                var inventoryItms = items.SelectMany(x => x.Item.InventoryItems)
+                    .Where(x => !string.IsNullOrEmpty(x.Description))// to drop the totals inventory item its empty
+                    .DistinctBy(x => new {x.ItemAlias, x.ItemNumber})
                    .Select(GetInventoryItem).DistinctBy(x => x.ItemNumber).ToList();
                 var aliases = inventoryItms.SelectMany(x => x.InventoryItemAlias)
                     .DistinctBy(x => new { x.InventoryItemId, x.AliasItemId }).ToList();
                 using (var ctx = new InventoryDSContext() { StartTracking = true })
                 {
-                    //foreach (var itm in inventoryItms)
-                    //{
-                    //    try
-                    //    {
-                    //        ctx.BulkMerge(new List<InventoryItem>(){itm});
-                    //    }
-                    //    catch (Exception e)
-                    //    {
-                    //        Console.WriteLine(e);
-
-                    //    }
-                    //}
-
+                   
                     ctx.BulkUpdate(inventoryItms.Where(x => x.Id != 0).ToList());
                     ctx.BulkInsert(inventoryItms.Where(x => x.Id == 0).ToList());
 

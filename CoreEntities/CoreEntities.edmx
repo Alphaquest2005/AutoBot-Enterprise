@@ -79,6 +79,7 @@
           <Property Name="AllocationsOpeningStockDate" Type="datetime2" Precision="7" />
           <Property Name="GroupShipmentInvoices" Type="bit" />
           <Property Name="UseAIClassification" Type="bit" />
+          <Property Name="GroupIM4ByCategory" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -4585,7 +4586,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="AllowStressTest" Type="Boolean" />
           <Property Name="AllocationsOpeningStockDate" Type="DateTime" Precision="7" />
           <Property Name="GroupShipmentInvoices" Type="Boolean" />
-          <Property Name="UseAIClassification" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="UseAIClassification" Type="Boolean" />
+          <Property Name="GroupIM4ByCategory" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -7376,6 +7378,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="GroupIM4ByCategory" ColumnName="GroupIM4ByCategory" />
                 <ScalarProperty Name="UseAIClassification" ColumnName="UseAIClassification" />
                 <ScalarProperty Name="GroupShipmentInvoices" ColumnName="GroupShipmentInvoices" />
                 <ScalarProperty Name="AllocationsOpeningStockDate" ColumnName="AllocationsOpeningStockDate" />

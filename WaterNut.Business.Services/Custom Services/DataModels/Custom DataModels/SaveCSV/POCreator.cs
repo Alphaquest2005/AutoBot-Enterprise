@@ -39,6 +39,8 @@ namespace WaterNut.DataSpace
                 EntryType = "PO",
                 SupplierCode = item.EntryData.Supplier,
                 TrackingState = TrackingState.Added,
+
+
                 TotalFreight = item.Totals.Sum(x => (double)x.TotalFreight),
                 TotalInternalFreight = item.Totals.Sum(x => (double)x.TotalInternalFreight),
                 TotalWeight = item.Totals.Sum(x => (double)x.TotalWeight),

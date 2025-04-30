@@ -300,7 +300,7 @@ namespace AutoBotUtilities.Tests
         public async Task GetTariffCode_RealApi_WomensDress()
         {
             using var realApi = new DeepSeekApi();
-            var result =   await realApi.GetTariffCode("Women's cotton dress with polyester lining").ConfigureAwait(false);
+            var result =   await realApi.GetClassificationInfoAsync("Women's cotton dress with polyester lining").ConfigureAwait(false);
 
             Assert.That(result, Does.Match(_deepSeekApi.HsCodePattern));
             Console.WriteLine($"Women's Dress HS Code: {result}");
@@ -311,7 +311,7 @@ namespace AutoBotUtilities.Tests
         public async Task GetTariffCode_RealApi_WoodenChairs()
         {
             using var realApi = new DeepSeekApi();
-            var result = await realApi.GetTariffCode("Oak wooden dining chairs with upholstered seats").ConfigureAwait(false);
+            var result = await realApi.GetClassificationInfoAsync("Oak wooden dining chairs with upholstered seats").ConfigureAwait(false);
 
             Assert.That(result, Does.Match(_deepSeekApi.HsCodePattern));
             Console.WriteLine($"Wooden Chairs HS Code: {result}");
@@ -324,7 +324,7 @@ namespace AutoBotUtilities.Tests
             using var realApi = new DeepSeekApi();
             var description = "MESAILUP 16 Inch LED Lighted Liquor Bottle Display 2 Step Illuminated Bottle Shelf 2 Tier Home Bar Drinks Commercial";
 
-            var result = await realApi.GetTariffCode(description).ConfigureAwait(false);
+            var result = await realApi.GetClassificationInfoAsync(description).ConfigureAwait(false);
 
             Assert.That(result, Does.Match(_deepSeekApi.HsCodePattern));
             Console.WriteLine($"LED Display HS Code: {result}");
@@ -337,7 +337,7 @@ namespace AutoBotUtilities.Tests
             using var realApi = new DeepSeekApi();
 
             Assert.ThrowsAsync<DeepSeekApi.HSCodeRequestException>(() =>
-                realApi.GetTariffCode("Non-existent imaginary product"));
+                realApi.GetClassificationInfoAsync("Non-existent imaginary product"));
         }
 
         // Add this to existing mock setup section

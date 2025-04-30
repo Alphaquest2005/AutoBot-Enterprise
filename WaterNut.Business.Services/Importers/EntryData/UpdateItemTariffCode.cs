@@ -9,15 +9,22 @@ namespace WaterNut.Business.Services.Importers.EntryData
     {
         public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            var inventoryDataItems = data.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
-                .Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
+            var inventoryDataItems = data
+                //.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode) took this out because it reduces the return data along the pipeline
+                //.Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
                 .Select(x =>
                 {
-                    x.Item.TariffCode = x.Data.Key.TariffCode;
+                    if(x.Item.TariffCode != x.Data.Key.TariffCode)
+                    if (!string.IsNullOrEmpty(x.Data.Key.TariffCode))
+                    {
+                        x.Item.TariffCode = x.Data.Key.TariffCode;
+                    }
+                    
                     return x;
                 })
                 .ToList();
-            return new Result<List<InventoryDataItem>>(inventoryDataItems, true, "") ;
+      
+            return new Result<List<InventoryDataItem>>(inventoryDataItems, true, "");
         }
     }
 }

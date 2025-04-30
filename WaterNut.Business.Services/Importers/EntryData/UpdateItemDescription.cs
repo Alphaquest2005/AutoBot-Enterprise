@@ -9,7 +9,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
     {
         public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            var inventoryDataItems = data.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
+            var inventoryDataItems = data
                 .Where(x => !string.IsNullOrEmpty(x.Data.Key.ItemDescription))
                 .Select(x =>
                 {

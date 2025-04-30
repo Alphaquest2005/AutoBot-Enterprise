@@ -23,8 +23,9 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
-             // Changed AppSetting ID from 2 to 3, as ID 3 is known to exist from FolderProcessorTests
-             Infrastructure.Utils.SetTestApplicationSettings(3);
+            Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
+            // Changed AppSetting ID from 2 to 3, as ID 3 is known to exist from FolderProcessorTests
+            Infrastructure.Utils.SetTestApplicationSettings(3);
              SetupTest();
         }
 
@@ -90,6 +91,107 @@ namespace AutoBotUtilities.Tests
             {
                 Console.WriteLine(e);
                 Assert.That(false);
+            }
+        }
+
+        [Test]
+        public void CanImportXSLXPOFileWithCategoryAndTariff()
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
+                // Use the specific file path provided by the user
+                string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-7827932-2029910.xlsx";
+                Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
+                var testFile = testFilePath; // Use the provided path
+                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                foreach (var fileType in fileTypes)
+                {
+                    new FileTypeImporter(fileType).Import(testFile);
+
+                }
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    // Get the actual counts after the import
+                    var actualEntryDataCount = ctx.EntryData.Count();
+                    var actualEntryDataDetailsCount = ctx.EntryDataDetails.Count();
+
+                    Console.WriteLine($"Actual Counts - EntryData: {actualEntryDataCount}, EntryDataDetails: {actualEntryDataDetailsCount}");
+
+                    // Assert that some data was imported (counts > 0)
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(actualEntryDataCount, Is.GreaterThan(0), "Expected at least one EntryData record to be created.");
+                        Assert.That(actualEntryDataDetailsCount, Is.GreaterThan(0), "Expected at least one EntryDataDetail record to be created.");
+
+                        // Verify the existence of 'category' and 'category tariff' data in EntryDataDetails
+                        // Using the column names provided by the user: "category" and "categoryTariffCode"
+                        // Assuming these are mapped to properties named Category and CategoryTariffCode
+                        Assert.That(ctx.EntryDataDetails.Any(d => !string.IsNullOrEmpty(d.Category)), Is.True, "Expected 'category' data to exist in EntryDataDetails.");
+                        Assert.That(ctx.EntryDataDetails.Any(d => !string.IsNullOrEmpty(d.CategoryTariffCode)), Is.True, "Expected 'category tariff Code' data to exist in EntryDataDetails.");
+                    });
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.That(false);
+            }
+        }
+[Test]
+        public void CanImportXSLXPOFileWithCategoryAndTariff_NewFile() // Renamed method
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
+                // Use the specific file path provided by the user for the new test
+                string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-7827932-2029910.xlsx"; // Modified file path
+                Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
+                var testFile = testFilePath; // Use the provided path
+                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                foreach (var fileType in fileTypes)
+                {
+                    new FileTypeImporter(fileType).Import(testFile);
+
+                }
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    // Get the actual counts after the import
+                    var actualEntryDataCount = ctx.EntryData.Count();
+                    var actualEntryDataDetailsCount = ctx.EntryDataDetails.Count();
+
+                    Console.WriteLine($"Actual Counts - EntryData: {actualEntryDataCount}, EntryDataDetails: {actualEntryDataDetailsCount}");
+
+                    // Assert that some data was imported (counts > 0)
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(actualEntryDataCount, Is.GreaterThan(0), "Expected at least one EntryData record to be created.");
+                        Assert.That(actualEntryDataDetailsCount, Is.GreaterThan(0), "Expected at least one EntryDataDetail record to be created.");
+
+                        // Find the specific item detail
+                        var specificItem = ctx.EntryDataDetails.FirstOrDefault(d => d.ItemNumber == "SILV-ADJ-350LB");
+
+                        // Assert that the specific item was found
+                        Assert.That(specificItem, Is.Not.Null, "Expected to find EntryDataDetail with ItemNumber 'SILV-ADJ-350LB'.");
+
+                        if (specificItem != null) // Proceed only if the item was found
+                        {
+                            // Assert the specific values for the found item
+                            Assert.That(specificItem.Category, Is.EqualTo("medical equipment"), $"Expected Category 'medical equipment' for ItemNumber 'SILV-ADJ-350LB', but was '{specificItem.Category}'.");
+                            Assert.That(specificItem.CategoryTariffCode, Is.EqualTo("90189090"), $"Expected CategoryTariffCode '90189090' for ItemNumber 'SILV-ADJ-350LB', but was '{specificItem.CategoryTariffCode}'.");
+                            // Assuming ItemDescription property exists and maps correctly
+                            Assert.That(specificItem.ItemDescription, Is.EqualTo("eniors and Adults Weighing Up To 350 Pounds, Adjustable Height, Silver"), $"Expected ItemDescription for ItemNumber 'SILV-ADJ-350LB' did not match.");
+                        }
+                    });
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 

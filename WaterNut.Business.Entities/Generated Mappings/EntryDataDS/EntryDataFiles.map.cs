@@ -33,6 +33,8 @@
               this.Property(t => t.FileType).HasColumnName("FileType").IsRequired().HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.Property(t => t.Category).HasColumnName("Category").HasMaxLength(60);
+              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

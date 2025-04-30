@@ -475,6 +475,13 @@ namespace AutoBot
         {
             foreach (var mapping in OrderFileTypeMappingsByOriginalName(fileType))
             {
+                // [ImportDebug] Log start of mapping processing if relevant
+                bool isRelevantMapping = mapping.DestinationName == "Category" || mapping.DestinationName == "CategoryTariffCode";
+                if (isRelevantMapping)
+                {
+                    Console.WriteLine($"[ImportDebug] Row {row_no}: Processing Mapping - Original: '{mapping.OriginalName}', Destination: '{mapping.DestinationName}'");
+                }
+
                 var maps = mapping.OriginalName.Split('+');
                 string val = null;
                 foreach (var map in maps)
@@ -482,21 +489,32 @@ namespace AutoBot
                     mappingMailSent =
                         CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no);
 
-                    if (GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val))
+                    // GetRawValue is called within the if condition, logging added there
+                    if (GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val, isRelevantMapping)) // Pass isRelevantMapping
                         continue;
                     else
                         break;
                 }
-                if (val == null) continue;
+                if (val == null) continue; // Skip if no raw value found
+
+                // [ImportDebug] Log value before regex
+                if (isRelevantMapping) Console.WriteLine($"[ImportDebug] Row {row_no}: Value before Regex ('{mapping.DestinationName}') = '{val}'");
+
                 foreach (var regEx in mapping.FileTypeMappingRegExs)
                 {
                     val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 }
 
-                val = ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow);
+                // [ImportDebug] Log value after regex, before ProcessValue
+                 if (isRelevantMapping) Console.WriteLine($"[ImportDebug] Row {row_no}: Value after Regex, before ProcessValue ('{mapping.DestinationName}') = '{val}'");
 
-                row = UpdateRow(row, mapping, row_no, val);
+                val = ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow, isRelevantMapping); // Pass isRelevantMapping
+
+                // [ImportDebug] Log value after ProcessValue, before UpdateRow
+                if (isRelevantMapping) Console.WriteLine($"[ImportDebug] Row {row_no}: Value after ProcessValue, before UpdateRow ('{mapping.DestinationName}') = '{val}'");
+
+                row = UpdateRow(row, mapping, row_no, val, isRelevantMapping); // Pass isRelevantMapping
             }
 
             return mappingMailSent;

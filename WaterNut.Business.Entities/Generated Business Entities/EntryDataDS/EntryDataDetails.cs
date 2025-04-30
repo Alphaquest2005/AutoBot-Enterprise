@@ -522,6 +522,36 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _clinenumber;
         [DataMember]
+        public string Category 
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                _category = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _category;
+        [DataMember]
+        public string CategoryTariffCode 
+        {
+            get
+            {
+                return _categorytariffcode;
+            }
+            set
+            {
+                _categorytariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _categorytariffcode;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemEx { get; set; }

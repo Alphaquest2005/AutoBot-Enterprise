@@ -56,6 +56,8 @@ namespace WaterNut.DataSpace
                         Cost = line.Cost,
                         InvoiceQty = line.InvoiceQuantity,
                         ItemDescription = line.ItemDescription,
+                        Category = line.Category,
+                        CategoryTariffCode = line.CategoryTariffCode,
                         ItemNumber = ((string)Convert.ToString(line.ItemNumber)).Truncate(20),
                         LineNumber = line.LineNumber,
                         Quantity = line.Quantity,

@@ -829,6 +829,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _useaiclassification;
         [DataMember]
+        public Nullable<bool> GroupIM4ByCategory 
+        {
+            get
+            {
+                return _groupim4bycategory;
+            }
+            set
+            {
+                _groupim4bycategory = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _groupim4bycategory;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

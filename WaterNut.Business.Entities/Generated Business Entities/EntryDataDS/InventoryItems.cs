@@ -149,6 +149,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _upgradekey;
         [DataMember]
+        public string CategoryTariffCode 
+        {
+            get
+            {
+                return _categorytariffcode;
+            }
+            set
+            {
+                _categorytariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _categorytariffcode;
+        [DataMember]
         public InventoryItems_NonStock InventoryItems_NonStock { get; set; }
         [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }

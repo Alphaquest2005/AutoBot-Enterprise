@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
+using MoreLinq;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
@@ -26,7 +27,8 @@ namespace WaterNut.Business.Services.Importers.EntryData
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
             var existingItems = data.Where(x => x.Item != null).Select(x => x.Data).ToList();
             var existingInventoryItemFromData = InventoryItemDataUtils.GetExistingInventoryItemFromData(existingItems, inventorySource);
-            return new Result<List<InventoryDataItem>>(existingInventoryItemFromData, true, "");
+            var distinctlst = existingInventoryItemFromData.DistinctBy(x => x.Item.Id).ToList();
+            return new Result<List<InventoryDataItem>>(distinctlst, true, "");
 
         }
     }

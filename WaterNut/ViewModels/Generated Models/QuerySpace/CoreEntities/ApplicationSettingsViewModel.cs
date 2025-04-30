@@ -1153,6 +1153,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _groupIM4ByCategoryFilter;
+        public Boolean? GroupIM4ByCategoryFilter
+        {
+            get
+            {
+                return _groupIM4ByCategoryFilter;
+            }
+            set
+            {
+                _groupIM4ByCategoryFilter = value;
+				NotifyPropertyChanged(x => GroupIM4ByCategoryFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1433,6 +1451,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(UseAIClassificationFilter.HasValue)
 						res.Append(" && " + string.Format("UseAIClassification == {0}",  UseAIClassificationFilter));						
+ 
+
+									if(GroupIM4ByCategoryFilter.HasValue)
+						res.Append(" && " + string.Format("GroupIM4ByCategory == {0}",  GroupIM4ByCategoryFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1606,7 +1628,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     GroupShipmentInvoices = x.GroupShipmentInvoices ,
                     
  
-                    UseAIClassification = x.UseAIClassification 
+                    UseAIClassification = x.UseAIClassification ,
+                    
+ 
+                    GroupIM4ByCategory = x.GroupIM4ByCategory 
                     
                 }).ToList()
             };
@@ -1770,6 +1795,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> UseAIClassification { get; set; } 
+                    
+ 
+                    public Nullable<bool> GroupIM4ByCategory { get; set; } 
                     
         }
 

@@ -904,6 +904,21 @@ public Nullable<bool> UseAIClassification
 		}
      
 
+       
+       
+public Nullable<bool> GroupIM4ByCategory
+		{ 
+		    get { return this.applicationsettings.GroupIM4ByCategory; }
+			set
+			{
+			    if (value == this.applicationsettings.GroupIM4ByCategory) return;
+				this.applicationsettings.GroupIM4ByCategory = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GroupIM4ByCategory");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

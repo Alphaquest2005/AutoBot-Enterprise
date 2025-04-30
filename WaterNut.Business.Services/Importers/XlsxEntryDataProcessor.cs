@@ -138,7 +138,7 @@ namespace WaterNut.Business.Services.Importers
     {
         public List<dynamic> Execute(List<dynamic> lines)
         {
-           return lines.Where(x => !string.IsNullOrEmpty(x.ItemNumber)).ToList();
+           return lines.Where(x => !string.IsNullOrEmpty(x.ItemDescription) || x.Packages != 0).ToList();// using packages to get the summary data be cause the category change drops the data
         }
     }
 

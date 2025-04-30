@@ -160,6 +160,8 @@
           <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="60" StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="CLineNumber" Type="int" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryDataDetails-SupportingDetails">
           <Key>
@@ -206,6 +208,8 @@
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="FileTypes">
           <Key>
@@ -252,6 +256,7 @@
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="20" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="InventoryItems-NonStock">
           <Key>
@@ -819,6 +824,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1117,7 +1124,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Property Name="POInventoryItemId" Type="int" Nullable="false" />
           <Property Name="RankNo" Type="int" />
           <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
-          <Property Name="category" Type="nvarchar" MaxLength="50" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
           <Property Name="rn" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -2113,7 +2120,9 @@ FROM [dbo].[AsycudaDocumentEntryDataLine] AS [AsycudaDocumentEntryDataLine]</Def
 [EntryDataDetailsEx].[EmailId] AS [EmailId], 
 [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
 [EntryDataDetailsEx].[Name] AS [Name], 
-[EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId]
+[EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId], 
+[EntryDataDetailsEx].[Category] AS [Category], 
+[EntryDataDetailsEx].[CategoryTariffCode] AS [CategoryTariffCode]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
@@ -2323,7 +2332,7 @@ FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches
 [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
 [ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo], 
 [ShipmentInvoicePOItemQueryMatches].[CategoryTariffCode] AS [CategoryTariffCode], 
-[ShipmentInvoicePOItemQueryMatches].[category] AS [category], 
+[ShipmentInvoicePOItemQueryMatches].[Category] AS [Category], 
 [ShipmentInvoicePOItemQueryMatches].[rn] AS [rn]
 FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
           </EntitySet>
@@ -3128,6 +3137,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
           <NavigationProperty Name="SupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryTariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -3214,6 +3225,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="VolumeLiters" Type="Double" />
           <Property Name="PreviousCLineNumber" Type="Int32" />
           <NavigationProperty Name="SystemDocumentSets" Relationship="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="SystemDocumentSets" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryTariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -3364,6 +3377,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="InventoryItemAlias" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
           <NavigationProperty Name="AliasInventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
+          <Property Name="CategoryTariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -3570,6 +3584,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="FileType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryTariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="WarehouseInfo">
           <Key>
@@ -5400,6 +5416,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
                 <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
                 <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
@@ -5454,6 +5472,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="PreviousCLineNumber" ColumnName="PreviousCLineNumber" />
                 <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
@@ -5569,6 +5589,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="InventoryItems">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems">
               <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
@@ -5656,6 +5677,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="EntryDataFiles">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataFiles">
               <MappingFragment StoreEntitySet="EntryDataFiles">
+                <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="FileType" ColumnName="FileType" />
@@ -6083,7 +6106,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoicePOItemQueryMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemQueryMatches">
-                <ScalarProperty Name="Category" ColumnName="category" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="CategoryTariffCode" ColumnName="CategoryTariffCode" />
                 <ScalarProperty Name="rn" ColumnName="rn" />
                 <ScalarProperty Name="RankNo" ColumnName="RankNo" />

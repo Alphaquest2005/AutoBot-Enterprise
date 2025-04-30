@@ -50,6 +50,8 @@
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
               this.Property(t => t.PreviousCLineNumber).HasColumnName("PreviousCLineNumber");
+              this.Property(t => t.Category).HasColumnName("Category").HasMaxLength(60);
+              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").HasMaxLength(50);
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
               this.HasRequired(t => t.SystemDocumentSets).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => d.AsycudaDocumentSetId);
              // Tracking Properties

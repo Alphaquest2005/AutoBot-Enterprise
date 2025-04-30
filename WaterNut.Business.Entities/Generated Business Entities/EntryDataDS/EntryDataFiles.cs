@@ -320,6 +320,36 @@ namespace EntryDataDS.Business.Entities
             }
         }
         int _entrydata_id;
+        [DataMember]
+        public string Category 
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                _category = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _category;
+        [DataMember]
+        public string CategoryTariffCode 
+        {
+            get
+            {
+                return _categorytariffcode;
+            }
+            set
+            {
+                _categorytariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _categorytariffcode;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

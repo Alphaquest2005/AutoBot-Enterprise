@@ -45,13 +45,15 @@ namespace WaterNut.DataSpace
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
                          droppedFilePath
                     ),
-                    EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber))
+                    EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemDescription))
                         .Select(x => new EntryDataDetails()
                         {
                             EntryDataId = x.EntryDataId,
                             //Can't set entrydata_id here cuz this is from data
                             ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
                             ItemDescription = ((string)x.ItemDescription).Truncate(255),
+                            Category = ((string)x.Category).Truncate(255),
+                            CategoryTariffCode = ((string)x.CategoryTariffCode).Truncate(255),
                             Cost = x.Cost ?? 0,
                             TotalCost = Convert.ToDouble((double)(x.TotalCost ?? 0.0)),
                             Quantity = Convert.ToDouble((double)(x.Quantity ?? 0.0)),
@@ -72,7 +74,7 @@ namespace WaterNut.DataSpace
                             VolumeLiters =
                                 Convert.ToDouble((double)(x.Gallons * DomainFactLibary.GalToLtrRate ??
                                                           Convert.ToDouble((double)(x.Liters ?? 0.0)))),
-                        }).ToList(),
+                        }).Where(z => !string.IsNullOrEmpty(z.ItemDescription) ).ToList(),
                     Totals = g.Select(x => new RawEntryDataValue.TotalsValue(
                          Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
                          Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
@@ -87,6 +89,7 @@ namespace WaterNut.DataSpace
                     )).Where(f => f.InvoiceTotal > 0).ToList(),
                     InventoryItems = g.DistinctBy(x =>(x.ItemNumber, x.ItemAlias))
                                         .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias, ((string)x.ItemDescription).Truncate(255)))
+                                        .Where(z => !string.IsNullOrEmpty(z.Description))
                                         .ToList()
                 }
                 )

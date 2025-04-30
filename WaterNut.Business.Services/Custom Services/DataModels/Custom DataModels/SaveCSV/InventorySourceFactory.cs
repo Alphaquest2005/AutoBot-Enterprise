@@ -8,6 +8,8 @@ namespace WaterNut.DataSpace
     public class InventorySourceFactory
     {
         public static InventorySource GetInventorySource(FileTypes fileType)
+        
+        
         {
             InventorySource inventorySource;
             using (var dctx = new InventoryDSContext())

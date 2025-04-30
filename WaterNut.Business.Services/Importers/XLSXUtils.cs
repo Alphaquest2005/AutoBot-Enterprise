@@ -289,6 +289,8 @@ namespace WaterNut.Business.Services.Importers
 
                 foreach (var row in rows)
                 {
+                    var currentLineNumber = Convert.ToInt32(row["LineNumber"]);
+                    Console.WriteLine($"[ImportDebug] Processing Line: {currentLineNumber}"); // Log start of row processing
                     IDictionary<string, object> a = new BetterExpando();
                     if (!headerRow.Any())
                         if (fileType.FileTypeMappings.Any() && fileType.FileTypeMappings.Select(x => x.OriginalName)
@@ -298,26 +300,61 @@ namespace WaterNut.Business.Services.Importers
                             headers = row.ItemArray.Select(x => x.ToString()).GetEnumerator().ToList<string>();
                             headerRow = fileType.FileTypeMappings.Where(x => row.ItemArray.Contains(x.OriginalName))
                                 .Select(x => new { x.OriginalName, x }).ToDictionary(k => k.OriginalName, d => d.x);
-
+                            Console.WriteLine($"[ImportDebug] Identified Header Row at Line: {currentLineNumber}. Mapped Headers: {string.Join(", ", headerRow.Keys)}");
                         }
                         else
                         {
+                            Console.WriteLine($"[ImportDebug] Skipping Line {currentLineNumber} (potential non-header row before header found).");
                             continue;
                         }
 
                     for (int i = 0; i < dataTable.Columns.Count - 1; i++)
                     {
-                        if (headerRow.ContainsKey(headers[i]))
-                            a[headerRow[headers[i]].DestinationName] =
-                                row[i].ToString() == headerRow[headers[i]].OriginalName
-                                    ? row[i].ToString()
-                                    : GetMappingValue(headerRow[headers[i]], row[i].ToString());
+                        // Ensure index is within bounds of headers list
+                        if (i >= headers.Count)
+                        {
+                             Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Warning: Column index {i} is out of bounds for detected headers ({headers.Count}). Skipping column.");
+                             continue;
+                        }
 
+                        var currentHeader = headers[i];
+                        Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Processing Header: '{currentHeader}' (Index: {i})");
 
+                        if (headerRow.ContainsKey(currentHeader))
+                        {
+                            var mapping = headerRow[currentHeader];
+                            Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Matched Mapping: Original='{mapping.OriginalName}', Destination='{mapping.DestinationName}'");
 
+                            var rawValue = row[i]?.ToString() ?? ""; // Handle potential nulls
+                            Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Raw Value: '{rawValue}'");
+
+                            // Check if raw value is the same as the header itself (often indicates still on header row)
+                             if (rawValue == mapping.OriginalName)
+                             {
+                                 Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Raw value matches header, likely header row data. Assigning raw value.");
+                                 a[mapping.DestinationName] = rawValue;
+                             }
+                             else
+                             {
+                                 var processedValue = GetMappingValue(mapping, rawValue);
+                                 Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Processed Value: '{processedValue}' (Type: {processedValue?.GetType().Name ?? "null"})");
+                                 a[mapping.DestinationName] = processedValue;
+                                 Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - Assigned '{processedValue}' to '{mapping.DestinationName}'");
+
+                                 // Specific check for target columns
+                                 if (mapping.DestinationName == "Category" || mapping.DestinationName == "CategoryTariffCode")
+                                 {
+                                     Console.WriteLine($"[ImportDebug][TARGET] Line {currentLineNumber} - Assigned '{processedValue}' to TARGET property '{mapping.DestinationName}'");
+                                 }
+                             }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[ImportDebug] Line {currentLineNumber} - No mapping found for header '{currentHeader}'");
+                        }
                     }
 
-                    table.GetOrAdd(Convert.ToInt32(row["LineNumber"]), (BetterExpando)a);
+                    table.GetOrAdd(currentLineNumber, (BetterExpando)a);
                 }
                 //);
 
