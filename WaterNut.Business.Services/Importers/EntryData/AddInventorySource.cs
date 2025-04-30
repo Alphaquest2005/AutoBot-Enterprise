@@ -22,10 +22,12 @@ namespace WaterNut.Business.Services.Importers.EntryData
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
 
             var inventoryDataItems = data
-                .Where(i => i.Item.InventoryItemSources.All(x => x.InventorySourceId != inventorySource.Id))
+                //Becareful not to add filtering operations that unintentionally reduce the return values
                 .Select(x =>
-                {x.Item.InventoryItemSources.Add(
-                        InventorySourceProcessor.CreateItemSource(inventorySource, x.Item));
+                {
+                    if(x.Item.InventoryItemSources.All(x => x.InventorySourceId != inventorySource.Id))
+                      x.Item.InventoryItemSources.Add(InventorySourceProcessor.CreateItemSource(inventorySource, x.Item));
+
                     return x;
                 })
                 .ToList();
