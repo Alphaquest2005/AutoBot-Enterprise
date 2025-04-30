@@ -718,7 +718,7 @@ namespace WaterNut.DataSpace
         {
             var docList = new List<DocumentCT>();
             var itmcount = 0;
-            var slst = groupItems ? CreateGroupEntryLineData(slstSource) : CreateSingleEntryLineData(slstSource);
+            var slst = groupItems || Instance.CurrentApplicationSettings.GroupIM4ByCategory == true ? CreateGroupEntryLineData(slstSource) : CreateSingleEntryLineData(slstSource);
 
             var cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
 
@@ -1475,45 +1475,9 @@ namespace WaterNut.DataSpace
         public IEnumerable<BaseDataModel.EntryLineData> CreateGroupEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
-            var slst = from s in slstSource.AsEnumerable()
-                group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItemEx}
-                into g
-                select new BaseDataModel.EntryLineData
-                {
-                    ItemNumber = g.Key.ItemNumber.Trim(),
-                    ItemDescription = g.Key.ItemDescription.Trim(),
-                    TariffCode = g.Key.TariffCode,
-                    Cost = g.Key.Cost,
-                    Quantity = g.Sum(x => x.Quantity),
-                    EntryDataDetails = g.Select(x => new EntryDataDetailSummary
-                    {
-                        EntryDataDetailsId = x.EntryDataDetailsId,
-                        EntryData_Id = x.EntryData_Id,
-                        EntryDataId = x.EntryDataId,
-                        EffectiveDate = x.EffectiveDate.GetValueOrDefault(),
-                        EntryDataDate = x.EntryData.EntryDataDate,
-                        QtyAllocated = x.QtyAllocated,
-                        Currency = x.EntryData.Currency,
-                        LineNumber = x.LineNumber
-                    }).ToList(),
-                    EntryData = g.Key.EntryData,
-
-                    Freight = Convert.ToDouble(g.Sum(x => x.Freight)),
-                    Weight = Convert.ToDouble(g.Sum(x => x.Weight)),
-                    InternalFreight = Convert.ToDouble(g.Sum(x => x.InternalFreight)),
-                    TariffSupUnitLkps = g.Key.InventoryItemEx.SuppUnitCode2 != null
-                        ? new List<ITariffSupUnitLkp>
-                        {
-                            new TariffSupUnitLkps
-                            {
-                                SuppUnitCode2 = g.Key.InventoryItemEx.SuppUnitCode2,
-                                SuppQty = g.Key.InventoryItemEx.SuppQty.GetValueOrDefault()
-                            }
-                        }
-                        : null,
-                    InventoryItemEx = g.Key.InventoryItemEx
-                };
-            return slst;
+            return Instance.CurrentApplicationSettings.GroupIM4ByCategory == true
+                ? CategoryGroupEntryLineData.Execute(slstSource) 
+                :SimpleGroupEntryLineData.Execute(slstSource);
         }
 
         public async Task<xcuda_ASYCUDA> GetDocument(int ASYCUDA_Id, List<string> includeLst = null)

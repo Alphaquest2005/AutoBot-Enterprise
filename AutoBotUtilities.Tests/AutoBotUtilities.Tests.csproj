@@ -83,6 +83,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+<None Update="TestData\114-7827932-2029910.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -121,10 +124,11 @@
     <PackageReference Include="TesserNet.System.Drawing" Version="0.8.0" />
     <PackageReference Include="TrackableEntities.Client" Version="2.5.7" />
     <PackageReference Include="TrackableEntities.Common" Version="2.5.7" />
-    <PackageReference Include="Z.EntityFramework.Extensions" Version="8.103.1" />
+    <PackageReference Include="Z.EntityFramework.Extensions" Version="8.103.1" /> <!-- Reverted to specific version for license compatibility -->
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
+<!-- <PackageReference Include="MockQueryable.Moq" Version="6.0.1" /> --> <!-- Removed as manual mocking is used -->
 </ItemGroup>
 
   <ItemGroup>

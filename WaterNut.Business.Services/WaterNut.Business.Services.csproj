@@ -735,6 +735,8 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\PreProcessDocumentItems.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCTBulk.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCT.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CategoryGroupEntryLineData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SimpleGroupEntryLineData.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SummaryData.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\CleanAsycudaDocument.cs" />
     <Compile Include="Importers\EntryData\ChainedProcessor.cs" />
