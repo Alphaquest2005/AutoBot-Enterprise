@@ -136,36 +136,50 @@ namespace AutoBot
                 // Assuming PDFUtils and ShipmentUtils are static or accessible
                 // Consider injecting IPdfUtils, IShipmentUtils if refactoring further
                 var res = await InvoiceReader.InvoiceReader.ImportPDF(fileInfos, fileType).ConfigureAwait(false);
-                if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
-                {
-                    var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);
-                    if (!res2.Any()
-                        || res2.Any(x => x.Value.status != ImportStatus.Success))
-                    {
-                        NotifyUnknownPDF(originalFile, res2);
-                        allgood = false;
-                        continue; // Skip to next fileType if this one failed
-                    }
-                     // If DeepSeek succeeded, potentially update status or log
-                }
+
+                allgood = await TryDeepSeekImport(originalFile, res, fileInfos, fileType, allgood).ConfigureAwait(false);
 
                 // Only create shipment if initial PDF import or DeepSeek was successful for this fileType
-                 if (allgood) // Check if still good after potential DeepSeek
-                 {
-                    try
-                    {
-                        allgood = ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
-                    }
-                    catch(Exception ex)
-                    {
-                         Console.WriteLine($"Error creating shipment email for {originalFile.Name}: {ex.Message}");
-                         // Decide if this error should mark 'allgood' as false
-                         allgood = false;
-                    }
-                 }
+                 allgood = TrySendShipmentEmail(originalFile, allgood, fileType, fileInfos);
             }
 
             return allgood; // Returns true only if all fileTypes processed successfully
+        }
+
+        private static bool TrySendShipmentEmail(FileInfo originalFile, bool allgood, FileTypes fileType, FileInfo[] fileInfos)
+        {
+            if (allgood) // Check if still good after potential DeepSeek
+            {
+                try
+                {
+                    allgood = ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Error creating shipment email for {originalFile.Name}: {ex.Message}");
+                    // Decide if this error should mark 'allgood' as false
+                    allgood = false;
+                }
+            }
+
+            return allgood;
+        }
+
+        private async Task<bool> TryDeepSeekImport(FileInfo originalFile, List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> res, FileInfo[] fileInfos, FileTypes fileType,
+            bool allgood)
+        {
+            if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
+            {
+                //var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);
+                //if (res2.Any()
+                //    && !res2.Any(x => x.Value.status != ImportStatus.Success)) return allgood;
+                //NotifyUnknownPDF(originalFile, res2);
+                allgood = false;
+                return allgood;
+                // If DeepSeek succeeded, potentially update status or log
+            }
+
+            return allgood;
         }
 
         private void NotifyUnknownPDF(FileInfo file, List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> res2)

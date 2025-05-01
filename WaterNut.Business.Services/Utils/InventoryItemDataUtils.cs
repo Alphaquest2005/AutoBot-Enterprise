@@ -12,6 +12,7 @@ using MoreLinq.Extensions;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using WaterNut.Business.Services.Utils.LlmApi;
 using WaterNut.Business.Services.Utils.SavingInventoryItems;
 using WaterNut.DataSpace;
 
@@ -184,8 +185,16 @@ namespace WaterNut.Business.Services.Utils
         {
             // Use the helper for the description passed to the API as well
             var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
-            var suspectedTariffCode = await new DeepSeekApi().GetClassificationInfoAsync(description).ConfigureAwait(false);
+            var suspectedTariffCode = await GetClassificationInfo(description);
             return await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
+        }
+
+        private static async Task<dynamic> GetClassificationInfo(dynamic description)
+        {
+            var desiredProvider = LLMProvider.DeepSeek;
+            var client = LlmApiClientFactory.CreateClient(desiredProvider);
+            var classificationInfo = await client.GetClassificationInfoAsync(description).ConfigureAwait(false);
+            return classificationInfo; //await new DeepSeekApi().GetClassificationInfoAsync(description).ConfigureAwait(false);
         }
     }
 }

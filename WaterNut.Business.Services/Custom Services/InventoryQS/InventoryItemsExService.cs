@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using InventoryDS.Business.Entities;
 using InventoryQS.Business.Entities;
+using Microsoft.Extensions.Logging;
 using MoreLinq;
 using Omu.ValueInjecter;
 using WaterNut.Business.Services.Utils;
+using WaterNut.Business.Services.Utils.LlmApi;
 using WaterNut.DataSpace;
 
 namespace InventoryQS.Business.Services
@@ -52,7 +54,7 @@ namespace InventoryQS.Business.Services
                 //var
                 var itms =
                 BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false
-                    ? (await new DeepSeekApi().ClassifyItemsAsync(Itms).ConfigureAwait(false))
+                    ? (await ClassifyItemsAsync(Itms).ConfigureAwait(false))
                         .ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.ItemNumber, kvp.Value.ItemDescription, kvp.Value.TariffCode, kvp.Value.Category, kvp.Value.CategoryTariffCode))
                     : Itms.DistinctBy(x => x.ItemNumber)
                         .ToDictionary(x => x.ItemNumber, x => (x.ItemNumber, x.ItemDescription, x.TariffCode, string.Empty, string.Empty));
@@ -63,12 +65,8 @@ namespace InventoryQS.Business.Services
 
                 foreach (var itm in itms)
                 {
-                    var tariffCode = await GetTariffCode(itm.Value.TariffCode).ConfigureAwait(false);
-
-                    res.Add(itm.Key,
-                        tariffCode == itm.Value.TariffCode
-                            ? itm.Value
-                            : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode, string.Empty, string.Empty));
+                    
+                    res.Add(itm.Key, await UpdateTariffValue(itm).ConfigureAwait(false));
                 }
 
 
@@ -80,6 +78,27 @@ namespace InventoryQS.Business.Services
                 throw;
             }
 
+        }
+
+        private static async Task<(string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> UpdateTariffValue( KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> itm)
+        {
+            var tariffCode = await GetTariffCode(itm.Value.TariffCode).ConfigureAwait(false);
+
+            var categoryTariffCode = await GetTariffCode(itm.Value.CategoryTariffCode).ConfigureAwait(false);
+
+            return tariffCode == itm.Value.TariffCode
+                ? itm.Value
+                : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode, itm.Value.Category, categoryTariffCode);
+        }
+
+        private static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>> ClassifyItemsAsync(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+        {
+            
+            var desiredProvider = LLMProvider.DeepSeek;
+            using var apiClient = LlmApiClientFactory.CreateClient(desiredProvider);
+            var res =await apiClient.ClassifyItemsAsync(Itms).ConfigureAwait(false);
+            Console.WriteLine($"Call cost: {res.TotalCost.ToString("C")}");
+            return res.Results;
         }
 
         public static async Task<string> GetTariffCode(string suspectedTariffCode)

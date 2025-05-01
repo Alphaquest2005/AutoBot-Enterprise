@@ -1,0 +1,250 @@
+﻿#nullable disable
+using Microsoft.Extensions.Logging;
+// Removed unused usings like Newtonsoft.Json, Polly, System.Net.*, System.Text.RegularExpressions etc.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace WaterNut.Business.Services.Utils.LlmApi
+{
+    /// <summary>
+    /// Client for interacting with configured LLM providers via a strategy pattern.
+    /// Orchestrates batching and fallbacks.
+    /// </summary>
+    public class LlmApiClient : IDisposable // Keep IDisposable if factory manages HttpClient lifetime maybe? Or remove if client is short-lived. Let's keep for now.
+    {
+        private readonly ILogger<LlmApiClient> _logger;
+        private readonly ILLMProviderStrategy _strategy;
+
+        // Configuration
+        private const int MAX_ITEMS_PER_BATCH = 5; // Batching logic remains here
+
+        // --- Public Properties (for potential overrides after creation) ---
+        public string Model
+        {
+            get => _strategy.Model;
+            set => _strategy.Model = value; // Pass through to strategy
+        }
+        public double DefaultTemperature
+        {
+            get => _strategy.DefaultTemperature;
+            set => _strategy.DefaultTemperature = value; // Pass through to strategy
+        }
+        // Add other config pass-throughs if needed (e.g., templates)
+
+        // --- Constructor ---
+        // Expects a fully configured strategy
+        public LlmApiClient(ILLMProviderStrategy strategy, ILogger<LlmApiClient> logger)
+        {
+            _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.LogInformation("LlmApiClient initialized with Strategy: {StrategyType}, Default Model: {Model}",
+                _strategy.GetType().Name, _strategy.Model);
+        }
+
+        // --- Public Methods ---
+
+        /// <summary>
+        /// Gets classification info for a single item using the configured strategy.
+        /// </summary>
+        public async Task<(string TariffCode, string Category, string CategoryTariffCode, decimal Cost)> GetClassificationInfoAsync(
+            string itemDescription, string productCode = null, double? temperature = null,
+            int? maxTokens = null, CancellationToken cancellationToken = default)
+        {
+            _logger.LogDebug("GetClassificationInfoAsync called for: {Description}", TruncateForLog(itemDescription));
+            var response = await _strategy.GetSingleClassificationAsync(itemDescription, productCode, temperature, maxTokens, cancellationToken).ConfigureAwait(false);
+
+            if (!response.IsSuccess || response.Result == null || !response.Result.ParsedSuccessfully)
+            {
+                _logger.LogWarning("GetSingleClassificationAsync failed for '{Description}'. Error: {Error}", itemDescription, response.ErrorMessage ?? "Unknown");
+                return ("ERROR", "ERROR", "ERROR", response.Cost);
+            }
+
+            var result = response.Result;
+            return (result.TariffCode, result.Category, result.CategoryHsCode, response.Cost);
+        }
+
+        /// <summary>
+        /// Classifies a list of items using batching and fallbacks via the configured strategy.
+        /// </summary>
+        public async Task<(Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> Results, decimal TotalCost)>
+            ClassifyItemsAsync(List<(string ItemNumber, string ItemDescription, string TariffCode)> items, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
+        {
+            // Use a Dictionary keyed by ORIGINAL description for the final output format
+            var finalResults = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>();
+            decimal totalCost = 0m;
+            if (items == null || !items.Any()) return (finalResults, totalCost);
+
+            // Use a temporary lookup for processing status (original description -> input tuple)
+            var itemsToProcess = items.Where(i => !string.IsNullOrWhiteSpace(i.ItemDescription))
+                                     .ToDictionary(i => i.ItemDescription, i => i); // Ensure unique descriptions or handle duplicates
+
+            var chunks = ChunkBy(itemsToProcess.Values, MAX_ITEMS_PER_BATCH).ToList();
+            _logger.LogInformation("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}",
+                itemsToProcess.Count, chunks.Count, _strategy.ProviderType);
+
+            int chunkIndex = 0;
+            foreach (var chunk in chunks)
+            {
+                chunkIndex++;
+                var chunkList = chunk.ToList(); // List of (string, string, string) tuples
+                var chunkDescriptions = chunkList.Select(i => i.ItemDescription).ToList();
+                _logger.LogDebug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count);
+
+                // --- Call Strategy for Batch ---
+                // Pass overrides if provided
+                var batchResponse = await _strategy.GetBatchClassificationAsync(chunkList, temperature, maxTokens, cancellationToken).ConfigureAwait(false);
+                totalCost += batchResponse.TotalCost;
+
+                if (batchResponse.IsSuccess)
+                {
+                    _logger.LogInformation("Chunk {ChunkIndex} processed via batch. Cost: {Cost:C}, Success Count: {SuccessCount}, Failed Count: {FailCount}",
+                        chunkIndex, batchResponse.TotalCost, batchResponse.Results.Count, batchResponse.FailedDescriptions.Count);
+
+                    // Process successful results from the batch
+                    foreach (var kvp in batchResponse.Results)
+                    {
+                        string originalDescription = kvp.Key;
+                        ClassificationResult classifiedItem = kvp.Value;
+                        finalResults[originalDescription] = (
+                            classifiedItem.ItemNumber,
+                            originalDescription, // Use key as description
+                            classifiedItem.TariffCode,
+                            classifiedItem.Category,
+                            classifiedItem.CategoryHsCode
+                        );
+                        itemsToProcess.Remove(originalDescription); // Mark as processed
+                    }
+
+                    // Handle items that failed *within* the successful batch call (e.g., parsing error for one item)
+                    foreach (string failedDesc in batchResponse.FailedDescriptions)
+                    {
+                        if (itemsToProcess.TryGetValue(failedDesc, out var itemTuple))
+                        {
+                            _logger.LogWarning("Item '{Description}' failed within successful batch {ChunkIndex}. Attempting fallback.", failedDesc, chunkIndex);
+                            await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
+                            itemsToProcess.Remove(failedDesc); // Mark as processed (or failed) by fallback
+                        }
+                    }
+                }
+                else // The entire batch API call failed
+                {
+                    _logger.LogWarning("Batch API call failed for chunk {ChunkIndex}. Error: {Error}. Attempting fallback for all items in chunk.", chunkIndex, batchResponse.ErrorMessage ?? "Unknown");
+                    foreach (var itemTuple in chunkList)
+                    {
+                        if (itemsToProcess.ContainsKey(itemTuple.ItemDescription)) // Check if not already processed by a previous successful batch (unlikely here)
+                        {
+                            await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
+                            itemsToProcess.Remove(itemTuple.ItemDescription);
+                        }
+                    }
+                }
+
+                if (cancellationToken.IsCancellationRequested) { _logger.LogWarning("Cancellation requested during batch processing."); break; }
+
+            } // end foreach chunk
+
+            // Safety check for any items missed (shouldn't happen with this logic, but belt-and-suspenders)
+            if (itemsToProcess.Any())
+            {
+                _logger.LogWarning("Found {Count} items remaining after batch/fallback loop. Processing individually.", itemsToProcess.Count);
+                foreach (var itemTuple in itemsToProcess.Values.ToList()) // Process remaining
+                {
+                    await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+
+            _logger.LogInformation("Finished processing using {Strategy}. Total Estimated Cost: {TotalCost:C}. Items Processed: {ResultCount}/{InitialCount}",
+                 _strategy.ProviderType, totalCost, finalResults.Count, items.Count);
+            return (finalResults, totalCost);
+        }
+
+        // --- Private Helper Methods ---
+
+        // Combined Fallback call and cost addition
+        private async Task ProcessSingleItemFallbackAndAddCost(
+             (string ItemNumber, string ItemDescription, string TariffCode) itemTuple,
+             Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> finalResults, decimal totalCost,
+             CancellationToken cancellationToken)
+        {
+            // Fallback using single item method
+            var (fbTariff, fbCat, fbCatHs, fbCost) = await GetClassificationInfoAsync(itemTuple.ItemDescription, itemTuple.ItemNumber, temperature: null, maxTokens: null, cancellationToken: cancellationToken).ConfigureAwait(false); // Use default temp/tokens for fallback? Or specific ones?
+            totalCost += fbCost; // Add cost of this fallback attempt
+
+            // Add result (even if it's "ERROR") to the final dictionary
+            finalResults[itemTuple.ItemDescription] = (
+                 itemTuple.ItemNumber == "NEW" && fbTariff != "ERROR" ? fbTariff : itemTuple.ItemNumber, // Need item number from ClassificationResult DTO ideally
+                 itemTuple.ItemDescription,
+                 fbTariff,
+                 fbCat,
+                 fbCatHs
+             );
+
+            if (fbTariff == "ERROR")
+            {
+                _logger.LogWarning("Fallback processing failed for '{Description}'.", itemTuple.ItemDescription);
+            }
+            else
+            {
+                _logger.LogInformation("Fallback processing successful for '{Description}'. Cost: {Cost:C}", itemTuple.ItemDescription, fbCost);
+            }
+        }
+
+        // --- Simple Helpers ---
+        private string TruncateForLog(string text, int maxLength = 250)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...(truncated)";
+        }
+
+        // --- Chunking Helper ---
+        private static IEnumerable<IEnumerable<T>> ChunkBy<T>(IEnumerable<T> source, int chunkSize) { if (chunkSize <= 0) throw new ArgumentOutOfRangeException(nameof(chunkSize)); if (source == null) throw new ArgumentNullException(nameof(source)); return ChunkByIterator(source, chunkSize); }
+        private static IEnumerable<IEnumerable<T>> ChunkByIterator<T>(IEnumerable<T> source, int chunkSize) { using (var enumerator = source.GetEnumerator()) { while (enumerator.MoveNext()) { yield return GetChunk(enumerator, chunkSize); } } }
+        private static IEnumerable<T> GetChunk<T>(IEnumerator<T> enumerator, int chunkSize) { var chunk = new List<T>(chunkSize); chunk.Add(enumerator.Current); for (int i = 1; i < chunkSize && enumerator.MoveNext(); i++) { chunk.Add(enumerator.Current); } return chunk; }
+
+        // --- CORRECT IDisposable IMPLEMENTATION ---
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    // Since LlmApiClient doesn't directly own disposable managed objects anymore
+                    // (like HttpClient), this section might be empty.
+                    // Log the disposal action.
+                    _logger?.LogDebug("Disposing LlmApiClient (managed resources).");
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                // This class likely doesn't have unmanaged resources.
+
+                disposedValue = true;
+            }
+        }
+
+        // Optional: uncomment finalizer only if you have unmanaged resources directly in this class
+        // ~LlmApiClient()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        // Public implementation of Dispose pattern callable by consumers.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            // Suppress finalization because Dispose has done the work.
+            GC.SuppressFinalize(this);
+        }
+        // --- END CORRECTED IDisposable IMPLEMENTATION ---
+    }
+}
