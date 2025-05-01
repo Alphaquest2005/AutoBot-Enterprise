@@ -105,7 +105,8 @@ namespace WaterNut.DataSpace
         {
             Instance = new BaseDataModel
             {
-                CurrentApplicationSettings = new CoreEntitiesContext().ApplicationSettings.First()
+                CurrentApplicationSettings = new CoreEntitiesContext().ApplicationSettings.Include(x => x.Declarants)
+                    .First()
             };
 
             Initialization = InitializationAsync();
@@ -439,7 +440,7 @@ namespace WaterNut.DataSpace
         {
             cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + $"-{prefix}" +
                                                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber;
-            cdoc.Document.xcuda_Declarant.Declarant_code =
+            cdoc.Document.xcuda_Declarant.Declarant_code = BaseDataModel.Instance.
                 CurrentApplicationSettings.Declarants.First(x => x.IsDefault).DeclarantCode;
             cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
@@ -737,7 +738,7 @@ namespace WaterNut.DataSpace
             /// If per invoice is choosen and sorted by tariff code it will alternate between invoice no and create too much entries
             /// left as is because this is not a problem
             /// 
-            switch (CurrentApplicationSettings.OrderEntriesBy)
+            switch (Instance.CurrentApplicationSettings.OrderEntriesBy)
             {
                 case "TariffCode":
                     if (combineEntryDataInSameFile)
@@ -767,7 +768,7 @@ namespace WaterNut.DataSpace
                 var possibleEntries =
                     Math.Ceiling(pod.EntryDataDetails.Count /
                                  (double) (currentAsycudaDocumentSet.MaxLines ??
-                                           CurrentApplicationSettings.MaxEntryLines));
+                                           Instance.CurrentApplicationSettings.MaxEntryLines));
 
 
                 if (checkPackages)
@@ -884,7 +885,7 @@ namespace WaterNut.DataSpace
                 }
 
 
-                if (itmcount % (currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines) == 0)
+                if (itmcount % (currentAsycudaDocumentSet.MaxLines ?? Instance.CurrentApplicationSettings.MaxEntryLines) == 0)
                     if (cdoc.DocumentItems.Any())
                     {
                         AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
@@ -1765,7 +1766,7 @@ namespace WaterNut.DataSpace
 
             itm.xcuda_Valuation_item.xcuda_Item_Invoice = ivc;
 
-            switch (CurrentApplicationSettings.WeightCalculationMethod)
+            switch (Instance.CurrentApplicationSettings.WeightCalculationMethod)
             {
                 case "WeightEqualQuantity":
                     if (itm.xcuda_Valuation_item.xcuda_Weight_itm != null)

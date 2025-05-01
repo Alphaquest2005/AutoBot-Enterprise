@@ -27,7 +27,7 @@ namespace InvoiceReader
             Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()// Set default level
+                .MinimumLevel.Debug()// Set default level
                 .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Override specific namespaces
                 .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
                 .MinimumLevel.Override("InvoiceReaderPipelineTests", Serilog.Events.LogEventLevel.Verbose) // Ensure test utilities logs are captured

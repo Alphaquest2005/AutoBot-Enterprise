@@ -1,91 +1,139 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+using System.Data.Entity; // Keep for Include potentially
+using System.Linq; // Added for .Any()
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
-using Castle.Components.DictionaryAdapter; // Added for Path.Combine
-using WaterNut.Business.Services.Importers; // Added for FileTypeImporter
-using WaterNut.Business.Services.Utils;    // Added for FileTypeManager
-using CoreEntities.Business.Entities; // Core context and entities
-using EntryDataDS.Business.Entities; // Needed for EntryData, EntryDataDetails
-using InventoryDS.Business.Entities; // Still needed? Check BaseDataModel dependencies if errors occur
-using DocumentDS.Business.Entities; // Needed for mapping AsycudaDocumentSet
-using NUnit.Framework;
-using WaterNut.DataSpace;
-using WaterNut.Business.Services;
-using EntryDataDS; // Added back for EntryDataDSContext
-using Z.EntityFramework.Extensions; // Added for LicenseManager
+using System.IO; // Keep for Path
+// using Castle.Components.DictionaryAdapter; // Removed - Path is in System.IO
+using WaterNut.Business.Services.Importers; // Keep for FileTypeImporter
+using WaterNut.Business.Services.Utils;    // Keep for FileTypeManager
+using CoreEntities.Business.Entities; // Keep for AsycudaDocumentSet
+using EntryDataDS.Business.Entities; // Keep for EntryData entity
+using InventoryDS.Business.Entities; // Keep - might be needed by BaseDataModel
+using DocumentDS.Business.Entities; // Keep for AsycudaDocumentSet parameter type
+using NUnit.Framework; // Keep for testing attributes and Assert
+using WaterNut.DataSpace; // Keep - might be needed by BaseDataModel or contexts
+using WaterNut.Business.Services; // Keep - might be needed by BaseDataModel
+using EntryDataDS; // Keep for EntryDataDSContext
+using Z.EntityFramework.Extensions; // Keep for LicenseManager
 // using DocumentDS; // Not needed directly if CoreEntitiesContext has AsycudaDocumentSet
 
 namespace WaterNut.Business.Services.Tests
 {
     [TestFixture]
-    public class BaseBusinessLayerDSTests
+    // Renaming class to reflect specific test focus
+    public class BaseBusinessLayerDSTests_CreateEntry // Consider renaming file too if this is the only test class
     {
-        private BaseDataModel _sut; // System Under Test
+        private BaseDataModel _sut = BaseDataModel.Instance; // Uncommented SUT
 
-        // Test Data - Will be populated from DB after import
-        private List<string> _testEntryDataList = new EditableList<string>(){};
-        private CoreEntities.Business.Entities.AsycudaDocumentSet _testCoreAsycudaDocumentSet; // Use CoreEntities type for fetching
-        private DocumentDS.Business.Entities.AsycudaDocumentSet _testAsycudaDocumentSetParam; // Use DocumentDS type for passing to SUT
+        // Test Data
+        private List<string> _testEntryDataList = new List<string>(){ "114-7827932-2029910" };
+        // Uncommented member variables needed by tests
+        private DocumentDS.Business.Entities.AsycudaDocumentSet _testCoreAsycudaDocumentSet;
+        
 
         [OneTimeSetUp]
         public void FixtureSetup()
         {
-
             Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
-            // 1. Define Test File Path
+
+            // 1. Define Test File Path (relative to test execution dir)
             string testFileName = "114-7827932-2029910.xlsx";
-            string testFilePath = Path.Combine("TestData", testFileName);
+            // Use TestContext for robust path resolution in test environments
+            string testFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", testFileName);
             Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
 
-            // 2. Clean up previous test data (Conceptual - implement if needed)
-            /*
-            using (var ctx = new EntryDataDSContext()) // Use EntryDataDSContext for cleanup
-            {
-                // Cleanup logic for EntryData/EntryDataDetails
-            }
-            */
-
-            // 3. Import Data from XLSX
+            // 2. Check if required EntryData exists, import if not
+            string targetEntryDataId = _testEntryDataList[0];
+            bool entryExists = false;
             try
             {
-                // Assuming FileTypeManager/Importer use connection string for the correct DB (likely CoreEntities/WebSource-AutoBot)
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFilePath);
-                Assert.That(fileTypes, Is.Not.Empty, "No suitable import file type found for the test XLSX.");
-
-                foreach (var fileType in fileTypes)
+                using (var ctx = new EntryDataDSContext())
                 {
-                    new FileTypeImporter(fileType).Import(testFilePath);
+                    // Check using the correct entity and property names
+                    // Check using Declarant_Reference_Number based on ID format and original code hints
+                    entryExists = ctx.EntryData.Any(e => e.EntryDataId == targetEntryDataId);
+                    Console.WriteLine($"DEBUG: Checking for EntryDataID: {targetEntryDataId}. Found: {entryExists}");
+                }
+
+                if (!entryExists)
+                {
+                    Console.WriteLine($"DEBUG: EntryDataID: {targetEntryDataId} not found. Attempting import from {testFilePath}...");
+                    // Assuming PO type based on previous examples, adjust if necessary
+                    var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFilePath);
+                    if (!fileTypes.Any())
+                    {
+                         Assert.Fail($"Could not determine importable file type for {testFilePath}");
+                    }
+
+                    foreach (var fileType in fileTypes)
+                    {
+                        // Use ToString() for fileType representation in log
+                        Console.WriteLine($"DEBUG: Importing using FileType: {fileType.ToString()}");
+                        new FileTypeImporter(fileType).Import(testFilePath);
+                        // Use ToString() for fileType representation in log
+                        Console.WriteLine($"DEBUG: Import attempted for EntryDataID: {targetEntryDataId} using FileType: {fileType.ToString()}.");
+                    }
+
+                    // Verify import success
+                    using (var ctxVerify = new EntryDataDSContext())
+                    {
+                        // Check using Declarant_Reference_Number based on ID format and original code hints
+                        if (!ctxVerify.EntryData.Any(e => e.EntryDataId == targetEntryDataId))
+                        {
+                            Assert.Fail($"Import verification failed. EntryDataID {targetEntryDataId} still not found after import attempt.");
+                        }
+                        else
+                        {
+                             Console.WriteLine($"DEBUG: Confirmed EntryDataID {targetEntryDataId} exists after import.");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"DEBUG: EntryDataID: {targetEntryDataId} already exists. Skipping import.");
                 }
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Data import failed: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                Console.WriteLine($"ERROR: Failed during data check/import for EntryDataID {targetEntryDataId}: {ex}");
+                Assert.Fail($"Failed during data check/import for EntryDataID {targetEntryDataId}: {ex.Message}");
             }
+
+            // 3. Clean up previous test data (Conceptual - implement if needed)
+            /*
+            using (var ctx = new EntryDataDSContext()) // Use EntryDataDSContext for cleanup
+            {
+                // Cleanup logic for EntryData/EntryDataDetails specific to this test's side effects
+            }
+            */
+
+            // Steps 4 & 5 are part of the original setup logic, let's keep them but ensure variables are defined.
+            // We need to ensure the check/import happens *before* this logic runs.
 
             // 4. Instantiate SUT
             _sut = new BaseDataModel(); // Assuming default constructor
 
-            // 5. Query DB using Correct Contexts for Test Data
+            // 5. Query DB using Correct Contexts for Test Data (after ensuring data exists)
             using (var entryCtx = new EntryDataDSContext()) // Use EntryDataDSContext for EntryData
-            using (var coreCtx = new CoreEntitiesContext())   // Use CoreEntitiesContext for AsycudaDocumentSet
+            using (var coreCtx = new DocumentDSContext())   // Use CoreEntitiesContext for AsycudaDocumentSet
             {
-                // Find the EntryData record created by the import using SourceFile
+                // Find the EntryData record. We need the correct property to identify it.
+                // Using SourceFile as per original code for now, but the check above should use the correct ID property.
                 var importedEntryData = entryCtx.EntryData // Use entryCtx
                                                 .Include(ed => ed.EntryDataDetails)
-                                                .OrderByDescending(ed => ed.EntryData_Id)
-                                                .FirstOrDefault(ed => ed.SourceFile == testFilePath); // Compare with full relative path
+                                                // Assuming Declarant_Reference_Number is the correct field for the ID "114-..."
+                                                // If not, this needs to be adjusted based on the correct property name.
+                                                .FirstOrDefault(ed => ed.EntryDataId == targetEntryDataId); // Check using the ID
 
-                Assert.That(importedEntryData, Is.Not.Null, "Could not find EntryData record created by the import in EntryDataDSContext.");
+                Assert.That(importedEntryData, Is.Not.Null, $"Could not find EntryData record with ID {targetEntryDataId} in EntryDataDSContext after check/import.");
                 Assert.That(importedEntryData.EntryDataDetails, Is.Not.Empty, "Imported EntryData has no details.");
 
                 // Get the list of keys for the test input
                 _testEntryDataList = importedEntryData.EntryDataDetails
-                                                     .Select(d => d.EntryDataDetailsKey)
+                                                     .Select(d => d.EntryDataId)
                                                      .Where(k => !string.IsNullOrEmpty(k))
                                                      .Distinct()
                                                      .ToList();
@@ -93,16 +141,17 @@ namespace WaterNut.Business.Services.Tests
                 Assert.That(_testEntryDataList, Is.Not.Empty, "Could not retrieve EntryDataDetailsKeys from imported data.");
 
                 // Find a suitable AsycudaDocumentSet from CoreEntitiesContext.
-                _testCoreAsycudaDocumentSet = coreCtx.AsycudaDocumentSet // Use coreCtx
+                _testCoreAsycudaDocumentSet = coreCtx.AsycudaDocumentSets // Use coreCtx
                                                 .Include(ads => ads.Customs_Procedure)
+                                                .Include(ads => ads.Customs_Procedure.Document_Type)
                                                 .FirstOrDefault(ads => ads.Customs_Procedure != null);
 
                 Assert.That(_testCoreAsycudaDocumentSet, Is.Not.Null, "Could not find a suitable AsycudaDocumentSet in CoreEntitiesContext.");
                 Assert.That(_testCoreAsycudaDocumentSet.Customs_Procedure, Is.Not.Null, "Selected AsycudaDocumentSet has no Customs_Procedure.");
+                Assert.That(_testCoreAsycudaDocumentSet.Customs_Procedure.Document_Type, Is.Not.Null, "Selected AsycudaDocumentSet.Customs_Procedure has no Document_Type.");
 
-                // Map the CoreEntities.AsycudaDocumentSet to DocumentDS.AsycudaDocumentSet for the SUT parameter
-                _testAsycudaDocumentSetParam = MapToDocumentDS(_testCoreAsycudaDocumentSet);
-                Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null, "Failed to map AsycudaDocumentSet to DocumentDS type.");
+
+                
 
 
                 Console.WriteLine($"Setup Complete: Using AsycudaDocumentSetId={_testCoreAsycudaDocumentSet.AsycudaDocumentSetId}, Found {_testEntryDataList.Count} EntryDataDetailsKeys.");
@@ -128,8 +177,8 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -147,8 +196,8 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -166,8 +215,8 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -185,8 +234,8 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -204,8 +253,8 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -223,43 +272,13 @@ namespace WaterNut.Business.Services.Tests
 
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
-            Assert.That(_testAsycudaDocumentSetParam, Is.Not.Null); // Use the mapped param
-            await _sut.AddToEntry(_testEntryDataList, _testAsycudaDocumentSetParam, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
         }
 
-        // Helper method to map CoreEntities.AsycudaDocumentSet to DocumentDS.AsycudaDocumentSet
-        private DocumentDS.Business.Entities.AsycudaDocumentSet MapToDocumentDS(CoreEntities.Business.Entities.AsycudaDocumentSet coreSet)
-        {
-            if (coreSet == null) return null;
 
-            var docDsSet = new DocumentDS.Business.Entities.AsycudaDocumentSet
-            {
-                AsycudaDocumentSetId = coreSet.AsycudaDocumentSetId,
-                Declarant_Reference_Number = coreSet.Declarant_Reference_Number,
-                Exchange_Rate = coreSet.Exchange_Rate,
-                Description = coreSet.Description,
-                Country_of_origin_code = coreSet.Country_of_origin_code,
-                Currency_Code = coreSet.Currency_Code,
-                EntryTimeStamp = coreSet.EntryTimeStamp,
-                // ... map other relevant scalar properties ...
-
-                Customs_Procedure = coreSet.Customs_Procedure == null ? null : new DocumentDS.Business.Entities.Customs_Procedure
-                {
-                    Customs_ProcedureId = coreSet.Customs_Procedure.Customs_ProcedureId,
-                    CustomsProcedure = coreSet.Customs_Procedure.CustomsProcedure,
-                    Extended_customs_procedure = coreSet.Customs_Procedure.Extended_customs_procedure,
-                    National_customs_procedure = coreSet.Customs_Procedure.National_customs_procedure,
-                    CustomsOperationId = coreSet.Customs_Procedure.CustomsOperationId,
-                    IsDefault = coreSet.Customs_Procedure.IsDefault,
-                    IsObsolete = coreSet.Customs_Procedure.IsObsolete
-                    // ... map other relevant Customs_Procedure properties ...
-                }
-            };
-
-            return docDsSet;
-        }
     }
 }

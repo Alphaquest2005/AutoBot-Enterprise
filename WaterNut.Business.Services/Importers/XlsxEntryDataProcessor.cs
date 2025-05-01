@@ -176,13 +176,19 @@ namespace WaterNut.Business.Services.Importers
                                     ? x.SupplierItemNumber
                                     : x.POItemNumber
                                 :x.ItemNumber;
+
                 x.ItemDescription = string.IsNullOrEmpty(x.ItemDescription)
                                     ? string.IsNullOrEmpty(x.POItemDescription)
                                         ? x.SupplierItemDescription
                                         : x.POItemDescription
                                     : x.ItemDescription;
+
+                x.EntryDataId = string.IsNullOrEmpty(x.EntryDataId)
+                                    ? x.SupplierInvoiceNo
+                                    : x.EntryDataId;
                 return x;
             }).ToList();
+
             return res;
         }
     }
