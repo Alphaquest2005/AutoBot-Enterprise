@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 
@@ -14,6 +15,11 @@ namespace EntryDataDS.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string Body { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public List<ShipmentInvoice> Invoices { get; set; }
+
 
         public override string ToString()
         {

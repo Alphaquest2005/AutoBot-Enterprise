@@ -50,6 +50,34 @@ namespace EntryDataDS.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string PONumber { get; set; }
+        
+        [IgnoreDataMember]
+        [NotMapped]
+        public double TotalsZero
+        {
+            get
+            {
+                // Check 1: Sum of differences at the detail level
+                double detailLevelDifference = this.InvoiceDetails
+                    .Sum(detail => (detail.TotalCost ?? 0.0) - ((detail.Cost) * (detail.Quantity)));
+
+                // Calculate the subtotal using the best available value per line for Check 2
+                double calculatedSubTotal = this.InvoiceDetails
+                    .Sum(detail => detail.TotalCost ?? ((detail.Cost) * (detail.Quantity)));
+
+                // Check 2: Difference at the header level (Calculated Components - InvoiceTotal)
+                double headerLevelDifference = (calculatedSubTotal
+                                                + (this.TotalInternalFreight ?? 0)
+                                                + (this.TotalOtherCost ?? 0)
+                                                + (this.TotalInsurance ?? 0)
+                                                - (this.TotalDeduction ?? 0))
+                                               - (this.InvoiceTotal ?? 0);
+
+                // TotalsZero is the sum of both checks
+                return detailLevelDifference + headerLevelDifference;
+            }
+            // No setter - calculated property
+        }
     }
 
     public partial class InvoiceDetails

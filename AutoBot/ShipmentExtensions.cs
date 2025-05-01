@@ -1319,6 +1319,7 @@ namespace AutoBotUtilities
                         ConsigneeCode = manifest.Consignees?.ConsigneeCode,
                         ConsigneeName = manifest.ConsigneeName,
                         ConsigneeAddress = manifest.Consignees?.Address,
+                        Invoices = invoices,
                         TrackingState = TrackingState.Added
                     };
 

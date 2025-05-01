@@ -112,26 +112,13 @@ namespace AutoBot
                     //.SaveShipment()
                     ;
 
-                var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer" || x.Role == "PO Clerk")
-                    .Select(x => x.EmailAddress)
-                    .Distinct()
-                    .ToArray();
+
 
                 var sent = false;
-                using (var ctx = new EntryDataDSContext())
-                {
-                    shipments.ForEach(shipment =>
-                    {
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
-                            $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
-                            shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
 
-                        sent = true;
-                        ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
-
-                    });
-                    ctx.SaveChanges();
-                }
+                shipments.ForEach(shipment => { sent = EmailShipment(shipment); });
+                   
+              
 
                 return sent;
             }
@@ -155,6 +142,27 @@ namespace AutoBot
                 BaseDataModel.EmailExceptionHandler(e);
                 throw;
             }
+        }
+
+        private static bool EmailShipment(Shipment shipment)
+        {
+            bool sent;
+            using (var ctx = new EntryDataDSContext())
+            {
+                var contacts = shipment.Invoices.Sum(x => x.TotalsZero) == 0
+                    ? new CoreEntitiesContext().Contacts.Where(x => x.Role == "Shipments").Select(x => x.EmailAddress).Distinct().ToArray()
+                    : new CoreEntitiesContext().Contacts.Where(x => x.Role == "Developer" || x.Role == "PO Clerk").Select(x => x.EmailAddress).Distinct().ToArray();
+
+                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
+                    $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
+                    shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
+
+                sent = true;
+                ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
+                ctx.SaveChanges();
+            }
+
+            return sent;
         }
 
         public static void CreateInstructions()
