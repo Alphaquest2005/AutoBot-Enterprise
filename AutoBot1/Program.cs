@@ -158,7 +158,7 @@ namespace AutoBot
                     var msgLst = (await Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client))
                             .ConfigureAwait(false))
                         .ToList();
-                    // get downloads
+                    // get downloads test
                     Console.WriteLine($"{msgLst.Count()} Emails Processed");
 
                     var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
