@@ -33,6 +33,7 @@ public class SimplifiedDeclarationImporter
                 try
                 {
                     if (!x.ContainsKey("Packages")) return null;
+                    if (!x.ContainsKey("BLNumber")) return null;
                     return new ShipmentManifest()
                     {
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,

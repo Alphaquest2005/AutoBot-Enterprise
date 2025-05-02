@@ -14,10 +14,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             LogPipelineStart(filePath);
             LogContextDetails();
 
+            // Guard Clause: Check for null context
             if (_context == null)
             {
+                // Log the error, but cannot add to context as it's null.
                 LogNullContextError();
-                return false;
+                // Removed: _context.Error = errorMessage; // This would throw NullReferenceException
+                return false; // Exit early
             }
 
             try
@@ -33,26 +36,39 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 if (isInitialRunUnsuccessful)
                 {
-                    LogProcessingErrorPipeline(filePath);
-                    var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);
-                    LogErrorPipelineCompleted(filePath, errorPipelineResult);
-                    LogContextAfterErrorPipeline();
-                    return errorPipelineResult;
+
+                    // Report unimported file, joining accumulated errors
+                    string aggregatedErrors = string.Join("; ", _context.Errors);
+                    InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
+                        _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, new List<Line>());
+                    return false;
                 }
                 else
                 {
+                    if (_context.Templates.Any(x => x.CsvLines == null || !x.CsvLines.Any() || x.Success == false))
+                    {
+                        LogProcessingErrorPipeline(filePath);
+                        var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);
+                        LogErrorPipelineCompleted(filePath, errorPipelineResult);
+                        LogContextAfterErrorPipeline();
+                        return errorPipelineResult;
+                    }
+
                     LogProcessingSuccessPipeline(filePath);
                     var successPipelineResult = await ProcessSuccessfulSteps().ConfigureAwait(false);
                     LogSuccessPipelineCompleted(filePath, successPipelineResult);
                     LogContextAfterSuccessPipeline();
                     return successPipelineResult;
                 }
+                
             }
             catch (Exception ex)
             {
-                LogFatalError(filePath, ex);
-                LogContextAfterFatalError();
-                return false;
+                string fatalErrorMessage = $"Fatal error during pipeline execution: {ex.Message}";
+                LogFatalError(filePath, ex); // Log the fatal error with exception details
+                _context.AddError(fatalErrorMessage); // Add the fatal error to the context's error list
+                LogContextAfterFatalError(); // Log context state after fatal error
+                return false; // Indicate pipeline failure
             }
             finally
             {

@@ -1,3 +1,4 @@
+using System;
 // Assuming Invoice and related entities are here
 // Assuming OCR_Lines and Fields are here
 
@@ -16,43 +17,79 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            // Use FilePath as the identifier
-            _logger.Debug("Executing AddMissingRequiredFieldValuesStep for File: {FilePath}", context.FilePath);
+             // Basic context validation
+            if (context == null)
+            {
+                _logger.Error("AddMissingRequiredFieldValuesStep executed with null context.");
+                return false;
+            }
+             if (!context.Templates.Any())
+            {
+                 _logger.Warning("Skipping AddMissingRequiredFieldValuesStep: No Templates found in context for File: {FilePath}", context.FilePath ?? "Unknown");
+                 return true; // No templates to process, not a failure.
+            }
 
+            string filePath = context.FilePath ?? "Unknown";
+            bool overallStepSuccess = true; // Track success across all templates
 
-
-            var res = true;
             foreach (var template in context.Templates)
             {
+                 int? templateId = template?.OcrInvoices?.Id; // Safe access
+                 _logger.Debug("Executing AddMissingRequiredFieldValuesStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
-                // Added null checks and Any() for CsvLines
-                if (template.CsvLines != null && template.CsvLines.Any())
-                {
-                    var requiredFieldsList = GetRequiredFieldsWithValues(context,template);
-                    // Use FilePath as the identifier
-                    _logger.Debug("Found {RequiredFieldCount} required fields with values for File: {FilePath}.",
-                        requiredFieldsList.Count, context.FilePath);
+                 try // Wrap processing for each template
+                 {
+                     // --- Validation for this template ---
+                     if (template == null || template.CsvLines == null || !template.CsvLines.Any())
+                     {
+                         string warningMsg = $"Skipping AddMissingRequiredFieldValuesStep for TemplateId: {templateId} due to missing Template or CsvLines for File: {filePath}.";
+                         _logger.Warning(warningMsg);
+                         // Don't add error or return false here, just skip this template.
+                         // If *no* templates have CsvLines, the step effectively does nothing but succeeds.
+                         continue; // Move to the next template
+                     }
+                     // --- End Validation ---
 
-                    AddRequiredFieldValuesToDocuments(context,template, requiredFieldsList);
+                     // --- Core Logic ---
+                     var requiredFieldsList = GetRequiredFieldsWithValues(context, template);
+                     _logger.Debug("Found {RequiredFieldCount} required fields with default values for File: {FilePath}, TemplateId: {TemplateId}.",
+                         requiredFieldsList.Count, filePath, templateId);
 
-                    // Replace Console.WriteLine with Serilog Information log
-                    // Use FilePath as the identifier
-                    _logger.Information("Added missing required field values for File: {FilePath}.", context.FilePath);
+                     if (requiredFieldsList.Any()) // Only proceed if there are fields to add
+                     {
+                         AddRequiredFieldValuesToDocuments(context, template, requiredFieldsList);
+                         _logger.Information("Attempted to add missing required field values for File: {FilePath}, TemplateId: {TemplateId}.", filePath, templateId);
+                     }
+                     else
+                     {
+                          _logger.Debug("No required fields with default values found to add for File: {FilePath}, TemplateId: {TemplateId}.", filePath, templateId);
+                     }
+                     // --- End Core Logic ---
 
-                    // Use FilePath as the identifier
-                    _logger.Debug(
-                        "Finished executing AddMissingRequiredFieldValuesStep successfully for File: {FilePath}",
-                        context.FilePath);
-                    return true; // Indicate success
-                }
-
-                // Log a warning if required data is missing
-                // Use FilePath as the identifier
-                _logger.Warning(
-                    "Skipping AddMissingRequiredFieldValuesStep on Template:{template.OcrInvoices.Name} due to missing CsvLines for File: {FilePath}.",
-                    context.FilePath);
+                     _logger.Debug("Finished processing AddMissingRequiredFieldValuesStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                 }
+                 catch (Exception ex) // Catch unexpected errors during processing for this template
+                 {
+                     string errorMsg = $"Error during AddMissingRequiredFieldValuesStep for File: {filePath}, TemplateId: {templateId}: {ex.Message}";
+                     _logger.Error(ex, errorMsg); // Log the error with exception details
+                     context.AddError(errorMsg); // Add error to context
+                     overallStepSuccess = false; // Mark the overall step as failed
+                     // Continue to next template? Or break? For consistency with others, let's break.
+                     break; // Stop processing immediately on error
+                 }
             }
-            return true; // Indicate success
+
+            // Log final status based on whether all templates were processed without error
+            if (overallStepSuccess)
+            {
+                 _logger.Information("AddMissingRequiredFieldValuesStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
+            }
+            else
+            {
+                 _logger.Error("AddMissingRequiredFieldValuesStep failed for at least one template in File: {FilePath}. See previous errors.", filePath);
+            }
+            
+            return overallStepSuccess;
         }
 
 
@@ -65,11 +102,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             // Assuming CsvLines is List<object> where the first object is List<IDictionary<string, object>>
             // Need null checks for safety
-            if (template.CsvLines == null || !template.CsvLines.Any() || !(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
+            // Added check for template null
+            if (template == null || template.CsvLines == null || !template.CsvLines.Any() || !(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
             {
+                 int? templateId = template?.OcrInvoices?.Id; // Safe access
                  // Use FilePath as the identifier
-                _logger.Warning("CsvLines is null, empty, or not in the expected format for Template:{template} File: {FilePath}. Cannot add required fields.", context.FilePath);
-                return;
+                _logger.Warning("CsvLines is null, empty, or not in the expected format for TemplateId:{TemplateId}, File: {FilePath}. Cannot add required fields.", templateId, context.FilePath);
+                return; // Exit this method for this template
             }
 
              // Use FilePath as the identifier

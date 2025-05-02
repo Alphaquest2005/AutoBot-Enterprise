@@ -57,7 +57,7 @@ namespace WaterNut.DataSpace
             if (ParentPart != null && WasStarted && importLineSuccess &&
                 (OCR_Part.RecuringPart != null && !OCR_Part.RecuringPart.IsComposite))
             {
-                LogRecurringChildReset(methodName, partId, parentInstance, triggerline.FirstOrDefault());
+                LogRecurringChildReset(methodName, partId, parentInstance, triggerline?.FirstOrDefault());
                 ResetInternalState();
             }
         }

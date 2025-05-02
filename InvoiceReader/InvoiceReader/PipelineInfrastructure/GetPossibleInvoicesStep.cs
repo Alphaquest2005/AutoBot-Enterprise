@@ -4,7 +4,8 @@ using System.Collections.Generic; // Added
 using System.Linq; // Added
 using System.Threading.Tasks; // Added
 using Serilog; // Added
-using System; // Added
+using System;
+using WaterNut.Business.Services.Utils; // Added
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -29,8 +30,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 var possibleInvoices = GetPossibleInvoices(context.Templates, pdfTextString, filePath);
 
+                if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Invoice"))
+                    throw new ApplicationException("No Shipment Invoice Templates found");
+
                 context.Templates = possibleInvoices;
                 LogPossibleInvoices(possibleInvoices, totalTemplateCount, filePath);
+
 
                 _logger.Debug("Finished executing GetPossibleInvoicesStep successfully for File: {FilePath}", filePath);
                 return true;
@@ -38,6 +43,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error during GetPossibleInvoicesStep processing templates for File: {FilePath}", filePath);
+                context.AddError(ex.Message);
                 context.Templates = new List<Invoice>();
                 return false;
             }

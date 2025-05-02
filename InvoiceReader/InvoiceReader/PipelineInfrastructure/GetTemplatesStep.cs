@@ -17,8 +17,16 @@ namespace InvoiceReader.PipelineInfrastructure
     public class GetTemplatesStep : IPipelineStep<InvoiceProcessingContext>
     {
         private static readonly ILogger _logger = Log.ForContext<GetTemplatesStep>();
+        private static IEnumerable<Invoice> _allTemplates = null;
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
+        {
+            if (_allTemplates == null) await GetTemplates(context).ConfigureAwait(false);
+            context.Templates = _allTemplates;
+            return true ;
+        }
+
+        private static async Task<bool> GetTemplates(InvoiceProcessingContext context)
         {
             string filePath = context?.FilePath ?? "unknown";
             _logger.Debug("Starting GetTemplatesStep for file: {FilePath}", filePath);
@@ -63,12 +71,13 @@ namespace InvoiceReader.PipelineInfrastructure
                                 .Where(x => x.IsActive)
                                 .Where(x => x.ApplicationSettingsId ==
                                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                                // .Where(filter) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
+                            // .Where(filter) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
                                 
 
                             _logger.Debug("Active templates query: {Query}", activeTemplatesQuery.ToString());
                             
                             var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
+
 
                             if (templates.Any())
                             {
@@ -84,6 +93,8 @@ namespace InvoiceReader.PipelineInfrastructure
                                     EmailId = context.EmailId,
 
                                 }).ToList();
+
+                                _allTemplates = context.Templates;
                                 return true;
                             }
 
@@ -131,6 +142,7 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
+/*
         private static async Task<List<Invoice>> GetInvoiceTemplatesAsync()
         {
             _logger.Debug("Loading invoice templates from database");
@@ -168,5 +180,6 @@ namespace InvoiceReader.PipelineInfrastructure
                 return new List<Invoice>();
             }
         }
+*/
     }
 }

@@ -16,127 +16,119 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            string filePath = context?.FilePath ?? "Unknown";
-            bool stepResult = false; // Initialize step result
-            foreach (var template in context.Templates)
+             // Basic context validation
+            if (context == null)
             {
-
-
-                int? templateId = template?.OcrInvoices?.Id; // Safe access
-                _logger.Information(
-                    "Executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}", filePath,
-                    templateId);
-                _logger.Verbose("Context details at start of HandleImportSuccessStateStep: {@Context}",
-                    context); // Log context details
-
-                // Null check context first
-                if (context == null)
-                {
-                    _logger.Error("HandleImportSuccessStateStep executed with null context.");
-                    return false;
-                }
-
-                bool requiredDataMissing = IsRequiredDataMissing(template); // Handles its own logging
-                _logger.Debug("IsRequiredDataMissing check result: {Result}", requiredDataMissing);
-                if (requiredDataMissing)
-                {
-                    _logger.Warning(
-                        "HandleImportSuccessStateStep cannot proceed due to missing required data in context for File: {FilePath}",
-                        filePath);
-                    return false; // Step fails if required data is missing
-                }
-
-                
-                try
-                {
-                    _logger.Debug("Resolving file type for File: {FilePath}, TemplateId: {TemplateId}", filePath,
-                        templateId);
-                    FileTypes fileType = ResolveFileType(template); // Handles its own logging
-                    if (fileType == null)
-                    {
-                        _logger.Error(
-                            "ResolveFileType returned null. Cannot proceed with data file processing for File: {FilePath}",
-                            filePath);
-                        return false;
-                    }
-
-                    // Removed .Name as it doesn't exist on FileTypes
-                    _logger.Information("Resolved FileType to Id: {FileTypeId} for File: {FilePath}", fileType.Id,
-                        filePath);
-
-                    _logger.Debug("Creating DataFile object for File: {FilePath}", filePath);
-                    DataFile dataFile = CreateDataFile(template, fileType); // Handles its own logging
-                    if (dataFile == null)
-                    {
-                        _logger.Error(
-                            "CreateDataFile returned null. Cannot proceed with data file processing for File: {FilePath}",
-                            filePath);
-                        return false;
-                    }
-
-                    _logger.Verbose("Created DataFile details: {@DataFile}", dataFile); // Log DataFile details
-
-                    // Add logging for CsvLines content before processing
-                    if (template.CsvLines != null && template.CsvLines.Any())
-                    {
-                        _logger.Verbose("CsvLines content before processing: {@CsvLines}", template.CsvLines);
-                        // Optionally log details of the first few items in CsvLines if it's a large list
-                        if (template.CsvLines.First() is List<IDictionary<string, object>> firstDocList)
-                        {
-                            _logger.Verbose("First document list in CsvLines (first 5 items): {@FirstDocList}",
-                                firstDocList.Take(5).ToList());
-                        }
-                    }
-                    else
-                    {
-                        _logger.Warning("CsvLines is null or empty before DataFileProcessor for File: {FilePath}",
-                            filePath);
-                    }
-
-                    // Add logging for DataFile content before processing
-                    if (dataFile != null)
-                    {
-                        _logger.Verbose(
-                            "DataFile content before processing (relevant properties): FileType={FileType}, DocSet Count={DocSetCount}, OverWriteExisting={OverWriteExisting}, EmailId={EmailId}",
-                            dataFile.FileType?.Id, dataFile.DocSet?.Count, dataFile.OverWriteExisting,
-                            dataFile.EmailId);
-                        // Note: FilePath and CsvLines properties are not available on this DataFile object for logging.
-                    }
-                    else
-                    {
-                        _logger.Error("DataFile is null before DataFileProcessor for File: {FilePath}", filePath);
-                    }
-
-                    _logger.Information("Starting DataFileProcessor for File: {FilePath}, FileTypeId: {FileTypeId}",
-                        filePath, fileType.Id);
-                    // Assuming DataFileProcessor().Process is synchronous or its async nature is handled internally
-                    // The original code uses GetAwaiter().GetResult() which blocks.
-                    // Running potentially blocking code in background thread to avoid blocking pipeline thread.
-                    var processor = new DataFileProcessor();
-                    bool processResult = await Task.Run(() => processor.Process(dataFile)).ConfigureAwait(false);
-                    _logger.Information("DataFileProcessor finished for File: {FilePath}. Success: {ProcessResult}",
-                        filePath, processResult);
-
-                    // LogImportProcessingOutcome handles its own logging
-                    stepResult = LogImportProcessingOutcome(processResult, filePath); // Pass context
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex,
-                        "Error during HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}",
-                        filePath, templateId);
-                    stepResult = false; // Indicate failure
-                }
-                finally
-                {
-                    _logger.Information(
-                        "Finished executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}. Result: {Result}",
-                        filePath, templateId, stepResult);
-                }
+                _logger.Error("HandleImportSuccessStateStep executed with null context.");
+                return false;
+            }
+             if (!context.Templates.Any())
+            {
+                 _logger.Warning("Skipping HandleImportSuccessStateStep: No Templates found in context for File: {FilePath}", context.FilePath ?? "Unknown");
+                 return true; // No templates to process, not a failure.
             }
 
-            return stepResult;
+            string filePath = context.FilePath ?? "Unknown";
+            bool overallStepSuccess = true; // Track success across all templates
+
+            foreach (var template in context.Templates)
+            {
+                 int? templateId = template?.OcrInvoices?.Id; // Safe access
+                 _logger.Information("Executing HandleImportSuccessStateStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                 _logger.Verbose("Context details at start of HandleImportSuccessStateStep: {@Context}", context);
+
+                 try // Wrap processing for each template
+                 {
+                     // --- Validation for this template ---
+                     if (IsRequiredDataMissing(template)) // Handles its own logging
+                     {
+                         string errorMsg = $"HandleImportSuccessStateStep cannot proceed due to missing required data for File: {filePath}, TemplateId: {templateId}";
+                         _logger.Warning(errorMsg); // Logged by helper, but log again for step context
+                         context.AddError(errorMsg); // Add error to context
+                         overallStepSuccess = false; // Mark step as failed
+                         break; // Stop processing other templates
+                     }
+                     // --- End Validation ---
+
+                     // --- Resolve File Type ---
+                     _logger.Debug("Resolving file type for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                     FileTypes fileType = ResolveFileType(template); // Handles its own logging
+                     if (fileType == null)
+                     {
+                         string errorMsg = $"ResolveFileType returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
+                         _logger.Error(errorMsg);
+                         context.AddError(errorMsg); // Add error to context
+                         overallStepSuccess = false;
+                         break;
+                     }
+                     _logger.Information("Resolved FileType to Id: {FileTypeId} for File: {FilePath}", fileType.Id, filePath);
+                     // --- End Resolve File Type ---
+
+                     // --- Create DataFile ---
+                     _logger.Debug("Creating DataFile object for File: {FilePath}", filePath);
+                     DataFile dataFile = CreateDataFile(template, fileType); // Handles its own logging
+                     if (dataFile == null)
+                     {
+                         string errorMsg = $"CreateDataFile returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
+                         _logger.Error(errorMsg);
+                         context.AddError(errorMsg); // Add error to context
+                         overallStepSuccess = false;
+                         break;
+                     }
+                     _logger.Verbose("Created DataFile details: {@DataFile}", dataFile);
+                     // --- End Create DataFile ---
+
+                     // --- Process DataFile ---
+                     _logger.Information("Starting DataFileProcessor for File: {FilePath}, FileTypeId: {FileTypeId}", filePath, fileType.Id);
+                     var processor = new DataFileProcessor();
+                     bool processResult = false; // Default to false
+                     try
+                     {
+                         // Run potentially blocking code in background thread
+                         processResult = await Task.Run(() => processor.Process(dataFile)).ConfigureAwait(false);
+                     }
+                     catch(Exception procEx) // Catch exceptions specifically from the processor
+                     {
+                          string errorMsg = $"DataFileProcessor threw an exception for File: {filePath}, TemplateId: {templateId}";
+                          _logger.Error(procEx, errorMsg);
+                          context.AddError($"{errorMsg}: {procEx.Message}");
+                          processResult = false; // Ensure failure
+                     }
+                     _logger.Information("DataFileProcessor finished for File: {FilePath}. Success: {ProcessResult}", filePath, processResult);
+                     
+                     if (!LogImportProcessingOutcome(processResult, filePath)) // Checks result and logs
+                     {
+                          // LogImportProcessingOutcome logs the error, add context error here
+                          string errorMsg = $"DataFileProcessor failed for File: {filePath}, TemplateId: {templateId}.";
+                          context.AddError(errorMsg);
+                          overallStepSuccess = false;
+                          break;
+                     }
+                     // --- End Process DataFile ---
+
+                     _logger.Information("Finished processing HandleImportSuccessStateStep successfully for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                 }
+                 catch (Exception ex) // Catch unexpected errors during processing for this template
+                 {
+                     string errorMsg = $"Unexpected error during HandleImportSuccessStateStep for File: {filePath}, TemplateId: {templateId}: {ex.Message}";
+                     _logger.Error(ex, errorMsg); // Log the error with exception details
+                     context.AddError(errorMsg); // Add error to context
+                     overallStepSuccess = false; // Mark the overall step as failed
+                     break; // Stop processing immediately on error
+                 }
+            }
+
+            // Log final status based on whether all templates were processed without error
+            if (overallStepSuccess)
+            {
+                 _logger.Information("HandleImportSuccessStateStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
+            }
+            else
+            {
+                 _logger.Error("HandleImportSuccessStateStep failed for at least one template in File: {FilePath}. See previous errors.", filePath);
+            }
+            
+            return overallStepSuccess;
         }
 
         private static bool IsRequiredDataMissing(Invoice Invoice)

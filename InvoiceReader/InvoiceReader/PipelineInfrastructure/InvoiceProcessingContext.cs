@@ -64,17 +64,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public Dictionary<string, (string file, string, ImportStatus Success)> Imports { get; set; } = new Dictionary<string, (string file, string, ImportStatus Success)>();
 
-        private string _error;
-        public string Error // Added Error property
+        private List<string> _errors = new List<string>();
+        public List<string> Errors // Changed from string to List<string> for accumulation
         {
-            get => _error;
-            set
+            get => _errors;
+            // Setter is removed; use AddError method to append errors
+        }
+
+        // Method to add errors consistently and log them
+        public void AddError(string errorMessage)
+        {
+            if (!string.IsNullOrWhiteSpace(errorMessage))
             {
-                if (_error != value)
-                {
-                    _error = value;
-                    _logger.Debug("Context Property Changed: Error = {NewValue}", value ?? "null");
-                }
+                _errors.Add(errorMessage);
+                _logger.Error("Error added to context: {ErrorMessage}", errorMessage); // Log as Error for visibility
+                _logger.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count);
             }
         }
 

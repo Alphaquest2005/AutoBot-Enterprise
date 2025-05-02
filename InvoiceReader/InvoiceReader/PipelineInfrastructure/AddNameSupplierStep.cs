@@ -1,3 +1,4 @@
+using System;
 // Assuming Invoice is defined here
 
 using System.Collections.Generic;
@@ -14,106 +15,107 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
+             // Basic context validation
+            if (context == null)
+            {
+                _logger.Error("AddNameSupplierStep executed with null context.");
+                return false;
+            }
+             if (!context.Templates.Any())
+            {
+                 _logger.Warning("Skipping AddNameSupplierStep: No Templates found in context for File: {FilePath}", context.FilePath ?? "Unknown");
+                 return true; // No templates to process, not a failure.
+            }
+
+            string filePath = context.FilePath ?? "Unknown";
 
             foreach (var template in context.Templates)
             {
+                 int? templateId = template?.OcrInvoices?.Id; // Safe access
+                 _logger.Debug("Executing AddNameSupplierStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
 
+                 try // Wrap processing for each template
+                 {
+                     // --- Validation for this template ---
+                     if (template == null || template.CsvLines == null || !template.CsvLines.Any())
+                     {
+                         string errorMsg = $"Skipping AddNameSupplierStep for TemplateId: {templateId} due to missing Template or CsvLines for File: {filePath}.";
+                         _logger.Warning(errorMsg);
+                         // This might not be a critical failure for the whole step if other templates exist.
+                         // However, to align with stop-on-failure, we'll treat it as such for now.
+                         // If partial success is desired, logic needs adjustment.
+                         context.AddError(errorMsg);
+                         return false;
+                     }
+                     // --- End Validation ---
 
-                _logger.Debug("Executing AddNameSupplierStep for File: {FilePath}", context.FilePath);
+                     // --- Core Logic ---
+                     _logger.Debug("Checking condition to add Name/SupplierCode for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                     bool conditionMet = template.CsvLines.Count == 1 &&
+                                         template.Lines != null &&
+                                         template.OcrInvoices != null &&
+                                         !template.Lines.All(x =>
+                                             x?.OCR_Lines != null &&
+                                             "Name, SupplierCode".Contains(x.OCR_Lines.Name));
 
-                // Added null check and Any() for CsvLines
+                     if (conditionMet)
+                     {
+                         _logger.Debug("Condition met to add Name/SupplierCode for single CSV line set for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                         
+                         // Check format and process
+                         if (template.CsvLines.First() is List<IDictionary<string, object>> firstDocList)
+                         {
+                             foreach (var doc in firstDocList)
+                             {
+                                 if (doc == null)
+                                 {
+                                      _logger.Verbose("Encountered a null document within CsvLines list, skipping Name/SupplierCode addition for this doc. File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                                      continue; // Skip this specific null document
+                                 }
 
-                if (template == null || template.CsvLines == null || !template.CsvLines.Any())
-                {
-                    // Log a warning if required data is missing
-                    _logger.Warning(
-                        "Skipping AddNameSupplierStep due to missing Template or CsvLines for File: {FilePath}.",
-                        context.FilePath);
-                    return false;
-                }
+                                 // Add SupplierCode if missing
+                                 if (!doc.ContainsKey("SupplierCode"))
+                                 {
+                                     _logger.Verbose("Adding SupplierCode '{SupplierCode}' to document. File: {FilePath}, TemplateId: {TemplateId}", template.OcrInvoices.Name, filePath, templateId);
+                                     doc.Add("SupplierCode", template.OcrInvoices.Name);
+                                 }
+                                 
+                                 // Add Name if missing
+                                 if (!doc.ContainsKey("Name"))
+                                 {
+                                     _logger.Verbose("Adding Name '{Name}' to document. File: {FilePath}, TemplateId: {TemplateId}", template.OcrInvoices.Name, filePath, templateId);
+                                     doc.Add("Name", template.OcrInvoices.Name);
+                                 }
+                             }
+                              _logger.Information("Added Name and/or Supplier information where missing for File: {FilePath}, TemplateId: {TemplateId}.", filePath, templateId);
+                         }
+                         else
+                         {
+                              // Log warning if format is wrong, but don't fail the whole step unless required.
+                              _logger.Warning("CsvLines is not in the expected format (List<IDictionary<string, object>>) for File: {FilePath}, TemplateId: {TemplateId}. Cannot add Name/SupplierCode.", filePath, templateId);
+                              // Decide if this is critical. For now, let the step succeed but log the issue.
+                         }
+                     }
+                     else
+                     {
+                         _logger.Information("Condition not met or skipped adding Name/SupplierCode for File: {FilePath}, TemplateId: {TemplateId}.", filePath, templateId);
+                     }
+                     // --- End Core Logic ---
 
-                // The original AddNameSupplier method logic is implemented here
-                // Added null checks for Template.Lines and Template.OcrInvoices
-                _logger.Debug("Checking condition to add Name/SupplierCode for File: {FilePath}", context.FilePath);
-                if (template.CsvLines.Count == 1 && template.Lines != null &&
-                    template.OcrInvoices != null &&
-                    !template.Lines.All(x =>
-                        x?.OCR_Lines != null &&
-                        "Name, SupplierCode".Contains(x.OCR_Lines.Name))) // Added null checks in lambda
-                {
-                    _logger.Debug("Condition met to add Name/SupplierCode for single CSV line set for File: {FilePath}",
-                        context.FilePath);
-                    // Need null checks for safety
-                    if (!(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
-                    {
-                        _logger.Warning(
-                            "CsvLines is not in the expected format (List<IDictionary<string, object>>) for File: {FilePath}. Cannot add Name/SupplierCode.",
-                            context.FilePath);
-                        // Decide if this is a failure or just a skip
-                        _logger.Debug(
-                            "Finished executing AddNameSupplierStep (skipped Name/Supplier addition due to format) for File: {FilePath}",
-                            context.FilePath);
-                        return true; // Assuming not a fatal error for the whole pipeline step
-                    }
-
-                    foreach (var doc in firstDocList)
-                    {
-                        if (doc == null)
-                        {
-                            _logger.Verbose(
-                                "Encountered a null document, skipping Name/SupplierCode addition for File: {FilePath}",
-                                context.FilePath);
-                            continue;
-                        }
-
-                        // Check and add SupplierCode
-                        if (!doc.ContainsKey("SupplierCode"))
-                        {
-                            _logger.Verbose("Adding SupplierCode '{SupplierCode}' to document for File: {FilePath}",
-                                template.OcrInvoices.Name, context.FilePath);
-                            doc.Add("SupplierCode", template.OcrInvoices.Name);
-                        }
-                        else
-                        {
-                            _logger.Verbose("SupplierCode already exists in document, skipping for File: {FilePath}",
-                                context.FilePath);
-                        }
-
-                        // Check and add Name
-                        if (!doc.ContainsKey("Name"))
-                        {
-                            _logger.Verbose("Adding Name '{Name}' to document for File: {FilePath}",
-                                template.OcrInvoices.Name, context.FilePath);
-                            doc.Add("Name", template.OcrInvoices.Name);
-                        }
-                        else
-                        {
-                            _logger.Verbose("Name already exists in document, skipping for File: {FilePath}",
-                                context.FilePath);
-                        }
-                    }
-
-                    _logger.Information("Added Name and Supplier information for File: {FilePath}.", context.FilePath);
-                }
-                else
-                {
-                    _logger.Debug(
-                        "Condition not met or skipped adding Name/SupplierCode for File: {FilePath}. CsvLines Count: {CsvLineCount}, Template Lines Null: {IsTemplateLinesNull}, OcrInvoices Null: {IsOcrInvoicesNull}",
-                        context.FilePath, template.CsvLines.Count, template.Lines == null,
-                        template.OcrInvoices == null);
-                    // Optionally log the result of the All() check if needed for debugging
-                    _logger.Information("Skipped adding Name and Supplier information for File: {FilePath}.",
-                        context.FilePath);
-                }
-
-                // Removed redundant Console.WriteLine
-
-                _logger.Debug("Finished executing AddNameSupplierStep successfully for File: {FilePath}",
-                    context.FilePath);
-
+                     _logger.Debug("Finished processing AddNameSupplierStep for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
+                 }
+                 catch (Exception ex) // Catch unexpected errors during processing for this template
+                 {
+                     string errorMsg = $"Error during AddNameSupplierStep for File: {filePath}, TemplateId: {templateId}: {ex.Message}";
+                     _logger.Error(ex, errorMsg); // Log the error with exception details
+                     context.AddError(errorMsg); // Add error to context
+                     return false; // Stop processing immediately
+                 }
             }
 
-            return true; // Indicate success
+            // If the loop completes without any template causing a 'return false', the step is successful.
+            _logger.Information("AddNameSupplierStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
+            return true;
         }
     }
 }

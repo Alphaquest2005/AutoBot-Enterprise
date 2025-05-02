@@ -6,9 +6,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class HandleErrorStateStep
     {
-        private static async Task<bool> HandleErrorEmailPipeline(Invoice template, string filePath)
+        // Added InvoiceProcessingContext context parameter
+        private static async Task<bool> HandleErrorEmailPipeline(InvoiceProcessingContext context, Invoice template, string filePath)
         {
-             filePath = filePath ?? "Unknown";
+             filePath = filePath ?? context?.FilePath ?? "Unknown"; // Get filePath from context if null
             _logger.Information("Starting HandleErrorEmailPipeline for File: {FilePath}", filePath);
 
             // Populate FileInfo and TextFilePath in template for email pipeline
@@ -46,7 +47,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 // Create and run the CreateEmailPipeline
                 _logger.Debug("Creating CreateEmailPipeline instance for File: {FilePath}", filePath);
-                var createEmailPipeline = new CreateEmailPipeline(_context); // Handles its own logging
+                var createEmailPipeline = new CreateEmailPipeline(context); // Pass the context parameter
 
                 _logger.Information("Running CreateEmailPipeline for File: {FilePath}", filePath);
                 bool emailPipelineSuccess =

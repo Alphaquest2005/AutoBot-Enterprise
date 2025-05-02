@@ -17,68 +17,124 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            string filePath = context?.FilePath ?? "Unknown";
-            var res = false;
+            // Basic context validation (null check)
+            if (context == null)
+            {
+                LogNullContextError();
+                // Cannot add error as context is null
+                return false;
+            }
+             if (!context.Templates.Any())
+            {
+                 _logger.Warning("Skipping ReadFormattedTextStep: No Templates found in context.");
+                 // Not necessarily an error, but nothing to process. Consider if this should be true or false based on pipeline logic.
+                 // Returning true as no processing *failed*, just skipped.
+                 return true;
+            }
+
+
+            string filePath = context.FilePath ?? "Unknown"; // Safe now due to null check above
+
             foreach (var template in context.Templates)
             {
-
+                 int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
 
                 try
                 {
+                    // --- Validation ---
                     if (!ExecutionValidation(template, filePath))
                     {
-                        res = false;
-                        continue;
+                        // ExecutionValidation logs the specific reason
+                        string errorMsg = $"Validation failed for TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}.";
+                        context.AddError(errorMsg); // Add error to context
+                        return false; // Stop processing immediately
                     }
+                    // --- End Validation ---
 
                     var textLines = GetTextLinesFromFormattedPdfText(template, filePath);
 
-                    ////////////////////////////////////////////////////////////
+                    // --- Template Read Execution ---
+                    try
+                    {
+                         LogCallingTemplateRead(textLines.Count, filePath, templateId);
+                         template.CsvLines = template.Read(textLines); // The core operation
+                         LogTemplateReadFinished(filePath, templateId, template.CsvLines?.Count ?? 0);
+                    }
+                    catch (Exception readEx) // Catch errors specifically from template.Read()
+                    {
+                         string errorMsg = $"Error executing template.Read() for TemplateId: {templateId}, File: {filePath}: {readEx.Message}";
+                         LogExecutionError(readEx, filePath, templateId); // Log detailed error
+                         context.AddError(errorMsg); // Add error to context
+                         template.CsvLines = null; // Ensure CsvLines is null after failure
+                         return false; // Stop processing immediately
+                    }
+                    // --- End Template Read Execution ---
 
-                    template.CsvLines = template.Read(textLines);
 
-                    ////////////////////////////////////////////////////////////
+                    // --- Result Check ---
+                    if (!ExecutionSuccess(template, filePath)) // Checks if CsvLines is null or empty
+                    {
+                         // ExecutionSuccess logs the specific reason (empty CsvLines)
+                         string errorMsg = $"No CsvLines generated after read for TemplateId: {templateId}, File: {filePath}.";
+                         context.AddError(errorMsg); // Add error to context
+                         return false; // Stop processing immediately
+                    }
+                     // --- End Result Check ---
 
-                    res =  ExecutionSuccess(template, filePath);
-                    
+                     // If we reach here, this template was processed successfully. Continue to the next if any.
+                     LogExecutionSuccess(filePath, templateId); // Log individual template success
+
                 }
-                catch (Exception ex)
+                catch (Exception ex) // Catch unexpected errors within the loop but outside template.Read()
                 {
-                    LogExecutionError(ex, filePath, template.OcrInvoices.Id);
-                    if (context != null) template.CsvLines = null;
-                    
+                    string errorMsg = $"Unexpected error processing TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}: {ex.Message}";
+                    LogExecutionError(ex, filePath, templateId); // Log detailed error
+                    context.AddError(errorMsg); // Add error to context
+                    template.CsvLines = null; // Ensure CsvLines is null
+                    return false; // Stop processing immediately
                 }
             }
-            return res; // Default return if no templates processed
+
+            // If the loop completes without any template causing a 'return false', the step is successful.
+             _logger.Information("ReadFormattedTextStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
+            return true;
         }
 
+        // Validation specific to one template instance
         private bool ExecutionValidation(Invoice template, string filePath)
         {
-            LogExecutionStart(filePath, template.OcrInvoices.Id, template.OcrInvoices.Name);
+             if (template == null || template.OcrInvoices == null)
+             {
+                  LogNullTemplateWarning(filePath); // Logs appropriate message
+                  return false;
+             }
 
-            
+             int? templateId = template.OcrInvoices.Id; // Safe now
+             string templateName = template.OcrInvoices.Name; // Safe now
+             LogExecutionStart(filePath, templateId, templateName);
            
             if (string.IsNullOrEmpty(template.FormattedPdfText))
             {
-                LogEmptyFormattedPdfTextWarning(filePath, template.OcrInvoices.Id);
+                LogEmptyFormattedPdfTextWarning(filePath, templateId);
                 return false;
             }
 
             return true;
         }
 
+        // Checks if the result of template.Read() is valid (not null/empty)
         private bool ExecutionSuccess(Invoice template, string filePath)
         {
-            LogTemplateReadFinished(filePath, template.OcrInvoices.Id, template.CsvLines?.Count ?? 0);
+            // Note: Logging for finish/counts moved to main Execute method for better flow control view
 
             if (template.CsvLines == null || !template.CsvLines.Any())
             {
-                LogEmptyCsvLinesWarning(filePath, template.OcrInvoices.Id);
-                return false;
+                LogEmptyCsvLinesWarning(filePath, template?.OcrInvoices?.Id); // Log the specific issue
+                return false; // Indicate failure
             }
 
-            LogExecutionSuccess(filePath, template.OcrInvoices.Id);
-            return true;
+            // Logging for success moved to main Execute method after this check passes
+            return true; // Indicate success
         }
 
         private List<string> GetTextLinesFromFormattedPdfText(Invoice template, string filePath)
@@ -100,7 +156,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 .ToList();
 
             LogTopLevelPartsIdentified(topLevelParts.Count);
-            LogCallingTemplateRead(textLines.Count, filePath, template.OcrInvoices.Id);
+            // Logging moved to main Execute method just before the call
             return textLines;
         }
 
@@ -168,9 +224,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Debug("Calling context.Template.Read with {LineCount} lines for File: {FilePath}, TemplateId: {TemplateId}", lineCount, filePath, templateId);
         }
 
+        // Log message updated slightly for clarity
         private void LogTemplateReadFinished(string filePath, int? templateId, int resultCount)
         {
-            _logger.Debug("context.Template.Read finished for File: {FilePath}, TemplateId: {TemplateId}. Result count: {ResultCount}", filePath, templateId, resultCount);
+            _logger.Debug("template.Read() finished for File: {FilePath}, TemplateId: {TemplateId}. Resulting CsvLines count: {ResultCount}", filePath, templateId, resultCount);
         }
 
         private void LogEmptyCsvLinesWarning(string filePath, int? templateId)

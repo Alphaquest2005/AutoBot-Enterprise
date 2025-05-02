@@ -25,7 +25,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Corrected logic: Check if data is PRESENT
             if (!IsContextDataPresent(context)) // Handles its own logging
             {
-                 _logger.Warning("WriteFormattedTextFileStep cannot proceed due to missing required data in context for File: {FilePath}", filePath);
+                 string errorMsg = $"WriteFormattedTextFileStep cannot proceed due to missing required data (FilePath or PdfText) for File: {filePath}";
+                 _logger.Warning(errorMsg);
+                 context.AddError(errorMsg); // Add error to context
                  return false; // Step fails if required data is missing
             }
 
@@ -54,22 +56,30 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
             catch (UnauthorizedAccessException uaEx) // Specific exception
             {
-                 _logger.Error(uaEx, "Unauthorized access error writing formatted text file: {TxtFilePath}", textFilePath ?? filePath + ".txt");
+                 string errorMsg = $"Unauthorized access error writing formatted text file: {textFilePath ?? filePath + ".txt"}";
+                 _logger.Error(uaEx, errorMsg);
+                 context.AddError($"{errorMsg}: {uaEx.Message}"); // Add error to context
                  return false;
             }
             catch (DirectoryNotFoundException dnfEx) // Specific exception
             {
-                 _logger.Error(dnfEx, "Directory not found error writing formatted text file: {TxtFilePath}", textFilePath ?? filePath + ".txt");
+                 string errorMsg = $"Directory not found error writing formatted text file: {textFilePath ?? filePath + ".txt"}";
+                 _logger.Error(dnfEx, errorMsg);
+                 context.AddError($"{errorMsg}: {dnfEx.Message}"); // Add error to context
                  return false;
             }
             catch (IOException ioEx) // Catch specific IO errors
             {
-                 _logger.Error(ioEx, "IO Error writing formatted text file: {TxtFilePath}", textFilePath ?? filePath + ".txt");
+                 string errorMsg = $"IO Error writing formatted text file: {textFilePath ?? filePath + ".txt"}";
+                 _logger.Error(ioEx, errorMsg);
+                 context.AddError($"{errorMsg}: {ioEx.Message}"); // Add error to context
                  return false;
             }
             catch (Exception ex) // Catch other potential errors
             {
-                 _logger.Error(ex, "Error during WriteFormattedTextFileStep for File: {FilePath}", filePath);
+                 string errorMsg = $"Unexpected error during WriteFormattedTextFileStep for File: {filePath}";
+                 _logger.Error(ex, errorMsg);
+                 context.AddError($"{errorMsg}: {ex.Message}"); // Add error to context
                  return false; // Indicate failure
             }
         }
@@ -81,9 +91,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Context null check happens in Execute
              if (string.IsNullOrEmpty(context.FilePath)) { _logger.Warning("Required data missing for writing text file: FilePath is null or empty."); return false; }
              // FormattedPdfText can be empty, but not null
-             if (string.IsNullOrEmpty(context.PdfText.ToString())) { _logger.Warning("Required data missing for writing text file: FormattedPdfText is null."); return false; }
+             // Check if PdfText StringBuilder is null or empty
+             if (context.PdfText == null || context.PdfText.Length == 0) { _logger.Warning("Required data missing for writing text file: PdfText (StringBuilder) is null or empty."); return false; }
 
-             _logger.Verbose("Required data is present for writing formatted text file.");
+             _logger.Verbose("Required data (FilePath, PdfText) is present for writing formatted text file.");
              return true; // All required data is present
         }
 

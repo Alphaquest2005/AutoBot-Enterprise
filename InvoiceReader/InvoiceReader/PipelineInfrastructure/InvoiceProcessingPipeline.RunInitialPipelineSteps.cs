@@ -21,8 +21,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
             catch (Exception ex)
             {
-                LogPipelineError(ex, filePath);
-                return false;
+                string errorMessage = $"Error during initial pipeline steps execution: {ex.Message}";
+                LogPipelineError(ex, filePath); // Log the error with exception details
+                _context.AddError(errorMessage); // Add the error to the context's error list
+                return false; // Indicate failure
             }
         }
 

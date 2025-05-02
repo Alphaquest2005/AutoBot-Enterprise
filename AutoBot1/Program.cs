@@ -173,10 +173,16 @@ namespace AutoBot
                     foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true))
                                  .ThenBy(x => x.Key.Item2.EmailUniqueId))
                     {
-                        var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
-                            msg.Key.Item2.EmailUniqueId.ToString());
+                        // --- Refactoring Start ---
+                        var emailIdForLogging = msg.Key.Item2?.EmailUniqueId.ToString() ?? $"UnknownEmailId_{msg.Key.Item1}"; // Identifier for logging
+                        try
+                        {
+                            Console.WriteLine($"Attempting to process email: {emailIdForLogging}");
 
-                        if (!msg.Key.Item2.EmailMapping.EmailFileTypes
+                            var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
+                                msg.Key.Item2.EmailUniqueId.ToString());
+
+                            if (!msg.Key.Item2.EmailMapping.EmailFileTypes
                                 .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
                                     .Any(z => Regex.IsMatch(z.FullName,
                                         x.FileTypes.FilePattern,
@@ -285,6 +291,17 @@ namespace AutoBot
 
 
                         }
+                        // --- Refactoring: Log Success ---
+                        Console.WriteLine($"Successfully processed email: {emailIdForLogging}");
+                    }
+                    catch (Exception ex)
+                    {
+                        // --- Refactoring: Log Error and Continue ---
+                        Console.WriteLine($"Error processing email {emailIdForLogging}: {ex.Message}");
+                        // Optionally log stack trace for more details: Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        // Continue to the next email in the main loop
+                    }
+                    // --- Refactoring End ---
                     }
 
                     if (ReadOnlyMode) return;

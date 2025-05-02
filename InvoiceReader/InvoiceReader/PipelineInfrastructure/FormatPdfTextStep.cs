@@ -41,10 +41,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     LogExecutionSuccess(templateId, filePath);
                     
                 }
-                catch (Exception ex)
+                catch (Exception ex) // Catch errors during formatting for a specific template
                 {
-                    LogExecutionError(ex, templateId, filePath);
-                    return false;
+                    string errorMsg = $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}: {ex.Message}";
+                    LogExecutionError(ex, templateId, filePath); // Log the error with details
+                    context.AddError(errorMsg); // Add the specific error to the context
+                    return false; // Stop processing this step and indicate failure
                 }
             }
 

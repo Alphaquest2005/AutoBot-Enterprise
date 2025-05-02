@@ -37,15 +37,33 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 //////////////////////
                 return true;
             }
-            catch (AggregateException aggEx)
+            catch (AggregateException aggEx) // Catch errors from concurrent tasks
             {
-                HandleAggregateException(aggEx, context, pdftxt, filePath, ripTask, singleColumnTask, sparseTextTask);
-                return false;
+                string errorMsg = $"One or more PDF text extraction tasks failed for File: {filePath}.";
+                _logger.Error(aggEx, errorMsg); // Log the aggregate exception
+
+                // Add specific errors from inner exceptions to the context
+                foreach (var innerEx in aggEx.Flatten().InnerExceptions)
+                {
+                    string innerErrorMsg = $"Task Error ({innerEx.Source ?? "Unknown Source"}): {innerEx.Message}";
+                     _logger.Error(innerEx, "Inner Task Exception Detail for File: {FilePath}", filePath);
+                    context.AddError(innerErrorMsg); // Add specific task error
+                }
+                
+                // Attempt to append partial results even after failure
+                _logger.Warning("Attempting to append results from potentially successful tasks after failure for File: {FilePath}", filePath);
+                AppendResults(context, pdftxt, filePath, ripTask, singleColumnTask, sparseTextTask); // Append successful parts if any
+                _logger.Verbose("Partial Extracted PDF Text after failure (first 500 chars): {PdfText}", pdftxt.ToString().Substring(0, Math.Min(pdftxt.Length, 500)));
+
+                return false; // Indicate step failure
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unexpected error during GetPdfTextStep for File: {FilePath}", filePath);
-                return false;
+                // Catch any other unexpected errors during step execution
+                string generalErrorMsg = $"Unexpected error during GetPdfTextStep for File: {filePath}: {ex.Message}";
+                _logger.Error(ex, generalErrorMsg);
+                context.AddError(generalErrorMsg); // Add the general error to context
+                return false; // Indicate step failure
             }
         }
 
@@ -90,19 +108,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Verbose("Extracted PDF Text (first 500 chars): {PdfText}", pdftxt.ToString().Substring(0, Math.Min(pdftxt.Length, 500)));
         }
 
-        private void HandleAggregateException(AggregateException aggEx, InvoiceProcessingContext context, StringBuilder pdftxt,
-            string filePath, Task<string> ripTask, Task<string> singleColumnTask, Task<string> sparseTextTask)
-        {
-            _logger.Error("One or more PDF text extraction tasks failed for File: {FilePath}. See inner exceptions.", filePath);
-
-            foreach (var ex in aggEx.Flatten().InnerExceptions)
-            {
-                _logger.Error(ex, "Task Exception Detail for File: {FilePath}", filePath);
-            }
-
-            _logger.Warning("Attempting to append results from potentially successful tasks after failure for File: {FilePath}", filePath);
-            AppendPdfTextResults(context, pdftxt, ripTask, singleColumnTask, sparseTextTask, logErrors: true);
-            _logger.Verbose("Partial Extracted PDF Text after failure (first 500 chars): {PdfText}", pdftxt.ToString().Substring(0, Math.Min(pdftxt.Length, 500)));
-        }
+        // Removed HandleAggregateException method as its logic is now integrated into the main catch block.
     }
 }

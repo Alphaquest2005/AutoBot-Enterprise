@@ -22,11 +22,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
              _logger.Debug("Executing ConstructEmailBodyStep for File: {FilePath}", context.FilePath);
 
-            // Check for required context properties
-            if (string.IsNullOrEmpty(context.Error) || context.FileInfo == null || string.IsNullOrEmpty(context.TextFilePath))
+            // Check if there are errors and required context properties
+            if (!context.Errors.Any() || context.FileInfo == null || string.IsNullOrEmpty(context.TextFilePath))
             {
-                 _logger.Warning("Skipping ConstructEmailBodyStep due to missing Error, FileInfo, or TextFilePath for File: {FilePath}. Error Null/Empty: {IsErrorNull}, FileInfo Null: {IsFileInfoNull}, TextFilePath Null/Empty: {IsTxtFileNull}",
-                    context.FilePath, string.IsNullOrEmpty(context.Error), context.FileInfo == null, string.IsNullOrEmpty(context.TextFilePath));
+                 _logger.Warning("Skipping ConstructEmailBodyStep due to no errors or missing FileInfo/TextFilePath for File: {FilePath}. Has Errors: {HasErrors}, FileInfo Null: {IsFileInfoNull}, TextFilePath Null/Empty: {IsTxtFileNull}",
+                    context.FilePath, context.Errors.Any(), context.FileInfo == null, string.IsNullOrEmpty(context.TextFilePath));
                 return false; // Required data is missing
             }
 
@@ -126,7 +126,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              _logger.Verbose("Using CommandsTxt from InvoiceProcessingUtils for File: {FilePath}", context.FilePath);
             var commandsText = InvoiceProcessingUtils.CommandsTxt; // Assuming CommandsTxt is accessible here
 
-            var body = $"Hey,\r\n\r\n {context.Error}-'{context.FileInfo.Name}'.\r\n\r\n\r\n" +
+            var errorSummary = string.Join("\r\n", context.Errors);
+            var body = $"Hey,\r\n\r\n Errors encountered for '{context.FileInfo.Name}':\r\n{errorSummary}\r\n\r\n" +
                        $"{firstInvoiceName}" + // Use the safely extracted name
                        $"{failedLinesInfo}\r\n\r\n" + // Use the safely constructed details
                        "Thanks\r\n" +

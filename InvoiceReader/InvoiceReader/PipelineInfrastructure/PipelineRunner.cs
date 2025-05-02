@@ -20,39 +20,58 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             LogPipelineInitialization();
         }
 
+        // Updated Run method to be async
         public async Task<bool> Run(TContext context)
         {
             if (!ValidateContext(context))
                 return false;
 
+            // Cast context once for error reporting (assuming InvoiceProcessingContext)
+            var invoiceContext = context as InvoiceProcessingContext;
+            if (invoiceContext == null && typeof(TContext) == typeof(InvoiceProcessingContext))
+            {
+                 // Log an error if the context is expected to be InvoiceProcessingContext but isn't.
+                 // This shouldn't happen if used correctly but is a safeguard.
+                 _logger.Error("{PipelineName} received context of type {ContextType} but expected InvoiceProcessingContext for error reporting.", _pipelineName, context?.GetType().Name ?? "null");
+                 // We might not be able to add to context.Errors here, depending on the actual type.
+                 // Consider throwing an exception or returning false based on desired strictness.
+                 return false; // Stop if context type is wrong for error handling
+            }
+
+
             _logger.Information("Starting execution of {PipelineName}.", _pipelineName);
 
             int stepCounter = 0;
-            bool continuePipeline = true;
+            bool overallSuccess = true; // Tracks if all steps succeeded
 
             foreach (var step in _steps)
             {
                 stepCounter++;
-                if (!ProcessStep(step, context, stepCounter, ref continuePipeline))
-                    break;
+                string stepName = GetStepName(step, stepCounter);
+                 LogStepProcessing(stepCounter, stepName); // Moved logging here
+
+                if (step == null)
+                {
+                    LogNullStepWarning(stepCounter);
+                    continue; // Skip null step
+                }
+
+                // Execute step asynchronously and check result
+                bool stepSuccess = await ExecuteStepAsync(step, context, invoiceContext, stepName, stepCounter);
+
+                if (!stepSuccess)
+                {
+                    overallSuccess = false;
+                    LogPipelinePrematureStop(stepCounter); // Log that pipeline stopped due to this step
+                    break; // Stop processing further steps
+                }
             }
 
-            LogPipelineCompletion(continuePipeline, stepCounter);
-            return continuePipeline;
+            LogPipelineCompletion(overallSuccess, stepCounter);
+            return overallSuccess;
         }
 
-        private bool ProcessStep(IPipelineStep<TContext> step, TContext context, int stepCounter, ref bool continuePipeline)
-        {
-            string stepName = GetStepName(step, stepCounter);
-
-            if (step == null)
-            {
-                LogNullStepWarning(stepCounter);
-                return true; // Continue to the next step
-            }
-
-            return ExecuteStep(step, context, stepName, stepCounter, ref continuePipeline);
-        }
+        // Removed ProcessStep as its logic is merged into the loop in Run and ExecuteStepAsync
 
         private void LogPipelineInitialization()
         {
@@ -90,19 +109,33 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Warning("Skipping null step at position {StepNumber} in {PipelineName}.", stepCounter, _pipelineName);
         }
 
-        private bool ExecuteStep(IPipelineStep<TContext> step, TContext context, string stepName, int stepCounter, ref bool continuePipeline)
+        // Renamed and made async, includes error handling and context update
+        private async Task<bool> ExecuteStepAsync(IPipelineStep<TContext> step, TContext context, InvoiceProcessingContext invoiceContext, string stepName, int stepCounter)
         {
             try
             {
                 LogStepExecutionStart(stepName);
-                bool stepResult = step.Execute(context).ConfigureAwait(false).GetAwaiter().GetResult();
-                return HandleStepResult(stepResult, stepName, stepCounter, ref continuePipeline);
+                bool stepResult = await step.Execute(context).ConfigureAwait(false); // Use await
+
+                if (!stepResult)
+                {
+                    // Step indicated failure without throwing an exception
+                    string failureMessage = $"Step {stepCounter} ({stepName}) in {_pipelineName} reported failure (returned false).";
+                    LogStepFailure(stepName, stepCounter); // Log the failure
+                    invoiceContext?.AddError(failureMessage); // Add error to context if possible
+                    return false; // Indicate failure, stop pipeline
+                }
+
+                LogStepSuccess(stepName, stepCounter);
+                return true; // Indicate success, continue pipeline
             }
             catch (Exception ex)
             {
-                LogStepExecutionError(ex, stepName, stepCounter);
-                continuePipeline = false;
-                return false; // Stop pipeline
+                // Exception occurred during step execution
+                string errorMessage = $"Error executing Step {stepCounter} ({stepName}) in {_pipelineName}: {ex.Message}";
+                LogStepExecutionError(ex, stepName, stepCounter); // Log the error with exception details
+                invoiceContext?.AddError(errorMessage); // Add error to context if possible
+                return false; // Indicate failure, stop pipeline
             }
         }
 
@@ -117,11 +150,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 stepCounter, stepName, _pipelineName);
         }
 
+        // GetStepName remains largely the same, just logging call moved inside Run loop
         private string GetStepName(IPipelineStep<TContext> step, int stepCounter)
         {
-            string stepName = step?.GetType().Name ?? $"Unnamed Step {stepCounter}";
-            LogStepProcessing(stepCounter, stepName);
-            return stepName;
+             return step?.GetType().Name ?? $"Unnamed Step {stepCounter}";
+             // LogStepProcessing call moved to the loop in Run for clarity
         }
 
         private void LogStepProcessing(int stepCounter, string stepName)
@@ -129,18 +162,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Verbose("Processing step {StepNumber}: {StepName} in {PipelineName}.", stepCounter, stepName, _pipelineName);
         }
 
-        private bool HandleStepResult(bool stepResult, string stepName, int stepCounter, ref bool continuePipeline)
-        {
-            if (!stepResult)
-            {
-                LogStepFailure(stepName, stepCounter);
-                continuePipeline = false;
-                return false; // Stop pipeline
-            }
-
-            LogStepSuccess(stepName, stepCounter);
-            return true; // Continue pipeline
-        }
+        // Removed HandleStepResult as its logic is now integrated into ExecuteStepAsync
 
         private void LogStepFailure(string stepName, int stepCounter)
         {
@@ -154,16 +176,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 stepCounter, stepName, _pipelineName);
         }
 
-        private void LogPipelineCompletion(bool continuePipeline, int stepCounter)
+        // Updated LogPipelineCompletion to use overallSuccess flag
+        private void LogPipelineCompletion(bool overallSuccess, int stepCounter)
         {
-            if (continuePipeline)
+            if (overallSuccess)
             {
                 LogPipelineSuccess();
             }
-            else
-            {
-                LogPipelinePrematureStop(stepCounter);
-            }
+            // else case is handled by LogPipelinePrematureStop called within the loop
+            // We could add a final "Pipeline finished with errors" log here if needed.
+             _logger.Information("{PipelineName} finished execution. Overall Success: {OverallSuccess}", _pipelineName, overallSuccess);
         }
 
         private void LogPipelineSuccess()

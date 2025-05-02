@@ -5,10 +5,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class HandleErrorStateStep
     {
-        private static bool IsValidErrorState(Invoice template, List<Line> failedlines)
+        // Added string filePath parameter
+        private static bool IsValidErrorState(Invoice template, List<Line> failedlines, string filePath)
         {
             int? templateId = template.OcrInvoices?.Id;
-            string filePath = _context?.FilePath ?? "Unknown";
+            // Removed line using static _context: string filePath = _context?.FilePath ?? "Unknown";
             _logger.Debug("Checking IsValidErrorState for File: {FilePath}, TemplateId: {TemplateId}", filePath,
                 templateId);
 
