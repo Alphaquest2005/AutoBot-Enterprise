@@ -105,7 +105,7 @@ namespace AutoWaterNutServer
 
                 Console.WriteLine();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;

@@ -22,3 +22,7 @@
 *(Refer to BUILD_INSTRUCTIONS.md for full details and prerequisites.)*
 [2025-05-04 08:33:54] - 
 **Rule:** Always clean, restore, and rebuild the relevant test project using MSBuild before running tests with vstest.console.exe to ensure the latest changes are included.
+
+## NuGet Package Management
+
+[2025-05-04 14:15:11] - All projects in this solution utilize `<PackageReference>` within their `.csproj` files for managing NuGet dependencies. `packages.config` files are not used.

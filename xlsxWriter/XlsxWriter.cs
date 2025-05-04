@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -1292,7 +1292,6 @@ namespace xlsxWriter
             {
                 if (workBook.Worksheets.All(x => x.SheetName != "UnMatchedInvoicePOs")) return;
                 workBook.SetCurrentWorksheet("UnMatchedInvoicePOs");
-                var isEnd = false;
                 var matches = new List<ShipmentInvoicePOManualMatches>();
                 var row = 2;
                 while (true)

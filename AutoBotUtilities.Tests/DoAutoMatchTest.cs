@@ -30,7 +30,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task CanDoAutoMatch()
+        public void CanDoAutoMatch()
         {
 
             if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
@@ -68,7 +68,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task CanDoAutoMatchAllPerformance()
+        public void CanDoAutoMatchAllPerformance()
         {
 
             if (Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);

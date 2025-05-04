@@ -26,7 +26,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task Exwarehouse()
+        public void Exwarehouse()
         {
 
 

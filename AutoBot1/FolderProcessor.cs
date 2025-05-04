@@ -13,7 +13,6 @@ using WaterNut.Business.Services.Utils; // Added for FileTypeManager
 using FileTypes = CoreEntities.Business.Entities.FileTypes; // Alias to resolve ambiguity
 using WaterNut.DataSpace; // Assuming PDFUtils, ShipmentUtils etc. are accessible via this
 using DocumentDS.Business.Entities; // Added for Attachments - Assuming this is the correct namespace
-using CoreEntities.Business.Entities; // Added for Emails
 using TrackableEntities; // Added for TrackingState
 
 

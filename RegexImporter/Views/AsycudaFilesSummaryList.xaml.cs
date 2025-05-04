@@ -22,13 +22,13 @@ namespace RegexImporter.Views
 		}
         DocumentFilesViewModel im;
 		
-		private async void ImportBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		private void ImportBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			
 			//await im.ImportDocuments(im.ImportOnlyRegisteredDocuments, im.ImportTariffCodes, im.NoMessages, im.OverwriteExisting, im.LinkPi).ConfigureAwait(false);
 		}
 
-		private async void ExportBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		private void ExportBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			//await im.ExportDocuments().ConfigureAwait(false);
 		}
@@ -39,7 +39,7 @@ namespace RegexImporter.Views
 
 		}
 
-		private async void DeleteAll(object sender, MouseButtonEventArgs e)
+		private void DeleteAll(object sender, MouseButtonEventArgs e)
 		{
             if (!(sender is FrameworkElement frameworkElement)) return;
 			var asycudaDocumentSet = frameworkElement.DataContext as VirtualListItem<AsycudaDocumentSetEx>;
@@ -90,7 +90,7 @@ namespace RegexImporter.Views
 		  
 		}
 
-	    private async void AttachDocuments(object sender, MouseButtonEventArgs e)
+	    private void AttachDocuments(object sender, MouseButtonEventArgs e)
 	    {
 
 	      //  await im.AttachDocuments().ConfigureAwait(false);
