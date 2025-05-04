@@ -129,6 +129,7 @@ namespace WaterNut.DataSpace
             bufferMatch = null;
             try
             {
+                //Todo: Create a check for characters in regex make sure that they compliant with regexoptions
                 bufferMatch = Regex.Match(textToCheck, pattern, options, RegexTimeout);
                 if (bufferMatch.Success)
                 {

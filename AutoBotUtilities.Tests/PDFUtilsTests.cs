@@ -216,12 +216,12 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice.ToList();
-                    var details = ctx.ShipmentInvoiceDetails.ToList();
+                    var invoices = ctx.ShipmentInvoice.Include("InvoiceDetails").Where(x => x.InvoiceNo == "PO-211-17867849567351770").ToList();
+                    var details = ctx.ShipmentInvoiceDetails.Where(x => x.Invoice.InvoiceNo == "PO-211-17867849567351770").ToList();
 
                     Assert.That(invoices.Any(), Is.True, "No ShipmentInvoice created.");
                     Assert.That(details.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Basic check
@@ -231,9 +231,9 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("TODO_INV_NUM"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-17867849567351770"), "Invoice number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
-                    Assert.That(details.Count, Is.EqualTo(0), "Invoice detail line count mismatch."); // TODO: Update expected line count
+                   
 
                     Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
@@ -271,12 +271,12 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).Wait();
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice.ToList();
-                    var details = ctx.ShipmentInvoiceDetails.ToList();
+                    var invoices = ctx.ShipmentInvoice.Include("InvoiceDetails").Where(x => x.InvoiceNo == "PO-211-01046445307513763").ToList();
+                    var details = ctx.ShipmentInvoiceDetails.Where(x => x.Invoice.InvoiceNo == "PO-211-01046445307513763").ToList();
 
                     Assert.That(invoices.Any(), Is.True, "No ShipmentInvoice created.");
                     Assert.That(details.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Basic check
@@ -286,9 +286,9 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("TODO_INV_NUM"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-01046445307513763"), "Invoice number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
-                    Assert.That(details.Count, Is.EqualTo(0), "Invoice detail line count mismatch."); // TODO: Update expected line count
+                    
 
                     Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
@@ -326,12 +326,14 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                var res = PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Result;
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice.ToList();
-                    var details = ctx.ShipmentInvoiceDetails.ToList();
+                    var invoices = ctx.ShipmentInvoice
+                                                        .Include("InvoiceDetails")
+                                                        .Where(x => x.InvoiceNo == "PO-211-11245148453753900").ToList();
+                    var details = ctx.ShipmentInvoiceDetails.Where(x => x.Invoice.InvoiceNo == "PO-211-01046445307513763").ToList();
 
                     Assert.That(invoices.Any(), Is.True, "No ShipmentInvoice created.");
                     Assert.That(details.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Basic check
@@ -341,9 +343,9 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("TODO_INV_NUM"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245148453753900"), "Invoice number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
-                    Assert.That(details.Count, Is.EqualTo(0), "Invoice detail line count mismatch."); // TODO: Update expected line count
+                   
 
                     Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
@@ -381,12 +383,14 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice.ToList();
-                    var details = ctx.ShipmentInvoiceDetails.ToList();
+                    var invoices = ctx.ShipmentInvoice
+                        .Include("InvoiceDetails")
+                        .Where(x => x.InvoiceNo == "PO-211-11245253311353900").ToList();
+                    var details = ctx.ShipmentInvoiceDetails.Where(x => x.Invoice.InvoiceNo == "PO-211-11245253311353900").ToList();
 
                     Assert.That(invoices.Any(), Is.True, "No ShipmentInvoice created.");
                     Assert.That(details.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Basic check
@@ -396,9 +400,9 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("TODO_INV_NUM"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245253311353900"), "Invoice number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
-                    Assert.That(details.Count, Is.EqualTo(0), "Invoice detail line count mismatch."); // TODO: Update expected line count
+                    
 
                     Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
@@ -436,12 +440,14 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).Wait();
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice.ToList();
-                    var details = ctx.ShipmentInvoiceDetails.ToList();
+                    var invoices = ctx.ShipmentInvoice
+                        .Include("InvoiceDetails")
+                        .Where(x => x.InvoiceNo == "PO-211-0650403289407038S").ToList();
+                    var details = ctx.ShipmentInvoiceDetails.Where(x => x.Invoice.InvoiceNo == "PO-211-0650403289407038S").ToList();
 
                     Assert.That(invoices.Any(), Is.True, "No ShipmentInvoice created.");
                     Assert.That(details.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Basic check
@@ -451,9 +457,9 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("TODO_INV_NUM"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-0650403289407038S"), "Invoice number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
-                    Assert.That(details.Count, Is.EqualTo(0), "Invoice detail line count mismatch."); // TODO: Update expected line count
+                    
 
                     Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }

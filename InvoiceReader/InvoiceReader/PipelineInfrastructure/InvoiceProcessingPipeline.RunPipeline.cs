@@ -36,12 +36,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 if (isInitialRunUnsuccessful)
                 {
-
                     // Report unimported file, joining accumulated errors
-                    string aggregatedErrors = string.Join("; ", _context.Errors);
-                    InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
-                        _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, new List<Line>());
-                    return false;
+                    return EmailErrors();
+                    
                 }
                 else
                 {
@@ -51,6 +48,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);
                         LogErrorPipelineCompleted(filePath, errorPipelineResult);
                         LogContextAfterErrorPipeline();
+                        if(!errorPipelineResult && _context.Errors.Any())//cuz the error pipeline could fail
+                            if (!EmailErrors()) return false;
                         return errorPipelineResult;
                     }
 
@@ -75,6 +74,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 LogPipelineEnd(filePath);
             }
         }
+
+        private bool EmailErrors()
+        {
+            string aggregatedErrors = string.Join("; ", _context.Errors);
+            InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
+                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines);
+            return false;
+          
+        }
+
         private List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineStepsWithLogging(string filePath)
         {
             LogInitializingPipelineSteps(filePath);
