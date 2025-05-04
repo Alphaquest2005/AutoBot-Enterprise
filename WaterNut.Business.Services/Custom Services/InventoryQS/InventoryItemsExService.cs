@@ -91,14 +91,25 @@ namespace InventoryQS.Business.Services
                 : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode, itm.Value.Category, categoryTariffCode);
         }
 
-        private static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>> ClassifyItemsAsync(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+        private static async
+            Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category,
+                string CategoryTariffCode)>> ClassifyItemsAsync(
+                List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
         {
-            
-            var desiredProvider = LLMProvider.DeepSeek;
-            using var apiClient = LlmApiClientFactory.CreateClient(desiredProvider);
-            var res =await apiClient.ClassifyItemsAsync(Itms).ConfigureAwait(false);
-            Console.WriteLine($"Call cost: {res.TotalCost.ToString("C")}");
-            return res.Results;
+            try
+            {
+                var desiredProvider = LLMProvider.DeepSeek;
+                using var apiClient = LlmApiClientFactory.CreateClient(desiredProvider);
+                var res = await apiClient.ClassifyItemsAsync(Itms).ConfigureAwait(false);
+                Console.WriteLine($"Call cost: {res.TotalCost.ToString("C")}");
+                return res.Results;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static async Task<string> GetTariffCode(string suspectedTariffCode)

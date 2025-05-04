@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿﻿using System;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
@@ -191,13 +191,58 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new EntryDataDSContext())
             {
+                // 1. Collect all details from all invoices first
+                var allDetails = lst.SelectMany(inv => inv.InvoiceDetails).ToList();
+
+                // 2. Ensure all required categories exist for the entire batch ONCE
+                if (allDetails.Any())
+                {
+                    await EnsureCategoriesExistAsync(ctx, allDetails).ConfigureAwait(false);
+                    // At this point, all necessary CategoryTariffs should be tracked by the context.
+
+                    // 3. Attempt to save ONLY the new categories immediately
+                    try
+                    {
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
+                    }
+                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+                    {
+                        // Log the specific error related to category saving
+                        Console.WriteLine($"Error saving categories before invoice processing: {ex.Message}");
+                        // Decide if this is fatal or if processing can continue.
+                        // Let's re-throw for now to halt processing if categories fail.
+                        // Consider more granular error handling if needed (e.g., check InnerException for PK violation)
+                        throw;
+                    }
+                }
+
+                // 4. Fetch the saved/existing categories into a dictionary for efficient lookup
+                // Use the standardized names that were potentially added or already existed.
+                var standardizedCategoryNames = allDetails
+                                                .Where(d => !string.IsNullOrEmpty(d.Category))
+                                                .Select(d => d.Category.ToUpperInvariant())
+                                                .Distinct()
+                                                .ToList();
+
+                var trackedCategories = new Dictionary<string, CategoryTariffs>();
+                if (standardizedCategoryNames.Any())
+                {
+                    // Fetch entities matching the standardized names. This ensures we have the instances tracked by the current context.
+                    trackedCategories = await ctx.CategoryTariffs
+                                                 .Where(ct => standardizedCategoryNames.Contains(ct.Category.ToUpper())) // Match standardized names
+                                                 .ToDictionaryAsync(ct => ct.Category.ToUpperInvariant()) // Key by standardized name
+                                                 .ConfigureAwait(false);
+                }
+
+
+                // 5. Now process each invoice
                 foreach (var invoice in lst)
                 {
                     var existingManifest = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
                     if (existingManifest != null)
                         ctx.ShipmentInvoice.Remove(existingManifest);
 
-                    invoice.InvoiceDetails = AutoFixImportErrors(invoice);
+                    invoice.InvoiceDetails = AutoFixImportErrors(invoice); // Keep this fix
                     invoice.ImportedLines = invoice.InvoiceDetails.Count;
 
                     if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
@@ -214,17 +259,45 @@ namespace WaterNut.DataSpace
                             invoicePOs[invoice.InvoiceNo]);
                     }
 
-                    // Ensure categories exist before adding the invoice
-                    await EnsureCategoriesExistAsync(ctx, invoice.InvoiceDetails).ConfigureAwait(false);
+                    // REMOVED: await EnsureCategoriesExistAsync(ctx, invoice.InvoiceDetails).ConfigureAwait(false);
 
+                    // **Crucial Step:** Standardize the Category FK on InvoiceDetails before adding the invoice.
+                    // This ensures EF links to the CategoryTariffs using the same standardized key.
+                    foreach (var detail in invoice.InvoiceDetails)
+                    {
+                        if (!string.IsNullOrEmpty(detail.Category))
+                        {
+                            detail.Category = detail.Category.ToUpperInvariant();
+                            // Optional: Explicitly link navigation property if FK linking isn't reliable
+                            // if (trackedCategories.TryGetValue(detail.Category, out var trackedCat))
+                            // {
+                            //    detail.CategoryTariff = trackedCat; // Assuming 'CategoryTariff' is the nav property name
+                            // }
+                        }
+                    }
+
+                    // Add/Update the invoice - EF should now correctly link via the standardized FK.
                     var existing = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
                     if (existing != null)
                     {
+                        // If overwriting, remove the old one first (as before)
                         ctx.ShipmentInvoice.Remove(existing);
                     }
-                    ctx.ShipmentInvoice.Add(invoice);
+                    ctx.ShipmentInvoice.Add(invoice); // Add the invoice with its details
 
-                    await ctx.SaveChangesAsync().ConfigureAwait(false);
+                    // Save changes for the current invoice (categories should already be saved)
+                    try
+                    {
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
+                    }
+                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+                    {
+                         // Log the specific error related to invoice saving
+                        Console.WriteLine($"Error saving invoice {invoice.InvoiceNo}: {ex.Message}");
+                        // Decide how to handle invoice-specific save errors (e.g., skip invoice, log, re-throw)
+                        // Re-throwing for now.
+                        throw;
+                    }
                 }
             }
         }
@@ -233,59 +306,60 @@ namespace WaterNut.DataSpace
         {
             if (details == null || !details.Any()) return;
 
-            var categoriesInDetails = details
-                                     .Select(d => new { d.Category, TariffCode = d.CategoryTariffCode})
-                                     .Where(c => !string.IsNullOrEmpty(c.Category))
-                                     .Distinct()
-                                     .ToList();
-
-            if (!categoriesInDetails.Any()) return;
-
-            // Use AsNoTracking for read-only query
-            var dbCategoryTariffsList = await ctx.CategoryTariffs
-                                                .AsNoTracking()
-                                                .ToListAsync().ConfigureAwait(false);
-            var existingCategoriesInDb = dbCategoryTariffsList
-                .Select(ct => new { ct.Category, ct.TariffCode })
-                .Where(ct => categoriesInDetails.Contains(ct))
+            // 1. Standardize and group category info from input details
+            var categoriesToEnsure = details
+                .Where(d => !string.IsNullOrEmpty(d.Category))
+                .Select(d => new { StandardizedName = d.Category.ToUpperInvariant(), OriginalDetail = d }) // Standardize upfront
+                .GroupBy(d => d.StandardizedName) // Group by standardized name
+                .Select(g => new
+                {
+                    StandardizedName = g.Key,
+                    // Get TariffCode from the first original detail in the group
+                    TariffCode = g.First().OriginalDetail.CategoryTariffCode
+                })
                 .ToList();
 
-            // Consider categories already added to the context but not saved yet
-            var categoriesInContext = ctx.ChangeTracker.Entries<CategoryTariffs>() // Use plural class name
-                                         .Where(e => e.State == System.Data.Entity.EntityState.Added)
-                                         .Select(e => new {e.Entity.Category, e.Entity.TariffCode})
-                                         .ToList();
+            if (!categoriesToEnsure.Any()) return;
 
-            // Manually combine lists to avoid LINQ extension method issues
-            var allExistingCategories = existingCategoriesInDb.ToList();
-            foreach (var cat in categoriesInContext)
+            // 2. Iterate through the distinct standardized categories found in the details
+            foreach (var catInfo in categoriesToEnsure)
             {
-                if (!allExistingCategories.Contains(cat))
+                var standardizedName = catInfo.StandardizedName; // Use the standardized name for checks and insertion
+
+                // 3. Check LOCAL context cache FIRST (cheaper) for Added entities matching the standardized name
+                bool existsInLocalContext = ctx.ChangeTracker.Entries<CategoryTariffs>()
+                                               .Any(e => e.State == EntityState.Added &&
+                                                         e.Entity.Category.ToUpperInvariant() == standardizedName); // Compare standardized
+
+                if (existsInLocalContext)
                 {
-                    allExistingCategories.Add(cat);
+                    continue; // Already added locally, skip
                 }
+
+                // 4. If not in local cache, check the DATABASE using the standardized name
+                // Using ToUpper() in the query assumes the DB function is available and efficient enough.
+                // Adjust if necessary based on DB provider (e.g., fetch and compare in memory if ToUpper() is problematic).
+                bool existsInDb = await ctx.CategoryTariffs
+                                           .AnyAsync(ct => ct.Category.ToUpper() == standardizedName) // Compare standardized in DB query
+                                           .ConfigureAwait(false);
+
+                if (existsInDb)
+                {
+                    continue; // Already in DB, skip
+                }
+
+                // 5. If it exists in neither local context nor DB, add it using the STANDARDIZED name
+                var newCategoryTariff = new CategoryTariffs
+                {
+                    Category = standardizedName, // Use STANDARDIZED name for insertion consistency
+                    TariffCode = catInfo.TariffCode // Or apply default logic: ?? "DEFAULT"
+                };
+
+                ctx.CategoryTariffs.Add(newCategoryTariff);
+                // The entity is now tracked locally with the standardized name.
             }
 
-            var missingCategories = categoriesInDetails.Except(allExistingCategories).ToList();
-
-            foreach (var missingCat in missingCategories)
-            {
-                // Find a detail to get the TariffCode (assuming it's consistent for the same category within the invoice)
-                
-                    var newCategoryTariff = new CategoryTariffs // Use plural class name
-                    {
-                        Category = missingCat.Category,
-                        // Use the tariff code from the detail, or a default if null/empty
-                        // Ensure TariffCode is not null if the DB requires it. Let's assume it can be null or use a default.
-                        TariffCode = missingCat.TariffCode // Or "DEFAULT" if required
-                    };
-                    // Add to context, EF will track it
-                    ctx.CategoryTariffs.Add(newCategoryTariff);
-                
-            }
-
-            ctx.SaveChanges();
-            // No need to call SaveChanges here, it will be called later in SaveInvoicePOsAsync
+            // No SaveChanges here; it's handled by the caller (SaveInvoicePOsAsync)
         }
 
 

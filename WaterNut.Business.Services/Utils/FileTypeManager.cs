@@ -187,7 +187,9 @@ namespace WaterNut.Business.Services.Utils
             FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => (x.FileImporterInfos?.EntryType == entryType) && x.FileImporterInfos?.Format == fileFormat)// || entryType == EntryTypes.Unknown - wanted stricter selection
-                .Where(x => x.FileTypeMappings.Any() || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
+                .Where(x => x.FileTypeMappings.Any() 
+                            || (!x.FileTypeMappings.Any() && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF) //pdfs wont have column mappings
+                            || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
                 .Where(x => x.ParentFileTypeId == null)
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
                 .Select(x =>

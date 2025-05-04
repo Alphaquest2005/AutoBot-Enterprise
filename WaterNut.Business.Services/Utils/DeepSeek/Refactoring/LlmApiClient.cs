@@ -79,8 +79,10 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             if (items == null || !items.Any()) return (finalResults, totalCost);
 
             // Use a temporary lookup for processing status (original description -> input tuple)
+            // Group by description to handle potential duplicates, taking the first item for each description.
             var itemsToProcess = items.Where(i => !string.IsNullOrWhiteSpace(i.ItemDescription))
-                                     .ToDictionary(i => i.ItemDescription, i => i); // Ensure unique descriptions or handle duplicates
+                                     .GroupBy(i => i.ItemDescription)
+                                     .ToDictionary(g => g.Key, g => g.First());
 
             var chunks = ChunkBy(itemsToProcess.Values, MAX_ITEMS_PER_BATCH).ToList();
             _logger.LogInformation("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}",

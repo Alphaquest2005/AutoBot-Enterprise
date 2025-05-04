@@ -90,7 +90,7 @@ namespace AutoBot
 
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
                         .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
-                    emailId = res?.EmailId ?? fileType.EmailId;
+                    emailId = res?.EmailId ?? fileType.EmailId?? file.Name;
                     fileTypeId = res?.FileTypeId ?? fileType.Id;
                 }
 
