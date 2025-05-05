@@ -159,3 +159,49 @@ Total tests: 1
 - (Add other test projects as needed)
 - Use a dedicated test database or appropriate mocking for database interactions.
 ```
+
+[2025-05-05 07:11:32] - ## High-Level Architecture (autobot1/autobot Analysis)
+
+The `autobot1/autobot` system appears to follow a task-driven, database-configured workflow architecture. 
+
+- **Entry Point:** A WCF Console Host (`WCFConsoleHost\Program.cs`) likely acts as the main process runner, potentially using a timer to trigger periodic action checks.
+- **Action Orchestration:** Actions are defined and configured in the database (`Actions`, `FileTypeActions`, `EmailMappingActions` tables).
+- **Core Logic:** The `AutoBot` project (providing `AutoBotUtilities.dll`) contains the central logic.
+- **Action Execution:** 
+    - Session-based actions (e.g., 'AssessIM7') are triggered via `SessionsUtils.SessionActions`, which maps action names to static methods in various utility classes.
+    - File/Email-based actions are orchestrated by `ImportUtils`, which reads configuration from the DB and delegates execution to methods stored in `FileUtils.FileActions`.
+- **Modularity:** Logic is separated into numerous static utility classes (e.g., `ADJUtils`, `DISUtils`, `EX9Utils`, `POUtils`, `C71Utils`, `LICUtils`, `PDFUtils`, `ShipmentUtils`, `DocumentUtils`, `SalesUtils`) within the `AutoBot` project, promoting separation of concerns for different business processes.
+- **Data Access:** Primarily uses Entity Framework (`CoreEntitiesContext`, `WaterNut.DataSpace`) for database interactions (SQL Server implied by MCP server config).
+
+## Core Modules/Components (autobot1/autobot Analysis)
+
+- **`WCFConsoleHost`:** The main executable/service host. Responsible for initiating the action processing loop.
+- **`AutoBot` Project (`AutoBotUtilities.dll`):** The core library containing the bulk of the business logic and orchestration.
+    - **`ActionsService.cs`:** Manages CRUD operations for the `Actions` entity.
+    - **`ImportUtils.cs`:** Orchestrates actions based on `FileTypes` and `EmailMapping` database configurations. Contains `EmailTextProcessor` for regex-based data extraction from text/CSV files and DB updates.
+    - **`SessionsUtils.cs`:** Provides the `SessionActions` dictionary, mapping high-level action names (strings) to specific implementation methods in other utility classes.
+    - **`FileUtils.cs` (Inferred):** Likely contains the `FileActions` dictionary mapping action names (strings) to `Action<FileTypes, FileInfo[]>` delegates for file processing steps.
+    - **Specialized Utility Classes (`ADJUtils`, `DISUtils`, `EX9Utils`, `POUtils`, `C71Utils`, `LICUtils`, `PDFUtils`, `ShipmentUtils`, `DocumentUtils`, `SalesUtils`, `SubmitSalesXmlToCustomsUtils`, etc.):** Each class encapsulates the logic for a specific domain or task (e.g., Adjustments, Discrepancies, EX9 processing, Purchase Orders, C71 forms, Licenses, PDF manipulation, Shipment tasks, Document import/export, Sales processing, Customs submission).
+- **`CoreEntities.Business.Entities` / `WaterNut.DataSpace`:** Contains Entity Framework models representing the database schema.
+- **`EmailDownloader` (External Dependency):** Used for sending email notifications (e.g., error reports).
+
+[2025-05-05 07:14:03] - ## Functionality Mapping (autobot1/autobot Analysis)
+
+*(Mapping based on action names in `SessionsUtils.SessionActions` and inferred purpose of utility classes)*
+
+- **Adjustment Processing:** `ADJUtils` (Create/Recreate/Clear Entries), `DISUtils` (Assess/Export ADJ Entries)
+- **Discrepancy Processing:** `DISUtils` (Create/Recreate/AutoMatch/Assess/Export/Submit/Cleanup/Clear Entries, PreAssessment Report), `ADJUtils` (Clear DIS Entries)
+- **Sales Allocation:** `AllocateSalesUtils` (AllocateSales), `SalesUtils` (ClearAllocations)
+- **EX9 Processing:** `EX9Utils` (Create/Recreate/Export/Assess Entries, Download Sales Files, Email Expiring Entries, Email Warehouse Errors, Relink Items), `CreateEX9Utils` (CreateEx9), `SubmitSalesXmlToCustomsUtils` (SubmitToCustoms), `SubmitSalesToCustomsUtils` (SubmitSalesToCustoms), `SalesUtils` (RebuildSalesReport, Ex9AllAllocatedSales)
+- **Entry Document Management:** `EntryDocSetUtils` (CleanupEntries, RemoveDuplicateEntries, FixIncompleteEntries, AttachToDocSetByRef, LinkEmail, RenameDuplicateDocuments/Codes, ImportExpired/CancelledEntries), `DocumentUtils` (ImportSalesEntries, ImportPOEntries, ImportAllSalesEntries, ImportEntries), `ImportAllAsycudaDocumentsInDataFolderUtils` (ImportAllFilesInDataFolder, ImportAllZeroItemsInDataFolder)
+- **Purchase Order (PO) Processing:** `POUtils` (RecreateLatest/Recreate/Clear/Export/Assess/ExportLatest/EmailLatest POEntries, SubmitPOs), `DocumentUtils` (ImportPOEntries), `EX9Utils` (DownloadPOFiles)
+- **C71 Processing:** `C71Utils` (ReImport/Create/Import/DownLoad/Assess C71)
+- **License Processing:** `LICUtils` (ReImport/DownLoad/ReDownLoad/Create/Import/ImportAll/Assess License)
+- **PDF Handling:** `PDFUtils` (Download/Link/ReLink/Import PDFs, ConvertPNG2PDF)
+- **Shipment/General Utilities:** `ShipmentUtils` (SubmitUnclassifiedItems, SubmitInadequatePackages, SubmitIncompleteSuppliers, CreateInstructions), `Utils` (SubmitMissingInvoices, SubmitIncompleteEntryData), `SalesUtils` (ReDownloadSalesFiles, SubmitUnknownDFPComments)
+- **Warehouse Error Import:** `ImportWarehouseErrorsUtils` (ImportWarehouseErrors)
+- **SQL Execution:** `SQLBlackBox` (RunSqlBlackBox)
+- **File/Email Action Orchestration:** `ImportUtils`, `FileUtils`
+- **Session Action Orchestration:** `SessionsUtils`
+- **Database Interaction:** `CoreEntitiesContext`, `ActionsService`
+- **Email Notifications:** `EmailDownloader` (External)
