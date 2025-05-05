@@ -37,8 +37,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (isInitialRunUnsuccessful)
                 {
                     // Report unimported file, joining accumulated errors
-                    return EmailErrors();
-                    
+                    //return EmailErrors();
+                    return false;
+
                 }
                 else
                 {
