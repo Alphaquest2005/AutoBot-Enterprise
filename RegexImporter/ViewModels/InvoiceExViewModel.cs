@@ -35,7 +35,7 @@ namespace RegexImporter.ViewModels
             RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnOCR_PartExsChanged2);
         }
 
-        public static InvoiceExViewModel Instance { get; }
+        public static new InvoiceExViewModel Instance { get; }
 
         public IEnumerable<Parts> Parts
         {

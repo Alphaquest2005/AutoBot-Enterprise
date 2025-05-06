@@ -2,7 +2,6 @@
 
 using AutoBot; // Added for FolderProcessor visibility
 using CoreEntities.Business.Entities;
-using CoreEntities.Business.Entities;
 using CoreEntities.Business.Enums;
 using System;
 using System.Collections.Generic;

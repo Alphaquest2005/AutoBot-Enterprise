@@ -33,7 +33,7 @@ namespace RegexImporter.ViewModels
                 OnAsycudaDocumentSetExsChanged2);
         }
 
-        public static DocumentFilesViewModel Instance { get; }
+        public static new DocumentFilesViewModel Instance { get; }
 
         public DateTime StartFileDateFilter
         {
@@ -90,7 +90,7 @@ namespace RegexImporter.ViewModels
                             .ConfigureAwait(false);
         }
 
-        private async void OnCurrentAsycudaDocumentSetExChanged2(object sender,
+        private void OnCurrentAsycudaDocumentSetExChanged2(object sender,
             NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
             if (e.Data != null)

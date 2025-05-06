@@ -22,3 +22,69 @@
 *(Refer to BUILD_INSTRUCTIONS.md for full details and prerequisites.)*
 [2025-05-04 08:33:54] - 
 **Rule:** Always clean, restore, and rebuild the relevant test project using MSBuild before running tests with vstest.console.exe to ensure the latest changes are included.
+
+## NuGet Package Management
+
+[2025-05-04 14:15:11] - All projects in this solution utilize `<PackageReference>` within their `.csproj` files for managing NuGet dependencies. `packages.config` files are not used.
+
+[2025-05-05 07:12:19] - ## Data Structures/Schemas (autobot1/autobot Analysis)
+
+- **Database Schema:** Primarily defined by Entity Framework models within `CoreEntities.Business.Entities` and `WaterNut.DataSpace`. Key entities observed or inferred include:
+    - `Actions`: Represents tasks to be executed.
+    - `FileTypes`: Defines configurations for processing specific file types, including associated actions (`FileTypeActions`) and email mappings (`EmailInfoMappings`).
+    - `EmailMapping`: Defines configurations for processing emails, including associated actions (`EmailMappingActions`).
+    - `FileTypeActions`: Links `FileTypes` to specific `Actions`, defining the workflow for a file type.
+    - `EmailMappingActions`: Links `EmailMapping` to specific `Actions`, defining the workflow for an email mapping.
+    - `EmailInfoMappings`: Defines how to extract data from emails/text using regex (`InfoMappingRegEx`).
+    - `InfoMapping`: Specifies target entity (`EntityType`), field (`Field`), and key (`EntityKeyField`) for database updates based on extracted data.
+    - `InfoMappingRegEx`: Contains regular expressions (`KeyRegX`, `FieldRx`, `KeyReplaceRx`, `FieldReplaceRx`) for data extraction.
+    - Domain-specific entities related to customs processes (e.g., likely tables for Adjustments, Discrepancies, EX9, POs, C71, Licenses, Shipments, Sales Data, Entry Documents, etc., managed by the respective utility classes).
+- **File Structures:** 
+    - Input files are often CSV or text-based, processed by `EmailTextProcessor` based on regex defined in the database.
+    - PDF files are processed (`DownloadPDFs`, `LinkPDFs`, `ImportPDF`, `ConvertPNG2PDF`).
+    - XML is likely used for customs submissions (`SubmitSalesXmlToCustomsUtils`).
+    - XLSX files are processed (`XLSXProcessor.cs`).
+- **In-Memory Structures:**
+    - `FileUtils.FileActions`: `Dictionary<string, Action<FileTypes, FileInfo[]>>` mapping action names to delegates.
+    - `SessionsUtils.SessionActions`: `Dictionary<string, Action>` mapping session action names to delegates.
+    - `FileTypes.Data`: `List<KeyValuePair<string, string>>` used temporarily by `EmailTextProcessor` to hold extracted data for a file.
+    - `FileTypes.ProcessNextStep`: `List<string>` holding a sequence of action names to execute.
+
+[2025-05-05 07:14:16] - ## Technology Stack (autobot1/autobot Analysis)
+
+- **Language:** C#
+- **Framework:** .NET Framework (Specific version not determined, but likely 4.x given WCF and Entity Framework usage)
+- **Runtime:** .NET CLR
+- **Host:** WCF Console Host (`WCFConsoleHost` project)
+- **Data Access:** Entity Framework (likely EF 6, based on `DbContext` usage in `CoreEntitiesContext`)
+- **Database:** SQL Server (Inferred from MCP server connection string: `MINIJOE\SQLDEVELOPER2022`, Database: `WebSource-AutoBot`)
+- **Libraries (Observed/Inferred):**
+    - `Core.Common.Converters` (Likely internal library)
+    - `AdjustmentQS.Business.Services` (Likely internal library)
+    - `EntryDataDS.Business.Entities` (Likely internal library)
+    - `SalesDataQS.Business.Services` (Likely internal library)
+    - `System.IO`
+    - `System.Linq`
+    - `System.Text.RegularExpressions`
+    - `System.Threading.Tasks`
+    - `System.Diagnostics`
+- **Build/Dependencies:** Uses `packages.config` (implies NuGet package management, common in older .NET Framework projects).
+
+## Configuration (autobot1/autobot Analysis)
+
+- **Primary Configuration Source:** Database tables (`Actions`, `FileTypes`, `EmailMapping`, `FileTypeActions`, `EmailMappingActions`, `EmailInfoMappings`, `InfoMapping`, `InfoMappingRegEx`). These tables define the workflows, actions, regex patterns, and database targets.
+- **Application Settings:** `ApplicationSettings` class (referenced in `ImportUtils`), likely populated from a database table or configuration file. Contains settings like `AssessIM7`, `AssessEX`, `TestMode`.
+- **Connection Strings:** Likely stored in `App.config` within `WCFConsoleHost` and potentially `AutoBotUtilities` project (standard .NET Framework practice).
+- **File Paths:** Input/output file paths might be configured in the database or potentially `App.config`, although specific locations weren't explicitly identified in the analyzed code.
+- **Action Definitions:** Action names (strings) are keys in `SessionsUtils.SessionActions` and `FileUtils.FileActions` dictionaries, linking names to code implementations.
+
+[2025-05-05 07:15:41] - ## Dependencies (autobot1/autobot Analysis)
+
+- **Internal Project Dependencies:**
+    - `WCFConsoleHost` depends on `AutoBotUtilities` (the `AutoBot` project).
+    - `AutoBot` project likely depends on other internal libraries/projects within the solution (e.g., `CoreEntities.Business.Entities`, `WaterNut.DataSpace`, `Core.Common.Converters`, `AdjustmentQS.Business.Services`, `EntryDataDS.Business.Entities`, `SalesDataQS.Business.Services`).
+- **External Service Dependencies:**
+    - **Database:** SQL Server instance `MINIJOE\SQLDEVELOPER2022`, database `WebSource-AutoBot`.
+    - **Email Server:** An external email server is required for `EmailDownloader` to send notifications.
+    - **Customs Systems (Inferred):** Actions like `SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms` imply interaction with external customs authority systems (likely via APIs or specific file formats/protocols).
+- **File System:** Relies heavily on the local file system for reading input files (CSV, text, PDF, XLSX, PNG) and writing output/log files.

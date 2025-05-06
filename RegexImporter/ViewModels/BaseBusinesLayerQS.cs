@@ -108,8 +108,9 @@ namespace RegexImporter
             }
         }
 
-        private static async Task InitializationAsync()
+        private static Task InitializationAsync()
         {
+            return Task.CompletedTask;
         }
 
         private void OnCurrentApplicationSettingsChanged1(object sender, NotificationEventArgs<ApplicationSettings> e)

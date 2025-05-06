@@ -166,7 +166,7 @@ namespace RegexImporter.ViewModels
             }
         }
 
-        private async void OnCurrentOCR_InvoiceExChanged2(object sender,
+        private void OnCurrentOCR_InvoiceExChanged2(object sender,
             NotificationEventArgs<Invoices> e)
         {
             RegexObjects = new List<RegularExpressions>();
@@ -192,7 +192,7 @@ namespace RegexImporter.ViewModels
             }
         }
 
-        private async void OnOCR_PartExsChanged2(object sender, NotificationEventArgs<Parts> e)
+        private void OnOCR_PartExsChanged2(object sender, NotificationEventArgs<Parts> e)
         {
             RegexObjects = new List<RegularExpressions>();
             if (e.Data != null)

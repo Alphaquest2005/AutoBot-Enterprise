@@ -649,7 +649,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         //[TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
-        public async Task AllocatExistingEx9s(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public void AllocatExistingEx9s(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -720,7 +720,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
-        public async Task Allocat1000Sales(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public void Allocat1000Sales(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -790,7 +790,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
         [TestCase("INT/YBA470GL", "3/1/2023", 60)]
-        public async Task MarkErrors(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public void MarkErrors(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -870,7 +870,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
-        public async Task ClearDocSetAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public void ClearDocSetAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {

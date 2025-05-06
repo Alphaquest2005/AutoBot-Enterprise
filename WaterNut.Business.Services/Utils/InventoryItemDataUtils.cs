@@ -186,7 +186,7 @@ namespace WaterNut.Business.Services.Utils
             // Use the helper for the description passed to the API as well
             var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
             var suspectedTariffCode = await GetClassificationInfo(description);
-            return await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
+            return await InventoryItemsExService.GetTariffCode(suspectedTariffCode.Item1).ConfigureAwait(false);
         }
 
         private static async Task<dynamic> GetClassificationInfo(dynamic description)
