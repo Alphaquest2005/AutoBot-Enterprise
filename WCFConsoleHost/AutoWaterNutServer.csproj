@@ -160,13 +160,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AutoBot-EnterpriseDB.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AutoBot-EnterpriseDB_log.ldf">
-      <DependentUpon>AutoBot-EnterpriseDB.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="SQLBlackBox\AddHighImpactIndexesStoredProc.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
