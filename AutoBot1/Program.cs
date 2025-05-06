@@ -91,7 +91,8 @@ namespace AutoBot
                         ExecuteDBSessionActions(ctx, appSetting);
 
                         // Use the instance method
-                        await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
+                        if(BaseDataModel.Instance.CurrentApplicationSettings.ProcessDownloadsFolder == true)
+                            await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false);
                     }
                 }
                 //Console.WriteLine($"Press ENTER to Close...");

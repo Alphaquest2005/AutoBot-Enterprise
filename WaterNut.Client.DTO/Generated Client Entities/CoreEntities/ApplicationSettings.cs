@@ -723,6 +723,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _GroupIM4ByCategory;
 
+        [DataMember]
+        public Nullable<bool> ProcessDownloadsFolder
+		{ 
+		    get { return _ProcessDownloadsFolder; }
+			set
+			{
+			    if (value == _ProcessDownloadsFolder) return;
+				_ProcessDownloadsFolder = value;
+				NotifyPropertyChanged();//m => this.ProcessDownloadsFolder
+			}
+		}
+        private Nullable<bool> _ProcessDownloadsFolder;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

@@ -844,6 +844,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _groupim4bycategory;
         [DataMember]
+        public Nullable<bool> ProcessDownloadsFolder 
+        {
+            get
+            {
+                return _processdownloadsfolder;
+            }
+            set
+            {
+                _processdownloadsfolder = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _processdownloadsfolder;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

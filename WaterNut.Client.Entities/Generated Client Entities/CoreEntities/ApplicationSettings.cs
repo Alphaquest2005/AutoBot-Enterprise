@@ -919,6 +919,21 @@ public Nullable<bool> GroupIM4ByCategory
 		}
      
 
+       
+       
+public Nullable<bool> ProcessDownloadsFolder
+		{ 
+		    get { return this.applicationsettings.ProcessDownloadsFolder; }
+			set
+			{
+			    if (value == this.applicationsettings.ProcessDownloadsFolder) return;
+				this.applicationsettings.ProcessDownloadsFolder = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ProcessDownloadsFolder");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

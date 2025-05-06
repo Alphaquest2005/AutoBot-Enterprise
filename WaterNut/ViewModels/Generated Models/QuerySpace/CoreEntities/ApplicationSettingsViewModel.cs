@@ -1171,6 +1171,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _processDownloadsFolderFilter;
+        public Boolean? ProcessDownloadsFolderFilter
+        {
+            get
+            {
+                return _processDownloadsFolderFilter;
+            }
+            set
+            {
+                _processDownloadsFolderFilter = value;
+				NotifyPropertyChanged(x => ProcessDownloadsFolderFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1455,6 +1473,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(GroupIM4ByCategoryFilter.HasValue)
 						res.Append(" && " + string.Format("GroupIM4ByCategory == {0}",  GroupIM4ByCategoryFilter));						
+ 
+
+									if(ProcessDownloadsFolderFilter.HasValue)
+						res.Append(" && " + string.Format("ProcessDownloadsFolder == {0}",  ProcessDownloadsFolderFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1631,7 +1653,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     UseAIClassification = x.UseAIClassification ,
                     
  
-                    GroupIM4ByCategory = x.GroupIM4ByCategory 
+                    GroupIM4ByCategory = x.GroupIM4ByCategory ,
+                    
+ 
+                    ProcessDownloadsFolder = x.ProcessDownloadsFolder 
                     
                 }).ToList()
             };
@@ -1798,6 +1823,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> GroupIM4ByCategory { get; set; } 
+                    
+ 
+                    public Nullable<bool> ProcessDownloadsFolder { get; set; } 
                     
         }
 
