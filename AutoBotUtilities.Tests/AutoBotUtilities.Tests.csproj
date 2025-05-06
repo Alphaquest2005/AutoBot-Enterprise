@@ -76,6 +76,9 @@
     <None Include="Test Data\TestInvoice.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+<None Include="Test Data\07252024_TEMU.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

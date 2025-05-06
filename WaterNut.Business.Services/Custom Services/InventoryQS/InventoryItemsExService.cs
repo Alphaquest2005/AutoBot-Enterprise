@@ -84,11 +84,20 @@ namespace InventoryQS.Business.Services
         {
             var tariffCode = await GetTariffCode(itm.Value.TariffCode).ConfigureAwait(false);
 
-            var categoryTariffCode = await GetTariffCode(itm.Value.CategoryTariffCode).ConfigureAwait(false);
+            var categoryTariffCode = await GetCategoryTariffCode(itm).ConfigureAwait(false);
 
             return tariffCode == itm.Value.TariffCode
                 ? itm.Value
                 : (itm.Value.ItemNumber, itm.Value.ItemDescription, tariffCode, itm.Value.Category, categoryTariffCode);
+        }
+
+        private static async Task<string> GetCategoryTariffCode(KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> itm)
+        {
+            var dbCategoryTariff = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == itm.Value.Category);
+            var categoryTariffCode = dbCategoryTariff == null
+                ? await GetTariffCode(itm.Value.CategoryTariffCode).ConfigureAwait(false)
+                : dbCategoryTariff.TariffCode;
+            return categoryTariffCode;
         }
 
         private static async
@@ -126,7 +135,7 @@ namespace InventoryQS.Business.Services
 
             using var context = new InventoryDSContext();
             return await context.TariffCodes
-                .Where(x => x.RateofDuty != null)
+                .Where(x => x.RateofDuty != null || !string.IsNullOrEmpty(x.RateofDuty))
                 .Where(x => x.TariffCodeName == suspectedTariffCode
                             || x.TariffCodeName == code90
                             || x.TariffCodeName == code00

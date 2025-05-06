@@ -48,3 +48,16 @@ This file tracks the project's current status...
 *   User clarified that `ApplicationSettingsId=3` is the only valid setting.
 *   Therefore, the existing `OCR-Invoices` record with `Id=164` (linked to `ApplicationSettingsId=3`) is the correct one to use for TEMU configuration.
 *   The record I created (`Id=168` with `ApplicationSettingsId=1`) is incorrect and needs to be deleted.
+
+[2025-05-05 13:33:23] - ## Code Definition Analysis: AutoBot/ Directory
+
+Scanned `AutoBot/` directory using `list_code_definition_names`. Key findings:
+
+*   **Customs Forms:** Contains classes like `C71Utils`, `EX9Utils`, `LICUtils`, `POUtils`, `DISUtils` for handling specific customs documents (import, create, assess, submit, download, error handling).
+*   **Sales/Adjustments:** Includes `AllocateSalesUtils`, `EmailSalesErrorsUtils`, `Ex9SalesReportUtils`, `SalesUtils`, `SubmitSalesToCustomsUtils`, `SubmitSalesXmlToCustomsUtils` for sales allocation, reporting, error management, and submission.
+*   **Shipment Processing:** `ShipmentExtensions` and `ShipmentUtils` provide extensive logic for loading shipment data (POs, Invoices, Riders, Manifests, Freight, BLs) from email/DB, processing complex shipment scenarios, managing attachments, handling unclassified items/suppliers, and import/export.
+*   **PDF/File Handling:** `PDFCreator`, `PDFUtils`, `FileUtils`, `ImportUtils`, `XLSXProcessor` offer utilities for PDF creation/processing/linking/import (mentions DeepSeek, suggesting OCR), CSV/XLSX handling, and general file operations.
+*   **Core Logic:** A large, partial `Utils` class seems central, defining numerous actions (`SessionActions`, `FileActions`) and orchestrating workflows related to the above areas.
+*   **Error Management:** Specific classes like `ImportWarehouseErrors`, `SubmitDiscrepancyErrorReport` focus on error handling and reporting.
+
+This directory appears crucial for the application's core business logic related to customs, sales, and shipment processing.
