@@ -37,7 +37,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (isInitialRunUnsuccessful)
                 {
                     // Report unimported file, joining accumulated errors
-                    //return EmailErrors();
+                    return EmailErrors();
                     return false;
 
                 }
@@ -49,9 +49,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);
                         LogErrorPipelineCompleted(filePath, errorPipelineResult);
                         LogContextAfterErrorPipeline();
-                        if(!errorPipelineResult && _context.Errors.Any())//cuz the error pipeline could fail
-                            if (!EmailErrors()) return false;
-                        return errorPipelineResult;
+                        if (!errorPipelineResult && _context.Errors.Any()) //cuz the error pipeline could fail
+                            EmailErrors(); //return false;
+                        // return errorPipelineResult;
                     }
 
                     LogProcessingSuccessPipeline(filePath);

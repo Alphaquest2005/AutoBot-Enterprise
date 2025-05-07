@@ -31,8 +31,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 var possibleInvoices = await GetPossibleInvoices(context, pdfTextString, filePath).ConfigureAwait(false);
 
-                if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Invoice"))
-                    throw new ApplicationException("No Shipment Invoice Templates found");
+                //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Invoice"))
+                //    throw new ApplicationException("No Shipment Invoice Templates found");
 
                 context.Templates = possibleInvoices;
                 LogPossibleInvoices(possibleInvoices, totalTemplateCount, filePath);

@@ -122,3 +122,22 @@
 
 **Creative Phase Components:**
 - [X] ⚙️ Algorithm Design (Specifically, Regex pattern design for TEMU PDF structure)
+
+[2025-05-07 17:10:57] - ## Task: Debug NullReferenceException in EmailShipment
+
+**ID:** TASK_VAN_001
+**Status:** Fix Implemented (Testing Pending)
+**Priority:** High
+**Assigned Mode:** IMPLEMENT
+**Description:** A `NullReferenceException` occurs in the `EmailShipment` method in `AutoBot/ShipmentUtils.cs` at line 152. The error is `Value cannot be null. Parameter name: source`, originating from `System.Linq.Enumerable.Sum` when called on `shipment.Invoices`. Suspected cause is `shipment.Invoices` being null.
+**Files Involved:**
+- `AutoBot/ShipmentUtils.cs`
+**Acceptance Criteria:**
+- The `EmailShipment` method no longer throws a `NullReferenceException` when `shipment.Invoices` is null.
+- The logic correctly handles cases where `shipment.Invoices` might be null or empty.
+**Complexity Assessment (VAN):** Level 1 (Direct fix anticipated)
+**Implementation Notes:**
+- Applied fix to `AutoBot/ShipmentUtils.cs` at line 152.
+- Changed `shipment.Invoices.Sum(x => x.TotalsZero)` to `(shipment.Invoices?.Sum(x => x.TotalsZero) ?? 0)`.
+- This ensures that if `shipment.Invoices` is null, the expression evaluates to `0`, preventing the `NullReferenceException`.
+**Next Step:** Manual testing or integration testing is required to verify the fix in a runtime environment. Transition to REFLECT mode.

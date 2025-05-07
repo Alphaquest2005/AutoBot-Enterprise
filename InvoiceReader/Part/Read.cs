@@ -201,7 +201,7 @@ namespace WaterNut.DataSpace
                         var instanceLines = _lines
                             .Where(l => l != null && l.LineNumber >= _currentInstanceStartLineNumber).TakeLast(10)
                             .ToList();
-                        if(!instanceLines.Any() && triggerLiner != null && triggerLiner.Any())
+                        if((!instanceLines.Any() || instanceLines?.Count() < triggerLiner?.Count() ) && triggerLiner != null && triggerLiner.Any())
                             instanceLines.AddRange(_linesForInstanceBuffer);// using the instancebuffer lines because startline is also dataline problem
                        
 

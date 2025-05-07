@@ -46,7 +46,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          _logger.Warning(errorMsg); // Logged by helper, but log again for step context
                          context.AddError(errorMsg); // Add error to context
                          overallStepSuccess = false; // Mark step as failed
-                         break; // Stop processing other templates
+                         continue; // Stop processing other templates
                      }
                      // --- End Validation ---
 
@@ -59,7 +59,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          _logger.Error(errorMsg);
                          context.AddError(errorMsg); // Add error to context
                          overallStepSuccess = false;
-                         break;
+                         continue;
                      }
                      _logger.Information("Resolved FileType to Id: {FileTypeId} for File: {FilePath}", fileType.Id, filePath);
                      // --- End Resolve File Type ---
@@ -73,7 +73,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          _logger.Error(errorMsg);
                          context.AddError(errorMsg); // Add error to context
                          overallStepSuccess = false;
-                         break;
+                         continue;
                      }
                      _logger.Verbose("Created DataFile details: {@DataFile}", dataFile);
                      // --- End Create DataFile ---
@@ -102,7 +102,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                           string errorMsg = $"DataFileProcessor failed for File: {filePath}, TemplateId: {templateId}.";
                           context.AddError(errorMsg);
                           overallStepSuccess = false;
-                          break;
+                          continue;
                      }
                      // --- End Process DataFile ---
 
@@ -114,7 +114,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      _logger.Error(ex, errorMsg); // Log the error with exception details
                      context.AddError(errorMsg); // Add error to context
                      overallStepSuccess = false; // Mark the overall step as failed
-                     break; // Stop processing immediately on error
+                     continue; // Stop processing immediately on error
                  }
             }
 

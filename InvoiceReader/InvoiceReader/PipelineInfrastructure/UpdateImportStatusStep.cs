@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          string errorMsg = $"UpdateImportStatusStep cannot proceed due to missing required data for File: {filePath}, TemplateId: {templateId}";
                          _logger.Warning(errorMsg); // Logged by IsImportDataPresent, but log again here for step context
                          context.AddError(errorMsg); // Add error to context
-                         return false; // Stop processing immediately
+                         continue;//return false; // Stop processing immediately
                      }
                      // --- End Data Presence Check ---
 
@@ -64,7 +64,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                            _logger.Warning(errorMsg); // Log the failure from the logging step
                            context.AddError(errorMsg); // Add error to context
                            // Decide if this is critical enough to stop the whole step. Assuming yes for now.
-                           return false;
+                           continue;
                      }
                      // --- End Process and Log Status ---
 
@@ -75,7 +75,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      string errorMsg = $"Error during UpdateImportStatusStep for File: {filePath}, TemplateId: {templateId}: {ex.Message}";
                      _logger.Error(ex, errorMsg); // Log the error with exception details
                      context.AddError(errorMsg); // Add error to context
-                     return false; // Stop processing immediately
+                     //return false; // Stop processing immediately
+                     continue;
                  }
             }
 

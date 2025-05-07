@@ -61,3 +61,30 @@ Scanned `AutoBot/` directory using `list_code_definition_names`. Key findings:
 *   **Error Management:** Specific classes like `ImportWarehouseErrors`, `SubmitDiscrepancyErrorReport` focus on error handling and reporting.
 
 This directory appears crucial for the application's core business logic related to customs, sales, and shipment processing.
+
+[2025-05-07 17:11:18] - ## Current Task: Debug NullReferenceException in EmailShipment (TASK_VAN_001)
+
+**Timestamp:** {{TIMESTAMP}}
+**Originating User Request:** User provided a stack trace indicating a `NullReferenceException`.
+**Stack Trace:**
+```
+Value cannot be null.
+Parameter name: source
+   at System.Linq.Enumerable.Select[TSource,TResult](IEnumerable`1 source, Func`2 selector)
+   at System.Linq.Enumerable.Sum[TSource](IEnumerable`1 source, Func`2 selector)
+   at AutoBot.ShipmentUtils.EmailShipment(Shipment shipment) in C:\Insight Software\AutoBot-Enterprise\AutoBot\ShipmentUtils.cs:line 152
+   at AutoBot.ShipmentUtils.<>c__DisplayClass2_0.<CreateShipmentEmail>b__0(Shipment shipment) in C:\Insight Software\AutoBot-Enterprise\AutoBot\ShipmentUtils.cs:line 119
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at AutoBot.ShipmentUtils.CreateShipmentEmail(FileTypes fileType, FileInfo[] files) in C:\Insight Software\AutoBot-Enterprise\AutoBot\ShipmentUtils.cs:line 119
+```
+**Problematic Code (AutoBot/ShipmentUtils.cs:152):**
+```csharp
+151 |             using (var ctx = new EntryDataDSContext())
+152 |             {
+153 |                 var contacts = shipment.Invoices.Sum(x => x.TotalsZero) == 0
+154 |                     ? new CoreEntitiesContext().Contacts.Where(x => x.Role == "Shipments").Select(x => x.EmailAddress).Distinct().ToArray()
+155 |                     : new CoreEntitiesContext().Contacts.Where(x => x.Role == "Developer" || x.Role == "PO Clerk").Select(x => x.EmailAddress).Distinct().ToArray();
+```
+**Analysis:** The `NullReferenceException` likely occurs because `shipment.Invoices` is null when `shipment.Invoices.Sum(...)` is called.
+**Proposed Fix:** Add a null check for `shipment.Invoices` before attempting to calculate the sum. Determine appropriate handling if it is null (e.g., assume sum is 0 or throw a more specific exception).
+**Next Mode:** IMPLEMENT

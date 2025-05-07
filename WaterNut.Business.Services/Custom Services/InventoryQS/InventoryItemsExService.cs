@@ -54,7 +54,8 @@ namespace InventoryQS.Business.Services
                 //var
                 var itms =
                 BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false
-                    ? (await ClassifyItemsAsync(Itms).ConfigureAwait(false))
+                    ? (await GetClassifyItems(Itms).ConfigureAwait(false))
+                        .Where(x => x.Value.ItemNumber != null)
                         .ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.ItemNumber, kvp.Value.ItemDescription, kvp.Value.TariffCode, kvp.Value.Category, kvp.Value.CategoryTariffCode))
                     : Itms.DistinctBy(x => x.ItemNumber)
                         .ToDictionary(x => x.ItemNumber, x => (x.ItemNumber, x.ItemDescription, x.TariffCode, string.Empty, string.Empty));
@@ -79,6 +80,54 @@ namespace InventoryQS.Business.Services
             }
 
         }
+
+        private static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>> GetClassifyItems(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+        {
+            // Assuming:
+            // - Itms is some input for ClassifyItemsAsync
+            // - ClassifyItemsAsync returns something like IEnumerable<KeyValuePair<string, YourOriginalValueType>>
+            //   where YourOriginalValueType has properties ItemNumber, ItemDescription, TariffCode, Category.
+            // - GetCategoryTariffCode is an async method:
+            //   public async Task<string> GetCategoryTariffCode(KeyValuePair<string, YourOriginalValueType> itemKeyValuePair)
+            //   or
+            //   public async Task<string> GetCategoryTariffCode(YourOriginalValueType itemValue)
+            //   (adjust the call to GetCategoryTariffCode(x) or GetCategoryTariffCode(x.Value) accordingly)
+
+            var classifiedItems = await ClassifyItemsAsync(Itms).ConfigureAwait(false);
+            if (BaseDataModel.Instance.CurrentApplicationSettings.GroupIM4ByCategory == true)
+            {
+
+
+                // Directly await Task.WhenAll on the LINQ Select expression
+                var transformedItems = await Task.WhenAll(
+                    classifiedItems.Select(async x => // x is a KeyValuePair<string, YourOriginalValueType>
+                        new KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string
+                            Category, string CategoryTariffCode)>(
+                            x.Key,
+                            ( // Start of the tuple for the Value
+                                x.Value.ItemNumber,
+                                x.Value.ItemDescription,
+                                x.Value.TariffCode,
+                                x.Value.Category,
+                                await GetCategoryTariffCode(x).ConfigureAwait(false) // Await directly here
+                            ) // End of the tuple
+                        )
+                    )
+                ).ConfigureAwait(false);
+
+                // Convert the array of KeyValuePairs to a Dictionary
+                // This assumes that x.Key values are unique across the items.
+                var resultDictionary = transformedItems.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value
+                );
+
+                return resultDictionary;
+            }
+
+            return classifiedItems;
+        }
+        
 
         private static async Task<(string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> UpdateTariffValue( KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> itm)
         {

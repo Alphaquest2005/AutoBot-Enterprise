@@ -45,7 +45,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          // However, to align with stop-on-failure, we'll treat it as such for now.
                          // If partial success is desired, logic needs adjustment.
                          context.AddError(errorMsg);
-                         return false;
+                         continue;
                      }
                      // --- End Validation ---
 
@@ -109,7 +109,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      string errorMsg = $"Error during AddNameSupplierStep for File: {filePath}, TemplateId: {templateId}: {ex.Message}";
                      _logger.Error(ex, errorMsg); // Log the error with exception details
                      context.AddError(errorMsg); // Add error to context
-                     return false; // Stop processing immediately
+                     continue; // Stop processing immediately
                  }
             }
 

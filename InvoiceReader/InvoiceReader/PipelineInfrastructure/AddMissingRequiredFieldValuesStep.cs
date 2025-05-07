@@ -75,7 +75,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      context.AddError(errorMsg); // Add error to context
                      overallStepSuccess = false; // Mark the overall step as failed
                      // Continue to next template? Or break? For consistency with others, let's break.
-                     break; // Stop processing immediately on error
+                     continue; // Stop processing immediately on error
                  }
             }
 

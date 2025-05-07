@@ -149,7 +149,7 @@ namespace AutoBot
             bool sent;
             using (var ctx = new EntryDataDSContext())
             {
-                var contacts = shipment.Invoices.Sum(x => x.TotalsZero) == 0
+                var contacts = (shipment.Invoices?.Sum(x => x.TotalsZero) ?? 0) == 0
                     ? new CoreEntitiesContext().Contacts.Where(x => x.Role == "Shipments").Select(x => x.EmailAddress).Distinct().ToArray()
                     : new CoreEntitiesContext().Contacts.Where(x => x.Role == "Developer" || x.Role == "PO Clerk").Select(x => x.EmailAddress).Distinct().ToArray();
 
