@@ -88,3 +88,31 @@
     - **Email Server:** An external email server is required for `EmailDownloader` to send notifications.
     - **Customs Systems (Inferred):** Actions like `SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms` imply interaction with external customs authority systems (likely via APIs or specific file formats/protocols).
 - **File System:** Relies heavily on the local file system for reading input files (CSV, text, PDF, XLSX, PNG) and writing output/log files.
+
+[2025-05-06 19:44:46] - ## IMAP MCP Server (non-dirty/imap-mcp)
+
+**Purpose:** Provides MCP access to an IMAP email account.
+**Configured for:** `websource@auto-brokerage.com`
+**Location:** `c:\Insight Software\AutoBot-Enterprise\imap-mcp`
+
+**Key Configuration (`config.yaml`):**
+- IMAP Host: `mail.auto-brokerage.com`
+- IMAP Port: `993`
+- Username: `websource@auto-brokerage.com`
+- Authentication: Password (stored in `config.yaml`)
+- SSL: `true`
+
+**To Start the Server:**
+1. Open a terminal.
+2. Navigate to the directory: `cd c:\Insight Software\AutoBot-Enterprise\imap-mcp`
+3. Run: `.venv\Scripts\Activate.ps1; C:\Users\josep\.local\bin\uv.exe run imap_mcp.server --config config.yaml`
+
+**To Test (List Inbox Emails):**
+1. Open a terminal.
+2. Navigate to the directory: `cd c:\Insight Software\AutoBot-Enterprise\imap-mcp`
+3. Run: `.venv\Scripts\Activate.ps1; C:\Users\josep\.local\bin\uv.exe run list_inbox.py --config config.yaml --folder INBOX --limit 10`
+
+**Installation Notes:**
+- Installed using `uv` package manager.
+- Source cloned from `https://github.com/non-dirty/imap-mcp.git`.
+- Dependencies managed in a virtual environment (`.venv`).

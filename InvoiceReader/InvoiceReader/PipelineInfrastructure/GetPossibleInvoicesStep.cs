@@ -5,6 +5,7 @@ using System.Linq; // Added
 using System.Threading.Tasks; // Added
 using Serilog; // Added
 using System;
+using InvoiceReader.PipelineInfrastructure;
 using WaterNut.Business.Services.Utils; // Added
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
@@ -28,7 +29,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 int totalTemplateCount = context.Templates.Count();
                 _logger.Debug("Processing {TemplateCount} templates to find possible invoices for File: {FilePath}", totalTemplateCount, filePath);
 
-                var possibleInvoices = GetPossibleInvoices(context.Templates, pdfTextString, filePath);
+                var possibleInvoices = await GetPossibleInvoices(context, pdfTextString, filePath).ConfigureAwait(false);
 
                 if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Invoice"))
                     throw new ApplicationException("No Shipment Invoice Templates found");
@@ -75,11 +76,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private List<Invoice> GetPossibleInvoices(IEnumerable<Invoice> templates, string pdfTextString, string filePath)
+        private async Task<List<Invoice>> GetPossibleInvoices(InvoiceProcessingContext context, string pdfTextString, string filePath)
         {
             _logger.Verbose("Ordering templates: Non-Tropical first (case-insensitive), then by Id.");
 
-            return templates
+            var possibleInvoices = context.Templates
                 .OrderBy(x => !(x?.OcrInvoices?.Name?.ToUpperInvariant().Contains("TROPICAL") ?? false))
                 .ThenBy(x => x?.OcrInvoices?.Id ?? int.MaxValue)
                 .Where(tmp =>
@@ -100,7 +101,28 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     _logger.Verbose("Template InvoiceId: {InvoiceId} IsMatch result: {IsMatch}", tmp.OcrInvoices.Id, isMatch);
                     return isMatch;
                 })
-                .ToList();
+                // .Select(x =>
+                // {
+                //     x.CsvLines = null;
+                //     x.FileType = context.FileType;
+                //     x.DocSet = context.DocSet ?? WaterNut.DataSpace.Utils.GetDocSets(context.FileType);
+                //     x.FilePath = context.FilePath;
+                //     x.EmailId = context.EmailId;
+                //     foreach (var part in x.Parts)
+                //     {
+                //         part.AllLines.ForEach(z => z.Values.Clear());
+                //     }
+
+                //     return x;
+                // })
+                .ToList()
+                ;
+
+            // need to get fresh templates
+            var lst = possibleInvoices.Select(x => x.OcrInvoices.Id).ToList();
+            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.Id)).ConfigureAwait(false);
+
+            return res;
         }
 
         private void LogPossibleInvoices(List<Invoice> possibleInvoices, int totalTemplateCount, string filePath)

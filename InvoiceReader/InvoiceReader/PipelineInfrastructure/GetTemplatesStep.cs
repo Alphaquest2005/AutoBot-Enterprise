@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Serilog;
 using OCR.Business.Entities;
@@ -25,6 +26,15 @@ namespace InvoiceReader.PipelineInfrastructure
             context.Templates = _allTemplates;
             return true ;
         }
+
+        public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context,
+            Expression<Func<Invoices, bool>> templateExpression)
+        {
+            var activeTemplatesQuery = GetActiveTemplatesQuery(new OCRContext(), templateExpression);
+            var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
+            return GetContextTemplates(context, templates);
+        }
+
 
         private static async Task<bool> GetTemplates(InvoiceProcessingContext context)
         {
@@ -50,27 +60,7 @@ namespace InvoiceReader.PipelineInfrastructure
                             
                             // Load all active templates
                             _logger.Information("Querying for all active templates");
-                            var activeTemplatesQuery = ctx.Invoices
-                                .Include(x => x.Parts)
-                                .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
-                                .Include("RegEx.RegEx")
-                                .Include("RegEx.ReplacementRegEx")
-                                .Include("Parts.RecuringPart")
-                                .Include("Parts.Start.RegularExpressions")
-                                .Include("Parts.End.RegularExpressions")
-                                .Include("Parts.PartTypes")
-                                .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
-                                .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
-                                .Include("Parts.Lines.RegularExpressions")
-                                .Include("Parts.Lines.Fields.FieldValue")
-                                .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
-                                .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
-                                .Include("Parts.Lines.Fields.ChildFields.FieldValue")
-                                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
-                                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
-                                .Where(x => x.IsActive)
-                                .Where(x => x.ApplicationSettingsId ==
-                                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                            var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
                             // .Where(filter) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
                                 
 
@@ -87,12 +77,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                     _logger.Information("- ID: {Id}, Name: {Name}, Parts: {PartCount}, IsActive: {IsActive}",
                                         t.Id, t.Name ?? "null", t.Parts?.Count ?? 0, t.IsActive);
                                 }
-                                context.Templates = templates.Select(x => new Invoice(x){FileType = context.FileType,
-                                    DocSet = context.DocSet ?? WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
-                                    FilePath = context.FilePath,
-                                    EmailId = context.EmailId,
-
-                                }).ToList();
+                                context.Templates = GetContextTemplates(context, templates);
 
                                 _allTemplates = context.Templates;
                                 return true;
@@ -142,7 +127,45 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
-/*
+        private static List<Invoice> GetContextTemplates(InvoiceProcessingContext context, List<Invoices> templates)
+        {
+            return templates.Select(x => new Invoice(x){
+                FileType = context.FileType,
+                DocSet = context.DocSet ?? WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
+                FilePath = context.FilePath,
+                EmailId = context.EmailId,
+
+            }).ToList();
+        }
+
+        public static IQueryable<Invoices> GetActiveTemplatesQuery(OCRContext ctx, Expression<Func<Invoices, bool>> exp)
+        {
+            var activeTemplatesQuery = ctx.Invoices
+                .Include(x => x.Parts)
+                .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                .Include("RegEx.RegEx")
+                .Include("RegEx.ReplacementRegEx")
+                .Include("Parts.RecuringPart")
+                .Include("Parts.Start.RegularExpressions")
+                .Include("Parts.End.RegularExpressions")
+                .Include("Parts.PartTypes")
+                .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
+                .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
+                .Include("Parts.Lines.RegularExpressions")
+                .Include("Parts.Lines.Fields.FieldValue")
+                .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                .Include("Parts.Lines.Fields.ChildFields.FieldValue")
+                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
+                .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
+                .Where(x => x.IsActive)
+                .Where(x => x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                .Where(exp);
+            return activeTemplatesQuery;
+        }
+
+        /*
         private static async Task<List<Invoice>> GetInvoiceTemplatesAsync()
         {
             _logger.Debug("Loading invoice templates from database");

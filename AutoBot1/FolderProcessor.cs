@@ -167,7 +167,9 @@ namespace AutoBot
         private async Task<bool> TryDeepSeekImport(FileInfo originalFile, List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> res, FileInfo[] fileInfos, FileTypes fileType,
             bool allgood)
         {
-            if (!res.Any(x => x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice && x.Value.Status == ImportStatus.Success))
+            if (!res.All(x =>
+                    // x.Value.DocumentType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice &&  // --- took this out because failed sad cant email cuz need manifest
+                    x.Value.Status == ImportStatus.Success))
             {
                 //var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);
                 //if (res2.Any()
