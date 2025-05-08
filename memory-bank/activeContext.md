@@ -88,3 +88,30 @@ Parameter name: source
 **Analysis:** The `NullReferenceException` likely occurs because `shipment.Invoices` is null when `shipment.Invoices.Sum(...)` is called.
 **Proposed Fix:** Add a null check for `shipment.Invoices` before attempting to calculate the sum. Determine appropriate handling if it is null (e.g., assume sum is 0 or throw a more specific exception).
 **Next Mode:** IMPLEMENT
+
+[2025-05-07 18:07:08] - ## {{TIMESTAMP}} - New Error Reported by User
+
+**Context:** User provided a new stack trace after the fix for TASK_VAN_001 was completed.
+**Stack Trace:**
+```
+One or more errors occurred.
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at AutoBot.POUtils.CreatePOEntries(Int32 docSetId, List`1 entrylst) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\POUtils.cs:line 790
+   at AutoBot.POUtils.RecreatePOEntries(Int32 asycudaDocumentSetId) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\POUtils.cs:line 609
+   at AutoBot.FileUtils.<>c.<get_FileActions>b__1_7(FileTypes ft, FileInfo[] fs) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\FileUtils.cs:line 24
+   at AutoBotUtilities.ImportUtils.ExecuteActions(FileTypes fileType, FileInfo[] files, ValueTuple`2 x) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\ImportUtils.cs:line 287
+   at AutoBotUtilities.ImportUtils.<>c__DisplayClass3_0.<ExecuteNonSpecificFileActions>b__11(ValueTuple`2 actionTuple) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\ImportUtils.cs:line 325
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at AutoBotUtilities.ImportUtils.ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting) in C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\ImportUtils.cs:line 321
+```
+**Analysis:** This appears to be a new issue in `POUtils.cs`, possibly related to asynchronous task handling. The file path `C:\Insight Software\Autobot-Enterprise.2.0\AutoBot\POUtils.cs` suggests it might be from a different version or branch of the project than the `ShipmentUtils.cs` file I just modified (`C:\Insight Software\AutoBot-Enterprise\AutoBot\ShipmentUtils.cs`).
+**Recommendation:** This new error should be treated as a new task. Switch to VAN mode to log this issue in `tasks.md`, assess its complexity, and determine the appropriate workflow.
+
+[2025-05-07 18:11:00] - 
+
+## {{TIMESTAMP}} - TASK_VAN_002 Further Analysis (POUtils Error)
+
+**Context:** Following up on the new error reported in `POUtils.CreatePOEntries`.
+**Analysis Update:** The error stems from a blocking call `.Result` on an asynchronous method `BaseDataModel.Instance.AddToEntry(...)`. The actual exception occurs within `AddToEntry`.
+**Complexity Assessment:** Level 2 (Moderate). Investigation into `AddToEntry` and its asynchronous operations is required.
+**Next Mode:** PLAN
