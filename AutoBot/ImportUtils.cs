@@ -43,13 +43,16 @@ namespace AutoBotUtilities
                                             kp.InfoData = new KeyValuePair<string, string>(kp.InfoData.Key, "USD");
                                         }
                                     }
+                                    
                                     fileType.Data.Add(kp.InfoData);
 
                                     // --- BEGIN ADDED LOGGING ---
                                         Console.WriteLine($"--- EmailTextProcessor: Added to fileType.Data - Key: '{kp.InfoData.Key}', Value: '{kp.InfoData.Value}'");
-                                        // --- END ADDED LOGGING ---
+                                    // --- END ADDED LOGGING ---
 
-                                    return kp;
+                                   
+                                        return kp;
+                                   
                                 })
                                 .Select(kp => GetDbStatement(fileType, kp))
                                 .DefaultIfEmpty("")
@@ -81,7 +84,7 @@ namespace AutoBotUtilities
         private static (string line, List<(EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field)> im) GetEmailMappings(FileTypes fileType, string line)
         {
             var im = fileType.EmailInfoMappings
-                .Where(x => x.UpdateDatabase == true)
+                //.Where(x => x.UpdateDatabase == true) took out because consignee address and code not going into database so have to be set to false
                 .SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z =>
                 (
                     EmailMapping: x,
@@ -129,9 +132,13 @@ namespace AutoBotUtilities
             
         }
 
-        private static string GetDbStatement(FileTypes fileType, ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) ikp) =>
-            $@" Update {ikp.InfoMapping.RegEx.InfoMapping.EntityType} Set {ikp.InfoMapping.RegEx.InfoMapping.Field} = '{ReplaceSpecialChar(ikp.InfoData.Value,
-                "")}' Where {ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField} = '{fileType.Data.First(z => z.Key == ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField).Value}';";
+        private static string GetDbStatement(FileTypes fileType,
+            ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping,
+                KeyValuePair<string, string> InfoData) ikp) =>
+            ikp.InfoMapping.EmailMapping.UpdateDatabase == true
+                ? $@" Update {ikp.InfoMapping.RegEx.InfoMapping.EntityType} Set {ikp.InfoMapping.RegEx.InfoMapping.Field} = '{ReplaceSpecialChar(ikp.InfoData.Value,
+                    "")}' Where {ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField} = '{fileType.Data.First(z => z.Key == ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField).Value}';"
+                : null;
 
         public static string ReplaceSpecialChar(string msgSubject, string rstring)
         {
