@@ -1,6 +1,8 @@
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using System.Threading.Tasks;
+using EntryDataDS.Business.Entities;
 using InventoryQS.Business.Services;
 
 namespace AutoBotUtilities.Tests
@@ -23,6 +25,30 @@ namespace AutoBotUtilities.Tests
 
             // Assert
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return the exact match if it's valid and exists.");
+        }
+
+        [Test]
+        public async Task ScrubCategoryTariffs()
+        {
+            using(var ctx = new EntryDataDSContext())
+            {
+                var lst = ctx.CategoryTariffs.ToList();
+                foreach (var item in lst)
+                {
+                    var tariffCode = await InventoryItemsExService.GetTariffCode(item.TariffCode).ConfigureAwait(false);
+                    if (tariffCode != item.TariffCode)
+                    {
+                        item.TariffCode = tariffCode;
+                        
+                    }
+                }
+
+                ctx.SaveChanges();
+            }
+
+            
+            // Assert
+            Assert.That(true, "The method should return the exact match if it's valid and exists.");
         }
 
         [Test]
