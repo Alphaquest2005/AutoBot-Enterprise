@@ -184,7 +184,7 @@ namespace InventoryQS.Business.Services
 
             using var context = new InventoryDSContext();
             return await context.TariffCodes
-                .Where(x => x.RateofDuty != null || !string.IsNullOrEmpty(x.RateofDuty))
+                .Where(x => x.RateofDuty != null && !string.IsNullOrEmpty(x.RateofDuty))
                 .Where(x => x.TariffCodeName == suspectedTariffCode
                             || x.TariffCodeName == code90
                             || x.TariffCodeName == code00

@@ -221,3 +221,26 @@ Type: Bug Fix / Refactor for Robustness
 - [ ] Planning complete
 - [ ] Technology validation complete
 - [ ] Implementation steps
+
+[2025-05-09 10:51:04] - ## New Task: Create Unit Test for GetTariffCode
+
+**ID:** TASK_VAN_003
+**Status:** Pending
+**Priority:** Medium
+**Assigned Mode:** VAN
+**Request:** Create a unit test for the `GetTariffCode` method in `WaterNut.Business.Services\Custom Services\InventoryQS\InventoryItemsExService.cs`. The test should use "61091000" as the input parameter and be located in the `AutoBotUtilities.Tests` project.
+**Files Involved:**
+- `WaterNut.Business.Services\Custom Services\InventoryQS\InventoryItemsExService.cs` (method to be tested)
+- A new test file or an existing one within `AutoBotUtilities.Tests` project.
+**Acceptance Criteria:**
+- A new unit test for `GetTariffCode` is created.
+- The test passes when `GetTariffCode` behaves as expected with the input "61091000".
+- The test is located in the `C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests` project.
+**Complexity Assessment (VAN):** Level 1 (Straightforward unit test creation)
+[2025-05-09 10:53:47] - 
+**Implementation Notes (TASK_VAN_003):**
+- Created unit test file `AutoBotUtilities.Tests/InventoryItemsExServiceTests.cs`.
+- Used NUnit framework as per existing project setup.
+- Added test cases for input "61091000", null input, and empty string input.
+- Corrected NUnit assertion syntax.
+**Status:** Implemented (Testing to be performed by user)
