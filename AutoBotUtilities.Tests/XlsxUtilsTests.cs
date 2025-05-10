@@ -67,8 +67,10 @@ namespace AutoBotUtilities.Tests
                 using (var ctx = new EntryDataDSContext())
                 {
                     // Get the actual counts after the import
-                    var actualEntryDataCount = ctx.EntryData.Count();
-                    var actualEntryDataDetailsCount = ctx.EntryDataDetails.Count();
+                    var actualEntryDataCount = ctx.EntryData
+                        .Count();
+                    var actualEntryDataDetailsCount = ctx.EntryDataDetails
+                        .Count();
 
                     Console.WriteLine($"Actual Counts - EntryData: {actualEntryDataCount}, EntryDataDetails: {actualEntryDataDetailsCount}");
 
@@ -184,6 +186,62 @@ namespace AutoBotUtilities.Tests
                             Assert.That(specificItem.CategoryTariffCode, Is.EqualTo("90189090"), $"Expected CategoryTariffCode '90189090' for ItemNumber 'SILV-ADJ-350LB', but was '{specificItem.CategoryTariffCode}'.");
                             // Assuming ItemDescription property exists and maps correctly
                             Assert.That(specificItem.ItemDescription, Is.EqualTo("eniors and Adults Weighing Up To 350 Pounds, Adjustable Height, Silver"), $"Expected ItemDescription for ItemNumber 'SILV-ADJ-350LB' did not match.");
+                        }
+                    });
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
+        [Test]
+        public void CanImportXSLXPOFileWithBadCategoryCheckingimportsCorrectly() // Renamed method
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
+                // Use the specific file path provided by the user for the new test
+                string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-2562440-6478607.xlsx"; // Modified file path
+                Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
+                var testFile = testFilePath; // Use the provided path
+                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                foreach (var fileType in fileTypes)
+                {
+                    new FileTypeImporter(fileType).Import(testFile);
+
+                }
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    // Get the actual counts after the import
+                    var actualEntryDataCount = ctx.EntryData.Count(x => x.EntryDataId == "114-2562440-6478607");
+                    var actualEntryDataDetailsCount = ctx.EntryDataDetails.Count(x => x.EntryDataId == "114-2562440-6478607");
+
+                    Console.WriteLine($"Actual Counts - EntryData: {actualEntryDataCount}, EntryDataDetails: {actualEntryDataDetailsCount}");
+
+                    // Assert that some data was imported (counts > 0)
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(actualEntryDataCount, Is.GreaterThan(0), "Expected at least one EntryData record to be created.");
+                        Assert.That(actualEntryDataDetailsCount, Is.GreaterThan(0), "Expected at least one EntryDataDetail record to be created.");
+
+                        // Find the specific item detail
+                        var specificItem = ctx.EntryDataDetails.FirstOrDefault(d => d.ItemNumber == "SASH-CORD-5-16-WHT");
+
+                        // Assert that the specific item was found
+                        Assert.That(specificItem, Is.Not.Null, "Expected to find EntryDataDetail with ItemNumber 'SASH-CORD-5-16-WHT'.");
+
+                        if (specificItem != null) // Proceed only if the item was found
+                        {
+                            // Assert the specific values for the found item
+                            Assert.That(specificItem.Category, Is.EqualTo("TEXTILE ROPE"), $"Expected Category 'medical equipment' for ItemNumber 'SASH-CORD-5-16-WHT', but was '{specificItem.Category}'.");
+                            Assert.That(specificItem.CategoryTariffCode, Is.EqualTo("56079010"), $"Expected CategoryTariffCode '90189090' for ItemNumber 'SASH-CORD-5-16-WHT', but was '{specificItem.CategoryTariffCode}'.");
+                            // Assuming ItemDescription property exists and maps correctly
+                            Assert.That(specificItem.ItemDescription, Is.EqualTo("Sash Cord - Cotton and Nylon Rope - 5/16 Inch x 100 Ft Rope - White Cotton Rope with Nylon Core - Window Sash Rope,"), $"Expected ItemDescription for ItemNumber 'SILV-ADJ-350LB' did not match.");
                         }
                     });
                 }

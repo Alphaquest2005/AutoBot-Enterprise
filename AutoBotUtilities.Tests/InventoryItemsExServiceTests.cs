@@ -27,6 +27,24 @@ namespace AutoBotUtilities.Tests
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return the exact match if it's valid and exists.");
         }
 
+
+        [Test]
+        public async Task GetTariffCode_WhenExactMatchExistsAndIsValid_ShouldReturnInputCode1()
+        {
+            // Arrange
+            string suspectedTariffCode = "56079000";
+            // This test assumes that the underlying database (accessed via new InventoryDSContext())
+            // contains a TariffCode with TariffCodeName = "61091000" and a non-null RateofDuty.
+            // If not, this test might not accurately reflect the method's behavior in that scenario.
+            string expectedTariffCode = "56079010";
+
+            // Act
+            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+
+            // Assert
+            Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return the exact match if it's valid and exists.");
+        }
+
         [Test]
         public async Task ScrubCategoryTariffs()
         {

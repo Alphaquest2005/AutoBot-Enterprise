@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
+using InventoryQS.Business.Services;
 using MoreLinq;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
@@ -15,14 +18,14 @@ namespace WaterNut.DataSpace
         public List<RawEntryData>
             GetRawEntryData(DataFile dataFile)
         {
-            return CreateRawEntryData(dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.FileType, dataFile.DroppedFilePath);
+            return CreateRawEntryDataAsync(dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.FileType, dataFile.DroppedFilePath).GetAwaiter().GetResult();
         }
 
-        public static List<RawEntryData> CreateRawEntryData(List<dynamic> data, List<AsycudaDocumentSet> docSet, string emailId, FileTypes fileType, string droppedFilePath)
+        public static async Task<List<RawEntryData>> CreateRawEntryDataAsync(List<dynamic> data, List<AsycudaDocumentSet> docSet, string emailId, FileTypes fileType, string droppedFilePath)
         {
-            var ed = data.Select(x => (dynamic)x)
+            var ed = await Task.WhenAll(data.Select(x => (dynamic)x)
                 .GroupBy(es => (es.EntryDataId, es.EntryDataDate, es.SupplierInvoiceNo, es.CustomerName))
-                .Select(g => new RawEntryDataValue()
+                .Select(async g => new RawEntryDataValue()
                 {
                     EntryData = new RawEntryDataValue.EntryDataValue(
                         g.Key.EntryDataId,
@@ -32,7 +35,6 @@ namespace WaterNut.DataSpace
                         docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                         g.Key.CustomerName,
                         ((dynamic)g.FirstOrDefault())?.Tax,
-                        
                         string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode)) ? g.Max(x => ((dynamic)x).Vendor?.ToUpper()) : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
                         emailId,
@@ -43,17 +45,16 @@ namespace WaterNut.DataSpace
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
-                         droppedFilePath
+                        droppedFilePath
                     ),
-                    EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemDescription))
-                        .Select(x => new EntryDataDetails()
+                    EntryDataDetails = (await Task.WhenAll(g.Where(x => !string.IsNullOrEmpty(x.ItemDescription))
+                        .Select(async x => new EntryDataDetails()
                         {
                             EntryDataId = x.EntryDataId,
-                            //Can't set entrydata_id here cuz this is from data
                             ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
                             ItemDescription = ((string)x.ItemDescription).Truncate(255),
                             Category = ((string)x.Category).Truncate(255),
-                            CategoryTariffCode = ((string)x.CategoryTariffCode).Truncate(255),
+                            CategoryTariffCode = await InventoryItemsExService.GetCategoryTariffCode(x.Category, x.CategoryTariffCode).ConfigureAwait(false),
                             Cost = x.Cost ?? 0,
                             TotalCost = Convert.ToDouble((double)(x.TotalCost ?? 0.0)),
                             Quantity = Convert.ToDouble((double)(x.Quantity ?? 0.0)),
@@ -71,32 +72,32 @@ namespace WaterNut.DataSpace
                             Comment = x.Comment,
                             InventoryItemId = x.InventoryItemId ?? 0,
                             EffectiveDate = x.EffectiveDate,
-                            VolumeLiters =
-                                Convert.ToDouble((double)(x.Gallons * DomainFactLibary.GalToLtrRate ??
-                                                          Convert.ToDouble((double)(x.Liters ?? 0.0)))),
-                        }).Where(z => !string.IsNullOrEmpty(z.ItemDescription) ).ToList(),
+                            VolumeLiters = Convert.ToDouble((double)(x.Gallons * DomainFactLibary.GalToLtrRate ?? Convert.ToDouble((double)(x.Liters ?? 0.0)))),
+                        })).ConfigureAwait(false)).Where(z => !string.IsNullOrEmpty(z.ItemDescription)).ToList(),
                     Totals = g.Select(x => new RawEntryDataValue.TotalsValue(
-                         Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalInternalFreight ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalOtherCost ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalInsurance ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalDeductions ?? 0.0)),
-                         Convert.ToDouble((double)(x.InvoiceTotal ?? 0.0)),
-                         Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
-                         Convert.ToInt32((int)(x.Packages ?? 0)),
+                        Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalInternalFreight ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalOtherCost ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalInsurance ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalDeductions ?? 0.0)),
+                        Convert.ToDouble((double)(x.InvoiceTotal ?? 0.0)),
+                        Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
+                        Convert.ToInt32((int)(x.Packages ?? 0)),
                         x.WarehouseNo
                     )).Where(f => f.InvoiceTotal > 0).ToList(),
-                    InventoryItems = g.DistinctBy(x =>(x.ItemNumber, x.ItemAlias))
-                                        .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias, ((string)x.ItemDescription).Truncate(255)))
-                                        .Where(z => !string.IsNullOrEmpty(z.Description))
-                                        .ToList()
-                }
-                )
-                .Select(x => new RawEntryData(x))
-                .ToList();
+                    InventoryItems = g.DistinctBy(x => (x.ItemNumber, x.ItemAlias))
+                        .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias, ((string)x.ItemDescription).Truncate(255)))
+                        .Where(z => !string.IsNullOrEmpty(z.Description))
+                        .ToList()
+                })).ConfigureAwait(false);
 
-            return ed;
+            return ed.Select(x => new RawEntryData(x)).ToList();
+        }
+
+        public static List<RawEntryData> CreateRawEntryData(List<dynamic> lines, List<AsycudaDocumentSet> DocSet, string EmailId, FileTypes FileType, string DroppedFilePath)
+        {
+            return CreateRawEntryDataAsync(lines, DocSet, EmailId, FileType, DroppedFilePath).GetAwaiter().GetResult();
         }
     }
 }

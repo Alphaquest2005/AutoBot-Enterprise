@@ -149,6 +149,15 @@ namespace InventoryQS.Business.Services
             return categoryTariffCode;
         }
 
+        public static async Task<string> GetCategoryTariffCode(string Category, string CategoryTariffCode)
+        {
+            var dbCategoryTariff = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == Category);
+            var categoryTariffCode = dbCategoryTariff == null
+                ? await GetTariffCode(CategoryTariffCode).ConfigureAwait(false)
+                : dbCategoryTariff.TariffCode;
+            return categoryTariffCode;
+        }
+
         private static async
             Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category,
                 string CategoryTariffCode)>> ClassifyItemsAsync(
@@ -182,7 +191,8 @@ namespace InventoryQS.Business.Services
             var code90 = partialCode + "90";
             var code00 = partialCode + "00";
 
-            using var context = new InventoryDSContext();
+
+            var context = new InventoryDSContext();
             return await context.TariffCodes
                 .Where(x => x.RateofDuty != null && !string.IsNullOrEmpty(x.RateofDuty))
                 .Where(x => x.TariffCodeName == suspectedTariffCode
