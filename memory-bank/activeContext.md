@@ -142,3 +142,13 @@ One or more errors occurred.
 *   **Task Complexity:** Assessed as Level 2-4.
 
 **Next Step:** Transition to PLAN mode for detailed planning of the MCP server creation.
+
+[2025-05-11 23:24:29] - 
+
+## Critical Update: Target Database Identified (Task ID: VAN-20250511-191130-RCA)
+
+**Date:** 2025-05-11 19:24
+**Source:** User provided connection strings.
+**Details:** The database experiencing connectivity issues is `Sandals-DiscoveryDB` on server `MINIJOE\SQLDEVELOPER2022`. All diagnostic efforts should target this database. The `sqlserver` MCP is currently configured for `WebSource-AutoBot` and will need to be conceptually re-targeted or its queries adjusted for `Sandals-DiscoveryDB` if direct MCP use is planned for diagnostics on this DB.
+**Connection String Example (WaterNutDBEntities):** `metadata=res://*/WaterNutDB.csdl|res://*/WaterNutDB.ssdl|res://*/WaterNutDB.msl;provider=System.Data.SqlClient;provider connection string='data source=MINIJOE\SQLDEVELOPER2022;initial catalog=Sandals-DiscoveryDB;user=sa;password=pa$$word;MultipleActiveResultSets=True;App=EntityFramework'`
+**Implication:** Previous SSMS connectivity validation (Tech Validation Step 2) needs to be re-evaluated for `Sandals-DiscoveryDB`.

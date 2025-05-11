@@ -640,3 +640,533 @@ This plan outlines the steps to build the `AutoBot-Enterprise` solution and then
 - status: PLAN - Plan Created
 - next_mode_recommendation: IMPLEMENT
 
+
+[2025-05-11 23:12:44] - ## Task: Root Cause Analysis of DB Connectivity Errors
+**ID:** VAN-20250511-191130-RCA
+**Status:** Pending Planning
+**Complexity:** High (Estimated Level 4)
+**Assigned Mode (Initial):** VAN
+**Objective:** Conduct an exhaustive, step-by-step root cause analysis to definitively identify and verify the actual causes of database connectivity errors (such as connection timeouts or pool exhaustion) within the target application, ensuring all findings and assumptions are rigorously double-checked.
+**User-Defined Investigation Areas (Sub-Tasks):
+
+    1.  **Sub-Task ID:** VAN-20250511-191130-RCA-01
+        **Description:** Investigate Connection Leaks: Meticulously review all code paths involving database context objects (e.g., `DbContext`) or direct connection objects (e.g., `SqlConnection`) for improper disposal patterns like missing `using` statements or unclosed connections, utilizing memory profilers and connection pool monitoring tools for verification.
+        **Status:** Pending
+
+    2.  **Sub-Task ID:** VAN-20250511-191130-RCA-02
+        **Description:** Investigate Long-Running Queries/Transactions: Identify and analyze queries or transactions holding database connections for excessive durations by employing database logs, SQL profiling tools, and scrutinizing query execution plans for optimization.
+        **Status:** Pending
+
+    3.  **Sub-Task ID:** VAN-20250511-191130-RCA-03
+        **Description:** Investigate High Application Load: Assess if legitimate high demand exceeds configured connection pool capacity by monitoring application performance metrics (requests/sec, active connections), pool statistics (active, idle, waiting), and server resource utilization (CPU, memory, I/O) during peak loads, potentially using load testing.
+        **Status:** Pending
+
+    4.  **Sub-Task ID:** VAN-20250511-191130-RCA-04
+        **Description:** Investigate Inefficient Data Access Patterns: Detect and quantify N+1 query problems, excessive data retrieval, or extensive row-by-row processing using ORM logging, Application Performance Monitoring (APM) tools, and targeted code reviews of data access layers.
+        **Status:** Pending
+
+    5.  **Sub-Task ID:** VAN-20250511-191130-RCA-05
+        **Description:** Investigate Connection Pool Misconfiguration: Evaluate current settings (e.g., `MaxPoolSize`, `MinPoolSize`, `ConnectTimeout`, `ConnectionLifetime`) against the application's load profile and database capabilities.
+        **Status:** Pending
+
+    6.  **Sub-Task ID:** VAN-20250511-191130-RCA-06
+        **Description:** Investigate Network Latency/Instability: Investigate potential network issues between application and database servers, including packet loss, high round-trip times, or firewall interference.
+        **Status:** Pending
+
+    7.  **Sub-Task ID:** VAN-20250511-191130-RCA-07
+        **Description:** Investigate Database Server Bottlenecks: Check for performance degradation on the database server itself, including CPU saturation, memory pressure, disk I/O limitations, excessive locking, blocking, or deadlocks.
+        **Status:** Pending
+
+**Next Step (Post-VAN):** Transition to PLAN mode to create a detailed investigation plan for these sub-tasks, outlining specific methodologies, tools, and expected outputs for each.
+
+[2025-05-11 23:18:43] - 
+
+## Detailed Investigation Plan for Task: Root Cause Analysis of DB Connectivity Errors (ID: VAN-20250511-191130-RCA)
+
+**Status:** PLAN - In Progress
+**Complexity:** High (Level 4)
+**Objective:** Conduct an exhaustive, step-by-step root cause analysis to definitively identify and verify the actual causes of database connectivity errors (such as connection timeouts or pool exhaustion) within the target application, ensuring all findings and assumptions are rigorously double-checked.
+
+**Overall Investigation Phasing:**
+1.  **Phase 1: Static Analysis & Configuration Review:** Focus on code, configuration files, and documented architecture.
+2.  **Phase 2: Live Monitoring & Profiling (Non-Peak & Peak):** Observe the application and database under normal and stress conditions.
+3.  **Phase 3: Deep Dive & Correlation:** Analyze gathered data, correlate findings, and pinpoint root cause(s).
+
+**General Tools & Access Requirements (to be validated in Technology Validation section):**
+*   Source code access (C# application, particularly WaterNut.Business.Services, AutoBot, etc.).
+*   SQL Server Management Studio (SSMS) or similar SQL client.
+*   Access to application logs (IIS, application-specific logs).
+*   Access to SQL Server Error Logs, SQL Profiler/Extended Events traces.
+*   Permissions to view Performance Counters on both application and database servers (.NET Data Provider for SqlServer, SQL Server specific counters).
+*   (Optional, if available) Application Performance Monitoring (APM) tool (e.g., Dynatrace, New Relic, AppDynamics, Azure Application Insights).
+*   (Optional, if available) .NET Memory Profiler (e.g., dotMemory, ANTS Memory Profiler).
+*   Network diagnostic tools (e.g., `ping`, `tracert`, `pathping`, Wireshark).
+*   Access to relevant configuration files (e.g., `web.config`, `app.config`, connection string sources).
+
+--- 
+
+### Investigation Area 1: Connection Leaks
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-01
+
+**Objective:** To confirm or refute whether improper disposal of `DbContext` or `SqlConnection` objects is leading to connection pool exhaustion.
+
+**Methodology:**
+1.  **Code Review (Static Analysis):**
+    *   Identify all code paths where `DbContext` (specifically `WaterNut.Data.WaterNutDBEntities` or similar based on stack trace) and `SqlConnection` objects are created and used.
+    *   Pay close attention to the methods identified in the stack trace: [`SaveSql`](C:\\Insight%20Software\\Autobot-Enterprise.2.0\\WaterNut.Business.Services\\Custom%20Services\\DataModels\\Custom%20DataModels\\Asycuda\\SavingAllocations\\SaveAllocationSQL.cs:148), [`SaveAllocations`](C:\\Insight%20Software\\Autobot-Enterprise.2.0\\WaterNut.Business.Services\\Custom%20Services\\DataModels\\Custom%20DataModels\\Asycuda\\SavingAllocations\\SaveAllocationSQL.cs:68), [`GetXcudaInventoryItems`](C:\\Insight%20Software\\Autobot-Enterprise.2.0\\WaterNut.Business.Services\\Custom%20Services\\DataModels\\Custom%20DataModels\\Asycuda\\GettingXcudaInventoryItems\\GetXcudaInventoryItems.cs:14), and their callers.
+    *   Verify that `DbContext` instances are scoped appropriately (e.g., per request, per unit of work) and consistently disposed of, preferably using `using` statements.
+        ```csharp
+        // Example of correct usage
+        using (var context = new YourDbContext()) 
+        { 
+            // ... operations ... 
+        }
+        ```
+    *   Check for any static `DbContext` or `SqlConnection` instances that are not managed correctly.
+    *   Ensure connections opened manually are closed in `finally` blocks or via `using` statements.
+2.  **Performance Counter Monitoring (Dynamic Analysis):**
+    *   Monitor `.NET Data Provider for SqlServer` performance counters on the application server, specifically:
+        *   `NumberOfPooledConnections`: Should ideally stabilize and not grow indefinitely under consistent load.
+        *   `NumberOfActiveConnections`: Should reflect actual ongoing database operations and return to a baseline.
+        *   `NumberOfFreeConnections`: Should be available in the pool.
+        *   `NumberOfReclaimedConnections`: A high number might indicate connections being forcefully reclaimed due to not being closed properly (though this is less common for true leaks and more for connections held too long).
+    *   Monitor these counters during idle, normal, and peak load periods.
+3.  **Memory Profiling (Dynamic Analysis - if necessary):**
+    *   If code review and performance counters are inconclusive, use a .NET memory profiler.
+    *   Profile the application under load, looking for `DbContext` or `SqlConnection` objects that are not being garbage collected as expected, potentially held by static references or incorrect event handler subscriptions.
+4.  **SQL Server Connection Monitoring (Dynamic Analysis):**
+    *   Use `sp_who2` or query `sys.dm_exec_sessions` and `sys.dm_exec_connections` on SQL Server. Look for connections from the application that remain in an idle state (`status = 'sleeping'`, `last_request_end_time` is old) for extended periods without being reused or closed. Correlate `host_process_id` with the application's process ID.
+
+**Tools & Commands:**
+*   IDE for code review (e.g., Visual Studio).
+*   Windows Performance Monitor (`perfmon.exe`).
+*   SQL Server Management Studio (SSMS): `sp_who2`, `SELECT * FROM sys.dm_exec_sessions WHERE program_name = 'YourApplicationName';`
+*   (Optional) .NET Memory Profiler.
+
+**Evidence to Gather:**
+*   Relevant code snippets showing `DbContext`/`SqlConnection` instantiation, usage, and disposal (or lack thereof).
+*   Screenshots or logs from Performance Monitor showing connection pool counter trends.
+*   Results from `sp_who2` or `sys.dm_exec_sessions` showing potentially leaked/idle connections.
+*   (If used) Memory profiler snapshots and analysis reports.
+
+**Verification/Determination Criteria:**
+*   **Confirmed if:** Code review reveals clear patterns of non-disposal (missing `using`, no `Close()`/`Dispose()` in `finally`), AND/OR performance counters show `NumberOfPooledConnections` growing without bound under sustained load and not returning to baseline after load, AND/OR `sys.dm_exec_sessions` shows a large number of old, sleeping connections from the application.
+*   **Refuted if:** All `DbContext`/`SqlConnection` instances are correctly disposed of via `using` or explicit `Dispose()` in all relevant code paths, and connection pool counters behave as expected (stabilize, connections are reused).
+
+--- 
+
+### Investigation Area 2: Long-Running Queries/Transactions
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-02
+
+**Objective:** To identify if specific database queries or transactions are taking an excessive amount of time, thereby holding connections and contributing to pool exhaustion.
+
+**Methodology:**
+1.  **SQL Server Profiler/Extended Events (Dynamic Analysis):**
+    *   Configure a trace to capture: `RPC:Completed`, `SQL:BatchCompleted`, `SQL:StmtCompleted`, `SP:Completed` events.
+    *   Filter by `ApplicationName` (if set in connection string) or `HostName`.
+    *   Include columns: `Duration`, `CPU`, `Reads`, `Writes`, `TextData`, `StartTime`, `EndTime`, `DatabaseName`, `LoginName`.
+    *   Run this trace during periods when timeouts are observed or under simulated load.
+    *   Analyze the trace for queries with high `Duration`. Pay attention to queries originating from the methods in the error stack trace.
+2.  **SQL Server Activity Monitor / DMVs (Dynamic Analysis):**
+    *   Use SSMS Activity Monitor to check for "Recent Expensive Queries" and "Active Expensive Queries".
+    *   Query `sys.dm_exec_query_stats`, `sys.dm_exec_sql_text`, `sys.dm_exec_query_plan` for historical query performance data. Sort by `total_elapsed_time`, `avg_elapsed_time`, `total_logical_reads`.
+        ```sql
+        SELECT TOP 50
+            qs.execution_count,
+            qs.total_elapsed_time / 1000000.0 AS total_elapsed_time_seconds,
+            qs.total_elapsed_time / qs.execution_count / 1000.0 AS avg_elapsed_time_ms,
+            qs.total_logical_reads, 
+            qs.total_logical_writes,
+            SUBSTRING(st.text, (qs.statement_start_offset/2)+1, 
+                ((CASE qs.statement_end_offset
+                    WHEN -1 THEN DATALENGTH(st.text)
+                    ELSE qs.statement_end_offset
+                    END - qs.statement_start_offset)/2) + 1) AS statement_text,
+            qp.query_plan
+        FROM sys.dm_exec_query_stats AS qs
+        CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS st
+        CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) AS qp
+        ORDER BY qs.total_elapsed_time DESC; 
+        ```
+3.  **Transaction Monitoring (Dynamic Analysis):**
+    *   Query `sys.dm_tran_active_transactions`, `sys.dm_tran_session_transactions`, and `sys.dm_tran_locks` to identify long-running open transactions and potential blocking.
+    *   If Entity Framework is used, ensure `TransactionScope` (if used) has appropriate timeout settings and is completed/disposed promptly.
+4.  **Execution Plan Analysis (Static/Dynamic):**
+    *   For identified slow queries, obtain their execution plans (Actual Execution Plan from SSMS or from DMVs/Profiler).
+    *   Look for table scans, key lookups, missing indexes, implicit conversions, or other inefficiencies.
+5.  **Code Review (Static Analysis):**
+    *   Review the C# code that generates these long-running queries or manages these transactions (e.g., the `SaveSql` method executing raw SQL, or EF queries in `GetXcudaInventoryItems`).
+    *   Check for loops performing multiple database calls that could be batched, or inefficient LINQ queries that translate to poor SQL.
+
+**Tools & Commands:**
+*   SQL Server Profiler or Extended Events.
+*   SQL Server Management Studio (Activity Monitor, Query Editor for DMVs).
+*   IDE for code review.
+
+**Evidence to Gather:**
+*   Profiler/Extended Events trace files or summaries highlighting long-running queries.
+*   Output from DMV queries showing expensive queries and active transactions.
+*   Execution plans for problematic queries.
+*   Relevant C# code snippets generating the queries or managing transactions.
+
+**Verification/Determination Criteria:**
+*   **Confirmed if:** Profiler/DMVs consistently show queries/transactions with durations significant enough to hold connections for extended periods (e.g., > few seconds, depending on application tolerance and load) especially during timeout incidents. Execution plans reveal clear optimization opportunities.
+*   **Refuted if:** All queries and transactions execute quickly, and no significant blocking or long-held locks are observed.
+
+--- 
+
+### Investigation Area 3: High Application Load
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-03
+
+**Objective:** To determine if legitimate high application demand is overwhelming the configured connection pool capacity or database server resources.
+
+**Methodology:**
+1.  **Application Performance Metrics Monitoring (Dynamic Analysis):**
+    *   Monitor key application server metrics (e.g., via Performance Monitor, APM tool, IIS logs):
+        *   Requests/sec (Web Applications).
+        *   Request Queue Length.
+        *   CPU Utilization.
+        *   Memory Utilization.
+    *   Correlate these with database connection pool counters (`NumberOfActiveConnections`, `NumberOfPooledConnections`).
+2.  **Connection Pool Statistics Monitoring (Dynamic Analysis):**
+    *   Monitor `.NET Data Provider for SqlServer` counters:
+        *   `NumberOfActiveConnections` vs. `MaxPoolSize` (from connection string, default 100).
+        *   `NumberOfFreeConnections`: Should not be consistently zero under load if the pool is healthy.
+        *   `ConnectionPoolOpenCount` / `ConnectionPoolCloseCount`.
+        *   `NumberOfStasisConnections` (connections waiting for creation because pool is busy).
+3.  **Database Server Resource Monitoring (Dynamic Analysis):**
+    *   Monitor SQL Server performance counters:
+        *   `SQLServer:General Statistics\User Connections`.
+        *   `Process\% Processor Time` (for `sqlservr.exe`).
+        *   `Memory\Available MBytes`.
+        *   `PhysicalDisk\% Idle Time` (for disks hosting data/log files).
+        *   `SQLServer:SQL Statistics\Batch Requests/sec`.
+4.  **Load Testing (Optional but Recommended):**
+    *   If possible, conduct controlled load tests simulating realistic peak user activity.
+    *   Gradually increase the load while monitoring all the above metrics.
+    *   Identify the point at which connection timeouts start occurring and correlate with pool/server metrics.
+
+**Tools & Commands:**
+*   Windows Performance Monitor (`perfmon.exe`) on application and DB servers.
+*   IIS Logs analyzer (if web application).
+*   SQL Server Management Studio (DMVs, Activity Monitor).
+*   (Optional) Load testing tools (e.g., Apache JMeter, k6, Azure Load Testing).
+*   (Optional) APM tool.
+
+**Evidence to Gather:**
+*   Time-series data/graphs of application performance metrics.
+*   Time-series data/graphs of connection pool counters, especially `NumberOfActiveConnections` approaching `MaxPoolSize`.
+*   Time-series data/graphs of database server resource utilization.
+*   Load testing results, if performed, showing throughput, error rates, and resource usage at different load levels.
+
+**Verification/Determination Criteria:**
+*   **Confirmed if:** `NumberOfActiveConnections` consistently hits or stays very close to `MaxPoolSize` during peak load or when errors occur, AND `NumberOfFreeConnections` is zero or very low, AND application request rates are high, AND database server resources (CPU, memory, I/O) are not already saturated (implying the pool itself is the bottleneck, not necessarily the server's ability to handle more if the pool were larger or connections processed faster).
+*   **Refuted if:** `NumberOfActiveConnections` remains well below `MaxPoolSize` when errors occur, OR if database server resources are clearly exhausted before the pool limit is reached (pointing to a DB server bottleneck instead).
+
+--- 
+
+### Investigation Area 4: Inefficient Data Access Patterns
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-04
+
+**Objective:** To identify and quantify issues like N+1 query problems, retrieval of excessive data, or extensive row-by-row processing that could lead to prolonged connection usage or high connection churn.
+
+**Methodology:**
+1.  **ORM Logging/Profiling (Dynamic Analysis):**
+    *   Enable Entity Framework logging to see the generated SQL queries. `DbContext.Database.Log = Console.Write;` (or a custom logger).
+    *   Use tools like EF Profiler (commercial), MiniProfiler (open-source), or an APM tool with ORM insight.
+    *   Look for patterns where multiple similar queries are executed in a loop (N+1 selects).
+    *   Analyze the volume of data being retrieved by queries – are all columns/rows necessary?
+2.  **Code Review (Static Analysis):**
+    *   Focus on data access layers and methods interacting with `DbContext`.
+    *   Look for loops that iterate over a collection and perform a database query inside the loop for each item.
+        ```csharp
+        // Example of N+1
+        var orders = context.Orders.ToList();
+        foreach (var order in orders)
+        {
+            order.Customer = context.Customers.Single(c => c.Id == order.CustomerId); // N+1 query
+        }
+        ```
+    *   Check for use of `Include()` (for eager loading) or explicit projection (`Select(x => new { ... })`) to avoid N+1 and over-fetching.
+    *   Identify any row-by-row processing (RBAR - Row By Agonizing Row) that involves database calls within the loop, especially for updates or inserts that could be batched.
+3.  **SQL Profiling (Dynamic Analysis - Correlated with Code):**
+    *   Use SQL Profiler/Extended Events traces captured in Area 2. Correlate sequences of queries with specific application code paths to identify N+1 patterns or inefficient data retrieval logic.
+
+**Tools & Commands:**
+*   Entity Framework logging mechanisms.
+*   (Optional) EF Profiler, MiniProfiler, APM tools.
+*   SQL Server Profiler / Extended Events.
+*   IDE for code review.
+
+**Evidence to Gather:**
+*   EF logs showing generated SQL, especially repeated queries.
+*   Profiler traces demonstrating N+1 query patterns.
+*   Code snippets exhibiting N+1 behavior or RBAR processing.
+*   Metrics from APM tools quantifying the impact of inefficient patterns.
+
+**Verification/Determination Criteria:**
+*   **Confirmed if:** Clear evidence of N+1 query patterns is found (many small, similar queries executed in rapid succession corresponding to a loop in code), OR if queries are found to retrieve significantly more data than necessary for the operation, OR if row-by-row processing involving database calls is prevalent for bulk operations. These patterns would contribute to longer connection holding times or higher frequency of connection requests.
+*   **Refuted if:** Data access patterns primarily use eager loading (`Include`), projections, or batch operations where appropriate, and N+1 issues are minimal or non-existent in critical paths.
+
+--- 
+
+### Investigation Area 5: Connection Pool Misconfiguration
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-05
+
+**Objective:** To evaluate if the current ADO.NET connection pool settings are appropriate for the application's load profile and database capabilities.
+
+**Methodology:**
+1.  **Identify Connection String:**
+    *   Locate the SQL Server connection string used by the application. This is typically in `web.config`, `app.config`, or could be constructed in code. The stack trace mentions `WaterNut.Business.Services`, so configuration might be within that project or a consuming application.
+2.  **Review Connection Pool Settings:**
+    *   Examine the connection string for explicit pool settings: `Max Pool Size`, `Min Pool Size`, `Connect Timeout`, `Connection Lifetime`, `Load Balance Timeout`.
+    *   Note default values if settings are not present (e.g., `Max Pool Size` default is 100, `Min Pool Size` default is 0, `Connect Timeout` default is 15 seconds).
+3.  **Compare with Observed Load & Performance:**
+    *   Relate `MaxPoolSize` to the `NumberOfActiveConnections` observed during peak load (from Area 3). Is the max size being hit frequently?
+    *   Consider `MinPoolSize`: If set too high for periods of low activity, it might keep unnecessary connections open. If too low (or 0), there might be a slight ramp-up cost for new connections during sudden load spikes.
+    *   `Connect Timeout`: Is the default 15 seconds (or configured value) sufficient for establishing a new connection, especially if the network or DB server is occasionally slow? The error message itself is a timeout *waiting for a connection from the pool*, not establishing a new one, but related timeouts can interact.
+    *   `Connection Lifetime`: If set, connections are destroyed and recreated after this period. This can help with issues like load balancing or stale connections but can also add overhead if too short.
+
+**Tools & Commands:**
+*   File viewer/editor for configuration files.
+*   Application source code viewer (if connection string is built in code).
+
+**Evidence to Gather:**
+*   The active SQL Server connection string(s).
+*   List of configured vs. default connection pool settings.
+*   Data from Area 3 (High Application Load) regarding `NumberOfActiveConnections` relative to `MaxPoolSize`.
+
+**Verification/Determination Criteria:**
+*   **Confirmed as a contributing factor if:**
+        *   `MaxPoolSize` is demonstrably too low for the observed peak load (i.e., consistently hitting the limit while the DB server still has capacity).
+        *   `Connect Timeout` is extremely short and there's evidence of intermittent network slowness in establishing *new* connections (though the primary error is about getting one *from* the pool).
+        *   Other settings like `Connection Lifetime` are set to unusually aggressive values causing excessive churn.
+*   **Refuted if:** Default settings are in use and seem reasonable, or custom settings are well-justified and do not appear to be the primary constraint based on load data.
+
+--- 
+
+### Investigation Area 6: Network Latency/Instability
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-06
+
+**Objective:** To determine if network issues between the application server(s) and the database server are causing delays or failures in establishing or maintaining connections.
+
+**Methodology:**
+1.  **Basic Network Connectivity Tests:**
+    *   From the application server, use `ping <database_server_ip_or_hostname>` to check basic reachability and round-trip time (RTT).
+    *   Use `tracert <database_server_ip_or_hostname>` (Windows) or `traceroute` (Linux) to identify the network path and potential points of delay.
+    *   Use `pathping <database_server_ip_or_hostname>` (Windows) for a more detailed analysis of packet loss along the route over a period.
+2.  **Sustained Network Monitoring:**
+    *   If intermittent issues are suspected, run sustained pings or use network monitoring tools over a longer period, especially during times when application errors occur.
+    *   Monitor for packet loss and significant RTT variations.
+3.  **Firewall/Security Group Review:**
+    *   Verify that firewalls (Windows Firewall on app/DB server, network firewalls, cloud security groups) are correctly configured to allow traffic on the SQL Server port (default 1433 TCP/UDP) between the application and database servers.
+    *   Check firewall logs for any dropped packets related to this communication.
+4.  **Network Interface Card (NIC) Health:**
+    *   Check NIC statistics on both application and database servers for errors, discards, or high utilization (e.g., via Performance Monitor `Network Interface` counters or OS-specific commands like `netstat -e` on Windows).
+5.  **DNS Resolution:**
+    *   Ensure DNS resolution for the database server hostname is fast and reliable from the application server.
+
+**Tools & Commands:**
+*   `ping`
+*   `tracert` / `traceroute`
+*   `pathping`
+*   `nslookup` or `Resolve-DnsName` (PowerShell)
+*   Firewall configuration tools/logs.
+*   Performance Monitor (`Network Interface` counters).
+*   (Optional) Wireshark or other packet capture tools for deep analysis if severe issues are suspected.
+
+**Evidence to Gather:**
+*   Output from `ping`, `tracert`, `pathping` commands.
+*   Screenshots of firewall rules.
+*   Firewall logs (if relevant drops are found).
+*   Network interface statistics.
+
+**Verification/Determination Criteria:**
+*   **Confirmed as a contributing factor if:** Consistent high RTT (> acceptable threshold, e.g., >50-100ms for LAN, varies for WAN), significant packet loss (>1-2%), or intermittent connectivity failures are observed between the application and database server. Firewall logs show blocked connections.
+*   **Refuted if:** Network connectivity is stable, RTT is low, packet loss is negligible, and firewalls are correctly configured.
+
+--- 
+
+### Investigation Area 7: Database Server Bottlenecks
+
+**Sub-Task ID:** VAN-20250511-191130-RCA-07
+
+**Objective:** To ascertain if the SQL Server itself is experiencing performance degradation that prevents it from servicing connection requests or queries in a timely manner.
+
+**Methodology:**
+1.  **SQL Server Resource Utilization Monitoring (Dynamic Analysis):**
+    *   **CPU:** Monitor `Process\% Processor Time` for `sqlservr.exe` and overall System CPU. Sustained high CPU (>80-90%) can be an issue.
+    *   **Memory:** Monitor `SQLServer:Memory Manager\Total Server Memory (KB)` vs. `Target Server Memory (KB)`, `Memory Grants Pending`, `Available MBytes` on the server. Low available memory or many pending grants indicate memory pressure.
+    *   **I/O:** Monitor `PhysicalDisk\Avg. Disk sec/Read`, `Avg. Disk sec/Write`, `Disk Queue Length` for disks hosting data, log, and tempdb files. High latencies or queue lengths indicate I/O bottlenecks.
+    *   **Waits Stats:** Query `sys.dm_os_wait_stats` (clearing it periodically or diffing over time) to identify prevalent wait types. Common problematic waits include `PAGEIOLATCH_*`, `WRITELOG`, `LCK_M_*` (locking), `CXPACKET` (parallelism, can be benign or problematic), `RESOURCE_SEMAPHORE` (query memory).
+        ```sql
+        -- Example: Top waits since last clear or server start
+        SELECT TOP 20 wait_type, waiting_tasks_count, wait_time_ms, 
+               max_wait_time_ms, signal_wait_time_ms
+        FROM sys.dm_os_wait_stats
+        WHERE wait_type NOT IN (
+            -- Filter out common benign waits
+            'BROKER_EVENTHANDLER', 'BROKER_RECEIVE_WAITFOR', 'BROKER_TASK_STOP', 
+            'BROKER_TO_FLUSH', 'BROKER_TRANSMITTER', 'CHECKPOINT_QUEUE', 
+            'CHKPT', 'CLR_AUTO_EVENT', 'CLR_MANUAL_EVENT', 'CLR_SEMAPHORE', 
+            'DBMIRROR_DBM_EVENT', 'DBMIRROR_EVENTS_QUEUE', 'DBMIRROR_WORKER_QUEUE', 
+            'DBMIRRORING_CMD', 'DIRTY_PAGE_POLL', 'DISPATCHER_QUEUE_SEMAPHORE', 
+            'EXECSYNC', 'FSAGENT', 'FT_IFTS_SCHEDULER_IDLE_WAIT', 'FT_IFTSHC_MUTEX', 
+            'HADR_CLUSAPI_CALL', 'HADR_FILESTREAM_IOMGR_IOCOMPLETION', 'HADR_LOGCAPTURE_WAIT', 
+            'HADR_NOTIFICATION_DEQUEUE', 'HADR_TIMER_TASK', 'HADR_WORK_QUEUE', 
+            'KSOURCE_WAKEUP', 'LAZYWRITER_SLEEP', 'LOGMGR_QUEUE', 'ONDEMAND_TASK_QUEUE', 
+            'PWAIT_ALL_COMPONENTS_INITIALIZED', 'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP', 
+            'QDS_ASYNC_QUEUE', 'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP', 
+            'QDS_SHUTDOWN_QUEUE', 'REDO_THREAD_PENDING_WORK', 'REQUEST_FOR_DEADLOCK_SEARCH', 
+            'RESOURCE_QUEUE', 'SERVER_IDLE_CHECK', 'SLEEP_BPOOL_FLUSH', 'SLEEP_DBSTARTUP', 
+            'SLEEP_DCOMSTARTUP', 'SLEEP_MASTERDBREADY', 'SLEEP_MASTERMDREADY', 
+            'SLEEP_MASTERUPGRADED', 'SLEEP_MSQLXPSTARTUP', 'SLEEP_SYSTEMTASK', 'SLEEP_TASK', 
+            'SLEEP_TEMPDBSTARTUP', 'SNI_HTTP_ACCEPT', 'SP_SERVER_DIAGNOSTICS_SLEEP', 
+            'SQLTRACE_BUFFER_FLUSH', 'SQLTRACE_INCREMENTAL_FLUSH_SLEEP', 
+            'SQLTRACE_WAIT_ENTRIES', 'WAIT_FOR_RESULTS', 'WAITFOR', 'WAITFOR_TASKSHUTDOWN', 
+            'WAIT_XTP_RECOVERY', 'WAIT_XTP_HOST_WAIT', 'WAIT_XTP_OFFLINE_CKPT_NEW_LOG', 
+            'WAIT_XTP_CKPT_CLOSE', 'XE_DISPATCHER_JOIN', 'XE_DISPATCHER_WAIT', 
+            'XE_TIMER_EVENT'
+        )
+        ORDER BY wait_time_ms DESC;
+        ```
+2.  **Locking, Blocking, Deadlocks (Dynamic Analysis):**
+    *   Monitor `sys.dm_tran_locks` for active locks.
+    *   Monitor `sys.dm_os_waiting_tasks` for blocked processes (`wait_type` starting with `LCK_M_`).
+    *   Use SQL Profiler/Extended Events to trace `Lock:Deadlock` graph events.
+    *   Check SQL Server Error Log for deadlock messages.
+3.  **TempDB Contention (Dynamic Analysis):**
+    *   Monitor `tempdb` usage and contention, especially if heavy use of temporary tables, table variables, or version store is expected. Look for `PAGELATCH_*` waits on `tempdb` pages.
+4.  **SQL Server Configuration Review (Static Analysis):**
+    *   Check `Max Server Memory` and `Min Server Memory` settings.
+    *   Check `max degree of parallelism (MAXDOP)` and `cost threshold for parallelism`.
+    *   Ensure database auto-growth settings are reasonable (not too small, not percentage-based for large DBs).
+    *   Verify database maintenance (index rebuilds/reorgs, statistics updates) is occurring regularly.
+
+**Tools & Commands:**
+*   Windows Performance Monitor on DB server.
+*   SQL Server Management Studio (Activity Monitor, DMVs, Query Editor).
+*   SQL Server Profiler / Extended Events.
+*   SQL Server Error Log viewer.
+
+**Evidence to Gather:**
+*   Performance counter logs/graphs for CPU, Memory, I/O, Waits on DB server.
+*   Output from wait stats queries.
+*   Information on blocking sessions and deadlock graphs.
+*   SQL Server configuration settings.
+*   Database maintenance plan details and history.
+
+**Verification/Determination Criteria:**
+*   **Confirmed as a contributing factor if:** Sustained high CPU/Memory/I/O on the DB server, significant blocking/deadlocking, high problematic wait stats (e.g., `RESOURCE_SEMAPHORE`, excessive `PAGEIOLATCH` on data files, `WRITELOG`), or severe `tempdb` contention are observed correlating with application timeout events. Misconfiguration of critical SQL Server settings (e.g., insufficient `Max Server Memory`).
+*   **Refuted if:** Database server resources are generally within healthy limits, and no significant waits, blocking, or configuration issues are found.
+
+--- 
+
+**Technology Validation for RCA Tools:**
+
+Before starting the implementation of this investigation plan, the following tools and access methods need to be validated:
+
+1.  **Performance Monitor Access (Application & DB Servers):**
+    *   **Objective:** Confirm ability to connect to and query performance counters on both application and database servers.
+    *   **Validation:** Attempt to add and view key counters like `.NET Data Provider for SqlServer\\NumberOfPooledConnections` (app server) and `SQLServer:General Statistics\\User Connections` (DB server) using `perfmon.exe`.
+    *   **Status:** [ ] Pending
+2.  **SQL Server Management Studio (SSMS) Connectivity & Permissions:**
+    *   **Objective:** Confirm ability to connect to the target SQL Server instance (`MINIJOE\\SQLDEVELOPER2022` for `WebSource-AutoBot`) with sufficient permissions to run DMV queries, view Activity Monitor, and potentially run Profiler/Extended Events sessions.
+    *   **Validation:** Connect via SSMS. Execute `SELECT @@VERSION;` and a sample DMV query like `SELECT * FROM sys.dm_exec_sessions;`.
+    *   **Status:** [ ] Pending (Assumed from MCP connection, but verify permissions for diagnostics)
+3.  **SQL Profiler / Extended Events Setup:**
+    *   **Objective:** Confirm ability to create and run a basic trace/session capturing `RPC:Completed` and `SQL:BatchCompleted` events.
+    *   **Validation:** Create a minimal trace/session, start it, perform a simple query from the application or SSMS, stop the trace/session, and verify events were captured.
+    *   **Status:** [ ] Pending
+4.  **Access to Application & SQL Server Logs:**
+    *   **Objective:** Confirm paths to and ability to read application logs (IIS, custom app logs) and SQL Server Error Logs.
+    *   **Validation:** Locate and attempt to open these log files.
+    *   **Status:** [ ] Pending
+5.  **Source Code Access & Build Environment:**
+    *   **Objective:** Confirm access to the relevant C# solution/projects and that the development environment can open/analyze the code.
+    *   **Validation:** Open the solution in Visual Studio. Check if code navigation and understanding is possible.
+    *   **Status:** [ ] Pending (Assumed from previous tasks, but re-verify for specific diagnostic needs)
+6.  **Network Diagnostic Tool Availability:**
+    *   **Objective:** Confirm `ping`, `tracert`, `pathping` are available on the application server.
+    *   **Validation:** Execute each command targeting a known host.
+    *   **Status:** [ ] Pending
+7.  **(Optional) APM / .NET Memory Profiler Availability:**
+    *   **Objective:** If these tools are intended for use, confirm they are installed/accessible and can be configured for the target application.
+    *   **Validation:** Launch the tool and check its ability to attach to or configure monitoring for the application process.
+    *   **Status:** [ ] Pending (Specify if these will be used)
+
+**Final Report Structure:**
+1.  Executive Summary (Overall findings, primary root cause(s)).
+2.  Detailed Findings for Each Investigation Area (Methodology, Evidence, Determination).
+3.  Correlated Analysis (How different factors might interact).
+4.  Confirmed Root Cause(s) with Supporting Evidence.
+5.  Actionable Recommendations (Prioritized: Remediation, Optimization, Prevention).
+6.  Appendix (Raw logs, detailed metrics, config snippets if extensive).
+
+**Next Steps:**
+1.  Complete the 'Technology Validation for RCA Tools' section above.
+2.  Update this plan in `tasks.md`.
+3.  Verify plan completeness against PLAN mode checklist.
+4.  Recommend transition to IMPLEMENT mode to execute this investigation plan.
+
+
+
+[2025-05-11 23:22:21] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+1.  **Performance Monitor Access (Application & DB Servers):**
+    *   **Status:** [X] Failed / Not Available
+    *   **Notes:** User confirmed Performance Monitor is not available/accessible. Will rely on alternative methods for performance counter data (e.g., SQL DMVs, enhanced application logging if feasible).
+
+
+[2025-05-11 23:22:50] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+2.  **SQL Server Management Studio (SSMS) Connectivity & Permissions:**
+    *   **Status:** [X] Passed
+    *   **Notes:** Confirmed connection to `MINIJOE\SQLDEVELOPER2022` (DB: `WebSource-AutoBot`) using `sa` login. The `sa` account has `sysadmin` privileges, which are sufficient for all planned diagnostic queries and tool usage (DMVs, Activity Monitor, Profiler/Extended Events).
+
+
+[2025-05-11 23:24:53] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+2.  **SQL Server Management Studio (SSMS) Connectivity & Permissions (Corrected Target DB):**
+    *   **Status:** [X] Passed
+    *   **Notes:** Confirmed connection to `MINIJOE\SQLDEVELOPER2022` using `sa` login. The `sa` account has `sysadmin` privileges. **The target database for investigation is `Sandals-DiscoveryDB` as per user-provided connection strings.** Sysadmin privileges grant sufficient access for all planned diagnostic queries and tool usage on `Sandals-DiscoveryDB`.
+
+
+[2025-05-11 23:27:05] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+3.  **SQL Profiler / Extended Events Setup:**
+    *   **Status:** [ ] Pending - Requires Assistance/Guidance
+    *   **Notes:** User is not familiar with setting up SQL Profiler or Extended Events. Detailed guidance or T-SQL scripts for an Extended Events session will be provided during the IMPLEMENT phase when this step is actively pursued. The `sa` permissions are sufficient to create and run these sessions.
+
+
+[2025-05-11 23:27:57] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+4.  **Access to Application & SQL Server Logs:**
+    *   **Status:** [ ] Pending - Requires Setup/Enhancement
+    *   **Notes:** User indicates that logging (application and/or SQL Server Error Log access) may need to be set up or enhanced. This will be addressed as a prerequisite during the IMPLEMENT phase. SQL Server Error Logs are typically default-enabled; access and verbosity for application logs will be key.
+
+
+[2025-05-11 23:29:34] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+5.  **Source Code Access & Build Environment:**
+    *   **Status:** [X] Passed
+    *   **Notes:** User confirmed the `AutoBot-Enterprise` solution is open in VS Code, code is navigable, and the project is building successfully. This provides the necessary access for code review and potential diagnostic modifications.
+
