@@ -21,7 +21,7 @@ namespace AutoBotUtilities.Tests
             string expectedTariffCode = "61091010";
 
             // Act
-            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
 
             // Assert
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return the exact match if it's valid and exists.");
@@ -39,7 +39,7 @@ namespace AutoBotUtilities.Tests
             string expectedTariffCode = "56079010";
 
             // Act
-            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
 
             // Assert
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return the exact match if it's valid and exists.");
@@ -77,7 +77,7 @@ namespace AutoBotUtilities.Tests
             string expectedTariffCode = null;
 
             // Act
-            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
 
             // Assert
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return null for null input.");
@@ -91,7 +91,7 @@ namespace AutoBotUtilities.Tests
             string expectedTariffCode = "";
 
             // Act
-            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode);
+            string actualTariffCode = await InventoryItemsExService.GetTariffCode(suspectedTariffCode).ConfigureAwait(false);
 
             // Assert
             Assert.That(actualTariffCode, Is.EqualTo(expectedTariffCode), "The method should return empty for empty input.");

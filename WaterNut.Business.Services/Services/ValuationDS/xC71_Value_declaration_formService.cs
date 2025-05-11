@@ -554,14 +554,14 @@ namespace ValuationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing xC71_Value_declaration_form", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () => // Mark the lambda as async
                 {
                     using (var ctx = new xC71_Value_declaration_formService())
                     {
                         foreach (var item in lst.ToList())
                         {
-
-                            ctx.DeletexC71_Value_declaration_form(item).Wait();
+ 
+                            await ctx.DeletexC71_Value_declaration_form(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

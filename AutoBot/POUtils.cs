@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -53,7 +53,7 @@ namespace AutoBot
             }
         }
 
-        private static void SubmitAssessPOErrors(FileTypes ft)
+        private static async Task SubmitAssessPOErrors(FileTypes ft)
         {
             try
             {
@@ -90,14 +90,14 @@ namespace AutoBot
                         };
                     using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                     {
-                        Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
-                            TaskCreationOptions.None, sta);
+                        await Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
+                            TaskCreationOptions.None, sta).ConfigureAwait(false);
                     }
 
 
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directory,
+                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
                         $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
-                        poContacts, body, new string[] { summaryFile });
+                        poContacts, body, new string[] { summaryFile }).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -127,7 +127,7 @@ namespace AutoBot
             }
         }
 
-        public static void SubmitPOs()
+        public static async Task SubmitPOs()
         {
             try
             {
@@ -156,15 +156,21 @@ namespace AutoBot
                             .OrderByDescending(x => x.AsycudaDocumentSetId)
                             .FirstOrDefault();
 
-                    var lst = MoreEnumerable.MaxBy(ctx.TODO_SubmitPOInfo
+                    if (docset == null)
+                    {
+                        Console.WriteLine("SubmitPOs: docset is null. Cannot proceed with filtering TODO_SubmitPOInfo based on Declarant_Reference_Number.");
+                        return;
+                    }
+
+                    var lst = ctx.TODO_SubmitPOInfo
                             .Where(x => x.ApplicationSettingsId ==
                                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                                         x.FileTypeId != null)
                             // .Where(x => !sysLst.Contains(x.AsycudaDocumentSetId))
                             .Where(x => x.IsSubmitted == false)
                             .Where(x => x.CNumber != null)
-                            .Where(x => x.Reference.Contains(docset.Declarant_Reference_Number))
-                            .ToList(), x => x.AsycudaDocumentSetId)
+                            .Where(x => x.Reference.Contains(docset.Declarant_Reference_Number)) // Now safe due to null check
+                            .ToList()
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"),
                             x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z })
@@ -172,7 +178,7 @@ namespace AutoBot
 
                     foreach (var doc in lst)
                     {
-                        SubmitPOs(doc.z, doc.x.ToList(), contacts, poContacts);
+                        await SubmitPOs(doc.z, doc.x.ToList(), contacts, poContacts).ConfigureAwait(false);
                     }
                 }
             }
@@ -182,7 +188,7 @@ namespace AutoBot
             }
         }
 
-        public static void EmailLatestPOEntries()
+        public static async Task EmailLatestPOEntries()
         {
             Console.WriteLine("Create Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -196,23 +202,23 @@ namespace AutoBot
 
                 if (docset != null)
                 {
-                    EmailPOEntries(docset.AsycudaDocumentSetId);
+                    await EmailPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
         }
 
-        public static List<DocumentCT> RecreateLatestPOEntries()
+        public static async Task<List<DocumentCT>> RecreateLatestPOEntries()
         {
             Console.WriteLine("Create Latest PO Entries");
 
-            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetLatestDocSet();
+            var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetLatestDocSet().ConfigureAwait(false);
             var res = EntryDocSetUtils.GetDocSetEntryData(docSet.AsycudaDocumentSetId);
 
 
-            return CreatePOEntries(docSet.AsycudaDocumentSetId, res);
+            return await CreatePOEntries(docSet.AsycudaDocumentSetId, res).ConfigureAwait(false);
         }
 
-        public static void SubmitPOs(FileTypes ft, FileInfo[] fs)
+        public static async Task SubmitPOs(FileTypes ft, FileInfo[] fs)
         {
             try
             {
@@ -281,7 +287,7 @@ namespace AutoBot
                     }
 
 
-                    SubmitPOs(docSet, lst, contacts, poContacts);
+                    await SubmitPOs(docSet, lst, contacts, poContacts).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -290,18 +296,18 @@ namespace AutoBot
             }
         }
 
-        private static void SubmitPOs(AsycudaDocumentSetEx docSet, List<TODO_SubmitPOInfo> pOs, string[] contacts,
+        private static async Task SubmitPOs(AsycudaDocumentSetEx docSet, List<TODO_SubmitPOInfo> pOs, string[] contacts,
             string[] poContacts)
         {
             if (!pOs.Any())
             {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
+                await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                     $"Document Package for {docSet.Declarant_Reference_Number}",
-                    contacts, "No Entries imported", Array.Empty<string>());
+                    contacts, "No Entries imported", Array.Empty<string>()).ConfigureAwait(false);
 
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
-                    $"Assessed Entries for {docSet.Declarant_Reference_Number}",
-                    poContacts, "No Entries imported", Array.Empty<string>());
+               await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
+                   $"Assessed Entries for {docSet.Declarant_Reference_Number}",
+                   poContacts, "No Entries imported", Array.Empty<string>()).ConfigureAwait(false);
                 return;
             }
 
@@ -398,8 +404,8 @@ namespace AutoBot
                         };
                     using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                     {
-                        Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
-                            TaskCreationOptions.None, sta);
+                        await Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
+                            TaskCreationOptions.None, sta).ConfigureAwait(false);
                     }
 
                     pdfs.Add(summaryFile);
@@ -410,23 +416,23 @@ namespace AutoBot
 
                     if (emailIds == null)
                     {
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                             $"Document Package for {docSet.Declarant_Reference_Number}",
-                            contacts, body, pdfs.ToArray());
+                            contacts, body, pdfs.ToArray()).ConfigureAwait(false);
 
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                             $"Assessed Entries for {docSet.Declarant_Reference_Number}",
-                            poContacts, body, Assessedpdfs.ToArray());
+                            poContacts, body, Assessedpdfs.ToArray()).ConfigureAwait(false);
                     }
                     else
                     {
-                        EmailDownloader.EmailDownloader.ForwardMsg(emailIds, Utils.Client,
+                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds, Utils.Client,
                             $"Document Package for {docSet.Declarant_Reference_Number}", body, contacts,
-                            pdfs.ToArray());
+                            pdfs.ToArray()).ConfigureAwait(false);
 
-                        EmailDownloader.EmailDownloader.ForwardMsg(emailIds, Utils.Client,
+                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds, Utils.Client,
                             $"Assessed Entries for {docSet.Declarant_Reference_Number}", body, poContacts,
-                            Assessedpdfs.ToArray());
+                            Assessedpdfs.ToArray()).ConfigureAwait(false);
                     }
 
                     foreach (var item in pOs)
@@ -460,7 +466,7 @@ namespace AutoBot
                         });
                     }
 
-                    ctx.SaveChanges();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -470,7 +476,7 @@ namespace AutoBot
             }
         }
 
-        public static void ExportPOEntries()
+        public static async Task ExportPOEntries()
         {
             try
             {
@@ -482,7 +488,7 @@ namespace AutoBot
                                  .Where(x => x.ApplicationSettingsId ==
                                              BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                     {
-                        ExportPOEntries(docset.AsycudaDocumentSetId);
+                        await ExportPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
                     }
                 }
             }
@@ -493,7 +499,7 @@ namespace AutoBot
             }
         }
 
-        public static void ExportLatestPOEntries()
+        public static async Task ExportLatestPOEntries()
         {
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -506,12 +512,12 @@ namespace AutoBot
                         .FirstOrDefault();
                 if (docset != null)
                 {
-                    ExportPOEntries(docset.AsycudaDocumentSetId);
+                    await ExportPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
         }
 
-        public static void RecreatePOEntries()
+        public static async Task RecreatePOEntries()
         {
             Console.WriteLine("Create PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -524,12 +530,12 @@ namespace AutoBot
                         .FirstOrDefault();
                 if (docset != null)
                 {
-                    RecreatePOEntries(docset.AsycudaDocumentSetId);
+                   await RecreatePOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
         }
 
-        public static void AssessPOEntries(FileTypes ft)
+        public static async Task AssessPOEntries(FileTypes ft)
         {
             Console.WriteLine("Assessing PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -539,14 +545,14 @@ namespace AutoBot
                     .ToList();
                 foreach (var doc in res)
                 {
-                    AssessPOEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId);
+                    await AssessPOEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
 
-            SubmitAssessPOErrors(ft);
+            await SubmitAssessPOErrors(ft).ConfigureAwait(false);
         }
 
-        public static void ClearPOEntries()
+        public static async Task ClearPOEntries()
         {
             Console.WriteLine("Clear PO Entries");
 
@@ -566,13 +572,13 @@ namespace AutoBot
 
                 foreach (var doc in lst)
                 {
-                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
                     BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
             }
         }
 
-        public static void RecreatePOEntries(int asycudaDocumentSetId)
+        public static async Task RecreatePOEntries(int asycudaDocumentSetId)
         {
             try
             {
@@ -599,7 +605,7 @@ namespace AutoBot
                         .ToList();
                     foreach (var docSetId in res)
                     {
-                        CreatePOEntries(docSetId.DocSetId, docSetId.Entrylst);
+                       await CreatePOEntries(docSetId.DocSetId, docSetId.Entrylst).ConfigureAwait(false);
                     }
                 }
             }
@@ -610,7 +616,7 @@ namespace AutoBot
             }
         }
 
-        public static void ExportPOEntries(int asycudaDocumentSetId)
+        public static async Task ExportPOEntries(int asycudaDocumentSetId)
         {
             using (var ctx = new DocumentDSContext())
             {
@@ -669,20 +675,20 @@ namespace AutoBot
                         {
                             var expectedfileName = Path.Combine(directoryName, item.ReferenceNumber + ".xml");
                             //if (File.Exists(expectedfileName)) continue;
-                            BaseDataModel.Instance.ExportDocument(expectedfileName, item.z).Wait();
+                            await BaseDataModel.Instance.ExportDocument(expectedfileName, item.z).ConfigureAwait(false);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    BaseDataModel.EmailExceptionHandler(ex);
+                    await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
                     throw;
                 }
             }
         }
 
-        public static void AssessPOEntry(string docReference, int asycudaDocumentSetId)
+        public static async Task AssessPOEntry(string docReference, int asycudaDocumentSetId)
         {
             try
             {
@@ -697,11 +703,16 @@ namespace AutoBot
                 var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
                 var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
-                var lcont = 0;
-                while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
+                int lcont;
+                var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                lcont = assessmentResult.lcontValue;
+
+                while (assessmentResult.success == false)
                 {
                     // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                     Utils.RunSiKuLi(directoryName, "SaveIM7", lcont.ToString(), 0, 0, 0, 0, true); // Pass true for enableDebugging
+                    assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                    lcont = assessmentResult.lcontValue;
                 }
             }
             catch (Exception)
@@ -710,7 +721,7 @@ namespace AutoBot
             }
         }
 
-        public static void EmailPOEntries(int asycudaDocumentSetId)
+        public static async Task EmailPOEntries(int asycudaDocumentSetId)
         {
             try
             {
@@ -755,8 +766,8 @@ namespace AutoBot
                 }
 
                 if (files.Length > 0)
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directory, $"Entries for {reference}",
-                        contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", files);
+                   await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory, $"Entries for {reference}",
+                        contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", files).ConfigureAwait(false);
 
                 //}
             }
@@ -767,11 +778,11 @@ namespace AutoBot
             }
         }
 
-        public static List<DocumentCT> CreatePOEntries(int docSetId, List<int> entrylst)
+        public static async Task<List<DocumentCT>> CreatePOEntries(int docSetId, List<int> entrylst)
         {
             try
             {
-                BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId).Wait();
+                await BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId).ConfigureAwait(false);
                 BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docSetId, 0);
 
                 var po = CurrentPOInfo(docSetId).FirstOrDefault();
@@ -779,14 +790,14 @@ namespace AutoBot
                 if (File.Exists(insts)) File.Delete(insts);
 
 
-                return BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
-                    (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).Result;
+                return await BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
+                    (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{ex.Message}\r\n{ex.StackTrace}",
-                    Array.Empty<string>());
+                await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found",
+                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{ex.Message}\r\n{ex.StackTrace}",
+                    Array.Empty<string>()).ConfigureAwait(false);
                 throw;
             }
         }

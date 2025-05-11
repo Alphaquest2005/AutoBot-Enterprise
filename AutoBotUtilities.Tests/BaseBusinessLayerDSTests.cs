@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
 using NUnit.Framework;
 using WaterNut.DataSpace;
@@ -20,13 +21,13 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanCallRenameDuplicateDocuments()
+        public async Task CanCallRenameDuplicateDocuments()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
-                var docSet = EntryDocSetUtils.GetLatestDocSet();
-                BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
+                var docSet =await EntryDocSetUtils.GetLatestDocSet().ConfigureAwait(false);
+                await BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId).ConfigureAwait(false);
                 Assert.That(true);
             }
             catch (Exception e)
@@ -38,19 +39,19 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanCallImportDocuments()
+        public async Task CanCallImportDocuments()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
-                var docSet = EntryDocSetUtils.GetDocSet("Imports");
+                var docSet = await EntryDocSetUtils.GetDocSet("Imports").ConfigureAwait(false);
 
                 var fileNames = new System.Collections.Generic.List<string>()
                 {
                     @"D:\OneDrive\Clients\Columbian\Emails\Imports\IM4-GDSGO-17482.xml"
                 };
 
-                Infrastructure.Utils.ImportDocuments(docSet, fileNames);
+                await Infrastructure.Utils.ImportDocuments(docSet, fileNames).ConfigureAwait(false);
 
                 Assert.That(true);
             }

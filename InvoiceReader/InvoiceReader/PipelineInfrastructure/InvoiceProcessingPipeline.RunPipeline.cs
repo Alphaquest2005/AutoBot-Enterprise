@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 var initialSteps = InitializePipelineStepsWithLogging(filePath);
                 ///////////////////////////////////////////////
-                var initialRunSuccess = await RunInitialPipelineStepsWithLogging(filePath, initialSteps);
+                var initialRunSuccess = await RunInitialPipelineStepsWithLogging(filePath, initialSteps).ConfigureAwait(false);
                 //////////////////////////////////////////////
                 ///
                
@@ -37,7 +37,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (isInitialRunUnsuccessful)
                 {
                     // Report unimported file, joining accumulated errors
-                    return EmailErrors();
+                    return await EmailErrors().ConfigureAwait(false);
                     return false;
 
                 }
@@ -50,7 +50,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         LogErrorPipelineCompleted(filePath, errorPipelineResult);
                         LogContextAfterErrorPipeline();
                         if (!errorPipelineResult && _context.Errors.Any()) //cuz the error pipeline could fail
-                            EmailErrors(); //return false;
+                            await EmailErrors().ConfigureAwait(false); //return false;
                         // return errorPipelineResult;
                     }
 
@@ -76,11 +76,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private bool EmailErrors()
+        private async Task<bool> EmailErrors()
         {
             string aggregatedErrors = string.Join("; ", _context.Errors);
-            InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
-                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines);
+           await InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
+                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines).ConfigureAwait(false);
             return false;
           
         }

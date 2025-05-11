@@ -548,14 +548,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing PreviousItemsEx", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new PreviousItemsExService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeletePreviousItemsEx(item).Wait();
+                            await ctx.DeletePreviousItemsEx(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

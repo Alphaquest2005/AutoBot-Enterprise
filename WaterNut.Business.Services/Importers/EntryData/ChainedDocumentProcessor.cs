@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using WaterNut.Business.Services.Utils;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
    
@@ -9,19 +10,20 @@ namespace WaterNut.Business.Services.Importers.EntryData
     {
         private readonly IDocumentProcessor _first;
         private readonly IDocumentProcessor _second;
-
+ 
         public ChainedDocumentProcessor(IDocumentProcessor first, IDocumentProcessor second)
         {
             _first = first;
             _second = second;
         }
         
-        public List<dynamic> Execute(List<dynamic> list)
+        public async Task<List<dynamic>> Execute(List<dynamic> list)
         {
-            return _second.Execute(_first.Execute(list));
+            var firstResult = await _first.Execute(list).ConfigureAwait(false);
+            return await _second.Execute(firstResult).ConfigureAwait(false);
         }
     }
-
+ 
     public static class ChainedDocumentProcessorConstruction
     {
         public static IDocumentProcessor Then(this IDocumentProcessor first, IDocumentProcessor next) =>

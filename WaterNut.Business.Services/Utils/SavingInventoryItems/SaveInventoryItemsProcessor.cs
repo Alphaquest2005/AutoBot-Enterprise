@@ -4,11 +4,12 @@ using InventoryDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Utils.SavingInventoryItems
 {
     public interface ISaveInventoryItemsProcessor
     {
-        void Execute(List<InventoryDataItem> processedInventoryItems);
+        Task Execute(List<InventoryDataItem> processedInventoryItems);
     }
 }

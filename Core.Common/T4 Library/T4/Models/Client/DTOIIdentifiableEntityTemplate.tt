@@ -87,7 +87,7 @@ foreach (EdmProperty p in ens)
  #>
        
 
-        private new void UpdateEntityName(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void UpdateEntityName(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if ("<#=elst.Replace(".EntityName","") #>".Contains(e.PropertyName))
             NotifyPropertyChanged();//m => m.EntityName

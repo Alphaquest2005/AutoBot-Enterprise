@@ -3,7 +3,8 @@ using System.IO;
 using System.Linq;
 using Serilog; // Added
 using OCR.Business.Entities; // Added
-using System; // Added
+using System;
+using System.Threading.Tasks; // Added
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -12,7 +13,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Assuming _utilsLogger is defined in another partial class part
         // private static readonly ILogger _utilsLogger = Log.ForContext(typeof(InvoiceProcessingUtils));
 
-        public static string CreateEmail(string file, EmailDownloader.Client client, string error, List<Line> failedlst,
+        public static async Task<string> CreateEmail(string file, EmailDownloader.Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
              _utilsLogger.Debug("CreateEmail called for File: {FilePath}", file);
@@ -33,7 +34,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              _utilsLogger.Debug("Email body created (Length: {BodyLength}) for File: {FilePath}", body?.Length ?? 0, file);
 
             _utilsLogger.Debug("Calling SendEmail for File: {FilePath}", file);
-            SendEmail(file, client, txtFile, body);
+            await SendEmail(file, client, txtFile, body).ConfigureAwait(false);
 
              _utilsLogger.Information("CreateEmail process completed for File: {FilePath}", file);
             return body;

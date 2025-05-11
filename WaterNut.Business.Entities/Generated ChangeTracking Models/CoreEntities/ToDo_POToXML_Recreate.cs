@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public new ChangeTrackingCollection<ToDo_POToXML_Recreate> ChangeTracker
+        public ChangeTrackingCollection<ToDo_POToXML_Recreate> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public new void StartTracking()
+         public void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<ToDo_POToXML_Recreate>(this);
         }

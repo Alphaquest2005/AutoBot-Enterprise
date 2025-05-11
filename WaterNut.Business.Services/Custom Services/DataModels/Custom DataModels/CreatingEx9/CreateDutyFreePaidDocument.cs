@@ -1543,7 +1543,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return remainingSalesQty;
         }
 
-        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus,ref string sql )
+        public void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus,ref string sql )
         {
             
             foreach (var a in allocations)

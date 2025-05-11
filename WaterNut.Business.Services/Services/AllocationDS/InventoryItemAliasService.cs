@@ -548,14 +548,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing InventoryItemAlias", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () => // Mark the lambda as async
                 {
                     using (var ctx = new InventoryItemAliasService())
                     {
                         foreach (var item in lst.ToList())
                         {
-
-                            ctx.DeleteInventoryItemAlias(item).Wait();
+ 
+                            await ctx.DeleteInventoryItemAlias(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

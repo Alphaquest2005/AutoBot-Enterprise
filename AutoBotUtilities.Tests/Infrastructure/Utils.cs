@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
@@ -62,11 +63,11 @@ namespace AutoBotUtilities.Tests.Infrastructure
             AutoBot.Utils.SetCurrentApplicationSettings(appId);
         }
 
-        public static IEnumerable<FileTypes> GetUnknownCSVFileType(string fileName) =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Csv, fileName);
+        public static async Task<IEnumerable<FileTypes>> GetUnknownCSVFileType(string fileName) =>
+            await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Csv, fileName).ConfigureAwait(false);
 
-        public static IEnumerable<FileTypes> GetPOCSVFileType(string testFile) =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv, testFile);
+        public static async Task<IEnumerable<FileTypes>> GetPOCSVFileType(string testFile) =>
+           await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv, testFile).ConfigureAwait(false);
 
         public static void 
             ClearDataBase()
@@ -91,7 +92,7 @@ namespace AutoBotUtilities.Tests.Infrastructure
         }
 
 
-        public static void ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames, bool noMessages = false)
+        public static Task ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames, bool noMessages = false)
         {
             bool importOnlyRegisteredDocument = true;
 
@@ -101,18 +102,18 @@ namespace AutoBotUtilities.Tests.Infrastructure
 
             bool linkPi = true;
 
-            BaseDataModel.Instance.ImportDocuments(docSet, fileNames, importOnlyRegisteredDocument,
-                importTariffCodes, noMessages, overwriteExisting, linkPi).Wait();
+            return BaseDataModel.Instance.ImportDocuments(docSet, fileNames, importOnlyRegisteredDocument,
+                importTariffCodes, noMessages, overwriteExisting, linkPi);
         }
 
 
-        public static void ImportEntryDataOldWay(List<string> files, string entryType, string fileFormat)
+        public static async Task ImportEntryDataOldWay(List<string> files, string entryType, string fileFormat)
         {
-            var testFile = Infrastructure.Utils.GetTestSalesFile(files);
-            var fileTypes = FileTypeManager.GetImportableFileType(entryType, fileFormat, testFile);
+            var testFile = GetTestSalesFile(files);
+            var fileTypes = await FileTypeManager.GetImportableFileType(entryType, fileFormat, testFile).ConfigureAwait(false);
             foreach (var fileType in fileTypes)
             {
-                CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType);
+                await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
             }
         }
 

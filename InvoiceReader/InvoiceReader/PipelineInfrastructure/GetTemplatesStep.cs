@@ -32,7 +32,7 @@ namespace InvoiceReader.PipelineInfrastructure
         {
             var activeTemplatesQuery = GetActiveTemplatesQuery(new OCRContext(), templateExpression);
             var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
-            return GetContextTemplates(context, templates);
+            return await GetContextTemplates(context, templates).ConfigureAwait(false);
         }
 
 
@@ -77,7 +77,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                     _logger.Information("- ID: {Id}, Name: {Name}, Parts: {PartCount}, IsActive: {IsActive}",
                                         t.Id, t.Name ?? "null", t.Parts?.Count ?? 0, t.IsActive);
                                 }
-                                context.Templates = GetContextTemplates(context, templates);
+                                context.Templates = await GetContextTemplates(context, templates).ConfigureAwait(false);
 
                                 _allTemplates = context.Templates;
                                 return true;
@@ -127,11 +127,12 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
-        private static List<Invoice> GetContextTemplates(InvoiceProcessingContext context, List<Invoices> templates)
+        private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoices> templates)
         {
+            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType).ConfigureAwait(false);
             return templates.Select(x => new Invoice(x){
                 FileType = context.FileType,
-                DocSet = context.DocSet ?? WaterNut.DataSpace.Utils.GetDocSets(context.FileType),
+                DocSet = docSet,
                 FilePath = context.FilePath,
                 EmailId = context.EmailId,
 

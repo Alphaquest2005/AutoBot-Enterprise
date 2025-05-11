@@ -16,13 +16,13 @@ namespace AutoBotUtilities.Tests
     public class DoAutoMatchTest
     {
         [SetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
             
                 Infrastructure.Utils.ClearDataBase();
 
-                ImportTestFile();
-                ImportTestIM7();
+                await ImportTestFile().ConfigureAwait(false);
+                await ImportTestIM7().ConfigureAwait(false);
             
             Infrastructure.Utils.SetTestApplicationSettings(2);
             return;
@@ -101,26 +101,26 @@ namespace AutoBotUtilities.Tests
 
 
 
-        private static void ImportTestIM7()
+        private static async Task ImportTestIM7()
         {
             if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
 
             var im7File = Infrastructure.Utils.GetTestSalesFile(new List<string>()
                 { "Discrepancy", "IM7-GDSGO-19810.xml" });
 
-            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports");
-            Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File });
+            var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports").ConfigureAwait(false);
+            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File }).ConfigureAwait(false);
         }
 
-        private static void ImportTestFile()
+        private static async Task ImportTestFile()
         {
             if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
 
             var disFile = Infrastructure.Utils.GetTestSalesFile(new List<string>()
                 { "Discrepancy", "CALA MARINE - Customs-test.csv" });
 
-            Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Unknown,
-                FileTypeManager.FileFormats.Csv);
+           await Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Unknown,
+               FileTypeManager.FileFormats.Csv).ConfigureAwait(false);
         }
     }
 }

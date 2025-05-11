@@ -37,21 +37,33 @@ namespace EntryDataQS.Business.Services
                         .ConfigureAwait(false)
                 };
 
-                var dfileType = FileTypeManager
-                    .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).FirstOrDefault(
+                var importableFileTypes = await FileTypeManager
+                    .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).ConfigureAwait(false);
+                
+                var dfileType = importableFileTypes.FirstOrDefault(
                         x =>
                             Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) &&
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = FileTypeManager
-                        .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).First();
+                    // Re-fetch if not found, or ensure the logic correctly handles the list if GetImportableFileType returns multiple.
+                    // This assumes GetImportableFileType is intended to return a list and we need to re-evaluate or take the first.
+                    // If GetImportableFileType was meant to return a single best match, its internal logic might need adjustment.
+                    // For now, mirroring the original logic of taking the first if the specific match fails.
+                    var allImportableTypes = await FileTypeManager
+                        .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).ConfigureAwait(false);
+                    dfileType = allImportableTypes.FirstOrDefault(); // Changed from .First() to .FirstOrDefault() for safety
                 }
 
-                if (dfileType.CopyEntryData)
+                if (dfileType != null && dfileType.CopyEntryData) // Added null check for dfileType
                 {
-                    docSet.Add(EntryDocSetUtils.GetAsycudaDocumentSet(dfileType.DocSetRefernece, true));
+                    var documentSetToAdd = await EntryDocSetUtils.GetAsycudaDocumentSet(dfileType.DocSetRefernece, true).ConfigureAwait(false);
+                    if (documentSetToAdd != null) // Ensure we don't add null
+                    {
+                        docSet.Add(documentSetToAdd);
+                    }
                 }
 
                 await WaterNut.DataSpace.SaveCSVModel.Instance.ProcessDroppedFile(droppedFilePath, dfileType, docSet,
@@ -73,16 +85,32 @@ namespace EntryDataQS.Business.Services
                 var emailId = res?.EmailId;
                 var fileTypeId = res?.FileTypeId;
 
-                var dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).ToList().FirstOrDefault(x =>
+                var importableFileTypesPdf = await FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).ConfigureAwait(false);
+                var dfileType = importableFileTypesPdf.FirstOrDefault(x =>
                     Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
+                
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).First();
+                    // Assuming the intent is to take the first if no specific pattern match is found from the initial list.
+                    // If GetImportableFileType is guaranteed to return something or if specific error handling is needed for an empty list,
+                    // this logic might need adjustment.
+                    dfileType = importableFileTypesPdf.FirstOrDefault(); // Changed from .First() to .FirstOrDefault() for safety
                 }
 
-                dfileType.AsycudaDocumentSetId = docSetId;
-                var client = BaseDataModel.GetClient();
-                await InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, Utils.GetDocSets(dfileType), dfileType, client).ConfigureAwait(false);
+                if (dfileType != null) // Ensure dfileType is not null before proceeding
+                {
+                    dfileType.AsycudaDocumentSetId = docSetId;
+                    var client = BaseDataModel.GetClient(); // Assuming GetClient() is synchronous
+                    var docSets = await Utils.GetDocSets(dfileType).ConfigureAwait(false);
+                    await InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, docSets, dfileType, client).ConfigureAwait(false);
+                }
+                else
+                {
+                    // Handle the case where no suitable dfileType was found
+                    // For example, log an error or throw an exception
+                    Console.WriteLine($"No suitable PDF file type found for {droppedFilePath} with fileType hint {fileType}");
+                    // Depending on requirements, you might throw new ApplicationException("No suitable PDF file type found.");
+                }
             
             
         }

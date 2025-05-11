@@ -7,8 +7,6 @@ using System.Linq;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Services;
 //using WaterNut.Client.Services;
-using CoreEntities.Client.Services;
-
 using System;
 
 namespace CoreEntities.Client.Entities

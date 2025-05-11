@@ -5,25 +5,26 @@ using Core.Common.Extensions;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using TrackableEntities;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class SaveXSales : IProcessor<BetterExpando>
     {
         private readonly ImportSettings _importSettings;
-
+ 
         public SaveXSales(ImportSettings importSettings)
         {
             _importSettings = importSettings;
-
+ 
         }
-
-        public Result<List<BetterExpando>> Execute(List<BetterExpando> data)
+ 
+        public async Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data)
         {
             try
             {
-
-
+ 
+ 
                 using (var ctx = new EntryDataDSContext())
                 {
                     foreach (dynamic itm in data)
@@ -68,10 +69,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
                         };
                         ctx.xSalesFiles.Add(xSale);
                     }
-
-                    ctx.SaveChanges();
+ 
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
-
+ 
                 return new Result<List<BetterExpando>>(data, true, "");
             }
             catch (Exception e)

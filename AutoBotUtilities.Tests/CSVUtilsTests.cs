@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using OCR.Business.Services;
@@ -48,16 +49,16 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportPOFileOldWay()
+        public async Task CanImportPOFileOldWay()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>(){ "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
+                var fileTypes = await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    CSVUtils.SaveCsv(new List<FileInfo>(){new FileInfo(testFile)}, fileType);
+                    await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
 
 
                     AssertPOExists();
@@ -85,16 +86,16 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportShipmentInvoiceOldWay()
+        public async Task CanImportShipmentInvoiceOldWay()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "02679.pdf" });
-                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                var fileTypes = (IEnumerable<FileTypes>)await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
 
 
                     using (var ctx = new EntryDataDSContext())
@@ -120,17 +121,17 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportPOFile()
+        public async Task CanImportPOFile()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 // Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { "TestPOCSVFile.csv" }, FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
+                var fileTypes = await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
                 AssertPOExists();
@@ -146,12 +147,12 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanGetUnknownFileType()
+        public async Task CanGetUnknownFileType()
         {
             try
             {
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetUnknownCSVFileType(testFile);
+                var fileTypes = await Infrastructure.Utils.GetUnknownCSVFileType(testFile).ConfigureAwait(false);
                 Assert.That(fileTypes.Any());
             }
             catch (Exception e)
@@ -163,12 +164,12 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanGetPOFileType()
+        public async Task CanGetPOFileType()
         {
             try
             {
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
+                var fileTypes =await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 Assert.That(fileTypes.Any());
             }
             catch (Exception e)

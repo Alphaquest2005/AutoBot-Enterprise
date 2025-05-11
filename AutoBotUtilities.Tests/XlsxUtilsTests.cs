@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using OCR.Business.Services;
@@ -46,7 +47,7 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanImportXSLXPOFile()
+        public async Task CanImportXSLXPOFile()
         {
             try
             {
@@ -57,10 +58,10 @@ namespace AutoBotUtilities.Tests
                 string testFilePath = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Test Data", "HAWB9595443", "111-8019845-2302666.xlsx"));
                 Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
                 var testFile = testFilePath; // Use the constructed path
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -97,7 +98,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportXSLXPOFileWithCategoryAndTariff()
+        public async Task CanImportXSLXPOFileWithCategoryAndTariff()
         {
             try
             {
@@ -106,10 +107,10 @@ namespace AutoBotUtilities.Tests
                 string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-7827932-2029910.xlsx";
                 Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
                 var testFile = testFilePath; // Use the provided path
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -143,7 +144,7 @@ namespace AutoBotUtilities.Tests
             }
         }
 [Test]
-        public void CanImportXSLXPOFileWithCategoryAndTariff_NewFile() // Renamed method
+        public async Task CanImportXSLXPOFileWithCategoryAndTariff_NewFile() // Renamed method
         {
             try
             {
@@ -152,10 +153,10 @@ namespace AutoBotUtilities.Tests
                 string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-7827932-2029910.xlsx"; // Modified file path
                 Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
                 var testFile = testFilePath; // Use the provided path
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -199,7 +200,7 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanImportXSLXPOFileWithBadCategoryCheckingimportsCorrectly() // Renamed method
+        public async Task CanImportXSLXPOFileWithBadCategoryCheckingimportsCorrectly() // Renamed method
         {
             try
             {
@@ -208,10 +209,10 @@ namespace AutoBotUtilities.Tests
                 string testFilePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\114-2562440-6478607.xlsx"; // Modified file path
                 Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
                 var testFile = testFilePath; // Use the provided path
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -254,16 +255,16 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportXSLXSalesFile()
+        public async Task CanImportXSLXSalesFile()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Monthly Customs Sales Report as at May 2022.xlsx" });
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -285,16 +286,16 @@ namespace AutoBotUtilities.Tests
             }
         }
         [Test]
-        public void CanImportXSLXDiscrepancyFile()
+        public async Task CanImportXSLXDiscrepancyFile()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "INTERNATIONAL PAINT DISCREPANCY- Customs.xlsx" });
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Dis, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Dis, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -316,16 +317,16 @@ namespace AutoBotUtilities.Tests
             }
         }
         [Test]
-        public void CanImportXSLXUnknownFile_Discrepancy()
+        public async Task CanImportXSLXUnknownFile_Discrepancy()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "INTERNATIONAL PAINT DISCREPANCY- Customs.xlsx" });
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -348,16 +349,16 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportXSLXUnknownFile_Sales()
+        public async Task CanImportXSLXUnknownFile_Sales()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "July-Sept 2020.xlsx" });
-                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    new FileTypeImporter(fileType).Import(testFile);
+                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
 
                 }
 

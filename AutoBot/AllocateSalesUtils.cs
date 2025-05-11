@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
 using WaterNut.DataSpace;
@@ -8,7 +9,7 @@ namespace AutoBot
 {
     public class AllocateSalesUtils
     {
-        public static void AllocateSales()
+        public static async Task AllocateSales()
         {
             Console.WriteLine("Allocations Started");
            
@@ -18,7 +19,7 @@ namespace AutoBot
 
             new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).Wait();
 
-            EmailSalesErrorsUtils.EmailSalesErrors();
+            await EmailSalesErrorsUtils.EmailSalesErrors().ConfigureAwait(false);
             
         }
 

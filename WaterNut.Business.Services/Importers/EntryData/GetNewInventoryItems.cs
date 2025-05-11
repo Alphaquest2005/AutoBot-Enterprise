@@ -22,15 +22,15 @@ namespace WaterNut.Business.Services.Importers.EntryData
         }
 
         // Revert signature to match IProcessor<InventoryDataItem> interface
-        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
+        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
-
+ 
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
             var newItems = data.Where(x => x.Item == null).Select(x => x.Data).ToList();
             // Synchronously wait for the async call result (potential blocking issue)
-            var newInventoryItemFromData = InventoryItemDataUtils.GetNewInventoryItemFromData(newItems, inventorySource).Result;
+            var newInventoryItemFromData = await InventoryItemDataUtils.GetNewInventoryItemFromData(newItems, inventorySource).ConfigureAwait(false);
             return new Result<List<InventoryDataItem>>(newInventoryItemFromData, true, "") ;
-
+ 
         }
     }
 }

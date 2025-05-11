@@ -58,7 +58,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
         }
 
-        private new void OnCurrentAsycudaDocumentItemChanged(object sender,
+        private void OnCurrentAsycudaDocumentItemChanged(object sender,
             NotificationEventArgs<AsycudaDocumentItem> e)
         {
            

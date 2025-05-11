@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using MoreLinq;
@@ -12,7 +13,7 @@ namespace AutoBot
 {
     public class SubmitSalesXmlToCustomsUtils
     {
-        public static void SubmitSalesXMLToCustoms(int months)
+        public static async Task SubmitSalesXMLToCustoms(int months)
         {
             try
             {
@@ -20,7 +21,7 @@ namespace AutoBot
 
                 // var saleInfo = CurrentSalesInfo();
                 
-                var salesinfo = BaseDataModel.CurrentSalesInfo(months);
+                var salesinfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
 
                 GetSalesXmls(salesinfo).ForEach(emailIds =>  ProcessSalesData(salesinfo, emailIds));
             }
@@ -77,14 +78,14 @@ namespace AutoBot
         }
 
 
-        private static void SendEmails(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds, string[] contacts, string body, List<string> attachments)
+        private static async Task SendEmails(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds, string[] contacts, string body, List<string> attachments)
         {
             if (emailIds.Key == null)
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Assessed Ex-Warehouse Entries",
-                    contacts, body, attachments.ToArray());
+                await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Assessed Ex-Warehouse Entries",
+                    contacts, body, attachments.ToArray()).ConfigureAwait(false);
             else
-                EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key, Utils.Client,
-                    "Assessed Ex-Warehouse Entries", body, contacts, attachments.ToArray());
+                await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client,
+                    "Assessed Ex-Warehouse Entries", body, contacts, attachments.ToArray()).ConfigureAwait(false);
         }
 
         private static List<string> GetAttachments(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds) => emailIds.SelectMany(GetAttachment).ToList();

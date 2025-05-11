@@ -1,3 +1,4 @@
+﻿using System.Threading.Tasks;
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -18,20 +19,20 @@ namespace WaterNut.DataSpace
 {
     public class EntryDocSetUtils
     {
-        public static (AsycudaDocumentSet docSet, List<IGrouping<string, xcuda_ASYCUDA>> lst)
+        public static async Task<(AsycudaDocumentSet docSet, List<IGrouping<string, xcuda_ASYCUDA>> lst)>
             GetDuplicateDocuments(int docKey)
         {
             try
             {
-
-                var docSet = GetAsycudaDocumentSet(docKey);
-
-                var res = GetRelatedDocuments(docSet);
-
+ 
+                var docSet = await GetAsycudaDocumentSet(docKey).ConfigureAwait(false);
+ 
+                var res = await GetRelatedDocuments(docSet).ConfigureAwait(false);
+ 
                 var lst = FilterForDuplicateDocuments(res, docSet);
-
+ 
                 return (docSet, lst);
-
+ 
             }
             catch (Exception e)
             {
@@ -40,12 +41,12 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static AsycudaDocumentSet GetAsycudaDocumentSet(int docKey)
+        private static async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int docKey)
         {
             using (var ctx = new DocumentDSContext())
             {
-                return ctx.AsycudaDocumentSets.Include("xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA")
-                    .First(x => x.AsycudaDocumentSetId == docKey);
+                return await ctx.AsycudaDocumentSets.Include("xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA")
+                    .FirstAsync(x => x.AsycudaDocumentSetId == docKey).ConfigureAwait(false);
             }
         }
 
@@ -59,32 +60,31 @@ namespace WaterNut.DataSpace
                 .ToList();
         }
 
-        public static List<IGrouping<string, xcuda_ASYCUDA>> GetRelatedDocuments(AsycudaDocumentSet docSet)
+        public static async Task<List<IGrouping<string, xcuda_ASYCUDA>>> GetRelatedDocuments(AsycudaDocumentSet docSet)
         {
-
+ 
             using (var ctx = new DocumentDSContext())
             {
-                var res = ctx.xcuda_ASYCUDA
+                var res = await ctx.xcuda_ASYCUDA
                     .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)
                     .Include(x => x.xcuda_Declarant)
                     .Where(
                         x => x != null && x.xcuda_Declarant != null &&
                              x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
                              ((x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
-                               x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
+                              x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
                               (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId &&
                                x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
                     )
-                    .ToList() // must load first to get the navigation properties
-                    .GroupBy(x => x.xcuda_Declarant.Number) //
-                    .ToList();
-
-                return res;
+                    .ToListAsync() // must load first to get the navigation properties
+                    .ConfigureAwait(false);
+                return res.GroupBy(x => x.xcuda_Declarant.Number).ToList();
+ 
             }
         }
 
-        public static void RenameDuplicateDocuments(List<IGrouping<string, xcuda_ASYCUDA>> lst,
-            ref AsycudaDocumentSet docSet)
+        public static async Task RenameDuplicateDocuments(List<IGrouping<string, xcuda_ASYCUDA>> lst,
+            AsycudaDocumentSet docSet) // Removed 'ref' keyword
         {
             try
             {
@@ -95,7 +95,7 @@ namespace WaterNut.DataSpace
                     foreach (var doc in g.Where(x => x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false).ToList())
                     {
                         //AppendDocSetLastFileNumber(docSet);
-                        var prop = GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId);
+                        var prop = await GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId).ConfigureAwait(false);
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
                         var newRef = GetNewReference(docSet, declarant, ctx);
@@ -105,8 +105,8 @@ namespace WaterNut.DataSpace
                         ctx.SaveChanges();
                         ctx.ApplyChanges(docSet);
                         ctx.SaveChanges();
-
-                        UpdateNameDependentAttachments(prop.ASYCUDA_Id, oldRef, newRef);
+ 
+                        await UpdateNameDependentAttachments(prop.ASYCUDA_Id, oldRef, newRef).ConfigureAwait(false);
                     }
                 }
             }
@@ -133,20 +133,23 @@ namespace WaterNut.DataSpace
             return newRef;
         }
 
-        private static xcuda_ASYCUDA_ExtendedProperties GetXcudaAsycudaExtendedProperties(xcuda_ASYCUDA doc,
+        private static async Task<xcuda_ASYCUDA_ExtendedProperties> GetXcudaAsycudaExtendedProperties(xcuda_ASYCUDA doc,
             int docSetAsycudaDocumentSetId)
         {
             try
             {
-                return new DocumentDSContext { StartTracking = true }.xcuda_ASYCUDA_ExtendedProperties.First(x =>
-                    x.ASYCUDA_Id == doc.ASYCUDA_Id); //&& x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId
+                using (var ctx = new DocumentDSContext { StartTracking = true })
+                {
+                    return await ctx.xcuda_ASYCUDA_ExtendedProperties.FirstAsync(x =>
+                        x.ASYCUDA_Id == doc.ASYCUDA_Id).ConfigureAwait(false); //&& x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
+ 
         }
 
         private static void AppendDocSetLastFileNumber(AsycudaDocumentSet docSet)
@@ -155,18 +158,18 @@ namespace WaterNut.DataSpace
             docSet.TrackingState = TrackingState.Modified;
         }
 
-        private static void UpdateNameDependentAttachments(int asycudaId, string oldRef, string newRef)
+        private static async Task UpdateNameDependentAttachments(int asycudaId, string oldRef, string newRef)
         {
             using (var ctx = new DocumentItemDSContext { StartTracking = true })
             {
-                var itms = GetAttachementItems(asycudaId, oldRef, ctx);
-
+                var itms = await GetAttachementItems(asycudaId, oldRef, ctx).ConfigureAwait(false);
+ 
                 foreach (var itm in itms)
                 {
                     UpdateAttachments(oldRef, newRef, itm);
                 }
-
-                ctx.SaveChanges();
+ 
+                await ctx.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 
@@ -181,64 +184,64 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static List<xcuda_Attached_documents> GetAttachementItems(int asycudaId, string oldRef,
+        private static async Task<List<xcuda_Attached_documents>> GetAttachementItems(int asycudaId, string oldRef,
             DocumentItemDSContext ctx)
         {
-            return ctx.xcuda_Attached_documents
+            return await ctx.xcuda_Attached_documents
                 .Include("xcuda_Attachments.Attachments")
                 .Where(x => x.Attached_document_reference == oldRef)
                 .Where(x => x.xcuda_Item.ASYCUDA_Id == asycudaId)
-                .ToList();
+                .ToListAsync().ConfigureAwait(false);
         }
 
-        public static AsycudaDocumentSet GetLatestDocSet()
+        public static async Task<AsycudaDocumentSet> GetLatestDocSet()
         {
             using (var ctx = new DocumentDSContext())
             {
-                var docSet = ctx.AsycudaDocumentSets.Where(x =>
+                var docSet = await ctx.AsycudaDocumentSets.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .OrderByDescending(x => x.AsycudaDocumentSetId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
                 return docSet;
             }
         }
 
-        public static AsycudaDocumentSet GetDocSet(string Reference)
+        public static async Task<AsycudaDocumentSet> GetDocSet(string Reference)
         {
             using (var ctx = new DocumentDSContext())
             {
-                var docSet = ctx.AsycudaDocumentSets.Where(x =>
+                var docSet = await ctx.AsycudaDocumentSets.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Where(x => x.Declarant_Reference_Number.Contains(Reference))
                     .OrderByDescending(x => x.AsycudaDocumentSetId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
                 return docSet;
             }
         }
 
-        public static List<AsycudaDocumentSet> GetLatestModifiedDocSet()
+        public static async Task<List<AsycudaDocumentSet>> GetLatestModifiedDocSet()
         {
             using (var ctx = new DocumentDSContext())
             {
-                var docSet = ctx.AsycudaDocumentSets.Where(x =>
+                var docSet = await ctx.AsycudaDocumentSets.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.Any(z => z.ImportComplete == false))
                     .OrderByDescending(x => x.xcuda_ASYCUDA_ExtendedProperties.Max(z => z.ASYCUDA_Id))
-                    .ToList();
+                    .ToListAsync().ConfigureAwait(false);
                 return docSet;
             }
         }
 
-        public static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) CreateMonthYearAsycudaDocSet(
+        public static async Task<(DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)> CreateMonthYearAsycudaDocSet(
             DateTime startDate)
         {
             var endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
             var docRef = startDate.ToString("MMMM") + " " + startDate.Year;
-            var docSet = GetAsycudaDocumentSet(docRef, false);
-
+            var docSet = await GetAsycudaDocumentSet(docRef, false).ConfigureAwait(false);
+ 
             var dirPath =
                 StringExtensions.UpdateToCurrentUser(
                     BaseDataModel.GetDocSetDirectoryName(docRef));
@@ -246,17 +249,20 @@ namespace WaterNut.DataSpace
             return (StartDate: startDate, EndDate: endDate, DocSet: docSet, DirPath: dirPath);
         }
 
-        public static AsycudaDocumentSet GetAsycudaDocumentSet(string docRef, bool isSystemDocSet)
+        public static async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(string docRef, bool isSystemDocSet)
         {
             AsycudaDocumentSet docSet;
-            docSet = new DocumentDSContext().AsycudaDocumentSets.FirstOrDefault(x =>
-                x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
-                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-            if (docSet == null) docSet = CreateAsycudaDocumentSet(docRef, isSystemDocSet);
+            using (var ctx = new DocumentDSContext()) // Add using for proper disposal
+            {
+                docSet = await ctx.AsycudaDocumentSets.FirstOrDefaultAsync(x => // Use FirstOrDefaultAsync
+                    x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+            }
+            if (docSet == null) docSet = await CreateAsycudaDocumentSet(docRef, isSystemDocSet).ConfigureAwait(false);
             return docSet;
         }
 
-        public static AsycudaDocumentSet CreateAsycudaDocumentSet(string docRef, bool isSystemDocSet)
+        public static async Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(string docRef, bool isSystemDocSet)
         {
             try
             {
@@ -273,18 +279,18 @@ namespace WaterNut.DataSpace
                             return x.CustomsOperationId == defaultCustomsOperation
                                    && x.IsDefault == true;
                         }); //&& x.Discrepancy != true
-                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                    await ctx.Database.ExecuteSqlCommandAsync($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Customs_ProcedureId},0)");
+                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Customs_ProcedureId},0)").ConfigureAwait(false);
 
-                    docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x =>
+                    docSet = await ctx.AsycudaDocumentSets.FirstOrDefaultAsync(x =>
                         x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
                     if (!isSystemDocSet) return docSet;
                     ctx.SystemDocumentSets.Add(new SystemDocumentSet(true)
                         { AsycudaDocumentSet = docSet, TrackingState = TrackingState.Added });
-                    ctx.SaveChanges();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
 
                 return docSet;

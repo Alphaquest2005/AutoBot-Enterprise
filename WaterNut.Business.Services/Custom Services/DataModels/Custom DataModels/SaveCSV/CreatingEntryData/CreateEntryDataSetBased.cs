@@ -57,7 +57,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                DataSpace.BaseDataModel.EmailExceptionHandler(e);
+                await DataSpace.BaseDataModel.EmailExceptionHandlerAsync(e).ConfigureAwait(false);
 
             }
 

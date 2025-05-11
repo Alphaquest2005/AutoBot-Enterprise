@@ -37,7 +37,7 @@ namespace WaterNut.Business.Services.Utils
             throw new NotImplementedException();
         }
 
-        public static void SaveCSVReport<T>(List<T> errors, string errorfile) where T : class, IIdentifiableEntity, ITrackable, INotifyPropertyChanged
+        public static async Task SaveCSVReport<T>(List<T> errors, string errorfile) where T : class, IIdentifiableEntity, ITrackable, INotifyPropertyChanged
         {
             var res = new ExportToCSV<T, List<T>>();
             res.IgnoreFields.AddRange(typeof(IIdentifiableEntity).GetProperties());
@@ -49,7 +49,7 @@ namespace WaterNut.Business.Services.Utils
             res.dataToPrint = errors;
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
             {
-                Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                await Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
             }
         }
 
@@ -67,17 +67,17 @@ namespace WaterNut.Business.Services.Utils
             }
             catch (Exception e)
             {
-                EmailCSVImportError(file, e);
+                await EmailCSVImportError(file, e).ConfigureAwait(false);
             }
         }
 
-        private static void EmailCSVImportError(FileInfo file, Exception e)
+        private static async Task EmailCSVImportError(FileInfo file, Exception e)
         {
            
                 if (IsErrorLogSent(file)) return;
                 var att = GetCSVOriginalFileAttachments(file);
                 var body = CreateCSVErrorEmailBody(file, e);
-                EmailDownloader.EmailDownloader.SendBackMsg(att?.EmailId, BaseDataModel.GetClient(), body);
+                await EmailDownloader.EmailDownloader.SendBackMsgAsync(att?.EmailId, BaseDataModel.GetClient(), body).ConfigureAwait(false);
                 if(att != null) SaveErrorLog(att);
             
         }
@@ -132,12 +132,10 @@ namespace WaterNut.Business.Services.Utils
             Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
             foreach (var file in csvFiles)
             {
-
                 try
                 {
                     await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true).ConfigureAwait(false);//set to false to merge
                         
-
 
                     //if (VerifyCSVImport(file))
                     //    return;
@@ -163,14 +161,14 @@ namespace WaterNut.Business.Services.Utils
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
                                 .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
-                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, BaseDataModel.GetClient(), body);
+                            await EmailDownloader.EmailDownloader.SendBackMsgAsync(emailId, BaseDataModel.GetClient(), body).ConfigureAwait(false);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = att.Id,
                                 Status = "Sender Informed of Error",
                                 TrackingState = TrackingState.Added
                             });
-                            ctx.SaveChanges();
+                            await ctx.SaveChangesAsync().ConfigureAwait(false);
                         }
                     }
 
@@ -215,7 +213,7 @@ namespace WaterNut.Business.Services.Utils
 
                 if (GetDataRows(file, fileType, out var table, out var dRows, out var header)) return; // not right file type
 
-                ImportRows(file, fileType, dic, dRows, header, table);
+                await ImportRows(file, fileType, dic, dRows, header, table).ConfigureAwait(false);
 
                 
                 await ImportFile(file, fileType, overwrite, table).ConfigureAwait(false);
@@ -293,7 +291,6 @@ namespace WaterNut.Business.Services.Utils
                         row[mappingOriginalName] = preValues[mapping.Id];
                 }
             }
-
 
 
         }
@@ -505,7 +502,7 @@ namespace WaterNut.Business.Services.Utils
             var output = CreateFile(file, table);
             if (fileType.ChildFileTypes.Any())
             {
-                ImportChildFileTypes(fileType, overwrite, output);
+                await ImportChildFileTypes(fileType, overwrite, output).ConfigureAwait(false);
             }
             else
             {
@@ -513,33 +510,34 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        private static void ImportRows(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, List<DataRow> dRows, DataRow header,
+        private static async Task ImportRows(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, List<DataRow> dRows, DataRow header,
             ConcurrentDictionary<int, string> table)
         {
             var mappingMailSent = false;
-            Parallel.ForEach(dRows, new ParallelOptions() { MaxDegreeOfParallelism = 1 }, //Environment.ProcessorCount *
-                drow =>
+            // Using Task.Run for parallel processing within an async method
+            var tasks = dRows.Select(async drow =>
+            {
+                var row = new Dictionary<string, string>();
+                var row_no = drow["LineNumber"].ToString() == $"LineNumber".ToUpper()
+                    ? 0
+                    : Convert.ToInt32(drow["LineNumber"]);
+                if (fileType.FileTypeMappings.Any())
                 {
-                    var row = new Dictionary<string, string>();
-                    var row_no = drow["LineNumber"].ToString() == $"LineNumber".ToUpper()
-                        ? 0
-                        : Convert.ToInt32(drow["LineNumber"]);
-                    if (fileType.FileTypeMappings.Any())
-                    {
-                        mappingMailSent =
-                            UpdateRowWithFileMapping(file, fileType, dic, mappingMailSent, header, row_no, drow, ref row);
-                    }
-                    else
-                    {
-                        UpdateRowFromFile(header, drow, row);
-                    }
-
-
-                    AddRowToTable(fileType, row, table, row_no, header);
-                });
+                    mappingMailSent =
+                        await UpdateRowWithFileMapping(file, fileType, dic, mappingMailSent, header, row_no, drow, row).ConfigureAwait(false);
+                }
+                else
+                {
+                    UpdateRowFromFile(header, drow, row);
+                }
+ 
+                AddRowToTable(fileType, row, table, row_no, header);
+            }).ToList();
+ 
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        private static void ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
+        private static async Task ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
         {
             foreach (var cfileType in fileType.ChildFileTypes.Where(x => x.FileTypeMappings.Any() && x.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv))
             {
@@ -548,7 +546,7 @@ namespace WaterNut.Business.Services.Utils
                 cfileTypes.EmailId = fileType.EmailId;
                 cfileTypes.OverwriteFiles = overwrite;
                 var fileInfos = new FileInfo[] { new FileInfo(output) };
-                SaveCsv(fileInfos, cfileTypes);
+                await SaveCsv(fileInfos, cfileTypes).ConfigureAwait(false);
             }
         }
 
@@ -600,15 +598,15 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        private static bool UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, bool mappingMailSent,
-            DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
+        private static async Task<bool> UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, bool mappingMailSent,
+            DataRow header, int row_no, DataRow drow, Dictionary<string, string> row)
         {
             var fileTypeMappingsByOriginalName = OrderFileTypeMappingsByOriginalName(fileType).ToList();
             var fileTypeMappings = fileTypeMappingsByOriginalName
                                         .Where(x =>!x.OriginalName.Split('+',',')
                                             .Select(z => z.ToUpper().Trim())
-                                            .Except(header.ItemArray.Select(z => z.ToString().ToUpper())).Any() 
-                                                            || x.OriginalName.StartsWith("{") 
+                                            .Except(header.ItemArray.Select(z => z.ToString().ToUpper())).Any()
+                                                            || x.OriginalName.StartsWith("{")
                                                             || x.FileTypeMappingValues.Any())
                                         .ToList();
             foreach (var mapping in fileTypeMappings)
@@ -618,7 +616,7 @@ namespace WaterNut.Business.Services.Utils
                 foreach (var map in maps)
                 {
                     mappingMailSent =
-                        CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no);
+                        await CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no).ConfigureAwait(false);
 
                     if(GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val) && row_no == 0) break;
 
@@ -637,7 +635,7 @@ namespace WaterNut.Business.Services.Utils
                         RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 }
 
-                val = ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow);
+                val = await ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow).ConfigureAwait(false);
 
                 row = UpdateRow(row, mapping, row_no, val);
             }
@@ -680,7 +678,7 @@ namespace WaterNut.Business.Services.Utils
             return row;
         }
 
-        private static string ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, string val, int row_no,
+        private static async Task<string> ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, string val, int row_no,
             DataRow header, FileTypeMappings mapping, Dictionary<string, string> row, DataRow drow)
         {
             var errLst = new List<string>();
@@ -704,6 +702,7 @@ namespace WaterNut.Business.Services.Utils
                         //     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                         errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has no Value.");
                         return val;
+                        //val = "";
                     }
                 }
 
@@ -732,11 +731,11 @@ namespace WaterNut.Business.Services.Utils
                     }
                 }
             if(errLst.Any())
-                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
+                await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,
                     BaseDataModel.GetClient(), $"Bug Found",
                     errLst.Aggregate((o,n) => o + "\r\n" + n),
                      EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
-                );
+                ).ConfigureAwait(false);
 
             return val;
         }
@@ -763,10 +762,8 @@ namespace WaterNut.Business.Services.Utils
                     if (index == -1) return true;
                     val += drow[index];
                 }
-
                 if (maps.Length > 1 && map != maps.Last()) val += " - ";
             }
-
             return false;
         }
 
@@ -777,7 +774,6 @@ namespace WaterNut.Business.Services.Utils
             {
                 res[drow.Table.Columns[i].ColumnName] = drow.ItemArray[i];
             }
-            
             return res;
         }
 
@@ -791,7 +787,7 @@ namespace WaterNut.Business.Services.Utils
             return res;
         }
 
-        private static bool CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, DataRow header,
+        private static async Task<bool> CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, DataRow header,
             string map, FileTypeMappings mapping, bool mappingMailSent, int row_no)
         {
             if (!header.ItemArray.Contains(map.ToUpper()) &&
@@ -800,19 +796,17 @@ namespace WaterNut.Business.Services.Utils
                 if (mapping.Required)
                 {
                     if (mappingMailSent) return mappingMailSent;
-                    EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
+                    await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,
                         BaseDataModel.GetClient(), $"Bug Found",
                         $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
                          EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
-                    );
+                    ).ConfigureAwait(false);
                     mappingMailSent = true;
                     return mappingMailSent;
                 }
-
                 //TODO: log error
                 return mappingMailSent;
             }
-
             return mappingMailSent;
         }
 
@@ -827,7 +821,6 @@ namespace WaterNut.Business.Services.Utils
                     @"Provider=Microsoft.ACE.OLEDB.16.0; Data Source={0};" +
                     $"Extended Properties=\"Text;HDR={headers};FMT=Delimited;CharacterSet=65001\"",
                     file.DirectoryName));
-
 
             conn.Open();
 

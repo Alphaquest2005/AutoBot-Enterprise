@@ -78,7 +78,7 @@ namespace AutoBot
                 },
                 {
                     "RequestInvoice",
-                    ((paramInfo) => { RequestInvoice(paramInfo, fileTypes); },
+                    (async (paramInfo) => { await RequestInvoice(paramInfo, fileTypes).ConfigureAwait(false); },
                         new string[] { "Name" }
                     )
                 },
@@ -580,8 +580,8 @@ namespace AutoBot
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
                        
 
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client,null, "Invoice Template Not found!",
-                             EmailDownloader.EmailDownloader.GetContacts("Developer"), body, res1);
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Invoice Template Not found!",
+                             EmailDownloader.EmailDownloader.GetContacts("Developer"), body, res1).ConfigureAwait(false);
 
                         fileTypes.ProcessNextStep.Add("Kill");
 

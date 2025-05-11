@@ -1,8 +1,9 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -17,7 +18,7 @@ namespace AutoBot
 {
     public class C71Utils
     {
-        public static void ImportC71(FileTypes ft)
+        public static async Task ImportC71(FileTypes ft)
         {
             
                 
@@ -27,17 +28,17 @@ namespace AutoBot
                 ctx.Database.CommandTimeout = 10;
                 var docSets = ctx.TODO_C71ToCreate
                     //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 || 
+                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                     .ToList();
                 foreach (var poInfo in docSets)
                 {
-                    ImportC71(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId);
+                    await ImportC71(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId).ConfigureAwait(false);
 
                 }
             }
         }
 
-        public static bool ImportC71(string declarant_Reference_Number, int asycudaDocumentSetId)
+        public static async Task<bool> ImportC71(string declarant_Reference_Number, int asycudaDocumentSetId)
         {
             try
             {
@@ -72,8 +73,8 @@ namespace AutoBot
 
                     if (csvFiles.Any())
                     {
-                        BaseDataModel.Instance.ImportC71(asycudaDocumentSetId,
-                            csvFiles.Select(x => x.FullName).ToList());
+                        await BaseDataModel.Instance.ImportC71(asycudaDocumentSetId,
+                            csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
                         ft.AsycudaDocumentSetId = asycudaDocumentSetId;
                         //BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
                     }
@@ -88,7 +89,7 @@ namespace AutoBot
             }
         }
 
-        internal static void CreateC71(FileTypes ft)
+        internal static async Task CreateC71(FileTypes ft)
         {
             try
 
@@ -150,7 +151,7 @@ namespace AutoBot
                         var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Declarant_Reference_Number, consigneeCode, consigneeName, consigneeAddress ?? ""); // Pass fetched values, ensure address is not null
                         ctx.xC71_Value_declaration_form.Add(c71);
                         ctx.SaveChanges();
-                        C71ToDataBase.Instance.ExportC71(pO.AsycudaDocumentSetId, c71, fileName);
+                        await C71ToDataBase.Instance.ExportC71(pO.AsycudaDocumentSetId, c71, fileName).ConfigureAwait(false);
 
 
                     }
@@ -352,7 +353,7 @@ namespace AutoBot
             }
         }
 
-        public static void ReImportC71()
+        public static async Task ReImportC71()
         {
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -366,7 +367,7 @@ namespace AutoBot
                         .FirstOrDefault();
                 if (docset != null)
                 {
-                    C71Utils.ImportC71(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId);
+                    await C71Utils.ImportC71(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
         }

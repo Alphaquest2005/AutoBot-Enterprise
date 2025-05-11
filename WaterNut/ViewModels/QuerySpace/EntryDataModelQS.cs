@@ -45,7 +45,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 
 
-        private new void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+        private void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
 
             if (e.Data != null)

@@ -16,16 +16,16 @@ namespace AutoBot
 {
     public class EmailSalesErrorsUtils
     {
-        public static void EmailSalesErrors()
+        public static async Task EmailSalesErrors()
         {
-            var info = BaseDataModel.CurrentSalesInfo(-1);
-            var directory = info.Item4;
+            var infoTuple = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+            var directory = infoTuple.DirPath; // Or infoTuple.Item4 if you prefer direct item access
             var errorfile = Path.Combine(directory, "SalesErrors.csv");
             if (!File.Exists(errorfile)) return;
-            var errors = GetSalesReportData(info);
+            var errors = GetSalesReportData(infoTuple);
             CreateSalesReport(errors, errorfile);
             var contactsLst = GetContactsList();
-            SendSalesReport(errorfile, directory, info, contactsLst);
+            await SendSalesReport(errorfile, directory, infoTuple, contactsLst).ConfigureAwait(false);
         }
 
         private static void CreateSalesReport(List<AsycudaSalesAndAdjustmentAllocationsEx> errors, string errorfile)
@@ -44,23 +44,23 @@ namespace AutoBot
         }
 
         private static List<AsycudaSalesAndAdjustmentAllocationsEx> GetSalesReportData(
-            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) info) =>
+            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) infoTuple) =>
             new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes
                 .Where(x => x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => x.Status != null)
-                .Where(x => x.InvoiceDate >= info.Item1.Date && x.InvoiceDate <= info.Item2.Date).ToList();
+                .Where(x => x.InvoiceDate >= infoTuple.StartDate.Date && x.InvoiceDate <= infoTuple.EndDate.Date).ToList();
 
-        private static void SendSalesReport(string errorfile, string directory,
-            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) info, List<Contacts> contactsLst)
+        private static async Task SendSalesReport(string errorfile, string directory,
+            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) infoTuple, List<Contacts> contactsLst)
         {
             
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directory,
-                        $"Sales Errors for {info.Item1.ToString("yyyy-MM-dd")} - {info.Item2.ToString("yyyy-MM-dd")}",
+                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
+                        $"Sales Errors for {infoTuple.StartDate.ToString("yyyy-MM-dd")} - {infoTuple.EndDate.ToString("yyyy-MM-dd")}",
                         contactsLst.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new[]
                         {
                             errorfile
-                        });
+                        }).ConfigureAwait(false);
         }
 
         private static List<Contacts> GetContactsList()

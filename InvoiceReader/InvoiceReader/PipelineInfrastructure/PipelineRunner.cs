@@ -57,7 +57,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 }
 
                 // Execute step asynchronously and check result
-                bool stepSuccess = await ExecuteStepAsync(step, context, invoiceContext, stepName, stepCounter);
+                bool stepSuccess = await ExecuteStepAsync(step, context, invoiceContext, stepName, stepCounter).ConfigureAwait(false);
 
                 if (!stepSuccess)
                 {

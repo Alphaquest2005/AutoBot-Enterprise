@@ -120,9 +120,11 @@ namespace AutoBotUtilities.Tests
                 }
 
                  _logger.Debug("Getting importable file types for PDF.");
-                 // Assuming FileTypeManager is static
-                 var fileTypes = FileTypeManager // Removed .Instance
-                     .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                // Assuming FileTypeManager is static
+                var fileLst = await FileTypeManager // Removed .Instance
+                    .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF,
+                        testFile).ConfigureAwait(false);
+                var fileTypes = fileLst
                      .OfType<CoreEntities.Business.Entities.FileTypes>() // Ensure correct type
                      .Where(x => x.Description == "Unknown")
                      .ToList();
@@ -189,8 +191,10 @@ namespace AutoBotUtilities.Tests
                 }
 
                  _logger.Debug("Getting importable file types for PDF.");
-                 var fileTypes = FileTypeManager // Removed .Instance
-                     .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                 var fileLst = await FileTypeManager // Removed .Instance
+                     .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF,
+                         testFile).ConfigureAwait(false);
+                 var fileTypes = fileLst
                      .OfType<CoreEntities.Business.Entities.FileTypes>() // Ensure correct type
                      .Where(x => x.Description == "Unknown")
                      .ToList();

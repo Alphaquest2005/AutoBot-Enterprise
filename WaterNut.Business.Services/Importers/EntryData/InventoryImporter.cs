@@ -4,7 +4,8 @@ using System.Linq;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class InventoryImporter : IDocumentProcessor
@@ -12,19 +13,19 @@ namespace WaterNut.Business.Services.Importers.EntryData
         private readonly ImportSettings _importSettings;
    
         private ProcessorPipline<InventoryDataItem> _importer;
-
+ 
         public InventoryImporter(ImportSettings importSettings)
         {
             _importSettings = importSettings;
         }
-
-        public List<dynamic> Execute(List<dynamic> lines)
+ 
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             try
             {
-
-           
-
+ 
+            
+ 
             _importer = new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
             {
                 new GetInventoryItems(_importSettings.FileType, _importSettings.DocSet, lines),
@@ -32,7 +33,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 (
                     new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
                     {
-
+ 
                         new GetExistingInventoryItems(_importSettings.FileType, _importSettings.DocSet),
                         new UpdateItemTariffCode(),
                         new UpdateItemDescription(),
@@ -42,9 +43,9 @@ namespace WaterNut.Business.Services.Importers.EntryData
                         new UpdateLineInventoryItemId(),
                         new SaveInventoryCodes(_importSettings.FileType),
                         new SaveInventoryAlias(_importSettings.FileType),
-
-
-
+ 
+ 
+ 
                     }),
                     new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
                     {
@@ -56,10 +57,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
                     })
                 ),
             });
-
-            var res = _importer.Execute(new List<InventoryDataItem>());
-
-
+ 
+            var res = await _importer.Execute(new List<InventoryDataItem>()).ConfigureAwait(false);
+ 
+ 
             return lines;
             }
             catch (Exception e)
@@ -67,10 +68,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 Console.WriteLine(e);
                 throw;
             }
-
+ 
         }
-
-
+ 
+ 
     
     }
 }

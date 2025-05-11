@@ -149,19 +149,19 @@ namespace CoreEntities.Business.Services
 
 
                 if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic)
-                    BaseDataModel.Instance.ImportLicense(fileType.AsycudaDocumentSetId,
-                        csvFiles.Select(x => x.FullName).ToList());
+                    await BaseDataModel.Instance.ImportLicense(fileType.AsycudaDocumentSetId,
+                        csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
 
                 if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71)
-                    BaseDataModel.Instance.ImportC71(fileType.AsycudaDocumentSetId,
-                        csvFiles.Select(x => x.FullName).ToList());
+                    await BaseDataModel.Instance.ImportC71(fileType.AsycudaDocumentSetId,
+                        csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
 
                 fileType.AsycudaDocumentSetId = asycudaDocumentSetId;
                 await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, fileType).ConfigureAwait(false);
                 
             }
 
-            BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
+            await BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
         }
 
         public async Task CleanBond(int docSetId, bool perIM7)

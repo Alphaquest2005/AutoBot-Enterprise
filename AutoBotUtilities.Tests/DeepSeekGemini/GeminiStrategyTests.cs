@@ -101,7 +101,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             string description = "Test Gemini Item"; string productCode = "G001";
 
             // Act: Call public interface method
-            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None);
+            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True); Assert.That(response.Result, Is.Not.Null);
@@ -134,7 +134,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             var items = new List<(string, string, string)> { ("G1", "Gem Prod 1", ""), ("G2", "Gem Prod 2", "") };
 
             // Act: Call public interface method
-            var response = await _strategy.GetBatchClassificationAsync(items, null, null, CancellationToken.None);
+            var response = await _strategy.GetBatchClassificationAsync(items, null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True); Assert.That(response.Results, Is.Not.Null); Assert.That(response.Results.Count, Is.EqualTo(2)); Assert.That(response.FailedDescriptions, Is.Empty);
@@ -162,7 +162,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             string description = "Generate a gemini code";
 
             // Act: Call public interface method
-            var response = await _strategy.GenerateProductCodeAsync(description, CancellationToken.None);
+            var response = await _strategy.GenerateProductCodeAsync(description, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True); Assert.That(response.ProductCode, Is.EqualTo("GEM-CODE-456"));
@@ -189,7 +189,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
                 .ReturnsAsync(new HttpResponseMessage { StatusCode = System.Net.HttpStatusCode.OK, Content = new StringContent(fakeBlockedResponse) }); // API call succeeds (200 OK) but content is blocked
 
             // Act
-            var response = await _strategy.GetSingleClassificationAsync("Risky Item", "R001", null, null, CancellationToken.None);
+            var response = await _strategy.GetSingleClassificationAsync("Risky Item", "R001", null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.False);

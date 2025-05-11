@@ -254,7 +254,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }
 
         private dynamic _AsycudaSalesAllocationsExs = null;
-        public new dynamic AsycudaSalesAllocationsExs
+        public dynamic AsycudaSalesAllocationsExs
         {
             get
             {
@@ -267,12 +267,12 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        private new void OnCurrentAsycudaSalesAllocationsExChanged1(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
+        private void OnCurrentAsycudaSalesAllocationsExChanged1(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
         {
        
         }
 
-        private new void OnCurrentPreviousDocumentChanged(object sender, NotificationEventArgs<PreviousDocument> e)
+        private void OnCurrentPreviousDocumentChanged(object sender, NotificationEventArgs<PreviousDocument> e)
         {
             if ( e.Data != null && PreviousDocumentItemsModel.Instance.ManualMode == false)
             {
@@ -285,7 +285,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
         }
 
-        private new void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
+        private void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
         {
            // if (BaseViewModel.Instance.CurrentAsycudaSalesAllocationsEx == null) return;
            if (e.Data != null && PreviousDocumentItemsModel.Instance.ManualMode == false )

@@ -572,14 +572,14 @@ namespace CoreEntities.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing AsycudaDocumentSet", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new AsycudaDocumentSetService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteAsycudaDocumentSet(item).Wait();
+                            await ctx.DeleteAsycudaDocumentSet(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

@@ -548,14 +548,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing SubItems", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new SubItemsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteSubItems(item).Wait();
+                            await ctx.DeleteSubItems(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

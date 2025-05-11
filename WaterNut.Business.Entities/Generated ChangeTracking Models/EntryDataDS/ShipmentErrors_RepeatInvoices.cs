@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public new ChangeTrackingCollection<ShipmentErrors_RepeatInvoices> ChangeTracker
+        public ChangeTrackingCollection<ShipmentErrors_RepeatInvoices> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public new void StartTracking()
+         public void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<ShipmentErrors_RepeatInvoices>(this);
         }

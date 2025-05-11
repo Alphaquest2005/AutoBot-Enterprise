@@ -38,7 +38,7 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanCallGetSubmitEntryData()
+        public async Task CanCallGetSubmitEntryData()
         {
             var fileType = GetFileType();
 
@@ -46,7 +46,7 @@ namespace AutoBotUtilities.Tests
             try
             {
 
-                DISUtils.GetSubmitEntryData(fileType);
+                await DISUtils.GetSubmitEntryData(fileType).ConfigureAwait(false);
                 Assert.That(true);
             }
             catch (Exception e)

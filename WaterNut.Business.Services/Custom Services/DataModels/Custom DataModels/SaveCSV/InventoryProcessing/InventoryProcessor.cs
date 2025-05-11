@@ -51,7 +51,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .ForEach(x =>
                     x.Item.InventoryItemSources.Add(InventorySourceProcessor.CreateItemSource(inventorySource, x.Item)));
 
-           new SaveInventoryItemsSelector().Execute(existingInventoryItem);
+           await new SaveInventoryItemsSelector().Execute(existingInventoryItem).ConfigureAwait(false);
             ///////////////
 
             existingInventoryItem.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));

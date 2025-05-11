@@ -26,26 +26,25 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void Exwarehouse()
+        public async Task Exwarehouse()
         {
 
 
  if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
             Infrastructure.Utils.ClearDataBase();
             Infrastructure.Utils.SetTestApplicationSettings(6);
-            ImportTestFile();
-            ImportTestIM7();
-            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false)
-                .Wait();
+            await ImportTestFile().ConfigureAwait(false);
+            await ImportTestIM7().ConfigureAwait(false);
+            await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).ConfigureAwait(false);
 
 
             if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
 
             var startDate = DateTime.Parse("5/1/2022");
           
-            var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
+            var saleInfo =await EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate).ConfigureAwait(false);
 
-            var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
+            var docset = await BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).ConfigureAwait(false);
 
             var filterExpression =
                 $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
@@ -65,14 +64,14 @@ namespace AutoBotUtilities.Tests
 
 
 
-            var res =  AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+            var res =  await AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).ConfigureAwait(false);
 
             Assert.That(res, Is.Empty);
 
 
         }
 
-        private static void ImportTestIM7()
+        private static async Task ImportTestIM7()
         {
             if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
 
@@ -83,19 +82,19 @@ namespace AutoBotUtilities.Tests
                 { "DuplicateExwarehousingIssue", "EX3-GDSGO-24037.xml" });
             
 
-            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports");
-            Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File, ex9File }, true);
+            var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports").ConfigureAwait(false);
+            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File, ex9File }, true).ConfigureAwait(false);
         }
 
-        private static void ImportTestFile()
+        private static async Task ImportTestFile()
         {
             if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
 
             var disFile = Infrastructure.Utils.GetTestSalesFile(new List<string>()
                 { "DuplicateExwarehousingIssue", "29118-8026.csv" });
 
-            Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Sales,
-                FileTypeManager.FileFormats.Csv);
+            await Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Sales,
+                FileTypeManager.FileFormats.Csv).ConfigureAwait(false);
         }
     }
 }

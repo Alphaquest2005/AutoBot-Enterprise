@@ -12,7 +12,7 @@ namespace AutoBot
 {
     public class CreateEX9Utils
     {
-        public static List<DocumentCT> CreateEx9(bool overwrite, int months)
+        public static async System.Threading.Tasks.Task<List<DocumentCT>> CreateEx9(bool overwrite, int months)
         {
             try
             {
@@ -20,21 +20,21 @@ namespace AutoBot
 
                 Console.WriteLine("Create Ex9");
 
-                var saleInfo = BaseDataModel.CurrentSalesInfo(months);
+                var saleInfoTuple = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
 
 
-                if (saleInfo.Item3.AsycudaDocumentSetId == 0 || !HasData(saleInfo)) return new List<DocumentCT>();
+                if (saleInfoTuple.DocSet.AsycudaDocumentSetId == 0 || !HasData(saleInfoTuple)) return new List<DocumentCT>();
                
 
-                var docSet = GetDocset(saleInfo.DocSet.AsycudaDocumentSetId);
+                var docSet = await GetDocset(saleInfoTuple.DocSet.AsycudaDocumentSetId).ConfigureAwait(false);
 
-                if (overwrite) BaseDataModel.Instance.ClearAsycudaDocumentSet(docSet.AsycudaDocumentSetId).Wait();
-
-
-                var filterExpression = CreateFilterExpression(saleInfo);
+                if (overwrite) await BaseDataModel.Instance.ClearAsycudaDocumentSet(docSet.AsycudaDocumentSetId).ConfigureAwait(false);
 
 
-                return AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docSet, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).Result;
+                var filterExpression = CreateFilterExpression(saleInfoTuple);
+
+
+                return await AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docSet, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).ConfigureAwait(false);
                 
 
             }
@@ -46,14 +46,14 @@ namespace AutoBot
 
         }
 
-        private static AsycudaDocumentSet GetDocset(int asycudaDocumentSetId) => BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
+        private static async System.Threading.Tasks.Task<AsycudaDocumentSet> GetDocset(int asycudaDocumentSetId) => await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).ConfigureAwait(false);
 
         private static string CreateFilterExpression(
-            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfo) =>
+            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfoTuple) =>
                     $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
-                    $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
-                    $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                    //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
+                    $"&& (InvoiceDate >= \"{saleInfoTuple.StartDate:MM/01/yyyy}\" " +
+                    $" && InvoiceDate <= \"{saleInfoTuple.EndDate:MM/dd/yyyy HH:mm:ss}\")" +
+                    //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfoTuple.StartDate:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfoTuple.EndDate:MM/dd/yyyy HH:mm:ss}\"))" +
                     "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
                     //"&& PreviousItem_Id != null" +
                     //"&& (xBond_Item_Id == 0 )" +
@@ -65,33 +65,33 @@ namespace AutoBot
                     //    : "") +
                     ($" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
 
-        private static bool HasData((DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfo)
+        private static bool HasData((DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfoTuple)
         {
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.CommandTimeout = 0;
 
-                return  ctx.Database.SqlQuery<string>(GetSqlStr(saleInfo)).Any();
+                return  ctx.Database.SqlQuery<string>(GetSqlStr(saleInfoTuple)).Any();
             }
         }
 
         private static string GetSqlStr(
-            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfo) =>
+            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) saleInfoTuple) =>
             $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
                     FROM    EX9AsycudaSalesAllocations INNER JOIN
-                                     ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND 
+                                     ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND
                                      EX9AsycudaSalesAllocations.pRegistrationDate >= ApplicationSettings.OpeningStockDate LEFT OUTER JOIN
                                      AllocationErrors ON ApplicationSettings.ApplicationSettingsId = AllocationErrors.ApplicationSettingsId AND EX9AsycudaSalesAllocations.ItemNumber = AllocationErrors.ItemNumber
-                    WHERE (EX9AsycudaSalesAllocations.PreviousItem_Id IS NOT NULL) AND (EX9AsycudaSalesAllocations.xBond_Item_Id = 0) AND (EX9AsycudaSalesAllocations.QtyAllocated IS NOT NULL) AND 
+                    WHERE (EX9AsycudaSalesAllocations.PreviousItem_Id IS NOT NULL) AND (EX9AsycudaSalesAllocations.xBond_Item_Id = 0) AND (EX9AsycudaSalesAllocations.QtyAllocated IS NOT NULL) AND
                                      (EX9AsycudaSalesAllocations.EntryDataDetailsId IS NOT NULL) AND (EX9AsycudaSalesAllocations.Status IS NULL OR
-                                     EX9AsycudaSalesAllocations.Status = '') AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocateSales, 0) <> 1) AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocatePreviousEntry, 0) <> 1) AND 
-                                     (ISNULL(EX9AsycudaSalesAllocations.DoNotEX, 0) <> 1) AND (EX9AsycudaSalesAllocations.WarehouseError IS NULL) AND (EX9AsycudaSalesAllocations.CustomsOperationId = {(int)CustomsOperations.Warehouse}) AND (AllocationErrors.ItemNumber IS NULL) 
+                                     EX9AsycudaSalesAllocations.Status = '') AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocateSales, 0) <> 1) AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocatePreviousEntry, 0) <> 1) AND
+                                     (ISNULL(EX9AsycudaSalesAllocations.DoNotEX, 0) <> 1) AND (EX9AsycudaSalesAllocations.WarehouseError IS NULL) AND (EX9AsycudaSalesAllocations.CustomsOperationId = {(int)CustomsOperations.Warehouse}) AND (AllocationErrors.ItemNumber IS NULL)
                           AND (ApplicationSettings.ApplicationSettingsId = {
                               BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                           }) AND (EX9AsycudaSalesAllocations.InvoiceDate >= '{
-                              saleInfo.Item1.ToShortDateString()
-                          }') AND 
-                                     (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfo.EndDate.ToShortDateString()}')
+                              saleInfoTuple.StartDate.ToShortDateString()
+                          }') AND
+                                     (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfoTuple.EndDate.ToShortDateString()}')
                     GROUP BY EX9AsycudaSalesAllocations.ItemNumber, ApplicationSettings.ApplicationSettingsId--, EX9AsycudaSalesAllocations.pQuantity, EX9AsycudaSalesAllocations.PreviousItem_Id
                     HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)";
     }

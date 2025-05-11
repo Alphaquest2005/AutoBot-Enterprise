@@ -1,7 +1,9 @@
-﻿namespace WaterNut.Business.Services.Importers
+﻿using System.Threading.Tasks;
+ 
+namespace WaterNut.Business.Services.Importers
 {
     public interface IFileTypeImporter
     {
-        void Import(string fileName);
+        Task Import(string fileName);
     }
 }

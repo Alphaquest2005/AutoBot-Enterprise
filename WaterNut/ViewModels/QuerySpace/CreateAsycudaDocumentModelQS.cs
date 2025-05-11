@@ -30,7 +30,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		private CreateAsycudaDocumentModel()
 		{
 			
-			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetChanged);
+			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, this.OnCurrentAsycudaDocumentSetChanged);
 			RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
 		   // LoadAsycudaDocumentSet();
 			Initialization = InitializationAsync();
@@ -64,13 +64,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		private new void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
 		{
 
-			Task.Run(() => { LoadDataFromAdoc(e.Data, QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocument).Wait(); });
+			Task.Run(async () => { await LoadDataFromAdoc(e.Data, QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocument).ConfigureAwait(false); });
 		}
 
 		private new void OnCurrentAsycudaDocumentChanged(object sender, NotificationEventArgs<AsycudaDocument> e)
 		{
 
-			Task.Run(() => { LoadDataFromAdoc(QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx, e.Data).Wait(); });
+			Task.Run(async () => { await LoadDataFromAdoc(QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx, e.Data).ConfigureAwait(false); });
 		}
 
 		private async Task LoadDataFromAdoc(AsycudaDocumentSetEx docSet, AsycudaDocument doc)

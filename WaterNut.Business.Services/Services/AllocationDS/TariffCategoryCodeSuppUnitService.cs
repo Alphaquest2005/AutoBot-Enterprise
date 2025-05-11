@@ -554,14 +554,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing TariffCategoryCodeSuppUnit", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new TariffCategoryCodeSuppUnitService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteTariffCategoryCodeSuppUnit(item).Wait();
+                            await ctx.DeleteTariffCategoryCodeSuppUnit(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

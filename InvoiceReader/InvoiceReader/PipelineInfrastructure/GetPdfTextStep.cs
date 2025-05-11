@@ -31,7 +31,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 SetupAndRunTasks(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
 
-                await AwaitTasksCompletion(filePath, ripTask, singleColumnTask, sparseTextTask);
+                await AwaitTasksCompletion(filePath, ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false);
                 //////////////////////
                 AppendResults(context, pdftxt, filePath, ripTask, singleColumnTask, sparseTextTask);
                 //////////////////////

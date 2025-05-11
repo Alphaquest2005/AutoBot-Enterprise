@@ -28,10 +28,10 @@ namespace WaterNut.Business.Services.Importers
 
             };
         }
-        public void Import(string fileName)
+        public async Task Import(string fileName)
         {
             var importer = _importers[FileType.FileImporterInfos.Format];
-            importer.Import(fileName, true);
+            await importer.Import(fileName, true).ConfigureAwait(false);
         }
 
         private readonly Dictionary<string, IImporter> _importers;
@@ -48,7 +48,7 @@ namespace WaterNut.Business.Services.Importers
             
         }
 
-        public void Import(string fileName, bool overWrite)
+        public async Task Import(string fileName, bool overWrite)
         {
             try
             {
@@ -61,10 +61,10 @@ namespace WaterNut.Business.Services.Importers
                     { FileTypeManager.EntryTypes.Dis, new XlsxEntryDataProcessor(_fileType, fileName, overWrite) },
                     { FileTypeManager.EntryTypes.Unknown, new XlsxEntryDataProcessor(_fileType, fileName, overWrite) },
                 };
-
-                DataSetProcessors[_fileType.FileImporterInfos.EntryType]
-                    .Execute(result.Tables.GetEnumerator().ToList<DataTable>());
-
+ 
+                await DataSetProcessors[_fileType.FileImporterInfos.EntryType]
+                    .Execute(result.Tables.GetEnumerator().ToList<DataTable>()).ConfigureAwait(false);
+ 
             }
             catch (Exception e)
             {
@@ -83,7 +83,7 @@ namespace WaterNut.Business.Services.Importers
            
         }
 
-        public void Import(string fileName, bool overWrite)
+        public async Task Import(string fileName, bool overWrite)
         {
             
         }

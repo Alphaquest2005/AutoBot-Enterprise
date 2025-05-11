@@ -54,19 +54,19 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .ToList();
              new InventorySourceProcessor().SaveInventoryItemSource(newInventorySources);
 
-           new SaveInventoryItemsSelector().Execute(existingInventoryItem);
+           await new SaveInventoryItemsSelector().Execute(existingInventoryItem).ConfigureAwait(false);
             ///////////////
 
             existingInventoryItem.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
 
             existingInventoryItem
                 .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
+                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
 
 
             existingInventoryItem
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
+                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
 
 
             // Await the async method call
@@ -79,12 +79,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             newInventoryItems
                 .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
+                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
 
 
             newInventoryItems
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes( inventorySource, x.Code, x.DataItem.Item));
+                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
             return true;
             }
             catch (Exception e)

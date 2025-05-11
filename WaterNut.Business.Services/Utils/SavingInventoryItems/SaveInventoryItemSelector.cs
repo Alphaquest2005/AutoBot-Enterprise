@@ -4,19 +4,20 @@ using InventoryDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Utils.SavingInventoryItems
 {
     public class SaveInventoryItemsSelector: ISaveInventoryItemsProcessor
     {
         private bool isDBMem = false;
-
-        public void Execute(List<InventoryDataItem> processedInventoryItems)
+ 
+        public async Task Execute(List<InventoryDataItem> processedInventoryItems)
         {
             if (isDBMem)
-                new SaveInventoryItems().Execute(processedInventoryItems);
+                await new SaveInventoryItems().Execute(processedInventoryItems).ConfigureAwait(false);
             else
-                new SaveInventoryItemsBulk().Execute(processedInventoryItems);
+                await new SaveInventoryItemsBulk().Execute(processedInventoryItems).ConfigureAwait(false);
         }
     }
 }

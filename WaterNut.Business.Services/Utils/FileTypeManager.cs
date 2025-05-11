@@ -183,40 +183,56 @@ namespace WaterNut.Business.Services.Utils
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
         }
 
-        public static List<FileTypes> GetImportableFileType(string entryType, string fileFormat, string fileName) =>
-            FileTypes()
+        public static async Task<List<FileTypes>> GetImportableFileType(string entryType, string fileFormat, string fileName)
+        {
+            var fileTypeTasks = FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => (x.FileImporterInfos?.EntryType == entryType) && x.FileImporterInfos?.Format == fileFormat)// || entryType == EntryTypes.Unknown - wanted stricter selection
-                .Where(x => x.FileTypeMappings.Any() 
+                .Where(x => x.FileTypeMappings.Any()
                             || (!x.FileTypeMappings.Any() && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF) //pdfs wont have column mappings
                             || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
                 .Where(x => x.ParentFileTypeId == null)
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
-                .Select(x =>
+                .Select(async x =>
                 {
-                    x.AsycudaDocumentSetId = EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true)
-                            .AsycudaDocumentSetId;
+                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true).ConfigureAwait(false);
+                    if (docSet != null)
+                    {
+                        x.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
+                    }
                     return x;
                 })
-                .ToList();
+                .ToList(); // This creates List<Task<FileTypes>>
+        
+            var results = await Task.WhenAll(fileTypeTasks).ConfigureAwait(false);
+            return results.ToList();
+        }
 
 
-        public static List<FileTypes> GetFileType(string entryType, string fileFormat, string fileName) =>
-            FileTypes()
+        public static async Task<List<FileTypes>> GetFileType(string entryType, string fileFormat, string fileName)
+        {
+            var fileTypeTasks = FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => (x.FileImporterInfos?.EntryType == entryType) && x.FileImporterInfos?.Format == fileFormat)// || entryType == EntryTypes.Unknown - wanted stricter selection
                 //.Where(x => x.FileTypeMappings.Any() || (entryType == EntryTypes.Unknown && x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF))
                 .Where(x => x.ParentFileTypeId == null)
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
-                .Select(x =>
+                .Select(async x =>
                 {
-                    x.AsycudaDocumentSetId = EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true)
-                        .AsycudaDocumentSetId;
+                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true).ConfigureAwait(false);
+                    if (docSet != null)
+                    {
+                        x.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
+                    }
                     return x;
                 })
-                .ToList();
+                .ToList(); // This creates List<Task<FileTypes>>
 
-        public static void SendBackTooBigEmail(FileInfo file, FileTypes fileType)
+            var results = await Task.WhenAll(fileTypeTasks).ConfigureAwait(false);
+            return results.ToList();
+        }
+
+        public static async Task SendBackTooBigEmail(FileInfo file, FileTypes fileType)
         {
             if (fileType.MaxFileSizeInMB != null && (file.Length / WaterNut.DataSpace.Utils._oneMegaByte) > fileType.MaxFileSizeInMB)
             {
@@ -225,7 +241,7 @@ namespace WaterNut.Business.Services.Utils
                     $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / WaterNut.DataSpace.Utils._oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
                     "Thanks\r\n" +
                     "AutoBot";
-                EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, BaseDataModel.GetClient(), errTxt);
+                await EmailDownloader.EmailDownloader.SendBackMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), errTxt).ConfigureAwait(false);
             }
         }
 

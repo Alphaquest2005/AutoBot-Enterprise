@@ -321,7 +321,7 @@ Product List:";
                 try
                 {
                     // Process the chunk using the batch prompt
-                    var batchResult = await ProcessChunk(chunkList, cancellationToken);
+                    var batchResult = await ProcessChunk(chunkList, cancellationToken).ConfigureAwait(false);
 
                     // Merge results from the batch back into the main result dictionary
                     foreach (var item in chunkList)
@@ -348,7 +348,7 @@ Product List:";
                         {
                             // Item was in the chunk sent, but not in the response (maybe LLM truncated?)
                             _logger.LogWarning("Item '{Description}' not found in batch result for chunk {ChunkIndex}. Attempting individual fallback.", TruncateForLog(originalDescription, 50), chunkIndex);
-                            await ProcessSingleItemFallback(item, result, cancellationToken);
+                            await ProcessSingleItemFallback(item, result, cancellationToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -361,7 +361,7 @@ Product List:";
                         // Check if already processed by a previous successful batch (shouldn't happen often here, but safe check)
                         if (!result.ContainsKey(item.ItemDescription))
                         {
-                            await ProcessSingleItemFallback(item, result, cancellationToken);
+                            await ProcessSingleItemFallback(item, result, cancellationToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -408,7 +408,7 @@ Product List:";
                 // Check if the original item number was 'NEW' or invalid before sanitization
                 if (itemNumber == "NEW" || string.IsNullOrWhiteSpace(itemNumber) || !Regex.IsMatch(itemNumber, ItemNumberPattern))
                 {
-                    itemNumber = await GenerateProductCode(description, cancellationToken);
+                    itemNumber = await GenerateProductCode(description, cancellationToken).ConfigureAwait(false);
                     _logger.LogDebug("Generated product code via fallback for '{Desc}': {Code}", TruncateForLog(description, 50), itemNumber);
                 }
 
@@ -420,7 +420,7 @@ Product List:";
 
                 if (string.IsNullOrWhiteSpace(finalTariffCode) || finalTariffCode == "00000000")
                 {
-                    var (retrievedTariff, retrievedCategory, retrievedCategoryHs) = await GetClassificationInfoAsync(description, itemNumber, cancellationToken: cancellationToken);
+                    var (retrievedTariff, retrievedCategory, retrievedCategoryHs) = await GetClassificationInfoAsync(description, itemNumber, cancellationToken: cancellationToken).ConfigureAwait(false);
                     // Use retrieved values if they are valid, otherwise keep defaults/original
                     finalTariffCode = !string.IsNullOrWhiteSpace(retrievedTariff) && retrievedTariff != "00000000" ? retrievedTariff : "00000000"; // Fallback requires 8 zeros if failed
                     category = !string.IsNullOrWhiteSpace(retrievedCategory) ? retrievedCategory : category;
@@ -464,7 +464,7 @@ Product List:";
 
             _logger.LogDebug("Processing batch with estimated prompt tokens: {EstimatedTokens}, calculated response max_tokens: {ResponseMaxTokens}", EstimateTokenCount(batchPrompt), responseMaxTokens);
 
-            var jsonResponseContent = await GetCompletionAsync(batchPrompt, DefaultTemperature, responseMaxTokens, cancellationToken);
+            var jsonResponseContent = await GetCompletionAsync(batchPrompt, DefaultTemperature, responseMaxTokens, cancellationToken).ConfigureAwait(false);
 
             return ParseBatchResponse(jsonResponseContent); // Parse the batch response JSON
         }
@@ -904,7 +904,7 @@ Respond ONLY with the generated product code, nothing else.";
                 var prompt = string.Format(promptTemplate, cleanDesc);
 
                 // Use lower temp for more predictable code generation, low max tokens
-                var response = await GetCompletionAsync(prompt, maxTokens: 30, temperature: 0.2, cancellationToken: cancellationToken);
+                var response = await GetCompletionAsync(prompt, maxTokens: 30, temperature: 0.2, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 // Sanitize the LLM's response to fit the rules
                 return SanitizeProductCode(response);

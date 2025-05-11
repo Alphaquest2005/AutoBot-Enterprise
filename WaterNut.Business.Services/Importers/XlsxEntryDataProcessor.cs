@@ -7,7 +7,8 @@ using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using WaterNut.Business.Services.Importers.EntryData;
 using WaterNut.Business.Services.Utils;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers
 {
     public class XlsxEntryDataProcessor : IProcessor<DataTable>
@@ -25,32 +26,32 @@ namespace WaterNut.Business.Services.Importers
 
 
 
-        public Result<List<DataTable>> Execute(List<DataTable> data)
+        public async Task<Result<List<DataTable>>> Execute(List<DataTable> data)
         {
             try
             {
-
-
+ 
+ 
                 var mainTable = data.First();
                 var rows = XLSXUtils.FixupDataSet(mainTable);
-
+ 
                 var fileType = _fileType.ChildFileTypes.First().FileImporterInfos.EntryType ==
                                FileTypeManager.EntryTypes.Unknown
-                    ? XLSXUtils.DetectFileType(_fileType, new FileInfo(_fileName), rows)
+                    ? await XLSXUtils.DetectFileType(_fileType, new FileInfo(_fileName), rows).ConfigureAwait(false)
                     : FileTypeManager.GetHeadingFileType(rows, _fileType);
-
+ 
                 var res = XLSXUtils.DataRowToBetterExpando(fileType, rows, mainTable).Select(x => (dynamic)x).ToList();
                 //var header = ((IDictionary<string, object>)res.First()).Values.Select(x => x.ToString()).ToList();
-
-                var docSet = DataSpace.Utils.GetDocSets(fileType);
-
+ 
+                var docSet = await DataSpace.Utils.GetDocSets(fileType).ConfigureAwait(false);
+ 
                 var emailId = DataSpace.Utils.GetExistingEmailId(_fileName, fileType);
-
-
-
+ 
+ 
+ 
                 fileType.EmailId = emailId;
                 var importSettings = new ImportSettings(fileType, docSet, _overWrite, _fileName, emailId);
-
+ 
                 var preEntryDatapipline = new DocumentProcessorPipline(new List<IDocumentProcessor>()
                 {
                     new FilterOutHeaders(fileType),
@@ -59,13 +60,13 @@ namespace WaterNut.Business.Services.Importers
                     new FillEntryId(),
                     new ApplyCalcualatedFileTypeMappings(fileType),
                     EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
-
+ 
                 });
-
-                preEntryDatapipline.Execute(res);
-
-
-
+ 
+                await preEntryDatapipline.Execute(res).ConfigureAwait(false);
+ 
+ 
+ 
                 return new Result<List<DataTable>>(data, true, "");
             }
             catch (Exception e)
@@ -87,11 +88,11 @@ namespace WaterNut.Business.Services.Importers
             _fileType = fileType;
         }
 
-        public List<dynamic> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var dic = FileTypeManager.PostCalculatedFileTypeMappings(_fileType);
             var res = new List<dynamic>();
-
+ 
             foreach (IDictionary<string, object> line in lines.ToList())
             {
                 foreach (var map in _fileType.FileTypeMappings.Where(x => x.OriginalName.Contains("{")).ToList())
@@ -103,10 +104,10 @@ namespace WaterNut.Business.Services.Importers
                             .Invoke(line, line, null));
                     }
                 }
-
+ 
                 res.Add(line);
             }
-
+ 
             return res;
         }
     }
@@ -121,7 +122,7 @@ namespace WaterNut.Business.Services.Importers
             
         }
 
-        public List<dynamic> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var result = new List<dynamic>();
             foreach (IDictionary<string, object> line in lines.ToList())
@@ -129,22 +130,22 @@ namespace WaterNut.Business.Services.Importers
                 if (line.Values.Select(x => x.ToString()).All(x => !_fileType.FileTypeMappings.Select(z => z.OriginalName).Contains(x)))
                     result.Add((dynamic)line);
             }
-
+ 
             return result;
         }
     }
-
+ 
     public class FilterOutBlankLines : IDocumentProcessor
     {
-        public List<dynamic> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
            return lines.Where(x => !string.IsNullOrEmpty(x.ItemDescription) || x.Packages != 0).ToList();// using packages to get the summary data be cause the category change drops the data
         }
     }
-
+ 
     public class FillEntryId : IDocumentProcessor
     {
-        public List<dynamic> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             dynamic lastLine = null;
             foreach (var line in lines)
@@ -164,31 +165,31 @@ namespace WaterNut.Business.Services.Importers
             return lines;
         }
     }
-
+ 
     public class GetItemInfo: IDocumentProcessor
     {
-        public List<dynamic> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
           var res =  lines.Select(x =>
             {
-                x.ItemNumber = string.IsNullOrEmpty(x.ItemNumber) 
+                x.ItemNumber = string.IsNullOrEmpty(x.ItemNumber)
                                 ? string.IsNullOrEmpty( x.POItemNumber)
                                     ? x.SupplierItemNumber
                                     : x.POItemNumber
                                 :x.ItemNumber;
-
+ 
                 x.ItemDescription = string.IsNullOrEmpty(x.ItemDescription)
                                     ? string.IsNullOrEmpty(x.POItemDescription)
                                         ? x.SupplierItemDescription
                                         : x.POItemDescription
                                     : x.ItemDescription;
-
+ 
                 x.EntryDataId = string.IsNullOrEmpty(x.EntryDataId)
                                     ? x.SupplierInvoiceNo
                                     : x.EntryDataId;
                 return x;
             }).ToList();
-
+ 
             return res;
         }
     }

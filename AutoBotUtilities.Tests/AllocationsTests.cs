@@ -193,7 +193,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("L5366300", "3/1/2023", 60)] // Make sure IM9 come out from im7 
 
 
-        public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
+        public async Task AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
             try
             {
@@ -204,14 +204,14 @@ namespace AutoBotUtilities.Tests
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if(itemSets == null || !itemSets.Any()) throw new ApplicationException("No Item Found");
                 if(string.IsNullOrEmpty(itemNumber) )
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
                 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
                 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -259,7 +259,7 @@ namespace AutoBotUtilities.Tests
         [TestCase( null, "3/1/2023", 60)] //P2O Shorts allocating to already exwarehoused
         [TestCase("BLS/9004E", "3/1/2023", 60)] //P2O Shorts allocating to already exwarehoused
         
-        public void AllocatSalesOnlyNewAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public async Task AllocatSalesOnlyNewAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -268,14 +268,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, true, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, true, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -322,7 +322,7 @@ namespace AutoBotUtilities.Tests
         [Test]
         [Timeout(60 * 1000 * 60)]
         [TestCase("Audit", "2023-12-19", 101)]
-        public void AllocatSalesByInvoiceNo(string invoiceNo, string LastInvoiceDate, int NoOfAllocations)
+        public async Task AllocatSalesByInvoiceNo(string invoiceNo, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -334,14 +334,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumbers);
                 if (string.IsNullOrEmpty(itemNumbers))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -372,7 +372,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("MMM/62556752301, 7000046623, 7100060280", "TR/026176")] // null ex9asycudasales allocations 
 
-        public void doubleAllocation (string itemNumber, string invoiceNo)
+        public async Task doubleAllocation (string itemNumber, string invoiceNo)
         {
             try
             {
@@ -381,14 +381,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -422,7 +422,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("CRB/SF-MD3/120-370", "50797")] // null ex9asycudasales allocations 
 
-        public void ReturnNotBringingDownQtyAllocated(string itemNumber, string pCnumber)
+        public async Task ReturnNotBringingDownQtyAllocated(string itemNumber, string pCnumber)
         {
             try
             {
@@ -431,14 +431,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -477,7 +477,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("ECL/80040", "40967")] // null ex9asycudasales allocations 
        
-        public void AllocateSaleToCancelledItem(string itemNumber, string pCnumber)
+        public async Task AllocateSaleToCancelledItem(string itemNumber, string pCnumber)
         {
             try
             {
@@ -486,14 +486,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -530,7 +530,7 @@ namespace AutoBotUtilities.Tests
 
         [Test]
         [TestCase("TOH/MTS009_8L", "2023-2-11", 7)] // Overage Adjustment not allocating - decided to leave it so
-      public void AllocatSalesTOH_MTS009_8L(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+      public async Task AllocatSalesTOH_MTS009_8L(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -539,14 +539,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -596,7 +596,7 @@ namespace AutoBotUtilities.Tests
 
       [Test]
         [TestCase("CAM/CMMP83RZ", "2023-2-28", 67)] // Overage Adjustment not allocating - decided to leave it so
-        public void MarkNegetiveAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public async Task MarkNegetiveAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
@@ -605,14 +605,14 @@ namespace AutoBotUtilities.Tests
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
                 if (string.IsNullOrEmpty(itemNumber))
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 else
-                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                    await AllocationsModel.Instance.ClearItemSetAllocations(itemSets).ConfigureAwait(false);
 
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets).ConfigureAwait(false);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);

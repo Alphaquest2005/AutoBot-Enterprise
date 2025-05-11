@@ -16,7 +16,7 @@ namespace AutoBot
 {
     public class SubmitSalesToCustomsUtils
     {
-        public static void SubmitSalesToCustoms() => SubmitSalesToCustoms(GetSalesDataToSubmit());
+        public static async Task SubmitSalesToCustoms() => await SubmitSalesToCustoms(GetSalesDataToSubmit()).ConfigureAwait(false);
 
         private static IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> GetSalesDataToSubmit()
         {
@@ -55,9 +55,9 @@ namespace AutoBot
             }
         }
 
-        public static void ReSubmitSalesToCustoms(FileTypes ft, FileInfo[] fs) => SubmitSalesToCustoms(DISUtils.GetSubmitEntryData(ft));
+        public static async Task ReSubmitSalesToCustoms(FileTypes ft, FileInfo[] fs) => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData(ft).ConfigureAwait(false)).ConfigureAwait(false);
 
-        private static void SubmitSalesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
+        private static async Task SubmitSalesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
         {
             try
             {
@@ -84,8 +84,8 @@ namespace AutoBot
                     var summaryFile = CreateSummaryFile(RES);
 
                  
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Assessed Ex-Warehoused Entries",
-                        contacts, body, pdfs.ToArray());
+                   await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Assessed Ex-Warehoused Entries",
+                       contacts, body, pdfs.ToArray()).ConfigureAwait(false);
               
                     UpdateAttachmentLog(RES);
             }
@@ -180,6 +180,6 @@ namespace AutoBot
                 .Distinct()
                 .ToArray();
 
-        public static void ReSubmitSalesToCustoms() => SubmitSalesToCustoms(DISUtils.GetSubmitEntryData());
+        public static async Task ReSubmitSalesToCustoms() => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData().ConfigureAwait(false)).ConfigureAwait(false);
     }
 }

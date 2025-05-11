@@ -52,7 +52,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void SaveIM7_Script_ExecutesSuccessfully()
+        public async Task SaveIM7_Script_ExecutesSuccessfully()
         {
             // Arrange
             Console.WriteLine("Starting SaveIM7 Integration Test...");
@@ -75,11 +75,11 @@ namespace AutoBotUtilities.Tests
             // 1. Import the PO XLSX to create the necessary DB entries
             Console.WriteLine("Importing PO XLSX file...");
             var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "02679.xlsx" }); // Use the known test PO file
-            var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile);
+            var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
             Assert.That(fileTypes.Any(), Is.True, "No PO FileType found for 02679.xlsx");
             var poFileType = fileTypes.First(); // Assuming only one matches
 
-            new FileTypeImporter(poFileType).Import(testFile);
+            await new FileTypeImporter(poFileType).Import(testFile).ConfigureAwait(false);
             Console.WriteLine("PO Import completed.");
 
             // 2. Retrieve the created AsycudaDocumentSet details from DB

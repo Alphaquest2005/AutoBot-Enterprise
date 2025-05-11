@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
@@ -37,13 +38,13 @@ namespace AutoBotUtilities.Tests
 
        
         [Test]
-        public void CanImportXSalesFile()
+        public async Task CanImportXSalesFile()
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); 
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
-                EX9Utils.ImportXSalesFiles(testFile);
+                await EX9Utils.ImportXSalesFiles(testFile).ConfigureAwait(false);
                 using (var ctx = new EntryDataDSContext())
                 {
                     Assert.Multiple(() =>
@@ -61,12 +62,12 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanGetXSalesFileType()
+        public async Task CanGetXSalesFileType()
         {
             try
             {
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
-                var fileType = EX9Utils.GetxSalesFileType(testFile);
+                var fileType = await EX9Utils.GetxSalesFileType(testFile).ConfigureAwait(false);
                 Assert.Equals(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)

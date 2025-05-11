@@ -67,7 +67,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }
 
        
-        private new void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+        private void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
             if (e.Data != null && ManualMode == false )
             {

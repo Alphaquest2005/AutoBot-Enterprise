@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public interface IDocumentProcessor
     {
-        List<dynamic> Execute(List<dynamic> lines);
+        Task<List<dynamic>> Execute(List<dynamic> lines);
     }
 }

@@ -35,7 +35,7 @@ namespace WaterNut.Business.Services.Tests
         
 
         [OneTimeSetUp]
-        public void FixtureSetup()
+        public async Task FixtureSetup()
         {
             Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
 
@@ -62,7 +62,7 @@ namespace WaterNut.Business.Services.Tests
                 {
                     Console.WriteLine($"DEBUG: EntryDataID: {targetEntryDataId} not found. Attempting import from {testFilePath}...");
                     // Assuming PO type based on previous examples, adjust if necessary
-                    var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFilePath);
+                    var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFilePath).ConfigureAwait(false);
                     if (!fileTypes.Any())
                     {
                          Assert.Fail($"Could not determine importable file type for {testFilePath}");
@@ -72,7 +72,7 @@ namespace WaterNut.Business.Services.Tests
                     {
                         // Use ToString() for fileType representation in log
                         Console.WriteLine($"DEBUG: Importing using FileType: {fileType.ToString()}");
-                        new FileTypeImporter(fileType).Import(testFilePath);
+                        await new FileTypeImporter(fileType).Import(testFilePath).ConfigureAwait(false);
                         // Use ToString() for fileType representation in log
                         Console.WriteLine($"DEBUG: Import attempted for EntryDataID: {targetEntryDataId} using FileType: {fileType.ToString()}.");
                     }
@@ -197,7 +197,7 @@ namespace WaterNut.Business.Services.Tests
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
             
-            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -216,7 +216,7 @@ namespace WaterNut.Business.Services.Tests
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
             
-            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -235,7 +235,7 @@ namespace WaterNut.Business.Services.Tests
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
             
-            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -254,7 +254,7 @@ namespace WaterNut.Business.Services.Tests
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
             
-            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");
@@ -273,7 +273,7 @@ namespace WaterNut.Business.Services.Tests
             // Act
             Assert.That(_testEntryDataList, Is.Not.Null.And.Not.Empty);
             
-            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages);
+            await _sut.AddToEntry(_testEntryDataList, _testCoreAsycudaDocumentSet, perInvoice, combineEntryDataInSameFile, groupItems, checkPackages).ConfigureAwait(false);
 
             // Assert
              Assert.Pass("Test executed without exceptions.");

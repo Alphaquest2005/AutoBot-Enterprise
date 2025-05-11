@@ -5,6 +5,7 @@ using System.Diagnostics; // Added for Stopwatch
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AutoBot;
 using CoreEntities.Business.Entities;
 using WaterNut.DataSpace;
@@ -13,7 +14,7 @@ namespace AutoBotUtilities
 {
     public class EmailTextProcessor
     {
-        public static FileInfo[] Execute(FileInfo[] csvFiles, FileTypes fileType)
+        public static async Task<FileInfo[]> Execute(FileInfo[] csvFiles, FileTypes fileType)
         {
             string dbStatement = null;
             try
@@ -67,7 +68,7 @@ namespace AutoBotUtilities
 
                     if (!string.IsNullOrEmpty(dbStatement))
                     {
-                        AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles);
+                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles).ConfigureAwait(false);
                         new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
                     }
 
@@ -148,7 +149,7 @@ namespace AutoBotUtilities
 
     public class ImportUtils
     {
-        public static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public static async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try
             {
@@ -187,14 +188,14 @@ namespace AutoBotUtilities
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,BaseDataModel.GetClient(), $"Bug Found",
+               await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,BaseDataModel.GetClient(), $"Bug Found",
                     $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                    Array.Empty<string>());
+                    Array.Empty<string>()).ConfigureAwait(false);
             }
         }
 
 
-        public static void ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public static async Task ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try
             {
@@ -215,9 +216,9 @@ namespace AutoBotUtilities
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found",
+                await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found",
                     $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                    Array.Empty<string>());
+                    Array.Empty<string>()).ConfigureAwait(false);
             }
         }
 
@@ -295,7 +296,7 @@ namespace AutoBotUtilities
             }
         }
 
-        public static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public static async Task ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try
             {
@@ -335,9 +336,9 @@ namespace AutoBotUtilities
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
+              await  EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
                      EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>());
+                    Array.Empty<string>()).ConfigureAwait(false);
                 // Consider re-throwing if needed: throw;
             }
         }

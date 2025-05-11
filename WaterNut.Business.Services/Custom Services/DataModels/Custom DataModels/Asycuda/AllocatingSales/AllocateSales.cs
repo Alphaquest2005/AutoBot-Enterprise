@@ -33,7 +33,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             {
                 List<List<(string ItemNumber, int InventoryItemId)>> itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                 //var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
-                Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets);
+                await Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

@@ -141,13 +141,13 @@ namespace AutoBotUtilities.Tests
           }
   
          [Test]
-         public void CanImportSheinMultiInvoice() // New Test for Shein
+         public async Task CanImportSheinMultiInvoice() // New Test for Shein
          {
              try
              {
                  //if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); // Skip if not test settings
                  // Use the absolute path provided by the user for Shein PDF
-                 var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\Shein - multiple invoices for one shipment .pdf"; 
+                 var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\Shein - multiple invoices for one shipment .pdf";
                  
                  if (!File.Exists(testFile))
                  {
@@ -155,7 +155,7 @@ namespace AutoBotUtilities.Tests
                      return; // Skip test if file doesn't exist
                  }
  
-                 var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                 var fileTypes = (IEnumerable<FileTypes>)await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                  if (!fileTypes.Any())
                  {
                      Assert.Warn($"No suitable PDF FileType found for: {testFile}");
@@ -166,8 +166,8 @@ namespace AutoBotUtilities.Tests
                  {
                      Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
                      // Clear DB before each filetype test within this method
-                     Infrastructure.Utils.ClearDataBase(); 
-                     PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+                     Infrastructure.Utils.ClearDataBase();
+                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
  
  
                      using (var ctx = new EntryDataDSContext())
@@ -482,7 +482,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\07252024_TEMU.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -494,7 +494,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\07262024_TEMU.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -506,7 +506,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025103631.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -518,7 +518,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025103721.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -530,7 +530,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025135830.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");

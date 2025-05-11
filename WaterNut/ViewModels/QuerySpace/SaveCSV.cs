@@ -79,8 +79,8 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.ToLower().Trim().EndsWith(".xlsx"))
                     {
-                        var fileTypes = FileTypeManager.GetImportableFileType(fileType,
-                            FileTypeManager.FileFormats.Xlsx, f);
+                        var fileTypes = await FileTypeManager.GetImportableFileType(fileType,
+                            FileTypeManager.FileFormats.Xlsx, f).ConfigureAwait(false);
                         //if (!fileTypes.Any())
                         //   fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown,
                         //        FileTypeManager.FileFormats.Xlsx, f);

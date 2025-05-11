@@ -2,20 +2,21 @@
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.DataSpace;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class EntryDataProcessor : IDocumentProcessor
     {
         private readonly ImportSettings _importSettings;
-
-
+ 
+ 
        public EntryDataProcessor(ImportSettings importSettings)
-        {
-            _importSettings = importSettings;
-        }
-
-        public List<dynamic> Execute(List<dynamic> lines)
+         {
+             _importSettings = importSettings;
+         }
+ 
+        public async Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var pipline = new ProcessorPipline<RawEntryData>(new List<IProcessor<RawEntryData>>()
             {
@@ -23,9 +24,9 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 new FilterValidEntryData(),
                 new SaveRawEntryData(_importSettings)
             });
-            pipline.Execute(new List<RawEntryData>());
+            await pipline.Execute(new List<RawEntryData>()).ConfigureAwait(false);
             return lines;
-
+ 
         }
     }
 }

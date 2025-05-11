@@ -23,7 +23,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         "this method cannot function properly on all items unless the caching issue is addressed");
                 var itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                
-                Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets);
+                await Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets).ConfigureAwait(false);
 
                 StatusModel.StopStatusUpdate();
             }
@@ -35,28 +35,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
+        private async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
             List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             SQLBlackBox.RunSqlBlackBox();
-
+ 
             AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
-
-            itemSets
-                .AsParallel()
-                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
-
+ 
+            // Use Parallel.ForEachAsync for asynchronous parallel processing
+            var tasks = itemSets.Select(async x =>
+            {
                 // chained implementation can only work with discrepancies of when memory data is loaded its is outdated
-                .ForAll(x =>
-                {
-                    new ReAllocatedExistingXSales().Execute(x).Wait();
-                    new ReallocateExistingEx9().Execute(x).Wait();
-                    new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).Wait();
-                    new OldSalesAllocator()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x).Wait();
-                    new MarkErrors().Execute(x).Wait();
-                });
+                await new ReAllocatedExistingXSales().Execute(x).ConfigureAwait(false);
+                await new ReallocateExistingEx9().Execute(x).ConfigureAwait(false);
+                await new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).ConfigureAwait(false);
+                await new OldSalesAllocator()
+                    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x).ConfigureAwait(false);
+                await new MarkErrors().Execute(x).ConfigureAwait(false);
+            }).ToList();
+ 
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
     }
 }

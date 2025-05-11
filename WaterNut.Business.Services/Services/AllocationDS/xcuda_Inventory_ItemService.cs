@@ -548,14 +548,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing xcuda_Inventory_Item", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new xcuda_Inventory_ItemService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.Deletexcuda_Inventory_Item(item).Wait();
+                            await ctx.Deletexcuda_Inventory_Item(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

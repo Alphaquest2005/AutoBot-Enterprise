@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Common.Extensions;
 using WaterNut.DataSpace;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class GetRawXSalesData : IProcessor<BetterExpando>
     {
         private readonly ImportSettings _importSettings;
         private readonly List<dynamic> _lines;
-
+ 
         public GetRawXSalesData(ImportSettings importSettings, List<dynamic> lines)
         {
             _importSettings = importSettings;
             _lines = lines;
         }
-
-        public Result<List<BetterExpando>> Execute(List<BetterExpando> data)
+ 
+        public async Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data)
         {
             try
             {
-
-           
+ 
+ 
             dynamic xsale = new BetterExpando();
             xsale.EmailId = _importSettings.EmailId;
             xsale.StartDate = _lines.Min(x => x.Date);
@@ -30,7 +31,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             xsale.SourceFile = _importSettings.DroppedFilePath;
             xsale.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
             xsale.IsImported = true;
-
+ 
             var details = _lines.Select(x =>
             {
                 dynamic itm = new BetterExpando();
@@ -63,10 +64,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
                     throw;
                 }
             }).ToList();
-
+ 
             xsale.xSalesDetails = details;
-
-            return new Result<List<BetterExpando>>(new List<BetterExpando>(){xsale}, true,"");
+ 
+            return Task.FromResult(new Result<List<BetterExpando>>(new List<BetterExpando>(){xsale}, true,"")).Result; // Wrap in Task.FromResult
             }
             catch (Exception e)
             {

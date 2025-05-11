@@ -2,7 +2,8 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using System.Collections.Generic; // Added
 using System.IO; // Added
 using Serilog; // Added
-using System; // Added
+using System;
+using System.Threading.Tasks; // Added
 using OCR.Business.Entities; // Added for Line
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
@@ -12,7 +13,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Assuming _utilsLogger is defined in another partial class part
         // private static readonly ILogger _utilsLogger = Log.ForContext(typeof(InvoiceProcessingUtils));
 
-        public static void ReportUnimportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
+        public static async Task ReportUnimportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
             int fileTypeId,
             EmailDownloader.Client client, string pdftxt, string error,
             List<Line> failedlst)
@@ -54,7 +55,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                  _utilsLogger.Debug("Calling CreateEmail for File: {FilePath}", file);
                  // Assuming CreateEmail handles its own logging, including sending
-                 var body = CreateEmail(file, client, error, failedlst, fileInfo, txtFile);
+                 var body = await CreateEmail(file, client, error, failedlst, fileInfo, txtFile).ConfigureAwait(false);
                  _utilsLogger.Information("Email creation/sending process initiated for File: {FilePath}. Body Length: {BodyLength}", file, body?.Length ?? 0);
 
                  _utilsLogger.Debug("Calling CreateTestCase for File: {FilePath}", file);

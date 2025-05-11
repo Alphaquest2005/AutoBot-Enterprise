@@ -54,7 +54,7 @@ namespace AutoBot
             var destFileName = CopyFileToDocumentsFolder(file, documentsFolder);
 
             // Assuming FileTypeManager is static or accessible
-            var fileTypes = GetUnknownFileTypes(file);
+            var fileTypes = await GetUnknownFileTypes(file).ConfigureAwait(false);
 
             fileTypes.ForEach(x => x.EmailId = file.Name); // Set EmailId based on filename for context
 
@@ -117,11 +117,12 @@ namespace AutoBot
             return destFileName;
         }
 
-        private List<FileTypes> GetUnknownFileTypes(FileInfo file)
+        private async Task<List<FileTypes>> GetUnknownFileTypes(FileInfo file)
         {
             // Assuming FileTypeManager is static or accessible
             // Consider injecting IFileTypeManager if refactoring further
-            return FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName)
+            var importableFileType = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, file.FullName).ConfigureAwait(false);
+            return importableFileType
                 .Where(x => x.Description == "Unknown") // Filter specifically for "Unknown" type
                 .ToList();
         }
@@ -136,22 +137,23 @@ namespace AutoBot
                 // Consider injecting IPdfUtils, IShipmentUtils if refactoring further
                 var res = await InvoiceReader.InvoiceReader.ImportPDF(fileInfos, fileType).ConfigureAwait(false);
 
-                allgood = await TryDeepSeekImport(originalFile, res, fileInfos, fileType, allgood).ConfigureAwait(false);
+                // Call to TryDeepSeekImport is now synchronous as the method itself will be made synchronous
+                allgood = TryDeepSeekImport(originalFile, res, fileInfos, fileType, allgood);
 
                 // Only create shipment if initial PDF import or DeepSeek was successful for this fileType
-                 allgood = TrySendShipmentEmail(originalFile, allgood, fileType, fileInfos);
+                 allgood = await TrySendShipmentEmail(originalFile, allgood, fileType, fileInfos).ConfigureAwait(false);
             }
 
             return allgood; // Returns true only if all fileTypes processed successfully
         }
 
-        private static bool TrySendShipmentEmail(FileInfo originalFile, bool allgood, FileTypes fileType, FileInfo[] fileInfos)
+        private static async Task<bool> TrySendShipmentEmail(FileInfo originalFile, bool allgood, FileTypes fileType, FileInfo[] fileInfos)
         {
             if (allgood) // Check if still good after potential DeepSeek
             {
                 try
                 {
-                    allgood = ShipmentUtils.CreateShipmentEmail(fileType, fileInfos);
+                    allgood = await ShipmentUtils.CreateShipmentEmail(fileType, fileInfos).ConfigureAwait(false);
                 }
                 catch(Exception ex)
                 {
@@ -164,7 +166,8 @@ namespace AutoBot
             return allgood;
         }
 
-        private async Task<bool> TryDeepSeekImport(FileInfo originalFile, List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> res, FileInfo[] fileInfos, FileTypes fileType,
+        // Removed async and Task<bool> as no await is performed with current commented code
+        private bool TryDeepSeekImport(FileInfo originalFile, List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>> res, FileInfo[] fileInfos, FileTypes fileType,
             bool allgood)
         {
             if (!res.All(x =>
@@ -174,7 +177,7 @@ namespace AutoBot
                 //var res2 = await PDFUtils.ImportPDFDeepSeek(fileInfos, fileType).ConfigureAwait(false);
                 //if (res2.Any()
                 //    && !res2.Any(x => x.Value.status != ImportStatus.Success)) return allgood;
-                //NotifyUnknownPDF(originalFile, res2);
+                //NotifyUnknownPDF(originalFile, res2); // If this were uncommented, TryDeepSeekImport would need to be async Task
                 allgood = false;
                 return allgood;
                 // If DeepSeek succeeded, potentially update status or log
@@ -183,7 +186,7 @@ namespace AutoBot
             return allgood;
         }
 
-        private void NotifyUnknownPDF(FileInfo file, List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> res2)
+        private async Task NotifyUnknownPDF(FileInfo file, List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> res2)
         {
             // Assuming Utils.Client and EmailDownloader are static or accessible
             // Consider injecting IEmailService if refactoring further
@@ -193,10 +196,10 @@ namespace AutoBot
                 var errorMessage = $"Unknown PDF Found: {file.Name}\r\n" +
                                    (errorDetails.Value.status != ImportStatus.Success ? $"Failed Step: {errorDetails.Value.DocumentType}" : "Details unavailable.");
 
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Unknown PDF Found",
+                await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, null, $"Unknown PDF Found",
                     EmailDownloader.EmailDownloader.GetContacts("Developer"),
                     errorMessage,
-                    res2.Select(x => x.Value.FileName).Distinct().ToArray());
+                    res2.Select(x => x.Value.FileName).Distinct().ToArray()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -327,8 +330,8 @@ namespace AutoBot
                     shipmentFolderType.Data = new List<KeyValuePair<string, string>>(); // Initialize Data list
 
                     Console.WriteLine($"Executing actions for FileType {shipmentFolderType.Id}, EmailId {placeholderEmailId}...");
-                    ImportUtils.ExecuteDataSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting);
-                    ImportUtils.ExecuteNonSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting);
+                    await ImportUtils.ExecuteDataSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
+                    await ImportUtils.ExecuteNonSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
                     Console.WriteLine($"Finished actions for folder: {subfolder.Name}");
 
                     // --- Post-Processing (Example: Move to Archive) ---

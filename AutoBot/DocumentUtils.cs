@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using MoreLinq;
@@ -15,7 +16,7 @@ namespace AutoBot
 {
     public class DocumentUtils
     {
-        public static void ImportPOEntries(bool overwriteExisting)
+        public static async Task ImportPOEntries(bool overwriteExisting)
         {
             try
             {
@@ -23,7 +24,7 @@ namespace AutoBot
 
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                if (ImportEntries(overwriteExisting, fileTypes, DateTime.Today.AddHours(-12))) return;
+                if (await ImportEntries(overwriteExisting, fileTypes, DateTime.Today.AddHours(-12)).ConfigureAwait(false)) return;
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
@@ -38,7 +39,7 @@ namespace AutoBot
             }
         }
 
-        public static void ImportAllSalesEntries(bool overwriteExisting)
+        public static async Task ImportAllSalesEntries(bool overwriteExisting)
         {
             try
             {
@@ -46,7 +47,7 @@ namespace AutoBot
 
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                if (ImportEntries(overwriteExisting, fileTypes, DateTime.MinValue)) return;
+                if (await ImportEntries(overwriteExisting, fileTypes, DateTime.MinValue).ConfigureAwait(false)) return;
 
                 ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
@@ -61,7 +62,7 @@ namespace AutoBot
             }
         }
 
-        public static void ImportSalesEntries(bool overwriteExisting)
+        public static async Task ImportSalesEntries(bool overwriteExisting)
         {
             try
             {
@@ -69,7 +70,7 @@ namespace AutoBot
 
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                if (ImportEntries(overwriteExisting, fileTypes)) return;
+                if (await ImportEntries(overwriteExisting, fileTypes).ConfigureAwait(false)) return;
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
@@ -83,7 +84,7 @@ namespace AutoBot
             }
         }
 
-        public static void ImportEntries(bool overwriteExisting, string fileLst)
+        public static async Task ImportEntries(bool overwriteExisting, string fileLst)
         {
             try
             {
@@ -91,7 +92,7 @@ namespace AutoBot
 
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                if (ImportEntries(overwriteExisting, fileTypes, fileLst)) return;
+                if (await ImportEntries(overwriteExisting, fileTypes, fileLst).ConfigureAwait(false)) return;
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
@@ -105,11 +106,11 @@ namespace AutoBot
             }
         }
 
-        private static bool ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, DateTime? getMinFileDate = null)
+        private static async Task<bool> ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, DateTime? getMinFileDate = null)
         {
             if (!fileTypes.Any()) return true;
 
-            var docSetId = GetDefaultAsycudaDocumentSetId();
+            var docSetId = await GetDefaultAsycudaDocumentSetId().ConfigureAwait(false);
 
             if (getMinFileDate == null) getMinFileDate = GetDocSetLastFileDate(docSetId);
 
@@ -119,11 +120,11 @@ namespace AutoBot
             return false;
         }
 
-        private static bool ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, string filelst)
+        private static async Task<bool> ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, string filelst)
         {
             if (!fileTypes.Any()) return true;
 
-            var docSetId = GetDefaultAsycudaDocumentSetId();
+            var docSetId = await GetDefaultAsycudaDocumentSetId().ConfigureAwait(false);
 
             var fileTypeFiles = GetFileTypeFiles(fileTypes, docSetId, filelst);
 
@@ -155,9 +156,14 @@ namespace AutoBot
         }
 
         private static void ImportEntries(bool overwriteExisting, IEnumerable<(FileTypes FileType, List<FileInfo> Files)> fileTypeFiles) =>
-            fileTypeFiles.ForEach(ft =>
-                BaseDataModel.Instance.ImportDocuments(WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.FileType.DocSetRefernece, true).AsycudaDocumentSetId,
-                    ft.Files.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true).Wait());
+            fileTypeFiles.ForEach(async ft =>
+            {
+                var asycudaDocumentSet = await WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.FileType.DocSetRefernece, true).ConfigureAwait(false);
+                await  BaseDataModel.Instance.ImportDocuments(
+                    asycudaDocumentSet
+                        .AsycudaDocumentSetId,
+                    ft.Files.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true).ConfigureAwait(false);
+            });
 
         private static DateTime GetDocSetLastFileDate(int docSetId) => GetFileCreationDate(GetAsycudaDocumentSetAttachments(docSetId));
 
@@ -185,11 +191,14 @@ namespace AutoBot
             .OrderByDescending(x => x.AttachmentId)
             .FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
 
-        private static int GetDefaultAsycudaDocumentSetId() =>
-            new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                x.ApplicationSettingsId ==
-                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ??
-            BaseDataModel.CurrentSalesInfo(-1).Item3.AsycudaDocumentSetId;
+        private static async Task<int> GetDefaultAsycudaDocumentSetId()
+        {
+            var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+            return new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+                       x.ApplicationSettingsId ==
+                       BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                       x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ??
+                   currentSalesInfo.Item3.AsycudaDocumentSetId;
+        }
     }
 }

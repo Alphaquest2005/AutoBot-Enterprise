@@ -29,7 +29,7 @@ namespace AutoBot
                 .ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
         }
 
-        public static void SubmitUnknownDFPComments()
+        public static async Task SubmitUnknownDFPComments()
         {
             try
             {
@@ -61,9 +61,9 @@ namespace AutoBot
                         var attlst = new List<string>();
 
 
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "",
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                             $"Shipment: {docSet.Declarant_Reference_Number}",
-                            contacts, body, attlst.ToArray());
+                            contacts, body, attlst.ToArray()).ConfigureAwait(false);
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace AutoBot
         public static void RebuildSalesReport() => BuildSalesReportClass.Instance.ReBuildSalesReports();
 
         public static async Task<List<AsycudaDocument>> GetSalesDocumentsWithEntryData(int asycudaDocumentSetId) =>
-            (await BaseDataModel.Instance.GetDocSetWithEntryDataDocs(asycudaDocumentSetId).ConfigureAwait(false)).Documents.Select(x => new SalesDataService().GetSalesDocument(x.ASYCUDA_Id).Result).ToList();
+            (await BaseDataModel.Instance.GetDocSetWithEntryDataDocs(asycudaDocumentSetId).ConfigureAwait(false)).Documents.Select<xcuda_ASYCUDA, AsycudaDocument>(x => new SalesDataService().GetSalesDocument(x.ASYCUDA_Id).ConfigureAwait(false).GetAwaiter().GetResult()).ToList<AsycudaDocument>();
 
         public static async Task<IEnumerable<EX9Utils.SaleReportLine>> GetDocumentSalesReport(int ASYCUDA_Id)
         {

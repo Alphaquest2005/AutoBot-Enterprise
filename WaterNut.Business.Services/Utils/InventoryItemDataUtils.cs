@@ -61,7 +61,7 @@ namespace WaterNut.Business.Services.Utils
                 newInventoryItems.Add(await CreateInventoryItem(inventorySource, itemData).ConfigureAwait(false));
             }
 
-            new SaveInventoryItemsSelector().Execute(newInventoryItems);
+            await new SaveInventoryItemsSelector().Execute(newInventoryItems).ConfigureAwait(false);
 
             return newInventoryItems;
         }
@@ -172,7 +172,7 @@ namespace WaterNut.Business.Services.Utils
                  // It's likely a Task<T>, await it
                 await dynamicValue.ConfigureAwait(false);
                 // Now get the result (which we hope is string or convertible)
-                 var result = dynamicValue.Result;
+                 var result = await dynamicValue.ConfigureAwait(false);
                  return Convert.ToString(result) ?? string.Empty;
             }
 

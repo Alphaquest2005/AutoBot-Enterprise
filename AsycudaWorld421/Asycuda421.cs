@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
-
-namespace Asycuda421
+﻿namespace Asycuda421
 {
+    using System;
+    using System.IO;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Schema;
+
     public partial class ASYCUDA
     {
         public static bool CanLoadFromFile(string fileName)
@@ -20,8 +20,8 @@ namespace Asycuda421
             schemas.Add(null, @"Asycuda421.xsd");
 
             var doc = XDocument.Load(fileName);
-            var msg = "";
-            doc.Validate(schemas, (o, e) => { msg += e.Message + Environment.NewLine; });
+            var msg = string.Empty;
+            doc.Validate(schemas, (object o, ValidationEventArgs e) => { msg += e.Message + Environment.NewLine; });
             if (string.IsNullOrEmpty(msg)) return true;
             return false;
         }
@@ -54,8 +54,8 @@ namespace Asycuda421
             schemas.Add(null, @"C71.xsd");
 
             var doc = XDocument.Load(fileName);
-            var msg = "";
-            doc.Validate(schemas, (o, e) => { msg += e.Message + Environment.NewLine; });
+            var msg = string.Empty;
+            doc.Validate(schemas, (object o, ValidationEventArgs e) => { msg += e.Message + Environment.NewLine; });
             if (string.IsNullOrEmpty(msg)) return true;
             return false;
         }
@@ -88,8 +88,8 @@ namespace Asycuda421
             schemas.Add(null, @"License.xsd");
 
             var doc = XDocument.Load(fileName);
-            var msg = "";
-            doc.Validate(schemas, (o, e) => { msg += e.Message + Environment.NewLine; });
+            var msg = string.Empty;
+            doc.Validate(schemas, (object o, ValidationEventArgs e) => { msg += e.Message + Environment.NewLine; });
             if (string.IsNullOrEmpty(msg)) return true;
             return false;
         }

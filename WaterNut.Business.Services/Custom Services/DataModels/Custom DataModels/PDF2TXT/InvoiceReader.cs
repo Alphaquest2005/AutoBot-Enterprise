@@ -93,7 +93,7 @@ namespace WaterNut.DataSpace
                                 imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(fileDescription), ImportStatus.HasErrors));
                                 break;
                             case ImportStatus.Failed:
-                                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
+                                await ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>()).ConfigureAwait(false);
                                 imports.Add($"{file}-{tmp.OcrInvoices.Name}-{possibleInvoices.IndexOf(tmp)}", (file, FileTypeManager.EntryTypes.GetEntryType(fileDescription), ImportStatus.Failed));
                                 break;
                         }
@@ -107,7 +107,7 @@ namespace WaterNut.DataSpace
                         var failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => realerror.Message.Contains(z.Field)) || realerror.Message.Contains(x.OCR_Lines.Name))
                             .ToList();
                         if (!failedLines.Any()) failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.DataType == "Number" )).ToList();
-                        ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), $"Problem importing file:{file} --- {realerror.Message}", failedLines);
+                        await ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), $"Problem importing file:{file} --- {realerror.Message}", failedLines).ConfigureAwait(false);
 
                         var ex = new ApplicationException($"Problem importing file:{file} --- {realerror.Message}", e);
                         Console.WriteLine(ex);
@@ -134,7 +134,7 @@ namespace WaterNut.DataSpace
                              "Check the file again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                              "Thanks\r\n" +
                              $"AutoBot";
-                EmailDownloader.EmailDownloader.SendBackMsg(emailId, client, errTxt);
+                await EmailDownloader.EmailDownloader.SendBackMsgAsync(emailId, client, errTxt).ConfigureAwait(false);
                 
                 return imports;
             }
@@ -307,9 +307,9 @@ namespace WaterNut.DataSpace
                 (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
                 tmp.Lines.SelectMany(x => x.Values.Values).Any())
             {
-                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
+                 ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
                     "Following fields failed to import",
-                    failedlines);
+                    failedlines).GetAwaiter().GetResult();
                 
                     return true;
                 
@@ -401,7 +401,7 @@ namespace WaterNut.DataSpace
 
 
 
-        private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
+        private static async Task ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
             int fileTypeId,
             Client client, string pdftxt, string error,
             List<Line> failedlst)
@@ -409,7 +409,7 @@ namespace WaterNut.DataSpace
             var fileInfo = new FileInfo(file);
             
             var txtFile = WriteTextFile(file, pdftxt);
-            var body = CreateEmail(file, client, error, failedlst, fileInfo, txtFile);
+            var body = await CreateEmail(file, client, error, failedlst, fileInfo, txtFile).ConfigureAwait(false);
             CreateTestCase(file, failedlst, txtFile, body);
 
 
@@ -562,7 +562,7 @@ namespace WaterNut.DataSpace
                 BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData);
         }
 
-        private static string CreateEmail(string file, Client client, string error, List<Line> failedlst,
+        private static async Task<string> CreateEmail(string file, Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
             var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
@@ -575,7 +575,7 @@ namespace WaterNut.DataSpace
                        $"\r\n" +
                        CommandsTxt
                 ;
-            EmailDownloader.EmailDownloader.SendEmail( client, null, "Invoice Template Not found!", EmailDownloader.EmailDownloader.GetContacts("Developer"), body, new[] {file, txtFile});
+            await EmailDownloader.EmailDownloader.SendEmailAsync( client, null, "Invoice Template Not found!", EmailDownloader.EmailDownloader.GetContacts("Developer"), body, new[] {file, txtFile}).ConfigureAwait(false);
             return body;
         }
 

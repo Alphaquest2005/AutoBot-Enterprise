@@ -60,15 +60,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                  // Assuming SendEmail is synchronous or handles its own async internally
                  // Running potentially blocking network code in background thread.
-                 await Task.Run(() =>
-                    EmailDownloader.EmailDownloader.SendEmail(
+                
+                   await EmailDownloader.EmailDownloader.SendEmailAsync(
                         context.Client,
                         null, // Assuming null sender is intended
                         "Invoice Template Not found!",
                         contacts?.ToArray(), // Convert IEnumerable<string> to string[]
                         context.EmailBody,
                         attachments // Use filtered list
-                    )).ConfigureAwait(false);
+                    ).ConfigureAwait(false);
 
                  _logger.Information("Successfully sent error email for File: {FilePath}", filePath);
 

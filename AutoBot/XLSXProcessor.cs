@@ -32,7 +32,7 @@ namespace AutoBotUtilities
                     {
                         var fileText = XLSXUtils.GetText(fileType, rows, result.Tables[0]);
 
-                        if (ProcessUnknownFileType(fileType, file, rows)) continue;
+                        if (await ProcessUnknownFileType(fileType, file, rows).ConfigureAwait(false)) continue;
 
                         // all xlsx suppose to have child filetypes
                         if (!fileType.ChildFileTypes.Any())
@@ -52,15 +52,17 @@ namespace AutoBotUtilities
         }
 
 
-        public static bool ProcessUnknownFileType(FileTypes fileType, FileInfo file, List<DataRow> rows)
+        public static async Task<bool> ProcessUnknownFileType(FileTypes fileType, FileInfo file, List<DataRow> rows)
         {
             if (fileType.ChildFileTypes.FirstOrDefault(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown) != null)
             {
-                FileTypeManager.SendBackTooBigEmail(file, fileType);
+                await FileTypeManager.SendBackTooBigEmail(file, fileType).ConfigureAwait(false);
 
-                var rFileType = XLSXUtils.DetectFileType(fileType, file, rows);
+                var rFileType = await XLSXUtils.DetectFileType(fileType, file, rows).ConfigureAwait(false);
                 if (fileType.Id != rFileType.Id)
                 {
+                    // Assuming these Execute methods are synchronous. If they are async, they would also need await.
+                    // Based on the original error, the issue was with rFileType, not these calls themselves.
                     ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
                         BaseDataModel.Instance.CurrentApplicationSettings);
                     ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },

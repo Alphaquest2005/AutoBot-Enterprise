@@ -1,4 +1,4 @@
-﻿using AdjustmentQS.Business.Services;
+﻿﻿using AdjustmentQS.Business.Services;
 using AllocationQS.Business.Entities;
 using Core.Common.Converters;
 using Core.Common.Data.Contracts;
@@ -188,7 +188,7 @@ namespace AutoBot
        }
 
 
-        public static void SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email)
+        public static async Task SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace AutoBot
 
                         if (fileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.Unknown)
                         {
-                            FileTypeManager.SendBackTooBigEmail(file, fileType);
+                            await FileTypeManager.SendBackTooBigEmail(file, fileType).ConfigureAwait(false);
                         }
 
                         var reference = GetReference(file, ctx);
@@ -299,32 +299,28 @@ namespace AutoBot
         }
 
 
-        public static bool AssessComplete(string instrFile, string resultsFile, out int lcont)
+        public static async Task<(bool success, int lcontValue)> AssessComplete(string instrFile, string resultsFile)
         {
+            int lcontValue = 0;
             try
             {
-
-
-                lcont = 0;
                 var rcount = 0;
 
                 if (File.Exists(instrFile))
                 {
-                    if (!File.Exists(resultsFile)) return false;
+                    if (!File.Exists(resultsFile)) return (false, lcontValue);
                     var lines = File.ReadAllLines(instrFile).Where(x => x.StartsWith("File\t")).ToArray();
                     var res = File.ReadAllLines(resultsFile).Where(x => x.StartsWith("File\t")).ToArray();
                     if (res.Length == 0)
                     {
-
-                        return false;
+                        return (false, lcontValue);
                     }
-
 
                     foreach (var line in lines)
                     {
                         var p = line.Split('\t');
-                        if (lcont + 1 >= res.Length) return false;
-                        if (string.IsNullOrEmpty(res[lcont])) return false;
+                        if (lcontValue + 1 >= res.Length) return (false, lcontValue);
+                        if (string.IsNullOrEmpty(res[lcontValue])) return (false, lcontValue);
                         rcount += 1;
                         var isSuccess = false;
                         foreach (var rline in res)
@@ -333,65 +329,65 @@ namespace AutoBot
 
                             if (r.Length == 3 && p[1] == r[1] && r[2] == "Success")
                             {
-                                if (r[0] == "File") lcont = rcount - 1;
+                                if (r[0] == "File") lcontValue = rcount - 1;
                                 isSuccess = true;
                                 break;
                             }
 
                             if (r.Length == 3 && p[1] == r[0] && r[2] == "Success") // for file
                             {
-                                lcont += 1;
+                                lcontValue += 1;
                                 isSuccess = true;
                                 break;
                             }
 
                             if (r.Length == 4 && p[2] == r[2] && r[3] == "Success") // for file
                             {
-                                lcont += 1;
+                                lcontValue += 1;
                                 isSuccess = true;
                                 break;
                             }
 
                             if (r.Length == 3 && p[1] != r[1] && r[2] == "Error")
                             {
-
                                 if (r[0] == "Screenshot")
                                 {
-
-                                    SubmitScriptErrors(r[1]);
-                                    return true;
+                                    await SubmitScriptErrors(r[1]).ConfigureAwait(false);
+                                    // Assuming true indicates an action was taken, even on error path,
+                                    // or that the process should be considered "complete" for this iteration.
+                                    // If AssessComplete's "true" means "overall success", this might need adjustment.
+                                    // For now, mirroring the original logic's "return true" path.
+                                    return (true, lcontValue);
                                 }
-                                //isSuccess = true;
-                                //break;
+                                //isSuccess = true; // Original commented out
+                                //break; // Original commented out
                             }
 
                             if (r.Length == 3 && p[1] == r[1] && r[2] == "Error")
                             {
                                 // email error
-                                //if (r[0] == "File") lcont = rcount - 1;
-                                //isSuccess = true;
-                                //break;
+                                //if (r[0] == "File") lcontValue = rcount - 1; // Original commented out
+                                //isSuccess = true; // Original commented out
+                                //break; // Original commented out
                             }
-
                         }
 
                         if (isSuccess == true) continue;
-                        return false;
+                        return (false, lcontValue);
                     }
-
-                    return true;
+                    return (true, lcontValue);
                 }
-
-                return true;
+                // If instrFile does not exist, original logic returns true.
+                return (true, lcontValue);
             }
             catch (Exception)
             {
-
+                // Preserving original stack trace
                 throw;
             }
         }
 
-        public static void SubmitScriptErrors(string file)
+        public static async Task SubmitScriptErrors(string file)
         {
             try
             {
@@ -414,11 +410,11 @@ namespace AutoBot
                                $"Regards,\r\n" +
                                $"AutoBot";
 
-                    var msg = EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]
+                    var msg =  EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]
                     {
                         file
                     });
-                    EmailDownloader.EmailDownloader.SendEmail(Client, msg);
+                    await EmailDownloader.EmailDownloader.SendEmailAsync(Client, msg).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -440,26 +436,34 @@ namespace AutoBot
             }
         }
 
-        public static void RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes)
+        public static async Task RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes)
         {
             var lcont = 0;
             for (int i = 0; i < trytimes; i++)
             {
-                if (Utils.AssessComplete(instrFile, resultsFile, out lcont) == true) break;
+                var assessmentResult1 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                lcont = assessmentResult1.lcontValue;
+                if (assessmentResult1.success == true) break;
             
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
-                if(Utils.AssessComplete(instrFile, resultsFile, out lcont) == true) break;
+                var assessmentResult2 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                lcont = assessmentResult2.lcontValue;
+                if(assessmentResult2.success == true) break;
             }
         }
 
-        public static void Assess(string instrFile, string resultsFile, string directoryName)
+        public static async Task Assess(string instrFile, string resultsFile, string directoryName)
         {
             var lcont = 0;
-            while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
+            var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+            lcont = assessmentResult.lcontValue;
+            while (assessmentResult.success == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
+                assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                lcont = assessmentResult.lcontValue;
             }
         }
 
@@ -632,7 +636,7 @@ namespace AutoBot
         }
 
      
-        public static void SubmitMissingInvoices(FileTypes ft)
+        public static async Task SubmitMissingInvoices(FileTypes ft)
         {
             try
             {
@@ -676,12 +680,12 @@ namespace AutoBot
 
                         if (emailIds.Key == null)
                         {
-                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Missing Invoices",
-                                contacts, body, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices",
+                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray()).ConfigureAwait(false);
                         }
 
 
@@ -712,7 +716,7 @@ namespace AutoBot
             }
         }
 
-        public static void SubmitMissingInvoicePDFs(FileTypes ft)
+        public static async Task SubmitMissingInvoicePDFs(FileTypes ft)
         {
             try
             {
@@ -757,12 +761,12 @@ namespace AutoBot
 
                         if (emailIds.Key == null)
                         {
-                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Missing Invoices PDF Attachments",
-                                contacts, body, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices PDF Attachments",
+                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray()).ConfigureAwait(false);
                         }
 
 
@@ -783,7 +787,7 @@ namespace AutoBot
             }
         }
 
-        public static void SubmitIncompleteEntryData(FileTypes ft)
+        public static async Task SubmitIncompleteEntryData(FileTypes ft)
         {
             try
             {
@@ -827,16 +831,16 @@ namespace AutoBot
 
                         if (emailIds.Key == null)
                         {
-                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Incomplete Invoice Data",
-                                contacts, body, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Incomplete Invoice Data",
+                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key, Utils.Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray());
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray()).ConfigureAwait(false);
                         }
 
 
-                        ctx.SaveChanges();
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
 
                     }
 
@@ -848,7 +852,7 @@ namespace AutoBot
                 throw e;
             }
         }
-        public static List<FileTypes> GetFileType(string entryType, string format, string fileName)
+        public static Task<List<FileTypes>> GetFileType(string entryType, string format, string fileName)
         {
             return FileTypeManager.GetImportableFileType(entryType, format, fileName);
         }

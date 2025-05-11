@@ -7,7 +7,8 @@ using Core.Common.CSV;
 using CoreEntities.Business.Entities;
 using WaterNut.Business.Services.Importers.EntryData;
 using WaterNut.Business.Services.Utils;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers
 {
     public class CSVImporter : IImporter
@@ -19,11 +20,11 @@ namespace WaterNut.Business.Services.Importers
             FileType = fileType;
         }
 
-        public void Import(string fileName, bool overWrite)
+        public async Task Import(string fileName, bool overWrite)
         {
             try
             {
-                var docSet = DataSpace.Utils.GetDocSets(FileType);
+                var docSet = await DataSpace.Utils.GetDocSets(FileType).ConfigureAwait(false);
                 var lines = GetFileLines(fileName);
                 var header = GetHeadings(lines);
                 var emailId = DataSpace.Utils.GetExistingEmailId(fileName, FileType);
@@ -38,15 +39,15 @@ namespace WaterNut.Business.Services.Importers
                 var importSettings = new ImportSettings(fileType, docSet, overWrite, fileName, emailId);
 
                 EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
-                    .Execute(data);
+                    .Execute(data).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
-
+ 
+ 
         }
 
 

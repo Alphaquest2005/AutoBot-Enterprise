@@ -424,7 +424,7 @@ namespace WaterNut
         }
 
 
-        private void ImportXSales(object sender, MouseButtonEventArgs e)
+        private async void ImportXSales(object sender, MouseButtonEventArgs e)
         {
             var od = new OpenFileDialog
             {
@@ -443,7 +443,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        EX9Utils.ImportXSalesFiles(f);
+                        await EX9Utils.ImportXSalesFiles(f).ConfigureAwait(false);
                     }
                     catch (Exception Ex)
                     {

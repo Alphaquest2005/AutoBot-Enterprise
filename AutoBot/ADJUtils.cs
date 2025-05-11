@@ -44,7 +44,7 @@ namespace AutoBot
         }
 
 
-        public static void CreateAdjustmentEntries(bool overwrite, string adjustmentType)
+        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType)
         {
             Console.WriteLine($"Create {adjustmentType} Entries");
 
@@ -53,7 +53,7 @@ namespace AutoBot
             {
                 var lst = GetADJtoXMLForType(adjustmentType);
 
-                CreateAdjustmentEntries(overwrite, adjustmentType, lst, null);
+                await CreateAdjustmentEntries(overwrite, adjustmentType, lst, null).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -202,10 +202,10 @@ namespace AutoBot
             return null;
         }
 
-        public static void EmailAdjustmentErrors()
+        public static async Task EmailAdjustmentErrors()
         {
 
-            var info = BaseDataModel.CurrentSalesInfo(-1);
+            var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "AdjustmentErrors.csv");
 
@@ -223,7 +223,7 @@ namespace AutoBot
                 };
                 using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                 {
-                    Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                    await Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
                 }
 
             }
@@ -235,15 +235,15 @@ namespace AutoBot
                     .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .ToList();
                 if (File.Exists(errorfile))
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directory, $"Adjustment Errors for {info.Item1:yyyy-MM-dd} - {info.Item2:yyyy-MM-dd}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[]
+                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory, $"Adjustment Errors for {info.Item1:yyyy-MM-dd} - {info.Item2:yyyy-MM-dd}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[]
                     {
                         errorfile
-                    });
+                    }).ConfigureAwait(false);
             }
 
         }
 
-        public static void CreateAdjustmentEntries(bool overwrite, string adjustmentType, FileTypes fileType)
+        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType, FileTypes fileType)
         {
             Console.WriteLine($"Create {adjustmentType} Entries");
 
@@ -261,7 +261,7 @@ namespace AutoBot
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .ToList();
 
-                    CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId);
+                    await CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -272,10 +272,10 @@ namespace AutoBot
 
         }
 
-        public static void CreateAdjustmentEntries(bool overwrite, string adjustmentType,
+        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType,
             List<IGrouping<int, TODO_AdjustmentsToXML>> lst, string emailId)
         {
-            ClearExistingAdjustments(overwrite, lst);
+            await ClearExistingAdjustments(overwrite, lst).ConfigureAwait(false);
 
             foreach (var doc in lst)
             {
@@ -293,18 +293,18 @@ namespace AutoBot
 
                     if (entryDataDetailsIds.Count > 7)
                     {
-                        Task.WhenAll(t1, t3).Wait();
+                        await Task.WhenAll(t1, t3).ConfigureAwait(false);
                         // t1.Wait();
-                        t2.Wait();
+                        await t2.ConfigureAwait(false);
                         // t3.Wait();
                     }
                     else
                     {
-                        Task.WhenAll(t1, t2, t3).Wait();
+                        await Task.WhenAll(t1, t2, t3).ConfigureAwait(false);
                     }
 
 
-                    BaseDataModel.RenameDuplicateDocuments(doc.Key);
+                    await BaseDataModel.RenameDuplicateDocuments(doc.Key).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -317,12 +317,11 @@ namespace AutoBot
         private static Task CreateDutyFreeOPSEntries(string adjustmentType, string emailId, string itemFilter, IGrouping<int, TODO_AdjustmentsToXML> doc,
             List<int> entryDataDetailsIds)
         {
-            var t3 = Task.Run(() =>
+            var t3 = Task.Run(async () =>
             {
                 var filterExpressionf = GetDutyFreeFilterExp(itemFilter);
-                new AdjustmentOverService()
-                    .CreateOPS(filterExpressionf, false, doc.Key, adjustmentType, entryDataDetailsIds, emailId)
-                    .Wait();
+                await new AdjustmentOverService()
+                    .CreateOPS(filterExpressionf, false, doc.Key, adjustmentType, entryDataDetailsIds, emailId).ConfigureAwait(false);
             });
             return t3;
         }
@@ -330,12 +329,12 @@ namespace AutoBot
         private static Task CreateDutyFreeADJEntries(string adjustmentType, string emailId, string itemFilter, IGrouping<int, TODO_AdjustmentsToXML> doc,
             List<int> entryDataDetailsIds)
         {
-            var t2 = Task.Run(() =>
+            var t2 = Task.Run(async () =>
             {
                 var filterExpressionf = GetDutyFreeFilterExp(itemFilter);
 
-                new AdjustmentShortService().CreateIM9(filterExpressionf, false,
-                    doc.Key, "Duty Free", adjustmentType, emailId).Wait();
+                await new AdjustmentShortService().CreateIM9(filterExpressionf, false,
+                    doc.Key, "Duty Free", adjustmentType, emailId).ConfigureAwait(false);
             });
             return t2;
         }
@@ -359,7 +358,7 @@ namespace AutoBot
         private static Task CreateDutyPaidADJEntries(string adjustmentType, string emailId, string itemFilter, IGrouping<int, TODO_AdjustmentsToXML> doc,
             List<int> entryDataDetailsIds)
         {
-            var t1 = Task.Run(() =>
+            var t1 = Task.Run(async () =>
             {
                 var filterExpressionp =
                         $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")"
@@ -372,13 +371,13 @@ namespace AutoBot
                     ;
 
 
-                new AdjustmentShortService().CreateIM9(filterExpressionp, false,
-                    doc.Key, "Duty Paid", adjustmentType, emailId).Wait();
+                await new AdjustmentShortService().CreateIM9(filterExpressionp, false,
+                    doc.Key, "Duty Paid", adjustmentType, emailId).ConfigureAwait(false);
             });
             return t1;
         }
 
-        private static void ClearExistingAdjustments(bool overwrite, List<IGrouping<int, TODO_AdjustmentsToXML>> lst)
+        private static async Task ClearExistingAdjustments(bool overwrite, List<IGrouping<int, TODO_AdjustmentsToXML>> lst)
         {
             if (overwrite)
             {
@@ -393,7 +392,7 @@ namespace AutoBot
                             BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                     }
 
-                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
                     //; // took it of so it would keep counting up
                 }
             }

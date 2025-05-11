@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -23,7 +23,7 @@ namespace AutoBot
 {
     public class LICUtils
     {
-        public static void ImportLicense(FileTypes ft)
+        public static async Task ImportLicense(FileTypes ft)
         {
             Console.WriteLine("Import License");
             using (var ctx = new CoreEntitiesContext())
@@ -31,18 +31,18 @@ namespace AutoBot
                 ctx.Database.CommandTimeout = 10;
                 var docSets = ctx.TODO_LICToCreate
                     //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 || 
+                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                     .ToList();
                 
                 foreach (var poInfo in docSets)
                 {
-                    ImportLicense(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId);
+                    await ImportLicense(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
 
         }
 
-        public static bool ImportLicense(string declarant_Reference_Number,int asycudaDocumentSetId)
+        public static async Task<bool> ImportLicense(string declarant_Reference_Number,int asycudaDocumentSetId)
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -85,15 +85,15 @@ namespace AutoBot
                         csvFiles.Remove(file);
                 }
 
-                BaseDataModel.Instance.ImportLicense(asycudaDocumentSetId,
-                    csvFiles.Select(x => x.FullName).ToList());
+                await BaseDataModel.Instance.ImportLicense(asycudaDocumentSetId,
+                    csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
                 ft.AsycudaDocumentSetId = asycudaDocumentSetId;
-                BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).Wait();
+                await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).ConfigureAwait(false);
                 return false;
             }
         }
 
-        public static bool ImportAllLicense()
+        public static async Task<bool> ImportAllLicense()
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -134,7 +134,7 @@ namespace AutoBot
                 BaseDataModel.Instance.ImportLicense(docSet.AsycudaDocumentSetId,
                     csvFiles.Select(x => x.FullName).ToList());
                 
-                BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).Wait();
+                await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).ConfigureAwait(false);
                 return false;
             }
         }
@@ -228,7 +228,7 @@ namespace AutoBot
             }
         }
 
-        public static void CreateLicence(FileTypes ft)
+        public static async Task CreateLicence(FileTypes ft)
         {
 
 
@@ -366,8 +366,8 @@ namespace AutoBot
                             if (!invoices.Any()) continue;
                             ctx.xLIC_License.Add(lic);
                             ctx.SaveChanges();
-                            LicenseToDataBase.Instance.ExportLicense(pO.AsycudaDocumentSetId, lic, fileName,
-                                invoices);
+                            await LicenseToDataBase.Instance.ExportLicense(pO.AsycudaDocumentSetId, lic, fileName,
+                                invoices).ConfigureAwait(false);
 
                         }
                     }
@@ -448,11 +448,11 @@ namespace AutoBot
 
         }
 
-        public static void SubmitBlankLicenses(FileTypes ft)
+        public static async Task SubmitBlankLicenses(FileTypes ft)
         {
             try
             {
-                var info = BaseDataModel.CurrentSalesInfo(-1);
+                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -494,18 +494,18 @@ namespace AutoBot
                             };
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
-                            Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None,
-                                TaskCreationOptions.None, sta);
+                            await Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None,
+                                TaskCreationOptions.None, sta).ConfigureAwait(false);
                         }
 
                         var contacts = MoreEnumerable.DistinctBy(ctx.Contacts.Where(x => x.Role == "Broker")
                                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId), x => x.EmailAddress).ToList();
                         if (File.Exists(errorfile))
-                            EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Utils.Client,
-                                $"Error:Blank License Description",
-                                "Please Fill out the attached License Description and resend CSV...",
-                                contacts.Select(x => x.EmailAddress).ToArray(),
-                                new string[] { errorfile });
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(email.Key.EmailId, Utils.Client,
+                               $"Error:Blank License Description",
+                               "Please Fill out the attached License Description and resend CSV...",
+                               contacts.Select(x => x.EmailAddress).ToArray(),
+                               new string[] { errorfile }).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
@@ -559,7 +559,7 @@ namespace AutoBot
             }
         }
 
-        public static void ReImportLIC()
+        public static async Task ReImportLIC()
         {
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -573,7 +573,7 @@ namespace AutoBot
                         .FirstOrDefault();
                 if (docset != null)
                 {
-                    LICUtils.ImportLicense(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId);
+                   await ImportLicense(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
             }
         }

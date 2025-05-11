@@ -340,7 +340,7 @@ namespace AutoBotUtilities.Tests
             // Assert.ThrowsAsync handles the awaiting of the async delegate.
             // The CS1998 warning is likely a compiler limitation here.
             Assert.ThrowsAsync<DeepSeekApi.HSCodeRequestException>(async () =>
-                await realApi.GetClassificationInfoAsync("Non-existent imaginary product"));
+                await realApi.GetClassificationInfoAsync("Non-existent imaginary product").ConfigureAwait(false));
         }
 #pragma warning restore CS1998
 

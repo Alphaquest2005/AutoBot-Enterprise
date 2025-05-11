@@ -10,7 +10,6 @@ using EmailDownloader;
 using OCR.Business.Entities;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.PipelineInfrastructure;
-using WaterNut.DataSpace.PipelineInfrastructure;
 using Serilog;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 

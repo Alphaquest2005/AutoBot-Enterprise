@@ -20,7 +20,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             instance = new TariffSuppUnitModel();
         }
 
-         public static TariffSuppUnitModel Instance
+         public new static TariffSuppUnitModel Instance
         {
             get { return instance; }
         }

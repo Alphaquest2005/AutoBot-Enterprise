@@ -28,7 +28,7 @@ namespace WaterNut.Business.Services.Importers
 {
     public static class XLSXUtils
     {
-        public static void ReadMISMatches(DataTable misMatches, DataTable poTemplate)
+        public static async Task ReadMISMatches(DataTable misMatches, DataTable poTemplate)
         {
             try
             {
@@ -87,8 +87,8 @@ namespace WaterNut.Business.Services.Importers
 
                         if (poTemplateRow == null)
                         {
-                            BaseDataModel.EmailExceptionHandler(new ApplicationException(
-                                $"Mismatch PO:{poNumber} and SupplierNo{InvoiceNo} on template and mismatch sheet."));
+                            await BaseDataModel.EmailExceptionHandlerAsync(new ApplicationException(
+                                $"Mismatch PO:{poNumber} and SupplierNo{InvoiceNo} on template and mismatch sheet.")).ConfigureAwait(false);
                             return;
                         }
 
@@ -401,7 +401,7 @@ namespace WaterNut.Business.Services.Importers
             return result;
         }
 
-        public static FileTypes DetectFileType(FileTypes fileType, FileInfo file, List<DataRow> dataRows)
+        public static async Task<FileTypes> DetectFileType(FileTypes fileType, FileInfo file, List<DataRow> dataRows)
         {
             try
             {
@@ -411,12 +411,12 @@ namespace WaterNut.Business.Services.Importers
                 var lastHeaderRow = dataRows[0].ItemArray.ToList();
                 int drow_no = 0;
                 List<object> headerRow;
-                var filetypes = FileTypeManager.GetImportableFileType(fileType.FileImporterInfos.EntryType, fileType.FileImporterInfos.Format, file.Name);
+                var filetypes = await FileTypeManager.GetImportableFileType(fileType.FileImporterInfos.EntryType, fileType.FileImporterInfos.Format, file.Name).ConfigureAwait(false);
                 while (drow_no < dataRows.Take(WaterNut.DataSpace.Utils.maxRowsToFindHeader).ToList().Count)
                 {
                     headerRow = dataRows[drow_no].ItemArray.ToList();
 
-                    foreach (var f in filetypes.Where(x => ((x.IsImportable ?? true) != false) && x.FileTypeMappings.Any()))
+                    foreach (var f in filetypes.Where(x => (x.IsImportable ?? true) && x.FileTypeMappings.Any()))
                     {
                         if (//headerRow.Any(x => f.FileTypeMappings.All(z => z.Required == false) && f.FileTypeMappings.All(z => z.OriginalName == x.ToString())) || // All False && all in header or all required in header
                             headerRow.Any(x => f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName.ToUpper().Trim() == x.ToString().ToUpper().Trim() || z.DestinationName.ToUpper().Trim() == x.ToString().ToUpper().Trim())))

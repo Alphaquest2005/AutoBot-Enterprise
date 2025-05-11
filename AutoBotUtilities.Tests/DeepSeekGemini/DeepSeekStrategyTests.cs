@@ -114,7 +114,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             string productCode = "T001";
 
             // Act
-            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None);
+            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True);
@@ -148,7 +148,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             var items = new List<(string, string, string)> { ("P1", "Product One", ""), ("P2", "Product Two", "") };
 
             // Act: Call public interface method
-            var response = await _strategy.GetBatchClassificationAsync(items, null, null, CancellationToken.None);
+            var response = await _strategy.GetBatchClassificationAsync(items, null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True); Assert.That(response.Results, Is.Not.Null); Assert.That(response.Results.Count, Is.EqualTo(2)); Assert.That(response.FailedDescriptions, Is.Empty);
@@ -170,7 +170,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             string description = "Generate a code for this";
 
             // Act: Call public interface method
-            var response = await _strategy.GenerateProductCodeAsync(description, CancellationToken.None);
+            var response = await _strategy.GenerateProductCodeAsync(description, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.True); Assert.That(response.ProductCode, Is.EqualTo("GEN-CODE-123"));
@@ -201,7 +201,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             decimal expectedInputCost = CalculateExpectedCost(estimatedInputTokens, 0); // Calculate cost for input only
 
             // Act
-            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None);
+            var response = await _strategy.GetSingleClassificationAsync(description, productCode, null, null, CancellationToken.None).ConfigureAwait(false);
 
             // Assert
             Assert.That(response.IsSuccess, Is.False);

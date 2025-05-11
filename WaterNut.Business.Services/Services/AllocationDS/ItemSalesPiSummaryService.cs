@@ -535,14 +535,14 @@ namespace AllocationDS.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing ItemSalesPiSummary", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(async () =>
                 {
                     using (var ctx = new ItemSalesPiSummaryService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteItemSalesPiSummary(item).Wait();
+                            await ctx.DeleteItemSalesPiSummary(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }

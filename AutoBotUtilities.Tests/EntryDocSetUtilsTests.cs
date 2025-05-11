@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
@@ -31,11 +32,14 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanCallGetRelatedDocuments()
+        public async Task CanCallGetRelatedDocuments()
         {
-            var docSets = EntryDocSetUtils.GetLatestModifiedDocSet();
-            foreach (var res in docSets.Select(EntryDocSetUtils.GetRelatedDocuments))
+            var docSets =await EntryDocSetUtils.GetLatestModifiedDocSet().ConfigureAwait(false);
+            foreach (var set in docSets)
+            {
+                var res = await EntryDocSetUtils.GetRelatedDocuments(set).ConfigureAwait(false);
                 Assert.That(res.First().First().xcuda_ASYCUDA_ExtendedProperties != null);
+            }
         }
 
 

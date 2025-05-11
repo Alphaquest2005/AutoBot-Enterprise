@@ -5,26 +5,32 @@ using CoreEntities.Business.Entities;
 using MoreLinq.Extensions;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class SaveInventoryAlias : IProcessor<InventoryDataItem>
     {
         private readonly FileTypes _fileType;
-
+ 
         public SaveInventoryAlias(FileTypes fileType)
         {
             _fileType = fileType;
            
         }
-
-        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
+ 
+        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
-            data
+            var tasks = data
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item));
-
+                .Select(async x =>
+                {
+                    await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                }).ToList();
+ 
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+ 
             return new Result<List<InventoryDataItem>>(data, true, "");
         }
     }

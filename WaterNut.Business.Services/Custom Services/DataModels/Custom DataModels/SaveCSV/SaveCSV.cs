@@ -47,14 +47,14 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var docSet = Utils.GetDocSets(fileType);
+                var docSet = await Utils.GetDocSets(fileType).ConfigureAwait(false);
                 await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
             }
             catch (Exception Ex)
             {
                 throw new ApplicationException($"Problem importing File '{droppedFilePath}'. - Error: {Ex.Message}");
             }
-
+ 
         }
 
         Dictionary<string, IRawDataExtractor> extractors = new Dictionary<string, IRawDataExtractor>()

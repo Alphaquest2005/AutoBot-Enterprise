@@ -2,12 +2,13 @@
 using System.Linq;
 using Core.Common.Extensions;
 using WaterNut.Business.Services.Utils;
-
+using System.Threading.Tasks;
+ 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class UpdateLineInventoryItemId : IProcessor<InventoryDataItem>
     {
-        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
+        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             var inventoryDataItems = data.Select(x =>
                 {
@@ -15,7 +16,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                     return x;
                 })
                 .ToList();
-            return new Result<List<InventoryDataItem>>(inventoryDataItems, true, "");
+            return Task.FromResult(new Result<List<InventoryDataItem>>(inventoryDataItems, true, "")).Result; // Wrap in Task.FromResult
         }
     }
 }

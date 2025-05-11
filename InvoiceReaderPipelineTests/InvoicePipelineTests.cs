@@ -8,7 +8,8 @@ using Serilog;
 using WaterNut.Business.Services.Utils; // Assuming FileTypeManager is here
 using WaterNut.DataSpace; // Assuming InvoiceReader is here
 using NUnit.Framework;
-using CoreEntities.Business.Entities; // Assuming FileTypes is here
+using CoreEntities.Business.Entities;
+using FileTypes = CoreEntities.Business.Entities.FileTypes; // Assuming FileTypes is here
 
 namespace InvoiceReaderPipelineTests
 {
@@ -23,7 +24,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 8;
             string assertionDescription = "equal to 8";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
         }
 
         [Test]
@@ -34,7 +35,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 1;
             string assertionDescription = "equal to 1";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
         }
 
         [Test]
@@ -45,7 +46,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 1;
             string assertionDescription = "exactly 1";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
         }
         
         
@@ -219,12 +220,12 @@ namespace InvoiceReaderPipelineTests
             {
                 if (!CheckTestFileExists(testFilePath)) return;
 
-                var fileTypes = GetImportableFileTypes(testFilePath);
+                var fileTypes = await GetImportableFileTypes(testFilePath).ConfigureAwait(false);
                 if (!CheckFileTypesFound(fileTypes, testFilePath)) return;
 
                 foreach (var fileType in fileTypes)
                 {
-                    await ProcessAndVerifyImportForFileType(fileType, testFilePath, expectedInvoiceNo, detailCountAssertion, assertionDescription);
+                    await ProcessAndVerifyImportForFileType(fileType, testFilePath, expectedInvoiceNo, detailCountAssertion, assertionDescription).ConfigureAwait(false);
                 }
 
                 LogTestExecutionSuccess(TestContext.CurrentContext.Test.Name);
@@ -271,10 +272,10 @@ namespace InvoiceReaderPipelineTests
         /// <summary>
         /// Gets suitable importable file types, orchestrating fetch and filter steps.
         /// </summary>
-        private List<CoreEntities.Business.Entities.FileTypes> GetImportableFileTypes(string testFile)
+        private async Task<List<FileTypes>> GetImportableFileTypes(string testFile)
         {
             _logger.Debug("Getting importable file types for PDF: {FilePath}", testFile);
-            var rawFileTypes = FetchRawFileTypes(testFile);
+            var rawFileTypes = await FetchRawFileTypes(testFile).ConfigureAwait(false);
             var filteredFileTypes = FilterAndConvertFileTypes(rawFileTypes);
             return filteredFileTypes;
         }
@@ -282,14 +283,14 @@ namespace InvoiceReaderPipelineTests
         /// <summary>
         /// Fetches raw file types from the FileTypeManager.
         /// </summary>
-        private IEnumerable<object> FetchRawFileTypes(string testFile) // Return type based on original code's usage
+        private async Task<IEnumerable<object>> FetchRawFileTypes(string testFile) // Return type based on original code's usage
         {
             _logger.Debug("Calling FileTypeManager.GetImportableFileType with EntryType: {EntryType}, FileFormat: {FileFormat}, FilePath: {FilePath}",
                 FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
 
             // Assuming FileTypeManager is static and thread-safe for tests
-            var rawFileTypes = FileTypeManager
-                .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile);
+            var rawFileTypes =await FileTypeManager
+                .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
 
             _logger.Debug("FileTypeManager.GetImportableFileType returned {Count} raw file types.", rawFileTypes?.Count() ?? 0); // Added null check
             return rawFileTypes ?? Enumerable.Empty<object>(); // Return empty if null
@@ -325,7 +326,7 @@ namespace InvoiceReaderPipelineTests
         private async Task ProcessAndVerifyImportForFileType(CoreEntities.Business.Entities.FileTypes fileType, string testFilePath, string expectedInvoiceNo, Func<int, bool> detailCountAssertion, string assertionDescription)
         {
             _logger.Information("Processing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
-            await ImportFile(fileType, testFilePath);
+            await ImportFile(fileType, testFilePath).ConfigureAwait(false);
             VerifyDatabaseState(fileType, expectedInvoiceNo, detailCountAssertion, assertionDescription);
         }
 

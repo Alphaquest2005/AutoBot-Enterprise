@@ -25,7 +25,7 @@ namespace WaterNut.DataSpace
             if (docSetId != 0)
             {
                 StatusModel.Timer("Downloading CP Sales...");
-                var sysDocSet = GetSalesSysDocSet();
+                var sysDocSet = await GetSalesSysDocSet().ConfigureAwait(false);
                 using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
                 {
                     ctx.ExecuteStoreCommand(@"
@@ -117,7 +117,7 @@ namespace WaterNut.DataSpace
         public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
         {
             StatusModel.Timer("Downloading CP Sales Data...");
-            var sysDocSet = GetSalesSysDocSet();
+            var sysDocSet = await GetSalesSysDocSet().ConfigureAwait(false);
             using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
             {
                 ctx.ExecuteStoreCommand(@"
@@ -206,9 +206,9 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        private static AsycudaDocumentSet GetSalesSysDocSet()
+        private static async Task<AsycudaDocumentSet> GetSalesSysDocSet()
         {
-            var sysDocSet = EntryDocSetUtils.GetAsycudaDocumentSet("Sales", true);
+            var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet("Sales", true).ConfigureAwait(false);
             if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Sales'");
             return sysDocSet;
         }

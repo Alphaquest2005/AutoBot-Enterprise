@@ -30,7 +30,7 @@ namespace AutoBot
             BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId);
         }
 
-        public static void ImportPDF()
+        public static async Task ImportPDF()
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -39,7 +39,7 @@ namespace AutoBot
                     .FirstOrDefault(x => x.Id == 17);
                 var files = new FileInfo[]
                     {new FileInfo(@"D:\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
-                ImportPDF(files, fileType);
+                await ImportPDF(files, fileType).ConfigureAwait(false);
             }
         }
 
@@ -95,8 +95,9 @@ namespace AutoBot
                 }
 
                 // Await the async call which returns a Dictionary
+                var docSets = await WaterNut.DataSpace.Utils.GetDocSets(fileType).ConfigureAwait(false);
                 var importResult = await InvoiceReader.InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId,
-                    true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client).ConfigureAwait(false);
+                    true, docSets, fileType, Utils.Client).ConfigureAwait(false);
                 // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
 
 
@@ -304,10 +305,11 @@ namespace AutoBot
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {
-                  var docSet = WaterNut.DataSpace.Utils.GetDocSets(fileType);
+                  var docSet = await WaterNut.DataSpace.Utils.GetDocSets(fileType).ConfigureAwait(false);
                   var docType = docTypes[(doc.Key as string) ?? "Unknown"];
-                  var docFileType = FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
-                      FileTypeManager.FileFormats.PDF, file.FullName).FirstOrDefault();
+                  var type = await FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
+                      FileTypeManager.FileFormats.PDF, file.FullName).ConfigureAwait(false);
+                  var docFileType = type.FirstOrDefault();
                   if (docFileType == null)
                   {
                       continue;
@@ -315,7 +317,7 @@ namespace AutoBot
 
                   SetFileTypeMappingDefaultValues(docFileType, doc);
 
-                  var import = await ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true, docSet,
+                  var import = await ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true,  docSet,
                       new List<dynamic>() { doc.ToList() }).ConfigureAwait(false);
                   success.Add($"{file}-{docType}-{doc.Key}",
                       import
