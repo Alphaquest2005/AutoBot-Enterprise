@@ -43,16 +43,15 @@ namespace WaterNut.DataSpace.Asycuda
 
        
         
-        public async Task SaveToDatabase(Licence adoc, AsycudaDocumentSet docSet, FileInfo file)
+        public Task SaveToDatabase(Licence adoc, AsycudaDocumentSet docSet, FileInfo file)
         {
-
             try
             {
 
                 var mat = Regex.Match(file.FullName,
                     @"[A-Z\\ -.]*(?<RegNumber>[0-9]+)-LIC.*.xml",
                     RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                if (!mat.Success) return;
+                if (!mat.Success) return Task.CompletedTask;
                 var regNumber = mat.Groups[1].Captures[0].Value;
 
                 var da =  CreateLicense(docSet, file,regNumber);
@@ -80,6 +79,7 @@ namespace WaterNut.DataSpace.Asycuda
                
             }
 
+            return Task.CompletedTask;
         }
 
         private static void SaveDocumentRef(Registered da)

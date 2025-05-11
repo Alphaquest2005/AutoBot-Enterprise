@@ -23,7 +23,7 @@ namespace AutoBotUtilities
                     var result = XLSXUtils.ExtractTables(file);
 
 
-                    if (result.Tables.Contains("MisMatches") && result.Tables.Contains("POTemplate")) XLSXUtils.ReadMISMatches(result.Tables["MisMatches"], result.Tables["POTemplate"]);
+                    if (result.Tables.Contains("MisMatches") && result.Tables.Contains("POTemplate")) await XLSXUtils.ReadMISMatches(result.Tables["MisMatches"], result.Tables["POTemplate"]).ConfigureAwait(false);
 
                     var mainTable = result.Tables[0];
                     var rows = XLSXUtils.FixupDataSet(mainTable);
@@ -45,7 +45,7 @@ namespace AutoBotUtilities
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -63,10 +63,10 @@ namespace AutoBotUtilities
                 {
                     // Assuming these Execute methods are synchronous. If they are async, they would also need await.
                     // Based on the original error, the issue was with rFileType, not these calls themselves.
-                    ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
-                        BaseDataModel.Instance.CurrentApplicationSettings);
-                    ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
-                        BaseDataModel.Instance.CurrentApplicationSettings);
+                    await ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
+                        BaseDataModel.Instance.CurrentApplicationSettings).ConfigureAwait(false);
+                    await ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
+                        BaseDataModel.Instance.CurrentApplicationSettings).ConfigureAwait(false);
                 }
                 else
                 {

@@ -10,20 +10,20 @@ namespace AutoBot
 {
     public class Ex9SalesReportUtils
     {
-        public static async Task<ObservableCollection<EX9Utils.SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
+        public static Task<ObservableCollection<EX9Utils.SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
         {
             try
             {
                 var alst = GetAsycudaSalesAllocationsExes(ASYCUDA_Id);
                 var d = CreateSaleReportLines(alst);
-                return new ObservableCollection<EX9Utils.SaleReportLine>(d);
+                return Task.FromResult(new ObservableCollection<EX9Utils.SaleReportLine>(d));
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
-            return null;
+            return Task.FromResult<ObservableCollection<EX9Utils.SaleReportLine>>(null);
         }
 
         private static IEnumerable<EX9Utils.SaleReportLine> CreateSaleReportLines(List<AsycudaSalesAllocationsEx> alst) =>

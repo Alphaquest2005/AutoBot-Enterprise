@@ -19,19 +19,19 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public async Task<bool> Process(DataFile dataFile)
+        public Task<bool> Process(DataFile dataFile)
         {
             try
             {
                 var lst = ExtractShipmentManifests(dataFile);
                 SaveManifest(dataFile, lst);
-                return true;
+                return Task.FromResult(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 //throw;
-                return false;
+                return Task.FromResult(false);
             }
         }
 

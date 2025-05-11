@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
 using System.Windows;
+using System.Windows.Data;
 using AllocationQS.Client.Entities;
 using Core.Common.Converters;
-using PreviousDocumentQS.Client.Repositories;
 using PreviousDocumentQS.Client.Entities;
+using PreviousDocumentQS.Client.Repositories;
 using SimpleMvvmToolkit;
 using WaterNut.Views;
 

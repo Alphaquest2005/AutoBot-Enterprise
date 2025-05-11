@@ -50,7 +50,7 @@ namespace AutoBot
             {
                 PDFUtils.LinkPDFs();
                 await SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(months).ConfigureAwait(false);
-                EntryDocSetUtils.CleanupEntries();
+                await EntryDocSetUtils.CleanupEntries().ConfigureAwait(false);
                 Application.Exit();
             }
         }
@@ -82,8 +82,8 @@ namespace AutoBot
         public static async Task AssessEx9Entries(int months)
         {
             var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
-            AssessSalesEntry(currentSalesInfo.Item3
-                .Declarant_Reference_Number);
+            await AssessSalesEntry(currentSalesInfo.Item3
+                .Declarant_Reference_Number).ConfigureAwait(false);
         }
 
         public static async Task AssessSalesEntry(string docReference)

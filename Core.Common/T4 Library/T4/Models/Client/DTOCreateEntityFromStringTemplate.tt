@@ -26,7 +26,6 @@ public class DTOCreateEntityFromStringTPL : CSharpTemplate
 using System.Linq;
 using <#=COREcontainer.Name #>.Client.Entities;
 using <#=COREcontainer.Name #>.Client.Services;
-//using <#=projectName#>.Client.Services;
 using <#=conTextName#>.Client.Services;
 using <#=conTextName#>.Client.DTO;
 using <#=projectName#>.QuerySpace.<#=conTextName#>;

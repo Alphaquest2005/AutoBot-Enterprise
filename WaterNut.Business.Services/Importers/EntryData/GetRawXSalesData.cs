@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _lines = lines;
         }
  
-        public async Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data)
+        public Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
  
             xsale.xSalesDetails = details;
  
-            return Task.FromResult(new Result<List<BetterExpando>>(new List<BetterExpando>(){xsale}, true,"")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<BetterExpando>>(new List<BetterExpando>(){xsale}, true,"")).Result); // Wrap in Task.FromResult
             }
             catch (Exception e)
             {

@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using SimpleMvvmToolkit;
-using CoreEntities.Client.Repositories;
 using CoreEntities.Client.Entities;
+using CoreEntities.Client.Repositories;
+using SimpleMvvmToolkit;
 
 
 

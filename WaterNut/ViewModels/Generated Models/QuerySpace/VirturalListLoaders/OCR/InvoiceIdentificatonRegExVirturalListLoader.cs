@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using SimpleMvvmToolkit;
-using OCR.Client.Repositories;
 using OCR.Client.Entities;
+using OCR.Client.Repositories;
+using SimpleMvvmToolkit;
 
 
 

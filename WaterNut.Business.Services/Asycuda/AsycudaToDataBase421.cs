@@ -412,7 +412,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task<int> GetOriginalEntryItemId(ASYCUDAPrev_decl ai, string itemNumber, bool noMessages)
+        private Task<int> GetOriginalEntryItemId(ASYCUDAPrev_decl ai, string itemNumber, bool noMessages)
         {
             try
             {
@@ -431,7 +431,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                 if (pdoc == null)
                     if (noMessages)
-                        return 0;
+                        return Task.FromResult(0);
                     else
                     throw new ApplicationException(
                         $"Please Import pCNumber {ai.Prev_decl_reg_number} Year {ai.Prev_decl_reg_year} Office {ai.Prev_decl_office_code} before importing this file {a.Identification.Registration.Number}-{a.Identification.Registration.Date}");
@@ -443,8 +443,8 @@ namespace WaterNut.DataSpace.Asycuda
                         //&& x.xcuda_Tarification.xcuda_HScode.Precision_4 == itemNumber // cuz of c#39457
                     );
 
-                    if (itm != null) return itm.Item_Id;
-                    return 0;
+                    if (itm != null) return Task.FromResult(itm.Item_Id);
+                    return Task.FromResult(0);
                 }
             }
             catch (Exception)
@@ -454,9 +454,9 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task LinkPi2Item(int itemId, xcuda_PreviousItem pi)
+        private Task LinkPi2Item(int itemId, xcuda_PreviousItem pi)
         {
-            if (pi.xcuda_Items.Any(x => x.Item_Id == itemId)) return;
+            if (pi.xcuda_Items.Any(x => x.Item_Id == itemId)) return Task.CompletedTask;
             var ep = new EntryPreviousItems(true)
             {
                 Item_Id = itemId,
@@ -465,7 +465,7 @@ namespace WaterNut.DataSpace.Asycuda
             };
             // //await DIBaseDataModel.Instance.SaveEntryPreviousItems(ep).ConfigureAwait(false);
             pi.xcuda_Items.Add(ep);
-
+            return Task.CompletedTask;
         }
 
 
@@ -537,9 +537,9 @@ namespace WaterNut.DataSpace.Asycuda
 
         }
 
-        private async Task Save_Suppliers_Documents()
+        private Task Save_Suppliers_Documents()
         {
-            if (a.Supplier_documents.Count > 0 && a.Supplier_documents[0] == null) return;
+            if (a.Supplier_documents.Count > 0 && a.Supplier_documents[0] == null) return Task.CompletedTask;
             for (int i = 0; i < a.Supplier_documents.Count; i++)
             {
                 var asd = a.Supplier_documents.ElementAt(i);
@@ -583,6 +583,8 @@ namespace WaterNut.DataSpace.Asycuda
                 //await DBaseDataModel.Instance.Savexcuda_Suppliers_documents(s).ConfigureAwait(false);
 
             }
+
+            return Task.CompletedTask;
         }
 
 
@@ -680,7 +682,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task Save_PreviousInvoiceInfo(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_PreviousInvoiceInfo(xcuda_Item di, ASYCUDAItem ai)
         {
             di.Free_text_1 = ai.Free_text_1.Text.FirstOrDefault();
             di.Free_text_2 = ai.Free_text_2.Text.FirstOrDefault();
@@ -712,6 +714,8 @@ namespace WaterNut.DataSpace.Asycuda
                 // think about saving comment
                 // if (lst.Length == 3) di.c = di.Free_text_2.Trim();
             }
+
+            return Task.CompletedTask;
         }
 
     
@@ -847,7 +851,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
         }
 
-        private async Task<InventoryItem> SaveInventoryItem(ASYCUDAItem ai)
+        private Task<InventoryItem> SaveInventoryItem(ASYCUDAItem ai)
         {
             try
             {
@@ -879,11 +883,11 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                         ctx.ApplyChanges(iv);
                         ctx.SaveChanges();
 
-                        return iv;
+                        return Task.FromResult(iv);
 
                     }
 
-                    if (iv == null || !updateItemsTariffCode || iv.TariffCode == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()) return iv;
+                    if (iv == null || !updateItemsTariffCode || iv.TariffCode == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()) return Task.FromResult(iv);
                     //iv.StartTracking();
                     iv.TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
                     
@@ -892,7 +896,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
 
                     //include tarrifcode
-                    return iv;
+                    return Task.FromResult(iv);
                 }
             }
             catch (Exception e)
@@ -904,7 +908,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         }
 
 
-        private async Task Save_Item_Valuation_item(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Valuation_item(xcuda_Item di, ASYCUDAItem ai)
         {
             var vi = di.xcuda_Valuation_item;//.FirstOrDefault();
             if (vi == null)
@@ -932,8 +936,9 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             Save_item_insurance(vi, ai);
 
             Save_Weight_Item(vi, ai);
+            return Task.CompletedTask;
 
-           //await DIBaseDataModel.Instance.Savexcuda_Valuation_item(vi).ConfigureAwait(false);
+            //await DIBaseDataModel.Instance.Savexcuda_Valuation_item(vi).ConfigureAwait(false);
         }
 
         private void Save_item_insurance(xcuda_Valuation_item vi, ASYCUDAItem ai)
@@ -1071,7 +1076,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
         }
 
-        private async Task Save_Item_Taxation(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Taxation(xcuda_Item di, ASYCUDAItem ai)
         {
             var t = di.xcuda_Taxation.FirstOrDefault();
             if (t == null)
@@ -1092,6 +1097,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
 
             Save_Taxation_line(t, ai);
+            return Task.CompletedTask;
 
             //await DIBaseDataModel.Instance.Savexcuda_Taxation(t).ConfigureAwait(false);
         }
@@ -1124,7 +1130,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
         }
 
-        private async Task Save_Item_Previous_doc(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Previous_doc(xcuda_Item di, ASYCUDAItem ai)
         {
             var pd = di.xcuda_Previous_doc;
             if (pd == null)
@@ -1136,11 +1142,12 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             pd.Summary_declaration = ai.Previous_doc.Summary_declaration.Text.FirstOrDefault();
             if (da.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber == null && ai.Previous_doc.Summary_declaration != null)
                 da.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ai.Previous_doc.Summary_declaration.Text.FirstOrDefault();
+            return Task.CompletedTask;
 
             //await DIBaseDataModel.Instance.Savexcuda_Previous_doc(pd).ConfigureAwait(false);
         }
 
-        private async Task Save_Item_Goods_description(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Goods_description(xcuda_Item di, ASYCUDAItem ai)
         {
             var g = di.xcuda_Goods_description;//.FirstOrDefault();
             if (g == null)
@@ -1151,6 +1158,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             g.Commercial_Description = ai.Goods_description.Commercial_Description.Text.FirstOrDefault();
             g.Country_of_origin_code = ai.Goods_description.Country_of_origin_code.Text.FirstOrDefault();
             g.Description_of_goods = ai.Goods_description.Description_of_goods.Text.FirstOrDefault();
+            return Task.CompletedTask;
 
             //await DIBaseDataModel.Instance.Savexcuda_Goods_description(g).ConfigureAwait(false);
         }
@@ -1290,7 +1298,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             };
         }
 
-        private async Task Save_Item_Packages(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Packages(xcuda_Item di, ASYCUDAItem ai)
         {
             var p = di.xcuda_Packages.FirstOrDefault();
             if (p == null)
@@ -1307,11 +1315,12 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
             if (ai.Packages.Marks2_of_packages.Text.Count > 0)
                 p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0].Truncate(40);
+            return Task.CompletedTask;
 
             //await DIBaseDataModel.Instance.Savexcuda_Packages(p).ConfigureAwait(false);
         }
 
-        private async Task Save_Item_Suppliers_link(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Suppliers_link(xcuda_Item di, ASYCUDAItem ai)
         {
             var sl = di.xcuda_Suppliers_link.FirstOrDefault();
             if (sl == null)
@@ -1321,10 +1330,11 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
 
             sl.Suppliers_link_code = ai.Suppliers_link.Suppliers_link_code;
+            return Task.CompletedTask;
             //await DIBaseDataModel.Instance.Savexcuda_Suppliers_link(sl).ConfigureAwait(false);
         }
 
-        private async Task Save_Item_Attached_documents(xcuda_Item di, ASYCUDAItem ai)
+        private Task Save_Item_Attached_documents(xcuda_Item di, ASYCUDAItem ai)
         {
             for (var i = 0; i < ai.Attached_documents.Count; i++)
             {
@@ -1354,9 +1364,11 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 //await DIBaseDataModel.Instance.Savexcuda_Attached_documents(ad).ConfigureAwait(false);
 
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task SaveContainer()
+        private Task SaveContainer()
         {
             try
             {
@@ -1385,13 +1397,15 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                
                 //await DBaseDataModel.Instance.Savexcuda_Container(c).ConfigureAwait(false);
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
                 throw;
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task Save_Valuation()
+        private Task Save_Valuation()
         {
             var v = da.Document.xcuda_Valuation;
             if (v == null)
@@ -1407,6 +1421,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             Save_Gs_Invoice(v);
             Save_Gs_External_freight(v);
             Save_Total(v);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_Valuation(v).ConfigureAwait(false);
         }
 
@@ -1468,7 +1483,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             // w.Gross_weight = a.Valuation.Weight.Gross_weight
         }
 
-        private async Task Save_Warehouse()
+        private Task Save_Warehouse()
         {
             var w = da.Document.xcuda_Warehouse.FirstOrDefault();
             if (w == null)
@@ -1478,10 +1493,11 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
             w.Identification = a.Warehouse.Identification.Text.FirstOrDefault();
             w.Delay = Convert.ToInt32(a.Warehouse.Delay == "" ? "0" : a.Warehouse.Delay);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_Warehouse(w).ConfigureAwait(false);
         }
 
-        private async Task SaveFinancial()
+        private Task SaveFinancial()
         {
             var f = da.Document.xcuda_Financial.FirstOrDefault();
             if (f == null)
@@ -1497,7 +1513,8 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
             Save_Amounts(f);
             Save_Guarantee(f);
-                //await DBaseDataModel.Instance.Savexcuda_Financial(f).ConfigureAwait(false); 
+            return Task.CompletedTask;
+            //await DBaseDataModel.Instance.Savexcuda_Financial(f).ConfigureAwait(false); 
 
         }
 
@@ -1535,7 +1552,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 fa.Totals_taxes = Convert.ToDecimal(a.Financial.Amounts.Totals_taxes);
         }
 
-        private async Task SaveTransport()
+        private Task SaveTransport()
         {
             var t = da.Document.xcuda_Transport.FirstOrDefault();
             if (t == null)
@@ -1552,6 +1569,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             SaveMeansofTransport(t);
             Save_Delivery_terms(t);
             Save_Border_office(t);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_Transport(t).ConfigureAwait(false);
         }
 
@@ -1634,7 +1652,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 d.Identity = a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text[0];
         }
 
-        private async Task SaveGeneralInformation()
+        private Task SaveGeneralInformation()
         {
             var gi = da.Document.xcuda_General_information;
             if (gi == null)
@@ -1648,6 +1666,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             SetEffectiveAssessmentDate(da, gi.Comments_free_text);
 
             SaveCountry(gi);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_General_information(gi).ConfigureAwait(false);
         }
 
@@ -1703,7 +1722,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             //Exp.Export_country_region = a.General_information.Country.Export.Export_country_region.;
         }
 
-        private async Task SaveDeclarant()
+        private Task SaveDeclarant()
         {
             try
             {
@@ -1723,14 +1742,15 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 d.Number = a.Declarant.Reference.Number.Text.FirstOrDefault();
                 //await DBaseDataModel.Instance.Savexcuda_Declarant(d).ConfigureAwait(false);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw new Exception("Declarant fail to import - " + a.Declarant.Reference.Number);
+                throw new Exception($"Declarant fail to import - {a.Declarant.Reference.Number} - {ex.Message}", ex);
             }
 
+            return Task.CompletedTask;
         }
 
-        private async Task SaveTraders()
+        private Task SaveTraders()
         {
             var t = da.Document.xcuda_Traders;
             if (t == null)
@@ -1741,6 +1761,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             SaveExporter(t);
             SaveConsignee(t);
             SaveTradersFinancial(t);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_Traders(t).ConfigureAwait(false);
         }
 
@@ -1801,7 +1822,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
         }
 
-        private async Task SaveProperty()
+        private Task SaveProperty()
         {
             var p = da.Document.xcuda_Property;//.FirstOrDefault();
 
@@ -1813,6 +1834,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             }
             // p.Date_of_declaration = a.Property.Date_of_declaration.ToString();
             SaveNbers(p);
+            return Task.CompletedTask;
             //await DBaseDataModel.Instance.Savexcuda_Property(p).ConfigureAwait(false);
         }
 
@@ -1853,7 +1875,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
         }
 
-        private async Task SaveType(xcuda_Identification di)
+        private Task SaveType(xcuda_Identification di)
         {
             var t = di.xcuda_Type;
             if (t == null)
@@ -1864,8 +1886,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
             t.Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code;
             t.Type_of_declaration = a.Identification.Type.Type_of_declaration;
-
-         
+            return Task.CompletedTask;
         }
 
 

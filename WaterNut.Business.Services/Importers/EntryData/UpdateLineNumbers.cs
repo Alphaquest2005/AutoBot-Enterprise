@@ -7,7 +7,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class UpdateLineNumbers : IProcessor<InventoryDataItem>
     {
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             throw new System.NotImplementedException();
         }

@@ -23,8 +23,9 @@ namespace Core.Common.UI
         }
 
         public static Task Initialization { get; private set; }
-        private static async Task InitializationAsync()
+        private static Task InitializationAsync()
         {
+            return Task.CompletedTask;
         }
 
     }

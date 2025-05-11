@@ -36,8 +36,8 @@ namespace WaterNut.DataSpace
 
    
 
-		public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId,
-			bool allocateToLastAdjustment, bool onlyNewAllocations, string lst)
+		public Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId,
+                                                                             bool allocateToLastAdjustment, bool onlyNewAllocations, string lst)
 		{
 			var itemSets = BaseDataModel.GetItemSets(lst);
 			itemSets.AsParallel()
@@ -45,8 +45,8 @@ namespace WaterNut.DataSpace
 														 BaseDataModel.Instance.ResourcePercentage))
 				.ForAll(async x =>
 					await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations,x).ConfigureAwait(false));
-
-		}
+            return Task.CompletedTask;
+        }
 
 		public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(bool allocateToLastAdjustment, bool onlyNewAllocations,
 			List<(string ItemNumber, int InventoryItemId)> itemSetLst)
@@ -315,13 +315,13 @@ namespace WaterNut.DataSpace
 		//}
 
 
-		private static async Task<List<AllocationsBaseModel.ItemSales>> GetSaleslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
+		private static Task<List<AllocationsBaseModel.ItemSales>> GetSaleslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
 		{
 			try
 			{
 				StatusModel.Timer("Getting Data - Sales Entries...");
 
-				return CreateSalesItemSetList(GetSales(itemSetLst));
+				return Task.FromResult(CreateSalesItemSetList(GetSales(itemSetLst)));
 			}
 			catch (Exception e)
 			{
@@ -333,8 +333,7 @@ namespace WaterNut.DataSpace
 
 		private static List<AllocationsBaseModel.ItemSales> CreateSalesItemSetList(IEnumerable<EntryDataDetails> entryDataDetails)
 		{
-			string lst;
-			return entryDataDetails
+            return entryDataDetails
 				.GroupBy(d => (d.Sales.EntryDataDate, d.EntryDataId, d.ItemNumber.ToUpper().Trim(),
 					d.InventoryItemId))
 				.Select(g => new AllocationsBaseModel.ItemSales
@@ -363,12 +362,12 @@ namespace WaterNut.DataSpace
 			
 		}
 
-		private static async Task<List<AllocationsBaseModel.ItemSales>> GetAdjustmentslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
+		private static Task<List<AllocationsBaseModel.ItemSales>> GetAdjustmentslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
 		{
 			
 			StatusModel.Timer("Getting Data - Adjustments Entries...");
 
-			return  UpdateAdjList(CreateADJItemSalesList(UpdateEffectiveDate(GetAdjustmentsData(itemSetLst))));
+			return  Task.FromResult(UpdateAdjList(CreateADJItemSalesList(UpdateEffectiveDate(GetAdjustmentsData(itemSetLst)))));
 			
 		}
 
@@ -446,13 +445,13 @@ namespace WaterNut.DataSpace
 			return salesData;
 		}
 
-		private static async Task<List<AllocationsBaseModel.ItemSales>> GetDiscrepancieslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
+		private static Task<List<AllocationsBaseModel.ItemSales>> GetDiscrepancieslstWithItemNumber(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
 		{
 			try
 			{ 
 				StatusModel.Timer("Getting Data - Discrepancy Errors ...");
 
-				return  UpdateDISItemSets(CreateDISItemSalesList(GetDiscrepanciesData(itemSetLst)));
+				return  Task.FromResult(UpdateDISItemSets(CreateDISItemSalesList(GetDiscrepanciesData(itemSetLst))));
 				
 			}
 			catch (Exception e)

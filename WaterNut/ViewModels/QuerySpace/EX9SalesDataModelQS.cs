@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.ComponentModel;
-using System.Linq;
-using System.Data.Entity;
-using System.Collections.ObjectModel;
+using AllocationQS.Client.Entities;
+using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Repositories;
 using SalesDataQS.Client.Entities;
 using SalesDataQS.Client.Repositories;
-using CoreEntities.Client.Entities;
-using AllocationQS.Client.Entities;
 using SimpleMvvmToolkit;
 
 
@@ -210,7 +210,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
         //}
 
 
-        internal async Task RemoveSalesData(SalesData salesData)
+        internal Task RemoveSalesData(SalesData salesData)
         {
             throw new NotImplementedException();
         }

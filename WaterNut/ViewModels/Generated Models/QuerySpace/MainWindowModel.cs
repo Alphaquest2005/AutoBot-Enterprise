@@ -1,10 +1,10 @@
-﻿using Core.Common.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Core.Common.UI;
 using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels

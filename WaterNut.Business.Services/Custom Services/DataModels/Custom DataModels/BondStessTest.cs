@@ -12,10 +12,10 @@ namespace AllocationQS.Business.Services
 {
     public class BondStressTest
     {
-        public async Task<List<DocumentCT>> Execute(List<DocumentCT> documentCts)
+        public Task<List<DocumentCT>> Execute(List<DocumentCT> documentCts)
         {
             AddErrorItm(documentCts);
-            return documentCts;
+            return Task.FromResult(documentCts);
         }
 
         private void AddErrorItm(List<DocumentCT> documentCts)

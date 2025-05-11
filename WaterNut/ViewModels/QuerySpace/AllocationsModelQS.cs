@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Schedulers;
 using System.Windows;
 using AllocationQS.Client.Entities;
 using AllocationQS.Client.Repositories;
+using Core.Common.Converters;
 using Core.Common.UI;
+using Core.Common.UI.DataVirtualization;
+using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
-using SalesDataQS.Client.Entities;
 using PreviousDocumentQS.Client.Entities;
+using SalesDataQS.Client.Entities;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.PreviousDocumentQS.ViewModels;
 using AsycudaDocumentItem = CoreEntities.Client.Entities.AsycudaDocumentItem;
-using System.Data.Entity;
-using System.Threading;
-using System.Threading.Tasks.Schedulers;
-using Core.Common.Converters;
-using Core.Common.UI.DataVirtualization;
-using CoreEntities.Client.Entities;
 
 namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 {
@@ -680,16 +680,14 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
 
-        public async Task GoToxBondEntry(string xBond_Item_Id)
+        public Task GoToxBondEntry(string xBond_Item_Id)
         {
-            
-                Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
                 {
                     CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem = AsycudaDocumentItemRepository.Instance.GetAsycudaDocumentItem(xBond_Item_Id).Result;
                     Core.Common.UI.BaseViewModel.Slider.MoveTo("AsycudaDocumentsExP");
                 });
-               
-           
+            return Task.CompletedTask;
         }
 
 

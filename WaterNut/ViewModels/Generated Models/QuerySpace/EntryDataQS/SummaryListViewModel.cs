@@ -5,8 +5,8 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.ComponentModel;
+using System.Linq;
 using EntryDataQS.Client.Entities;
 using SimpleMvvmToolkit;
 

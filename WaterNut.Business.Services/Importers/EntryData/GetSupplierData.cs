@@ -15,13 +15,13 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _lines = lines;
         }
  
-        public async Task<Result<List<SupplierData>>> Execute(List<SupplierData> data)
+        public Task<Result<List<SupplierData>>> Execute(List<SupplierData> data)
         {
             var supplierDatas = _lines
                 .GroupBy(x => (x.SupplierCode, x.SupplierName, x.SupplierAddress, x.CountryCode ))
                 .Select(x => new SupplierData(x.Key, x.ToList()))
                 .ToList();
-            return Task.FromResult(new Result<List<SupplierData>>(supplierDatas, true, "")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<SupplierData>>(supplierDatas, true, "")).Result); // Wrap in Task.FromResult
         }
     }
 }

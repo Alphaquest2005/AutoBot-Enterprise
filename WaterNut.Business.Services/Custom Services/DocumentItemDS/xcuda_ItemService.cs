@@ -20,7 +20,7 @@ namespace DocumentItemDS.Business.Services
 
     public partial class xcuda_ItemService
     {
-        public async Task<bool> Updatexcuda_Items(List<xcuda_Item> entities)
+        public Task<bool> Updatexcuda_Items(List<xcuda_Item> entities)
         {
             var exceptions = new ConcurrentQueue<Exception>();
             Parallel.ForEach(entities, itm =>
@@ -36,7 +36,7 @@ namespace DocumentItemDS.Business.Services
 
             });
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
-            return true;
+            return Task.FromResult(true);
         }
 
         private void UpdateEntity(xcuda_Item entity)

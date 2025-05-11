@@ -26,8 +26,8 @@ namespace WaterNut.DataSpace
 
       
 
-        public async Task<EntryData> Execute(FileTypes fileType, List<AsycudaDocumentSet> docSet,
-            RawEntryDataValue rawEntryData)
+        public Task<EntryData> Execute(FileTypes fileType, List<AsycudaDocumentSet> docSet,
+                                       RawEntryDataValue rawEntryData)
         {
             var applicationSettingsId = rawEntryData.EntryData.ApplicationSettingsId;
             var entryDataId = rawEntryData.EntryData.EntryDataId;
@@ -35,7 +35,7 @@ namespace WaterNut.DataSpace
             var entryData = entryDataCreators[fileType.FileImporterInfos.EntryType]
                 .Create(docSet, rawEntryData, applicationSettingsId, entryDataId);
 
-            return entryData;
+            return Task.FromResult<EntryData>(entryData);
         }
     }
 }

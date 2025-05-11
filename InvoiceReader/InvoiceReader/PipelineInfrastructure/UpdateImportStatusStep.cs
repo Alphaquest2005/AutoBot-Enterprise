@@ -17,18 +17,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Add a static logger instance for this class
         private static readonly ILogger _logger = Log.ForContext<UpdateImportStatusStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
              // Basic context validation
             if (context == null)
             {
                 _logger.Error("UpdateImportStatusStep executed with null context.");
-                return false;
+                return Task.FromResult(false);
             }
              if (!context.Templates.Any())
             {
                  _logger.Warning("Skipping UpdateImportStatusStep: No Templates found in context for File: {FilePath}", context.FilePath ?? "Unknown");
-                 return true; // No templates to process, not a failure of the step itself.
+                 return Task.FromResult(true); // No templates to process, not a failure of the step itself.
             }
 
             string filePath = context.FilePath ?? "Unknown";
@@ -81,7 +81,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             // If the loop completes without any template causing a 'return false', the step is successful.
             _logger.Information("UpdateImportStatusStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
-            return true;
+            return Task.FromResult(true);
         }
 
         // Renamed and corrected logic: Returns true if data needed for this step is PRESENT

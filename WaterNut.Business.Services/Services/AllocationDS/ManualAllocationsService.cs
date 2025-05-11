@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsSet(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ManualAllocations>> GetManualAllocationsSet(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AllocationDS.Business.Services
                     IEnumerable<ManualAllocations> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<ManualAllocations> GetManualAllocationsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public Task<ManualAllocations> GetManualAllocationsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
+			   if(string.IsNullOrEmpty(EntryDataDetailsId))return Task.FromResult<ManualAllocations>(null); 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
 				var set = AddIncludes(includesLst, dbContext);
                 ManualAllocations entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ManualAllocations>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ManualAllocations>>(new List<ManualAllocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ManualAllocations>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ManualAllocations>>(new List<ManualAllocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(entities); 
 											
 					}
 					
@@ -266,8 +266,8 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatch(string exp,
+                                                                                   int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ManualAllocations>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ManualAllocations>>(new List<ManualAllocations>());
 
 
                 var batchSize = 500;
@@ -325,7 +325,7 @@ namespace AllocationDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -341,8 +341,8 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatchExpressionLst(List<string> expLst,
+                                                                                                int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -351,7 +351,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ManualAllocations>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ManualAllocations>>(new List<ManualAllocations>());
 
 
                 var batchSize = 500;
@@ -400,7 +400,7 @@ namespace AllocationDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -417,7 +417,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<ManualAllocations> UpdateManualAllocations(ManualAllocations entity)
+        public Task<ManualAllocations> UpdateManualAllocations(ManualAllocations entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
@@ -429,7 +429,7 @@ namespace AllocationDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -474,7 +474,7 @@ namespace AllocationDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -487,10 +487,10 @@ namespace AllocationDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<ManualAllocations> CreateManualAllocations(ManualAllocations entity)
+        public Task<ManualAllocations> CreateManualAllocations(ManualAllocations entity)
         {
             try
             {
@@ -500,7 +500,7 @@ namespace AllocationDS.Business.Services
                 dbContext.ManualAllocationsSet.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -517,7 +517,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteManualAllocations(string EntryDataDetailsId)
+        public Task<bool> DeleteManualAllocations(string EntryDataDetailsId)
         {
             try
             {
@@ -527,12 +527,12 @@ namespace AllocationDS.Business.Services
                 ManualAllocations entity = dbContext.ManualAllocationsSet
 													.SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.ManualAllocationsSet.Attach(entity);
                     dbContext.ManualAllocationsSet.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -588,23 +588,23 @@ namespace AllocationDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<ManualAllocations>)dbContext.ManualAllocationsSet; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -623,26 +623,26 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (AllocationDSContext dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.ManualAllocationsSet
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.ManualAllocationsSet
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.ManualAllocationsSet
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.ManualAllocationsSet
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -660,33 +660,33 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<ManualAllocations>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<ManualAllocations>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ManualAllocations>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ManualAllocations>>(new List<ManualAllocations>());
                     if (exp == "All")
                     {
-                        return dbContext.ManualAllocationsSet
-										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataDetailsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(dbContext.ManualAllocationsSet
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryDataDetailsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.ManualAllocationsSet
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.EntryDataDetailsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<ManualAllocations>>(dbContext.ManualAllocationsSet
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.EntryDataDetailsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -764,18 +764,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ManualAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -784,18 +784,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ManualAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -889,8 +889,8 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<ManualAllocations>> LoadRangeSelectMany<T>(int startIndex, int count,
-            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<ManualAllocations>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                   AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -901,14 +901,14 @@ namespace AllocationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<ManualAllocations>>(set
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryDataDetailsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -917,8 +917,8 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ManualAllocations>> LoadRangeSelect<T>(int startIndex, int count,
-            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<ManualAllocations>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                               AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -929,14 +929,14 @@ namespace AllocationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+               return Task.FromResult<IEnumerable<ManualAllocations>>(set
+                   .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.EntryDataDetailsId)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -969,21 +969,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ManualAllocations>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<ManualAllocations>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+                                                                                  string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<ManualAllocations>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<ManualAllocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<ManualAllocations>()
+                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<ManualAllocations>)dbContext.Set<T>()
@@ -995,7 +995,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<ManualAllocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1004,21 +1004,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ManualAllocations>> GetWhereSelect<T>(AllocationDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<ManualAllocations>> GetWhereSelect<T>(AllocationDSContext dbContext,
+                                                                              string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<ManualAllocations>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<ManualAllocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<ManualAllocations>()
+                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<ManualAllocations>)dbContext.Set<T>()
@@ -1030,7 +1030,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<ManualAllocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1039,7 +1039,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ManualAllocations>> GetManualAllocationsByItem_Id(string Item_Id, List<string> includesLst = null)
+			        public Task<IEnumerable<ManualAllocations>> GetManualAllocationsByItem_Id(string Item_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1051,7 +1051,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.Item_Id.ToString() == Item_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1163,18 +1163,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ManualAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1183,18 +1183,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ManualAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

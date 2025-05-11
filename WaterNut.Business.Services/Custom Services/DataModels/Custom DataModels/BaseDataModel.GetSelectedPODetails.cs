@@ -11,13 +11,13 @@ namespace WaterNut.DataSpace;
 
 public partial class BaseDataModel
 {
-    public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<string> elst,
-        int asycudaDocumentSetId)
+    public Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<string> elst,
+                                                                    int asycudaDocumentSetId)
     {
         try
         {
             var res = new List<EntryDataDetails>();
-            if (!elst.Any()) return res;
+            if (!elst.Any()) return Task.FromResult<IEnumerable<EntryDataDetails>>(res);
             {
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -52,7 +52,7 @@ public partial class BaseDataModel
                 }
             }
 
-            return res.OrderBy(x => x.EntryDataDetailsId);
+            return Task.FromResult<IEnumerable<EntryDataDetails>>(res.OrderBy(x => x.EntryDataDetailsId));
         }
         catch (Exception e)
         {
@@ -61,7 +61,7 @@ public partial class BaseDataModel
         }
     }
 
-    public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<int> lst)
+    public Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<int> lst)
     {
         try
         {
@@ -104,9 +104,8 @@ public partial class BaseDataModel
                     });
 
 
-            return
-                res.Values.OrderBy(x =>
-                    x.EntryDataDetailsId);
+            return Task.FromResult<IEnumerable<EntryDataDetails>>(res.Values.OrderBy(x =>
+                    x.EntryDataDetailsId));
         }
         catch (Exception e)
         {

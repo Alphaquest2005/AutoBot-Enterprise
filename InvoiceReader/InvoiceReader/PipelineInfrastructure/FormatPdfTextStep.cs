@@ -12,14 +12,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         private static readonly ILogger _logger = Log.ForContext<FormatPdfTextStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
             string filePath = context?.FilePath ?? "Unknown";
             LogExecutionStart(filePath);
 
             if (!ValidateContext(context, filePath))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
             foreach (var template in context?.Templates)
@@ -46,11 +46,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     string errorMsg = $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}: {ex.Message}";
                     LogExecutionError(ex, templateId, filePath); // Log the error with details
                     context.AddError(errorMsg); // Add the specific error to the context
-                    return false; // Stop processing this step and indicate failure
+                    return Task.FromResult(false); // Stop processing this step and indicate failure
                 }
             }
 
-            return true;
+            return Task.FromResult(true);
 
         }
 

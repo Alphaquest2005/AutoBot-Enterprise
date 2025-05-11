@@ -88,7 +88,7 @@ namespace WaterNut.Business.Services.Importers
             _fileType = fileType;
         }
 
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var dic = FileTypeManager.PostCalculatedFileTypeMappings(_fileType);
             var res = new List<dynamic>();
@@ -108,7 +108,7 @@ namespace WaterNut.Business.Services.Importers
                 res.Add(line);
             }
  
-            return res;
+            return Task.FromResult(res);
         }
     }
 
@@ -122,7 +122,7 @@ namespace WaterNut.Business.Services.Importers
             
         }
 
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var result = new List<dynamic>();
             foreach (IDictionary<string, object> line in lines.ToList())
@@ -131,21 +131,21 @@ namespace WaterNut.Business.Services.Importers
                     result.Add((dynamic)line);
             }
  
-            return result;
+            return Task.FromResult(result);
         }
     }
  
     public class FilterOutBlankLines : IDocumentProcessor
     {
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
-           return lines.Where(x => !string.IsNullOrEmpty(x.ItemDescription) || x.Packages != 0).ToList();// using packages to get the summary data be cause the category change drops the data
+           return Task.FromResult(lines.Where(x => !string.IsNullOrEmpty(x.ItemDescription) || x.Packages != 0).ToList());// using packages to get the summary data be cause the category change drops the data
         }
     }
  
     public class FillEntryId : IDocumentProcessor
     {
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             dynamic lastLine = null;
             foreach (var line in lines)
@@ -162,13 +162,13 @@ namespace WaterNut.Business.Services.Importers
                     line.CustomerName = lastLine?.CustomerName;
                 }
             }
-            return lines;
+            return Task.FromResult(lines);
         }
     }
  
     public class GetItemInfo: IDocumentProcessor
     {
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
           var res =  lines.Select(x =>
             {
@@ -190,7 +190,7 @@ namespace WaterNut.Business.Services.Importers
                 return x;
             }).ToList();
  
-            return res;
+            return Task.FromResult(res);
         }
     }
 }

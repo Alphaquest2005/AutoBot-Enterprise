@@ -148,14 +148,10 @@ namespace WaterNut.Business.Services.Importers
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    InvoiceDetails invRow;
-                    EntryDataDetails poRow;
-
                     if (invItemCode == poItemCode)
                     {
                         return;
                         // this should not happen write code to deal with it
-                        Debugger.Break();
                     }
 
                     var invItm = ctx.InventoryItems.Include(x => x.InventoryItemAlias).FirstOrDefault(x =>

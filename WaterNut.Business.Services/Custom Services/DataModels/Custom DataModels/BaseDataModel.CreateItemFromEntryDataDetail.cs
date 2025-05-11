@@ -108,7 +108,6 @@ public partial class BaseDataModel
                 break;
             default:
                 throw new ApplicationException("Please Configure WeightCalculationMethod");
-                break;
         }
 
 

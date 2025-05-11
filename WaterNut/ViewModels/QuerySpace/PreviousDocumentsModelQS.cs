@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Data;
-using System.ComponentModel;
-using System.Linq;
-using System.Data.Entity;
-using System.Threading.Tasks; // Added for Task
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks; // Added for Task
+using System.Windows.Data;
+using AllocationQS.Client.Entities;
 using CoreEntities.Client.Entities;
-using PreviousDocumentQS.Client.Repositories;
 using PreviousDocumentQS.Client.Entities;
+using PreviousDocumentQS.Client.Repositories;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.PreviousDocumentQS.ViewModels;
-using AllocationQS.Client.Entities;
 
 
 namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
@@ -45,7 +45,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
   }
 
         // Change signature to async void for event handler
-        private async void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
+        private void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
         {
             if (e.Data != null && ManualMode == false)
             {

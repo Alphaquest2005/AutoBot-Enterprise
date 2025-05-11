@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Add a static logger instance for this class
         private static readonly ILogger _logger = Log.ForContext<ReturnImportsStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
             // FilePath might not be relevant here if this is a final summary step across multiple files/templates
             _logger.Debug("Executing ReturnImportsStep. Finalizing import process.");
@@ -26,7 +26,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             if (context == null)
             {
                  _logger.Error("ReturnImportsStep executed with null context.");
-                 return false; // Cannot determine success without context
+                 return Task.FromResult(false); // Cannot determine success without context
             }
 
             bool overallSuccess = false; // Default to false
@@ -61,12 +61,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 }
 
                  _logger.Debug("Finished executing ReturnImportsStep. Returning Overall Success: {OverallSuccess}", overallSuccess);
-                return overallSuccess; // Indicate overall success or failure based on the check
+                return Task.FromResult(overallSuccess); // Indicate overall success or failure based on the check
             }
             catch (Exception ex)
             {
                  _logger.Error(ex, "Error during ReturnImportsStep execution.");
-                 return false; // Indicate failure on error
+                 return Task.FromResult(false); // Indicate failure on error
             }
         }
     }

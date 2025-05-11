@@ -38,7 +38,7 @@ namespace WaterNut.Business.Services.Importers
                 fileType.EmailId = emailId;
                 var importSettings = new ImportSettings(fileType, docSet, overWrite, fileName, emailId);
 
-                EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
+                await EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
                     .Execute(data).ConfigureAwait(false);
             }
             catch (Exception e)

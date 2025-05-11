@@ -1,18 +1,18 @@
 ﻿
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Linq;
 using AutoBot;
-using CoreEntities.Client.Entities;
 using Core.Common.UI;
+using CoreEntities.Client.Entities;
 using Microsoft.Win32;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
-using WaterNut.QuerySpace.InventoryQS.ViewModels;
 using WaterNut.QuerySpace.CoreEntities.ViewModels;
+using WaterNut.QuerySpace.InventoryQS.ViewModels;
 using BaseViewModel = WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel;
 
 

@@ -223,7 +223,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        private async Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, string adjustmentType)
+        private Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, string adjustmentType)
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\")", "");
@@ -252,7 +252,7 @@ namespace AdjustmentQS.Business.Services
             //var oldData = GetEx9AllocationsListOldway(FilterExpression, exp);
             var newData = new getEx9AllocationsList().Execute(exp);
 
-            return newData;
+            return Task.FromResult(newData);
 
         }
 

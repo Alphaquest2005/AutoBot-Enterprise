@@ -38,8 +38,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 {
                     // Report unimported file, joining accumulated errors
                     return await EmailErrors().ConfigureAwait(false);
-                    return false;
-
                 }
                 else
                 {

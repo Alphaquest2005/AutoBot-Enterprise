@@ -30,7 +30,7 @@ namespace System.Linq.Dynamic
                         return (e.Compile().DynamicInvoke(@object) ?? "").ToString();
                     });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                // Console.WriteLine(e);
                 throw;

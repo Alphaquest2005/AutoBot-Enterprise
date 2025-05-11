@@ -76,8 +76,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                             new NotificationEventArgs(MessageToken.AsycudaDocumentSetAttachmentsChanged));
         }
 
-        internal async Task AddDocToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> lst, bool perInvoice,bool combineEntryDataInSameFile)
+        internal Task AddDocToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> lst, bool perInvoice,bool combineEntryDataInSameFile)
         {
+            return Task.CompletedTask;
             //StatusModel.Timer($"Creating Entries");
             //var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
             //if ( docSet == null)

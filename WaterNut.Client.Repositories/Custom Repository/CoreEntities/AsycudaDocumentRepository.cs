@@ -47,13 +47,14 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task IM72Ex9Document(string fileName)
+        public Task IM72Ex9Document(string fileName)
         {
-
             using (var ctx = new AsycudaDocumentClient())
             {
                 ctx.IM72Ex9Document(fileName);
             }
+
+            return Task.CompletedTask;
         }
 
         public async Task<AsycudaDocument> NewDocument(int docSetId)

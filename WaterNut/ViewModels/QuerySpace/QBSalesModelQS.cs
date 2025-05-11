@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.ComponentModel;
 using Core.Common.UI;
 using SalesDataQS.Client.Repositories;
 using SimpleMvvmToolkit;

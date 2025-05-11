@@ -14,13 +14,13 @@ namespace WaterNut.DataSpace
         private SimplifiedDeclarationImporter _simplifiedDeclarationImporter = new SimplifiedDeclarationImporter();
 
 
-        public async Task<bool> Process(DataFile dataFile)
+        public Task<bool> Process(DataFile dataFile)
         {
             if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.SimplifiedDeclaration
-                || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
+                || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return Task.FromResult(false);
 
             
-           return _simplifiedDeclarationImporter.ProcessSimplifiedDeclaration(dataFile);
+           return Task.FromResult(this._simplifiedDeclarationImporter.ProcessSimplifiedDeclaration(dataFile));
 
          
 

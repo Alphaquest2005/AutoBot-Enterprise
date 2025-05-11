@@ -34,8 +34,9 @@ namespace WaterNut.DataSpace
 
         public static Task Initialization { get; }
 
-        private static async Task InitializationAsync()
+        private static Task InitializationAsync()
         {
+            return Task.CompletedTask;
         }
 
 
@@ -226,7 +227,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private async Task SetXBond(AsycudaSalesAllocations ssa, xcuda_PreviousItem pitm)
+        private Task SetXBond(AsycudaSalesAllocations ssa, xcuda_PreviousItem pitm)
         {
             var amt = ssa.QtyAllocated;
             var atot = (double) pitm.Suplementary_Quantity - pitm.QtyAllocated;
@@ -246,7 +247,7 @@ namespace WaterNut.DataSpace
                     pitm.QtyAllocated += amt;
                     ssa.QtyAllocated = atot;
                     ssa.Status = "OverAllocated"; //Todo: might neeed to save status
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 if (atot <= 0 && amt < 0)
@@ -254,7 +255,7 @@ namespace WaterNut.DataSpace
                     pitm.QtyAllocated += amt;
                     ssa.QtyAllocated += amt * -1;
                     //ssa.Status = "OverAllocated";//Todo: might neeed to save status
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 pitm.QtyAllocated += atot;
@@ -262,6 +263,8 @@ namespace WaterNut.DataSpace
 
                 ssa.QtyAllocated = atot;
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task SaveXbond(AsycudaSalesAllocations ssa, xcuda_PreviousItem pitm)
@@ -277,10 +280,10 @@ namespace WaterNut.DataSpace
                 .ConfigureAwait(false);
         }
 
-        private async Task SavePitm(xcuda_PreviousItem pitm)
+        private Task SavePitm(xcuda_PreviousItem pitm)
         {
             //	var res = pitm.ChangeTracker.GetChanges().FirstOrDefault();
-            if (pitm == null) return;
+            if (pitm == null) return Task.CompletedTask;
             //var sql = $@"INSERT INTO xcuda_PreviousItem
             //                   (Packages_number, Previous_Packages_number, Hs_code, Commodity_code, Previous_item_number, Goods_origin, Net_weight, Prev_net_weight, Prev_reg_ser, Prev_reg_nbr, Prev_reg_dat, Prev_reg_cuo, 
             //                   Suplementary_Quantity, Preveious_suplementary_quantity, Current_value, Previous_value, Current_item_number, ASYCUDA_Id, QtyAllocated)
@@ -294,6 +297,8 @@ namespace WaterNut.DataSpace
                 ctx.ApplyChanges(pitm);
                 ctx.SaveChanges();
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task SaveAllocation(AsycudaSalesAllocations pitm)
@@ -446,7 +451,7 @@ namespace WaterNut.DataSpace
             return await GetSalesData(expLst).ConfigureAwait(false);
         }
 
-        private async Task<List<AsycudaSalesAllocations>> GetSalesData(string dfp)
+        private Task<List<AsycudaSalesAllocations>> GetSalesData(string dfp)
         {
             //var expLst = new List<string>()
             //{
@@ -462,7 +467,7 @@ namespace WaterNut.DataSpace
 
 
             // return await GetSalesData(expLst).ConfigureAwait(false);
-            return null;
+            return Task.FromResult<List<AsycudaSalesAllocations>>(null);
         }
 
         private async Task<List<AsycudaSalesAllocations>> GetSalesData(List<string> expLst)
@@ -490,7 +495,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task ReLinkPi2Item(List<xcuda_PreviousItem> piLst)
+        public Task ReLinkPi2Item(List<xcuda_PreviousItem> piLst)
         {
             StatusModel.Timer("Getting Previous Items");
 
@@ -586,6 +591,7 @@ namespace WaterNut.DataSpace
                     }
                 });
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
+            return Task.CompletedTask;
         }
 
         private async Task<List<xcuda_PreviousItem>> GetPreviousItems(AsycudaDocument doc)

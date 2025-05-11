@@ -25,13 +25,10 @@ namespace AutoBot
             await SaveSalesReport(folder, doclst).ConfigureAwait(false);
         }
 
-        private static async Task SaveSalesReport(string folder, IEnumerable<AsycudaDocument> doclst, ConcurrentQueue<Exception> exceptions)
+        private static Task SaveSalesReport(string folder, IEnumerable<AsycudaDocument> doclst, ConcurrentQueue<Exception> exceptions)
         {
-           
-                        
-                        doclst.Where(x => x != null).ForEach(doc =>  CreateSalesReport(folder, exceptions, doc));
-
-            
+            doclst.Where(x => x != null).ForEach(doc =>  CreateSalesReport(folder, exceptions, doc));
+            return Task.CompletedTask;
         }
 
         private static void CreateSalesReport(string folder, ConcurrentQueue<Exception> exceptions, AsycudaDocument doc)

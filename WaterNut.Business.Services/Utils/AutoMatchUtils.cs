@@ -67,8 +67,8 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public static async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesWithInvoiceNumber(int applicationSettingsId,
-            string sPreviousInvoiceNumber, string sEntryDataId)
+        public static Task<List<AsycudaDocumentItem>> GetAsycudaEntriesWithInvoiceNumber(int applicationSettingsId,
+                                                                                         string sPreviousInvoiceNumber, string sEntryDataId)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace AdjustmentQS.Business.Services
                 var res = aItem.ToList();
 
 
-                return res;
+                return Task.FromResult(res);
             }
             catch (Exception e)
             {
@@ -94,8 +94,8 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public static async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesWithInvoiceNumber(int applicationSettingsId,
-            string sPreviousInvoiceNumber, string sEntryDataId, string sItemNumber)
+        public static Task<List<AsycudaDocumentItem>> GetAsycudaEntriesWithInvoiceNumber(int applicationSettingsId,
+                                                                                         string sPreviousInvoiceNumber, string sEntryDataId, string sItemNumber)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace AdjustmentQS.Business.Services
                                                                      x.ItemNumber.ToUpper().Trim() == sItemNumber.ToUpper().Trim())
                     .Select(y => y.AliasName.ToUpper().Trim()).ToList();
 
-                if (!alias.Any()) return res;
+                if (!alias.Any()) return Task.FromResult(res);
 
                 var ae = Enumerable.Where<AsycudaDocumentItem>(Services.AutoMatchProcessor.AsycudaDocumentItemCache, x => x.PreviousInvoiceNumber != null
                                                                                                 && alias.Contains(x.ItemNumber)
@@ -125,7 +125,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                return res;
+                return Task.FromResult(res);
             }
             catch (Exception e)
             {
@@ -163,8 +163,8 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public static async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber,
-            int? previousCLineNumber, string itemNumber)
+        public static Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber,
+                                                                                 int? previousCLineNumber, string itemNumber)
         {
 
             try
@@ -184,7 +184,7 @@ namespace AdjustmentQS.Business.Services
                 var reverseAlias = GetReverseAlias(itemNumber);
                  alias.AddRange(reverseAlias);
 
-                if (!alias.Any()) return res;
+                if (!alias.Any()) return Task.FromResult(res);
 
                 var ae = Enumerable.Where<AsycudaDocumentItem>(Services.AutoMatchProcessor.AsycudaDocumentItemCache, x => x.AsycudaDocument.CNumber != null
                                                                                                 && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
@@ -194,7 +194,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                return res;
+                return Task.FromResult(res);
             }
             catch (Exception e)
             {
@@ -215,8 +215,8 @@ namespace AdjustmentQS.Business.Services
                 .Select(y => y.ItemNumber.ToUpper().Trim()).ToList();
         }
 
-        public static async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumberReference(int applicationSettingsId,
-            string cNumber, string itemNumber)
+        public static Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumberReference(int applicationSettingsId,
+                                                                                          string cNumber, string itemNumber)
         {
 
             try
@@ -224,7 +224,7 @@ namespace AdjustmentQS.Business.Services
                 List<string> cnumberlst = GetCNumbersFromString(cNumber);
                 var doc = Services.AutoMatchProcessor.AsycudaDocumentItemCache.FirstOrDefault(x => x.CNumber != null && cnumberlst.Contains(x.CNumber));
                 
-                if (doc == null) return new List<AsycudaDocumentItem>();
+                if (doc == null) return Task.FromResult(new List<AsycudaDocumentItem>());
                 var docref = doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal) > 0
                     ? doc.ReferenceNumber.Substring(0, doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal))
                     : doc.ReferenceNumber;
@@ -242,7 +242,7 @@ namespace AdjustmentQS.Business.Services
                 alias.AddRange(reverseAlias);
 
 
-                if (!alias.Any()) return res;
+                if (!alias.Any()) return Task.FromResult(res);
 
                 var ae = Services.AutoMatchProcessor.AsycudaDocumentItemCache
                     .Where(x => alias.Contains(x.ItemNumber)
@@ -254,7 +254,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                return res;
+                return Task.FromResult(res);
             }
             catch (Exception e)
             {

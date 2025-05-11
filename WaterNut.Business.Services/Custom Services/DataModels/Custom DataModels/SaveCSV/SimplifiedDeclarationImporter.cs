@@ -59,7 +59,7 @@ public class SimplifiedDeclarationImporter
                         }
                     };
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }

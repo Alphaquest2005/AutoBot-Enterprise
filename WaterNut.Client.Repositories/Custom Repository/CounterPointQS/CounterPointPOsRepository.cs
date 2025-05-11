@@ -29,7 +29,7 @@ namespace CounterPointQS.Client.Repositories
             {
                 throw new Exception(e.Detail.Message, e.InnerException);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;

@@ -202,7 +202,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             }
         }
 
-        private static async Task<EntryDataDetail> AutoMatchItemNumber(AdjustmentDetail s)
+        private static Task<EntryDataDetail> AutoMatchItemNumber(AdjustmentDetail s)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                     .ForEach(async x => await x.Execute().ConfigureAwait(false));
 
                 
-                return ed;
+                return Task.FromResult(ed);
             }
             catch (Exception ex)
             {

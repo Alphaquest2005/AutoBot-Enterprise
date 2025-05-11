@@ -8,7 +8,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class UpdateItemDescription : IProcessor<InventoryDataItem>
     {
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             var inventoryDataItems = data
                 .Where(x => !string.IsNullOrEmpty(x.Data.Key.ItemDescription))
@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                     return x;
                 })
                 .ToList();
-            return Task.FromResult(new Result<List<InventoryDataItem>>(inventoryDataItems, true, "")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<InventoryDataItem>>(inventoryDataItems, true, "")).Result); // Wrap in Task.FromResult
         }
     }
 }

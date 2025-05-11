@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
@@ -118,7 +118,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
                 }
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
             }
 
@@ -178,7 +178,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                    
                 }
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
             }
 
@@ -423,7 +423,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
                 }
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
             }
 

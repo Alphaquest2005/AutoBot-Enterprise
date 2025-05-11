@@ -221,7 +221,7 @@ public partial class BaseDataModel
         await CalculateDocumentSetFreight(currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false);
         StatusModel.StopStatusUpdate();
 
-        AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
+        await this.AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false);
         SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
         RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
 

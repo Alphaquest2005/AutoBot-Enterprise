@@ -65,7 +65,7 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<IEnumerable<RegularExpressions>> GetRegularExpressions(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<RegularExpressions>> GetRegularExpressions(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace OCR.Business.Services
                     IEnumerable<RegularExpressions> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace OCR.Business.Services
         }
 
 
-        public async Task<RegularExpressions> GetRegularExpressionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public Task<RegularExpressions> GetRegularExpressionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Id))return Task.FromResult<RegularExpressions>(null); 
               using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 RegularExpressions entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace OCR.Business.Services
         }
 
 
-		 public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<RegularExpressions>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<RegularExpressions>>(new List<RegularExpressions>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace OCR.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<RegularExpressions>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<RegularExpressions>>(new List<RegularExpressions>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(entities); 
 											
 					}
 					
@@ -302,8 +302,8 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByBatch(string exp,
+                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace OCR.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<RegularExpressions>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<RegularExpressions>>(new List<RegularExpressions>());
 
 
                 var batchSize = 500;
@@ -361,7 +361,7 @@ namespace OCR.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -377,8 +377,8 @@ namespace OCR.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByBatchExpressionLst(List<string> expLst,
+                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -387,7 +387,7 @@ namespace OCR.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<RegularExpressions>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<RegularExpressions>>(new List<RegularExpressions>());
 
 
                 var batchSize = 500;
@@ -436,7 +436,7 @@ namespace OCR.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -453,7 +453,7 @@ namespace OCR.Business.Services
         }
 
 
-        public async Task<RegularExpressions> UpdateRegularExpressions(RegularExpressions entity)
+        public Task<RegularExpressions> UpdateRegularExpressions(RegularExpressions entity)
         { 
             using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
@@ -465,7 +465,7 @@ namespace OCR.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -510,7 +510,7 @@ namespace OCR.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -523,10 +523,10 @@ namespace OCR.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<RegularExpressions> CreateRegularExpressions(RegularExpressions entity)
+        public Task<RegularExpressions> CreateRegularExpressions(RegularExpressions entity)
         {
             try
             {
@@ -536,7 +536,7 @@ namespace OCR.Business.Services
                 dbContext.RegularExpressions.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -553,7 +553,7 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<bool> DeleteRegularExpressions(string Id)
+        public Task<bool> DeleteRegularExpressions(string Id)
         {
             try
             {
@@ -563,12 +563,12 @@ namespace OCR.Business.Services
                 RegularExpressions entity = dbContext.RegularExpressions
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.RegularExpressions.Attach(entity);
                     dbContext.RegularExpressions.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -624,23 +624,23 @@ namespace OCR.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<RegularExpressions>)dbContext.RegularExpressions; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -659,26 +659,26 @@ namespace OCR.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (OCRContext dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.RegularExpressions
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.RegularExpressions
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.RegularExpressions
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.RegularExpressions
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -696,33 +696,33 @@ namespace OCR.Business.Services
             }
         }
         
-        public async Task<IEnumerable<RegularExpressions>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<RegularExpressions>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<RegularExpressions>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<RegularExpressions>>(new List<RegularExpressions>());
                     if (exp == "All")
                     {
-                        return dbContext.RegularExpressions
-										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(dbContext.RegularExpressions
+                            .AsNoTracking()
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.RegularExpressions
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<RegularExpressions>>(dbContext.RegularExpressions
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -818,18 +818,18 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<RegularExpressions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -838,18 +838,18 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<RegularExpressions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -979,8 +979,8 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<RegularExpressions>> LoadRangeSelectMany<T>(int startIndex, int count,
-            OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<RegularExpressions>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                    OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -991,14 +991,14 @@ namespace OCR.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<RegularExpressions>>(set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -1007,8 +1007,8 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<RegularExpressions>> LoadRangeSelect<T>(int startIndex, int count,
-            OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<RegularExpressions>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -1019,14 +1019,14 @@ namespace OCR.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Id)
+               return Task.FromResult<IEnumerable<RegularExpressions>>(set
+                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -1059,21 +1059,21 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<RegularExpressions>> GetWhereSelectMany<T>(OCRContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<RegularExpressions>> GetWhereSelectMany<T>(OCRContext dbContext,
+                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<RegularExpressions>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<RegularExpressions>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<RegularExpressions>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<RegularExpressions>)dbContext.Set<T>()
@@ -1085,7 +1085,7 @@ namespace OCR.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<RegularExpressions>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1094,21 +1094,21 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<RegularExpressions>> GetWhereSelect<T>(OCRContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<RegularExpressions>> GetWhereSelect<T>(OCRContext dbContext,
+                                                                               string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<RegularExpressions>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<RegularExpressions>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<RegularExpressions>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<RegularExpressions>)dbContext.Set<T>()
@@ -1120,7 +1120,7 @@ namespace OCR.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<RegularExpressions>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1243,18 +1243,18 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<RegularExpressions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1263,18 +1263,18 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<RegularExpressions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

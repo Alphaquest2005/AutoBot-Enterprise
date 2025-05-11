@@ -13,13 +13,13 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _importSettings = importSettings;
         }
  
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines)
         {
             var eslst = EntryDataFileImporter.SetDefaults(lines);
  
             EntryDataFileImporter.SaveDataFile(eslst, _importSettings.FileType, _importSettings.EmailId, _importSettings.DroppedFilePath);
  
-            return lines;
+            return Task.FromResult(lines);
         }
     }
 }

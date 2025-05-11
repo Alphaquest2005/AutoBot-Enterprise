@@ -13,7 +13,7 @@ public partial class EX9Utils
         {
             var directoryName = BaseDataModel.GetDocSetDirectoryName("Imports");
             Console.WriteLine("Download History With Invoices");
-            var lcont = 0;
+            //var lcont = 0; // Unused variable
 
             var startDate =
                 DateTime.Parse("9/1/2023"); //BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;

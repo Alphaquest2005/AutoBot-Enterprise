@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using System.Collections.ObjectModel;
 using AllocationQS.Client.Entities;
 using Core.Common.UI.DataVirtualization;
 using PreviousDocumentQS.Client.Entities;

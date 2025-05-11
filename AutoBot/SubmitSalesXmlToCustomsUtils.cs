@@ -23,7 +23,10 @@ namespace AutoBot
                 
                 var salesinfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
 
-                GetSalesXmls(salesinfo).ForEach(emailIds =>  ProcessSalesData(salesinfo, emailIds));
+                foreach (var emailIds in GetSalesXmls(salesinfo))
+                {
+                    await ProcessSalesData(salesinfo, emailIds).ConfigureAwait(false);
+                }
             }
             catch (Exception e)
             {
@@ -31,12 +34,12 @@ namespace AutoBot
             }
         }
 
-        private static void ProcessSalesData(
+        private static async Task ProcessSalesData(
             (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) salesinfo, IGrouping<string, TODO_SubmitXMLToCustoms> emailIds)
         {
             var body = CreateEmailBody(salesinfo, emailIds);
             var attachments = GetAttachments(emailIds);
-            SendEmails(emailIds, GetContacts(), body, attachments);
+            await SendEmails(emailIds, GetContacts(), body, attachments).ConfigureAwait(false);
             UpdateEmailLog(emailIds);
         }
 

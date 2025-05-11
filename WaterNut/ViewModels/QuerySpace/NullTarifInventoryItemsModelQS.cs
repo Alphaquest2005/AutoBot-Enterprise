@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using System.Data.Entity;
+using System.Windows.Data;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using InventoryQS.Client.Entities;
-using InventoryQS.Client.Repositories;
 using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Entities;
+using InventoryQS.Client.Entities;
+using InventoryQS.Client.Repositories;
 using SimpleMvvmToolkit;
 using InventoryItemsEx = InventoryQS.Client.Entities.InventoryItemsEx;
 

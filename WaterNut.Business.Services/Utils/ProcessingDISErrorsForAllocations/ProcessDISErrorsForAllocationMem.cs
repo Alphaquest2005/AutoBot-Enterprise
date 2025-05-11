@@ -73,7 +73,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
         }
 
 
-        public async Task<List<EntryDataDetail>> Execute(int applicationSettingsId, string res)
+        public Task<List<EntryDataDetail>> Execute(int applicationSettingsId, string res)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                         .ToList();
 
                 
-               return GetUpdatedEntryDataDetails(lst);
+               return Task.FromResult(GetUpdatedEntryDataDetails(lst));
                 
             }
             catch (Exception)

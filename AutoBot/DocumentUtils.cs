@@ -28,8 +28,8 @@ namespace AutoBot
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
-                EntryDocSetUtils.RemoveDuplicateEntries();
-                EntryDocSetUtils.FixIncompleteEntries();
+               await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
 
             }
             catch (Exception e)
@@ -51,8 +51,8 @@ namespace AutoBot
 
                 ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
-                EntryDocSetUtils.RemoveDuplicateEntries();
-                EntryDocSetUtils.FixIncompleteEntries();
+                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
 
             }
             catch (Exception e)
@@ -74,8 +74,8 @@ namespace AutoBot
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
-                EntryDocSetUtils.RemoveDuplicateEntries();
-                EntryDocSetUtils.FixIncompleteEntries();
+                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -96,8 +96,8 @@ namespace AutoBot
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
-                EntryDocSetUtils.RemoveDuplicateEntries();
-                EntryDocSetUtils.FixIncompleteEntries();
+                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
             }
             catch (Exception e)
             {

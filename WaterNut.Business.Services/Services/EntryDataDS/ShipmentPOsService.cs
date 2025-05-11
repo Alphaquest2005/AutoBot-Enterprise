@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOs(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ShipmentPOs>> GetShipmentPOs(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace EntryDataDS.Business.Services
                     IEnumerable<ShipmentPOs> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentPOs> GetShipmentPOsByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
+        public Task<ShipmentPOs> GetShipmentPOsByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return Task.FromResult<ShipmentPOs>(null); 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 ShipmentPOs entity = set.AsNoTracking().SingleOrDefault(x => x.EntryData_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentPOs>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentPOs>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(entities); 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpressionNav(string exp,
-																							  Dictionary<string, string> navExp,
-																							  List<string> includesLst = null, bool tracking = true)
+		public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByExpressionNav(string exp,
+                                                                            Dictionary<string, string> navExp,
+                                                                            List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentPOs>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return aentities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(aentities); 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(entities); 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByBatch(string exp,
+                                                                    int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace EntryDataDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentPOs>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace EntryDataDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByBatchExpressionLst(List<string> expLst,
+                                                                                 int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace EntryDataDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentPOs>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace EntryDataDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentPOs> UpdateShipmentPOs(ShipmentPOs entity)
+        public Task<ShipmentPOs> UpdateShipmentPOs(ShipmentPOs entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace EntryDataDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace EntryDataDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<ShipmentPOs> CreateShipmentPOs(ShipmentPOs entity)
+        public Task<ShipmentPOs> CreateShipmentPOs(ShipmentPOs entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace EntryDataDS.Business.Services
                 dbContext.ShipmentPOs.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteShipmentPOs(string EntryData_Id)
+        public Task<bool> DeleteShipmentPOs(string EntryData_Id)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace EntryDataDS.Business.Services
                 ShipmentPOs entity = dbContext.ShipmentPOs
 													.SingleOrDefault(x => x.EntryData_Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.ShipmentPOs.Attach(entity);
                     dbContext.ShipmentPOs.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace EntryDataDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<ShipmentPOs>)dbContext.ShipmentPOs; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (EntryDataDSContext dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.ShipmentPOs
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.ShipmentPOs
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.ShipmentPOs
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.ShipmentPOs
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<ShipmentPOs>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<ShipmentPOs>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentPOs>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
                     if (exp == "All")
                     {
-                        return dbContext.ShipmentPOs
-										.AsNoTracking()
-                                        .OrderBy(y => y.EntryData_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(dbContext.ShipmentPOs
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryData_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.ShipmentPOs
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.EntryData_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(dbContext.ShipmentPOs
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.EntryData_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.ShipmentPOs
-										.AsNoTracking()
-                                        .Count();
+                        return Task.FromResult(dbContext.ShipmentPOs
+                            .AsNoTracking()
+                            .Count());
                     }
-                    return dbContext.ShipmentPOs.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-											.AsNoTracking()
-                                            .Count();
+                    return Task.FromResult(dbContext.ShipmentPOs.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                        .AsNoTracking()
+                        .Count());
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentPOs>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentPOs>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<ShipmentPOs>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public Task<IEnumerable<ShipmentPOs>> LoadRangeNav(int startIndex, int count, string exp,
+                                                             Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ShipmentPOs>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<ShipmentPOs>>(new List<ShipmentPOs>());
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return set
-									.AsNoTracking()
-                                    .OrderBy(y => y.EntryData_Id)
+                        return Task.FromResult<IEnumerable<ShipmentPOs>>(set
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryData_Id)
  
-                                    .Skip(startIndex)
-                                    .Take(count)
-									.ToList();
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
-                    return set//dbContext.ShipmentPOs
-								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-								.OrderBy(y => y.EntryData_Id)
+                    return Task.FromResult<IEnumerable<ShipmentPOs>>(set//dbContext.ShipmentPOs
+                        .AsNoTracking()
+                        .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                        .OrderBy(y => y.EntryData_Id)
  
-                                .Skip(startIndex)
-                                .Take(count)
-								.ToList();
+                        .Skip(startIndex)
+                        .Take(count)
+                        .ToList());
 
 
                 }
@@ -836,8 +836,8 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<ShipmentPOs>> LoadRangeSelectMany<T>(int startIndex, int count,
-            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<ShipmentPOs>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace EntryDataDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<ShipmentPOs>>(set
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentPOs>> LoadRangeSelect<T>(int startIndex, int count,
-            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<ShipmentPOs>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                         EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace EntryDataDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+               return Task.FromResult<IEnumerable<ShipmentPOs>>(set
+                   .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.EntryData_Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentPOs>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<ShipmentPOs>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+                                                                            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<ShipmentPOs>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<ShipmentPOs>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<ShipmentPOs>()
+                    .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<ShipmentPOs>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<ShipmentPOs>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentPOs>> GetWhereSelect<T>(EntryDataDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<ShipmentPOs>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+                                                                        string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<ShipmentPOs>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<ShipmentPOs>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<ShipmentPOs>()
+                    .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<ShipmentPOs>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<ShipmentPOs>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -986,7 +986,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1014,7 +1014,7 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<ShipmentPOs>> GetShipmentPOsByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1078,24 +1078,24 @@ namespace EntryDataDS.Business.Services
              }
          }
 
-        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.ShipmentPOs.Any()) return 0;
+                    if (!dbContext.ShipmentPOs.Any()) return Task.FromResult<decimal>(0);
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.ShipmentPOs
-										.AsNoTracking()
-                                        .Sum(field)??0);
+                        return Task.FromResult(Convert.ToDecimal(dbContext.ShipmentPOs
+                                                                     .AsNoTracking()
+                                                                     .Sum(field)??0));
                     }
-                    return Convert.ToDecimal(dbContext.ShipmentPOs.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-											.AsNoTracking()
-                                            .Sum(field)??0);
+                    return Task.FromResult(Convert.ToDecimal(dbContext.ShipmentPOs.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                                                                 .AsNoTracking()
+                                                                 .Sum(field)??0));
                 }
                 
             }
@@ -1126,18 +1126,18 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentPOs>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1146,18 +1146,18 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentPOs>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

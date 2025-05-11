@@ -122,8 +122,8 @@ namespace WaterNut.DataSpace
         //System.Windows.Forms.MessageBox.
 
 
-        public async Task ManuallyAllocate(AsycudaSalesAllocations currentAsycudaSalesAllocation,
-            xcuda_Item PreviousItemEx)
+        public Task ManuallyAllocate(AsycudaSalesAllocations currentAsycudaSalesAllocation,
+                                     xcuda_Item PreviousItemEx)
         {
             double aqty;
             using (var ctx = new AllocationDSContext {StartTracking = true})
@@ -157,6 +157,8 @@ namespace WaterNut.DataSpace
                 ctx.SaveChanges();
                 currentAsycudaSalesAllocation.AcceptChanges();
             }
+
+            return Task.CompletedTask;
             // SaveAsycudaSalesAllocation(currentAsycudaSalesAllocation);
         }
 

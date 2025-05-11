@@ -14,9 +14,9 @@ namespace WaterNut.DataSpace
     public class SaveDocumentCTBulk : ISaveDocumentCT
     {
 
-        public async Task Execute(DocumentCT cdoc)
+        public Task Execute(DocumentCT cdoc)
         {
-            if (cdoc == null) return;
+            if (cdoc == null) return Task.CompletedTask;
 
             try
             {
@@ -46,6 +46,7 @@ namespace WaterNut.DataSpace
                 throw;
             }
 
+            return Task.CompletedTask;
         }
     }
 }

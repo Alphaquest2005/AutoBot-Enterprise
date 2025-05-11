@@ -32,7 +32,7 @@ namespace AutoBot
         private static readonly int __ColumnWidth = 15;
         private static readonly int _tripleLongDatabaseCommandTimeout = _databaseCommandTimeout* 3;
 
-        public static void AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs)
+        public static async Task AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace AutoBot
                                     x.ReferenceNumber == reference && x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                 ?.AsycudaDocumentSetEx;
-                            if(doc != null) EntryDocSetUtils.AssessEntries(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId);
+                            if(doc != null) await EntryDocSetUtils.AssessEntries(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId).ConfigureAwait(false);
                         }
 
                     }
@@ -1075,7 +1075,7 @@ namespace AutoBot
             return ADJUtils.CreateAdjustmentEntries(true,"DIS", fileType);
         }
 
-        public static void AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs)
+        public static async Task AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs)
         {
             Console.WriteLine("Assess Discrepancy Entries");
 
@@ -1094,7 +1094,7 @@ namespace AutoBot
                     .GroupBy(x => new { x.AsycudaDocumentSetId, x.Declarant_Reference_Number }).ToList();
                 foreach (var doc in lst)
                 {
-                    EntryDocSetUtils.AssessEntries(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId);
+                    await EntryDocSetUtils.AssessEntries(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
 
             }
@@ -1362,13 +1362,13 @@ namespace AutoBot
         }
 
 
-        public static void AutoMatch()
+        public static Task AutoMatch()
         {
             Console.WriteLine("AutoMatch ...");
-            new AdjustmentShortService().AutoMatch(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, true).Wait();
+            return new AdjustmentShortService().AutoMatch(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, true);
         }
 
-        public static void AssessDiscpancyEntries()
+        public static async Task AssessDiscpancyEntries()
         {
             Console.WriteLine("Assess Discrepancy Entries");
 
@@ -1387,7 +1387,7 @@ namespace AutoBot
                 foreach (var doc in lst)
                 {
 
-                    POUtils.AssessPOEntry(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId);
+                   await POUtils.AssessPOEntry(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
 
             }

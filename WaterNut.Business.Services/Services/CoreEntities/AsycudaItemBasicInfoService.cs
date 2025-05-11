@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfo(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfo(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<AsycudaItemBasicInfo> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<AsycudaItemBasicInfo> GetAsycudaItemBasicInfoByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
+        public Task<AsycudaItemBasicInfo> GetAsycudaItemBasicInfoByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Item_Id))return null; 
+			   if(string.IsNullOrEmpty(Item_Id))return Task.FromResult<AsycudaItemBasicInfo>(null); 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 AsycudaItemBasicInfo entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaItemBasicInfo>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaItemBasicInfo>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(entities); 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpressionNav(string exp,
-																							  Dictionary<string, string> navExp,
-																							  List<string> includesLst = null, bool tracking = true)
+		public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByExpressionNav(string exp,
+                                                                                              Dictionary<string, string> navExp,
+                                                                                              List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaItemBasicInfo>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return aentities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(aentities); 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(entities); 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByBatch(string exp,
+                                                                                      int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaItemBasicInfo>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByBatchExpressionLst(List<string> expLst,
+                                                                                                   int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaItemBasicInfo>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<AsycudaItemBasicInfo> UpdateAsycudaItemBasicInfo(AsycudaItemBasicInfo entity)
+        public Task<AsycudaItemBasicInfo> UpdateAsycudaItemBasicInfo(AsycudaItemBasicInfo entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<AsycudaItemBasicInfo> CreateAsycudaItemBasicInfo(AsycudaItemBasicInfo entity)
+        public Task<AsycudaItemBasicInfo> CreateAsycudaItemBasicInfo(AsycudaItemBasicInfo entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace CoreEntities.Business.Services
                 dbContext.AsycudaItemBasicInfo.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaItemBasicInfo(string Item_Id)
+        public Task<bool> DeleteAsycudaItemBasicInfo(string Item_Id)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace CoreEntities.Business.Services
                 AsycudaItemBasicInfo entity = dbContext.AsycudaItemBasicInfo
 													.SingleOrDefault(x => x.Item_Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.AsycudaItemBasicInfo.Attach(entity);
                     dbContext.AsycudaItemBasicInfo.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<AsycudaItemBasicInfo>)dbContext.AsycudaItemBasicInfo; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaItemBasicInfo
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaItemBasicInfo
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaItemBasicInfo
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaItemBasicInfo
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AsycudaItemBasicInfo>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<AsycudaItemBasicInfo>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaItemBasicInfo>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaItemBasicInfo
-										.AsNoTracking()
-                                        .OrderBy(y => y.Item_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(dbContext.AsycudaItemBasicInfo
+                            .AsNoTracking()
+                            .OrderBy(y => y.Item_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaItemBasicInfo
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Item_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(dbContext.AsycudaItemBasicInfo
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Item_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.AsycudaItemBasicInfo
-										.AsNoTracking()
-                                        .Count();
+                        return Task.FromResult(dbContext.AsycudaItemBasicInfo
+                            .AsNoTracking()
+                            .Count());
                     }
-                    return dbContext.AsycudaItemBasicInfo.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-											.AsNoTracking()
-                                            .Count();
+                    return Task.FromResult(dbContext.AsycudaItemBasicInfo.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                        .AsNoTracking()
+                        .Count());
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaItemBasicInfo>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaItemBasicInfo>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                      Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaItemBasicInfo>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(new List<AsycudaItemBasicInfo>());
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return set
-									.AsNoTracking()
-                                    .OrderBy(y => y.Item_Id)
+                        return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set
+                            .AsNoTracking()
+                            .OrderBy(y => y.Item_Id)
  
-                                    .Skip(startIndex)
-                                    .Take(count)
-									.ToList();
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
-                    return set//dbContext.AsycudaItemBasicInfo
-								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-								.OrderBy(y => y.Item_Id)
+                    return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set//dbContext.AsycudaItemBasicInfo
+                        .AsNoTracking()
+                        .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                        .OrderBy(y => y.Item_Id)
  
-                                .Skip(startIndex)
-                                .Take(count)
-								.ToList();
+                        .Skip(startIndex)
+                        .Take(count)
+                        .ToList());
 
 
                 }
@@ -836,8 +836,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeSelectMany<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                      CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Item_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeSelect<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaItemBasicInfo>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                  CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Item_Id)
+               return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set
+                   .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Item_Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaItemBasicInfo>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaItemBasicInfo>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+                                                                                     string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<AsycudaItemBasicInfo>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<AsycudaItemBasicInfo>()
+                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaItemBasicInfo>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaItemBasicInfo>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaItemBasicInfo>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+                                                                                 string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<AsycudaItemBasicInfo>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<AsycudaItemBasicInfo>()
+                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaItemBasicInfo>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaItemBasicInfo>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -986,7 +986,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+			        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1014,7 +1014,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1042,7 +1042,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1054,7 +1054,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1106,24 +1106,24 @@ namespace CoreEntities.Business.Services
              }
          }
 
-        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.AsycudaItemBasicInfo.Any()) return 0;
+                    if (!dbContext.AsycudaItemBasicInfo.Any()) return Task.FromResult<decimal>(0);
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.AsycudaItemBasicInfo
-										.AsNoTracking()
-                                        .Sum(field)??0);
+                        return Task.FromResult(Convert.ToDecimal(dbContext.AsycudaItemBasicInfo
+                                                                     .AsNoTracking()
+                                                                     .Sum(field)??0));
                     }
-                    return Convert.ToDecimal(dbContext.AsycudaItemBasicInfo.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-											.AsNoTracking()
-                                            .Sum(field)??0);
+                    return Task.FromResult(Convert.ToDecimal(dbContext.AsycudaItemBasicInfo.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                                                                 .AsNoTracking()
+                                                                 .Sum(field)??0));
                 }
                 
             }
@@ -1154,18 +1154,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaItemBasicInfo>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1174,18 +1174,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaItemBasicInfo>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

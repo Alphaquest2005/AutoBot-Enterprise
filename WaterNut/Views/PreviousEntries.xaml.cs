@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,13 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Linq;
-using System.Data.Entity;
-using System.Collections.ObjectModel;
 using Core.Common.UI.DataVirtualization;
-using WaterNut.QuerySpace;
-using PreviousDocumentQS.Client.Entities;
 using EntryDataQS.Client.Entities;
+using PreviousDocumentQS.Client.Entities;
+using WaterNut.QuerySpace;
 using WaterNut.QuerySpace.PreviousDocumentQS.ViewModels;
 
 
@@ -121,7 +121,7 @@ namespace WaterNut.Views
                         var dragData = new DataObject("xcuda_Item_Format", previousEntry);
                         DragDrop.DoDragDrop(listViewItem, dragData, DragDropEffects.Move);
                     }
-                    catch (Exception Ex)
+                    catch (Exception)
                     {
                     }
                 }

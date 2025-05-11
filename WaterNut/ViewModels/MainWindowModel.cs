@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Data;
 using System.ComponentModel;
-using System.Windows.Input;
+using System.Text;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using Core.Common.UI;
 using SimpleMvvmToolkit;
 

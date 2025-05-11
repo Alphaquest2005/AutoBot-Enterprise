@@ -9,7 +9,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class CreateEntryData : ICreateEntryDataProcessor
     {
-        public  async Task Execute(DataFile dataFile, List<RawEntryData> goodLst)
+        public Task Execute(DataFile dataFile, List<RawEntryData> goodLst)
         {
             Parallel.ForEach(goodLst, new ParallelLinqOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount},
                 async item => // foreach (RawEntryData item in goodLst)
@@ -34,6 +34,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     }
                     
                 });
+            return Task.CompletedTask;
         }
     }
 }

@@ -15,21 +15,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         private static readonly ILogger _logger = Log.ForContext<ReadFormattedTextStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
             // Basic context validation (null check)
             if (context == null)
             {
                 LogNullContextError();
                 // Cannot add error as context is null
-                return false;
+                return Task.FromResult(false);
             }
              if (!context.Templates.Any())
             {
                  _logger.Warning("Skipping ReadFormattedTextStep: No Templates found in context.");
                  // Not necessarily an error, but nothing to process. Consider if this should be true or false based on pipeline logic.
                  // Returning true as no processing *failed*, just skipped.
-                 return true;
+                 return Task.FromResult(true);
             }
 
 
@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         // ExecutionValidation logs the specific reason
                         string errorMsg = $"Validation failed for TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}.";
                         context.AddError(errorMsg); // Add error to context
-                        return false; // Stop processing immediately
+                        return Task.FromResult(false); // Stop processing immediately
                     }
                     // --- End Validation ---
 
@@ -66,7 +66,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          LogExecutionError(readEx, filePath, templateId); // Log detailed error
                          context.AddError(errorMsg); // Add error to context
                          template.CsvLines = null; // Ensure CsvLines is null after failure
-                         return false; // Stop processing immediately
+                         return Task.FromResult(false); // Stop processing immediately
                     }
                     // --- End Template Read Execution ---
 
@@ -77,7 +77,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          // ExecutionSuccess logs the specific reason (empty CsvLines)
                          string errorMsg = $"No CsvLines generated after read for TemplateId: {templateId}, File: {filePath}.";
                          context.AddError(errorMsg); // Add error to context
-                         return false; // Stop processing immediately
+                         return Task.FromResult(false); // Stop processing immediately
                     }
                      // --- End Result Check ---
 
@@ -91,13 +91,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     LogExecutionError(ex, filePath, templateId); // Log detailed error
                     context.AddError(errorMsg); // Add error to context
                     template.CsvLines = null; // Ensure CsvLines is null
-                    return false; // Stop processing immediately
+                    return Task.FromResult(false); // Stop processing immediately
                 }
             }
 
             // If the loop completes without any template causing a 'return false', the step is successful.
              _logger.Information("ReadFormattedTextStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
-            return true;
+            return Task.FromResult(true);
         }
 
         // Validation specific to one template instance

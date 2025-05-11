@@ -134,7 +134,7 @@ namespace AdjustmentQS.Business.Services
         }
 
         // Made async Task
-        private static async Task ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
+        private static Task ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
         {
             // Assuming AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation.Execute returns Task
             // Add ConfigureAwait(false) before await
@@ -147,9 +147,10 @@ namespace AdjustmentQS.Business.Services
                         .Select(v => v).Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
                         .Aggregate((o, n) => $"{o},{n}") // Aggregate the strings first
                 ); // Apply ConfigureAwait to the Task returned by Execute
+            return Task.CompletedTask;
         }
 
-        public async Task MatchToAsycudaItem(int entryDataDetailId, int itemId)
+        public Task MatchToAsycudaItem(int entryDataDetailId, int itemId)
         {
             try
             {
@@ -169,6 +170,7 @@ namespace AdjustmentQS.Business.Services
                 throw;
             }
 
+            return Task.CompletedTask;
         }
 
         public async Task AutoMatchDocSet(int applicationSettingsId, int docSetId)

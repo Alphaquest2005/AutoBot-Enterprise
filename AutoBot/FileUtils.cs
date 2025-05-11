@@ -49,7 +49,7 @@ namespace AutoBot
                 {"RecreateDocSetDiscrepanciesEntries", (ft, fs) => DISUtils.RecreateDocSetDiscrepanciesEntries(ft) },
                 {"ExportDocSetDiscpancyEntries", (ft, fs) => DISUtils.ExportDocSetDiscpancyEntries("DIS",ft) },
                 {"SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms", async (ft, fs) => await DISUtils.SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(ft).ConfigureAwait(false) },
-                {"AssessDiscrepancyExecutions", DISUtils.AssessDiscrepancyExecutions },
+                {"AssessDiscrepancyExecutions", async (ft, fs) => await DISUtils.AssessDiscrepancyExecutions(ft, fs).ConfigureAwait(false) },
                 {"AttachEmailPDF", PDFUtils.AttachEmailPDF },
                 {"ReSubmitDiscrepanciesToCustoms", async (types, infos) => await DISUtils.ReSubmitDiscrepanciesToCustoms(types, infos).ConfigureAwait(false)
                 },
@@ -73,15 +73,15 @@ namespace AutoBot
                
                 { "AttachToDocSetByRef",(ft, fs) => EntryDocSetUtils.AttachToDocSetByRef(ft) },
                 
-                {"AssessPOEntries",(ft, fs) => POUtils.AssessPOEntries(ft) },
-                {"AssessDiscpancyEntries", DISUtils.AssessDiscpancyEntries },
+                {"AssessPOEntries", async (ft, fs) => await POUtils.AssessPOEntries(ft).ConfigureAwait(false) },
+                {"AssessDiscpancyEntries", async (ft, fs) => await DISUtils.AssessDiscpancyEntries(ft, fs).ConfigureAwait(false) },
                 {"DeletePONumber", POUtils.DeletePONumber },
                 { "SubmitPOs", async (ft, fs) => await POUtils.SubmitPOs().ConfigureAwait(false) },
                 {"SubmitEntryCIF", async (types, infos) => await EntryDocSetUtils.SubmitEntryCIF(types, infos).ConfigureAwait(false) },
                 {"SubmitBlankLicenses", async (ft,fs) => await LICUtils.SubmitBlankLicenses(ft).ConfigureAwait(false) },
                 {"ProcessUnknownCSVFileType", (ft,fs) => CSVUtils.ProcessUnknownCSVFileType(ft, fs) },
                 {"ProcessUnknownPDFFileType", (ft,fs) => PDFUtils.ProcessUnknownPDFFileType(ft, fs) },
-                {"ImportUnAttachedSummary", (ft,fs) => ShipmentUtils.ImportUnAttachedSummary(ft, fs) },
+                {"ImportUnAttachedSummary", async (ft,fs) => await ShipmentUtils.ImportUnAttachedSummary(ft, fs).ConfigureAwait(false) },
 
                 {"RemoveDuplicateEntries", async (ft,fs) => await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false) },
                 {"FixIncompleteEntries", async (ft,fs) => await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false) },

@@ -55,7 +55,7 @@ namespace Core.Common.Converters
                             MessageBoxImage.Exclamation);
                     }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Error while generating Excel report");
             }
@@ -79,7 +79,7 @@ namespace Core.Common.Converters
                         Mouse.SetCursor(Cursors.Arrow);
                     }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Error while generating Excel report");
             }
@@ -151,7 +151,7 @@ namespace Core.Common.Converters
 
                 AddExcelRows(objData);
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
                 throw;
             }

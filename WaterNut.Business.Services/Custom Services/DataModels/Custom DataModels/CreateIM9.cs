@@ -138,7 +138,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static async Task<List<AsycudaDocumentItemIM9>> GetAllIM9Data()
+        private static Task<List<AsycudaDocumentItemIM9>> GetAllIM9Data()
         {
             var alst = new List<AsycudaDocumentItemIM9>();
 
@@ -187,11 +187,11 @@ namespace WaterNut.DataSpace
             var ares = alst.OrderBy(x => x.CNumber).ToList();
             AttachPackageInfo(ares);
 
-            return ares;
+            return Task.FromResult(ares);
         }
 
-        private static async Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedIM9Data(IEnumerable<int> lst,
-            int applicationSettingsId)
+        private static Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedIM9Data(IEnumerable<int> lst,
+                                                                                    int applicationSettingsId)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace WaterNut.DataSpace
                     var ares = alst.OrderBy(x => x.LineNumber).ToList();
                     AttachPackageInfo(ares);
 
-                    return ares;
+                    return Task.FromResult<IEnumerable<AsycudaDocumentItemIM9>>(ares);
 
                 }
                 //});
@@ -265,7 +265,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static async Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedLinesIM9Data(IEnumerable<int> lst)
+        private static Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedLinesIM9Data(IEnumerable<int> lst)
         {
             var alst = new ConcurrentQueue<IEnumerable<AsycudaDocumentItemIM9>>();
 
@@ -324,7 +324,7 @@ namespace WaterNut.DataSpace
 
             AttachPackageInfo(ares);
 
-            return ares;
+            return Task.FromResult<IEnumerable<AsycudaDocumentItemIM9>>(ares);
         }
 
         private static void AttachPackageInfo(List<AsycudaDocumentItemIM9> ares)

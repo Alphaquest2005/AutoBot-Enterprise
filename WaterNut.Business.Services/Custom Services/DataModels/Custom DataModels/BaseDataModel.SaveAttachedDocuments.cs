@@ -10,7 +10,7 @@ namespace WaterNut.DataSpace;
 
 public partial class BaseDataModel
 {
-    public async Task SaveAttachedDocuments(FileInfo[] csvFiles, FileTypes fileType)
+    public Task SaveAttachedDocuments(FileInfo[] csvFiles, FileTypes fileType)
     {
         try
         {
@@ -70,5 +70,7 @@ public partial class BaseDataModel
             Console.WriteLine(e);
             throw;
         }
+
+        return Task.CompletedTask;
     }
 }

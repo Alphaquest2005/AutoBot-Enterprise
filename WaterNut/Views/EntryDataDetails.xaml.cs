@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,13 +12,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Linq;
 using Core.Common.UI.DataVirtualization;
+using EntryDataQS.Client.Entities;
 using EntryDataQS.Client.Repositories;
 using Omu.ValueInjecter;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace;
-using EntryDataQS.Client.Entities;
 using WaterNut.QuerySpace.EntryDataQS;
 using WaterNut.QuerySpace.EntryDataQS.ViewModels;
 

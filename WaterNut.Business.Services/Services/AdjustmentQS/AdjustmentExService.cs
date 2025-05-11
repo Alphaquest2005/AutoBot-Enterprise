@@ -65,7 +65,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExes(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExes(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AdjustmentQS.Business.Services
                     IEnumerable<AdjustmentEx> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        public async Task<AdjustmentEx> GetAdjustmentExByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
+        public Task<AdjustmentEx> GetAdjustmentExByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return Task.FromResult<AdjustmentEx>(null); 
               using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 AdjustmentEx entity = set.AsNoTracking().SingleOrDefault(x => x.EntryData_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentEx>>(new List<AdjustmentEx>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentEx>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AdjustmentEx>>(new List<AdjustmentEx>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(entities); 
 											
 					}
 					
@@ -290,8 +290,8 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatch(string exp,
+                                                                        int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -300,7 +300,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentEx>>(new List<AdjustmentEx>());
 
 
                 var batchSize = 500;
@@ -349,7 +349,7 @@ namespace AdjustmentQS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -365,8 +365,8 @@ namespace AdjustmentQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatchExpressionLst(List<string> expLst,
+                                                                                     int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -375,7 +375,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentEx>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AdjustmentEx>>(new List<AdjustmentEx>());
 
 
                 var batchSize = 500;
@@ -424,7 +424,7 @@ namespace AdjustmentQS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -441,7 +441,7 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        public async Task<AdjustmentEx> UpdateAdjustmentEx(AdjustmentEx entity)
+        public Task<AdjustmentEx> UpdateAdjustmentEx(AdjustmentEx entity)
         { 
             using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
@@ -453,7 +453,7 @@ namespace AdjustmentQS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -498,7 +498,7 @@ namespace AdjustmentQS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -511,10 +511,10 @@ namespace AdjustmentQS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<AdjustmentEx> CreateAdjustmentEx(AdjustmentEx entity)
+        public Task<AdjustmentEx> CreateAdjustmentEx(AdjustmentEx entity)
         {
             try
             {
@@ -524,7 +524,7 @@ namespace AdjustmentQS.Business.Services
                 dbContext.AdjustmentExes.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -541,7 +541,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAdjustmentEx(string EntryData_Id)
+        public Task<bool> DeleteAdjustmentEx(string EntryData_Id)
         {
             try
             {
@@ -551,12 +551,12 @@ namespace AdjustmentQS.Business.Services
                 AdjustmentEx entity = dbContext.AdjustmentExes
 													.SingleOrDefault(x => x.EntryData_Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.AdjustmentExes.Attach(entity);
                     dbContext.AdjustmentExes.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -612,23 +612,23 @@ namespace AdjustmentQS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<AdjustmentEx>)dbContext.AdjustmentExes; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -647,26 +647,26 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (AdjustmentQSContext dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.AdjustmentExes
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.AdjustmentExes
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.AdjustmentExes
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.AdjustmentExes
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -684,33 +684,33 @@ namespace AdjustmentQS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AdjustmentEx>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<AdjustmentEx>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentEx>>(new List<AdjustmentEx>());
                     if (exp == "All")
                     {
-                        return dbContext.AdjustmentExes
-										.AsNoTracking()
-                                        .OrderBy(y => y.EntryData_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(dbContext.AdjustmentExes
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryData_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.AdjustmentExes
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.EntryData_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AdjustmentEx>>(dbContext.AdjustmentExes
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.EntryData_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -800,18 +800,18 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentEx>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -820,18 +820,18 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentEx>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -949,8 +949,8 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> LoadRangeSelectMany<T>(int startIndex, int count,
-            AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentEx>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                              AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -961,14 +961,14 @@ namespace AdjustmentQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<AdjustmentEx>>(set
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -977,8 +977,8 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> LoadRangeSelect<T>(int startIndex, int count,
-            AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentEx>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                          AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -989,14 +989,14 @@ namespace AdjustmentQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+               return Task.FromResult<IEnumerable<AdjustmentEx>>(set
+                   .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.EntryData_Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -1029,21 +1029,21 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> GetWhereSelectMany<T>(AdjustmentQSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentEx>> GetWhereSelectMany<T>(AdjustmentQSContext dbContext,
+                                                                             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AdjustmentEx>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<AdjustmentEx>()
+                    .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AdjustmentEx>)dbContext.Set<T>()
@@ -1055,7 +1055,7 @@ namespace AdjustmentQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AdjustmentEx>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1064,21 +1064,21 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> GetWhereSelect<T>(AdjustmentQSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentEx>> GetWhereSelect<T>(AdjustmentQSContext dbContext,
+                                                                         string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AdjustmentEx>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<AdjustmentEx>()
+                    .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AdjustmentEx>)dbContext.Set<T>()
@@ -1090,7 +1090,7 @@ namespace AdjustmentQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AdjustmentEx>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1099,7 +1099,7 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1117,7 +1117,7 @@ namespace AdjustmentQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1133,7 +1133,7 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1151,7 +1151,7 @@ namespace AdjustmentQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1167,7 +1167,7 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1185,7 +1185,7 @@ namespace AdjustmentQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1309,18 +1309,18 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentEx>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1329,18 +1329,18 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentEx>()
                 .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                 .OrderBy("EntryData_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

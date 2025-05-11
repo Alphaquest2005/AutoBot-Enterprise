@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_Allocations(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_Allocations(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<TODO_ERRReport_Allocations> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_ERRReport_Allocations> GetTODO_ERRReport_AllocationsByKey(string ApplicationSettingsId, List<string> includesLst = null, bool tracking = true)
+        public Task<TODO_ERRReport_Allocations> GetTODO_ERRReport_AllocationsByKey(string ApplicationSettingsId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ApplicationSettingsId))return null; 
+			   if(string.IsNullOrEmpty(ApplicationSettingsId))return Task.FromResult<TODO_ERRReport_Allocations>(null); 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(ApplicationSettingsId);
 				var set = AddIncludes(includesLst, dbContext);
                 TODO_ERRReport_Allocations entity = set.AsNoTracking().SingleOrDefault(x => x.ApplicationSettingsId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_ERRReport_Allocations>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_ERRReport_Allocations>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(entities); 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpressionNav(string exp,
-																							  Dictionary<string, string> navExp,
-																							  List<string> includesLst = null, bool tracking = true)
+		public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByExpressionNav(string exp,
+                                                                                                          Dictionary<string, string> navExp,
+                                                                                                          List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_ERRReport_Allocations>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return aentities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(aentities); 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(entities); 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByBatch(string exp,
+                                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_ERRReport_Allocations>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_ERRReport_Allocations>> GetTODO_ERRReport_AllocationsByBatchExpressionLst(List<string> expLst,
+                                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_ERRReport_Allocations>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_ERRReport_Allocations> UpdateTODO_ERRReport_Allocations(TODO_ERRReport_Allocations entity)
+        public Task<TODO_ERRReport_Allocations> UpdateTODO_ERRReport_Allocations(TODO_ERRReport_Allocations entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<TODO_ERRReport_Allocations> CreateTODO_ERRReport_Allocations(TODO_ERRReport_Allocations entity)
+        public Task<TODO_ERRReport_Allocations> CreateTODO_ERRReport_Allocations(TODO_ERRReport_Allocations entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace CoreEntities.Business.Services
                 dbContext.TODO_ERRReport_Allocations.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_ERRReport_Allocations(string ApplicationSettingsId)
+        public Task<bool> DeleteTODO_ERRReport_Allocations(string ApplicationSettingsId)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace CoreEntities.Business.Services
                 TODO_ERRReport_Allocations entity = dbContext.TODO_ERRReport_Allocations
 													.SingleOrDefault(x => x.ApplicationSettingsId == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.TODO_ERRReport_Allocations.Attach(entity);
                     dbContext.TODO_ERRReport_Allocations.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<TODO_ERRReport_Allocations>)dbContext.TODO_ERRReport_Allocations; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.TODO_ERRReport_Allocations
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.TODO_ERRReport_Allocations
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.TODO_ERRReport_Allocations
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.TODO_ERRReport_Allocations
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_ERRReport_Allocations>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
                     if (exp == "All")
                     {
-                        return dbContext.TODO_ERRReport_Allocations
-										.AsNoTracking()
-                                        .OrderBy(y => y.ApplicationSettingsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(dbContext.TODO_ERRReport_Allocations
+                            .AsNoTracking()
+                            .OrderBy(y => y.ApplicationSettingsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.TODO_ERRReport_Allocations
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.ApplicationSettingsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(dbContext.TODO_ERRReport_Allocations
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.ApplicationSettingsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.TODO_ERRReport_Allocations
-										.AsNoTracking()
-                                        .Count();
+                        return Task.FromResult(dbContext.TODO_ERRReport_Allocations
+                            .AsNoTracking()
+                            .Count());
                     }
-                    return dbContext.TODO_ERRReport_Allocations.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
-											.AsNoTracking()
-                                            .Count();
+                    return Task.FromResult(dbContext.TODO_ERRReport_Allocations.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                        .AsNoTracking()
+                        .Count());
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_ERRReport_Allocations>()
                 .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
                 .Distinct()
                 .OrderBy("ApplicationSettingsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_ERRReport_Allocations>()
                 .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
                 .Distinct()
                 .OrderBy("ApplicationSettingsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                            Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_ERRReport_Allocations>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(new List<TODO_ERRReport_Allocations>());
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return set
-									.AsNoTracking()
-                                    .OrderBy(y => y.ApplicationSettingsId)
+                        return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set
+                            .AsNoTracking()
+                            .OrderBy(y => y.ApplicationSettingsId)
  
-                                    .Skip(startIndex)
-                                    .Take(count)
-									.ToList();
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
-                    return set//dbContext.TODO_ERRReport_Allocations
-								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
-								.OrderBy(y => y.ApplicationSettingsId)
+                    return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set//dbContext.TODO_ERRReport_Allocations
+                        .AsNoTracking()
+                        .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                        .OrderBy(y => y.ApplicationSettingsId)
  
-                                .Skip(startIndex)
-                                .Take(count)
-								.ToList();
+                        .Skip(startIndex)
+                        .Take(count)
+                        .ToList());
 
 
                 }
@@ -836,8 +836,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeSelectMany<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set
                 .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.ApplicationSettingsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeSelect<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<TODO_ERRReport_Allocations>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                        CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.ApplicationSettingsId)
+               return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set
+                   .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.ApplicationSettingsId)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_ERRReport_Allocations>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<TODO_ERRReport_Allocations>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+                                                                                           string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<TODO_ERRReport_Allocations>()
-							.Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<TODO_ERRReport_Allocations>()
+                    .Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<TODO_ERRReport_Allocations>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_ERRReport_Allocations>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<TODO_ERRReport_Allocations>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+                                                                                       string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<TODO_ERRReport_Allocations>()
-							.Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<TODO_ERRReport_Allocations>()
+                    .Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<TODO_ERRReport_Allocations>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<TODO_ERRReport_Allocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1022,24 +1022,24 @@ namespace CoreEntities.Business.Services
              }
          }
 
-        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.TODO_ERRReport_Allocations.Any()) return 0;
+                    if (!dbContext.TODO_ERRReport_Allocations.Any()) return Task.FromResult<decimal>(0);
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.TODO_ERRReport_Allocations
-										.AsNoTracking()
-                                        .Sum(field)??0);
+                        return Task.FromResult(Convert.ToDecimal(dbContext.TODO_ERRReport_Allocations
+                                                                     .AsNoTracking()
+                                                                     .Sum(field)??0));
                     }
-                    return Convert.ToDecimal(dbContext.TODO_ERRReport_Allocations.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
-											.AsNoTracking()
-                                            .Sum(field)??0);
+                    return Task.FromResult(Convert.ToDecimal(dbContext.TODO_ERRReport_Allocations.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                                                                 .AsNoTracking()
+                                                                 .Sum(field)??0));
                 }
                 
             }
@@ -1070,18 +1070,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_ERRReport_Allocations>()
                 .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
                 .Distinct()
                 .OrderBy("ApplicationSettingsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1090,18 +1090,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_ERRReport_Allocations>()
                 .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
                 .Distinct()
                 .OrderBy("ApplicationSettingsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

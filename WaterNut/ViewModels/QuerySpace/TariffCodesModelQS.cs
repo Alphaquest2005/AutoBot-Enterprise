@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Linq;
-using InventoryQS.Client.Repositories;
 using InventoryQS.Client.Entities;
+using InventoryQS.Client.Repositories;
 using SimpleMvvmToolkit;
 
 
@@ -61,19 +61,20 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 
 
-        internal async Task AssignTariffCodeToItm()
+        internal Task AssignTariffCodeToItm()
         {
             if (BaseViewModel.Instance.CurrentInventoryItemsEx == null)
             {
                 MessageBox.Show("Please select Inventory Item");
-                return;
+                return Task.CompletedTask;
             }
             if (BaseViewModel.Instance.CurrentTariffCodes == null)
             {
                 MessageBox.Show("Please select TariffCode");
-                return;
+                return Task.CompletedTask;
             }
             MessageBus.Default.BeginNotify(MessageToken.CurrentInventoryItemsExChanged, this, new NotificationEventArgs(MessageToken.CurrentInventoryItemsExChanged));
+            return Task.CompletedTask;
         }
     }
 }

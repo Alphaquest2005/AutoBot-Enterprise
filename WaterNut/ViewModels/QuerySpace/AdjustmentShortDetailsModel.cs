@@ -195,8 +195,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             // OnStaticPropertyChanged("OSSuggestedAsycudaItemEntry");
         }
 
-        internal async Task RemoveOsMatch(AdjustmentShort osd)
+        internal Task RemoveOsMatch(AdjustmentShort osd)
         {
+            return Task.CompletedTask;
             //osd.EntryDataDetailAllocations.Clear();
             //osd.Status = "";
             //using (var ctx = new EntryDataDetailRepository())

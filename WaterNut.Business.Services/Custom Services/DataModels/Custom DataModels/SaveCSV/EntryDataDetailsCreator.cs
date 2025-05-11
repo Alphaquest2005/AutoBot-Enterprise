@@ -15,8 +15,8 @@ namespace WaterNut.DataSpace
 {
     public class EntryDataDetailsCreator
     {
-        public async Task CreateAndSaveEntryDataDetails(List<AsycudaDocumentSet> docSet, bool overWriteExisting,
-            (dynamic existingEntryData, List<EntryDataDetails> details) data)
+        public Task CreateAndSaveEntryDataDetails(List<AsycudaDocumentSet> docSet, bool overWriteExisting,
+                                                  (dynamic existingEntryData, List<EntryDataDetails> details) data)
         {
             try
             {
@@ -60,6 +60,8 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+
+            return Task.CompletedTask;
         }
 
         public List<EntryDataDetails> CreateEntryDataDetails(

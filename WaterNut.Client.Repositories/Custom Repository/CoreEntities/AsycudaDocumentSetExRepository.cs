@@ -22,7 +22,7 @@ namespace CoreEntities.Client.Repositories
    
     public partial class AsycudaDocumentSetExRepository 
     {
-		 public IEnumerable<AsycudaDocumentSetEx> GetAsycudaDocumentSetExsByExpression(string exp, Dictionary<string, string> navExp)
+		 public async Task<IEnumerable<AsycudaDocumentSetEx>> GetAsycudaDocumentSetExsByExpression(string exp, Dictionary<string, string> navExp)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<AsycudaDocumentSetEx>().AsEnumerable();
             using (var t = new AsycudaDocumentSetExClient())
@@ -30,11 +30,11 @@ namespace CoreEntities.Client.Repositories
 					IEnumerable<DTO.AsycudaDocumentSetEx> res = null;
                     if(exp == "All" && navExp.Count == 0)
                     {                       
-						res = t.GetAsycudaDocumentSetExs().Result;					
+						res = await t.GetAsycudaDocumentSetExs().ConfigureAwait(false);					
                     }
                     else
                     {
-                        res = t.GetAsycudaDocumentSetExsByExpressionNav(exp, navExp).Result;	                         
+                        res = await t.GetAsycudaDocumentSetExsByExpressionNav(exp, navExp).ConfigureAwait(false);	                         
                     }
                     
                     if (res != null)
@@ -61,7 +61,7 @@ namespace CoreEntities.Client.Repositories
              {
                  throw new Exception(e.Detail.Message, e.InnerException);
              }
-             catch (Exception ex)
+             catch (Exception)
              {
                  Debugger.Break();
                  throw;
@@ -91,7 +91,7 @@ namespace CoreEntities.Client.Repositories
             {
                 throw new Exception(e.Detail.Message, e.InnerException);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;
@@ -111,7 +111,7 @@ namespace CoreEntities.Client.Repositories
             {
                 throw new Exception(e.Detail.Message, e.InnerException);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;
@@ -131,7 +131,7 @@ namespace CoreEntities.Client.Repositories
             {
                 throw new Exception(e.Detail.Message, e.InnerException);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;
@@ -152,7 +152,7 @@ namespace CoreEntities.Client.Repositories
             {
                 throw new Exception(e.Detail.Message, e.InnerException);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debugger.Break();
                 throw;

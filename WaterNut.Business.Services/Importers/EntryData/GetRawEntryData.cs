@@ -16,9 +16,9 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _lines = lines;
         }
  
-        public async Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
+        public Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
         {
-            return  new Result<List<RawEntryData>>(RawEntryDataExtractor.CreateRawEntryData(_lines, _importSettings.DocSet, _importSettings.EmailId, _importSettings.FileType, _importSettings.DroppedFilePath),true,"");
+            return  Task.FromResult(new Result<List<RawEntryData>>(RawEntryDataExtractor.CreateRawEntryData(this._lines, this._importSettings.DocSet, this._importSettings.EmailId, this._importSettings.FileType, this._importSettings.DroppedFilePath),true,""));
         }
     }
 }

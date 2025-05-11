@@ -1,8 +1,8 @@
-﻿using Core.Common.UI.DataVirtualization;
-using CounterPointQS.Client.Entities;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Core.Common.UI.DataVirtualization;
+using CounterPointQS.Client.Entities;
 using WaterNut.QuerySpace.CounterPointQS.ViewModels;
 
 namespace WaterNut.Views

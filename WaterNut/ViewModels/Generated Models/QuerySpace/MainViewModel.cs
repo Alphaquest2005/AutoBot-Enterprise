@@ -1,10 +1,10 @@
-﻿using CoreEntities.Client.Entities;
-using CoreEntities.Client.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreEntities.Client.Entities;
+using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
@@ -20,7 +20,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     BaseViewModel.Instance.CurrentApplicationSettings = ctx.ApplicationSettings().Result.Where(x => x.IsActive).FirstOrDefault(x => x.Description == "WaterNut");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

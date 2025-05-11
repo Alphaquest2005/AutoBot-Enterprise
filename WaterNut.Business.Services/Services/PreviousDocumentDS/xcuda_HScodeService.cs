@@ -65,7 +65,7 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScode(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_HScode>> Getxcuda_HScode(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace PreviousDocumentDS.Business.Services
                     IEnumerable<xcuda_HScode> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-        public async Task<xcuda_HScode> Getxcuda_HScodeByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
+        public Task<xcuda_HScode> Getxcuda_HScodeByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Item_Id))return null; 
+			   if(string.IsNullOrEmpty(Item_Id))return Task.FromResult<xcuda_HScode>(null); 
               using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 xcuda_HScode entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_HScode>>(new List<xcuda_HScode>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_HScode>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_HScode>>(new List<xcuda_HScode>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(entities); 
 											
 					}
 					
@@ -260,8 +260,8 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatch(string exp,
+                                                                      int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace PreviousDocumentDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_HScode>>(new List<xcuda_HScode>());
 
 
                 var batchSize = 500;
@@ -319,7 +319,7 @@ namespace PreviousDocumentDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -335,8 +335,8 @@ namespace PreviousDocumentDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatchExpressionLst(List<string> expLst,
+                                                                                   int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace PreviousDocumentDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_HScode>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_HScode>>(new List<xcuda_HScode>());
 
 
                 var batchSize = 500;
@@ -394,7 +394,7 @@ namespace PreviousDocumentDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -411,7 +411,7 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-        public async Task<xcuda_HScode> Updatexcuda_HScode(xcuda_HScode entity)
+        public Task<xcuda_HScode> Updatexcuda_HScode(xcuda_HScode entity)
         { 
             using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
               {
@@ -423,7 +423,7 @@ namespace PreviousDocumentDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -468,7 +468,7 @@ namespace PreviousDocumentDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -481,10 +481,10 @@ namespace PreviousDocumentDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<xcuda_HScode> Createxcuda_HScode(xcuda_HScode entity)
+        public Task<xcuda_HScode> Createxcuda_HScode(xcuda_HScode entity)
         {
             try
             {
@@ -494,7 +494,7 @@ namespace PreviousDocumentDS.Business.Services
                 dbContext.xcuda_HScode.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -511,7 +511,7 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public async Task<bool> Deletexcuda_HScode(string Item_Id)
+        public Task<bool> Deletexcuda_HScode(string Item_Id)
         {
             try
             {
@@ -521,12 +521,12 @@ namespace PreviousDocumentDS.Business.Services
                 xcuda_HScode entity = dbContext.xcuda_HScode
 													.SingleOrDefault(x => x.Item_Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.xcuda_HScode.Attach(entity);
                     dbContext.xcuda_HScode.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -582,23 +582,23 @@ namespace PreviousDocumentDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<xcuda_HScode>)dbContext.xcuda_HScode; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -617,26 +617,26 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (PreviousDocumentDSContext dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_HScode
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.xcuda_HScode
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_HScode
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.xcuda_HScode
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -654,33 +654,33 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xcuda_HScode>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<xcuda_HScode>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_HScode>>(new List<xcuda_HScode>());
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_HScode
-										.AsNoTracking()
-                                        .OrderBy(y => y.Item_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(dbContext.xcuda_HScode
+                            .AsNoTracking()
+                            .OrderBy(y => y.Item_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_HScode
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Item_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<xcuda_HScode>>(dbContext.xcuda_HScode
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Item_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -755,18 +755,18 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_HScode>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -775,18 +775,18 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_HScode>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -874,8 +874,8 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> LoadRangeSelectMany<T>(int startIndex, int count,
-            PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<xcuda_HScode>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                              PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -886,14 +886,14 @@ namespace PreviousDocumentDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<xcuda_HScode>>(set
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Item_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -902,8 +902,8 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> LoadRangeSelect<T>(int startIndex, int count,
-            PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<xcuda_HScode>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                          PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -914,14 +914,14 @@ namespace PreviousDocumentDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Item_Id)
+               return Task.FromResult<IEnumerable<xcuda_HScode>>(set
+                   .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Item_Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -954,21 +954,21 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> GetWhereSelectMany<T>(PreviousDocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<xcuda_HScode>> GetWhereSelectMany<T>(PreviousDocumentDSContext dbContext,
+                                                                             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<xcuda_HScode>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<xcuda_HScode>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<xcuda_HScode>()
+                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<xcuda_HScode>)dbContext.Set<T>()
@@ -980,7 +980,7 @@ namespace PreviousDocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<xcuda_HScode>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -989,21 +989,21 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> GetWhereSelect<T>(PreviousDocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<xcuda_HScode>> GetWhereSelect<T>(PreviousDocumentDSContext dbContext,
+                                                                         string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<xcuda_HScode>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<xcuda_HScode>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<xcuda_HScode>()
+                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<xcuda_HScode>)dbContext.Set<T>()
@@ -1015,7 +1015,7 @@ namespace PreviousDocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<xcuda_HScode>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1117,18 +1117,18 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_HScode>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1137,18 +1137,18 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_HScode>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

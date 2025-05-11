@@ -13,18 +13,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Add a static logger instance for this class
         private static readonly ILogger _logger = Log.ForContext<AddNameSupplierStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
              // Basic context validation
             if (context == null)
             {
                 _logger.Error("AddNameSupplierStep executed with null context.");
-                return false;
+                return Task.FromResult(false);
             }
              if (!context.Templates.Any())
             {
                  _logger.Warning("Skipping AddNameSupplierStep: No Templates found in context for File: {FilePath}", context.FilePath ?? "Unknown");
-                 return true; // No templates to process, not a failure.
+                 return Task.FromResult(true); // No templates to process, not a failure.
             }
 
             string filePath = context.FilePath ?? "Unknown";
@@ -115,7 +115,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             // If the loop completes without any template causing a 'return false', the step is successful.
             _logger.Information("AddNameSupplierStep completed successfully for all applicable templates in File: {FilePath}.", filePath);
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

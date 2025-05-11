@@ -48,7 +48,7 @@ public partial class BaseDataModel
         StatusModel.StopStatusUpdate();
     }
 
-    public async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet currentAsycudaDocumentSet)
+    public Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet currentAsycudaDocumentSet)
     {
         var cdoc = new DocumentCT
         {
@@ -56,7 +56,7 @@ public partial class BaseDataModel
             DocumentItems = new List<xcuda_Item>()
         };
 
-        return cdoc;
+        return Task.FromResult(cdoc);
     }
 
     public xcuda_ASYCUDA CreateNewAsycudaDocument(AsycudaDocumentSet CurrentAsycudaDocumentSet)
@@ -107,12 +107,14 @@ public partial class BaseDataModel
         }
     }
 
-    public async Task SaveEntryPreviousItems(List<EntryPreviousItems> epi)
+    public Task SaveEntryPreviousItems(List<EntryPreviousItems> epi)
     {
         using (var ctx = new CoreEntitiesContext())
         {
             ctx.ApplyChanges(epi);
             ctx.SaveChanges();
         }
+
+        return Task.CompletedTask;
     }
 }

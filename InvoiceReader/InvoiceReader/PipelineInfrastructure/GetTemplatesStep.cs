@@ -116,8 +116,6 @@ namespace InvoiceReader.PipelineInfrastructure
                 }
 
                 // No templates found in primary loading method
-                _logger.Warning("No templates found in primary loading method");
-                return false;
             }
             catch (Exception ex)
             {

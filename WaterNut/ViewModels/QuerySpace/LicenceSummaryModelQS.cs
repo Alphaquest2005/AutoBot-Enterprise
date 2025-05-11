@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 using Core.Common.Converters;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
@@ -64,8 +64,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             get { return _licenceSummaryData; }
         }
 
-        private async Task GetLicenceSummaryLines()
-	    {
+        private Task GetLicenceSummaryLines()
+        {
             try
             {
                 if (BaseViewModel.Instance.CurrentAsycudaDocumentSetEx != null)
@@ -81,7 +81,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         {
                             // return licenceSummaryLines;
                             //return true;
-                            return;
+                            return Task.CompletedTask;
                         }
                         var lst = from t in clst
                             select new LicenceSummaryLine
@@ -99,13 +99,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     }
                 }
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
                 throw;
             }
 
-
-	    }
+            return Task.CompletedTask;
+        }
 
 	    public class LicenceSummaryLine
         {

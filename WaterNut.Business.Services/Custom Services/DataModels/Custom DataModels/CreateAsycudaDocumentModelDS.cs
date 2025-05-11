@@ -23,14 +23,16 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-	    public async Task SaveAsycudaDocument(xcuda_ASYCUDA doc, DocInfo docInfo)
-	    {
-	        if (doc != null &&
-	            doc.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate == false)
+	    public Task SaveAsycudaDocument(xcuda_ASYCUDA doc, DocInfo docInfo)
+        {
+            if (doc != null &&
+                doc.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate == false)
 	        {
 	            UpdateDocument(doc, docInfo);
 	        }
-	    }
+
+            return Task.CompletedTask;
+        }
 
 	    //public async Task SaveAsycudaDocument(AsycudaDocumentSet docSet, DocInfo docInfo)
      //   {

@@ -1,5 +1,4 @@
-﻿using InventoryQS.Client.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -10,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using InventoryQS.Client.Entities;
 using WaterNut.QuerySpace;
 using WaterNut.QuerySpace.InventoryQS.ViewModels;
 

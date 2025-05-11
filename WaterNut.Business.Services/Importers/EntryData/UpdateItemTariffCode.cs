@@ -8,7 +8,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class UpdateItemTariffCode : IProcessor<InventoryDataItem>
     {
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             var inventoryDataItems = data
                 //.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode) took this out because it reduces the return data along the pipeline
@@ -25,7 +25,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 })
                 .ToList();
        
-            return Task.FromResult(new Result<List<InventoryDataItem>>(inventoryDataItems, true, "")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<InventoryDataItem>>(inventoryDataItems, true, "")).Result); // Wrap in Task.FromResult
         }
     }
 }

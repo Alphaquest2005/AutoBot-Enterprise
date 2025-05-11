@@ -73,7 +73,7 @@ namespace WaterNut.DataSpace
                             // Log a warning if the SQL script directory is not found
                             Console.WriteLine($"WARNING: SQL script directory not found. Skipping SQL script execution for '{sName}'. Error: {ex.Message}");
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             // Re-throw other exceptions
                             throw;

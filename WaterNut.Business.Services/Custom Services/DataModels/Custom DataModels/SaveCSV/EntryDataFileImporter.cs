@@ -13,9 +13,10 @@ namespace WaterNut.DataSpace
     public class EntryDataFileImporter
     {
       
-        public async Task ImportEntryDataFile(DataFile dataFile)
+        public Task ImportEntryDataFile(DataFile dataFile)
         {
             EntryDataFileProcessor(dataFile);
+            return Task.CompletedTask;
         }
 
         private static void EntryDataFileProcessor(DataFile dataFile)

@@ -23,7 +23,7 @@ public partial class EX9Utils
                 .Where(x => x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
 
-            CSVUtils.SaveCSVReport(errors, errorfile);
+            await CSVUtils.SaveCSVReport(errors, errorfile).ConfigureAwait(false);
 
 
             var contacts = ctx.Contacts

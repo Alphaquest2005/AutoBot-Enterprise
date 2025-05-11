@@ -2,13 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.UI;
-using Core.Common.UI.DataVirtualization;
-using CoreEntities.Client.Entities;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AutoBot;
+using Core.Common.UI;
+using Core.Common.UI.DataVirtualization;
+using CoreEntities.Client.Entities;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
 using WaterNut.QuerySpace.CoreEntities;

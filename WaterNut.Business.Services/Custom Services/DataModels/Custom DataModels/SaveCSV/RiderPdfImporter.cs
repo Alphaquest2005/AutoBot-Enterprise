@@ -16,7 +16,7 @@ namespace WaterNut.DataSpace
 {
     public class RiderPdfImporter
     {
-        public async Task<bool> Process(DataFile dataFile)
+        public Task<bool> Process(DataFile dataFile)
         {
             try
             {
@@ -50,13 +50,13 @@ namespace WaterNut.DataSpace
                     ctx.SaveChanges();
                 }
 
-                return true;
+                return Task.FromResult(true);
                 /// pass to rider importer            
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return Task.FromResult(false);
             }
         }
 

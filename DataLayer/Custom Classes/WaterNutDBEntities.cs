@@ -45,11 +45,11 @@ namespace WaterNut.DataLayer
 
                 return base.SaveChanges(options);
             }
-            catch (System.Data.Entity.Core.UpdateException u) // Qualified UpdateException
+            catch (System.Data.Entity.Core.UpdateException) // Qualified UpdateException
             {
                 throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

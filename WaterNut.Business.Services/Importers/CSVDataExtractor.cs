@@ -203,7 +203,7 @@ namespace WaterNut.Business.Services.Importers
                                 splits = splits
                             });
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         // can't figure out how to test for missing columns so just skip if failed
                     }
@@ -217,8 +217,6 @@ namespace WaterNut.Business.Services.Importers
             {
                 throw ex;
             }
-
-            return null;
         }
 
         private static void GetMappingValue(dynamic res, FileTypeMappings key)

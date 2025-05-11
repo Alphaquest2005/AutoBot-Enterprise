@@ -30,8 +30,7 @@ public class EntityGridListViewTPL : CSharpTemplate
             EntityType MainEntity = entityCollection.Where(x=>x.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true).FirstOrDefault();
             if(MainEntity != null && MainEntity.Name == mainEntity.Name) mlst = null;
 
-                EdmType et;
-                if(mlst == null )
+		if(mlst == null )
                 {
                    if(MainEntity != null)
                 {

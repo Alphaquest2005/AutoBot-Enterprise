@@ -1,10 +1,9 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using System.Collections.ObjectModel;
 using Core.Common.UI.DataVirtualization;
-
 using SalesDataQS.Client.Entities;
 using WaterNut.QuerySpace.SalesDataQS.ViewModels;
 

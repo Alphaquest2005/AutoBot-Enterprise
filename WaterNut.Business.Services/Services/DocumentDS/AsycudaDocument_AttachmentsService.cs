@@ -65,7 +65,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_Attachments(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_Attachments(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace DocumentDS.Business.Services
                     IEnumerable<AsycudaDocument_Attachments> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<AsycudaDocument_Attachments> GetAsycudaDocument_AttachmentsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public Task<AsycudaDocument_Attachments> GetAsycudaDocument_AttachmentsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Id))return Task.FromResult<AsycudaDocument_Attachments>(null); 
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 AsycudaDocument_Attachments entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace DocumentDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocument_Attachments>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(new List<AsycudaDocument_Attachments>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocument_Attachments>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(new List<AsycudaDocument_Attachments>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(entities); 
 											
 					}
 					
@@ -266,8 +266,8 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByBatch(string exp,
+                                                                                                    int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace DocumentDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocument_Attachments>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(new List<AsycudaDocument_Attachments>());
 
 
                 var batchSize = 500;
@@ -325,7 +325,7 @@ namespace DocumentDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -341,8 +341,8 @@ namespace DocumentDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByBatchExpressionLst(List<string> expLst,
+                                                                                                                 int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -351,7 +351,7 @@ namespace DocumentDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocument_Attachments>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(new List<AsycudaDocument_Attachments>());
 
 
                 var batchSize = 500;
@@ -400,7 +400,7 @@ namespace DocumentDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -417,7 +417,7 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<AsycudaDocument_Attachments> UpdateAsycudaDocument_Attachments(AsycudaDocument_Attachments entity)
+        public Task<AsycudaDocument_Attachments> UpdateAsycudaDocument_Attachments(AsycudaDocument_Attachments entity)
         { 
             using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
@@ -429,7 +429,7 @@ namespace DocumentDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -474,7 +474,7 @@ namespace DocumentDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -487,10 +487,10 @@ namespace DocumentDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<AsycudaDocument_Attachments> CreateAsycudaDocument_Attachments(AsycudaDocument_Attachments entity)
+        public Task<AsycudaDocument_Attachments> CreateAsycudaDocument_Attachments(AsycudaDocument_Attachments entity)
         {
             try
             {
@@ -500,7 +500,7 @@ namespace DocumentDS.Business.Services
                 dbContext.AsycudaDocument_Attachments.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -517,7 +517,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaDocument_Attachments(string Id)
+        public Task<bool> DeleteAsycudaDocument_Attachments(string Id)
         {
             try
             {
@@ -527,12 +527,12 @@ namespace DocumentDS.Business.Services
                 AsycudaDocument_Attachments entity = dbContext.AsycudaDocument_Attachments
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.AsycudaDocument_Attachments.Attach(entity);
                     dbContext.AsycudaDocument_Attachments.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -588,23 +588,23 @@ namespace DocumentDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<AsycudaDocument_Attachments>)dbContext.AsycudaDocument_Attachments; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -623,26 +623,26 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (DocumentDSContext dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaDocument_Attachments
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaDocument_Attachments
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaDocument_Attachments
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaDocument_Attachments
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -660,33 +660,33 @@ namespace DocumentDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AsycudaDocument_Attachments>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<AsycudaDocument_Attachments>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocument_Attachments>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(new List<AsycudaDocument_Attachments>());
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaDocument_Attachments
-										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(dbContext.AsycudaDocument_Attachments
+                            .AsNoTracking()
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaDocument_Attachments
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(dbContext.AsycudaDocument_Attachments
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -764,18 +764,18 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocument_Attachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -784,18 +784,18 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocument_Attachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -889,8 +889,8 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AsycudaDocument_Attachments>> LoadRangeSelectMany<T>(int startIndex, int count,
-            DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocument_Attachments>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                             DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -901,14 +901,14 @@ namespace DocumentDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -917,8 +917,8 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocument_Attachments>> LoadRangeSelect<T>(int startIndex, int count,
-            DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocument_Attachments>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                         DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -929,14 +929,14 @@ namespace DocumentDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Id)
+               return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(set
+                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -969,21 +969,21 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocument_Attachments>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocument_Attachments>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
+                                                                                            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<AsycudaDocument_Attachments>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<AsycudaDocument_Attachments>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaDocument_Attachments>)dbContext.Set<T>()
@@ -995,7 +995,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1004,21 +1004,21 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocument_Attachments>> GetWhereSelect<T>(DocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocument_Attachments>> GetWhereSelect<T>(DocumentDSContext dbContext,
+                                                                                        string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<AsycudaDocument_Attachments>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<AsycudaDocument_Attachments>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaDocument_Attachments>)dbContext.Set<T>()
@@ -1030,7 +1030,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaDocument_Attachments>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1039,7 +1039,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null)
+			        public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null)
         {
             try
             {
@@ -1051,7 +1051,7 @@ namespace DocumentDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AttachmentId.ToString() == AttachmentId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1067,7 +1067,7 @@ namespace DocumentDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AsycudaDocument_Attachments>> GetAsycudaDocument_AttachmentsByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null)
         {
             try
             {
@@ -1079,7 +1079,7 @@ namespace DocumentDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentId.ToString() == AsycudaDocumentId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1191,18 +1191,18 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocument_Attachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1211,18 +1211,18 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocument_Attachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

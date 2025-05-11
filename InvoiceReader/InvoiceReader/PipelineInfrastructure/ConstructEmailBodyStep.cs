@@ -18,7 +18,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Add a static logger instance for this class
         private static readonly ILogger _logger = Log.ForContext<ConstructEmailBodyStep>();
 
-        public async Task<bool> Execute(InvoiceProcessingContext context)
+        public Task<bool> Execute(InvoiceProcessingContext context)
         {
              _logger.Debug("Executing ConstructEmailBodyStep for File: {FilePath}", context.FilePath);
 
@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                  _logger.Warning("Skipping ConstructEmailBodyStep due to no errors or missing FileInfo/TextFilePath for File: {FilePath}. Has Errors: {HasErrors}, FileInfo Null: {IsFileInfoNull}, TextFilePath Null/Empty: {IsTxtFileNull}",
                     context.FilePath, context.Errors.Any(), context.FileInfo == null, string.IsNullOrEmpty(context.TextFilePath));
-                return false; // Required data is missing
+                return Task.FromResult(false); // Required data is missing
             }
 
             _logger.Debug("Constructing email body for File: {FilePath}", context.FilePath);
@@ -145,7 +145,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              _logger.Information("Constructed email body for File: {FilePath}.", context.FilePath);
 
              _logger.Debug("Finished executing ConstructEmailBodyStep successfully for File: {FilePath}", context.FilePath);
-            return true; // Indicate success
+            return Task.FromResult(true); // Indicate success
         }
     }
 }

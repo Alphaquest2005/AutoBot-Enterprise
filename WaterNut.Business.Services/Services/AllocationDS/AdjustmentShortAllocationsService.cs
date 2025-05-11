@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocations(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocations(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AllocationDS.Business.Services
                     IEnumerable<AdjustmentShortAllocations> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<AdjustmentShortAllocations> GetAdjustmentShortAllocationsByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
+        public Task<AdjustmentShortAllocations> GetAdjustmentShortAllocationsByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AllocationId))return null; 
+			   if(string.IsNullOrEmpty(AllocationId))return Task.FromResult<AdjustmentShortAllocations>(null); 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(AllocationId);
 				var set = AddIncludes(includesLst, dbContext);
                 AdjustmentShortAllocations entity = set.AsNoTracking().SingleOrDefault(x => x.AllocationId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShortAllocations>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(new List<AdjustmentShortAllocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentShortAllocations>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(new List<AdjustmentShortAllocations>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(entities); 
 											
 					}
 					
@@ -278,8 +278,8 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByBatch(string exp,
+                                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShortAllocations>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(new List<AdjustmentShortAllocations>());
 
 
                 var batchSize = 500;
@@ -337,7 +337,7 @@ namespace AllocationDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -353,8 +353,8 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByBatchExpressionLst(List<string> expLst,
+                                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -363,7 +363,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentShortAllocations>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(new List<AdjustmentShortAllocations>());
 
 
                 var batchSize = 500;
@@ -412,7 +412,7 @@ namespace AllocationDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -429,7 +429,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<AdjustmentShortAllocations> UpdateAdjustmentShortAllocations(AdjustmentShortAllocations entity)
+        public Task<AdjustmentShortAllocations> UpdateAdjustmentShortAllocations(AdjustmentShortAllocations entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
@@ -441,7 +441,7 @@ namespace AllocationDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -486,7 +486,7 @@ namespace AllocationDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -499,10 +499,10 @@ namespace AllocationDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<AdjustmentShortAllocations> CreateAdjustmentShortAllocations(AdjustmentShortAllocations entity)
+        public Task<AdjustmentShortAllocations> CreateAdjustmentShortAllocations(AdjustmentShortAllocations entity)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace AllocationDS.Business.Services
                 dbContext.AdjustmentShortAllocations.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -529,7 +529,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAdjustmentShortAllocations(string AllocationId)
+        public Task<bool> DeleteAdjustmentShortAllocations(string AllocationId)
         {
             try
             {
@@ -539,12 +539,12 @@ namespace AllocationDS.Business.Services
                 AdjustmentShortAllocations entity = dbContext.AdjustmentShortAllocations
 													.SingleOrDefault(x => x.AllocationId == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.AdjustmentShortAllocations.Attach(entity);
                     dbContext.AdjustmentShortAllocations.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -600,23 +600,23 @@ namespace AllocationDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<AdjustmentShortAllocations>)dbContext.AdjustmentShortAllocations; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -635,26 +635,26 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (AllocationDSContext dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.AdjustmentShortAllocations
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.AdjustmentShortAllocations
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.AdjustmentShortAllocations
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.AdjustmentShortAllocations
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -672,33 +672,33 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AdjustmentShortAllocations>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<AdjustmentShortAllocations>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShortAllocations>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(new List<AdjustmentShortAllocations>());
                     if (exp == "All")
                     {
-                        return dbContext.AdjustmentShortAllocations
-										.AsNoTracking()
-                                        .OrderBy(y => y.AllocationId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(dbContext.AdjustmentShortAllocations
+                            .AsNoTracking()
+                            .OrderBy(y => y.AllocationId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.AdjustmentShortAllocations
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.AllocationId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(dbContext.AdjustmentShortAllocations
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.AllocationId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -782,18 +782,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentShortAllocations>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -802,18 +802,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentShortAllocations>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -919,8 +919,8 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AdjustmentShortAllocations>> LoadRangeSelectMany<T>(int startIndex, int count,
-            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentShortAllocations>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -931,14 +931,14 @@ namespace AllocationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(set
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.AllocationId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -947,8 +947,8 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentShortAllocations>> LoadRangeSelect<T>(int startIndex, int count,
-            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentShortAllocations>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                        AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -959,14 +959,14 @@ namespace AllocationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.AllocationId)
+               return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(set
+                   .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.AllocationId)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -999,21 +999,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentShortAllocations>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentShortAllocations>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+                                                                                           string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<AdjustmentShortAllocations>()
-							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<AdjustmentShortAllocations>()
+                    .Where(exp == "All" || exp == null?"AllocationId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AdjustmentShortAllocations>)dbContext.Set<T>()
@@ -1025,7 +1025,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1034,21 +1034,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentShortAllocations>> GetWhereSelect<T>(AllocationDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AdjustmentShortAllocations>> GetWhereSelect<T>(AllocationDSContext dbContext,
+                                                                                       string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<AdjustmentShortAllocations>()
-							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<AdjustmentShortAllocations>()
+                    .Where(exp == "All" || exp == null?"AllocationId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AdjustmentShortAllocations>)dbContext.Set<T>()
@@ -1060,7 +1060,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AdjustmentShortAllocations>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1069,7 +1069,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
+			        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1082,7 +1082,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1098,7 +1098,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
         {
             try
             {
@@ -1111,7 +1111,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1127,7 +1127,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1140,7 +1140,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.xBond_Item_Id.ToString() == xBond_Item_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1156,7 +1156,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1169,7 +1169,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.xASYCUDA_Id.ToString() == xASYCUDA_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1185,7 +1185,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1198,7 +1198,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.pASYCUDA_Id.ToString() == pASYCUDA_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1214,7 +1214,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1227,7 +1227,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1243,7 +1243,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -1256,7 +1256,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1272,7 +1272,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1285,7 +1285,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1301,7 +1301,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1314,7 +1314,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1432,18 +1432,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentShortAllocations>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1452,18 +1452,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentShortAllocations>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

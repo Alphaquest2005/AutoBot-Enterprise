@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using SimpleMvvmToolkit;
-using CounterPointQS.Client.Repositories;
 using CounterPointQS.Client.Entities;
+using CounterPointQS.Client.Repositories;
+using SimpleMvvmToolkit;
 
 
 

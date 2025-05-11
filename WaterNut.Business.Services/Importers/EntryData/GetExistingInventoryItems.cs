@@ -22,14 +22,14 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
  
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
  
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
             var existingItems = data.Where(x => x.Item != null).Select(x => x.Data).ToList();
             var existingInventoryItemFromData = InventoryItemDataUtils.GetExistingInventoryItemFromData(existingItems, inventorySource);
             var distinctlst = existingInventoryItemFromData.DistinctBy(x => x.Item.Id).ToList();
-            return new Result<List<InventoryDataItem>>(distinctlst, true, "");
+            return Task.FromResult(new Result<List<InventoryDataItem>>(distinctlst, true, ""));
  
         }
     }

@@ -394,7 +394,7 @@ namespace WaterNut.DataSpace
                     saleitm.Sales.EntryDataDate);
         }
 
-        private async Task AddExceptionAllocation(EntryDataDetails saleitm,  string error)
+        private Task AddExceptionAllocation(EntryDataDetails saleitm,  string error)
         {
             if (saleitm.AsycudaSalesAllocations.FirstOrDefault(x => x.Status == error && error != null) == null)
             {
@@ -410,6 +410,8 @@ namespace WaterNut.DataSpace
                 saleitm.QtyAllocated += ssa.QtyAllocated;
                 saleitm.AsycudaSalesAllocations.Add(ssa);
             }
+
+            return Task.CompletedTask;
         }
 
         private double GetAsycudaItmQtyToAllocate(xcuda_Item cAsycudaItm, EntryDataDetails saleitm, out SubItems subitm)
@@ -517,8 +519,8 @@ namespace WaterNut.DataSpace
             return SaleEntries.ElementAtOrDefault(CurrentSaleItemIndex);
         }
 
-        private async Task<double> AllocateSaleItem(xcuda_Item cAsycudaItm, EntryDataDetails saleitm,
-            double saleitmQtyToallocate, SubItems subitm)
+        private Task<double> AllocateSaleItem(xcuda_Item cAsycudaItm, EntryDataDetails saleitm,
+                                              double saleitmQtyToallocate, SubItems subitm)
         {
             //cAsycudaItm.StartTracking();
             //saleitm.StartTracking();
@@ -618,7 +620,7 @@ namespace WaterNut.DataSpace
                 }
             }
 
-            if (ssa.QtyAllocated == 0) return saleitmQtyToallocate;
+            if (ssa.QtyAllocated == 0) return Task.FromResult(saleitmQtyToallocate);
             //SaveAllocation(cAsycudaItm, saleitm, subitm, ssa);
 
             saleitm.AsycudaSalesAllocations.Add(ssa);
@@ -628,7 +630,7 @@ namespace WaterNut.DataSpace
             _asycudaItems.AddOrUpdate(cAsycudaItm.Item_Id, cAsycudaItm, (key, oldValue) => cAsycudaItm);
 
 
-            return saleitmQtyToallocate;
+            return Task.FromResult(saleitmQtyToallocate);
         }
 
         private void SetPreviousItemXbond(AsycudaSalesAllocations ssa, xcuda_Item cAsycudaItm, string dfp, double amt)

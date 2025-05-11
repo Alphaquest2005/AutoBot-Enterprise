@@ -323,9 +323,10 @@ namespace WaterNut.DataSpace
         }
 
 
-        public async Task ExportDocument(string filename, xcuda_ASYCUDA doc)
+        public Task ExportDocument(string filename, xcuda_ASYCUDA doc)
         {
             Instance.ExporttoXML(filename, doc);
+            return Task.CompletedTask;
         }
 
         public async Task ExportDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)

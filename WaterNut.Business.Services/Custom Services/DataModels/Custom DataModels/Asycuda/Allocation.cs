@@ -217,7 +217,7 @@ namespace WaterNut.DataSpace
                     {
                        ctx.Database.ExecuteSqlCommand("EXEc [dbo].[FixItemIssues]");
                     }
-                    catch (SqlException ex)
+                    catch (SqlException)
                     {
                         // Handle the exception here
                     }

@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.ComIntegration;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Core.Common.UI;
+using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using Microsoft.Win32;
 using SimpleMvvmToolkit;
-using CoreEntities.Client.Entities;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
-using System.ServiceModel.ComIntegration;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {

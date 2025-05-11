@@ -118,7 +118,7 @@ namespace AutoBotUtilities.Tests
             // Act
             Console.WriteLine($"Triggering POUtils.AssessPOEntry for DocSetId: {testDocSetId}, Ref: {testDocReference}...");
             // Call the identified trigger method
-            POUtils.AssessPOEntry(testDocReference, testDocSetId);
+            await POUtils.AssessPOEntry(testDocReference, testDocSetId).ConfigureAwait(false);
             Console.WriteLine("POUtils.AssessPOEntry call completed.");
 
             // Assert

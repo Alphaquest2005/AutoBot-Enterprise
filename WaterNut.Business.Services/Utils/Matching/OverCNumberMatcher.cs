@@ -14,13 +14,14 @@ namespace AdjustmentQS.Business.Services
             _entryDataDetail = entryDataDetail;
         }
 
-        public async Task Execute()
+        public Task Execute()
         {
-            if (!IsApplicable(_adjustmentDetail,_entryDataDetail)) return;
+            if (!IsApplicable(_adjustmentDetail,_entryDataDetail)) return Task.CompletedTask;
 
             var asycudaDocument =
                 AutoMatchUtils.GetAsycudaDocumentInCNumber(_adjustmentDetail.ApplicationSettingsId, _adjustmentDetail.PreviousCNumber);
             AutoMatchUtils.MatchToAsycudaDocument(asycudaDocument, _entryDataDetail);
+            return Task.CompletedTask;
         }
 
         public bool IsApplicable(AdjustmentDetail s, EntryDataDetail ed)

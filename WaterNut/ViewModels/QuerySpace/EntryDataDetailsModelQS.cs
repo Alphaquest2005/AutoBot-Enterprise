@@ -176,7 +176,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
          }
         
-         internal async Task AddToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataDetailsEx> list)
+         internal Task AddToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataDetailsEx> list)
          {
              throw new NotImplementedException();
          }
@@ -192,9 +192,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
              MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
          }
 
-         internal async Task NewEntryDataDetailEx()
+         internal Task NewEntryDataDetailEx()
          {
              BaseViewModel.Instance.CurrentEntryDataDetailsEx = new EntryDataDetailsEx() { TrackingState = TrackingState.Added };
+             return Task.CompletedTask;
          }
     }
 }

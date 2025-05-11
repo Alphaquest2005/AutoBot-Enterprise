@@ -57,7 +57,7 @@ namespace CoreEntities.Client.Repositories
                     {
                         _proxy.Open();
                     }
-                    catch (EndpointNotFoundException enfe)
+                    catch (EndpointNotFoundException)
                     {
                         _proxy.Abort();
                         _proxy = new ApplicationSettingsClient();

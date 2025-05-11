@@ -515,7 +515,7 @@ namespace AutoBot
                         var oldProcess = Process.GetProcessById(oldProcessId);
                         oldProcess.Kill();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
 
                     }
@@ -698,7 +698,7 @@ namespace AutoBot
                     }
 
                 }
-                SubmitMissingInvoicePDFs(ft);
+                await SubmitMissingInvoicePDFs(ft).ConfigureAwait(false);
             }
             catch (Exception e)
             {

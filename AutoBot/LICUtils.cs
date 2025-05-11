@@ -131,8 +131,8 @@ namespace AutoBot
                     csvFiles.Remove(file);
                 }
 
-                BaseDataModel.Instance.ImportLicense(docSet.AsycudaDocumentSetId,
-                    csvFiles.Select(x => x.FullName).ToList());
+                await BaseDataModel.Instance.ImportLicense(docSet.AsycudaDocumentSetId,
+                    csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
                 
                 await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).ConfigureAwait(false);
                 return false;

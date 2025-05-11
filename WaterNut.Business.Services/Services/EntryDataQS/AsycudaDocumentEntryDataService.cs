@@ -65,7 +65,7 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatas(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatas(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace EntryDataQS.Business.Services
                     IEnumerable<AsycudaDocumentEntryData> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace EntryDataQS.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentEntryData> GetAsycudaDocumentEntryDataByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public Task<AsycudaDocumentEntryData> GetAsycudaDocumentEntryDataByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Id))return Task.FromResult<AsycudaDocumentEntryData>(null); 
               using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 AsycudaDocumentEntryData entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace EntryDataQS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentEntryData>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(new List<AsycudaDocumentEntryData>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentEntryData>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(new List<AsycudaDocumentEntryData>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(entities); 
 											
 					}
 					
@@ -266,8 +266,8 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByBatch(string exp,
+                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace EntryDataQS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentEntryData>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(new List<AsycudaDocumentEntryData>());
 
 
                 var batchSize = 500;
@@ -325,7 +325,7 @@ namespace EntryDataQS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -341,8 +341,8 @@ namespace EntryDataQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDatasByBatchExpressionLst(List<string> expLst,
+                                                                                                            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -351,7 +351,7 @@ namespace EntryDataQS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentEntryData>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(new List<AsycudaDocumentEntryData>());
 
 
                 var batchSize = 500;
@@ -400,7 +400,7 @@ namespace EntryDataQS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -417,7 +417,7 @@ namespace EntryDataQS.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentEntryData> UpdateAsycudaDocumentEntryData(AsycudaDocumentEntryData entity)
+        public Task<AsycudaDocumentEntryData> UpdateAsycudaDocumentEntryData(AsycudaDocumentEntryData entity)
         { 
             using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
@@ -429,7 +429,7 @@ namespace EntryDataQS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -474,7 +474,7 @@ namespace EntryDataQS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -487,10 +487,10 @@ namespace EntryDataQS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<AsycudaDocumentEntryData> CreateAsycudaDocumentEntryData(AsycudaDocumentEntryData entity)
+        public Task<AsycudaDocumentEntryData> CreateAsycudaDocumentEntryData(AsycudaDocumentEntryData entity)
         {
             try
             {
@@ -500,7 +500,7 @@ namespace EntryDataQS.Business.Services
                 dbContext.AsycudaDocumentEntryDatas.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -517,7 +517,7 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaDocumentEntryData(string Id)
+        public Task<bool> DeleteAsycudaDocumentEntryData(string Id)
         {
             try
             {
@@ -527,12 +527,12 @@ namespace EntryDataQS.Business.Services
                 AsycudaDocumentEntryData entity = dbContext.AsycudaDocumentEntryDatas
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.AsycudaDocumentEntryDatas.Attach(entity);
                     dbContext.AsycudaDocumentEntryDatas.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -588,23 +588,23 @@ namespace EntryDataQS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<AsycudaDocumentEntryData>)dbContext.AsycudaDocumentEntryDatas; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -623,26 +623,26 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (EntryDataQSContext dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaDocumentEntryDatas
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaDocumentEntryDatas
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaDocumentEntryDatas
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.AsycudaDocumentEntryDatas
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -660,33 +660,33 @@ namespace EntryDataQS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AsycudaDocumentEntryData>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<AsycudaDocumentEntryData>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentEntryData>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(new List<AsycudaDocumentEntryData>());
                     if (exp == "All")
                     {
-                        return dbContext.AsycudaDocumentEntryDatas
-										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(dbContext.AsycudaDocumentEntryDatas
+                            .AsNoTracking()
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.AsycudaDocumentEntryDatas
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(dbContext.AsycudaDocumentEntryDatas
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -764,18 +764,18 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentEntryData>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -784,18 +784,18 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentEntryData>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -889,8 +889,8 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentEntryData>> LoadRangeSelectMany<T>(int startIndex, int count,
-            EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocumentEntryData>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                          EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -901,14 +901,14 @@ namespace EntryDataQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -917,8 +917,8 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentEntryData>> LoadRangeSelect<T>(int startIndex, int count,
-            EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocumentEntryData>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                      EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -929,14 +929,14 @@ namespace EntryDataQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Id)
+               return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(set
+                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -969,21 +969,21 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentEntryData>> GetWhereSelectMany<T>(EntryDataQSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocumentEntryData>> GetWhereSelectMany<T>(EntryDataQSContext dbContext,
+                                                                                         string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<AsycudaDocumentEntryData>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<AsycudaDocumentEntryData>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaDocumentEntryData>)dbContext.Set<T>()
@@ -995,7 +995,7 @@ namespace EntryDataQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1004,21 +1004,21 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentEntryData>> GetWhereSelect<T>(EntryDataQSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<AsycudaDocumentEntryData>> GetWhereSelect<T>(EntryDataQSContext dbContext,
+                                                                                     string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<AsycudaDocumentEntryData>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<AsycudaDocumentEntryData>()
+                    .Where(exp == "All" || exp == null?"Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<AsycudaDocumentEntryData>)dbContext.Set<T>()
@@ -1030,7 +1030,7 @@ namespace EntryDataQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<AsycudaDocumentEntryData>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1039,7 +1039,7 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null)
+			        public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null)
         {
             try
             {
@@ -1051,7 +1051,7 @@ namespace EntryDataQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentId.ToString() == AsycudaDocumentId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1067,7 +1067,7 @@ namespace EntryDataQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+ 	        public Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1079,7 +1079,7 @@ namespace EntryDataQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1191,18 +1191,18 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentEntryData>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1211,18 +1211,18 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentEntryData>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

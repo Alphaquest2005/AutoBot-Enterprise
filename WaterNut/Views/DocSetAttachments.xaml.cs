@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
 using CoreEntities.Business.Entities;
-using SimpleMvvmToolkit;
-
 using EntryDataQS.Client.Entities;
+using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.AdjustmentQS.ViewModels;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
 using WaterNut.QuerySpace.CoreEntities.ViewModels;

@@ -65,7 +65,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_Transport>> Getxcuda_Transport(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_Transport>> Getxcuda_Transport(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace DocumentDS.Business.Services
                     IEnumerable<xcuda_Transport> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<xcuda_Transport> Getxcuda_TransportByKey(string Transport_Id, List<string> includesLst = null, bool tracking = true)
+        public Task<xcuda_Transport> Getxcuda_TransportByKey(string Transport_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Transport_Id))return null; 
+			   if(string.IsNullOrEmpty(Transport_Id))return Task.FromResult<xcuda_Transport>(null); 
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Transport_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 xcuda_Transport entity = set.AsNoTracking().SingleOrDefault(x => x.Transport_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace DocumentDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Transport>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_Transport>>(new List<xcuda_Transport>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Transport>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_Transport>>(new List<xcuda_Transport>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(entities); 
 											
 					}
 					
@@ -284,8 +284,8 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByBatch(string exp,
+                                                                            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -294,7 +294,7 @@ namespace DocumentDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Transport>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_Transport>>(new List<xcuda_Transport>());
 
 
                 var batchSize = 500;
@@ -343,7 +343,7 @@ namespace DocumentDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -359,8 +359,8 @@ namespace DocumentDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByBatchExpressionLst(List<string> expLst,
+                                                                                         int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace DocumentDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Transport>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_Transport>>(new List<xcuda_Transport>());
 
 
                 var batchSize = 500;
@@ -418,7 +418,7 @@ namespace DocumentDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -435,7 +435,7 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<xcuda_Transport> Updatexcuda_Transport(xcuda_Transport entity)
+        public Task<xcuda_Transport> Updatexcuda_Transport(xcuda_Transport entity)
         { 
             using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
@@ -447,7 +447,7 @@ namespace DocumentDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -492,7 +492,7 @@ namespace DocumentDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -505,10 +505,10 @@ namespace DocumentDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<xcuda_Transport> Createxcuda_Transport(xcuda_Transport entity)
+        public Task<xcuda_Transport> Createxcuda_Transport(xcuda_Transport entity)
         {
             try
             {
@@ -518,7 +518,7 @@ namespace DocumentDS.Business.Services
                 dbContext.xcuda_Transport.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -535,7 +535,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<bool> Deletexcuda_Transport(string Transport_Id)
+        public Task<bool> Deletexcuda_Transport(string Transport_Id)
         {
             try
             {
@@ -545,12 +545,12 @@ namespace DocumentDS.Business.Services
                 xcuda_Transport entity = dbContext.xcuda_Transport
 													.SingleOrDefault(x => x.Transport_Id == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.xcuda_Transport.Attach(entity);
                     dbContext.xcuda_Transport.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -606,23 +606,23 @@ namespace DocumentDS.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<xcuda_Transport>)dbContext.xcuda_Transport; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -641,26 +641,26 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (DocumentDSContext dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_Transport
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.xcuda_Transport
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_Transport
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.xcuda_Transport
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -678,33 +678,33 @@ namespace DocumentDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xcuda_Transport>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<xcuda_Transport>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Transport>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_Transport>>(new List<xcuda_Transport>());
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_Transport
-										.AsNoTracking()
-                                        .OrderBy(y => y.Transport_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(dbContext.xcuda_Transport
+                            .AsNoTracking()
+                            .OrderBy(y => y.Transport_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_Transport
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.Transport_Id)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<xcuda_Transport>>(dbContext.xcuda_Transport
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.Transport_Id)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -791,18 +791,18 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Transport>()
                 .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Transport_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -811,18 +811,18 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Transport>()
                 .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Transport_Id")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -934,8 +934,8 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xcuda_Transport>> LoadRangeSelectMany<T>(int startIndex, int count,
-            DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<xcuda_Transport>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                 DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -946,14 +946,14 @@ namespace DocumentDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<xcuda_Transport>>(set
                 .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Transport_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -962,8 +962,8 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Transport>> LoadRangeSelect<T>(int startIndex, int count,
-            DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<xcuda_Transport>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                             DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -974,14 +974,14 @@ namespace DocumentDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.Transport_Id)
+               return Task.FromResult<IEnumerable<xcuda_Transport>>(set
+                   .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.Transport_Id)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -1014,21 +1014,21 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Transport>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<xcuda_Transport>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
+                                                                                string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<xcuda_Transport>()
-							.Where(exp == "All" || exp == null?"Transport_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<xcuda_Transport>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<xcuda_Transport>()
+                    .Where(exp == "All" || exp == null?"Transport_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<xcuda_Transport>)dbContext.Set<T>()
@@ -1040,7 +1040,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<xcuda_Transport>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1049,21 +1049,21 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Transport>> GetWhereSelect<T>(DocumentDSContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<xcuda_Transport>> GetWhereSelect<T>(DocumentDSContext dbContext,
+                                                                            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<xcuda_Transport>()
-							.Where(exp == "All" || exp == null?"Transport_Id != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<xcuda_Transport>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<xcuda_Transport>()
+                    .Where(exp == "All" || exp == null?"Transport_Id != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<xcuda_Transport>)dbContext.Set<T>()
@@ -1075,7 +1075,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<xcuda_Transport>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -1084,7 +1084,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+			        public Task<IEnumerable<xcuda_Transport>> Getxcuda_TransportByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1100,7 +1100,7 @@ namespace DocumentDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1221,18 +1221,18 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Transport>()
                 .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Transport_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1241,18 +1241,18 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(DocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Transport>()
                 .Where(exp == "All" || exp == null ? "Transport_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Transport_Id")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

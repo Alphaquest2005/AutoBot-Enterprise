@@ -195,7 +195,7 @@ namespace AutoBot
 
                 }
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
             }
 

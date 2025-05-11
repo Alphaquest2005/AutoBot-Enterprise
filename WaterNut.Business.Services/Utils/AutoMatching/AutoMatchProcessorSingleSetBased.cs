@@ -20,11 +20,11 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
     {
       
 
-        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst)
+        public Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst)
         {
             var itemSets = BaseDataModel.GetItemSets(lst);
             itemSets.ForEach(async x => await AutoMatch(applicationSettingsId, overwriteExisting, x).ConfigureAwait(false));
-            
+            return Task.CompletedTask;
         }
 
         public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, List<(string ItemNumber, int InventoryItemId)> itemSet)
@@ -167,7 +167,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         }
 
        
-        private async Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
+        private Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
         {
             // Apply ConfigureAwait to the Task before awaiting
             var errors =  new ProcessDISErrorsForAllocation().Execute( // Move ConfigureAwait here
@@ -185,7 +185,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             //              .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
             //  SaveEntryDataDetails(errors);
             //  await DeleteAllocationsForEntryDataDetails(errors).ConfigureAwait(false);
-            return errors;
+            return Task.FromResult(errors);
         }
 
         private async Task<List<EntryDataDetail>> ProcessNoDataDISForAllocation(List<EntryDataDetail> lst)
@@ -241,13 +241,13 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             }
         }
 
-        private static async Task<EntryDataDetail> AutoMatchItemNumber(AdjustmentDetail s)
+        private static Task<EntryDataDetail> AutoMatchItemNumber(AdjustmentDetail s)
         {
             try
             {
 
                 var ed = GetEntryDataDetail(s);
-                if(ed == null) return null;
+                if(ed == null) return Task.FromResult<EntryDataDetail>(null);
                 var processors = new List<IAutoMatchProcessor>()
                 {
                     new PreviousInvoiceNumberMatcher(s, ed),
@@ -262,7 +262,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                     .ForEach(async x => await x.Execute().ConfigureAwait(false));
 
                 
-                return ed;
+                return Task.FromResult(ed);
             }
             catch (Exception ex)
             {

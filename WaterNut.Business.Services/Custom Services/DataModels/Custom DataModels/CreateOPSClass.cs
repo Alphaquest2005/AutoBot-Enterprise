@@ -98,8 +98,6 @@ namespace WaterNut.DataSpace
             {
                 throw new ApplicationException(
                     "No OPS Allocations found! If you just deleted Entries, Please Allocate Sales then continue Else Contact your Network Administrator");
-                StatusModel.StopStatusUpdate();
-                return;
             }
 
             var cdoc = new DocumentCT

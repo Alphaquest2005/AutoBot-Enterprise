@@ -83,9 +83,9 @@ namespace WaterNut.Business.Services.Importers
            
         }
 
-        public async Task Import(string fileName, bool overWrite)
+        public Task Import(string fileName, bool overWrite)
         {
-            
+            return Task.CompletedTask;
         }
     }
 }

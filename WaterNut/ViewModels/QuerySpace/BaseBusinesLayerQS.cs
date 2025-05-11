@@ -2,14 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-
-using CoreEntities.Client.Repositories;
-
-
-using System.ComponentModel;
 using CoreEntities.Client.Entities;
+using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;
 
 

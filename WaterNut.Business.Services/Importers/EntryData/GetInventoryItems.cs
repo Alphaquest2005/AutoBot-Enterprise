@@ -26,7 +26,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
 
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
         {
             var rawData = InventoryItemDataUtils.CreateItemGroupList(_lines);
  
@@ -45,7 +45,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 r => r.Key.ItemNumber,
                 (i, r) => new InventoryDataItem(r.FirstOrDefault(), i));
  
-            return Task.FromResult(new Result<List<InventoryDataItem>>(left.Union(right).ToList(), true, "")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<InventoryDataItem>>(left.Union(right).ToList(), true, "")).Result); // Wrap in Task.FromResult
  
  
         }

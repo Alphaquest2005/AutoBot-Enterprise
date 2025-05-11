@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReport(List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReport(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<TODO_DiscrepancyPreExecutionReport> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return entities;
+                            return Task.FromResult(entities);
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_DiscrepancyPreExecutionReport> GetTODO_DiscrepancyPreExecutionReportByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public Task<TODO_DiscrepancyPreExecutionReport> GetTODO_DiscrepancyPreExecutionReportByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
+			   if(string.IsNullOrEmpty(EntryDataDetailsId))return Task.FromResult<TODO_DiscrepancyPreExecutionReport>(null); 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
 				var set = AddIncludes(includesLst, dbContext);
                 TODO_DiscrepancyPreExecutionReport entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return entity;
+                return Task.FromResult(entity);
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(entities); 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(entities); 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(entities); 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(entities); 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionNav(string exp,
-																							  Dictionary<string, string> navExp,
-																							  List<string> includesLst = null, bool tracking = true)
+		public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionNav(string exp,
+                                                                                                                          Dictionary<string, string> navExp,
+                                                                                                                          List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return aentities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(aentities); 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return entities; 
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(entities); 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatch(string exp,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatch(string exp,
+                                                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatchExpressionLst(List<string> expLst,
-            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatchExpressionLst(List<string> expLst,
+                                                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return entities; 
+                return Task.FromResult(entities); 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_DiscrepancyPreExecutionReport> UpdateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity)
+        public Task<TODO_DiscrepancyPreExecutionReport> UpdateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return res;      
+                    return Task.FromResult(res);      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return entity;
+                        return Task.FromResult(entity);
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return entity;
+           return Task.FromResult(entity);
         }
 
-        public async Task<TODO_DiscrepancyPreExecutionReport> CreateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity)
+        public Task<TODO_DiscrepancyPreExecutionReport> CreateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace CoreEntities.Business.Services
                 dbContext.TODO_DiscrepancyPreExecutionReport.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return res;
+                return Task.FromResult(res);
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_DiscrepancyPreExecutionReport(string EntryDataDetailsId)
+        public Task<bool> DeleteTODO_DiscrepancyPreExecutionReport(string EntryDataDetailsId)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace CoreEntities.Business.Services
                 TODO_DiscrepancyPreExecutionReport entity = dbContext.TODO_DiscrepancyPreExecutionReport
 													.SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if (entity == null)
-                    return false;
+                    return Task.FromResult(false);
 
                     dbContext.TODO_DiscrepancyPreExecutionReport.Attach(entity);
                     dbContext.TODO_DiscrepancyPreExecutionReport.Remove(entity);
                     dbContext.SaveChanges();
-                    return true;
+                    return Task.FromResult(true);
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public async Task<int> CountByExpressionLst(List<string> expLst)
+         public Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
                     var set = (IQueryable<TODO_DiscrepancyPreExecutionReport>)dbContext.TODO_DiscrepancyPreExecutionReport; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return set.AsNoTracking().Count();
+                        return Task.FromResult(set.AsNoTracking().Count());
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> Count(string exp)
+		public Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                     if (exp == "All")
                     {
-                        return dbContext.TODO_DiscrepancyPreExecutionReport
-                                    .AsNoTracking()
-									.Count();
+                        return Task.FromResult(dbContext.TODO_DiscrepancyPreExecutionReport
+                            .AsNoTracking()
+                            .Count());
                     }
                     else
                     {
                         
-                        return dbContext.TODO_DiscrepancyPreExecutionReport
-									.AsNoTracking()
-                                    .Where(exp)
-									.Count();
+                        return Task.FromResult(dbContext.TODO_DiscrepancyPreExecutionReport
+                            .AsNoTracking()
+                            .Where(exp)
+                            .Count());
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRange(int startIndex, int count, string exp)
+        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
                     if (exp == "All")
                     {
-                        return dbContext.TODO_DiscrepancyPreExecutionReport
-										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataDetailsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(dbContext.TODO_DiscrepancyPreExecutionReport
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryDataDetailsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                     else
                     {
                         
-                        return dbContext.TODO_DiscrepancyPreExecutionReport
-										.AsNoTracking()
-                                        .Where(exp)
-										.OrderBy(y => y.EntryDataDetailsId)
-										.Skip(startIndex)
-										.Take(count)
-										.ToList();
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(dbContext.TODO_DiscrepancyPreExecutionReport
+                            .AsNoTracking()
+                            .Where(exp)
+                            .OrderBy(y => y.EntryDataDetailsId)
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.TODO_DiscrepancyPreExecutionReport
-										.AsNoTracking()
-                                        .Count();
+                        return Task.FromResult(dbContext.TODO_DiscrepancyPreExecutionReport
+                            .AsNoTracking()
+                            .Count());
                     }
-                    return dbContext.TODO_DiscrepancyPreExecutionReport.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-											.AsNoTracking()
-                                            .Count();
+                    return Task.FromResult(dbContext.TODO_DiscrepancyPreExecutionReport.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                        .AsNoTracking()
+                        .Count());
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count();
+                .Count());
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                    Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_DiscrepancyPreExecutionReport>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(new List<TODO_DiscrepancyPreExecutionReport>());
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return set
-									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataDetailsId)
+                        return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set
+                            .AsNoTracking()
+                            .OrderBy(y => y.EntryDataDetailsId)
  
-                                    .Skip(startIndex)
-                                    .Take(count)
-									.ToList();
+                            .Skip(startIndex)
+                            .Take(count)
+                            .ToList());
                     }
-                    return set//dbContext.TODO_DiscrepancyPreExecutionReport
-								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-								.OrderBy(y => y.EntryDataDetailsId)
+                    return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set//dbContext.TODO_DiscrepancyPreExecutionReport
+                        .AsNoTracking()
+                        .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                        .OrderBy(y => y.EntryDataDetailsId)
  
-                                .Skip(startIndex)
-                                .Take(count)
-								.ToList();
+                        .Skip(startIndex)
+                        .Take(count)
+                        .ToList());
 
 
                 }
@@ -836,8 +836,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeSelectMany<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeSelectMany<T>(int startIndex, int count,
+                                                                                                    CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return set
+            return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryDataDetailsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList();
+                .ToList());
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeSelect<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeSelect<T>(int startIndex, int count,
+                                                                                                CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-                .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+               return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set
+                   .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                   .Distinct()
+                   .OrderBy(y => y.EntryDataDetailsId)
  
-                .Skip(startIndex)
-                .Take(count)
-                .ToList();
+                   .Skip(startIndex)
+                   .Take(count)
+                   .ToList());
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+                                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.SelectMany(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .SelectMany(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
+                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<TODO_DiscrepancyPreExecutionReport>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+                                                                                               string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return dbContext.Set<T>()
-							.AsNoTracking()
-                            .Where(navExp)
-							.Select(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-							.Distinct()
-							.ToList();
+				return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(dbContext.Set<T>()
+                    .AsNoTracking()
+                    .Where(navExp)
+                    .Select(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
+                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                    .Distinct()
+                    .ToList());
 			}
 
 			var set = (DbQuery<TODO_DiscrepancyPreExecutionReport>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return set.ToList();
+            return Task.FromResult<IEnumerable<TODO_DiscrepancyPreExecutionReport>>(set.ToList());
 			}
 			catch (Exception)
 			{
@@ -986,7 +986,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null)
+			        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1014,7 +1014,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	        public Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToList();
-                return entities;
+                return Task.FromResult(entities);
               }
              }
             catch (Exception updateEx)
@@ -1078,24 +1078,24 @@ namespace CoreEntities.Business.Services
              }
          }
 
-        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
+                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.TODO_DiscrepancyPreExecutionReport.Any()) return 0;
+                    if (!dbContext.TODO_DiscrepancyPreExecutionReport.Any()) return Task.FromResult<decimal>(0);
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.TODO_DiscrepancyPreExecutionReport
-										.AsNoTracking()
-                                        .Sum(field)??0);
+                        return Task.FromResult(Convert.ToDecimal(dbContext.TODO_DiscrepancyPreExecutionReport
+                                                                     .AsNoTracking()
+                                                                     .Sum(field)??0));
                     }
-                    return Convert.ToDecimal(dbContext.TODO_DiscrepancyPreExecutionReport.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-											.AsNoTracking()
-                                            .Sum(field)??0);
+                    return Task.FromResult(Convert.ToDecimal(dbContext.TODO_DiscrepancyPreExecutionReport.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                                                                 .AsNoTracking()
+                                                                 .Sum(field)??0));
                 }
                 
             }
@@ -1126,18 +1126,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{
@@ -1146,18 +1146,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Convert.ToDecimal(dbContext.Set<T>()
-				.AsNoTracking()
+            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
+                .AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_DiscrepancyPreExecutionReport>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field));
+                .Sum(field)));
 			}
 			catch (Exception)
 			{

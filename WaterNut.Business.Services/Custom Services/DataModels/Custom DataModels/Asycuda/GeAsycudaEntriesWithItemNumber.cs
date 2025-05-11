@@ -11,8 +11,7 @@ namespace WaterNut.DataSpace
 {
     public class GeAsycudaEntriesWithItemNumber
     {
-        public static async
-            Task<(ConcurrentDictionary<int, xcuda_Item> asycudaItems, IEnumerable<AllocationsBaseModel.ItemEntries>
+        public static Task<(ConcurrentDictionary<int, xcuda_Item> asycudaItems, IEnumerable<AllocationsBaseModel.ItemEntries>
                 asycudaEntries)> GetAsycudaEntriesWithItemNumber(
                 List<(string ItemNumber, int InventoryItemId)> itemList, int? asycudaDocumentSetId)
         {
@@ -42,7 +41,7 @@ namespace WaterNut.DataSpace
                                 Convert.ToDateTime(x.AsycudaDocument.RegistrationDate))
                             .ToList()
                     });
-                return (asycudaItems, asycudaEntries);
+                return Task.FromResult((asycudaItems, asycudaEntries));
 
 
                 //var res = asycudaEntries.Where(x => x.Key.Contains("8309"));

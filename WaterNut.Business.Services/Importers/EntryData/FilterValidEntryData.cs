@@ -8,10 +8,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class FilterValidEntryData : IProcessor<RawEntryData>
     {
-        public async Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
+        public Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
         {
             var validRawEntryData = new RawEntryDataProcessor().GetValidRawEntryData(data);
-            return Task.FromResult(new Result<List<RawEntryData>>(validRawEntryData,true,"")).Result; // Wrap in Task.FromResult
+            return Task.FromResult(Task.FromResult(new Result<List<RawEntryData>>(validRawEntryData,true,"")).Result); // Wrap in Task.FromResult
         }
     }
 }

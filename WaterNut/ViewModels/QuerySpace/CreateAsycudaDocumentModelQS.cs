@@ -61,19 +61,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			}
 		}
 
-		private new void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+		private void OnCurrentAsycudaDocumentSetChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
 		{
 
 			Task.Run(async () => { await LoadDataFromAdoc(e.Data, QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocument).ConfigureAwait(false); });
 		}
 
-		private new void OnCurrentAsycudaDocumentChanged(object sender, NotificationEventArgs<AsycudaDocument> e)
+		private void OnCurrentAsycudaDocumentChanged(object sender, NotificationEventArgs<AsycudaDocument> e)
 		{
 
 			Task.Run(async () => { await LoadDataFromAdoc(QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx, e.Data).ConfigureAwait(false); });
 		}
 
-		private async Task LoadDataFromAdoc(AsycudaDocumentSetEx docSet, AsycudaDocument doc)
+		private Task LoadDataFromAdoc(AsycudaDocumentSetEx docSet, AsycudaDocument doc)
 		{
 			if (docSet == null && ((doc != null) && (docSet != doc.AsycudaDocumentSetEx)))
 			{
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			NotifyPropertyChanged(x => TotalFreight);
 			NotifyPropertyChanged(x => TotalWeight);
 		    NotifyPropertyChanged(x => ApportionMethod);
-
+            return Task.CompletedTask;
         }
 
 		private ObservableCollection<Document_Type> _document_types = new ObservableCollection<Document_Type>();
@@ -484,7 +484,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 		}
 
-		internal async Task AssessAllinSet()
+		internal Task AssessAllinSet()
 		{
 			throw new NotImplementedException();
 		}

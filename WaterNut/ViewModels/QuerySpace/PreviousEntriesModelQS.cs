@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.ComponentModel;
-using System.Linq;
-using System.Data.Entity;
-using System.Collections.ObjectModel;
+using AllocationQS.Client.Entities;
 using PreviousDocumentQS.Client.Entities;
 using PreviousDocumentQS.Client.Repositories;
-using AllocationQS.Client.Entities;
 using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
@@ -68,17 +68,17 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }
 
 
-        internal async Task RemoveItem(int p)
+        internal Task RemoveItem(int p)
         {
             throw new NotImplementedException();
         }
 
-        internal async Task RemoveSelectedItems(List<PreviousDocumentItem> list)
+        internal Task RemoveSelectedItems(List<PreviousDocumentItem> list)
         {
             throw new NotImplementedException();
         }
 
-        internal async Task SavePreviousDocumentItem(PreviousDocumentItem previousDocumentItem)
+        internal Task SavePreviousDocumentItem(PreviousDocumentItem previousDocumentItem)
         {
             throw new NotImplementedException();
         }

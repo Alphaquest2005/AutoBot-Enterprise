@@ -8,7 +8,6 @@ public partial class BaseDataModel
 {
     public static Customs_Procedure GetCustomsProcedure(string dfp, string DocumentType)
     {
-        Customs_Procedure customsProcedure;
         var isPaid = dfp == "Duty Paid";
         Func<Customs_Procedure, bool> dtpredicate = x => false;
         switch (DocumentType)
