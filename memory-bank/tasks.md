@@ -1170,3 +1170,119 @@ Before starting the implementation of this investigation plan, the following too
     *   **Status:** [X] Passed
     *   **Notes:** User confirmed the `AutoBot-Enterprise` solution is open in VS Code, code is navigable, and the project is building successfully. This provides the necessary access for code review and potential diagnostic modifications.
 
+
+[2025-05-11 23:31:31] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+6.  **Network Diagnostic Tool Availability (`ping`, `tracert`, `pathping`):**
+    *   **Status:** [X] Assumed Available (Standard OS Tools)
+    *   **Notes:** These are standard Windows command-line utilities. Execution will be attempted via `execute_command` tool during the IMPLEMENT phase, assuming the context allows targeting the application server. If the application server is remote and not directly accessible by `execute_command`, user guidance will be needed to run them on the target server.
+
+
+[2025-05-11 23:32:24] - 
+
+**Technology Validation Update (Task ID: VAN-20250511-191130-RCA):**
+
+7.  **(Optional) APM / .NET Memory Profiler Availability:**
+    *   **Status:** [X] Not Available
+    *   **Notes:** User confirmed no APM or .NET Memory Profiler is currently installed. Investigation will proceed using other available methods. If critical data is missing, the possibility of installing a profiler (e.g., Visual Studio built-in tools, or a trial version of a commercial profiler) can be revisited.
+
+
+[2025-05-11 23:32:39] - 
+
+**Technology Validation Summary (Task ID: VAN-20250511-191130-RCA):**
+
+*   **Performance Monitor:** Unavailable. Will rely on SQL DMVs and potential app-level logging.
+*   **SSMS Access:** Passed (sysadmin on `MINIJOE\SQLDEVELOPER2022` for `Sandals-DiscoveryDB`).
+*   **Profiler/XEvents:** Requires guidance/scripts during implementation.
+*   **Logging:** May require setup/enhancement during implementation.
+*   **Source Code/Build:** Passed.
+*   **Network Diag Tools:** Assumed available.
+*   **APM/Memory Profilers:** Not available.
+
+**Plan Status:** The detailed investigation plan for each of the 7 areas is documented above. Technology validation for the required tools and access is complete to the extent possible at this stage. The plan will adapt based on tool availability during execution.
+
+**Creative Phases Required:**
+*   N/A (This is a root cause analysis investigation, not a design/build task from scratch).
+
+
+[2025-05-11 23:33:11] - 
+
+## PLANNING COMPLETE for Task: Root Cause Analysis of DB Connectivity Errors (ID: VAN-20250511-191130-RCA)
+
+**Date:** 2025-05-11 19:32
+
+**Summary of Plan Verification:**
+*   ✅ Requirements clearly documented.
+*   ✅ Technology stack and tool availability validated (with notes on alternatives/assistance needed).
+*   ✅ Affected components for investigation identified.
+*   ✅ Implementation steps (investigation methodologies) detailed for each area.
+*   ✅ Dependencies for the investigation documented.
+*   ✅ Challenges (tool availability) and mitigations (alternative methods) noted.
+*   ✅ Creative phases: N/A for this investigative task.
+*   ✅ `tasks.md` updated with the detailed plan and validation summary.
+
+**Status Update for Task VAN-20250511-191130-RCA:**
+*   **Overall Status:** PLAN - Complete
+*   **Sub-Task Status:** All 7 investigation sub-tasks are now 'Pending Implementation'.
+
+→ **NEXT RECOMMENDED MODE: IMPLEMENT MODE** (To execute the detailed investigation plan).
+
+
+[2025-05-11 23:37:28] - 
+
+## REVISED Investigation Plan for Task: Root Cause Analysis of DB Connectivity Errors (ID: VAN-20250511-191130-RCA)
+
+**Date of Revision:** 2025-05-11 19:36
+**Reason for Revision:** User request to re-prioritize investigation steps: start with simpler code analysis/changes and database optimizations, test a key process, then proceed to more complex dynamic analysis.
+
+**Revised Overall Investigation Phasing:**
+
+1.  **Phase 1: Initial Code Review, Simple Fixes & Logging Setup**
+    *   **Sub-Phase 1.1:** Static Code Review for Connection Management (Potential Leaks - Area 1). Apply straightforward fixes (e.g., ensuring `using` statements for `DbContext`).
+    *   **Sub-Phase 1.2:** Static Code Review for Inefficient Data Access Patterns (Obvious N+1, Over-fetching - Area 4). Apply straightforward fixes.
+    *   **Sub-Phase 1.3:** Setup/Enhance Application & SQL Server Logging (Supports all areas, addresses Tech Validation item 4).
+2.  **Phase 2: Initial Database Optimizations & Baseline Functional Test**
+    *   **Sub-Phase 2.1:** Database Index Review & Recalculation (Addresses parts of Area 2 & Area 7).
+    *   **Sub-Phase 2.2:** Test Allocation Process (Functional test to gauge impact of initial changes).
+3.  **Phase 3: Dynamic Analysis & Deeper Investigation (Iterative, based on Phase 2 results)**
+    *   **Sub-Phase 3.1:** Long-Running Queries/Transactions (Dynamic Profiling - Area 2).
+    *   **Sub-Phase 3.2:** Inefficient Data Access Patterns (Dynamic Profiling, if still indicated - Area 4).
+    *   **Sub-Phase 3.3:** High Application Load (Area 3).
+    *   **Sub-Phase 3.4:** Connection Pool Misconfiguration (Area 5).
+    *   **Sub-Phase 3.5:** Network Latency/Instability (Area 6).
+    *   **Sub-Phase 3.6:** Database Server Bottlenecks (Deeper Dynamic Monitoring - Area 7).
+4.  **Phase 4: Correlation, Root Cause Determination & Final Recommendations**
+
+**Note:** The detailed methodologies for each of the 7 investigation areas (Connection Leaks, Long-Running Queries, High Load, Inefficient Patterns, Pool Misconfig, Network, DB Bottlenecks) as previously documented remain largely the same but will be executed in this revised order and iterative fashion. Technology Validation findings still apply.
+
+**Next Steps (within PLAN mode):**
+1.  Confirm this revised phasing aligns with user expectations.
+2.  Re-confirm plan completeness against PLAN mode checklist based on this revised structure.
+3.  Recommend transition to IMPLEMENT mode to execute this *revised* investigation plan, starting with Phase 1.
+
+
+[2025-05-11 23:47:08] - 
+
+## REVISED PLAN CONFIRMED for Task: Root Cause Analysis of DB Connectivity Errors (ID: VAN-20250511-191130-RCA)
+
+**Date:** 2025-05-11 19:46
+
+**Summary of Plan Verification (Post-Revision):**
+*   ✅ Revised phasing confirmed by user.
+*   ✅ Requirements clearly documented.
+*   ✅ Technology stack and tool availability validated (with notes on alternatives/assistance needed).
+*   ✅ Affected components for investigation identified.
+*   ✅ Implementation steps (investigation methodologies for each of the 7 areas) remain detailed, to be applied within the new phased approach.
+*   ✅ Dependencies for the investigation documented.
+*   ✅ Challenges (tool availability) and mitigations (alternative methods) noted.
+*   ✅ Creative phases: N/A for this investigative task.
+*   ✅ `tasks.md` updated with the revised plan structure and this confirmation.
+
+**Status Update for Task VAN-20250511-191130-RCA:**
+*   **Overall Status:** PLAN - Complete (Revised Plan Confirmed)
+*   **Sub-Task Status:** All 7 investigation sub-tasks are 'Pending Implementation' under the new phased approach.
+
+→ **NEXT RECOMMENDED MODE: IMPLEMENT MODE** (To execute the revised investigation plan, starting with Phase 1: Initial Code Review, Simple Fixes & Logging Setup).
+

@@ -22,9 +22,8 @@ public static partial class EmailDownloader
             {
                 // For .NET 4.8, File.AppendAllLinesAsync might not exist or have the desired overload.
                 // Using a helper if needed, or Task.Run for simplicity if AppendAllLines is sync.
-                string content = string.Join(Environment.NewLine, attachments) + Environment.NewLine;
-                await WriteAllTextAsync(Path.Combine(directory, "EmailResults.txt"), content, true, cancellationToken)
-                    .ConfigureAwait(false); // true for append
+                
+                File.AppendAllLines(Path.Combine(directory, "EmailResults.txt"), attachments); 
             }
         }
         catch (Exception e)

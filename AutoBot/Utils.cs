@@ -414,7 +414,7 @@ namespace AutoBot
                     {
                         file
                     });
-                    await EmailDownloader.EmailDownloader.SendEmailAsync(Client, msg).ConfigureAwait(false);
+                    await EmailDownloader.EmailDownloader.SendEmailInternalAsync(Client, msg).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

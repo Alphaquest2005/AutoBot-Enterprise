@@ -1,4 +1,5 @@
-﻿using System;
+﻿﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -145,28 +146,36 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
                     try
                     {
-                       new AllocationDSContext {StartTracking = false}.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, sql);
-                       break;
+                        using (var context = new AllocationDSContext { StartTracking = false })
+                        {
+                            context.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, sql);
+                        }
+                        break;
                     }
                     catch (SqlException e) // This example is for SQL Server, change the exception type/logic if you're using another DBMS
                     {
                         if (e.Number == 1205)  // SQL Server error code for deadlock
                         {
                             retryCount++;
+                            if (retryCount >= maxRetries)
+                            {
+                                Log.Error(e, "Max retries for deadlock exceeded in SaveSql. SQL: {FailedSql}", sql);
+                                throw; // Re-throw or handle as appropriate
+                            }
+                            // Optional: Add a small delay before retrying
+                            // System.Threading.Thread.Sleep(100);
                         }
                         else
                         {
+                            Log.Error(e, "SQL Exception in SaveSql. SQL: {FailedSql}", sql);
                             throw;  // Not a deadlock so throw the exception
                         }
-                        // Add some code to do whatever you want with the exception once you've exceeded the max. retries
                     }
                 }
-                
-                
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "General Exception in SaveSql. SQL: {FailedSql}", sql);
                 throw;
             }
 

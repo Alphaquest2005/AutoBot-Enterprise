@@ -119,7 +119,7 @@ namespace WaterNut.Views
         }
         //TODO: Convert this to commands to make it automatic
         #region "ListBox Selection"
-        bool selectall = false;
+      
         private void ItemList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //if (MultiSelectChk.IsChecked == false)

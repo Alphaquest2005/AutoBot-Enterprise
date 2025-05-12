@@ -152,3 +152,13 @@ One or more errors occurred.
 **Details:** The database experiencing connectivity issues is `Sandals-DiscoveryDB` on server `MINIJOE\SQLDEVELOPER2022`. All diagnostic efforts should target this database. The `sqlserver` MCP is currently configured for `WebSource-AutoBot` and will need to be conceptually re-targeted or its queries adjusted for `Sandals-DiscoveryDB` if direct MCP use is planned for diagnostics on this DB.
 **Connection String Example (WaterNutDBEntities):** `metadata=res://*/WaterNutDB.csdl|res://*/WaterNutDB.ssdl|res://*/WaterNutDB.msl;provider=System.Data.SqlClient;provider connection string='data source=MINIJOE\SQLDEVELOPER2022;initial catalog=Sandals-DiscoveryDB;user=sa;password=pa$$word;MultipleActiveResultSets=True;App=EntityFramework'`
 **Implication:** Previous SSMS connectivity validation (Tech Validation Step 2) needs to be re-evaluated for `Sandals-DiscoveryDB`.
+
+[2025-05-12 00:02:28] - 
+
+## Observation during RCA (Task ID: VAN-20250511-191130-RCA) - Sub-Phase 1.1
+
+**File:** `WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/Asycuda/GettingXcudaInventoryItems/GetXcudaInventoryItems.cs`
+**Method:** `Execute`
+**Observation:** The `DbContext` (`AllocationDSContext`) is correctly disposed of using a `using` statement.
+**Potential Issue:** `ctx.Database.CommandTimeout` is set to `0` (indefinite). While not a connection leak, this could cause connections to be held for very long periods if the query is slow or blocked, potentially contributing to connection pool exhaustion symptoms. This should be reviewed if this query path is identified as problematic later.
+

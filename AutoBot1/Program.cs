@@ -15,13 +15,9 @@ using AutoBotUtilities;    // Assuming this contains your Utils class definition
 using Core.Common.Utils;  // For StringExtensions
 // using EntryDataDS.Business.Entities; // Keep if used
 using MoreLinq;
-using WaterNut.Business.Services.Utils;
-using WaterNut.DataSpace; // For .ForEach() and .DistinctBy()
-// using WaterNut.Business.Services.Utils; // Keep if used
-// using WaterNut.DataSpace; // Keep if used
-// using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations; // Keep if used
-// using xlsxWriter; // Keep if used
-// using FileTypes = CoreEntities.Business.Entities.FileTypes; // Explicit using if needed
+using WaterNut.Business.Services.Utils; // Assuming ImportUtils, FileTypeManager might be here or related
+using WaterNut.DataSpace;             // Assuming SessionsUtils might be here or related
+using MailKit.Net.Imap; // Added for ImapClient type
 
 namespace AutoBot
 {
@@ -84,22 +80,18 @@ namespace AutoBot
             {
                 ctx.Database.CommandTimeout = 10;
 
-                // Using original string-based includes for nested properties, which are common in EF6.
-                // Lambda includes for direct properties.
                 var applicationSettings = await ctx.ApplicationSettings.AsNoTracking()
-                    .Include(x => x.FileTypes) // Direct collection
-                    .Include(x => x.Declarants) // Direct collection or single entity
-                                                // For nested properties on items within FileTypes:
-                    .Include("FileTypes.FileTypeReplaceRegex") // If FileTypeReplaceRegex is on FileType
-                    .Include("FileTypes.FileImporterInfos")    // If FileImporterInfos is on FileType
-                                                               // For EmailMapping and its nested properties:
-                    .Include(x => x.EmailMapping) // Direct collection
-                    .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos") // Deeply nested
+                    .Include(x => x.FileTypes)
+                    .Include(x => x.Declarants)
+                    .Include("FileTypes.FileTypeReplaceRegex")
+                    .Include("FileTypes.FileImporterInfos")
+                    .Include(x => x.EmailMapping)
+                    .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
                     .Include("EmailMapping.EmailMappingRexExs")
                     .Include("EmailMapping.EmailMappingActions.Actions")
                     .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                     .Where(x => x.IsActive)
-                    .ToListAsync(cancellationToken) // EF6 async
+                    .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
 
                 foreach (var appSetting in applicationSettings)
@@ -121,15 +113,14 @@ namespace AutoBot
                     ExecuteDBSessionActions(ctx, appSetting);
 
                     if (BaseDataModel.Instance.CurrentApplicationSettings.ProcessDownloadsFolder == true)
-                        await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false); // Assuming async
+                        await folderProcessor.ProcessDownloadFolder(appSetting).ConfigureAwait(false); // Original was missing cancellationToken
                 }
             }
         }
 
         private static bool ExecuteLastDBSessionAction(CoreEntitiesContext ctx, ApplicationSettings appSetting)
         {
-            // Original synchronous logic
-            var lastAction = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions") // EF6 string includes
+            var lastAction = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
                 .OrderByDescending(p => p.Id)
                 .FirstOrDefault(x => x.ApplicationSettingId == appSetting.ApplicationSettingsId);
 
@@ -137,8 +128,8 @@ namespace AutoBot
             {
                 lastAction.Sessions.SessionActions
                     .Where(x => lastAction.ActionId == null || x.ActionId == lastAction.ActionId)
-                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name]) // Assumes SessionsUtils.SessionActions is populated
-                    .ForEach(x => x.Invoke()); // From MoreLinq
+                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
+                    .ForEach(x => x.Invoke());
                 return true;
             }
             return false;
@@ -151,15 +142,14 @@ namespace AutoBot
             {
                 if (string.IsNullOrEmpty(appSetting.Email)) return;
 
-                // Ensure Utils.Client is of type EmailDownloader.Client or compatible
-                Utils.Client = new EmailDownloader.Client // This implies EmailDownloader.Client is the correct type
+                Utils.Client = new EmailDownloader.Client
                 {
                     CompanyName = appSetting.CompanyName,
                     DataFolder = appSetting.DataFolder,
                     Password = appSetting.EmailPassword,
                     Email = appSetting.Email,
                     ApplicationSettingsId = appSetting.ApplicationSettingsId,
-                    EmailMappings = appSetting.EmailMapping.ToList(), // Ensure EmailMapping is loaded
+                    EmailMappings = appSetting.EmailMapping.ToList(),
                     DevMode = Settings.Default.DevMode,
                     NotifyUnknownMessages = appSetting.NotifyUnknownMessages ?? false
                 };
@@ -167,189 +157,207 @@ namespace AutoBot
                 int processedEmailCount = 0;
                 var filesForNonSpecificActions = new List<Tuple<CoreEntities.Business.Entities.FileTypes, FileInfo[], int>>();
 
-                // Consume the IEnumerable<Task<EmailProcessingResult>> from StreamEmailResultsAsync
-                // Process each email's data as its task completes.
-                foreach (Task<EmailDownloader.EmailProcessingResult> emailTask in
-                         EmailDownloader.EmailDownloader.StreamEmailResultsAsync(Utils.Client, cancellationToken))
+                ImapClient imapClient = null; // Declare ImapClient here to manage its lifecycle
+                try
                 {
-                    cancellationToken.ThrowIfCancellationRequested(); // Early check before awaiting
+                    imapClient = await EmailDownloader.EmailDownloader.GetOpenImapClientAsync(Utils.Client, cancellationToken).ConfigureAwait(false);
 
-                    EmailDownloader.EmailProcessingResult currentEmailResult;
-                    try
+                    if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
                     {
-                        currentEmailResult = await emailTask.ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        Console.WriteLine("Email processing task was canceled.");
-                        throw; // Propagate to allow higher-level cancellation handling
-                    }
-                    catch (Exception taskEx)
-                    {
-                        Console.WriteLine($"Error awaiting or processing an email task: {taskEx.Message}");
-                        continue; // Skip this email and try the next
+                        Console.WriteLine($"Failed to open IMAP client for {Utils.Client.Email}. Skipping email processing for this appSetting.");
+                        return; // Exit if client can't be established
                     }
 
-                    if (currentEmailResult == null) // Email was skipped by downloader logic
+                    // Pass the connected imapClient to StreamEmailResultsAsync
+                    foreach (Task<EmailDownloader.EmailProcessingResult> emailTask in
+                             EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClient, Utils.Client, cancellationToken))
                     {
-                        continue;
-                    }
-                    
-                    processedEmailCount++;
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    // Perform processing for currentEmailResult immediately
+                        EmailDownloader.EmailProcessingResult currentEmailResult;
+                        try
+                        {
+                            currentEmailResult = await emailTask.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Console.WriteLine("Email processing task was canceled during await.");
+                            throw;
+                        }
+                        catch (Exception taskEx)
+                        {
+                            Console.WriteLine($"Error awaiting or processing an email task: {taskEx.Message}");
+                            // Check if IMAP client is still usable, otherwise break or re-establish
+                            if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
+                            {
+                                Console.WriteLine("IMAP client disconnected during task processing. Aborting further email checks for this appSetting.");
+                                break; // Exit the foreach loop for tasks
+                            }
+                            continue;
+                        }
 
-                    // --- Start: Adapted first loop logic ---
-                    // Order by EmailMapping.Id was originally on the collected list.
-                    // If this specific ordering is critical *before* this step for a single email,
-                    // it's already handled by how emails are presented by StreamEmailResultsAsync or this step is per email.
-                    // Assuming processing per email is fine without re-sorting based on other emails here.
-                    await ImportUtils.ExecuteEmailMappingActions(currentEmailResult.EmailKey.Item2.EmailMapping,
-                        new CoreEntities.Business.Entities.FileTypes() { EmailId = currentEmailResult.EmailKey.Item2.EmailId },
-                        currentEmailResult.AttachedFiles.ToArray(), appSetting).ConfigureAwait(false);
-                    // --- End: Adapted first loop logic ---
-
-                    // --- Start: Adapted second loop logic (for the currentEmailResult) ---
-                    // The OrderBy for CreateDocumentSet and EmailUniqueId was on the collected list.
-                    // This implies a potential processing order preference. If StreamEmailResultsAsync doesn't guarantee this,
-                    // and it's critical, a more complex pre-fetch and sort might be needed,
-                    // or accept the order from the stream. For one-by-one processing, we take the stream's order.
-                    var msgResult = currentEmailResult; // Use current email result directly
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    // Deconstruct from EmailProcessingResult
-                    var emailKeyTuple = msgResult.EmailKey; // This is Tuple<string, Email, string>
-                    var attachments = msgResult.AttachedFiles; // This is List<FileInfo>
-
-                    // emailKeyTuple.Item1 is subject string
-                    // emailKeyTuple.Item2 is the Email object
-                    // emailKeyTuple.Item3 is the UID string
-
-                    var emailForLog = emailKeyTuple.Item2; // The Email object
-                    var emailIdForLogging = emailForLog?.EmailUniqueId.ToString() ?? $"UnknownEmailId_{emailKeyTuple.Item1}";
-
-                    try
-                    {
-                        Console.WriteLine($"Attempting to process email: {emailIdForLogging}");
-
-                        var desFolder = Path.Combine(appSetting.DataFolder, emailKeyTuple.Item1,
-                            emailForLog.EmailUniqueId.ToString());
-
-                        if (!emailForLog.EmailMapping.EmailFileTypes
-                            .All(x => x.IsRequired != true || attachments // Use the attachments list directly
-                                .Any(att => Regex.IsMatch(att.FullName, x.FileTypes.FilePattern, RegexOptions.IgnoreCase) &&
-                                            att.LastWriteTime >= beforeImport)))
+                        if (currentEmailResult == null)
                         {
                             continue;
                         }
 
-                        var emailFileTypes = emailForLog.EmailMapping.InfoFirst == true
-                            ? emailForLog.FileTypes.OrderByDescending(x => x.FileImporterInfos.EntryType == "Info").ToList() // Assuming FileTypeManager.EntryTypes.Info was "Info"
-                            : emailForLog.FileTypes.OrderBy(x => x.FileImporterInfos.EntryType == "Info").ToList();
+                        processedEmailCount++;
 
-                        foreach (var emailFileTypeDefinition in emailFileTypes)
+                        await ImportUtils.ExecuteEmailMappingActions(currentEmailResult.EmailKey.Item2.EmailMapping,
+                            new CoreEntities.Business.Entities.FileTypes() { EmailId = currentEmailResult.EmailKey.Item2.EmailId },
+                            currentEmailResult.AttachedFiles.ToArray(), appSetting).ConfigureAwait(false);
+
+                        var msgResult = currentEmailResult;
+                        // Inner processing loop for the current email (msgResult)
+                        // This block remains the same as your existing production code's second loop,
+                        // but operates on 'msgResult' (which is currentEmailResult).
+                        // All 'await' calls within should use .ConfigureAwait(false).
+                        // START OF YOUR EXISTING PRODUCTION CODE'S SECOND LOOP LOGIC (ADAPTED)
+                        var emailKeyTuple = msgResult.EmailKey;
+                        var attachments = msgResult.AttachedFiles;
+                        var emailForLog = emailKeyTuple.Item2;
+                        var emailIdForLogging = emailForLog?.EmailUniqueId.ToString() ?? $"UnknownEmailId_{emailKeyTuple.Item1}";
+
+                        try
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            var fileTypeInstance = FileTypeManager.GetFileType(emailFileTypeDefinition);
-                            fileTypeInstance.Data.Clear();
-                            fileTypeInstance.EmailInfoMappings = emailForLog.EmailMapping.EmailInfoMappings;
+                            Console.WriteLine($"Attempting to process email: {emailIdForLogging}");
 
-                            var csvFiles = attachments // Use the attachments from the result
-                                .Where(x => Regex.IsMatch(x.FullName, fileTypeInstance.FilePattern, RegexOptions.IgnoreCase) &&
-                                            x.LastWriteTime >= beforeImport)
-                                .ToArray();
+                            var desFolder = Path.Combine(appSetting.DataFolder, emailKeyTuple.Item1,
+                                emailForLog.EmailUniqueId.ToString());
 
-                            fileTypeInstance.EmailId = emailForLog.EmailId;
-                            fileTypeInstance.FilePath = desFolder;
-                            if (csvFiles.Length == 0) continue;
-
-                            var reference = emailKeyTuple.Item1; // subject string as reference
-
-                            // EF6 Async for database operations
-                            var docSet = await ctx.AsycudaDocumentSetExs
-                                .FirstOrDefaultAsync(x => x.Declarant_Reference_Number.Contains(reference) && // Original used Contains
-                                                           x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                .ConfigureAwait(false);
-
-                            if (fileTypeInstance.CreateDocumentSet)
+                            if (!emailForLog.EmailMapping.EmailFileTypes
+                                .All(x => x.IsRequired != true || attachments
+                                    .Any(att => Regex.IsMatch(att.FullName, x.FileTypes.FilePattern, RegexOptions.IgnoreCase) &&
+                                                att.LastWriteTime >= beforeImport)))
                             {
-                                if (docSet == null || docSet.Declarant_Reference_Number != reference) // If Contains found something else, or nothing
-                                {
-                                    docSet = await ctx.AsycudaDocumentSetExs
-                                       .FirstOrDefaultAsync(x => x.Declarant_Reference_Number == reference &&
+                                Console.WriteLine($"Skipping email {emailIdForLogging}, required files criteria not met.");
+                                continue; // to next emailTask in the outer loop
+                            }
+
+                            var emailFileTypes = emailForLog.EmailMapping.InfoFirst == true
+                                ? emailForLog.FileTypes.OrderByDescending(x => x.FileImporterInfos.EntryType == "Info").ToList()
+                                : emailForLog.FileTypes.OrderBy(x => x.FileImporterInfos.EntryType == "Info").ToList();
+
+                            foreach (var emailFileTypeDefinition in emailFileTypes)
+                            {
+                                cancellationToken.ThrowIfCancellationRequested();
+                                var fileTypeInstance = FileTypeManager.GetFileType(emailFileTypeDefinition); // Ensure this returns a new/cloned instance if state is modified
+                                fileTypeInstance.Data.Clear();
+                                fileTypeInstance.EmailInfoMappings = emailForLog.EmailMapping.EmailInfoMappings;
+
+                                var csvFiles = attachments
+                                    .Where(x => Regex.IsMatch(x.FullName, fileTypeInstance.FilePattern, RegexOptions.IgnoreCase) &&
+                                                x.LastWriteTime >= beforeImport)
+                                    .ToArray();
+
+                                fileTypeInstance.EmailId = emailForLog.EmailId;
+                                fileTypeInstance.FilePath = desFolder;
+                                if (csvFiles.Length == 0) continue;
+
+                                var reference = emailKeyTuple.Item1;
+
+                                var docSet = await ctx.AsycudaDocumentSetExs
+                                    .FirstOrDefaultAsync(x => x.Declarant_Reference_Number.Contains(reference) &&
                                                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                       .ConfigureAwait(false);
-                                    if (docSet == null)
+                                    .ConfigureAwait(false);
+
+                                if (fileTypeInstance.CreateDocumentSet)
+                                {
+                                    if (docSet == null || docSet.Declarant_Reference_Number != reference)
                                     {
-                                        var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
-                                            x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation() && x.IsDefault == true);
+                                        docSet = await ctx.AsycudaDocumentSetExs
+                                           .FirstOrDefaultAsync(x => x.Declarant_Reference_Number == reference &&
+                                                                   x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                           .ConfigureAwait(false);
+                                        if (docSet == null)
+                                        {
+                                            var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
+                                                x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation() && x.IsDefault == true);
 
-                                        // Use ExecuteSqlCommandAsync for EF6
-                                        await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction, // Or other behavior
-                                            $@"INSERT INTO AsycudaDocumentSet (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
-                                               VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{reference.Replace("'", "''")}',{cp.Customs_ProcedureId},0)", // SQL Encode reference
-                                            cancellationToken).ConfigureAwait(false);
+                                            await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction,
+                                                $@"INSERT INTO AsycudaDocumentSet (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
+                                                   VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{reference.Replace("'", "''")}',{cp.Customs_ProcedureId},0)",
+                                                cancellationToken).ConfigureAwait(false);
 
-                                        docSet = await ctx.AsycudaDocumentSetExs // Re-fetch
-                                            .FirstOrDefaultAsync(x => x.Declarant_Reference_Number == reference &&
-                                                                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                            .ConfigureAwait(false);
+                                            docSet = await ctx.AsycudaDocumentSetExs
+                                                .FirstOrDefaultAsync(x => x.Declarant_Reference_Number == reference &&
+                                                                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                                .ConfigureAwait(false);
+                                        }
                                     }
                                 }
-                            }
 
-                            if (docSet != null)
-                            {
-                                fileTypeInstance.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
-                                fileTypeInstance.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId", fileTypeInstance.AsycudaDocumentSetId.ToString()));
-                            }
-
-                            // Attachments are saved within ProcessSingleEmailAndDownloadAttachmentsAsync,
-                            // which is called by StreamEmailResultsAsync.
-                            // The results (list of FileInfo) are in currentEmailResult.AttachedFiles.
-                            // Thus, an explicit call to Utils.SaveAttachmentsAsync here is not needed
-                            // if currentEmailResult.AttachedFiles is already populated correctly.
-
-                            if (!ReadOnlyMode)
-                            {
-                                await ImportUtils.ExecuteDataSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
-                                if (emailForLog.EmailMapping.IsSingleEmail == true)
+                                if (docSet != null)
                                 {
-                                    await ImportUtils.ExecuteNonSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
+                                    fileTypeInstance.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
+                                    fileTypeInstance.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId", fileTypeInstance.AsycudaDocumentSetId.ToString()));
                                 }
-                                else
+
+                                // Utils.SaveAttachments was called in original code, assuming it's still relevant
+                                // If attachments are already saved by EmailDownloader in the correct place, this might be redundant
+                                // or it might perform additional DB logging/linking. Keeping for consistency with original.
+                                // Utils.SaveAttachments(csvFiles, fileTypeInstance, emailForLog); // Assuming sync or make async
+
+                                if (!ReadOnlyMode)
                                 {
-                                    int currentDocSetId = 0; // Default
-                                    if (docSet != null) currentDocSetId = docSet.AsycudaDocumentSetId;
+                                    await ImportUtils.ExecuteDataSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
+                                    if (emailForLog.EmailMapping.IsSingleEmail == true)
+                                    {
+                                        await ImportUtils.ExecuteNonSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
+                                    }
                                     else
                                     {
-                                        var lastDocSet = await ctx.AsycudaDocumentSet
-                                            .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                            .OrderByDescending(x => x.AsycudaDocumentSetId)
-                                            .FirstOrDefaultAsync().ConfigureAwait(false);
-                                        if (lastDocSet != null) currentDocSetId = lastDocSet.AsycudaDocumentSetId;
+                                        int currentDocSetId = 0;
+                                        if (docSet != null) currentDocSetId = docSet.AsycudaDocumentSetId;
+                                        else
+                                        {
+                                            var lastDocSet = await ctx.AsycudaDocumentSet
+                                                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                                .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                                .FirstOrDefaultAsync().ConfigureAwait(false);
+                                            if (lastDocSet != null) currentDocSetId = lastDocSet.AsycudaDocumentSetId;
+                                        }
+                                        filesForNonSpecificActions.Add(new Tuple<CoreEntities.Business.Entities.FileTypes, FileInfo[], int>(
+                                            fileTypeInstance, csvFiles, currentDocSetId));
                                     }
-                                    filesForNonSpecificActions.Add(new Tuple<CoreEntities.Business.Entities.FileTypes, FileInfo[], int>(
-                                        fileTypeInstance, csvFiles, currentDocSetId));
                                 }
+                            } // end foreach emailFileTypeDefinition
+                            Console.WriteLine($"Successfully processed email: {emailIdForLogging}");
+                        }
+                        catch (OperationCanceledException) { throw; }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing specific email content for {emailIdForLogging}: {ex.Message}");
+                            // Decide if IMAP client is still healthy or if we need to break
+                            if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
+                            {
+                                Console.WriteLine("IMAP client disconnected during content processing. Aborting.");
+                                break; // Exit the foreach loop for tasks
                             }
                         }
-                        Console.WriteLine($"Successfully processed email: {emailIdForLogging}");
-                    }
-                    catch (OperationCanceledException) { throw; }
-                    catch (Exception ex)
+                        // END OF YOUR EXISTING PRODUCTION CODE'S SECOND LOOP LOGIC (ADAPTED)
+                    } // end foreach emailTask
+                } // end try block for ImapClient
+                finally
+                {
+                    if (imapClient != null)
                     {
-                        Console.WriteLine($"Error processing email {emailIdForLogging}: {ex.Message}");
+                        if (imapClient.IsConnected)
+                        {
+                            try
+                            {
+                                await imapClient.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false);
+                            }
+                            catch (Exception dex) { Console.WriteLine($"Error disconnecting IMAP client: {dex.Message}"); }
+                        }
+                        imapClient.Dispose();
                     }
                 }
 
-                } // End of foreach (Task<EmailDownloader.EmailProcessingResult> emailTask...)
-                
                 Console.WriteLine($"{processedEmailCount} Emails processed individually.");
 
                 if (ReadOnlyMode) return;
 
-                // Process accumulated filesForNonSpecificActions after all emails are handled
                 var pfg = filesForNonSpecificActions
                     .Where(x => x.Item1.FileTypeActions.Any(z => z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
                     .GroupBy(x => x.Item3).ToList();
@@ -365,28 +373,32 @@ namespace AutoBot
                     }
                 }
             }
-            catch (OperationCanceledException) { throw; }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("ProcessEmailsAsync was canceled.");
+                throw; // Re-throw to be caught by MainAsync/Main
+            }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"Critical error in ProcessEmailsAsync for appSetting {appSetting.ApplicationSettingsId}: {e}");
+                // Consider if this error should stop all processing or just this appSetting.
+                // For now, re-throwing will stop the current appSetting.
                 throw;
             }
         }
 
         private static void ExecuteDBSessionActions(CoreEntitiesContext ctx, ApplicationSettings appSetting)
         {
-            // Original synchronous logic
             ctx.SessionActions.OrderBy(x => x.Id)
-                .Include(x => x.Actions) // EF6 string include
+                .Include(x => x.Actions)
                 .Where(x => x.Sessions.Name == "End").ToList()
                 .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                 .ForEach(x => x.Invoke());
 
-            // For EF6, use DbFunctions from System.Data.Entity
             var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
                 .Include("ParameterSet.ParameterSetParameters.Parameters")
-                .Where(x => x.RunDateTime >= DbFunctions.AddMinutes(DateTime.Now, (x.Sessions.WindowInMinutes /* ?? 0 removed as it's int not int? */) * -1)
-                            && x.RunDateTime <= DbFunctions.AddMinutes(DateTime.Now, x.Sessions.WindowInMinutes /* ?? 0 removed */ ))
+                .Where(x => x.RunDateTime >= DbFunctions.AddMinutes(DateTime.Now, (x.Sessions.WindowInMinutes) * -1) // Assuming WindowInMinutes is not nullable based on previous error
+                            && x.RunDateTime <= DbFunctions.AddMinutes(DateTime.Now, x.Sessions.WindowInMinutes))
                 .Where(x => (x.ApplicationSettingId == null || x.ApplicationSettingId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                 .OrderBy(x => x.Id)
                 .ToList();

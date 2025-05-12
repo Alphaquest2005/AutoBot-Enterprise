@@ -103,6 +103,7 @@
   <ItemGroup>
     <Compile Include="CheckFileSizeLimitAsync.cs" />
     <Compile Include="CreateMessage.cs" />
+    <Compile Include="EmailDownloader.CleanFileName.cs" />
     <Compile Include="ForwardMsgAsync.cs" />
     <Compile Include="ForwardMsgToSenderAsync.cs" />
     <Compile Include="EmailDownloadResult.cs" />

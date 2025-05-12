@@ -13,8 +13,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
     public class AdjustmentExModel : AdjustmentExViewModel_AutoGen
     {
         private string _entryDataDateFilter;
-        private bool _viewOvers;
-        private bool _viewShorts;
 
         static AdjustmentExModel()
         {

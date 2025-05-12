@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Class1.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Asycuda421.xsd" />
     <None Remove="SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
     <None Remove="SQLBlackBox\AdhocChange.sql" />

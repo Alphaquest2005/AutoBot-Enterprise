@@ -12,7 +12,6 @@ namespace WaterNut.DataSpace
 {
     public class CSVShipmentImporter
     {
-        private SaveCsvEntryData _saveCsvEntryData;
         private CSVToShipmentInvoiceConverter _csvToShipmentInvoiceConverter = new CSVToShipmentInvoiceConverter();
         private InventoryImporter _inventoryImporter = new InventoryImporter();
         private ShipmentInvoiceImporter _shipmentInvoiceImporter = new ShipmentInvoiceImporter();

@@ -8,37 +8,50 @@ namespace EmailDownloader;
 
 public static partial class EmailDownloader
 {
-    private static async Task ForwardMsgInternalAsync(MimeMessage msg, Client clientDetails, string subject,
-        string body,
-        string[] contacts, string[] attachments, CancellationToken cancellationToken) // Made async
+    private static async Task ForwardMsgInternalAsync(MimeMessage originalMsg, Client clientDetails, string subject, string body,
+               string[] contacts, string[] attachments, CancellationToken cancellationToken)
     {
         if (clientDetails.Email == null) return;
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
+
         if (!clientDetails.DevMode)
         {
-            if (msg.From.Mailboxes.Any())
+            if (originalMsg != null && originalMsg.From.Mailboxes.Any())
             {
-                message.ReplyTo.Add(new MailboxAddress(msg.From?.FirstOrDefault()?.Name ?? "No Sender Found",
-                    msg.From?.Mailboxes?.FirstOrDefault()?.Address ?? GetContacts("Developer").FirstOrDefault()));
+                message.ReplyTo.Add(new MailboxAddress(originalMsg.From.First().Name ?? "Original Sender", originalMsg.From.Mailboxes.First().Address));
             }
-
-            foreach (var recipent in contacts.Distinct())
+            else
             {
-                message.To.Add(MailboxAddress.Parse(recipent));
+                // Fallback if original sender is unknown
+                var devContacts = GetContacts("Developer"); // This is sync, consider GetContactsAsync if available
+                if (devContacts.Any()) message.ReplyTo.Add(MailboxAddress.Parse(devContacts.First()));
             }
+            foreach (var recipent in contacts.Distinct()) { message.To.Add(MailboxAddress.Parse(recipent)); }
+        }
+        else
+        {
+            // DevMode logic for recipients (e.g., send to a specific test address)
+            // var devContacts = GetContacts("Developer");
+            // if(devContacts.Any()) message.To.Add(MailboxAddress.Parse(devContacts.First()));
         }
 
         message.Subject = subject;
         var builder = new BodyBuilder { TextBody = body };
-        if (msg.MessageId != null)
-            builder.Attachments.Add(new MessagePart { Message = msg }); // Check if msg is not a new/empty one
-        foreach (var attachment in attachments)
+
+        // Only add original message as attachment if it's not null and has content (e.g., MessageId is set)
+        if (originalMsg != null && originalMsg.MessageId != null)
         {
-            if (File.Exists(attachment)) builder.Attachments.Add(attachment);
+            builder.Attachments.Add(new MessagePart { Message = originalMsg });
         }
 
+        foreach (var attachmentPath in attachments)
+        {
+            if (File.Exists(attachmentPath)) builder.Attachments.Add(attachmentPath);
+        }
         message.Body = builder.ToMessageBody();
+        // Use the public SendEmailAsync (MimeMessage overload)
         await SendEmailInternalAsync(clientDetails, message, cancellationToken).ConfigureAwait(false);
     }
+
 }

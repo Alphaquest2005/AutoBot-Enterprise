@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Security.Permissions;
+using Serilog; // Added for Serilog configuration
 
 namespace AutoWaterNutServer
 {
@@ -28,8 +29,22 @@ namespace AutoWaterNutServer
         
         static void Main(string[] args)
         {
+            // Configure Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs/AutoWaterNutServer-.txt",
+                              rollingInterval: RollingInterval.Day,
+                              retainedFileCountLimit: 7,
+                              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
+
             try
             {
+                Log.Information("Application Starting...");
+
                 Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
 
                 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
@@ -57,6 +72,7 @@ namespace AutoWaterNutServer
             
 
             Console.WriteLine("");
+            Log.Information("Services started. Press [Enter] to exit.");
             Console.WriteLine("Press [Enter] to exit.");
             Console.ReadLine();
             Console.WriteLine("");
@@ -65,11 +81,17 @@ namespace AutoWaterNutServer
             }
             catch (Exception ex)
             {
+                Log.Fatal(ex, "Application terminated unexpectedly.");
                 Debugger.Break();
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("");
                 Console.WriteLine("");
                 Console.WriteLine(ex.StackTrace);
+            }
+            finally
+            {
+                Log.Information("Application Shutting Down...");
+                Log.CloseAndFlush();
             }
         }
         
