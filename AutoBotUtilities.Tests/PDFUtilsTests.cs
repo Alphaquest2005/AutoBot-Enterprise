@@ -92,13 +92,13 @@ namespace AutoBotUtilities.Tests
         }
 
           [Test]
-          public void CanImportAmazonMultiSectionInvoice() // Added Test (Corrected)
+          public async Task CanImportAmazonMultiSectionInvoice() // Added Test (Corrected)
           {
               try
               {
                   //if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true); // Skip if not test settings
                   // Use the absolute path provided by the user
-                  var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf"; 
+                  var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
                   
                   if (!File.Exists(testFile))
                   {
@@ -106,7 +106,7 @@ namespace AutoBotUtilities.Tests
                       return; // Skip test if file doesn't exist
                   }
   
-                  var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                  var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                   if (!fileTypes.Any())
                   {
                       Assert.Fail($"No suitable PDF FileType found for: {testFile}");
@@ -117,13 +117,13 @@ namespace AutoBotUtilities.Tests
                   {
                       Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
                       // Clear DB before each filetype test within this method
-                      Infrastructure.Utils.ClearDataBase(); 
-                      PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
+                      Infrastructure.Utils.ClearDataBase();
+                      await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
   
   
                       using (var ctx = new EntryDataDSContext())
                       {
-                          // Basic assertion: Check if *any* data was imported. 
+                          // Basic assertion: Check if *any* data was imported.
                           // Specific counts might vary depending on the actual PDF content.
                           Assert.That(ctx.ShipmentInvoice.Any(), Is.True, "No ShipmentInvoice created."); // Corrected Assert
                           Assert.That(ctx.ShipmentInvoiceDetails.Any(), Is.True, "No ShipmentInvoiceDetails created."); // Corrected Assert

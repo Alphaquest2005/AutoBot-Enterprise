@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asycuda421.designer.cs" />
+    <Compile Include="EmailProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="FolderProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

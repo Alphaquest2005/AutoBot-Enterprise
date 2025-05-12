@@ -16,8 +16,7 @@ namespace EmailDownloader
             this.Subject = subject;
             this.EmailDate = emailDate;
             this.EmailMapping = emailMapping;
-          
-
+            this.FileTypes = new List<CoreEntities.Business.Entities.FileTypes>(); // Initialize the list
         }
 
         public string EmailId => Subject + "--" + EmailDate.ToString("yyyy-MM-dd-HH:mm:ss");

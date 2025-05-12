@@ -31,20 +31,22 @@ namespace WaterNut.DataSpace
         {
             HashSet<AsycudaDocumentSet> docSet = new HashSet<AsycudaDocumentSet>();
             var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(fileType.DocSetRefernece, true).ConfigureAwait(false);
-            
-            (await GetAsycudaDocumentSets(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId && fileType.AsycudaDocumentSetId != 0).ConfigureAwait(false)).ForEach(x => docSet.Add(x));
+
+            var asycudaDocumentSets = GetAsycudaDocumentSets(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId && fileType.AsycudaDocumentSetId != 0);
+            asycudaDocumentSets.ForEach(x => docSet.Add(x));
  
             var originaldocSetRefernece = GetFileTypeOriginalReference(fileType);
+            var documentSets = GetAsycudaDocumentSets(x => x.Declarant_Reference_Number == originaldocSetRefernece);
             if (fileType.CopyEntryData)
             {
-                (await GetAsycudaDocumentSets( x => x.Declarant_Reference_Number == originaldocSetRefernece).ConfigureAwait(false)).ForEach(x => docSet.Add(x));
+                documentSets.ForEach(x => docSet.Add(x));
             }
             else
             {
                 if (IsSystemDocSet(sysDocSet))
                 {
                     docSet.Clear();
-                    (await GetAsycudaDocumentSets(x => x.Declarant_Reference_Number == originaldocSetRefernece).ConfigureAwait(false)).ForEach(x => docSet.Add(x));
+                    documentSets.ForEach(x => docSet.Add(x));
  
                 }
  
@@ -67,15 +69,15 @@ namespace WaterNut.DataSpace
             }
         }
  
-        private static async Task<List<AsycudaDocumentSet>> GetAsycudaDocumentSets( Expression<Func<AsycudaDocumentSet, bool>> predicate)
+        private static List<AsycudaDocumentSet> GetAsycudaDocumentSets( Expression<Func<AsycudaDocumentSet, bool>> predicate)
         {
             using (var ctx = new DocumentDSContext())
             {
-                return await ctx.AsycudaDocumentSets
+                return  ctx.AsycudaDocumentSets
                     .Include(x => x.SystemDocumentSet)
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(predicate).ToListAsync().ConfigureAwait(false);
+                    .Where(predicate).ToList();
             }
         }
  

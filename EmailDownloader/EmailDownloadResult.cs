@@ -9,12 +9,12 @@ namespace EmailDownloader;
 
 public class EmailProcessingResult
 {
-    public Tuple<string, Email, string> EmailKey { get; }
+    public (string SubjectIdentifier, Email EmailMessage, string UidString) EmailKey { get; }
     public List<System.IO.FileInfo> AttachedFiles { get; }
 
-    public EmailProcessingResult(Tuple<string, Email, string> emailKey, List<System.IO.FileInfo> attachedFiles)
+    public EmailProcessingResult((string SubjectIdentifier, Email EmailMessage, string UidString) emailKey, List<System.IO.FileInfo> attachedFiles)
     {
         EmailKey = emailKey;
-        AttachedFiles = attachedFiles;
+        AttachedFiles = attachedFiles ?? new List<System.IO.FileInfo>(); // Added null check for safety, consistent with previous attempt
     }
 }

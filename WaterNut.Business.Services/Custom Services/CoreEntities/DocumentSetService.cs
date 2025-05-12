@@ -161,7 +161,7 @@ namespace CoreEntities.Business.Services
                 
             }
 
-            await BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
+            await BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId).ConfigureAwait(false);
         }
 
         public async Task CleanBond(int docSetId, bool perIM7)

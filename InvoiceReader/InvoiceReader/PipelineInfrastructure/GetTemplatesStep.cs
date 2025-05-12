@@ -66,7 +66,7 @@ namespace InvoiceReader.PipelineInfrastructure
 
                             _logger.Debug("Active templates query: {Query}", activeTemplatesQuery.ToString());
                             
-                            var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
+                            var templates = activeTemplatesQuery.ToList();
 
 
                             if (templates.Any())

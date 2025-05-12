@@ -254,9 +254,9 @@ namespace WaterNut.DataSpace
             AsycudaDocumentSet docSet;
             using (var ctx = new DocumentDSContext()) // Add using for proper disposal
             {
-                docSet = await ctx.AsycudaDocumentSets.FirstOrDefaultAsync(x => // Use FirstOrDefaultAsync
+                docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x => // Use FirstOrDefaultAsync
                     x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
-                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
             }
             if (docSet == null) docSet = await CreateAsycudaDocumentSet(docRef, isSystemDocSet).ConfigureAwait(false);
             return docSet;

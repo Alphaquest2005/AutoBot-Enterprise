@@ -116,3 +116,11 @@
 - Installed using `uv` package manager.
 - Source cloned from `https://github.com/non-dirty/imap-mcp.git`.
 - Dependencies managed in a virtual environment (`.venv`).
+
+## Logging Framework
+
+[2025-05-12 11:38:27] - The AutoBot project utilizes the Serilog library for logging, not NLog.
+
+## Build & Test Process
+
+[2025-05-12 12:18:22] - Always refer to and use the instructions specified in [`BUILD_INSTRUCTIONS.md`](BUILD_INSTRUCTIONS.md) when building or testing any part of the AutoBot-Enterprise project.
