@@ -125,19 +125,19 @@ namespace AutoBot
                 {
                     "AddPart",
                     ((paramInfo) => { AddPart(paramInfo); },
-                        new string[] { "Invoice", "Name", "StartRegex", "IsRecurring", "IsComposite" }
+                        new string[] { "Template", "Name", "StartRegex", "IsRecurring", "IsComposite" }
                     )
                 },
                 {
                     "AddLine",
                     ((paramInfo) => { AddLine(paramInfo); },
-                        new string[] { "Invoice", "Part", "Name", "Regex" }
+                        new string[] { "Template", "Part", "Name", "Regex" }
                     )
                 },
                 {
                     "UpdateLine",
                     ((paramInfo) => { UpdateLine(paramInfo); },
-                        new string[] { "Invoice", "Part", "Name", "Regex" }
+                        new string[] { "Template", "Part", "Name", "Regex" }
                     )
                 },
                 {
@@ -251,7 +251,7 @@ namespace AutoBot
             {
                 using (var ctx = new OCRContext() { StartTracking = true })
                 {
-                    var pInvoice = paramInfo["Invoice"];
+                    var pInvoice = paramInfo["Template"];
                     var pPart = paramInfo["Part"];
                     var pLine = paramInfo["Name"];
                     var pRegex = paramInfo["Regex"];
@@ -341,7 +341,7 @@ namespace AutoBot
             {
                 using (var ctx = new OCRContext() { StartTracking = true })
                 {
-                    var pInvoice = paramInfo["Invoice"];
+                    var pInvoice = paramInfo["Template"];
                     var pPart = paramInfo["Part"];
                     var pLine = paramInfo["Name"];
                     var pRegex = paramInfo["Regex"];
@@ -431,7 +431,7 @@ namespace AutoBot
             {
                 using (var ctx = new OCRContext())
                 {
-                    var pInvoice = paramInfo["Invoice"];
+                    var pInvoice = paramInfo["Template"];
                     var pPart = paramInfo["Name"];
                     var pStartRegex = paramInfo["StartRegex"];
                     var pIsRecurring = bool.Parse(paramInfo["IsRecurring"]);
@@ -580,7 +580,7 @@ namespace AutoBot
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
                        
 
-                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Invoice Template Not found!",
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Template Template Not found!",
                              EmailDownloader.EmailDownloader.GetContacts("Developer"), body, res1).ConfigureAwait(false);
 
                         fileTypes.ProcessNextStep.Add("Kill");

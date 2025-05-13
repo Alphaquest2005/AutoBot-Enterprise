@@ -189,7 +189,7 @@ namespace AutoBotUtilities.Tests
              }
          }
  
-// --- START TEMU Invoice Import Tests ---
+// --- START TEMU Template Import Tests ---
 
 
         [Test]
@@ -205,7 +205,7 @@ namespace AutoBotUtilities.Tests
                     return; // Skip test if file doesn't exist
                 }
 
-                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                 if (!fileTypes.Any(ft => ft.Id == 1147)) // Ensure we use the generic PDF invoice type
                 {
                     Assert.Warn($"FileType 1147 not found or not applicable for: {testFile}");
@@ -231,11 +231,11 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-17867849567351770"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-17867849567351770"), "Template number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
                    
 
-                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
+                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Template: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
 
                 Assert.That(true); // Indicate overall success if no exceptions/failures
@@ -286,11 +286,11 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-01046445307513763"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-01046445307513763"), "Template number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
                     
 
-                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
+                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Template: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
 
                 Assert.That(true); // Indicate overall success if no exceptions/failures
@@ -343,11 +343,11 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245148453753900"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245148453753900"), "Template number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
                    
 
-                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
+                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Template: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
 
                 Assert.That(true); // Indicate overall success if no exceptions/failures
@@ -400,11 +400,11 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245253311353900"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-11245253311353900"), "Template number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
                     
 
-                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
+                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Template: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
 
                 Assert.That(true); // Indicate overall success if no exceptions/failures
@@ -457,11 +457,11 @@ namespace AutoBotUtilities.Tests
                     var invoice = invoices.First();
                     
                     // TODO: Update expected values once extraction rules are defined
-                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-0650403289407038S"), "Invoice number mismatch."); 
+                    Assert.That(invoice.InvoiceNo, Is.EqualTo("PO-211-0650403289407038S"), "Template number mismatch."); 
                     Assert.That(invoice.TotalsZero, Is.EqualTo(0), "TotalsZero should be 0."); 
                     
 
-                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Invoice: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
+                    Console.WriteLine($"Import successful for {Path.GetFileName(testFile)}. Template: {invoice.InvoiceNo}, Details: {details.Count}, TotalsZero: {invoice.TotalsZero}"); 
                 }
 
                 Assert.That(true); // Indicate overall success if no exceptions/failures
@@ -473,7 +473,7 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-        // --- END TEMU Invoice Import Tests ---
+        // --- END TEMU Template Import Tests ---
         // --- TEMPORARY TESTS TO EXTRACT PDF TEXT ---
 
 

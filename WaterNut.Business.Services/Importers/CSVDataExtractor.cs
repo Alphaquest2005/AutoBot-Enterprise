@@ -372,7 +372,7 @@ namespace WaterNut.Business.Services.Importers
                     "EntryDataId",
                     (c, mapping, splits) =>
                         new Tuple<bool, string>(Regex.IsMatch(splits[mapping["EntryDataId"]], @"\d+E\+\d+"),
-                            "Invoice # contains Excel E+ Error")
+                            "Template # contains Excel E+ Error")
                 },
                 {
                     "ItemNumber",

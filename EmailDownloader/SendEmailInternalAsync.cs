@@ -8,27 +8,26 @@ namespace EmailDownloader;
 
 public static partial class EmailDownloader
 {
-    public static async Task SendEmailInternalAsync(Client clientDetails, MimeMessage message,
+    public static  Task SendEmailInternalAsync(Client clientDetails, MimeMessage message,
         CancellationToken cancellationToken = default) // Made async
     {
         try
         {
-            if (clientDetails.Email == null) return;
+            if (clientDetails.Email == null) return null;
             var mailSettings = GetSendMailSettings(clientDetails.Email);
             using (var smtpClient = new SmtpClient()) // Renamed variable to avoid conflict
             {
-                await smtpClient
-                    .ConnectAsync(mailSettings.Server, mailSettings.Port, mailSettings.Options, cancellationToken)
-                    .ConfigureAwait(false);
-                await smtpClient.AuthenticateAsync(clientDetails.Email, clientDetails.Password, cancellationToken)
-                    .ConfigureAwait(false);
-                await smtpClient.SendAsync(message, cancellationToken).ConfigureAwait(false);
-                await smtpClient.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
+                smtpClient.Connect(mailSettings.Server, mailSettings.Port, mailSettings.Options, cancellationToken);
+
+                smtpClient.Authenticate(clientDetails.Email, clientDetails.Password, cancellationToken);
+                smtpClient.Send(message, cancellationToken);
+                smtpClient.Disconnect(true, cancellationToken);
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
+        return Task.CompletedTask;
     }
 }

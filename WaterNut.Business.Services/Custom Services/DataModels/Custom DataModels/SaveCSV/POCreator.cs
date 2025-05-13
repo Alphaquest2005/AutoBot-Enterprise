@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace
             if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
                 Math.Abs((double)item.Totals.Sum(x => x.InvoiceTotal)) < .001)
                 throw new ApplicationException(
-                    $"{entryDataId} has no Invoice Total. Please check File.");
+                    $"{entryDataId} has no Template Total. Please check File.");
 
 
             var EDpo = new PurchaseOrders(true)

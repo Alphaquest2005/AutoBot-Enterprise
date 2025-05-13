@@ -95,7 +95,7 @@
         <DataTemplate  DataType="{x:Type QSOCREntities:Invoices}">
             
                     <Grid d:DesignWidth="561.4" d:DesignHeight="40.6" Width="561"  Background="#00000000">
-                        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Invoice Regex"/>
+                        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Template Regex"/>
                         <TextBox Text="{Binding Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0,40,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
                         
 

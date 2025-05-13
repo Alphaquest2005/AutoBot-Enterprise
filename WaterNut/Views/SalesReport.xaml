@@ -97,7 +97,7 @@
                                                     Header="Date" />
                                 <DataGridTextColumn Width="60"
                                                     Binding="{Binding InvoiceNo}"
-                                                    Header="Invoice#" />
+                                                    Header="Template#" />
                                 <DataGridTextColumn Width="100"
                                                     Binding="{Binding CustomerName}"
                                                     Header="Customer Name" />

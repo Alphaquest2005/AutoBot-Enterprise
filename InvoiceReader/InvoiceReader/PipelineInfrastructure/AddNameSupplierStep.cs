@@ -1,5 +1,5 @@
 using System;
-// Assuming Invoice is defined here
+// Assuming Template is defined here
 
 using System.Collections.Generic;
 using System.Linq;

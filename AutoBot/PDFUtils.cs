@@ -289,7 +289,7 @@ namespace AutoBot
             var success = new Dictionary<string, (string FileName, string DocumentType, ImportStatus status)>();
             var logger = LoggingConfig.CreateLogger();
             var docTypes = new Dictionary<string, string>()
-                { { "Invoice", "Shipment Invoice" }, { "CustomsDeclaration", "Simplified Declaration" } };
+                { { "Template", "Shipment Template" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
               var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName).ConfigureAwait(false);  

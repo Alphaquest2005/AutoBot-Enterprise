@@ -9,6 +9,12 @@ using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
 namespace AutoBotUtilities
 {
+    using System.Text.RegularExpressions;
+
+    using WaterNut.Business.Services.Utils;
+
+    using Utils = WaterNut.DataSpace.Utils;
+
     public class ImportUtils
     {
         
@@ -260,6 +266,34 @@ namespace AutoBotUtilities
                     Array.Empty<string>()).ConfigureAwait(false);
                 // throw; // Consider re-throwing
             }
+        }
+
+        public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
+        {
+
+           
+
+            var importableFileTypesPdf = await FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).ConfigureAwait(false);
+            var dfileType = importableFileTypesPdf.FirstOrDefault(x =>
+                Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
+
+           
+
+            if (dfileType != null) // Ensure dfileType is not null before proceeding
+            {
+                dfileType.AsycudaDocumentSetId = docSetId;
+           
+                await InvoiceReader.InvoiceReader.ImportPDF([new FileInfo(droppedFilePath)],dfileType).ConfigureAwait(false);
+            }
+            else
+            {
+                // Handle the case where no suitable dfileType was found
+                // For example, log an error or throw an exception
+                Console.WriteLine($"No suitable PDF file type found for {droppedFilePath} with fileType hint {fileType}");
+                // Depending on requirements, you might throw new ApplicationException("No suitable PDF file type found.");
+            }
+
+
         }
     }
 }

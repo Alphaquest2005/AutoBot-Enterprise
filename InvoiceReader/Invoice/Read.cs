@@ -12,7 +12,7 @@ namespace WaterNut.DataSpace
     public partial class Invoice
     {
         // Assuming _logger exists from another partial part
-        // private static readonly ILogger _logger = Log.ForContext<Invoice>();
+        // private static readonly ILogger _logger = Log.ForContext<Template>();
 
         // Overload for string input - simply splits and calls the main Read method
 
@@ -87,7 +87,7 @@ namespace WaterNut.DataSpace
         private static bool LogNullPartsIssue(string methodName, int? invoiceId)
         {
             _logger.Error(
-                "{MethodName}: Invoice Parts collection is null for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.",
+                "{MethodName}: Template Parts collection is null for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.",
                 methodName, invoiceId);
                 
             _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to null Parts collection.",

@@ -88,10 +88,10 @@ namespace WaterNut.DataSpace
             get
             {
                  int? invoiceId = this.OcrInvoices?.Id;
-                 _logger.Verbose("Evaluating Invoice Success for InvoiceId: {InvoiceId}", invoiceId);
+                 _logger.Verbose("Evaluating Template Success for InvoiceId: {InvoiceId}", invoiceId);
                  // Added null check for Parts collection itself and individual parts
                  bool success = this.Parts?.All(x => x != null && x.Success) ?? true; // Default to true if Parts is null? Or false? Assuming true.
-                 _logger.Verbose("Invoice Success evaluation result: {Success}. Part Count: {PartCount}", success, this.Parts?.Count ?? 0);
+                 _logger.Verbose("Template Success evaluation result: {Success}. Part Count: {PartCount}", success, this.Parts?.Count ?? 0);
                  return success;
             }
         }
@@ -100,7 +100,7 @@ namespace WaterNut.DataSpace
              get
              {
                   int? invoiceId = this.OcrInvoices?.Id;
-                  _logger.Verbose("Evaluating Invoice Lines property for InvoiceId: {InvoiceId}", invoiceId);
+                  _logger.Verbose("Evaluating Template Lines property for InvoiceId: {InvoiceId}", invoiceId);
                   List<Line> lines = null;
                   try
                   {
@@ -128,17 +128,17 @@ namespace WaterNut.DataSpace
         public Invoice(Invoices ocrInvoices)
         {
              int? invoiceId = ocrInvoices?.Id;
-             _logger.Debug("Constructing Invoice object for OcrInvoices Id: {InvoiceId}", invoiceId);
+             _logger.Debug("Constructing Template object for OcrInvoices Id: {InvoiceId}", invoiceId);
 
              // Null check input
              if (ocrInvoices == null)
              {
-                  _logger.Error("Invoice constructor called with null OcrInvoices object. Cannot initialize.");
+                  _logger.Error("Template constructor called with null OcrInvoices object. Cannot initialize.");
                   throw new ArgumentNullException(nameof(ocrInvoices), "OcrInvoices object cannot be null.");
              }
 
             OcrInvoices = ocrInvoices;
-             _logger.Verbose("Assigned OcrInvoices (Id: {InvoiceId}) to Invoice property.", invoiceId);
+             _logger.Verbose("Assigned OcrInvoices (Id: {InvoiceId}) to Template property.", invoiceId);
 
             // Initialize Parts collection safely
             try
@@ -146,7 +146,7 @@ namespace WaterNut.DataSpace
                  _logger.Debug("Filtering and selecting Parts for InvoiceId: {InvoiceId}", invoiceId);
                  if (ocrInvoices.Parts == null)
                  {
-                      _logger.Warning("OcrInvoices Id: {InvoiceId} has a null Parts collection. Invoice will have no parts.", invoiceId);
+                      _logger.Warning("OcrInvoices Id: {InvoiceId} has a null Parts collection. Template will have no parts.", invoiceId);
                       this.Parts = new List<Part>(); // Initialize to empty list
                  }
                  else
@@ -169,7 +169,7 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex, "Error during Parts initialization in Invoice constructor for OcrInvoices Id: {InvoiceId}", invoiceId);
+                 _logger.Error(ex, "Error during Parts initialization in Template constructor for OcrInvoices Id: {InvoiceId}", invoiceId);
                  this.Parts = new List<Part>(); // Ensure Parts is not null even on error
                  // throw; // Optionally re-throw
             }

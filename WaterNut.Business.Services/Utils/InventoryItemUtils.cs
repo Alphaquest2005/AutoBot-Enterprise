@@ -69,7 +69,7 @@ namespace WaterNut.Business.Services.Utils
             {
                 switch (fileType.FileImporterInfos.EntryType)
                 {
-                    case "Shipment Invoice":
+                    case "Shipment Template":
                     case "INV":
 
                         inventorySource = dctx.InventorySources.FirstOrDefault(x => x.Name == "Supplier");

@@ -62,7 +62,7 @@ namespace WaterNut.Business.Services.Importers
                         foreach (DataRow prow in poTemplate.Rows)
                         {
                             if (prow[poHeaderRow.IndexOf("PO Number")].ToString() == poNumber &&
-                                prow[poHeaderRow.IndexOf("Supplier Invoice#")].ToString() == InvoiceNo)
+                                prow[poHeaderRow.IndexOf("Supplier Template#")].ToString() == InvoiceNo)
                             {
                                 if (prow == poTemplateRow)
                                 {
@@ -96,9 +96,9 @@ namespace WaterNut.Business.Services.Importers
                         // changed to false because when importing in portage it doubling the errors because they get imported in importData function
                         row = addrow == false ? poTemplateRow : poTemplate.NewRow();
 
-                       if(oldInvoiceNo != InvoiceNo && !addrow) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
+                       if(oldInvoiceNo != InvoiceNo && !addrow) row[poHeaderRow.IndexOf("Supplier Template#")] = InvoiceNo;
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
-                        row[poHeaderRow.IndexOf("Supplier Invoice#")] = misMatch[misHeaderRow.IndexOf("InvoiceNo")];
+                        row[poHeaderRow.IndexOf("Supplier Template#")] = misMatch[misHeaderRow.IndexOf("InvoiceNo")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplateRow[poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
                         row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;

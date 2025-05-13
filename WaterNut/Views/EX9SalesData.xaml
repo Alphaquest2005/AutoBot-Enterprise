@@ -52,7 +52,7 @@
 
         <TextBlock x:Name="ImportSalesTxt" HorizontalAlignment="Left" Height="22" Margin="533,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82" FontSize="14" Text="Import Sales" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="ImportSales"/>
         <TextBlock MouseLeftButtonDown="RemoveSelected" HorizontalAlignment="Left" Height="26" Margin="387,118,0,0" TextWrapping="Wrap" Text="Remove Selected" VerticalAlignment="Top" Width="126" FontSize="16" Style="{DynamicResource CloseButtonStyle}" TextAlignment="Right" />
-        <TextBlock HorizontalAlignment="Left" Height="23" Margin="9,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="14" Text="Invoice Number" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Height="23" Margin="9,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="14" Text="Template Number" TextAlignment="Center"/>
         <TextBox Text="{Binding EntryDataIdFilter, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="22" Margin="9,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="14"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}"  PreviewKeyDown="TextBox_PreviewKeyDown"/>
         <TextBlock HorizontalAlignment="Left" Height="23" Margin="183,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="113" FontSize="14" Text="Start Date" TextAlignment="Center"/>
         <DatePicker SelectedDate="{Binding StartEntryDataDateFilter}" HorizontalAlignment="Left" Height="22" Margin="179,82,0,0" VerticalAlignment="Top" Width="117"/>

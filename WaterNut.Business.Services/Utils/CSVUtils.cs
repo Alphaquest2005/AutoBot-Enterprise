@@ -689,10 +689,10 @@ namespace WaterNut.Business.Services.Utils
                  !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) return val;
             if (row_no > 0)
                 if (string.IsNullOrEmpty(val) &&
-                    (mapping.Required == true || mapping.DestinationName == "Invoice #")
+                    (mapping.Required == true || mapping.DestinationName == "Template #")
                    ) // took out because it will replace invoice no regardless
                 {
-                    if (mapping.DestinationName == "Invoice #")
+                    if (mapping.DestinationName == "Template #")
                     {
                         val += dic["DIS-Reference"].Invoke(row.ToDynamic(), drow.ToDynamic(), header.ToDynamic());
                     }

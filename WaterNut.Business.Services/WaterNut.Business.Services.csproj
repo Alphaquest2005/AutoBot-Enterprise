@@ -704,7 +704,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\ItemSalesPiSummary.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\LicenceDocItem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\ImportStatus.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Template.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />

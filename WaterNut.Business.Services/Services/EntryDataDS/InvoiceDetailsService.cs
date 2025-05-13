@@ -229,7 +229,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "Template":
                                 return
                                     await
                                         GetWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany", includesLst)
@@ -740,7 +740,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "Template":
                                 return await CountWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "POItems":
@@ -857,7 +857,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "Template":
                                 return
                                     await
                                         LoadRangeWhere<ShipmentInvoice>(startIndex, count, dbContext, exp, itm.Value, "InvoiceDetails", "SelectMany")
@@ -1197,7 +1197,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Invoice":
+                            case "Template":
                                 return await SumWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "InvoiceDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "POItems":

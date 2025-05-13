@@ -239,7 +239,7 @@
 //         //    }
 //         //    else
 //         //    {
-//         //        MessageBox.Show("Please Select an Invoice to Assign, then try again.");
+//         //        MessageBox.Show("Please Select an Template to Assign, then try again.");
 
 //         //    }
 //         //}

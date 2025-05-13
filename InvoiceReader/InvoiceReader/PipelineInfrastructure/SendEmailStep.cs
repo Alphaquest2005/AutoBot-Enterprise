@@ -56,7 +56,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                      .Where(f => !string.IsNullOrEmpty(f))
                                      .ToArray();
                  _logger.Verbose("Email Subject: {Subject}, Body Length: {BodyLength}, Attachments: {Attachments}",
-                    "Invoice Template Not found!", context.EmailBody?.Length ?? 0, attachments);
+                    "Template Template Not found!", context.EmailBody?.Length ?? 0, attachments);
 
                  // Assuming SendEmail is synchronous or handles its own async internally
                  // Running potentially blocking network code in background thread.
@@ -64,7 +64,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                    await EmailDownloader.EmailDownloader.SendEmailAsync(
                         context.Client,
                         null, // Assuming null sender is intended
-                        "Invoice Template Not found!",
+                        "Template Template Not found!",
                         contacts?.ToArray(), // Convert IEnumerable<string> to string[]
                         context.EmailBody,
                         attachments // Use filtered list

@@ -165,7 +165,7 @@ namespace InvoiceReader.PipelineInfrastructure
         }
 
         /*
-        private static async Task<List<Invoice>> GetInvoiceTemplatesAsync()
+        private static async Task<List<Template>> GetInvoiceTemplatesAsync()
         {
             _logger.Debug("Loading invoice templates from database");
 
@@ -192,14 +192,14 @@ namespace InvoiceReader.PipelineInfrastructure
                     // Return only active templates
                     return allTemplates
                         .Where(x => x.IsActive)
-                        .Select(x => new Invoice(x))
+                        .Select(x => new Template(x))
                         .ToList();
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error loading templates from database");
-                return new List<Invoice>();
+                return new List<Template>();
             }
         }
 */

@@ -18,6 +18,7 @@ using TrackableEntities; // Added for TrackingState
 
 namespace AutoBot
 {
+    // ReSharper disable once HollowTypeName
     public class FolderProcessor
     {
         // Constructor could potentially take dependencies like ILogger, IEmailService etc. in a fuller refactoring

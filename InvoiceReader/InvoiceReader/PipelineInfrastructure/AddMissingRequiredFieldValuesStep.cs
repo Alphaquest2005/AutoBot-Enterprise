@@ -1,5 +1,5 @@
 using System;
-// Assuming Invoice and related entities are here
+// Assuming Template and related entities are here
 // Assuming OCR_Lines and Fields are here
 
 using System.Collections.Generic;

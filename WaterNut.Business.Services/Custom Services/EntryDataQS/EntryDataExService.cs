@@ -77,43 +77,7 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
-        {
-            
-                var res = new CoreEntitiesContext().AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == droppedFilePath)
-                    .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
-                var emailId = res?.EmailId;
-                var fileTypeId = res?.FileTypeId;
 
-                var importableFileTypesPdf = await FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).ConfigureAwait(false);
-                var dfileType = importableFileTypesPdf.FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
-                
-                if (dfileType == null) // for filenames not in database
-                {
-                    // Assuming the intent is to take the first if no specific pattern match is found from the initial list.
-                    // If GetImportableFileType is guaranteed to return something or if specific error handling is needed for an empty list,
-                    // this logic might need adjustment.
-                    dfileType = importableFileTypesPdf.FirstOrDefault(); // Changed from .First() to .FirstOrDefault() for safety
-                }
-
-                if (dfileType != null) // Ensure dfileType is not null before proceeding
-                {
-                    dfileType.AsycudaDocumentSetId = docSetId;
-                    var client = BaseDataModel.GetClient(); // Assuming GetClient() is synchronous
-                    var docSets = await Utils.GetDocSets(dfileType).ConfigureAwait(false);
-                    await InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, docSets, dfileType, client).ConfigureAwait(false);
-                }
-                else
-                {
-                    // Handle the case where no suitable dfileType was found
-                    // For example, log an error or throw an exception
-                    Console.WriteLine($"No suitable PDF file type found for {droppedFilePath} with fileType hint {fileType}");
-                    // Depending on requirements, you might throw new ApplicationException("No suitable PDF file type found.");
-                }
-            
-            
-        }
     }
 }
 

@@ -45,7 +45,7 @@ namespace AutoBot
                 if (!attachments.Any()) return;
 
 
-                var imageTxt = WaterNut.DataSpace.InvoiceReader.GetImageTxt(directoryName);
+                var imageTxt = await InvoiceReader.InvoiceReader.GetPdftxt(directoryName).ConfigureAwait(false);
                 var errorLst = new List<string>();
 
                 foreach (var reg in warehouseRegex)

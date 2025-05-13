@@ -343,7 +343,7 @@ namespace InvoiceReader
 
         public static bool IsInvoiceDocument(Invoices invoice, string fileText, string fileName)
         {
-            return GetPossibleInvoicesStep.IsInvoiceDocument(invoice, fileText, fileName);
+            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice), fileText, fileName);
         }
 
         private static void LogStartPDFImport(int fileCount, FileTypes fileType)

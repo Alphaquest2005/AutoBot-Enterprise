@@ -399,7 +399,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
  
 
 									if(string.IsNullOrEmpty(InvoiceFilter) == false)
-						res.Append(" && " + string.Format("Invoice.Contains(\"{0}\")",  InvoiceFilter));						
+						res.Append(" && " + string.Format("Template.Contains(\"{0}\")",  InvoiceFilter));						
  
 
 									if(string.IsNullOrEmpty(PartFilter) == false)

@@ -10,7 +10,7 @@ namespace WaterNut.DataSpace
 {
     public partial class Invoice
     {
-        // Logger instance is defined in the main Invoice.cs partial class file.
+        // Logger instance is defined in the main Template.cs partial class file.
         // Assuming 'table' is a static or instance member accessible here, e.g.:
         // private static Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
 

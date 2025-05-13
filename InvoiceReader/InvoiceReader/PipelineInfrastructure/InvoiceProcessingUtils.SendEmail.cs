@@ -17,10 +17,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 // Consider logging subject and body length for debugging, but avoid logging full body unless necessary (PII)
                 _utilsLogger.Verbose(
                     "Email Subject: {Subject}, Body Length: {BodyLength}, Attachment Count: {AttachmentCount}",
-                    "Invoice Template Not found!", body?.Length ?? 0,
+                    "Template Template Not found!", body?.Length ?? 0,
                     (file != null ? 1 : 0) + (txtFile != null ? 1 : 0));
 
-                await EmailDownloader.EmailDownloader.SendEmailAsync(client, null, "Invoice Template Not found!",
+                await EmailDownloader.EmailDownloader.SendEmailAsync(client, null, "Template Template Not found!",
                     contacts, body, new[] { file, txtFile }.Where(f => f != null).ToArray()).ConfigureAwait(false); // Filter null attachments
 
                 _utilsLogger.Information("Successfully sent email regarding File: {FilePath}", file);

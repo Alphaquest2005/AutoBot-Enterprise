@@ -7,9 +7,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                           "AddFieldRegEx: RegId: 000,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
                                           "RequestInvoice: Name:'xyz'\r\n" +
                                           "AddInvoice: Name:'', IDRegex:''\r\n" +
-                                          "AddPart: Invoice:'', Name: '', StartRegex: '', ParentPart:'', IsRecurring: True, IsComposite: False, IsMultiLine: True \r\n" +
-                                          "AddLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
-                                          "UpdateLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
+                                          "AddPart: Template:'', Name: '', StartRegex: '', ParentPart:'', IsRecurring: True, IsComposite: False, IsMultiLine: True \r\n" +
+                                          "AddLine: Template:'',  Part: '', Name: '', Regex: ''\r\n" +
+                                          "UpdateLine: Template:'',  Part: '', Name: '', Regex: ''\r\n" +
                                           "AddFieldFormatRegex: RegexId: 000, Keyword:'', Regex:'', ReplaceRegex:'', ReplacementRegexIsMultiLine: True, RegexIsMultiLine: True\r\n";
     }
 

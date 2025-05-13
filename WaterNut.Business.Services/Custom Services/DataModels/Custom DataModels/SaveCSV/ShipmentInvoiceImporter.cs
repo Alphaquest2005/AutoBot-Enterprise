@@ -61,7 +61,7 @@ namespace WaterNut.DataSpace
             {
                 var invoice = new ShipmentInvoice();
 
-                if (x["InvoiceDetails"] == null) return null;// throw new ApplicationException("Invoice Details is null");
+                if (x["InvoiceDetails"] == null) return null;// throw new ApplicationException("Template Details is null");
             
                 var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                     .Where(z => z != null)
@@ -527,7 +527,7 @@ private static async Task EnsureCategoriesExistAsync(EntryDataDSContext ctx, ICo
         //            //----------ALLOW IMPORTS AND CHANGE THE XLSX TO HIGHLIGHT ERRORS
         //            //if (invoice.ImportedTotalDifference > 0.001 )
         //            //    throw new ApplicationException(
-        //            //        $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");
+        //            //        $"Imported Total Difference for Template > 0: {invoice.ImportedTotalDifference}");
         //        }
 
 

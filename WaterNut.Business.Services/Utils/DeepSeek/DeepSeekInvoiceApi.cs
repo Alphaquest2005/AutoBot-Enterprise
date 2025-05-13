@@ -341,7 +341,7 @@ try
                 foreach (var inv in invoices.EnumerateArray())
                 {
                     IDictionary<string,object> dict = new BetterExpando();
-                    dict["DocumentType"] = "Invoice";
+                    dict["DocumentType"] = "Template";
                     dict["InvoiceNo"] = GetStringValue(inv, "InvoiceNo");
                     dict["PONumber"] = GetStringValue(inv, "PONumber");
                     dict["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate"));
@@ -457,7 +457,7 @@ try
 
         private void CleanSupplierCodeConsignee(List<IDictionary<string, object>> documents)
         {
-            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Invoice"))
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Template"))
             {
                 // Prevent consignee/supplier mismatch
                 var supplier = doc["SupplierCode"]?.ToString() ?? "";
@@ -479,7 +479,7 @@ try
 
         private void CleanTotals(List<IDictionary<string, object>> documents)
         {
-            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Invoice"))
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Template"))
             {
                 try
                 {
@@ -685,7 +685,7 @@ try
             {
                 var key = doc["DocumentType"] switch
                 {
-                    "Invoice" => $"INV_{doc["InvoiceNo"]}",
+                    "Template" => $"INV_{doc["InvoiceNo"]}",
                     "CustomsDeclaration" => $"CUST_{doc["BLNumber"]}",
                     _ => Guid.NewGuid().ToString()
                 };

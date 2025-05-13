@@ -6,7 +6,7 @@ using System.Threading.Tasks; // Added
 using Serilog; // Added
 using System;
 using System.Runtime.InteropServices; // Added
-using OCR.Business.Entities; // Added for Invoice
+using OCR.Business.Entities; // Added for Template
 using Core.Common.Extensions; // Added for BetterExpando
 
 namespace WaterNut.DataSpace.PipelineInfrastructure

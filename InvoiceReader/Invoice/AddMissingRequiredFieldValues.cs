@@ -9,7 +9,7 @@ namespace WaterNut.DataSpace
 {
     public partial class Invoice
     {
-        // Logger instance is defined in the main Invoice.cs partial class file.
+        // Logger instance is defined in the main Template.cs partial class file.
 
         private void AddMissingRequiredFieldValues()
         {

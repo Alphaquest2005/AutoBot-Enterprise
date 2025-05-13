@@ -232,13 +232,13 @@ namespace EntryDataDS.Business.Services
                             case "InvoiceDetails":
                                 return
                                     await
-                                        GetWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", "Select", includesLst)
+                                        GetWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Template", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "InvoiceExtraInfo":
                                 return
                                     await
-                                        GetWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Invoice", "Select", includesLst)
+                                        GetWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Template", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "ShipmentRiderInvoice":
@@ -753,10 +753,10 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "InvoiceDetails":
-                                return await CountWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", "Select")
+                                return await CountWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Template", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InvoiceExtraInfo":
-                                return await CountWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Invoice", "Select")
+                                return await CountWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Template", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentRiderInvoice":
                                 return await CountWhere<ShipmentRiderInvoice>(dbContext, exp, itm.Value, "ShipmentInvoice", "Select")
@@ -878,13 +878,13 @@ namespace EntryDataDS.Business.Services
                             case "InvoiceDetails":
                                 return
                                     await
-                                        LoadRangeWhere<InvoiceDetails>(startIndex, count, dbContext, exp, itm.Value, "Invoice", "Select")
+                                        LoadRangeWhere<InvoiceDetails>(startIndex, count, dbContext, exp, itm.Value, "Template", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "InvoiceExtraInfo":
                                 return
                                     await
-                                        LoadRangeWhere<InvoiceExtraInfo>(startIndex, count, dbContext, exp, itm.Value, "Invoice", "Select")
+                                        LoadRangeWhere<InvoiceExtraInfo>(startIndex, count, dbContext, exp, itm.Value, "Template", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "ShipmentRiderInvoice":
@@ -1275,10 +1275,10 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "InvoiceDetails":
-                                return await SumWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", field, "Select")
+                                return await SumWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Template", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InvoiceExtraInfo":
-                                return await SumWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Invoice", field, "Select")
+                                return await SumWhere<InvoiceExtraInfo>(dbContext, exp, itm.Value, "Template", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentRiderInvoice":
                                 return await SumWhere<ShipmentRiderInvoice>(dbContext, exp, itm.Value, "ShipmentInvoice", field, "Select")

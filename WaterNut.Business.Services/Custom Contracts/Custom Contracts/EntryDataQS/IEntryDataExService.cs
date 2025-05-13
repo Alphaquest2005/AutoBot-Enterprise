@@ -17,9 +17,9 @@ namespace EntryDataQS.Business.Services
         Task SaveCSV(string droppedFilePath, string fileType, int docSetId,
             bool overWriteExisting);
 
-        [OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite);
+        //[OperationContract]
+        //[FaultContract(typeof(ValidationFault))]
+        //Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite);
 
       
     }

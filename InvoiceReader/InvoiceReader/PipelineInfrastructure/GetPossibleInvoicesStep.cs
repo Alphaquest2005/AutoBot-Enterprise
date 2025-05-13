@@ -31,8 +31,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 var possibleInvoices = await GetPossibleInvoices(context, pdfTextString, filePath).ConfigureAwait(false);
 
-                //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Invoice"))
-                //    throw new ApplicationException("No Shipment Invoice Templates found");
+                //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Template"))
+                //    throw new ApplicationException("No Shipment Template Templates found");
 
                 context.Templates = possibleInvoices;
                 LogPossibleInvoices(possibleInvoices, totalTemplateCount, filePath);
@@ -97,7 +97,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         return false;
                     }
 
-                    bool isMatch = IsInvoiceDocument(tmp.OcrInvoices, pdfTextString, filePath);
+                    bool isMatch = IsInvoiceDocument(tmp, pdfTextString, filePath);
                     _logger.Verbose("Template InvoiceId: {InvoiceId} IsMatch result: {IsMatch}", tmp.OcrInvoices.Id, isMatch);
                     return isMatch;
                 })

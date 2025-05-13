@@ -51,7 +51,7 @@ public partial class BaseDataModel
                         .ToList();
 
                 break;
-            case "Invoice":
+            case "Template":
                 if (combineEntryDataInSameFile)
                     entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.SourceFile)
                         .ThenBy(p => p.EntryData.EntryDataId).ToList();

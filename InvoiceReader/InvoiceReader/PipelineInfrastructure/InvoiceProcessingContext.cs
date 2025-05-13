@@ -6,7 +6,7 @@ using CoreEntities.Business.Entities;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using Serilog; // Added Serilog using
 using System.Linq; // Added System.Linq using
-using WaterNut.DataSpace; // Added WaterNut.DataSpace using for Invoice type
+using WaterNut.DataSpace; // Added WaterNut.DataSpace using for Template type
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {

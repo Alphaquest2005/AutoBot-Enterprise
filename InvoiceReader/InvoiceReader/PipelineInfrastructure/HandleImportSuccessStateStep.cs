@@ -134,7 +134,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         private static bool IsRequiredDataMissing(Invoice Invoice)
         {
              _logger.Debug("Entering IsRequiredDataMissing check.");
-             _logger.Verbose("Checking for missing required data in Invoice for success state.");
+             _logger.Verbose("Checking for missing required data in Template for success state.");
              // Check each property and log which one is missing if any
              // Context null check happens in Execute
              if (Invoice.FileType == null) { _logger.Warning("Missing required data for success state: FileType is null."); return true; }

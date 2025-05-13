@@ -63,30 +63,30 @@ namespace WaterNut.QuerySpace
                         return;
                 }
 
-                foreach (var f in od.FileNames)
+                foreach (var fileName in od.FileNames)
                 {
-                    if (f.ToLower().Trim().EndsWith(".csv"))
+                    if (fileName.ToLower().Trim().EndsWith(".csv"))
                     {
                         await
-                            EntryDataExRepository.Instance.SaveCSV(f, fileType, asycudaDocumentSetId, overwrite)
+                            EntryDataExRepository.Instance.SaveCSV(fileName, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    if (f.ToLower().Trim().EndsWith(".pdf"))
+                    if (fileName.ToLower().Trim().EndsWith(".pdf"))
                     {
                         await
-                            EntryDataExRepository.Instance.SavePDF(f, fileType, asycudaDocumentSetId, overwrite)
+                           new AutoBotUtilities.ImportUtils().SavePDF(fileName, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    if (f.ToLower().Trim().EndsWith(".xlsx"))
+                    if (fileName.ToLower().Trim().EndsWith(".xlsx"))
                     {
                         var fileTypes = await FileTypeManager.GetImportableFileType(fileType,
-                            FileTypeManager.FileFormats.Xlsx, f).ConfigureAwait(false);
+                            FileTypeManager.FileFormats.Xlsx, fileName).ConfigureAwait(false);
                         //if (!fileTypes.Any())
                         //   fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown,
                         //        FileTypeManager.FileFormats.Xlsx, f);
 
                         fileTypes.ForEach(x => x.AsycudaDocumentSetId = asycudaDocumentSetId);
-                        await XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes, overwrite).ConfigureAwait(false);
+                        await XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(fileName)}, fileTypes, overwrite).ConfigureAwait(false);
                     }
                    
 

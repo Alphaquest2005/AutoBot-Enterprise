@@ -102,7 +102,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return overallStepSuccess;
         }
 
-        // Corrected signature: Takes InvoiceProcessingContext and the specific Invoice template
+        // Corrected signature: Takes InvoiceProcessingContext and the specific Template template
         private async Task<bool> ProcessTemplate(InvoiceProcessingContext context, Invoice template, string filePath, int? templateId)
         {
             // Assuming helper methods now correctly use 'template' where appropriate,
@@ -125,7 +125,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return await HandleErrorState(context, template, failedLines, filePath, templateId).ConfigureAwait(false);
         }
 
-        // Corrected signature: Takes Invoice template
+        // Corrected signature: Takes Template template
         private List<Line> GetFailedLinesWithLogging(Invoice template, string filePath, int? templateId)
         {
             _logger.Debug("Getting failed lines for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
@@ -135,7 +135,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return failedLines;
         }
 
-        // Corrected signature: Takes Invoice template
+        // Corrected signature: Takes Template template
         private void AddExistingFailedLinesWithLogging(Invoice template, List<Line> failedLines, string filePath, int? templateId)
         {
             _logger.Debug("Adding existing failed lines from template parts for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
@@ -144,7 +144,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _logger.Verbose("Total failed lines details after adding existing: {@FailedLines}", failedLines);
         }
 
-        // Corrected signature: Takes Invoice template
+        // Corrected signature: Takes Template template
         private List<Line> GetDistinctRequiredLinesWithLogging(Invoice template, string filePath, int? templateId)
         {
             _logger.Debug("Getting distinct required lines for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);
@@ -154,7 +154,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return allRequired;
         }
 
-        // Corrected signature: Takes InvoiceProcessingContext and Invoice template
+        // Corrected signature: Takes InvoiceProcessingContext and Template template
         private async Task<bool> HandleErrorState(InvoiceProcessingContext context, Invoice template, List<Line> failedLines, string filePath, int? templateId)
         {
             _logger.Debug("Checking if current state is a valid error state for email notification for File: {FilePath}, TemplateId: {TemplateId}", filePath, templateId);

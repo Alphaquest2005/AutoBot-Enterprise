@@ -297,10 +297,10 @@ namespace WaterNut.Business.Services.Utils
                 }, //adjReference
                 {
                     "Quantity",
-                    (dt, drow, header) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")
+                    (dt, drow, header) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Template Quantity")
                         ? Convert.ToString(
                             Math.Abs(Convert.ToDouble(dt["Received Quantity"]?.ToString().Replace("\"", "")) -
-                                     Convert.ToDouble(dt["Invoice Quantity"]?.ToString().Replace("\"", ""))), CultureInfo.CurrentCulture)
+                                     Convert.ToDouble(dt["Template Quantity"]?.ToString().Replace("\"", ""))), CultureInfo.CurrentCulture)
                         : Convert.ToDouble(dt["Quantity"] ?.ToString().Replace("\"", "")).ToString(CultureInfo.CurrentCulture)
                 },
                 { "ZeroCost", (x, drow, header) => "0" },

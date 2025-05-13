@@ -7,19 +7,19 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
 public partial class GetPossibleInvoicesStep
 {
-    public static bool IsInvoiceDocument(Invoices invoice, string fileText, string filePath)
+    public static bool IsInvoiceDocument(Invoice invoice, string fileText, string filePath)
     {
-        // Invoice null check happens in caller's Where clause
-        int invoiceId = invoice.Id;
+        // Template null check happens in caller's Where clause
+        int invoiceId = invoice.OcrInvoices.Id;
         _logger.Verbose(
-            "Checking if document matches Invoice Template using InvoiceId: {InvoiceId} for File: {FilePath}",
+            "Checking if document matches Template Template using InvoiceId: {InvoiceId} for File: {FilePath}",
             invoiceId, filePath);
 
         // Check if InvoiceIdentificatonRegEx collection exists and has items
-        if (invoice.InvoiceIdentificatonRegEx == null || !invoice.InvoiceIdentificatonRegEx.Any())
+        if (invoice.OcrInvoices.InvoiceIdentificatonRegEx == null || !invoice.OcrInvoices.InvoiceIdentificatonRegEx.Any())
         {
             _logger.Warning(
-                "No Invoice Identification Regex patterns found for InvoiceId: {InvoiceId}. Cannot determine if it's an invoice document based on regex.",
+                "No Template Identification Regex patterns found for InvoiceId: {InvoiceId}. Cannot determine if it's an invoice document based on regex.",
                 invoiceId);
             return false; // Cannot match without patterns
         }
@@ -28,7 +28,7 @@ public partial class GetPossibleInvoicesStep
         try
         {
             // Iterate through regex patterns, ensuring inner objects aren't null
-            foreach (var regexInfo in invoice.InvoiceIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
+            foreach (var regexInfo in invoice.OcrInvoices.InvoiceIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
             {
                 string pattern = regexInfo.OCR_RegularExpressions.RegEx;
                 int regexId = regexInfo.OCR_RegularExpressions.Id;
@@ -51,10 +51,12 @@ public partial class GetPossibleInvoicesStep
 
                 if (isMatch)
                 {
+
+                    var res = invoice.Parts.All(x => CanPartStart(fileText, x) && x.ChildParts.All(z => CanPartStart(fileText, z)));
                     _logger.Information(
                         "Regex match FOUND! RegexId: {RegexId} matched for InvoiceId: {InvoiceId}, File: {FilePath}. Document identified as this invoice type.",
                         regexId, invoiceId, filePath);
-                    return true; // Exit method on first match
+                    return res; // Exit method on first match
                 }
                 else
                 {
@@ -84,6 +86,16 @@ public partial class GetPossibleInvoicesStep
             "No identifying regex patterns matched for InvoiceId: {InvoiceId}, File: {FilePath}. Document NOT identified as this invoice type.",
             invoiceId, filePath);
         return false; // No match found
+    }
+
+    private static bool CanPartStart(string fileText, Part x)
+    {
+        return x.OCR_Part.Start.All(
+            x => Regex.IsMatch(
+                fileText,
+                x.RegularExpressions.RegEx,
+                RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.ExplicitCapture,
+                RegexTimeout));
     }
 }
 }

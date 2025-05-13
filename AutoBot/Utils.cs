@@ -667,7 +667,7 @@ namespace AutoBot
 
 
                         var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoices. {emailIds.FirstOrDefault().ImportedInvoices} were Imported out of {emailIds.FirstOrDefault().TotalInvoices} . \r\n" +
-                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Invoice Date".FormatedSpace(20)}{"Invoice Value".FormatedSpace(20)}\r\n" +
+                                   $"\t{"Template No.".FormatedSpace(20)}{"Template Date".FormatedSpace(20)}{"Template Value".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.InvoiceDate.ToShortDateString().FormatedSpace(20)}{current.InvoiceTotal.Value.ToString().FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check CSVs or Document Set Total Invoices\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -722,7 +722,7 @@ namespace AutoBot
             {
 
 
-                Console.WriteLine("Submit Missing Invoice PDFs");
+                Console.WriteLine("Submit Missing Template PDFs");
 
 
                 // var saleInfo = CurrentSalesInfo();
@@ -747,8 +747,8 @@ namespace AutoBot
                         if (Enumerable.Any<ActionDocSetLogs>(Utils.GetDocSetActions(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs"))) continue;
 
 
-                        var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoice PDF Attachments. \r\n" +
-                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Source File".FormatedSpace(20)}\r\n" +
+                        var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Template PDF Attachments. \r\n" +
+                                   $"\t{"Template No.".FormatedSpace(20)}{"Source File".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SourceFile.FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please email CSV with Coresponding PDF to prevent this error.\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -818,7 +818,7 @@ namespace AutoBot
 
 
                         var body = "The Following Invoices Total do not match Imported Totals . \r\n" +
-                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Supplier Code".FormatedSpace(20)}{"Invoice Total".FormatedSpace(20)}{"Imported Total".FormatedSpace(20)}\r\n" +
+                                   $"\t{"Template No.".FormatedSpace(20)}{"Supplier Code".FormatedSpace(20)}{"Template Total".FormatedSpace(20)}{"Imported Total".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SupplierCode.FormatedSpace(20)}{current.InvoiceTotal.Value.ToString("C").FormatedSpace(20)}{current.ImportedTotal.Value.ToString("C").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check CSVs or Document Set Total Invoices\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -831,12 +831,12 @@ namespace AutoBot
 
                         if (emailIds.Key == null)
                         {
-                           await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Incomplete Invoice Data",
+                           await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Incomplete Template Data",
                                contacts, body, attlst.ToArray()).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Template Data", body, contacts, attlst.ToArray()).ConfigureAwait(false);
                         }
 
 

@@ -63,7 +63,7 @@ namespace RegexImporter.ViewModels
 
         public void ExtractTxt()
         {
-            PDFText = InvoiceReader.GetPdftxt(CurrentAttachment.Attachments.FilePath).ToString();
+            //PDFText = InvoiceReader.GetPdftxt(CurrentAttachment.Attachments.FilePath).ToString();
         }
     }
 }

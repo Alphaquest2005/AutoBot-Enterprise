@@ -42,7 +42,7 @@ namespace WaterNut.Business.Services.Tests
             // 1. Define Test File Path (relative to test execution dir)
             string testFileName = "114-7827932-2029910.xlsx";
             // Use TestContext for robust path resolution in test environments
-            string testFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData", testFileName);
+            string testFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Test Data", testFileName);
             Assert.That(File.Exists(testFilePath), Is.True, $"Test XLSX file not found at: {testFilePath}");
 
             // 2. Check if required EntryData exists, import if not

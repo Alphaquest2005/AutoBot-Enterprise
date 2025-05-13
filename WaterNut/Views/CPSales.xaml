@@ -31,7 +31,7 @@
 		<TextBlock HorizontalAlignment="Left" Height="32.766" Margin="8.838,14.011,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333" Text="Counter Point Sales"/>
         <ListBox x:Name="SalesGrd" HorizontalAlignment="Stretch" Height="335" Margin="0,145,0,0" VerticalAlignment="Top" Width="Auto"  ItemTemplate="{DynamicResource CounterPointPurchaseOrdersTemplate}" 
                  ItemsSource="{Binding CounterPointSales}"  Style="{DynamicResource AlphaListBoxStyle}"/>
-		<TextBlock HorizontalAlignment="Left" Height="33" Margin="10,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" Text="Invoice Number" TextAlignment="Center"/>
+		<TextBlock HorizontalAlignment="Left" Height="33" Margin="10,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" Text="Template Number" TextAlignment="Center"/>
 		<TextBlock HorizontalAlignment="Left" Height="33" Margin="197.44,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="236.617" FontSize="16" Text="Sales Dates" TextAlignment="Center"/>
         <TextBox Text="{Binding InvoiceNoFilter, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="10,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}"  PreviewKeyDown="TextBox_PreviewKeyDown"/>
 		<TextBlock HorizontalAlignment="Left" Height="26" Margin="439.057,92,0,0" TextWrapping="Wrap" Text="Import Date Range" VerticalAlignment="Top" Width="138.853" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="ImportSalesDateRange" />

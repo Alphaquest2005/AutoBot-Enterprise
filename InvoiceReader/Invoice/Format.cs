@@ -9,7 +9,7 @@ namespace WaterNut.DataSpace
 {
     public partial class Invoice
     {
-        // Logger instance is defined in the main Invoice.cs partial class file.
+        // Logger instance is defined in the main Template.cs partial class file.
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5); // Define a timeout
 
         public string Format(string pdftxt)

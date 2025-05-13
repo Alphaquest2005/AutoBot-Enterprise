@@ -457,7 +457,7 @@ namespace AutoBot
                                    $"Your Maximum Lines per Entry is {docSet.MaxEntryLines}.\r\n" +
                                    $"The minium required packages is {docSet.RequiredPackages}\r\n" +
                                    $"Please increase the Maxlines using \"MaxLines:\"\r\n" +
-                                   $"Please note the System will automatically switch from \"Entry per Invoice\" to \"Group Invoices per Entry\", if there are not enough packages per invoice. \r\n" +
+                                   $"Please note the System will automatically switch from \"Entry per Template\" to \"Group Invoices per Entry\", if there are not enough packages per invoice. \r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +

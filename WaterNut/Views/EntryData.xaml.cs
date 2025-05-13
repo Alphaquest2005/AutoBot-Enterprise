@@ -47,11 +47,11 @@ namespace WaterNut.Views
                 }
                 lst.Add(itm.Data);
             }
-            var res = MessageBox.Show("Do You Want Invoice per Entry?", "Add Invoice To Document",
+            var res = MessageBox.Show("Do You Want Template per Entry?", "Add Template To Document",
                 MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                var res1 = MessageBox.Show("Do You Want Combine EntryData in Same File?", "Add Invoice To Document",
+                var res1 = MessageBox.Show("Do You Want Combine EntryData in Same File?", "Add Template To Document",
                     MessageBoxButton.YesNo);
                 if (res1 == MessageBoxResult.Yes)
                 {
