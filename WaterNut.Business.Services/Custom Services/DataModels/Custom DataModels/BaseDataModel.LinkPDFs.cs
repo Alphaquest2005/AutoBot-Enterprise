@@ -10,9 +10,11 @@ using TrackableEntities;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    public static void LinkPDFs(List<int> entries, string docCode = "NA")
+    public static async Task LinkPDFs(List<int> entries, string docCode = "NA")
     {
         Console.WriteLine("Link PDF Files");
         var directoryName = StringExtensions.UpdateToCurrentUser(
@@ -68,7 +70,7 @@ public partial class BaseDataModel
                             TrackingState = TrackingState.Added
                         });
 
-                    ctx.SaveChanges();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
         }

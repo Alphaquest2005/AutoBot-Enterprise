@@ -7,9 +7,11 @@ using TrackableEntities;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    public static void AttachToDocument(List<Attachment> alst, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
+    public static async Task AttachToDocument(List<Attachment> alst, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
     {
         try
         {
@@ -75,7 +77,7 @@ public partial class BaseDataModel
                         docItemCtx.xcuda_Attached_documents.Add(ad);
                     }
 
-                    docItemCtx.SaveChanges();
+                  await docItemCtx.SaveChangesAsync().ConfigureAwait(false);
                 }
 
             using (var ctx = new DocumentDSContext { StartTracking = true })
@@ -89,7 +91,7 @@ public partial class BaseDataModel
                     ctx.AsycudaDocument_Attachments.Add(at);
                 }
 
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync().ConfigureAwait(false);
             }
         }
         catch (Exception e)
@@ -102,7 +104,7 @@ public partial class BaseDataModel
 
 public partial class BaseDataModel
 {
-    private static void AttachToDocument(IEnumerable<int> alst, int docId, int itmId)
+    private static async Task AttachToDocument(IEnumerable<int> alst, int docId, int itmId)
     {
         try
         {
@@ -123,7 +125,7 @@ public partial class BaseDataModel
                     .Where(x => x.Item_Id >= itmId).ToList();
             }
 
-            AttachToDocument(attlst, doc, itms);
+           await AttachToDocument(attlst, doc, itms).ConfigureAwait(false);
         }
 
         catch (Exception e)

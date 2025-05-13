@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics; // Added for Stopwatch
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoBot;
 using CoreEntities.Business.Entities;
@@ -12,187 +9,9 @@ using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
 namespace AutoBotUtilities
 {
-    public class EmailTextProcessor
-    {
-        public static async Task<FileInfo[]> Execute(FileInfo[] csvFiles, FileTypes fileType)
-        {
-            string dbStatement = null;
-            try
-            {
-
-                var res = new List<FileInfo>();
-
-                foreach (var file in csvFiles)
-                {
-                    var emailMappings = File.ReadAllLines(file.FullName)
-                        .Where(line => !line.ToLower().Contains("Not Found".ToLower()))
-                        .Select(line => GetEmailMappings(fileType, line))
-                        .Where(x => !string.IsNullOrEmpty(x.line))
-                        .ToList();
-
-                    if (emailMappings.Any()) res.Add(file);
-                        dbStatement = emailMappings.Select(linex =>
-                        {
-
-                            var str = linex.im.Select(im => GetMappingData(im, linex.line))
-                                .Select(kp =>
-                                {
-                                    if(kp.InfoData.Key == "Currency" || kp.InfoData.Key == "FreightCurrency")
-                                    {
-                                        if(kp.InfoData.Value == "US")
-                                        {
-                                            kp.InfoData = new KeyValuePair<string, string>(kp.InfoData.Key, "USD");
-                                        }
-                                    }
-                                    
-                                    fileType.Data.Add(kp.InfoData);
-
-                                    // --- BEGIN ADDED LOGGING ---
-                                        Console.WriteLine($"--- EmailTextProcessor: Added to fileType.Data - Key: '{kp.InfoData.Key}', Value: '{kp.InfoData.Value}'");
-                                    // --- END ADDED LOGGING ---
-
-                                   
-                                        return kp;
-                                   
-                                })
-                                .Select(kp => GetDbStatement(fileType, kp))
-                                .DefaultIfEmpty("")
-                                .Aggregate((o, n) => $"{o}\r\n{n}");
-                            return str;
-
-
-                        })
-                        .DefaultIfEmpty("")
-                        .Aggregate((o, n) => $"{o}\r\n{n}").Trim();
-
-
-                    if (!string.IsNullOrEmpty(dbStatement))
-                    {
-                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles).ConfigureAwait(false);
-                        new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
-                    }
-
-                }
-
-                return res.ToArray();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private static (string line, List<(EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field)> im) GetEmailMappings(FileTypes fileType, string line)
-        {
-            var im = fileType.EmailInfoMappings
-                //.Where(x => x.UpdateDatabase == true) took out because consignee address and code not going into database so have to be set to false
-                .SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z =>
-                (
-                    EmailMapping: x,
-                    RegEx: z,
-                    Key: Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase | RegexOptions.Multiline),
-                    Field: Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase | RegexOptions.Multiline)
-                )))
-                .Where(z => z.Key.Success && z.Field.Success).ToList();
-            return (line,im);
-        }
-
-        private static ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) GetMappingData((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) x, string line)
-        {
-                try
-                {
-                    var key = string.IsNullOrEmpty(x.Key.Groups["Key"].Value.Trim())
-                        ? x.RegEx.InfoMapping.Key
-                        : x.RegEx.KeyReplaceRx == null
-                            ? x.Key.Groups["Key"].Value.Trim()
-                            : Regex.Match(
-                                    Regex.Replace(line, x.RegEx.KeyRegX, x.RegEx.KeyReplaceRx,
-                                        RegexOptions.IgnoreCase), x.RegEx.KeyRegX,
-                                    RegexOptions.IgnoreCase)
-                                .Value.Trim();
-
-                    var value = string.IsNullOrEmpty(x.Field.Groups["Value"].Value.Trim())
-                        ? x.Field.Groups[0].Value.Trim()
-                        : x.RegEx.FieldReplaceRx == null
-                            ? x.Field.Groups["Value"].Value.Trim()
-                            : Regex.Match(
-                                    Regex.Replace(line, x.RegEx.FieldRx, x.RegEx.FieldReplaceRx,
-                                        RegexOptions.IgnoreCase), x.RegEx.FieldRx,
-                                    RegexOptions.IgnoreCase)
-                                .Value.Trim();
-
-                    return (InfoMapping: x,InfoData:  new KeyValuePair<string, string>(key, value));
-
-
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            
-            
-        }
-
-        private static string GetDbStatement(FileTypes fileType,
-            ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping,
-                KeyValuePair<string, string> InfoData) ikp) =>
-            ikp.InfoMapping.EmailMapping.UpdateDatabase == true
-                ? $@" Update {ikp.InfoMapping.RegEx.InfoMapping.EntityType} Set {ikp.InfoMapping.RegEx.InfoMapping.Field} = '{ReplaceSpecialChar(ikp.InfoData.Value,
-                    "")}' Where {ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField} = '{fileType.Data.First(z => z.Key == ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField).Value}';"
-                : null;
-
-        public static string ReplaceSpecialChar(string msgSubject, string rstring)
-        {
-            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z.\s\-]+", rstring);
-        }
-    }
-
     public class ImportUtils
     {
-        public static async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
-        {
-            try
-            {
-                var missingActions = fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true
-                                                                         && !FileUtils.FileActions.ContainsKey(x.Actions.Name)).ToList();
-
-                if (missingActions.Any())
-                {
-                    throw new ApplicationException(
-                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
-                }
-                // --- MODIFICATION START: Query DB directly for ordered actions ---
-                using (var ctx = new CoreEntitiesContext()) // Use a new context for fresh data
-                {
-                    var orderedActions = ctx.FileTypeActions
-                        .Include(fta => fta.Actions) // Eager load Actions
-                        .Where(fta => fta.FileTypeId == fileType.Id)
-                        .Where(fta => fta.Actions.IsDataSpecific == true) // Original filter
-                        .Where(fta => (fta.AssessIM7.Equals(null) && fta.AssessEX.Equals(null)) || // Original filter
-                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
-                                       appSetting.AssessEX == fta.AssessEX))
-                        .Where(fta => fta.Actions.TestMode == // Original filter
-                                      (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                        .OrderBy(fta => fta.Id)
-                        .Include(fileTypeActions => fileTypeActions.Actions) // Order by ID from DB
-                        .ToList(); // Execute query
-
-                    // Now iterate through 'orderedActions'
-                    orderedActions
-                        .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists in dictionary
-                        .Select(fta => (fta.Actions.Name, FileUtils.FileActions[fta.Actions.Name])) // Get action delegate
-                        .ToList()
-                        .ForEach(actionTuple => { ExecuteActions(fileType, files, actionTuple); }); // Execute
-                }
-                // --- MODIFICATION END ---
-            }
-            catch (Exception e)
-            {
-               await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,BaseDataModel.GetClient(), $"Bug Found",
-                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                    Array.Empty<string>()).ConfigureAwait(false);
-            }
-        }
+        
 
 
         public static async Task ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
@@ -211,7 +30,7 @@ namespace AutoBotUtilities
                 emailMapping.EmailMappingActions.OrderBy(x => x.Id)
                     .Where(x => x.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
                     .Select(x => (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
-                    .ForEach(x => { ExecuteActions(fileType, files, x); });
+                    .ForEach(async x => { await ExecuteActions(fileType, files, x).ConfigureAwait(false); });
 
             }
             catch (Exception e)
@@ -222,77 +41,175 @@ namespace AutoBotUtilities
             }
         }
 
-        public static void ExecuteActions(FileTypes fileType, FileInfo[] files,
-            (string Name, Action<FileTypes, FileInfo[]> Action) x)
+
+
+        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files,
+                                                (string Name, Func<FileTypes, FileInfo[], Task> Action) x)
         {
-            // --- Enhanced Logging ---
-            var contextInfo = $"FTID: {fileType.Id}, EmailId: {fileType.EmailId ?? "N/A"}, DocSetId: {(fileType.AsycudaDocumentSetId == 0 ? "N/A" : fileType.AsycudaDocumentSetId.ToString())}, Ref: {fileType.DocSetRefernece ?? "N/A"}"; // Corrected null check for int
+            var contextInfo = $"FTID: {fileType.Id}, EmailId: {fileType.EmailId ?? "N/A"}, DocSetId: {(fileType.AsycudaDocumentSetId == 0 ? "N/A" : fileType.AsycudaDocumentSetId.ToString())}, Ref: {fileType.DocSetRefernece ?? "N/A"}";
             Console.WriteLine($"Action START: {x.Name} | Context: [{contextInfo}]");
             var stopwatch = Stopwatch.StartNew();
-            // --- End Enhanced Logging ---
+
+            // Declare isContinue here so it's accessible for the final check
+            bool isContinueProcessingMainAction = true; // Default to true, ProcessNextStep logic might set it to false
 
             try
             {
-                 // --- Existing ProcessNextStep Logic ---
+                // --- ProcessNextStep Logic ---
                 if (fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                 {
-                    var isContinue = false;
+                    bool hitContinueInLoop = false; // Tracks if "Continue" action was encountered in the loop
+
                     while (fileType.ProcessNextStep.Any())
                     {
                         var nextActionName = fileType.ProcessNextStep.First();
-                        if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextAction))
+                        if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextActionAsyncFunc))
                         {
-                             Console.WriteLine($"Action SKIP (ProcessNextStep): Action '{nextActionName}' not found in FileUtils.FileActions. | Context: [{contextInfo}]");
-                             fileType.ProcessNextStep.RemoveAt(0); // Remove to avoid infinite loop
-                             continue;
+                            Console.WriteLine($"Action SKIP (ProcessNextStep): Action '{nextActionName}' not found in FileUtils.FileActions. | Context: [{contextInfo}]");
+                            // Remove to avoid infinite loop if action is permanently missing
+                            // Place removal in finally block to ensure it's always removed after processing attempt
+                        }
+                        else // Action found, proceed to execute
+                        {
+                            Console.WriteLine($"Action START (ProcessNextStep): {nextActionName} | Context: [{contextInfo}]");
+                            var nextStopwatch = Stopwatch.StartNew();
+                            try
+                            {
+                                if (nextActionName == "Continue")
+                                {
+                                    hitContinueInLoop = true;
+                                    nextStopwatch.Stop();
+                                    Console.WriteLine($"Action CONTINUE (ProcessNextStep): '{nextActionName}' encountered. Proceeding to main action. | Context: [{contextInfo}]");
+                                    // Remove "Continue" action from the list
+                                    fileType.ProcessNextStep.RemoveAt(0);
+                                    break; // Exit while loop to continue to main action
+                                }
+
+                                await nextActionAsyncFunc.Invoke(fileType, files).ConfigureAwait(false);
+
+                                nextStopwatch.Stop();
+                                Console.WriteLine($"Action SUCCESS (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                            }
+                            catch (Exception nextEx)
+                            {
+                                nextStopwatch.Stop();
+                                Console.WriteLine($"Action FAILED (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Error: {nextEx.Message} | Context: [{contextInfo}]");
+                                // If a step in ProcessNextStep fails, we should not proceed to the main action
+                                isContinueProcessingMainAction = false;
+                                // Remove the failed action before rethrowing or exiting
+                                if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
+                                {
+                                    fileType.ProcessNextStep.RemoveAt(0);
+                                }
+                                throw; // Rethrowing to be caught by the outer try-catch, which will stop further processing for this x.Action
+                            }
+                        }
+                        // Always remove the processed (or skipped) action from the head of the list
+                        // This needs to be done carefully, especially with the 'Continue' break and potential exceptions
+                        if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
+                        {
+                            fileType.ProcessNextStep.RemoveAt(0);
+                        }
+                        else if (nextActionName == "Continue" && !fileType.ProcessNextStep.Any(pns => pns == "Continue"))
+                        {
+                            // This case is if "Continue" was the last item and already removed.
+                            // No action needed here, the break took care of it.
+                        }
+                        else if (fileType.ProcessNextStep.Any())
+                        { // If it wasn't the 'Continue' action that broke, or if action was skipped
+                            fileType.ProcessNextStep.RemoveAt(0);
                         }
 
-                        Console.WriteLine($"Action START (ProcessNextStep): {nextActionName} | Context: [{contextInfo}]");
-                        var nextStopwatch = Stopwatch.StartNew();
-                        try
-                        {
-                            if (nextActionName == "Continue")
-                            {
-                                isContinue = true;
-                                nextStopwatch.Stop();
-                                Console.WriteLine($"Action CONTINUE (ProcessNextStep): {nextActionName} encountered. | Context: [{contextInfo}]");
-                                break; // Exit while loop to continue to main action
-                            }
-                            nextAction.Invoke(fileType, files);
-                            nextStopwatch.Stop();
-                            Console.WriteLine($"Action SUCCESS (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
-                        }
-                        catch (Exception nextEx)
-                        {
-                             nextStopwatch.Stop();
-                             Console.WriteLine($"Action FAILED (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Error: {nextEx.Message} | Context: [{contextInfo}]");
-                             // Decide whether to rethrow or just log and potentially stop further ProcessNextStep
-                             throw; // Rethrowing for now to maintain original behavior on error
-                        }
-                        finally
-                        {
-                             fileType.ProcessNextStep.RemoveAt(0);
-                        }
-                    }
-                    if (!isContinue)
+
+                    } // End While
+
+                    // After the loop, if "Continue" was not hit AND there were items to process,
+                    // it means the ProcessNextStep sequence finished without a 'Continue' signal.
+                    // In this case, the main action (x.Action) should not be executed.
+                    if (!hitContinueInLoop)
                     {
-                         Console.WriteLine($"Action EXIT (ProcessNextStep): Sequence terminated before 'Continue' or completion. | Context: [{contextInfo}]");
-                         return; // Exit if 'Continue' wasn't hit and loop finished
+                        isContinueProcessingMainAction = false;
+                        Console.WriteLine($"Action EXIT (ProcessNextStep): Sequence completed without 'Continue'. Main action '{x.Name}' will NOT run. | Context: [{contextInfo}]");
                     }
                 }
-                 // --- End ProcessNextStep Logic ---
+                // --- End ProcessNextStep Logic ---
 
-                // Execute the main action passed into this method
-                x.Action.Invoke(fileType, files);
-                stopwatch.Stop();
-                Console.WriteLine($"Action SUCCESS: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                if (isContinueProcessingMainAction)
+                {
+                    // Execute the main action passed into this method
+                    await x.Action.Invoke(fileType, files).ConfigureAwait(false);
+                    stopwatch.Stop();
+                    Console.WriteLine($"Action SUCCESS: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                }
+                else
+                {
+                    // If ProcessNextStep determined we shouldn't continue, log it and stop the timer.
+                    stopwatch.Stop(); // Ensure stopwatch is stopped even if main action doesn't run
+                    Console.WriteLine($"Action SKIPPED (Due to ProcessNextStep): {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                    // Do not throw here, as this is a controlled exit from ProcessNextStep
+                }
             }
             catch (Exception e)
             {
                 stopwatch.Stop();
                 Console.WriteLine($"Action FAILED: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Error: {e.Message} | Context: [{contextInfo}]");
-                Console.WriteLine($"Stack Trace: {e.StackTrace}"); // Log stack trace for failures
-                throw; // Re-throw exception to maintain original behavior
+                Console.WriteLine($"Stack Trace: {e.StackTrace}");
+                await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in Action: {x.Name}",
+                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
+                    Array.Empty<string>()).ConfigureAwait(false);
+                throw;
+            }
+        }
+
+        public static async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                // Missing actions check (this part is fine, assuming FileUtils.FileActions keys are up-to-date)
+                var missingActions = fileType.FileTypeActions
+                    .Where(x => x.Actions.IsDataSpecific == true && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
+                    .ToList();
+
+                if (missingActions.Any())
+                {
+                    throw new ApplicationException(
+                        $"The following data-specific actions were missing: {string.Join(", ", missingActions.Select(x => x.Actions.Name))}");
+                }
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var orderedFileActions = ctx.FileTypeActions // Renamed for clarity
+                        .Include(fta => fta.Actions)
+                        .Where(fta => fta.FileTypeId == fileType.Id)
+                        .Where(fta => fta.Actions.IsDataSpecific == true)
+                        .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) || // Corrected .Equals(null) to == null
+                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
+                                       appSetting.AssessEX == fta.AssessEX))
+                        .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                        .OrderBy(fta => fta.Id)
+                        // .Include(fileTypeActions => fileTypeActions.Actions) // Already included above, redundant
+                        .ToList();
+
+                    // Get the delegates from FileUtils.FileActions
+                    var actionsToExecute = orderedFileActions
+                        .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists
+                        .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name])) // Action is Func<..., Task>
+                        .ToList();
+
+                    // Use a proper foreach loop to await async operations
+                    foreach (var actionTuple in actionsToExecute)
+                    {
+                        await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // ... error handling ...
+                await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found in ExecuteDataSpecificFileActions",
+                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
+                    Array.Empty<string>()).ConfigureAwait(false);
+                // Consider rethrowing if this is a critical path: throw;
             }
         }
 
@@ -300,46 +217,48 @@ namespace AutoBotUtilities
         {
             try
             {
-                // Check for missing action implementations first (using cached FileTypeActions is fine here)
+                // Missing actions check
                 var missingActionsCheck = fileType.FileTypeActions
-                                           .Where(x => (x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true) && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
-                                           .ToList();
+                   .Where(x => (x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true) && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
+                   .ToList();
                 if (missingActionsCheck.Any())
                 {
-                    // Log or handle missing non-specific actions if necessary, maybe less critical than specific ones
-                    Console.WriteLine($"WARNING: Non-specific actions missing implementation: {missingActionsCheck.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                    Console.WriteLine($"WARNING: Non-specific actions missing implementation: {string.Join(", ", missingActionsCheck.Select(x => x.Actions.Name))}");
                 }
 
-                // --- MODIFICATION START: Query DB directly for ordered actions ---
-                using (var ctx = new CoreEntitiesContext()) // Use a new context for fresh data
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    var orderedActions = ctx.FileTypeActions
-                                            .Include(fta => fta.Actions) // Eager load Actions
-                                            .Where(fta => fta.FileTypeId == fileType.Id)
-                                            .Where(fta => fta.Actions.IsDataSpecific == null || fta.Actions.IsDataSpecific != true) // Original filter
-                                            .Where(fta => (fta.AssessIM7.Equals(null) && fta.AssessEX.Equals(null)) || // Original filter
-                                                        (appSetting.AssessIM7 == fta.AssessIM7 ||
-                                                         appSetting.AssessEX == fta.AssessEX))
-                                            .Where(fta => fta.Actions.TestMode == // Original filter
-                                                        (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                            .OrderBy(fta => fta.Id) // Order by ID from DB
-                                            .ToList(); // Execute query
+                    var orderedFileActions = ctx.FileTypeActions // Renamed for clarity
+                        .Include(fta => fta.Actions)
+                        .Where(fta => fta.FileTypeId == fileType.Id)
+                        .Where(fta => fta.Actions.IsDataSpecific == null || fta.Actions.IsDataSpecific != true)
+                        .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) || // Corrected .Equals(null) to == null
+                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
+                                       appSetting.AssessEX == fta.AssessEX))
+                        .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                        .OrderBy(fta => fta.Id)
+                        .ToList();
 
-                    // Now iterate through 'orderedActions'
-                    orderedActions
-                       .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists in dictionary
-                       .Select(fta => (fta.Actions.Name, FileUtils.FileActions[fta.Actions.Name])) // Get action delegate
-                       .ToList()
-                       .ForEach(actionTuple => { ExecuteActions(fileType, files, actionTuple); }); // Execute
+                    var actionsToExecute = orderedFileActions
+                       .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name))
+                       .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name])) // Action is Func<..., Task>
+                       .ToList();
+
+                    // Use a proper foreach loop to await async operations
+                    foreach (var actionTuple in actionsToExecute)
+                    {
+                        // ExecuteActions returns a Task, so await it.
+                        await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                    }
                 }
-                // --- MODIFICATION END ---
             }
             catch (Exception e)
             {
-              await  EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
-                     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
+                // ... error handling ...
+                await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
+                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>()).ConfigureAwait(false);
-                // Consider re-throwing if needed: throw;
+                // throw; // Consider re-throwing
             }
         }
     }

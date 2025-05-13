@@ -186,8 +186,8 @@ namespace WaterNut.DataSpace
             {
                 BaseDataModel.SetEffectiveAssessmentDate(cdoc);
                 //attachments = AddAttachments(savedEntryData, exportTemplate, lst);
-                BaseDataModel.AttachToDocument(attachments,
-                    cdoc.Document, cdoc.DocumentItems);
+                await BaseDataModel.AttachToDocument(attachments,
+                    cdoc.Document, cdoc.DocumentItems).ConfigureAwait(false);
                 await BaseDataModel.Instance.SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                 //dup new file
             }

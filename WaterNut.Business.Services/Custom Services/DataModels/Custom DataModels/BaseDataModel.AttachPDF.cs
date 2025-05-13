@@ -8,9 +8,11 @@ using MoreLinq.Extensions;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    private static void AttachPDF(int asycudaDocumentSetId)
+    private static async Task AttachPDF(int asycudaDocumentSetId)
     {
         List<xcuda_ASYCUDA> docs;
         List<xcuda_Item> itms;
@@ -46,6 +48,8 @@ public partial class BaseDataModel
 
 
         foreach (var doc in docs)
-            AttachToDocument(pdfs, doc, itms.Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id).ToList());
+        {
+            await AttachToDocument(pdfs, doc, itms.Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id).ToList()).ConfigureAwait(false);
+        }
     }
 }

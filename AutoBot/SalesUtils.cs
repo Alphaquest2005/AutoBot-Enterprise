@@ -23,10 +23,10 @@ namespace AutoBot
 {
     public class SalesUtils
     {
-        public static void ClearAllocations()
+        public static async Task ClearAllocations()
         {
-            AllocationsModel.Instance
-                .ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+            await AllocationsModel.Instance
+                .ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
         }
 
         public static async Task SubmitUnknownDFPComments()
@@ -73,9 +73,9 @@ namespace AutoBot
             }
         }
 
-        public static void ReDownloadSalesFiles() => EX9Utils.DownloadSalesFiles(100, "IM7History", true);
+        public static Task ReDownloadSalesFiles() => EX9Utils.DownloadSalesFiles(100, "IM7History", true);
 
-        public static void RebuildSalesReport() => BuildSalesReportClass.Instance.ReBuildSalesReports();
+        public static Task RebuildSalesReport() => BuildSalesReportClass.Instance.ReBuildSalesReports();
 
         public static async Task<List<AsycudaDocument>> GetSalesDocumentsWithEntryData(int asycudaDocumentSetId) =>
             (await BaseDataModel.Instance.GetDocSetWithEntryDataDocs(asycudaDocumentSetId).ConfigureAwait(false)).Documents.Select<xcuda_ASYCUDA, AsycudaDocument>(x => new SalesDataService().GetSalesDocument(x.ASYCUDA_Id).ConfigureAwait(false).GetAwaiter().GetResult()).ToList<AsycudaDocument>();

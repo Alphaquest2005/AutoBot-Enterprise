@@ -17,7 +17,7 @@ namespace AutoBot
 {
     public class ADJUtils
     {
-        public static void ClearAllAdjustmentEntries(string adjustmentType)
+        public static async Task ClearAllAdjustmentEntries(string adjustmentType)
         {
             Console.WriteLine($"Clear {adjustmentType} Entries");
 
@@ -36,7 +36,7 @@ namespace AutoBot
 
                 foreach (var doc in lst)
                 {
-                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
                     BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
 

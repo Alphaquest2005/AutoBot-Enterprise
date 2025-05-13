@@ -58,7 +58,7 @@ namespace AutoBot
             await RemoveDuplicateEntries().ConfigureAwait(false);
         }
 
-        public static void LinkEmail()
+        public static async Task LinkEmail()
         {
             try
             {
@@ -70,7 +70,8 @@ namespace AutoBot
 
                     var lst = entries
                         .GroupBy(x => x.AsycudaDocumentSetId)
-                        .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
+                        .Join(ctx.AsycudaDocumentSetExs
+                        .Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
 
                     foreach (var itm in entries)
                     {
@@ -78,6 +79,7 @@ namespace AutoBot
                         var cdoc = ctx.AsycudaDocuments.First(x => x.ReferenceNumber == idoc.ReferenceNumber);
 
                         if (cdoc == null) continue;
+                        await Task.Run(() => { }).ConfigureAwait(false);
                     }
                 }
             }
@@ -168,7 +170,7 @@ namespace AutoBot
             await CSVUtils.SaveCsv(new FileInfo[] { new FileInfo(expFile) }, fileType).ConfigureAwait(false);
         }
 
-        public static void RenameDuplicateDocumentCodes()
+        public static async Task RenameDuplicateDocumentCodes()
         {
             try
             {
@@ -176,11 +178,11 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     var docset =
-                        ctx.AsycudaDocumentSetExs.Where(x =>
-                                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                            .ApplicationSettingsId)
-                            .OrderByDescending(x => x.AsycudaDocumentSetId)
-                            .FirstOrDefault();
+                       await ctx.AsycudaDocumentSetExs.Where(x =>
+                               x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                   .ApplicationSettingsId)
+                           .OrderByDescending(x => x.AsycudaDocumentSetId)
+                           .FirstOrDefaultAsync().ConfigureAwait(false);
                     var doclst = ctx.AsycudaDocuments.Where(x => x.AsycudaDocumentSetId == docset.AsycudaDocumentSetId)
                         .Select(x => x.ASYCUDA_Id).ToList();
                     if (docset != null)

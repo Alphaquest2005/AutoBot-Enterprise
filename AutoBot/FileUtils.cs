@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using AutoBotUtilities;
 using AutoBotUtilities.CSV;
 using WaterNut.Business.Services.Importers;
@@ -11,98 +12,98 @@ namespace AutoBot
 {
     public class FileUtils
     {
-        public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
-            new Dictionary<string, Action<FileTypes, FileInfo[]>>(WaterNut.DataSpace.Utils.ignoreCase)
+        public static Dictionary<string, Func<FileTypes, FileInfo[], Task>> FileActions =>
+            new Dictionary<string, Func<FileTypes, FileInfo[], Task>>(WaterNut.DataSpace.Utils.ignoreCase)
             {
-                {"ImportSalesEntries",async (ft, fs) => await DocumentUtils.ImportSalesEntries(false).ConfigureAwait(false) },
-                {"AllocateSales",async (ft, fs) => await AllocateSalesUtils.AllocateSales().ConfigureAwait(false) },
-                {"CreateEx9",async (ft, fs) => await CreateEX9Utils.CreateEx9(false, -1).ConfigureAwait(false) },
-                {"ExportEx9Entries",async (ft, fs) => await EX9Utils.ExportEx9Entries(-1).ConfigureAwait(false) },
-                {"AssessEx9Entries",async (ft, fs) => await EX9Utils.AssessEx9Entries(-1).ConfigureAwait(false) },
-                {"SaveCsv", async (ft, fs) => await CSVUtils.SaveCsv(fs, ft).ConfigureAwait(false) }, // Corrected namespace qualification
-                {"ReplaceCSV",async (ft, fs) => await CSVUtils.ReplaceCSV(fs, ft).ConfigureAwait(false) },
-                {"RecreatePOEntries",async (ft, fs) => await POUtils.RecreatePOEntries(ft.AsycudaDocumentSetId).ConfigureAwait(false) },
-                {"ExportPOEntries",async (ft, fs) => await POUtils.ExportPOEntries(ft.AsycudaDocumentSetId).ConfigureAwait(false) },
-                {"AssessPOEntry",async (ft, fs) => await POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId).ConfigureAwait(false)},
-                {"EmailPOEntries",async (ft, fs) => await POUtils.EmailPOEntries(ft.AsycudaDocumentSetId).ConfigureAwait(false) },
+                {"ImportSalesEntries",(ft, fs) => DocumentUtils.ImportSalesEntries(false) },
+                {"AllocateSales",(ft, fs) => AllocateSalesUtils.AllocateSales() },
+                {"CreateEx9",(ft, fs) => CreateEX9Utils.CreateEx9(false, -1) },
+                {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
+                {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries(-1) },
+                {"SaveCsv", (ft, fs) => CSVUtils.SaveCsv(fs, ft) }, // Corrected namespace qualification
+                {"ReplaceCSV",(ft, fs) => CSVUtils.ReplaceCSV(fs, ft) },
+                {"RecreatePOEntries",(ft, fs) => POUtils.RecreatePOEntries(ft.AsycudaDocumentSetId) },
+                {"ExportPOEntries",(ft, fs) => POUtils.ExportPOEntries(ft.AsycudaDocumentSetId) },
+                {"AssessPOEntry", (ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
+                {"EmailPOEntries", (ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv",  async (ft, fs) =>  await XLSXProcessor.Xlsx2csv(fs, new List<FileTypes>(){ft}).ConfigureAwait(false) },
-                {"SaveInfo", async (ft, fs) => await EmailTextProcessor.Execute(fs, ft).ConfigureAwait(false) },
-                {"CleanupEntries",async (ft, fs) => await EntryDocSetUtils.CleanupEntries().ConfigureAwait(false) },
-                {"SubmitToCustoms",async (ft, fs) => await SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1).ConfigureAwait(false) },
+                {"Xlsx2csv",  (ft, fs) => XLSXProcessor.Xlsx2csv(fs, new List < FileTypes >() { ft }) },
+                {"SaveInfo", (ft, fs) => EmailTextProcessor.Execute(fs, ft) },
+                {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
+                {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
-                {"ImportPDF", async (ft, fs) => await InvoiceReader.InvoiceReader.ImportPDF(fs, ft).ConfigureAwait(false) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
-                {"CreateShipmentEmail", async (types, infos) => await ShipmentUtils.CreateShipmentEmail(types, infos).ConfigureAwait(false) },
+                {"ImportPDF", (ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(fs, ft) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() },
+                {"CreateShipmentEmail", (types, infos) => ShipmentUtils.CreateShipmentEmail(types, infos) },
                 //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
                 //{"AttachToDocSetByRef", (ft, fs) => AttachToDocSetByRef(ft.AsycudaDocumentSetId) },
 
 
-                {"SyncConsigneeInDB", async(types, infos) => await EntryDocSetUtils.SyncConsigneeInDB(types, infos).ConfigureAwait(false) },
+                {"SyncConsigneeInDB", (types, infos) => EntryDocSetUtils.SyncConsigneeInDB(types, infos) },
 
-                {"ClearDocSetEntries",async (ft, fs) => await EntryDocSetUtils.ClearDocSetEntries(ft).ConfigureAwait(false) },
+                {"ClearDocSetEntries",(ft, fs) => EntryDocSetUtils.ClearDocSetEntries(ft) },
                
-                {"SubmitDocSetUnclassifiedItems",async (ft, fs) => await ShipmentUtils.SubmitDocSetUnclassifiedItems(ft).ConfigureAwait(false) },
-                {"AllocateDocSetDiscrepancies",async (ft, fs) => await DISUtils.AllocateDocSetDiscrepancies(ft).ConfigureAwait(false) },
-                {"CleanupDocSetDiscpancies",async (ft, fs) => await DISUtils.CleanupDocSetDiscpancies(ft).ConfigureAwait(false) },
+                {"SubmitDocSetUnclassifiedItems",(ft, fs) => ShipmentUtils.SubmitDocSetUnclassifiedItems(ft) },
+                {"AllocateDocSetDiscrepancies",(ft, fs) => DISUtils.AllocateDocSetDiscrepancies(ft) },
+                {"CleanupDocSetDiscpancies",(ft, fs) => DISUtils.CleanupDocSetDiscpancies(ft) },
                 {"RecreateDocSetDiscrepanciesEntries", (ft, fs) => DISUtils.RecreateDocSetDiscrepanciesEntries(ft) },
                 {"ExportDocSetDiscpancyEntries", (ft, fs) => DISUtils.ExportDocSetDiscpancyEntries("DIS",ft) },
-                {"SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms", async (ft, fs) => await DISUtils.SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(ft).ConfigureAwait(false) },
-                {"AssessDiscrepancyExecutions", async (ft, fs) => await DISUtils.AssessDiscrepancyExecutions(ft, fs).ConfigureAwait(false) },
+                {"SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms", (ft, fs) => DISUtils.SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(ft) },
+                {"AssessDiscrepancyExecutions", (ft, fs) => DISUtils.AssessDiscrepancyExecutions(ft, fs) },
                 {"AttachEmailPDF", PDFUtils.AttachEmailPDF },
-                {"ReSubmitDiscrepanciesToCustoms", async (types, infos) => await DISUtils.ReSubmitDiscrepanciesToCustoms(types, infos).ConfigureAwait(false)
+                {"ReSubmitDiscrepanciesToCustoms", (types, infos) => DISUtils.ReSubmitDiscrepanciesToCustoms(types, infos)
                 },
-                {"ReSubmitSalesToCustoms", async (types, infos) => await SubmitSalesToCustomsUtils.ReSubmitSalesToCustoms(types, infos).ConfigureAwait(false)
+                {"ReSubmitSalesToCustoms", (types, infos) => SubmitSalesToCustomsUtils.ReSubmitSalesToCustoms(types, infos)
                 },
 
 
-                {"SubmitMissingInvoices",  async (ft, fs) => await Utils.SubmitMissingInvoices(ft).ConfigureAwait(false) },
-                {"SubmitIncompleteEntryData",async (ft, fs) => await Utils.SubmitIncompleteEntryData(ft).ConfigureAwait(false) },
-                {"SubmitUnclassifiedItems",async (ft, fs) =>  await ShipmentUtils.SubmitUnclassifiedItems(ft).ConfigureAwait(false) },
-                {"SubmitInadequatePackages",async (ft, fs) => await ShipmentUtils.SubmitInadequatePackages(ft).ConfigureAwait(false) },
-                {"SubmitIncompleteSuppliers",async (ft, fs) => await ShipmentUtils.SubmitIncompleteSuppliers(ft).ConfigureAwait(false) },
-                {"CreateC71",async (ft, fs) => await C71Utils.CreateC71(ft).ConfigureAwait(false) },
-                {"CreateLicense",async (ft, fs) =>  await LICUtils.CreateLicence(ft).ConfigureAwait(false)},
+                {"SubmitMissingInvoices",  (ft, fs) => Utils.SubmitMissingInvoices(ft) },
+                {"SubmitIncompleteEntryData",(ft, fs) => Utils.SubmitIncompleteEntryData(ft) },
+                {"SubmitUnclassifiedItems",(ft, fs) => ShipmentUtils.SubmitUnclassifiedItems(ft) },
+                {"SubmitInadequatePackages",(ft, fs) => ShipmentUtils.SubmitInadequatePackages(ft) },
+                {"SubmitIncompleteSuppliers",(ft, fs) => ShipmentUtils.SubmitIncompleteSuppliers(ft) },
+                {"CreateC71",(ft, fs) => C71Utils.CreateC71(ft) },
+                {"CreateLicense", (ft, fs) =>  LICUtils.CreateLicence(ft)},
                 { "AssessC71",(ft, fs) => C71Utils.AssessC71(ft) },
                 {"AssessLicense",(ft, fs) => LICUtils.AssessLicense(ft) },
                 {"DownLoadC71", (ft, fs) => C71Utils.DownLoadC71(ft) },
                 {"DownLoadLicense", (ft, fs) => LICUtils.DownLoadLicence(false, ft) },
-                { "ImportC71", async (ft, fs) => await C71Utils.ImportC71(ft).ConfigureAwait(false) },
-                {"ImportLicense", async (ft, fs) => await LICUtils.ImportLicense(ft).ConfigureAwait(false) },
+                { "ImportC71", (ft, fs) => C71Utils.ImportC71(ft) },
+                {"ImportLicense", (ft, fs) => LICUtils.ImportLicense(ft) },
                
                 { "AttachToDocSetByRef",(ft, fs) => EntryDocSetUtils.AttachToDocSetByRef(ft) },
                 
-                {"AssessPOEntries", async (ft, fs) => await POUtils.AssessPOEntries(ft).ConfigureAwait(false) },
-                {"AssessDiscpancyEntries", async (ft, fs) => await DISUtils.AssessDiscpancyEntries(ft, fs).ConfigureAwait(false) },
+                {"AssessPOEntries", (ft, fs) => POUtils.AssessPOEntries(ft) },
+                {"AssessDiscpancyEntries", (ft, fs) => DISUtils.AssessDiscpancyEntries(ft, fs) },
                 {"DeletePONumber", POUtils.DeletePONumber },
-                { "SubmitPOs", async (ft, fs) => await POUtils.SubmitPOs().ConfigureAwait(false) },
-                {"SubmitEntryCIF", async (types, infos) => await EntryDocSetUtils.SubmitEntryCIF(types, infos).ConfigureAwait(false) },
-                {"SubmitBlankLicenses", async (ft,fs) => await LICUtils.SubmitBlankLicenses(ft).ConfigureAwait(false) },
+                { "SubmitPOs", (ft, fs) => POUtils.SubmitPOs() },
+                {"SubmitEntryCIF", (types, infos) => EntryDocSetUtils.SubmitEntryCIF(types, infos) },
+                {"SubmitBlankLicenses", (ft, fs) => LICUtils.SubmitBlankLicenses(ft) },
                 {"ProcessUnknownCSVFileType", (ft,fs) => CSVUtils.ProcessUnknownCSVFileType(ft, fs) },
-                {"ProcessUnknownPDFFileType", (ft,fs) => PDFUtils.ProcessUnknownPDFFileType(ft, fs) },
-                {"ImportUnAttachedSummary", async (ft,fs) => await ShipmentUtils.ImportUnAttachedSummary(ft, fs).ConfigureAwait(false) },
+               // {"ProcessUnknownPDFFileType", (ft,fs) => PDFUtils.ProcessUnknownPDFFileType(ft, fs) },
+                {"ImportUnAttachedSummary", (ft, fs) => ShipmentUtils.ImportUnAttachedSummary(ft, fs) },
 
-                {"RemoveDuplicateEntries", async (ft,fs) => await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false) },
-                {"FixIncompleteEntries", async (ft,fs) => await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false) },
-                {"EmailWarehouseErrors", async (ft,fs) => await EntryDocSetUtils.EmailWarehouseErrors(ft,fs).ConfigureAwait(false) },
-                {"ImportExpiredEntires", async (ft,fs) => await EntryDocSetUtils.ImportExpiredEntires().ConfigureAwait(false) },
-                {"ImportCancelledEntries", async (ft,fs) => await EntryDocSetUtils.ImportCancelledEntries().ConfigureAwait(false) },
-                {"EmailEntriesExpiringNextMonth", async (ft,fs) => await EntryDocSetUtils.EmailEntriesExpiringNextMonth().ConfigureAwait(false) },
-                {"RecreateEx9", async (types, infos) => await EX9Utils.RecreateEx9(types, infos).ConfigureAwait(false) },//
+                {"RemoveDuplicateEntries", (ft,fs) => EntryDocSetUtils.RemoveDuplicateEntries() },
+                {"FixIncompleteEntries", (ft, fs) => EntryDocSetUtils.FixIncompleteEntries() },
+                {"EmailWarehouseErrors", (ft, fs) => EntryDocSetUtils.EmailWarehouseErrors(ft, fs) },
+                {"ImportExpiredEntires", (ft, fs) => EntryDocSetUtils.ImportExpiredEntires() },
+                {"ImportCancelledEntries", (ft, fs) => EntryDocSetUtils.ImportCancelledEntries() },
+                {"EmailEntriesExpiringNextMonth", (ft, fs) => EntryDocSetUtils.EmailEntriesExpiringNextMonth() },
+                {"RecreateEx9", (types, infos) => EX9Utils.RecreateEx9(types, infos) },//
                 {"UpdateRegEx", UpdateInvoice.UpdateRegEx},
-                {"ImportWarehouseErrors", async (ft,fs) => await ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1).ConfigureAwait(false)},
+                {"ImportWarehouseErrors", (ft, fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)},
                 {"Kill", Utils.Kill},
-                {"Continue", (ft, fs) => { }},
+                {"Continue", (ft, fs) => { return Task.Run(() => { });}},
                 {"LinkPDFs", (ft,fs) => PDFUtils.LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", false)},
                 {"ReDownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", true)},
-                {"SubmitDiscrepanciesToCustoms", async (types, infos) => await DISUtils.SubmitDiscrepanciesToCustoms(types, infos).ConfigureAwait(false) },
+                {"SubmitDiscrepanciesToCustoms", (types, infos) => DISUtils.SubmitDiscrepanciesToCustoms(types, infos) },
                 {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
-                {"ImportPOEntries", async (ft,fs) => await DocumentUtils.ImportPOEntries(false).ConfigureAwait(false) },
+                {"ImportPOEntries", (ft, fs) => DocumentUtils.ImportPOEntries(false) },
                 {"ImportAllAsycudaDocumentsInDataFolder", (ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) },
-                {"ImportEntries",async (ft, fs) => await DocumentUtils.ImportEntries(false, ft.Data.ToString()).ConfigureAwait(false) },
-                {"ImportShipmentInfoFromTxt", async (types, infos) => await ShipmentUtils.ImportShipmentInfoFromTxt(types, infos).ConfigureAwait(false) }, // Added mapping for new action
+                {"ImportEntries",(ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString()) },
+                {"ImportShipmentInfoFromTxt", (types, infos) => ShipmentUtils.ImportShipmentInfoFromTxt(types, infos) }, // Added mapping for new action
 
 
             };

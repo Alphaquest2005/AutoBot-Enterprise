@@ -135,8 +135,13 @@
     <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj" />
     <ProjectReference Include="..\AutoBot1\AutoBot.csproj" />
     <ProjectReference Include="..\InvoiceReader\InvoiceReader.csproj" />
+    <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreEntities\CoreEntities.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>

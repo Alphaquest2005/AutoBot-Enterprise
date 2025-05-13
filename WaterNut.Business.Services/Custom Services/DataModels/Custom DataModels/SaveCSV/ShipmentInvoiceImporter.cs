@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,8 +156,8 @@ namespace WaterNut.DataSpace
                             : 1;
                         details.LineNumber = z.ContainsKey("Instance")
                             ? Convert.ToInt32(
-                                z["Instance"].ToString().Contains("-") 
-                                ? z["Instance"].ToString().Split('-')[1] 
+                                z["Instance"].ToString().Contains("-")
+                                ? z["Instance"].ToString().Split('-')[1]
                                 : z["Instance"].ToString())
                             : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1;
                         details.FileLineNumber = z.ContainsKey("FileLineNumber") ? Convert.ToInt32(z["FileLineNumber"].ToString()) : -1;
@@ -240,8 +240,10 @@ namespace WaterNut.DataSpace
                 {
                     var existingManifest = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
                     if (existingManifest != null)
+                    {
                         ctx.ShipmentInvoice.Remove(existingManifest);
-
+                    }
+                    
                     invoice.InvoiceDetails = AutoFixImportErrors(invoice); // Keep this fix
                     invoice.ImportedLines = invoice.InvoiceDetails.Count;
 
@@ -284,25 +286,23 @@ namespace WaterNut.DataSpace
                         ctx.ShipmentInvoice.Remove(existing);
                     }
                     ctx.ShipmentInvoice.Add(invoice); // Add the invoice with its details
-
-                    // Save changes for the current invoice (categories should already be saved)
-                    try
-                    {
-                        await ctx.SaveChangesAsync().ConfigureAwait(false);
-                    }
-                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
-                    {
-                         // Log the specific error related to invoice saving
-                        Console.WriteLine($"Error saving invoice {invoice.InvoiceNo}: {ex.Message}");
-                        // Decide how to handle invoice-specific save errors (e.g., skip invoice, log, re-throw)
-                        // Re-throwing for now.
-                        throw;
-                    }
+                } // Close the foreach loop here
+                // Save all changes after processing all invoices
+                try
+                {
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
+                }
+                catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+                {
+                     // Log the specific error related to saving the batch of invoices
+                    Console.WriteLine($"Error saving batch of invoices: {ex.Message}");
+                    // Re-throwing for now.
+                    throw;
                 }
             }
         }
 
-        private static async Task EnsureCategoriesExistAsync(EntryDataDSContext ctx, ICollection<InvoiceDetails> details)
+private static async Task EnsureCategoriesExistAsync(EntryDataDSContext ctx, ICollection<InvoiceDetails> details)
         {
             if (details == null || !details.Any()) return;
 
@@ -362,7 +362,6 @@ namespace WaterNut.DataSpace
             // No SaveChanges here; it's handled by the caller (SaveInvoicePOsAsync)
         }
 
-
         //public bool ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
         //{
         //    try
@@ -410,7 +409,7 @@ namespace WaterNut.DataSpace
         //            invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ?  x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
         //            invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
         //            invoice.InvoiceDate = x.ContainsKey("InvoiceDate") ?  DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue;
-        //            invoice.InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null; //Because of MPI not 
+        //            invoice.InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null; //Because of MPI not
         //            invoice.SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null;
         //            invoice.ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count;
         //            invoice.SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null;
@@ -434,8 +433,8 @@ namespace WaterNut.DataSpace
         //                        ? Convert.ToDouble(z["Quantity"].ToString())
         //                        : 1;
         //                    details.Quantity = qty;
-        //                    var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString()) 
-        //                            ? classifiedItms[z["ItemDescription"].ToString()] 
+        //                    var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString())
+        //                            ? classifiedItms[z["ItemDescription"].ToString()]
         //                            : (ItemNumber:z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20) : null,
         //                                ItemDescription: z["ItemDescription"].ToString().Truncate(255),
         //                                TariffCode: z.ContainsKey("TariffCode") ? z["TariffCode"].ToString().ToUpper().Truncate(20) : null);
@@ -475,7 +474,6 @@ namespace WaterNut.DataSpace
         //        }).ToList();
         //    return lstdata;
         //}
-
 
 
         //private static void SaveInvoicePOs(Dictionary<string, string> invoicePOs, List<ShipmentInvoice> lst)
@@ -561,7 +559,7 @@ namespace WaterNut.DataSpace
 
             foreach (var err in details.Where(x =>x.TotalCost.GetValueOrDefault() > 0 && Math.Abs(((x.Quantity * x.Cost) - x.Discount.GetValueOrDefault()) - x.TotalCost.GetValueOrDefault()) > 0.01))
             {
-                
+
             }
 
             //if (invoice.SubTotal > 0

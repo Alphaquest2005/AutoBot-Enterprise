@@ -1276,7 +1276,7 @@ namespace AutoBot
             return alst;
         }
 
-        public static void ExportDiscpancyEntries(string adjustmentType)
+        public static async Task ExportDiscpancyEntries(string adjustmentType)
         {
             Console.WriteLine($"Export Last {adjustmentType} Entries");
 
@@ -1300,10 +1300,10 @@ namespace AutoBot
                     {
 
                         var directoryName = BaseDataModel.GetDocSetDirectoryName(doc.Key.Declarant_Reference_Number);
-                        ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
-                            directoryName).Wait();
-                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
-                            directoryName, true).Wait();
+                        await ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                            directoryName).ConfigureAwait(false);
+                        await BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
+                            directoryName, true).ConfigureAwait(false);
 
 
                     }
@@ -1317,7 +1317,7 @@ namespace AutoBot
             }
         }
 
-        public static void ExportDocSetDiscpancyEntries(string adjustmentType, FileTypes fileType)
+        public static async Task ExportDocSetDiscpancyEntries(string adjustmentType, FileTypes fileType)
         {
             Console.WriteLine($"Export Last {adjustmentType} Entries");
 
@@ -1343,12 +1343,12 @@ namespace AutoBot
                         var docSetEx = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId);
                         //if (docSetEx.ClassifiedLines != docSetEx.TotalLines) continue;
 
-                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
+                        await BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                doc.Key.Declarant_Reference_Number), true).Wait();
-                        ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                                doc.Key.Declarant_Reference_Number), true).ConfigureAwait(false);
+                        await ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                doc.Key.Declarant_Reference_Number)).Wait();
+                                doc.Key.Declarant_Reference_Number)).ConfigureAwait(false);
 
                     }
 

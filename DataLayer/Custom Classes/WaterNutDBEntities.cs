@@ -28,7 +28,7 @@ namespace WaterNut.DataLayer
         {
             try
             {
-                var now = DateTime.UtcNow;
+                var now = DateTime.Now;
 
                 var entities = ObjectStateManager.GetObjectStateEntries(System.Data.Entity.EntityState.Added | System.Data.Entity.EntityState.Modified) // Explicitly qualify EntityState
                                         .Select(e => e.Entity)

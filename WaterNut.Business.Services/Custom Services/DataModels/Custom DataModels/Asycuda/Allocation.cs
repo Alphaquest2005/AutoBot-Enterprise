@@ -62,7 +62,7 @@ namespace WaterNut.DataSpace
   public DataCache<InventoryItemAlias> InventoryAliasCache
   {
             // NOTE: Calling .Result here can block. Consider initializing the cache asynchronously elsewhere.
-   get => _inventoryAliasCache ?? GetDataCache().Result;
+   get => _inventoryAliasCache ?? GetDataCache().GetAwaiter().GetResult();
             set => _inventoryAliasCache = value;
         }
 

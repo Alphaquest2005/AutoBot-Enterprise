@@ -86,10 +86,10 @@ namespace AutoBot
         };
 
 
-    public static void Kill(FileTypes arg1, FileInfo[] arg2)
-        {
-            Application.Exit();
-        }
+    public static Task Kill(FileTypes arg1, FileInfo[] arg2)
+    {
+        return Task.Run(() => Application.Exit());
+    }
 
 
     public static void SetCurrentApplicationSettings(int id)

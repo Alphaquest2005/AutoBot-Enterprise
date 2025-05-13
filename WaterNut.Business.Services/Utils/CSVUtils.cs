@@ -32,7 +32,7 @@ namespace WaterNut.Business.Services.Utils
     {
         
 
-        public static void ProcessUnknownCSVFileType(FileTypes ft, FileInfo[] fs)
+        public static Task ProcessUnknownCSVFileType(FileTypes ft, FileInfo[] fs)
         {
             throw new NotImplementedException();
         }

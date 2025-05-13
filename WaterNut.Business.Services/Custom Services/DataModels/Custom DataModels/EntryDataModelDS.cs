@@ -27,23 +27,24 @@ namespace WaterNut.DataSpace
             await BaseDataModel.Instance.RemoveEntryData(entryData.EntryDataId).ConfigureAwait(false);
         }
 
-        public async Task RemoveSelectedEntryData(IEnumerable<string> lst)
+        public Task RemoveSelectedEntryData(IEnumerable<string> lst)
         {
           
                 StatusModel.StartStatusUpdate("Removing EntryData", lst.Count());
-                var t = Task.Run(() =>
+                var t = Task.Run(
+                    async () =>
                 {
                     using (var ctx = new EntryDataService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteEntryData(item).Wait();
+                            await ctx.DeleteEntryData(item).ConfigureAwait(false);
                             StatusModel.StatusUpdate();
                         }
                     }
                 });
-                await t.ConfigureAwait(false);
+                return t;
 
                
         }

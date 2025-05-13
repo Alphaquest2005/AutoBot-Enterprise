@@ -20,14 +20,14 @@ namespace AutoBot
 {
     public class PDFUtils
     {
-        public static void ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
-        {
+        //public static Task ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
+        //{
             
-        }
+        //}
 
-        public static void AttachEmailPDF(FileTypes ft, FileInfo[] fs)
+        public static async Task AttachEmailPDF(FileTypes ft, FileInfo[] fs)
         {
-            BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId);
+            await BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId).ConfigureAwait(false);
         }
 
         public static async Task ImportPDF()
@@ -43,7 +43,7 @@ namespace AutoBot
             }
         }
 
-        public static void LinkPDFs()
+        public static async Task LinkPDFs()
         {
             try
 
@@ -56,15 +56,7 @@ namespace AutoBot
                         .Distinct()
                         .ToList();
 
-                    //var entries = ctx.TODO_ImportCompleteEntries
-                    //    .Where(x => x.ApplicationSettingsId ==
-                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    //    .Select(x => x.AssessedAsycuda_Id)
-                    //    .Distinct()
-                    //    .ToList();
-
-
-                    BaseDataModel.LinkPDFs(entries);
+                 await BaseDataModel.LinkPDFs(entries).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -133,7 +125,7 @@ namespace AutoBot
             return success;
         }
 
-        public static void DownloadPDFs()
+        public static async Task DownloadPDFs()
         {
             try
 
@@ -210,7 +202,7 @@ namespace AutoBot
             }
         }
 
-        public static void ReLinkPDFs()
+        public static async Task ReLinkPDFs()
         {
             Console.WriteLine("ReLink PDF Files");
             try
@@ -266,7 +258,7 @@ namespace AutoBot
 
 
 
-                        ctx.SaveChanges();
+                      await  ctx.SaveChangesAsync().ConfigureAwait(false);
 
                     }
                 }
@@ -279,17 +271,17 @@ namespace AutoBot
             }
         }
 
-        public static void ConvertPNG2PDF()
-        {
-            var directoryName = BaseDataModel.GetDocSetDirectoryName("Old Imports");
-            Console.WriteLine("Convert PNG 2 PDF");
-            var pngFiles = new DirectoryInfo(directoryName).GetFiles($"*.png");
-                //.Where(x => x.LastWriteTime.ToString("d") == DateTime.Today.ToString("d")).ToArray();
-            foreach (var pngFile in pngFiles)
-            {
+        //public static Task ConvertPNG2PDF()
+        //{
+        //    var directoryName = BaseDataModel.GetDocSetDirectoryName("Old Imports");
+        //    Console.WriteLine("Convert PNG 2 PDF");
+        //    var pngFiles = new DirectoryInfo(directoryName).GetFiles($"*.png");
+        //        //.Where(x => x.LastWriteTime.ToString("d") == DateTime.Today.ToString("d")).ToArray();
+        //    foreach (var pngFile in pngFiles)
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         public static async Task<List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
         {

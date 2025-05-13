@@ -10,9 +10,11 @@ using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    public static void AttachEmailPDF(int asycudaDocumentSetId, string emailId)
+    public static async Task AttachEmailPDF(int asycudaDocumentSetId, string emailId)
     {
         try
         {
@@ -55,7 +57,7 @@ public partial class BaseDataModel
 
 
             foreach (var doc in docs)
-                AttachToDocument(pdfs, doc, itms.Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id).ToList());
+                await AttachToDocument(pdfs, doc, itms.Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id).ToList()).ConfigureAwait(false);
         }
         catch (Exception e)
         {

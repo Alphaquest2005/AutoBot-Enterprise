@@ -48,7 +48,7 @@ namespace AutoBot
 
         }
 
-        public static void UpdateSupplierInfo(FileTypes ft, FileInfo[] fs)
+        public static async Task UpdateSupplierInfo(FileTypes ft, FileInfo[] fs)
         {
             using (var ctx = new EntryDataDSContext() { StartTracking = true })
             {
@@ -67,7 +67,7 @@ namespace AutoBot
                         itm.Street = row["SupplierAddress"].ToString();
                         itm.CountryCode = row["CountryCode"].ToString();
 
-                        ctx.SaveChanges();
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
                     }
 
                 }
@@ -165,7 +165,7 @@ namespace AutoBot
             return sent;
         }
 
-        public static void CreateInstructions()
+        public static Task CreateInstructions()
         {
             var dir = new DirectoryInfo(@"D:\OneDrive\Clients\Rouge\2019\October");
             var files = dir.GetFiles().Where(x => Regex.IsMatch(x.Name, @".*(P|F)\d+.xml"));
@@ -181,9 +181,10 @@ namespace AutoBot
                     File.Copy(file.FullName.Replace("xml", "csv"), file.FullName.Replace("xml", "csv.pdf"));
                 File.AppendAllText(Path.Combine(dir.FullName, "Instructions.txt"), $"Attachment\t{file.FullName.Replace("xml", "csv.pdf")}\r\n");
             }
+            return Task.CompletedTask;
         }
 
-        public static void MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
+        public static async Task MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
         {
             Console.WriteLine("Mapping unclassified items");
             using (var ctx = new InventoryDSContext() { StartTracking = true })
@@ -196,14 +197,14 @@ namespace AutoBot
                     {
                         if (string.IsNullOrEmpty(row["TariffCode"].ToString())) continue;
                         var itmNumber = row["ItemNumber"].ToString();
-                        var itms = ctx.InventoryItems.Where(x => x.ItemNumber == itmNumber && x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                        var itms = await ctx.InventoryItems.Where(x => x.ItemNumber == itmNumber && x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToListAsync().ConfigureAwait(false);
                         foreach (var itm in itms)
                         {
                             itm.TariffCode = row["TariffCode"].ToString();
                         }
 
-                        ctx.SaveChanges();
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
                     }
 
                 }
@@ -480,14 +481,14 @@ namespace AutoBot
             }
         }
 
-        public static void ClearShipmentData(FileTypes fileType, FileInfo[] fileInfos)
+        public static async Task ClearShipmentData(FileTypes fileType, FileInfo[] fileInfos)
         {
             using (var ctx = new EntryDataDSContext())
             {
-                ctx.Database.ExecuteSqlCommand($@"DELETE FROM ShipmentBL WHERE (EmailId = N'{fileType.EmailId}')
+               await ctx.Database.ExecuteSqlCommandAsync($@"DELETE FROM ShipmentBL WHERE (EmailId = N'{fileType.EmailId}')
                                                     delete from ShipmentInvoice WHERE (EmailId = N'{fileType.EmailId}')
                                                     delete from entrydata WHERE (EmailId = N'{fileType.EmailId}')
-                                                    delete from ShipmentManifest WHERE (EmailId = N'{fileType.EmailId}')");
+                                                    delete from ShipmentManifest WHERE (EmailId = N'{fileType.EmailId}')").ConfigureAwait(false);
             }
         }
 // --- Start of Added/Corrected Methods ---

@@ -11,9 +11,11 @@ using WaterNut.Business.Entities;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet,
+    private async Task AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet,
         BaseDataModel.EntryLineData pod,
         DocumentCT cdoc)
     {
@@ -39,8 +41,8 @@ public partial class BaseDataModel
                 AddPreviousDocument(currentAsycudaDocumentSet, cdoc, p, alst);
             }
 
-            AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
-                cdoc.Document, cdoc.DocumentItems);
+                await AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
+                    cdoc.Document, cdoc.DocumentItems).ConfigureAwait(false);
         }
 
         if ((pod.EntryData is Adjustments a))

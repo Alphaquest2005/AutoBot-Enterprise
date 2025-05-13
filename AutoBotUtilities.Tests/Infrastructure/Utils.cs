@@ -60,7 +60,34 @@ namespace AutoBotUtilities.Tests.Infrastructure
 
         public static void SetTestApplicationSettings(int appId)
         {
-            AutoBot.Utils.SetCurrentApplicationSettings(appId);
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var appSetting = ctx.ApplicationSettings.AsNoTracking()
+                    .FirstOrDefault(x => x.ApplicationSettingsId == appId && x.IsActive); // Use FirstOrDefault and check IsActive
+
+                if (appSetting == null)
+                {
+                    // Create a dummy active ApplicationSettings for the test if it doesn't exist
+                    appSetting = new CoreEntities.Business.Entities.ApplicationSettings
+                    {
+                        ApplicationSettingsId = appId,
+                        IsActive = true,
+                        CompanyName = "Test Company", // Provide dummy data
+                        DataFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestImports"), // Provide a test data folder
+                        Email = "test@example.com",
+                        EmailPassword = "password",
+                        EmailMapping = new List<EmailMapping>(),
+                        NotifyUnknownMessages = false
+                    };
+                     ctx.ApplicationSettings.Add(appSetting);
+                     ctx.SaveChanges();
+                     // Re-fetch the entity with tracking enabled if needed for relationships later,
+                     // but for setting BaseDataModel.Instance.CurrentApplicationSettings, the detached entity is fine.
+                }
+
+                // set BaseDataModel CurrentAppSettings
+                BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
+            }
         }
 
         public static async Task<IEnumerable<FileTypes>> GetUnknownCSVFileType(string fileName) =>

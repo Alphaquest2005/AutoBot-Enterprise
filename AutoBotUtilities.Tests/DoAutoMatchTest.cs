@@ -30,7 +30,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanDoAutoMatch()
+        public async Task CanDoAutoMatch()
         {
 
             if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
@@ -40,7 +40,7 @@ namespace AutoBotUtilities.Tests
                 .ToList();
 
 
-            AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}")).Wait();
+            await AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
 
             AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 

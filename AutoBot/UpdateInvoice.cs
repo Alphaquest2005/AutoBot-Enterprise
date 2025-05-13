@@ -16,7 +16,7 @@ namespace AutoBot
 {
     public class UpdateInvoice
     {
-        public static void UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
+        public static async Task UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
         {
             
             var regExCommands = RegExCommands(fileTypes);
@@ -45,7 +45,7 @@ namespace AutoBot
                     }
 
                     ValidateParams(cmdparamDic, regExCommands[cmdName].Params);
-                    regExCommands[cmdName].Action.Invoke(cmdparamDic);
+                    await Task.Run(() => regExCommands[cmdName].Action.Invoke(cmdparamDic)).ConfigureAwait(false);
 
                 }
 

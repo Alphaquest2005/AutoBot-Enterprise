@@ -9,16 +9,17 @@ using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    using System.Threading.Tasks;
+
     public class ImportAllAsycudaDocumentsInDataFolderUtils
     {
-        public static void ImportAllAsycudaDocumentsInDataFolder(bool overwriteExisting)
+        public static async Task ImportAllAsycudaDocumentsInDataFolder(bool overwriteExisting)
         {
             try
             {
                 Console.WriteLine("Import All Asycuda Documents in DataFolder");
 
-                BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true)
-                    .Wait();
+                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -27,7 +28,7 @@ namespace AutoBot
             }
         }
 
-        public static void ImportAllZeroItemsInDataFolder(bool overwriteExisting)
+        public static async Task ImportAllZeroItemsInDataFolder(bool overwriteExisting)
         {
             try
             {
@@ -36,8 +37,7 @@ namespace AutoBot
                     .Select(x => x.SourceFileName).ToList();
                
 
-                BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, zeroitems, true, true, true, overwriteExisting, true)
-                    .Wait();
+                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, zeroitems, true, true, true, overwriteExisting, true).ConfigureAwait(false);
             }
             catch (Exception e)
             {

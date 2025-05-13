@@ -119,23 +119,23 @@ namespace WaterNut.DataSpace
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
 
-        private void ClearXbondAllocations()
+        private async Task ClearXbondAllocations()
         {
             using (var ctx = new AllocationDSContext {StartTracking = true})
             {
-                ctx.Database.ExecuteSqlCommand($@"DELETE FROM xBondAllocations
+                await ctx.Database.ExecuteSqlCommandAsync($@"DELETE FROM xBondAllocations
 			                                        FROM    xBondAllocations INNER JOIN
 			                                        xcuda_Item ON xBondAllocations.xEntryItem_Id = xcuda_Item.Item_Id INNER JOIN
 			                                        xcuda_ASYCUDA_ExtendedProperties ON xcuda_Item.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id INNER JOIN
 			                                        AsycudaDocumentSet ON xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = AsycudaDocumentSet.AsycudaDocumentSetId
 			                                        WHERE(xcuda_Item.IsAssessed = 1) 
-                                                    AND(AsycudaDocumentSet.ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId})");
+                                                    AND(AsycudaDocumentSet.ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId})").ConfigureAwait(false);
 
-                ctx.Database.ExecuteSqlCommand($@"UPDATE xcuda_PreviousItem
+               await ctx.Database.ExecuteSqlCommandAsync($@"UPDATE xcuda_PreviousItem
                                                     SET         QtyAllocated = 0
                                                     FROM    AsycudaDocument INNER JOIN
                                                                      xcuda_PreviousItem ON AsycudaDocument.ASYCUDA_Id = xcuda_PreviousItem.ASYCUDA_Id
-                                                    WHERE (AsycudaDocument.AsycudaDocumentSetId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId})");
+                                                    WHERE (AsycudaDocument.AsycudaDocumentSetId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId})").ConfigureAwait(false);
             }
         }
 
@@ -332,7 +332,7 @@ namespace WaterNut.DataSpace
             //await BuildSalesReport(alst, dfp).ConfigureAwait(false);//.Where(x => x.pCNumber == "29635" && x.PreviousItemEx.LineNumber == 166).ToList()
         }
 
-        public void ReBuildSalesReports()
+        public async Task ReBuildSalesReports()
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.AllowSalesToPI != "Visible") return;
 
@@ -351,7 +351,7 @@ namespace WaterNut.DataSpace
 
             // var alst = (await GetSalesData("Duty Free").ConfigureAwait(false));
 
-            ClearXbondAllocations();
+           await this.ClearXbondAllocations().ConfigureAwait(false);
             piBag.Clear();
 
             BuildSalesReport();

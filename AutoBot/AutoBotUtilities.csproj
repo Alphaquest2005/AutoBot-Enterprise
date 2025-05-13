@@ -112,6 +112,7 @@
     <Compile Include="AssessedEntryInfo.cs" />
     <Compile Include="BlandRiderCreator.cs" />
     <Compile Include="C71Utils.cs" />
+    <Compile Include="EmailTextProcessor.cs" />
     <Compile Include="EX9Utils.DownloadHistoryWithInvoices.cs" />
     <Compile Include="EX9Utils.EmailEntriesExpiringNextMonth.cs" />
     <Compile Include="EX9Utils.EmailWarehouseErrors.cs" />

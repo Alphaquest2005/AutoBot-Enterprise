@@ -52,7 +52,7 @@ namespace AutoBotUtilities.Tests
 
         
         [Test]
-        public void CanImportShipmentInvoice() // Original Test
+        public async Task CanImportShipmentInvoice() // Original Test
         {
             try
             {
@@ -66,7 +66,7 @@ namespace AutoBotUtilities.Tests
                 }
                 foreach (var fileType in fileTypes)
                 {
-                    PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
 
 
                     using (var ctx = new EntryDataDSContext())
@@ -193,7 +193,7 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanImportTemuInvoice_07252024_TEMU() 
+        public async Task CanImportTemuInvoice_07252024_TEMU() 
         {
             try
             {
@@ -216,7 +216,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
+                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -248,7 +248,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportTemuInvoice_07262024_TEMU() 
+        public async Task CanImportTemuInvoice_07262024_TEMU() 
         {
             try
             {
@@ -271,7 +271,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).Wait();
+                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -303,7 +303,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportTemuInvoice_03152025103631() 
+        public async Task CanImportTemuInvoice_03152025103631() 
         {
             try
             {
@@ -326,7 +326,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                var res = PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Result;
+                var res = await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -360,7 +360,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportTemuInvoice_03152025103721() 
+        public async Task CanImportTemuInvoice_03152025103721() 
         {
             try
             {
@@ -383,7 +383,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).Wait();
+                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -417,7 +417,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportTemuInvoice_03152025135830() 
+        public async Task CanImportTemuInvoice_03152025135830() 
         {
             try
             {
@@ -440,7 +440,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).Wait();
+                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {

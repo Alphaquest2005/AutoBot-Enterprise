@@ -101,7 +101,7 @@ namespace AutoBot
 
         private static string GetInstructionFile(string docReference) => Path.Combine(BaseDataModel.GetDocSetDirectoryName(docReference), "Instructions.txt");
 
-        public static void DownloadSalesFiles(int trytimes, string script, bool redownload = false)
+        public static async Task DownloadSalesFiles(int trytimes, string script, bool redownload = false)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace AutoBot
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
 
-                Utils.RetryImport(trytimes, script, redownload, directoryName);
+                await Task.Run(() => Utils.RetryImport(trytimes, script, redownload, directoryName)).ConfigureAwait(false);
 
             }
             catch (Exception e)

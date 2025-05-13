@@ -115,7 +115,7 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void ClassifyItems_ProcessesMixedItems_CorrectlyPopulatesMissingFields()
+        public async Task ClassifyItems_ProcessesMixedItems_CorrectlyPopulatesMissingFields()
         {
             // Arrange
             var api = new DeepSeekApi();
@@ -129,7 +129,7 @@ namespace AutoBotUtilities.Tests
             };
 
             // Act
-            var results = api.ClassifyItemsAsync(testItems).Result;
+            var results = await api.ClassifyItemsAsync(testItems).ConfigureAwait(false);
 
             // Assert
             foreach (var kvp in results)
@@ -166,7 +166,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void ClassifyItems_SanitizesAllInputFields()
+        public async Task ClassifyItems_SanitizesAllInputFields()
         {
             var api = new DeepSeekApi();
             var testItems = new List<(string, string, string)>
@@ -175,7 +175,7 @@ namespace AutoBotUtilities.Tests
                 ("", "Wireless Mouse", "8517.60.00")
             };
 
-            var results = api.ClassifyItemsAsync(testItems).Result;
+            var results = await api.ClassifyItemsAsync(testItems).ConfigureAwait(false);
 
             // Verify item number sanitization
             var mouseEntry = results["Wireless Mouse"];

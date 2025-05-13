@@ -557,7 +557,7 @@ public class EmailDownloaderIntegrationTests
             Assert.Fail($"Failed to prepare for ProcessEmailsAsync: {ex.Message}");
         }
 
-        DateTime beforeImport = DateTime.UtcNow.AddMinutes(-1); // Time before the processor runs
+        DateTime beforeImport = DateTime.Now.AddMinutes(-1); // Time before the processor runs
         CancellationToken cancellationToken = CancellationToken.None;
 
         // --- Act ---
@@ -645,7 +645,7 @@ public class EmailDownloaderIntegrationTests
                         EmailUniqueId = (int)uidUint,
                         EmailId = $"simulated-{Guid.NewGuid()}",
                         MachineName = Environment.MachineName,
-                        // TimeStamp = DateTime.UtcNow // Set if required by DB
+                        // TimeStamp = DateTime.Now // Set if required by DB
                     };
                     dbCtx.Emails.Add(emailEntity);
                     await dbCtx.SaveChangesAsync().ConfigureAwait(false);
@@ -678,7 +678,7 @@ public class EmailDownloaderIntegrationTests
                         EmailDate = emailData.EmailDate.ToUniversalTime(),
                         EmailUniqueId = (int)mailkitUid,
                         MachineName = Environment.MachineName,
-                        // TimeStamp = DateTime.UtcNow // Set if required by DB
+                        // TimeStamp = DateTime.Now // Set if required by DB
                     };
                     dbCtx.Emails.Add(emailEntity);
                     await dbCtx.SaveChangesAsync().ConfigureAwait(false);

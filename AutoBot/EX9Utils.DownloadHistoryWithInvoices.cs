@@ -5,9 +5,11 @@ using WaterNut.DataSpace;
 
 namespace AutoBot;
 
+using System.Threading.Tasks;
+
 public partial class EX9Utils
 {
-    public static void DownloadHistoryWithInvoices(int trytimes, string script, bool redownload = false)
+    public static Task DownloadHistoryWithInvoices(int trytimes, string script, bool redownload = false)
     {
         try
         {
@@ -42,5 +44,7 @@ public partial class EX9Utils
             Console.WriteLine(e);
             throw;
         }
+
+        return Task.CompletedTask;
     }
 }

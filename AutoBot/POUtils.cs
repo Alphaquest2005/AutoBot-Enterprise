@@ -24,7 +24,7 @@ namespace AutoBot
 {
     public class POUtils
     {
-        public static void DeletePONumber(FileTypes ft, FileInfo[] fs)
+        public static async Task DeletePONumber(FileTypes ft, FileInfo[] fs)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace AutoBot
                         if (res != null) ctx.EntryData.Remove(res);
                     }
 
-                    ctx.SaveChanges();
+                   await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)

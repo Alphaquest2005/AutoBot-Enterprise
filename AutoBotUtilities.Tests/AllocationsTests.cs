@@ -101,14 +101,14 @@ namespace AutoBotUtilities.Tests
 
         [Test]
        [Timeout(3*1000*60)]
-        public void AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber()
+        public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
-                 new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(2, false, false, "TOH/MTSX018S").Wait();
+                 await new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(2, false, false, "TOH/MTSX018S").ConfigureAwait(false);
                 timer.Stop();
                 Console.Write("AllocatSales1 in seconds: " + timer.Elapsed.Seconds);
 
@@ -649,14 +649,14 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         //[TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
-        public void AllocatExistingEx9s(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public async Task AllocatExistingEx9s(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
-                if (Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                if (Infrastructure.Utils.IsDevSqlServer()) await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
                 timer.Start();
 
@@ -720,14 +720,14 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
-        public void Allocat1000Sales(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        public async Task Allocat1000Sales(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var timer = new System.Diagnostics.Stopwatch();
 
-                if (Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                if (Infrastructure.Utils.IsDevSqlServer()) await AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
                 timer.Start();
 

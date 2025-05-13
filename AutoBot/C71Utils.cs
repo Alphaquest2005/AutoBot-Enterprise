@@ -220,7 +220,7 @@ namespace AutoBot
         }
 
 
-        public static void DownLoadC71(FileTypes ft)
+        public static async Task DownLoadC71(FileTypes ft)
         {
             try
 
@@ -230,12 +230,12 @@ namespace AutoBot
                 {
                     ctx.Database.CommandTimeout = 10;
 
-                    var lst = ctx.TODO_C71ToCreate
-                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
-                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
-                        .OrderByDescending(x => x.AsycudaDocumentSetId)
-                        .Take(1)
-                        .ToList();
+                    var lst = await ctx.TODO_C71ToCreate
+                                  //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
+                                  .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
+                                  .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                  .Take(1)
+                                  .ToListAsync().ConfigureAwait(false);
 
 
                     if (!lst.Any()) return;
@@ -373,18 +373,18 @@ namespace AutoBot
         }
 
 
-        public static void AssessC71(FileTypes ft)
+        public static async Task AssessC71(FileTypes ft)
         {
 
 
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.CommandTimeout = 10;
-                var res = ctx.TODO_C71ToCreate
-                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
-                    .OrderByDescending(x => x.AsycudaDocumentSetId)
-                    .Take(1)
-                    .ToList();
+                var res =await ctx.TODO_C71ToCreate
+                             .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
+                             .OrderByDescending(x => x.AsycudaDocumentSetId)
+                             .Take(1)
+                             .ToListAsync().ConfigureAwait(false);
 
                 foreach (var doc in res)
                 {

@@ -140,7 +140,7 @@ namespace AutoBot
         }
 
 
-        public static void DownLoadLicence(bool redownload, FileTypes ft)
+        public static async Task DownLoadLicence(bool redownload, FileTypes ft)
         {
             try
 
@@ -150,9 +150,9 @@ namespace AutoBot
                 {
 
                     ctx.Database.CommandTimeout = 10;
-                    var pOs = ctx.TODO_LICToCreate
-                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
-                        .ToList();
+                    var pOs = await ctx.TODO_LICToCreate
+                                  .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
+                                  .ToListAsync().ConfigureAwait(false);
 
                     if (!pOs.Any()) return;
                     var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC")); ;
@@ -520,7 +520,7 @@ namespace AutoBot
             }
         }
 
-        public static void AssessLicense(FileTypes ft)
+        public static async Task AssessLicense(FileTypes ft)
         {
 
             try
@@ -530,9 +530,9 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 60;
-                    var res = ctx.TODO_LICToAssess
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
-                        .ToList();
+                    var res = await ctx.TODO_LICToAssess
+                                  .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                                  .ToListAsync().ConfigureAwait(false);
 
                     foreach (var doc in res)
                     {
