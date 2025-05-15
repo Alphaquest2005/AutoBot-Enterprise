@@ -142,7 +142,7 @@ namespace AutoBotUtilities.Tests
                      _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                      _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                      // Assuming PDFUtils is static
-                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
+                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, _logger).ConfigureAwait(false); // Removed .Instance
                      _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 
@@ -211,7 +211,7 @@ namespace AutoBotUtilities.Tests
                 {
                      _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                      _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
-                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false); // Removed .Instance
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, _logger).ConfigureAwait(false); // Removed .Instance
                      _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 
@@ -283,7 +283,7 @@ namespace AutoBotUtilities.Tests
                 {
                      _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                      _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
-                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(absoluteTestFilePath)}, fileType).ConfigureAwait(false);
+                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(absoluteTestFilePath)}, fileType, Log.Logger).ConfigureAwait(false);
                      _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
                      _logger.Debug("Verifying import results in database...");
@@ -356,7 +356,7 @@ namespace AutoBotUtilities.Tests
                 {
                      _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                      _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
-                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(absoluteTestFilePath)}, fileType).ConfigureAwait(false);
+                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(absoluteTestFilePath)}, fileType, Log.Logger).ConfigureAwait(false);
                      _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
                      _logger.Debug("Verifying import results in database...");
@@ -424,7 +424,7 @@ namespace AutoBotUtilities.Tests
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                     _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                     // Assuming PDFUtils is static
-                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).ConfigureAwait(false); // Removed .Instance
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false); // Removed .Instance
                     _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 

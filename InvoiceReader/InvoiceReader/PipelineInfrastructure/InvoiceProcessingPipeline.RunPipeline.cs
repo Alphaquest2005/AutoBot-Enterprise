@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
-    using Microsoft.Office.Interop.Excel;
+    using Serilog;
 
     public partial class InvoiceProcessingPipeline
     {
 
-        public async Task<bool> RunPipeline()
+        public async Task<bool> RunPipeline(ILogger log)
         {
             string filePath = _context?.FilePath ?? "Unknown";
             LogPipelineStart(filePath);
@@ -39,7 +39,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (isInitialRunUnsuccessful)
                 {
                     // Report unimported file, joining accumulated errors
-                    return await EmailErrors().ConfigureAwait(false);
+                    return await EmailErrors(log).ConfigureAwait(false);
                 }
                 else
                 {
@@ -50,7 +50,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         LogErrorPipelineCompleted(filePath, errorPipelineResult);
                         LogContextAfterErrorPipeline();
                         if (!errorPipelineResult && _context.Errors.Any()) //cuz the error pipeline could fail
-                            await EmailErrors().ConfigureAwait(false); //return false;
+                            await EmailErrors(log).ConfigureAwait(false); //return false;
                         // return errorPipelineResult;
                     }
 
@@ -76,11 +76,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private async Task<bool> EmailErrors()
+        private async Task<bool> EmailErrors(ILogger log)
         {
             string aggregatedErrors = string.Join("; ", _context.Errors);
            await InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
-                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines).ConfigureAwait(false);
+                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines, log).ConfigureAwait(false);
             return false;
           
         }
@@ -137,8 +137,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 "RunInitialPipelineSteps", "ASYNC_EXPECTED");
 
         private void LogInitialStepsCompleted(string filePath, bool success) =>
-            _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                "RunInitialPipelineSteps", 0, "If ASYNC_EXPECTED, this is pre-await return"); // Duration will be added in RunInitialPipelineStepsWithLogging
             _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "InitialStepsCompletion", "Initial pipeline steps completed.", $"FilePath: {filePath}, Success: {success}", "");
 
@@ -155,14 +153,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(RunPipeline), "ResultCheck", "Initial run unsuccessful check complete.", $"FilePath: {filePath}, IsUnsuccessful: {result}", "");
 
         private void LogProcessingErrorPipeline(string filePath) =>
-            _logger.Warning("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                "ProcessErrorPipeline", "ASYNC_EXPECTED");
             _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "ErrorHandling", "Initial run deemed unsuccessful. Processing error pipeline.", $"FilePath: {filePath}", "");
 
         private void LogErrorPipelineCompleted(string filePath, bool result) =>
-            _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                "ProcessErrorPipeline", 0, "If ASYNC_EXPECTED, this is pre-await return"); // Duration will be added in ProcessErrorPipeline
             _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "ErrorHandling", "Error pipeline processing finished.", $"FilePath: {filePath}, Result (Continue?): {result}", "");
 
@@ -171,14 +165,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(RunPipeline), "ContextSnapshot", "Context after error pipeline.", "", new { Context = _context });
 
         private void LogProcessingSuccessPipeline(string filePath) =>
-            _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                "ProcessSuccessfulSteps", "ASYNC_EXPECTED");
             _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "SuccessProcessing", "Initial run deemed successful. Processing success steps.", $"FilePath: {filePath}", "");
 
         private void LogSuccessPipelineCompleted(string filePath, bool result) =>
-            _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                "ProcessSuccessfulSteps", 0, "If ASYNC_EXPECTED, this is pre-await return"); // Duration will be added in ProcessSuccessfulSteps
             _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "SuccessProcessing", "Success pipeline processing finished.", $"FilePath: {filePath}, Result (Overall Success?): {result}", "");
 
@@ -187,19 +177,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(RunPipeline), "ContextSnapshot", "Context after success pipeline.", "", new { Context = _context });
 
         private void LogFatalError(string filePath, Exception ex) =>
-            _logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                nameof(RunPipeline), "Execute the invoice processing pipeline", 0, $"Fatal error during pipeline execution for File: {filePath}. Error: {ex.Message}");
-            _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+           _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                 nameof(RunPipeline), "Fatal error during execution", 0, $"Fatal error during pipeline execution for File: {filePath}. Error: {ex.Message}");
-            _logger.Fatal(ex, "GLOBAL_ERROR: Unhandled {ExceptionType}. Error: {ErrorMessage}", ex.GetType().Name, ex.Message);
+            
 
         private void LogContextAfterFatalError() =>
             _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(RunPipeline), "ContextSnapshot", "Context after fatal error.", "", new { Context = _context });
 
         private void LogPipelineEnd(string filePath) =>
-            _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                nameof(RunPipeline), "Pipeline execution completed", $"FinalImportStatus: {_context?.ImportStatus}", 0); // Duration will be added in RunPipeline
             _logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
                 nameof(RunPipeline), $"Pipeline execution completed for File: {filePath}. Final Status: {_context?.ImportStatus}", 0); // Duration will be added in RunPipeline
     }

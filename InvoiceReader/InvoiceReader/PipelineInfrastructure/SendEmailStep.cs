@@ -91,8 +91,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         "Template Template Not found!",
                         contacts?.ToArray(), // Convert IEnumerable<string> to string[]
                         context.EmailBody,
-                        attachments // Use filtered list
-                    ).ConfigureAwait(false);
+                        attachments, // Use filtered list
+                     context.Logger).ConfigureAwait(false);
                 sendEmailStopwatch.Stop(); // Stop stopwatch
                 context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     $"EmailDownloader.EmailDownloader.SendEmailAsync for File: {filePath}", sendEmailStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after SendEmailAsync

@@ -22,7 +22,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
  
             });
             
-            await _importer.Execute(new List<SupplierData>()).ConfigureAwait(false);
+            await _importer.Execute(new List<SupplierData>(), log).ConfigureAwait(false);
             return lines;
         }
     }

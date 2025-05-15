@@ -29,13 +29,13 @@ namespace AutoBot
 
     public class EmailProcessor
     {
-        private static readonly ILogger _log = Log.ForContext<EmailProcessor>();
-
+        
         public static async Task ProcessEmailsAsync(
             ApplicationSettings appSetting,
             DateTime beforeImport,
             CoreEntitiesContext ctx,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            ILogger log)
         {
             string operationId = Guid.NewGuid().ToString();
             using (LogContext.PushProperty("InvocationId", operationId))
@@ -44,21 +44,21 @@ namespace AutoBot
             {
                 var stopwatch = Stopwatch.StartNew();
                 int processedEmailCount = 0; // Declare and initialize processedEmailCount here
-                _log.Information("ACTION_START: {ActionName} for {EmailAccount} (AppSettingId: {AppSettingId})",
+                log.Information("ACTION_START: {ActionName} for {EmailAccount} (AppSettingId: {AppSettingId})",
                     nameof(ProcessEmailsAsync), appSetting?.Email, appSetting?.ApplicationSettingsId);
 
                 try
                 {
                     if (string.IsNullOrEmpty(appSetting?.Email))
                     {
-                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Email is null or empty. Aborting. AppSettingId: {AppSettingId}",
+                        log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Email is null or empty. Aborting. AppSettingId: {AppSettingId}",
                                                     nameof(ProcessEmailsAsync), "ParameterValidation", appSetting?.ApplicationSettingsId);
                         stopwatch.Stop();
-                        _log.Information("ACTION_END_SUCCESS: {ActionName} (Validation Failed: No Email). Duration: {TotalObservedDurationMs}ms",
+                        log.Information("ACTION_END_SUCCESS: {ActionName} (Validation Failed: No Email). Duration: {TotalObservedDurationMs}ms",
                             nameof(ProcessEmailsAsync), stopwatch.ElapsedMilliseconds);
                         return;
                     }
-                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Email parameter validated for AppSettingId: {AppSettingId}",
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Email parameter validated for AppSettingId: {AppSettingId}",
                                             nameof(ProcessEmailsAsync), "ParameterValidation", appSetting?.ApplicationSettingsId);
 
                     Utils.Client = new EmailDownloader.Client
@@ -72,8 +72,8 @@ namespace AutoBot
                         DevMode = Settings.Default.DevMode,
                         NotifyUnknownMessages = appSetting.NotifyUnknownMessages ?? false
                     };
-                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): EmailDownloader.Client configured for {EmailAccount}",
-                        nameof(ProcessEmailsAsync), "ClientSetup", Utils.Client.Email);
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): EmailDownloader.Client configured for {EmailAccount}",
+                       nameof(ProcessEmailsAsync), "ClientSetup", Utils.Client.Email);
 
                     var filesForNonSpecificActions =
                         new List<Tuple<CoreEntities.Business.Entities.FileTypes, FileInfo[], int>>();
@@ -81,32 +81,32 @@ namespace AutoBot
                     ImapClient imapClient = null;
                     try
                     {
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to connect IMAP client for {EmailAccount}",
+                       log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to connect IMAP client for {EmailAccount}",
                             nameof(ProcessEmailsAsync), "ImapConnectAttempt", Utils.Client.Email);
                         
                         var imapConnectStopwatch = Stopwatch.StartNew();
-                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                             "EmailDownloader.GetOpenImapClientAsync", "ASYNC_EXPECTED");
                         
                         imapClient = await EmailDownloader.EmailDownloader
-                                         .GetOpenImapClientAsync(Utils.Client, cancellationToken).ConfigureAwait(false);
+                                         .GetOpenImapClientAsync(Utils.Client, log, cancellationToken).ConfigureAwait(false);
                         
                         imapConnectStopwatch.Stop();
-                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) Connected: {IsConnected}, Authenticated: {IsAuthenticated}",
+                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) Connected: {IsConnected}, Authenticated: {IsAuthenticated}",
                             "EmailDownloader.GetOpenImapClientAsync", imapConnectStopwatch.ElapsedMilliseconds, "Async call completed (await).", imapClient?.IsConnected ?? false, imapClient?.IsAuthenticated ?? false);
 
                         if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
                         {
-                            _log.Error("ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
+                            log.Error("ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
                                                             nameof(ProcessEmailsAsync), stopwatch.ElapsedMilliseconds, appSetting.ApplicationSettingsId);
                                                         stopwatch.Stop(); // Ensure stopwatch is stopped before return
                                                         return;
                         }
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully connected IMAP client for {EmailAccount}",
+                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully connected IMAP client for {EmailAccount}",
                             nameof(ProcessEmailsAsync), "ImapConnectSuccess", Utils.Client.Email);
 
                         foreach (Task<EmailDownloader.EmailProcessingResult> emailTask in EmailDownloader.EmailDownloader
-                                     .StreamEmailResultsAsync(imapClient, Utils.Client, cancellationToken))
+                                     .StreamEmailResultsAsync(imapClient, Utils.Client, log, cancellationToken))
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             string emailIterationInvocationId = Guid.NewGuid().ToString();
@@ -116,34 +116,34 @@ namespace AutoBot
                                 var emailTaskStopwatch = Stopwatch.StartNew();
                                 try
                                 {
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Awaiting next email processing task. InvocationId: {InvocationId}",
+                                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Awaiting next email processing task. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "StreamEmailLoopAwait", emailIterationInvocationId);
-                                    _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                                         "emailTask (StreamEmailResultsAsync item)", "ASYNC_EXPECTED");
 
                                     currentEmailResult = await emailTask.ConfigureAwait(false);
 
                                     emailTaskStopwatch.Stop();
-                                    _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) ResultIsNull: {ResultIsNull}, Subject: {EmailSubject}, Attachments: {AttachmentCount}",
+                                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) ResultIsNull: {ResultIsNull}, Subject: {EmailSubject}, Attachments: {AttachmentCount}",
                                         "emailTask (StreamEmailResultsAsync item)", emailTaskStopwatch.ElapsedMilliseconds, "Async call completed (await).",
                                         currentEmailResult == null, currentEmailResult != null ? currentEmailResult.EmailKey.SubjectIdentifier : "N/A", currentEmailResult != null ? (currentEmailResult.AttachedFiles?.Count ?? 0) : 0);
                                 }
                                 catch (OperationCanceledException oce)
                                 {
                                     emailTaskStopwatch.Stop();
-                                    _log.Warning(oce, "INTERNAL_STEP ({OperationName} - {Stage}): Email processing task was canceled during await. Duration: {DurationMs}ms. InvocationId: {InvocationId}",
+                                    log.Warning(oce, "INTERNAL_STEP ({OperationName} - {Stage}): Email processing task was canceled during await. Duration: {DurationMs}ms. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "StreamEmailLoopCancel", emailTaskStopwatch.ElapsedMilliseconds, emailIterationInvocationId);
                                     throw; // Propagate cancellation
                                 }
                                 catch (Exception taskEx)
                                 {
                                     emailTaskStopwatch.Stop();
-                                    _log.Error(taskEx, "INTERNAL_STEP ({OperationName} - {Stage}): Exception during email task processing. Duration: {DurationMs}ms. InvocationId: {InvocationId}, Subject (if available): {EmailSubject}",
+                                        log.Error(taskEx, "INTERNAL_STEP ({OperationName} - {Stage}): Exception during email task processing. Duration: {DurationMs}ms. InvocationId: {InvocationId}, Subject (if available): {EmailSubject}",
                                         nameof(ProcessEmailsAsync), "StreamEmailLoopException", emailTaskStopwatch.ElapsedMilliseconds, emailIterationInvocationId, currentEmailResult != null ? currentEmailResult.EmailKey.SubjectIdentifier : "N/A");
                                     
                                     if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
                                     {
-                                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected during task processing. Aborting further email checks for AppSettingId: {AppSettingId}. InvocationId: {InvocationId}",
+                                            log.Error("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected during task processing. Aborting further email checks for AppSettingId: {AppSettingId}. InvocationId: {InvocationId}",
                                             nameof(ProcessEmailsAsync), "StreamEmailLoopImapError", appSetting.ApplicationSettingsId, emailIterationInvocationId);
                                         break;
                                     }
@@ -152,7 +152,7 @@ namespace AutoBot
 
                                 if (currentEmailResult == null)
                                 {
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Current email processing result is null, skipping. InvocationId: {InvocationId}",
+                                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Current email processing result is null, skipping. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "NullEmailResult", emailIterationInvocationId);
                                     continue;
                                 }
@@ -162,19 +162,19 @@ namespace AutoBot
                                 var attachments = currentEmailResult.AttachedFiles.ToArray();
                                 string emailSubjectForLog = emailKey.SubjectIdentifier ?? "UnknownSubject";
 
-                                _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing email {EmailSubject} with {AttachmentCount} attachments. InvocationId: {InvocationId}",
+                                log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing email {EmailSubject} with {AttachmentCount} attachments. InvocationId: {InvocationId}",
                                     nameof(ProcessEmailsAsync), "ProcessIndividualEmailStart", emailSubjectForLog, attachments.Length, emailIterationInvocationId);
 
                                 foreach (var att in attachments)
                                 {
-                                    _log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Attachment: {AttachmentName} (Size: {AttachmentSize} bytes, LastModified: {LastModifiedDate}, IsPDF: {IsPdf}) for Email {EmailSubject}. InvocationId: {InvocationId}",
+                                    log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Attachment: {AttachmentName} (Size: {AttachmentSize} bytes, LastModified: {LastModifiedDate}, IsPDF: {IsPdf}) for Email {EmailSubject}. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "LogAttachmentDetail", att.Name, att.Length, att.LastWriteTime, att.Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase), emailSubjectForLog, emailIterationInvocationId);
                                 }
 
                                 try
                                 {
                                     var execMapActionsStopwatch = Stopwatch.StartNew();
-                                    _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for Email {EmailSubject}. InvocationId: {InvocationId}",
+                                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for Email {EmailSubject}. InvocationId: {InvocationId}",
                                         $"ImportUtils.ExecuteEmailMappingActions", "ASYNC_EXPECTED", emailSubjectForLog, emailIterationInvocationId);
                                     
                                     await ImportUtils.ExecuteEmailMappingActions(
@@ -184,12 +184,12 @@ namespace AutoBot
                                         appSetting).ConfigureAwait(false);
                                     
                                     execMapActionsStopwatch.Stop();
-                                    _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for Email {EmailSubject}. InvocationId: {InvocationId}",
+                                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for Email {EmailSubject}. InvocationId: {InvocationId}",
                                         $"ImportUtils.ExecuteEmailMappingActions", execMapActionsStopwatch.ElapsedMilliseconds, "Async call completed (await).", emailSubjectForLog, emailIterationInvocationId);
                                 }
                                 catch (Exception ex)
                                 {
-                                    _log.Error(ex, "ACTION_END_FAILURE: {ActionName}. Error: {ErrorMessage}. InvocationId: {InvocationId}",
+                                    log.Error(ex, "ACTION_END_FAILURE: {ActionName}. Error: {ErrorMessage}. InvocationId: {InvocationId}",
                                         $"ExecuteEmailMappingActions for Email {emailSubjectForLog}", emailIterationInvocationId);
                                     throw; // Rethrow to be handled by the main try-catch for ProcessEmailsAsync or the outer loop's catch
                                 }
@@ -202,14 +202,14 @@ namespace AutoBot
 
                                 try // Inner processing for this specific email's content
                                 {
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Entering inner content processing for email: {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Entering inner content processing for email: {EmailIdForLogging}. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "InnerEmailProcessingStart", emailIdForLogging, emailIterationInvocationId);
 
                                     var desFolder = Path.Combine(
                                         appSetting.DataFolder,
                                         emailKeyTuple.SubjectIdentifier,
                                         emailForLog.EmailUniqueId.ToString());
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Destination folder set to {DestinationFolder} for Email {EmailIdForLogging}.",
+                                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Destination folder set to {DestinationFolder} for Email {EmailIdForLogging}.",
                                         nameof(ProcessEmailsAsync), "SetDestinationFolder", desFolder, emailIdForLogging);
 
                                     bool meetsRequiredFiles = emailForLog.EmailMapping.EmailFileTypes.All(
@@ -218,11 +218,11 @@ namespace AutoBot
                                     
                                     if (!meetsRequiredFiles)
                                     {
-                                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Skipping email {EmailIdForLogging}, required files criteria not met (e.g., missing required files or files too old). BeforeImportDate: {BeforeImportDate}. InvocationId: {InvocationId}",
+                                        log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Skipping email {EmailIdForLogging}, required files criteria not met (e.g., missing required files or files too old). BeforeImportDate: {BeforeImportDate}. InvocationId: {InvocationId}",
                                             nameof(ProcessEmailsAsync), "RequiredFilesCheckFail", emailIdForLogging, beforeImport, emailIterationInvocationId);
                                         continue;
                                     }
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Required files criteria met for email: {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Required files criteria met for email: {EmailIdForLogging}. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "RequiredFilesCheckPass", emailIdForLogging, emailIterationInvocationId);
 
                                     var fileTypesForOrdering = emailForLog.FileTypes ?? new List<CoreEntities.Business.Entities.FileTypes>();
@@ -230,12 +230,12 @@ namespace AutoBot
                                                               ? fileTypesForOrdering.OrderByDescending(x => x.FileImporterInfos.EntryType == "Info").ToList()
                                                               : fileTypesForOrdering.OrderBy(x => x.FileImporterInfos.EntryType == "Info").ToList();
                                     
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {FileTypeCount} file types for email {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {FileTypeCount} file types for email {EmailIdForLogging}. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "ProcessFileTypesStart", emailFileTypes.Count, emailIdForLogging, emailIterationInvocationId);
 
                                     if (!emailFileTypes.Any())
                                     {
-                                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation} for Email {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                        log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation} for Email {EmailIdForLogging}. InvocationId: {InvocationId}",
                                             nameof(ProcessEmailsAsync), "ProcessFileTypes", "EmailFileTypes", "No file types defined or matched for this email.", emailIdForLogging, emailIterationInvocationId);
                                     }
 
@@ -245,7 +245,7 @@ namespace AutoBot
                                         string fileTypeInvocationId = Guid.NewGuid().ToString();
                                         using(LogContext.PushProperty("InvocationId", fileTypeInvocationId))
                                         {
-                                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing file type definition {FileTypeId} ('{FilePattern}') for email {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                            log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing file type definition {FileTypeId} ('{FilePattern}') for email {EmailIdForLogging}. InvocationId: {InvocationId}",
                                                 nameof(ProcessEmailsAsync), "ProcessFileTypeDefinition", emailFileTypeDefinition.Id, emailFileTypeDefinition.FilePattern, emailIdForLogging, fileTypeInvocationId);
 
                                             var fileTypeInstance = FileTypeManager.GetFileType(emailFileTypeDefinition);
@@ -262,25 +262,25 @@ namespace AutoBot
 
                                             if (csvFiles.Length == 0)
                                             {
-                                                _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No matching/recent files for pattern '{FilePattern}' for email {EmailIdForLogging}. Skipping this file type. InvocationId: {InvocationId}",
+                                                log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No matching/recent files for pattern '{FilePattern}' for email {EmailIdForLogging}. Skipping this file type. InvocationId: {InvocationId}",
                                                     nameof(ProcessEmailsAsync), "NoCsvFilesForFileType", fileTypeInstance.FilePattern, emailIdForLogging, fileTypeInvocationId);
                                                 continue;
                                             }
-                                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {CsvFileCount} files for pattern '{FilePattern}' for email {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                            log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {CsvFileCount} files for pattern '{FilePattern}' for email {EmailIdForLogging}. InvocationId: {InvocationId}",
                                                 nameof(ProcessEmailsAsync), "CsvFilesFound", csvFiles.Length, fileTypeInstance.FilePattern, emailIdForLogging, fileTypeInvocationId);
 
                                             var reference = emailKeyTuple.SubjectIdentifier;
                                             AsycudaDocumentSetEx docSet = null; // Changed type here
 
                                             var findDocSetStopwatch = Stopwatch.StartNew();
-                                            _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for reference '{Reference}'. InvocationId: {InvocationId}",
+                                            log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for reference '{Reference}'. InvocationId: {InvocationId}",
                                                 "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (initial search)", "ASYNC_EXPECTED", reference, fileTypeInvocationId);
                                             docSet = await ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync(
                                                                   x => x.Declarant_Reference_Number.Contains(reference)
                                                                        && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, cancellationToken)
                                                                               .ConfigureAwait(false);
                                             findDocSetStopwatch.Stop();
-                                            _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, Reference: '{Reference}'. InvocationId: {InvocationId}",
+                                            log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, Reference: '{Reference}'. InvocationId: {InvocationId}",
                                                 "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (initial search)", findDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", docSet != null, reference, fileTypeInvocationId);
                                             
                                             if (fileTypeInstance.CreateDocumentSet)
@@ -288,14 +288,14 @@ namespace AutoBot
                                                 if (docSet == null || docSet.Declarant_Reference_Number != reference) // If not exact match or not found
                                                 {
                                                     var findExactDocSetStopwatch = Stopwatch.StartNew();
-                                                    _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for exact reference '{Reference}'. InvocationId: {InvocationId}",
+                                                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for exact reference '{Reference}'. InvocationId: {InvocationId}",
                                                         "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (exact search)", "ASYNC_EXPECTED", reference, fileTypeInvocationId);
                                                     docSet = await ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync(
                                                                      x => x.Declarant_Reference_Number == reference
                                                                           && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, cancellationToken)
                                                                                  .ConfigureAwait(false);
                                                     findExactDocSetStopwatch.Stop();
-                                                    _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, ExactReference: '{Reference}'. InvocationId: {InvocationId}",
+                                                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, ExactReference: '{Reference}'. InvocationId: {InvocationId}",
                                                         "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (exact search)", findExactDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", docSet != null, reference, fileTypeInvocationId);
                                                     if (docSet == null)
                                                     {
@@ -303,7 +303,7 @@ namespace AutoBot
                                                             x => x.CustomsOperationId == BaseDataModel.GetDefaultCustomsOperation() && x.IsDefault == true);
                                                         
                                                         var createDocSetStopwatch = Stopwatch.StartNew();
-                                                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) to create DocSet for reference '{Reference}'. InvocationId: {InvocationId}",
+                                                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) to create DocSet for reference '{Reference}'. InvocationId: {InvocationId}",
                                                             "ctx.Database.ExecuteSqlCommandAsync (Insert AsycudaDocumentSet)", "ASYNC_EXPECTED", reference, fileTypeInvocationId);
                                                         await ctx.Database.ExecuteSqlCommandAsync(
                                                             TransactionalBehavior.EnsureTransaction,
@@ -311,17 +311,17 @@ namespace AutoBot
                                                                 VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{reference.Replace("'", "''")}',{cp.Customs_ProcedureId},0)",
                                                             cancellationToken).ConfigureAwait(false);
                                                         createDocSetStopwatch.Stop();
-                                                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for reference '{Reference}'. InvocationId: {InvocationId}",
+                                                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for reference '{Reference}'. InvocationId: {InvocationId}",
                                                             "ctx.Database.ExecuteSqlCommandAsync (Insert AsycudaDocumentSet)", createDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", reference, fileTypeInvocationId);
                                                         var findNewDocSetStopwatch = Stopwatch.StartNew();
-                                                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) to find newly created DocSet for reference '{Reference}'. InvocationId: {InvocationId}",
+                                                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) to find newly created DocSet for reference '{Reference}'. InvocationId: {InvocationId}",
                                                             "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (post-create search)", "ASYNC_EXPECTED", reference, fileTypeInvocationId);
                                                         docSet = await ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync(
                                                                          x => x.Declarant_Reference_Number == reference
                                                                               && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, cancellationToken)
                                                                                      .ConfigureAwait(false);
                                                         findNewDocSetStopwatch.Stop();
-                                                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, Reference: '{Reference}'. InvocationId: {InvocationId}",
+                                                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) DocSetFound: {DocSetFound}, Reference: '{Reference}'. InvocationId: {InvocationId}",
                                                             "ctx.AsycudaDocumentSetExs.FirstOrDefaultAsync (post-create search)", findNewDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", docSet != null, reference, fileTypeInvocationId);
                                                     }
                                                 }
@@ -330,37 +330,37 @@ namespace AutoBot
                                             {
                                                 fileTypeInstance.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
                                                 fileTypeInstance.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId", fileTypeInstance.AsycudaDocumentSetId.ToString()));
-                                                _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Associated FileTypeInstance with AsycudaDocumentSetId {AsycudaDocumentSetId}. InvocationId: {InvocationId}",
+                                               log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Associated FileTypeInstance with AsycudaDocumentSetId {AsycudaDocumentSetId}. InvocationId: {InvocationId}",
                                                     nameof(ProcessEmailsAsync), "AssociateDocSet", docSet.AsycudaDocumentSetId, fileTypeInvocationId);
                                             } else {
-                                                _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): AsycudaDocumentSet is null for FileType {FileTypeId}, reference {Reference}. Some operations might be affected. InvocationId: {InvocationId}",
+                                               log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): AsycudaDocumentSet is null for FileType {FileTypeId}, reference {Reference}. Some operations might be affected. InvocationId: {InvocationId}",
                                                     nameof(ProcessEmailsAsync), "NullDocSet", fileTypeInstance.Id, reference, fileTypeInvocationId);
                                             }
                                             
                                             var saveAttachStopwatch = Stopwatch.StartNew();
-                                            _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for {FileCount} files. InvocationId: {InvocationId}",
+                                           log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for {FileCount} files. InvocationId: {InvocationId}",
                                                 "Utils.SaveAttachments", "ASYNC_EXPECTED", csvFiles.Length, fileTypeInvocationId);
-                                            await Utils.SaveAttachments(csvFiles, fileTypeInstance, emailForLog).ConfigureAwait(false);
+                                            await Utils.SaveAttachments(csvFiles, fileTypeInstance, emailForLog, log).ConfigureAwait(false);
                                             saveAttachStopwatch.Stop();
-                                            _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). InvocationId: {InvocationId}",
+                                           log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). InvocationId: {InvocationId}",
                                                 "Utils.SaveAttachments", saveAttachStopwatch.ElapsedMilliseconds, "Async call completed (await).", fileTypeInvocationId);
                                             if (!Program.ReadOnlyMode)
                                             {
                                                 var execDataSpecificStopwatch = Stopwatch.StartNew();
-                                                _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}). InvocationId: {InvocationId}",
+                                               log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}). InvocationId: {InvocationId}",
                                                     "ImportUtils.ExecuteDataSpecificFileActions", "ASYNC_EXPECTED", fileTypeInvocationId);
                                                 await ImportUtils.ExecuteDataSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
                                                 execDataSpecificStopwatch.Stop();
-                                                _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). InvocationId: {InvocationId}",
+                                               log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). InvocationId: {InvocationId}",
                                                     "ImportUtils.ExecuteDataSpecificFileActions", execDataSpecificStopwatch.ElapsedMilliseconds, "Async call completed (await).", fileTypeInvocationId);
                                                 if (emailForLog.EmailMapping.IsSingleEmail == true)
                                                 {
                                                     var execNonSpecificSingleStopwatch = Stopwatch.StartNew();
-                                                    _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (single email mode). InvocationId: {InvocationId}",
+                                                   log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (single email mode). InvocationId: {InvocationId}",
                                                         "ImportUtils.ExecuteNonSpecificFileActions", "ASYNC_EXPECTED", fileTypeInvocationId);
                                                     await ImportUtils.ExecuteNonSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
                                                     execNonSpecificSingleStopwatch.Stop();
-                                                    _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (single email mode). FileTypeInvocationId: {FileTypeInvocationId_Context}",
+                                                   log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (single email mode). FileTypeInvocationId: {FileTypeInvocationId_Context}",
                                                         "ImportUtils.ExecuteNonSpecificFileActions", execNonSpecificSingleStopwatch.ElapsedMilliseconds, "Async call completed (await).", fileTypeInvocationId);
                                                 }
                                                 else
@@ -369,45 +369,45 @@ namespace AutoBot
                                                     if (currentDocSetId == 0) // If still 0, try to get last one
                                                     {
                                                         var findLastDocSetStopwatch = Stopwatch.StartNew();
-                                                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for non-specific actions fallback. InvocationId: {InvocationId}",
+                                                       log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for non-specific actions fallback. InvocationId: {InvocationId}",
                                                             "ctx.AsycudaDocumentSet.FirstOrDefaultAsync (last DocSet for non-specific)", "ASYNC_EXPECTED", fileTypeInvocationId);
                                                         var lastDocSet = await ctx.AsycudaDocumentSet
                                                                              .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                                                              .OrderByDescending(x => x.AsycudaDocumentSetId)
                                                                              .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
                                                         findLastDocSetStopwatch.Stop();
-                                                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) LastDocSetId: {LastDocSetId}. InvocationId: {InvocationId}",
+                                                       log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) LastDocSetId: {LastDocSetId}. InvocationId: {InvocationId}",
                                                             "ctx.AsycudaDocumentSet.FirstOrDefaultAsync (last DocSet for non-specific)", findLastDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", lastDocSet?.AsycudaDocumentSetId, fileTypeInvocationId);
                                                         if (lastDocSet != null) currentDocSetId = lastDocSet.AsycudaDocumentSetId;
                                                     }
                                                     filesForNonSpecificActions.Add(new Tuple<CoreEntities.Business.Entities.FileTypes, FileInfo[], int>(fileTypeInstance, csvFiles, currentDocSetId));
-                                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Added FileTypeInstance {FileTypeId} to filesForNonSpecificActions with DocSetId {DocSetId}. InvocationId: {InvocationId}",
+                                                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Added FileTypeInstance {FileTypeId} to filesForNonSpecificActions with DocSetId {DocSetId}. InvocationId: {InvocationId}",
                                                         nameof(ProcessEmailsAsync), "QueueForNonSpecific", fileTypeInstance.Id, currentDocSetId, fileTypeInvocationId);
                                                 }
                                             }
                                             else {
-                                                _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): ReadOnlyMode is TRUE. Skipping data modification actions (ExecuteDataSpecificFileActions, ExecuteNonSpecificFileActions). InvocationId: {InvocationId}",
+                                               log.Information("INTERNAL_STEP ({OperationName} - {Stage}): ReadOnlyMode is TRUE. Skipping data modification actions (ExecuteDataSpecificFileActions, ExecuteNonSpecificFileActions). InvocationId: {InvocationId}",
                                                     nameof(ProcessEmailsAsync), "ReadOnlySkip", fileTypeInvocationId);
                                             }
                                         } // End FileTypeInvocationId LogContext
                                     } // end foreach emailFileTypeDefinition
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully processed content for email {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully processed content for email {EmailIdForLogging}. InvocationId: {InvocationId}",
                                         nameof(ProcessEmailsAsync), "InnerEmailProcessingSuccess", emailIdForLogging, emailIterationInvocationId);
                                 }
                                 catch (OperationCanceledException oceInner)
                                 {
-                                    _log.Warning(oceInner, "ACTION_END_FAILURE: {ActionName} (Cancelled). InvocationId: {InvocationId}",
+                                   log.Warning(oceInner, "ACTION_END_FAILURE: {ActionName} (Cancelled). InvocationId: {InvocationId}",
                                         $"Inner Email Content Processing for {emailIdForLogging}", emailIterationInvocationId);
                                     throw;
                                 }
                                 catch (Exception exInner)
                                 {
-                                    _log.Error(exInner, "ACTION_END_FAILURE: {ActionName}. InvocationId: {InvocationId}",
+                                   log.Error(exInner, "ACTION_END_FAILURE: {ActionName}. InvocationId: {InvocationId}",
                                         $"Inner Email Content Processing for {emailIdForLogging}", emailIterationInvocationId);
                                     
                                     if (imapClient == null || !imapClient.IsConnected || !imapClient.IsAuthenticated)
                                     {
-                                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected during inner content processing. Aborting further email checks. EmailIdForLogging: {EmailIdForLogging}. InvocationId: {InvocationId}",
+                                       log.Error("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected during inner content processing. Aborting further email checks. EmailIdForLogging: {EmailIdForLogging}. InvocationId: {InvocationId}",
                                             nameof(ProcessEmailsAsync), "InnerEmailImapError", emailIdForLogging, emailIterationInvocationId);
                                         break;
                                     }
@@ -423,42 +423,42 @@ namespace AutoBot
                             {
                                 try
                                 {
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Disconnecting IMAP client for {EmailAccount}.",
+                                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Disconnecting IMAP client for {EmailAccount}.",
                                         nameof(ProcessEmailsAsync), "ImapDisconnectAttempt", Utils.Client.Email);
                                     var disconnectStopwatch = Stopwatch.StartNew();
                                     await imapClient.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false); // Use CancellationToken.None for cleanup
                                     disconnectStopwatch.Stop();
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected. Duration: {DurationMs}ms.",
+                                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disconnected. Duration: {DurationMs}ms.",
                                         nameof(ProcessEmailsAsync), "ImapDisconnectSuccess", disconnectStopwatch.ElapsedMilliseconds);
                                 }
                                 catch (Exception dex)
                                 {
-                                    _log.Warning(dex, "INTERNAL_STEP ({OperationName} - {Stage}): Error disconnecting IMAP client for {EmailAccount}.",
+                                   log.Warning(dex, "INTERNAL_STEP ({OperationName} - {Stage}): Error disconnecting IMAP client for {EmailAccount}.",
                                         nameof(ProcessEmailsAsync), "ImapDisconnectError", Utils.Client.Email);
                                 }
                             }
                             imapClient.Dispose();
-                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disposed for {EmailAccount}.",
+                           log.Information("INTERNAL_STEP ({OperationName} - {Stage}): IMAP client disposed for {EmailAccount}.",
                                 nameof(ProcessEmailsAsync), "ImapDispose", Utils.Client.Email);
                         }
                     }
-                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processed {ProcessedEmailCount} emails individually.",
+                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processed {ProcessedEmailCount} emails individually.",
                         nameof(ProcessEmailsAsync), "IndividualEmailProcessingSummary", processedEmailCount);
                     if (Program.ReadOnlyMode)
                     {
                         // methodStopwatch.Stop(); // methodStopwatch is not declared, using stopwatch instead
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): {ActionName} (ReadOnlyMode: NonSpecificActions Skipped). Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms",
+                       log.Information("INTERNAL_STEP ({OperationName} - {Stage}): {ActionName} (ReadOnlyMode: NonSpecificActions Skipped). Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms",
                             nameof(ProcessEmailsAsync), "ReadOnlySkip", nameof(ProcessEmailsAsync), processedEmailCount, stopwatch.ElapsedMilliseconds);
                         return;
                     }
                     var pfg = filesForNonSpecificActions
                         .Where(x => x.Item1.FileTypeActions.Any(z => z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
                         .GroupBy(x => x.Item3).ToList();
-                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {GroupCount} groups for non-specific file actions.",
+                   log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {GroupCount} groups for non-specific file actions.",
                         nameof(ProcessEmailsAsync), "GroupedNonSpecificActionsStart", pfg.Count);
                     
                     if (!pfg.Any() && filesForNonSpecificActions.Any()) {
-                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation}",
+                       log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation}",
                             nameof(ProcessEmailsAsync), "GroupedNonSpecificActionsWarning", "filesForNonSpecificActions (grouped)", "filesForNonSpecificActions has items, but grouping resulted in an empty collection. This might indicate an issue with grouping or action definitions.");
                     }
                     foreach (var docSetIdGroup in pfg)
@@ -467,7 +467,7 @@ namespace AutoBot
                         string groupInvocationId = Guid.NewGuid().ToString();
                         using(LogContext.PushProperty("InvocationId", groupInvocationId))
                         {
-                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing non-specific actions for DocSetIdGroupKey: {DocSetIdGroupKey}. InvocationId: {InvocationId}",
+                           log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing non-specific actions for DocSetIdGroupKey: {DocSetIdGroupKey}. InvocationId: {InvocationId}",
                                 nameof(ProcessEmailsAsync), "ProcessDocSetIdGroup", docSetIdGroup.Key, groupInvocationId);
                             
                             var pf = docSetIdGroup.DistinctBy(x => x.Item1.Id).ToList();
@@ -475,14 +475,14 @@ namespace AutoBot
                             {
                                 t.Item1.AsycudaDocumentSetId = docSetIdGroup.Key;
                                 var execNonSpecificGroupedStopwatch = Stopwatch.StartNew();
-                                _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {FileTypeId}, DocSetId {DocSetId}. InvocationId: {InvocationId}",
+                               log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {FileTypeId}, DocSetId {DocSetId}. InvocationId: {InvocationId}",
                                     "ImportUtils.ExecuteNonSpecificFileActions (grouped)", "ASYNC_EXPECTED", t.Item1.Id, docSetIdGroup.Key, groupInvocationId);
                                 
                                 await ImportUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting)
                                     .ConfigureAwait(false);
                                 
                                 execNonSpecificGroupedStopwatch.Stop();
-                                _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for FileType {FileTypeId}, DocSetId {DocSetId}. InvocationId: {InvocationId}",
+                               log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for FileType {FileTypeId}, DocSetId {DocSetId}. InvocationId: {InvocationId}",
                                     "ImportUtils.ExecuteNonSpecificFileActions (grouped)", execNonSpecificGroupedStopwatch.ElapsedMilliseconds, "Async call completed (await).", t.Item1.Id, docSetIdGroup.Key, groupInvocationId);
                             }
                         }
@@ -491,21 +491,21 @@ namespace AutoBot
                 catch (OperationCanceledException oceMain)
                 {
                     stopwatch.Stop();
-                    _log.Warning(oceMain, "ACTION_END_FAILURE: {ActionName} (Cancelled). Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
+                   log.Warning(oceMain, "ACTION_END_FAILURE: {ActionName} (Cancelled). Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
                         nameof(ProcessEmailsAsync), processedEmailCount, stopwatch.ElapsedMilliseconds, appSetting.ApplicationSettingsId);
                     throw;
                 }
                 catch (Exception e)
                 {
                     stopwatch.Stop();
-                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
+                   log.Error(e, "ACTION_END_FAILURE: {ActionName}. Processed {ProcessedEmailCount} emails. Duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
                         nameof(ProcessEmailsAsync), processedEmailCount, stopwatch.ElapsedMilliseconds, appSetting.ApplicationSettingsId);
                     throw;
                 }
                 finally
                 {
                     if (stopwatch.IsRunning) stopwatch.Stop(); // Ensure it's stopped
-                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Processed {ProcessedEmailCount} emails. Total observed duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
+                   log.Information("ACTION_END_SUCCESS: {ActionName}. Processed {ProcessedEmailCount} emails. Total observed duration: {TotalObservedDurationMs}ms. AppSettingId: {AppSettingId}",
                         nameof(ProcessEmailsAsync), processedEmailCount, stopwatch.ElapsedMilliseconds, appSetting.ApplicationSettingsId);
                 }
             }

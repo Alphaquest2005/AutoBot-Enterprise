@@ -30,7 +30,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => // Changed
             {
-                LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek);
+                LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, Log.Logger);
             });
         }
 
@@ -44,7 +44,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => // Changed
             {
-                LlmApiClientFactory.CreateClient(LLMProvider.Gemini);
+                LlmApiClientFactory.CreateClient(LLMProvider.Gemini, Log.Logger);
             });
         }
 

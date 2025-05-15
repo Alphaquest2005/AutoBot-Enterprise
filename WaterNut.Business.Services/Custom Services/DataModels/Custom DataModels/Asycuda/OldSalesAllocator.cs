@@ -16,7 +16,9 @@ using static sun.security.jca.GetInstance;
 
 namespace WaterNut.DataSpace
 {
-	public class OldSalesAllocator
+    using Serilog;
+
+    public class OldSalesAllocator
 	{
 	   
 		
@@ -36,8 +38,12 @@ namespace WaterNut.DataSpace
 
    
 
-		public Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId,
-                                                                             bool allocateToLastAdjustment, bool onlyNewAllocations, string lst)
+		public Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+            int applicationSettingsId,
+            bool allocateToLastAdjustment,
+            bool onlyNewAllocations,
+            string lst
+            )
 		{
 			var itemSets = BaseDataModel.GetItemSets(lst);
 			itemSets.AsParallel()

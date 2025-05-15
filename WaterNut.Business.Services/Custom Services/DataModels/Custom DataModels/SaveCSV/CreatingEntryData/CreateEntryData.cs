@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.EntryDataCreating;
 using WaterNut.DataSpace;
+using Serilog;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.CreatingEntryData
 {
     public class CreateEntryData : ICreateEntryDataProcessor
     {
-        public Task Execute(DataFile dataFile, List<RawEntryData> goodLst)
+        public Task Execute(DataFile dataFile, List<RawEntryData> goodLst, ILogger log)
         {
             Parallel.ForEach(goodLst, new ParallelLinqOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount},
                 async item => // foreach (RawEntryData item in goodLst)
@@ -29,7 +30,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     catch (Exception e)
                     {
                         Console.WriteLine(e);
-                        await DataSpace.BaseDataModel.EmailExceptionHandlerAsync(e).ConfigureAwait(false);
+                        await DataSpace.BaseDataModel.EmailExceptionHandlerAsync(e, log, true).ConfigureAwait(false);
 
                     }
                     

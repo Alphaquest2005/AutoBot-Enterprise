@@ -167,7 +167,7 @@ namespace AutoBot
             try
             {
 
-                var saleInfo = await BaseDataModel.CurrentSalesInfo(log, 0).ConfigureAwait(false);
+                var saleInfo = await BaseDataModel.CurrentSalesInfo(0, log).ConfigureAwait(false);
 
                 var cplst = BaseDataModel.Instance.Customs_Procedures
                     .Where(x => x.CustomsOperation.Name == "Exwarehouse" || (x.CustomsOperation.Name == "Warehouse" && x.Stock == true)).Select(x => x.CustomsProcedure).ToList();
@@ -305,7 +305,7 @@ namespace AutoBot
                     .ToList();
 
             cNumbers.AddRange(otherCNumbers);
-            var pdfs = AttachDiscrepancyPdfs(cNumbers);
+            var pdfs = await AttachDiscrepancyPdfs(cNumbers).ConfigureAwait(false);
             
             //if (pdfs.Count == 0) return;
 
@@ -355,7 +355,7 @@ namespace AutoBot
             return emailIds;
         }
 
-        private static List<string> AttachDiscrepancyPdfs(List<TODO_SubmitDiscrepanciesToCustoms> emailIds)
+        private async static Task<List<string>> AttachDiscrepancyPdfs(List<TODO_SubmitDiscrepanciesToCustoms> emailIds)
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -367,7 +367,7 @@ namespace AutoBot
                         .Select(x => x.Attachments.FilePath).ToArray();
                     if (!res.Any())
                     {
-                        BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                        await BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id }).ConfigureAwait(false);
                         res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
                             .Select(x => x.Attachments.FilePath).ToArray();
                     }
@@ -552,7 +552,7 @@ namespace AutoBot
                 Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
 
 
-                var info = await BaseDataModel.CurrentSalesInfo(log,-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
                
@@ -747,7 +747,7 @@ namespace AutoBot
         }
 
 
-        public static async Task AssessDISEntries(string adjustmentType)
+        public static async Task AssessDISEntries(string adjustmentType, ILogger log)
         {
             Console.WriteLine("Assessing Discrepancy Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -763,7 +763,7 @@ namespace AutoBot
                     var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
                     
-                    var assessComplete = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                    var assessComplete = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                     while (assessComplete.success == false)
                     {
                         // RunSiKuLi(doc.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
@@ -1092,9 +1092,9 @@ namespace AutoBot
 
         }
 
-        public static Task RecreateDocSetDiscrepanciesEntries(FileTypes fileType)
+        public static Task RecreateDocSetDiscrepanciesEntries(FileTypes fileType, ILogger log)
         {
-            return ADJUtils.CreateAdjustmentEntries(true,"DIS", fileType);
+            return ADJUtils.CreateAdjustmentEntries(true,"DIS", fileType, log);
         }
 
         public static async Task AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs, ILogger log)
@@ -1152,11 +1152,11 @@ namespace AutoBot
                         fileType.AsycudaDocumentSetId).ConfigureAwait(false);
 
                 // ProcessDisErrorsForAllocation.Execute is synchronous, remove Wait()
-                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+                await new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                     .Execute(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")
-                    ); // Removed Wait()
+                    ).ConfigureAwait(false); // Removed Wait()
 
 
                 var shortlst = GetShorts(lst, fileType);
@@ -1165,11 +1165,11 @@ namespace AutoBot
                 // Replace Wait() with await ConfigureAwait(false)
                 await new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst, log).ConfigureAwait(false);
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst).ConfigureAwait(false);
 
                 // Replace Wait() with await ConfigureAwait(false)
                 await new MarkErrors()
-                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, log, shortlst)
+                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
                     .ConfigureAwait(false);
             }
             catch (Exception e)

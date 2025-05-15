@@ -130,12 +130,12 @@ public class EmailDownloaderIntegrationTests
         Log.Information("Deriving server settings using EmailDownloader logic...");
         try
         {
-            var readSettings = EmailDownloader.EmailDownloader.GetReadMailSettings(_dbConfiguredEmailAddress);
+            var readSettings = EmailDownloader.EmailDownloader.GetReadMailSettings(_dbConfiguredEmailAddress, _log);
             _resolvedImapServer = readSettings.Server;
             _resolvedImapPort = readSettings.Port;
             _resolvedImapOptions = readSettings.Options;
 
-            var sendSettings = EmailDownloader.EmailDownloader.GetSendMailSettings(_dbConfiguredEmailAddress);
+            var sendSettings = EmailDownloader.EmailDownloader.GetSendMailSettings(_dbConfiguredEmailAddress, _log);
             _resolvedSmtpServer = sendSettings.Server;
             _resolvedSmtpPort = sendSettings.Port;
             _resolvedSmtpOptions = sendSettings.Options;
@@ -308,7 +308,7 @@ public class EmailDownloaderIntegrationTests
             Assert.That(imapClientForTest, Is.Not.Null, "IMAP client for test should be connected and authenticated.");
 
             Log.Debug("Starting StreamEmailResultsAsync to find email: {Subject}", testSubject);
-            var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForTest, _testClientForDownloader, CancellationToken.None);
+            var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForTest, _testClientForDownloader, _log, CancellationToken.None);
             foreach (var emailTask in streamEmailResultsAsync) // Use await foreach
             {
                 var result = await emailTask.ConfigureAwait(false); // Materialize the result
@@ -427,7 +427,7 @@ public class EmailDownloaderIntegrationTests
             Assert.That(imapClientForDownload, Is.Not.Null, "IMAP client for initial download failed.");
 
             // Use StreamEmailResultsAsync to find the email and simulate download logic
-            var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForDownload, _testClientForDownloader, CancellationToken.None);
+            var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForDownload, _testClientForDownloader, _log, CancellationToken.None);
             foreach (var emailTask in streamEmailResultsAsync) // Use await foreach
             {
                 var result = await emailTask.ConfigureAwait(false);
@@ -565,7 +565,7 @@ public class EmailDownloaderIntegrationTests
         try
         {
             // Ensure EmailProcessor.ProcessEmailsAsync is accessible (public/internal+InternalsVisibleTo)
-            await EmailProcessor.ProcessEmailsAsync(appSetting, beforeImport, ctxForProcess, cancellationToken).ConfigureAwait(false); // Assuming EmailProcessor class
+            await EmailProcessor.ProcessEmailsAsync(appSetting, beforeImport, ctxForProcess, cancellationToken, Log.Logger).ConfigureAwait(false); // Assuming EmailProcessor class
             Log.Information("EmailProcessor.ProcessEmailsAsync call completed.");
         }
         catch (Exception ex)

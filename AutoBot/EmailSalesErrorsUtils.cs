@@ -32,7 +32,7 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var infoTuple = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var infoTuple = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
@@ -178,7 +178,7 @@ namespace AutoBot
                     contactsLst.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new[]
                     {
                         errorfile
-                    }).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                    }, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 sendEmailStopwatch.Stop();
                 log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EmailDownloader.EmailDownloader.SendEmailAsync", sendEmailStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log

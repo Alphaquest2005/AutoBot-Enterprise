@@ -20,6 +20,8 @@ using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
 {
+    using Serilog;
+
     public class Ex9SalesDataModel : SalesDataViewModel_AutoGen 
 	{
         private static readonly Ex9SalesDataModel instance;
@@ -218,7 +220,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
         internal async Task SaveCSV(string fileType)
         {
             await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType,
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, Log.Logger).ConfigureAwait(false);
         }
 
         internal async Task RemoveSelectedSalesData(List<SalesData> lst)

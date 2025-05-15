@@ -126,7 +126,7 @@ public partial class BaseDataModel
     }
 
     public async Task AddToEntry(IEnumerable<string> entryDatalst, AsycudaDocumentSet currentAsycudaDocumentSet,
-        bool perInvoice, bool combineEntryDataInSameFile, bool groupItems, bool checkPackages)
+        bool perInvoice, bool combineEntryDataInSameFile, bool groupItems, bool checkPackages, Serilog.ILogger log)
     {
         try
         {
@@ -140,7 +140,7 @@ public partial class BaseDataModel
             if (!IsValidEntryData(slstSource)) return;
 
             await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false,
-                    combineEntryDataInSameFile, groupItems, checkPackages)
+                    combineEntryDataInSameFile, groupItems, checkPackages, log)
                 .ConfigureAwait(false);
         }
         catch (Exception e)
@@ -151,7 +151,7 @@ public partial class BaseDataModel
     }
 
     public async Task<List<DocumentCT>> AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,
-        bool combineEntryDataInSameFile, bool groupItems)
+        bool combineEntryDataInSameFile, bool groupItems, Serilog.ILogger log)
     {
         try
         {
@@ -178,7 +178,7 @@ public partial class BaseDataModel
             if (!IsValidEntryData(slstSource)) return new List<DocumentCT>();
 
             return await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
-                groupItems, true).ConfigureAwait(false);
+                groupItems, true, log).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -289,7 +289,7 @@ public partial class BaseDataModel
         }
     }
 
-    public static void LinkPDFs(List<string> cNumbers, string docCode = "NA")
+    public async static void LinkPDFs(List<string> cNumbers, string docCode = "NA")
     {
         try
         {
@@ -299,7 +299,7 @@ public partial class BaseDataModel
                 foreach (var entryId in cNumbers)
                     res.Add(ctx.AsycudaDocuments.Where(x => x.CNumber == entryId).OrderByDescending(x => x.ASYCUDA_Id)
                         .Select(x => x.ASYCUDA_Id).FirstOrDefault());
-                LinkPDFs(res.Where(x => x != 0).ToList(), docCode);
+                await LinkPDFs(res.Where(x => x != 0).ToList(), docCode).ConfigureAwait(false);
             }
         }
         catch (Exception)

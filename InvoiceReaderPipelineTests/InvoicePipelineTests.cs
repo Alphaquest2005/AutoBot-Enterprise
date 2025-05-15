@@ -24,7 +24,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 8;
             string assertionDescription = "equal to 8";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription, _logger).ConfigureAwait(false);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 1;
             string assertionDescription = "equal to 1";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription, _logger).ConfigureAwait(false);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace InvoiceReaderPipelineTests
             Func<int, bool> expectedDetailCountAssertion = count => count == 1;
             string assertionDescription = "exactly 1";
 
-            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription).ConfigureAwait(false);
+            await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription, _logger).ConfigureAwait(false);
         }
         
         
@@ -211,7 +211,12 @@ namespace InvoiceReaderPipelineTests
         // Reusable Test Logic Workflow (Unchanged from previous refactoring)
         // ========================================================================
 
-        private async Task RunImportAndVerificationTest(string testFilePath, string expectedInvoiceNo, Func<int, bool> detailCountAssertion, string assertionDescription)
+        private async Task RunImportAndVerificationTest(
+            string testFilePath,
+            string expectedInvoiceNo,
+            Func<int, bool> detailCountAssertion,
+            string assertionDescription,
+            ILogger log)
         {
             LogTestExecutionStart(TestContext.CurrentContext.Test.Name);
             Console.SetOut(TestContext.Progress);
@@ -225,7 +230,7 @@ namespace InvoiceReaderPipelineTests
 
                 foreach (var fileType in fileTypes)
                 {
-                    await ProcessAndVerifyImportForFileType(fileType, testFilePath, expectedInvoiceNo, detailCountAssertion, assertionDescription).ConfigureAwait(false);
+                    await this.ProcessAndVerifyImportForFileType(fileType, testFilePath, expectedInvoiceNo, detailCountAssertion, assertionDescription, log).ConfigureAwait(false);
                 }
 
                 LogTestExecutionSuccess(TestContext.CurrentContext.Test.Name);
@@ -323,20 +328,20 @@ namespace InvoiceReaderPipelineTests
             return true;
         }
 
-        private async Task ProcessAndVerifyImportForFileType(CoreEntities.Business.Entities.FileTypes fileType, string testFilePath, string expectedInvoiceNo, Func<int, bool> detailCountAssertion, string assertionDescription)
+        private async Task ProcessAndVerifyImportForFileType(CoreEntities.Business.Entities.FileTypes fileType, string testFilePath, string expectedInvoiceNo, Func<int, bool> detailCountAssertion, string assertionDescription, ILogger log)
         {
             _logger.Information("Processing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
-            await ImportFile(fileType, testFilePath).ConfigureAwait(false);
+            await ImportFile(fileType, testFilePath, log).ConfigureAwait(false);
             VerifyDatabaseState(fileType, expectedInvoiceNo, detailCountAssertion, assertionDescription);
         }
 
-        private async Task ImportFile(CoreEntities.Business.Entities.FileTypes fileType, string testFilePath)
+        private async Task ImportFile(FileTypes fileType, string testFilePath, ILogger log)
         {
             _logger.Information("Attempting import via InvoiceReader.InvoiceReader.ImportPDF with file: {FilePath} and FileType ID: {FileTypeId}", testFilePath, fileType.Id);
             try
             {
                 // Assuming InvoiceReader is static and thread-safe for tests
-                await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(testFilePath) }, fileType).ConfigureAwait(false);
+                await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(testFilePath) }, fileType, log).ConfigureAwait(false);
                 _logger.Information("InvoiceReader.InvoiceReader.ImportPDF completed successfully for FileType ID: {FileTypeId}", fileType.Id);
             }
             catch (Exception importEx)

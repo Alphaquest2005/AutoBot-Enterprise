@@ -32,7 +32,7 @@ namespace WaterNut.Business.Services.Importers
 
             };
         }
-        public async Task Import(string fileName, ILogger log)
+        public async Task Import(string fileName)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             _logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]", "ImportFile", $"FileName: {fileName}, FileType: {FileType.Description}");
@@ -42,7 +42,7 @@ namespace WaterNut.Business.Services.Importers
                 var importer = _importers[FileType.FileImporterInfos.Format];
                 _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", $"Importer.Import for {FileType.FileImporterInfos.Format}", "ASYNC_EXPECTED");
                 var importStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await importer.Import(fileName, true, log).ConfigureAwait(false);
+                await importer.Import(fileName, true, this._logger).ConfigureAwait(false);
                 importStopwatch.Stop();
                 _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     $"Importer.Import for {FileType.FileImporterInfos.Format}", importStopwatch.ElapsedMilliseconds, "Async call completed (await).");

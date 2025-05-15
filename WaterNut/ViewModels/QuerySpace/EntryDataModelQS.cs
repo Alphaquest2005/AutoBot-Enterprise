@@ -11,6 +11,8 @@ using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 {
+    using Serilog;
+
     public partial class EntryDataModel : EntryDataExViewModel_AutoGen
 	{
         private static readonly EntryDataModel instance;
@@ -98,7 +100,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
-        public async Task SaveCSV(string fileType)
+        public async Task SaveCSV(string fileType, ILogger log)
         {
             StatusModel.Timer($"Importing {fileType}");
             var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
@@ -108,7 +110,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 return;
             }
             await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType,
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, log).ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.EntryDataExChanged, null,
                          new NotificationEventArgs(MessageToken.EntryDataExChanged));

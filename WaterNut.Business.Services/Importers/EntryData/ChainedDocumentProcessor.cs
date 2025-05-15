@@ -20,8 +20,8 @@ namespace WaterNut.Business.Services.Importers.EntryData
         
         public async Task<List<dynamic>> Execute(List<dynamic> list, ILogger log)
         {
-            var firstResult = await _first.Execute(list).ConfigureAwait(false);
-            return await _second.Execute(firstResult).ConfigureAwait(false);
+            var firstResult = await _first.Execute(list, log).ConfigureAwait(false);
+            return await _second.Execute(firstResult, log).ConfigureAwait(false);
         }
     }
  

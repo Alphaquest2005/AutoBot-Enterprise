@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
+
     public partial class HandleErrorStateStep
     {
         // Added string filePath parameter

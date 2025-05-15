@@ -17,7 +17,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _processors = processors;
         }
  
-        public async Task<Result<List<T>>> Execute(List<T> data, ILogger log) => await _processors.Aggregate((o, n) => ChainedProcessorConstruction.Then(o, n)).Execute(data).ConfigureAwait(false);
+        public async Task<Result<List<T>>> Execute(List<T> data, ILogger log) => await _processors.Aggregate((o, n) => ChainedProcessorConstruction.Then(o, n)).Execute(data, log).ConfigureAwait(false);
     }
     
 }

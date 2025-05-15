@@ -35,7 +35,7 @@ namespace AutoBot
     {
 
 
-        public static async Task RecreateEx9(ILogger log, int months) // Add ILogger
+        public static async Task RecreateEx9(int months, ILogger log) // Add ILogger
         {
             string methodName = nameof(RecreateEx9);
             log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ Months: {Months} }}",
@@ -64,7 +64,7 @@ namespace AutoBot
                         "AssessEx9Entries", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "DownloadSalesFiles", "ASYNC_EXPECTED");
-                    DownloadSalesFiles(log, 10, "IM7", false); // Pass log
+                    await DownloadSalesFiles(log, 10, "IM7", false).ConfigureAwait(false); // Pass log
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})",
                         "DownloadSalesFiles", "Sync call returned (Task not awaited here)."); // This method returns Task but is not awaited
 
@@ -74,12 +74,12 @@ namespace AutoBot
                         "DocumentUtils.ImportSalesEntries", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ImportWarehouseErrorsUtils.ImportWarehouseErrors", "ASYNC_EXPECTED");
-                    await ImportWarehouseErrorsUtils.ImportWarehouseErrors(log, months).ConfigureAwait(false); // Pass log
+                    await ImportWarehouseErrorsUtils.ImportWarehouseErrors(months, log).ConfigureAwait(false); // Pass log
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "ImportWarehouseErrorsUtils.ImportWarehouseErrors", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "RecreateEx9 (recursive call)", "ASYNC_EXPECTED");
-                    await RecreateEx9(log, months).ConfigureAwait(false); // Pass log
+                    await RecreateEx9(months, log).ConfigureAwait(false); // Pass log
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "RecreateEx9 (recursive call)", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -90,17 +90,17 @@ namespace AutoBot
                 {
                     log.Information("INTERNAL_STEP ({MethodName} - {Stage}): No generated documents found. Starting re-import/submit process.", methodName, "ReimportSubmitProcess");
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PDFUtils.LinkPDFs", "SYNC_EXPECTED");
-                    PDFUtils.LinkPDFs(); // Need to check if this method accepts ILogger
+                    await PDFUtils.LinkPDFs().ConfigureAwait(false); // Need to check if this method accepts ILogger
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})",
                         "PDFUtils.LinkPDFs", "Sync call returned.");
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms", "ASYNC_EXPECTED");
-                    await SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(log, months).ConfigureAwait(false); // Pass log
+                    await SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(months, log).ConfigureAwait(false); // Pass log
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.CleanupEntries", "ASYNC_EXPECTED");
-                    await EntryDocSetUtils.CleanupEntries(log).ConfigureAwait(false); // Pass log
+                    await EntryDocSetUtils.CleanupEntries().ConfigureAwait(false); // Pass log
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "EntryDocSetUtils.CleanupEntries", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -137,27 +137,20 @@ namespace AutoBot
                 // Console.WriteLine("Export EX9 Entries"); // Remove Console.WriteLine
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var saleInfo =  await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var saleInfo =  await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) SaleInfoFound: {SaleInfoFound}",
-                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfo != null);
+                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfo.DocSet != null);
 
-                if (saleInfo == null)
-                {
-                    log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): Could not get current sales info for months {Months}. Cannot export.", methodName, "NoSalesInfo", months);
-                    stopwatch.Stop();
-                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
-                        methodName, stopwatch.ElapsedMilliseconds);
-                    return;
-                }
+               
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ExportDocSetSalesReportUtils.ExportDocSetSalesReport", "ASYNC_EXPECTED");
-                await ExportDocSetSalesReportUtils.ExportDocSetSalesReport(log, saleInfo.DocSet.AsycudaDocumentSetId, // Pass log
+                await ExportDocSetSalesReportUtils.ExportDocSetSalesReport(saleInfo.DocSet.AsycudaDocumentSetId, // Pass log
                     BaseDataModel.GetDocSetDirectoryName(saleInfo.DocSet.Declarant_Reference_Number)).ConfigureAwait(false); // Need to check if GetDocSetDirectoryName accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "ExportDocSetSalesReportUtils.ExportDocSetSalesReport", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.Instance.ExportDocSet", "ASYNC_EXPECTED");
-                await BaseDataModel.Instance.ExportDocSet(log, saleInfo.DocSet.AsycudaDocumentSetId, // Pass log
+                await BaseDataModel.Instance.ExportDocSet(saleInfo.DocSet.AsycudaDocumentSetId, // Pass log
                     BaseDataModel.GetDocSetDirectoryName(saleInfo.DocSet.Declarant_Reference_Number), true).ConfigureAwait(false); // Need to check if GetDocSetDirectoryName accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "BaseDataModel.Instance.ExportDocSet", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -190,18 +183,11 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) SalesInfoFound: {SalesInfoFound}",
-                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", currentSalesInfo != null);
+                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", currentSalesInfo.DocSet != null);
 
-                if (currentSalesInfo == null)
-                {
-                    log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): Could not get current sales info for months {Months}. Cannot assess entries.", methodName, "NoSalesInfo", months);
-                    stopwatch.Stop();
-                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
-                        methodName, stopwatch.ElapsedMilliseconds);
-                    return;
-                }
+               
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "AssessSalesEntry", "ASYNC_EXPECTED");
                 await AssessSalesEntry(log, currentSalesInfo.Item3 // Pass log
@@ -234,8 +220,9 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Utils.AssessComplete", "ASYNC_EXPECTED");
-                var assessComplete = await Utils.AssessComplete(log, GetInstructionFile(docReference), // Pass log, Need to check if GetInstructionFile accepts ILogger
-                    GetInstructionResultsFile(docReference)).ConfigureAwait(false); // Need to check if GetInstructionResultsFile accepts ILogger
+                var assessComplete = await Utils.AssessComplete(GetInstructionFile(docReference), // Pass log, Need to check if GetInstructionFile accepts ILogger
+                    GetInstructionResultsFile(docReference),
+                    log).ConfigureAwait(false); // Need to check if GetInstructionResultsFile accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) AssessCompleteSuccess: {AssessCompleteSuccess}",
                     "Utils.AssessComplete", stopwatch.ElapsedMilliseconds, "Async call completed (await).", assessComplete.success);
 
@@ -252,8 +239,9 @@ namespace AutoBot
                         "Utils.RunSiKuLi (AssessIM7)", "Sync call returned.", docReference);
 
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Utils.AssessComplete (re-check)", "ASYNC_EXPECTED");
-                    assessComplete = await Utils.AssessComplete(log, GetInstructionFile(docReference), // Pass log
-                        GetInstructionResultsFile(docReference)).ConfigureAwait(false); // Need to check if GetInstructionFile/GetInstructionResultsFile accept ILogger
+                    assessComplete = await Utils.AssessComplete(GetInstructionFile(docReference), // Pass log
+                        GetInstructionResultsFile(docReference),
+                        log).ConfigureAwait(false); // Need to check if GetInstructionFile/GetInstructionResultsFile accept ILogger
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) AssessCompleteSuccess: {AssessCompleteSuccess}",
                         "Utils.AssessComplete (re-check)", stopwatch.ElapsedMilliseconds, "Async call completed (await).", assessComplete.success);
 
@@ -312,7 +300,7 @@ namespace AutoBot
 
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Utils.RetryImport", "ASYNC_EXPECTED");
-                await Task.Run(() => Utils.RetryImport(log, trytimes, script, redownload, directoryName)).ConfigureAwait(false); // Pass log, Need to check if Utils.RetryImport accepts ILogger
+                await Task.Run(() => Utils.RetryImport(trytimes, script, redownload, directoryName)).ConfigureAwait(false); // Pass log, Need to check if Utils.RetryImport accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "Utils.RetryImport", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -391,11 +379,11 @@ namespace AutoBot
                     "CreateEX9Utils.CreateEx9", stopwatch.ElapsedMilliseconds, "Async call completed (await).", genDocs?.Count() ?? 0);
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var saleInfo = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var saleInfo = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) SaleInfoFound: {SaleInfoFound}",
-                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfo != null);
+                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfo.DocSet != null);
 
-                if (saleInfo != null)
+                if (saleInfo.DocSet != null)
                 {
                     filetype.AsycudaDocumentSetId = saleInfo.DocSet.AsycudaDocumentSetId;
                     log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Set FileType DocSetId to {DocSetId}.", methodName, "SetDocSetId", filetype.AsycudaDocumentSetId);
@@ -403,6 +391,7 @@ namespace AutoBot
                 else
                 {
                     log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): Could not get current sales info. Cannot set FileType DocSetId.", methodName, "NoSalesInfo");
+                    
                 }
 
 
@@ -432,7 +421,7 @@ namespace AutoBot
 
 
 
-        public static async Task ImportXSalesFiles(ILogger log, string testFile) // Add ILogger
+        public static async Task ImportXSalesFiles( string testFile, ILogger log) // Add ILogger
         {
             string methodName = nameof(ImportXSalesFiles);
             log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ TestFile: {TestFile} }}",
@@ -461,7 +450,7 @@ namespace AutoBot
                 {
                     log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Importing file '{TestFile}' with FileType {FileTypeId}.", methodName, "ImportSingleFile", testFile, fileType.Id);
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file '{TestFile}' and FileType {FileTypeId}", "FileTypeImporter.Import", "ASYNC_EXPECTED", testFile, fileType.Id);
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false); // Need to check if FileTypeImporter.Import accepts ILogger
+                    await new FileTypeImporter(fileType, log).Import(testFile).ConfigureAwait(false); // Need to check if FileTypeImporter.Import accepts ILogger
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for file '{TestFile}' and FileType {FileTypeId}",
                         "FileTypeImporter.Import", stopwatch.ElapsedMilliseconds, "Async call completed (await).", testFile, fileType.Id);
                 }
@@ -491,7 +480,7 @@ namespace AutoBot
             try
             {
                 log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Utils.GetFileType", "ASYNC_EXPECTED");
-                var task = Utils.GetFileType(log, FileTypeManager.EntryTypes.xSales, FileTypeManager.FileFormats.Csv, fileName); // Pass log
+                var task = Utils.GetFileType(FileTypeManager.EntryTypes.xSales, FileTypeManager.FileFormats.Csv, fileName); // Pass log
                 // Since this returns a Task directly, we don't await it here.
                 // The caller is responsible for awaiting this task.
                 // We can log the start of the operation.

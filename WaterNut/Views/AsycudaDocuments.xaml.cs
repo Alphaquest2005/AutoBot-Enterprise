@@ -17,7 +17,9 @@ using WaterNut.QuerySpace.CoreEntities.ViewModels;
 
 namespace WaterNut.Views
 {
-	/// <summary>
+    using Serilog;
+
+    /// <summary>
 	/// Interaction logic for AsycudaDocuments.xaml
 	/// </summary>
 	public partial class AsycudaDocuments : UserControl
@@ -165,9 +167,9 @@ namespace WaterNut.Views
         #endregion
 
 
-	    private void AutoDownload(object sender, MouseButtonEventArgs e)
+	    private async void AutoDownload(object sender, MouseButtonEventArgs e)
 	    {
-	        EX9Utils.DownloadSalesFiles(2, "IM7History");
+	        await EX9Utils.DownloadSalesFiles(Log.Logger, 2, "IM7History").ConfigureAwait(false);
 
 	    }
 	}

@@ -93,7 +93,7 @@ public partial class BaseDataModel
     }
 
     public static async Task<(DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)>
-        CurrentSalesInfo(ILogger log, int months) // Add ILogger parameter
+        CurrentSalesInfo( int months, ILogger log) // Add ILogger parameter
     {
         string methodName = nameof(CurrentSalesInfo);
         log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ Months: {Months} }}",

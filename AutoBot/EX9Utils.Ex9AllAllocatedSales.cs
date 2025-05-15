@@ -6,9 +6,11 @@ using WaterNut.DataSpace;
 
 namespace AutoBot;
 
+using Serilog;
+
 public partial class EX9Utils
 {
-    public static async Task Ex9AllAllocatedSales(bool overwrite)
+    public static async Task Ex9AllAllocatedSales(bool overwrite, ILogger log)
     {
         try
         {
@@ -29,7 +31,7 @@ public partial class EX9Utils
                 .ConfigureAwait(false);
             if (overwrite)
             {
-                await BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).ConfigureAwait(false);
+                await BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId, log).ConfigureAwait(false);
                 BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId,
                     0); // don't overwrite previous entries
             }

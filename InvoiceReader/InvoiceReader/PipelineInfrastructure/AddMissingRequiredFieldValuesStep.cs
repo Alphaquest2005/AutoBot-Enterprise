@@ -77,7 +77,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                          nameof(Execute), "CoreLogic", "Starting core logic for adding missing required field values.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
 
-                     var requiredFieldsList = GetRequiredFieldsWithValues(context.Logger, template); // Pass logger
+                     var requiredFieldsList = GetRequiredFieldsWithValues(context, template); // Pass logger
                      context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                          nameof(Execute), "CoreLogic", "Found required fields with default values.", $"RequiredFieldCount: {requiredFieldsList.Count}, FilePath: {filePath}, TemplateId: {templateId}.", "");
 
@@ -184,16 +184,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  nameof(AddRequiredFieldValuesToDocuments), "Completion", "Finished adding required field values to documents.", $"FilePath: {template?.FilePath ?? "Unknown"}", "");
         }
 
-       private List<Fields> GetRequiredFieldsWithValues(ILogger logger, Invoice template) // Add logger parameter
+       private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Invoice template) // Add logger parameter
        {
             // Use FilePath as the identifier
-           logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+           context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                nameof(GetRequiredFieldsWithValues), "Processing", "Getting required fields with values.", $"FilePath: {context.FilePath}", "");
            // Added null check for safety
            if (template?.Lines == null)
            {
                 // Use FilePath as the identifier
-               logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                    nameof(GetRequiredFieldsWithValues), "Validation", "Template or Template.Lines is null.", $"FilePath: {context.FilePath}", "Returning empty list.");
                return new List<Fields>();
            }
@@ -204,7 +204,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                .Where(z => z != null && z.IsRequired && z.FieldValue != null && !string.IsNullOrEmpty(z.FieldValue.Value)) // Ensure field and FieldValue are not null
                .ToList();
             // Use FilePath as the identifier
-           logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+           context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                nameof(GetRequiredFieldsWithValues), "Completion", "Found required fields with values.", $"FieldCount: {fields.Count}, FilePath: {context.FilePath}", "");
            return fields;
        }

@@ -15,9 +15,11 @@ using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class ADJUtils
     {
-        public static async Task ClearAllAdjustmentEntries(string adjustmentType)
+        public static async Task ClearAllAdjustmentEntries(string adjustmentType, ILogger log)
         {
             Console.WriteLine($"Clear {adjustmentType} Entries");
 
@@ -36,7 +38,7 @@ namespace AutoBot
 
                 foreach (var doc in lst)
                 {
-                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc, log).ConfigureAwait(false);
                     BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
 
@@ -44,7 +46,7 @@ namespace AutoBot
         }
 
 
-        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType)
+        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType, ILogger log)
         {
             Console.WriteLine($"Create {adjustmentType} Entries");
 
@@ -53,7 +55,7 @@ namespace AutoBot
             {
                 var lst = GetADJtoXMLForType(adjustmentType);
 
-                await CreateAdjustmentEntries(overwrite, adjustmentType, lst, null).ConfigureAwait(false);
+                await CreateAdjustmentEntries(overwrite, adjustmentType, lst, null, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -202,10 +204,10 @@ namespace AutoBot
             return null;
         }
 
-        public static async Task EmailAdjustmentErrors()
+        public static async Task EmailAdjustmentErrors(ILogger log)
         {
 
-            var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+            var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "AdjustmentErrors.csv");
 
@@ -238,12 +240,16 @@ namespace AutoBot
                     await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory, $"Adjustment Errors for {info.Item1:yyyy-MM-dd} - {info.Item2:yyyy-MM-dd}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[]
                     {
                         errorfile
-                    }).ConfigureAwait(false);
+                    }, log).ConfigureAwait(false);
             }
 
         }
 
-        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType, FileTypes fileType)
+        public static async Task CreateAdjustmentEntries(
+            bool overwrite,
+            string adjustmentType,
+            FileTypes fileType,
+            ILogger log)
         {
             Console.WriteLine($"Create {adjustmentType} Entries");
 
@@ -261,7 +267,7 @@ namespace AutoBot
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .ToList();
 
-                    await CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId).ConfigureAwait(false);
+                    await CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId, log).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -272,10 +278,14 @@ namespace AutoBot
 
         }
 
-        public static async Task CreateAdjustmentEntries(bool overwrite, string adjustmentType,
-            List<IGrouping<int, TODO_AdjustmentsToXML>> lst, string emailId)
+        public static async Task CreateAdjustmentEntries(
+            bool overwrite,
+            string adjustmentType,
+            List<IGrouping<int, TODO_AdjustmentsToXML>> lst,
+            string emailId,
+            ILogger log)
         {
-            await ClearExistingAdjustments(overwrite, lst).ConfigureAwait(false);
+            await ClearExistingAdjustments(overwrite, lst, log).ConfigureAwait(false);
 
             foreach (var doc in lst)
             {
@@ -377,7 +387,10 @@ namespace AutoBot
             return t1;
         }
 
-        private static async Task ClearExistingAdjustments(bool overwrite, List<IGrouping<int, TODO_AdjustmentsToXML>> lst)
+        private static async Task ClearExistingAdjustments(
+            bool overwrite,
+            List<IGrouping<int, TODO_AdjustmentsToXML>> lst,
+            ILogger log)
         {
             if (overwrite)
             {
@@ -392,7 +405,7 @@ namespace AutoBot
                             BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                     }
 
-                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc, log).ConfigureAwait(false);
                     //; // took it of so it would keep counting up
                 }
             }

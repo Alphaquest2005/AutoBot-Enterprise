@@ -14,6 +14,8 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBotUtilities.Tests.Infrastructure
 {
+    using Serilog;
+
     public static class Utils
     {
 
@@ -119,7 +121,11 @@ namespace AutoBotUtilities.Tests.Infrastructure
         }
 
 
-        public static Task ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames, bool noMessages = false)
+        public static Task ImportDocuments(
+            AsycudaDocumentSet docSet,
+            List<string> fileNames,
+            ILogger log,
+            bool noMessages = false)
         {
             bool importOnlyRegisteredDocument = true;
 
@@ -130,17 +136,21 @@ namespace AutoBotUtilities.Tests.Infrastructure
             bool linkPi = true;
 
             return BaseDataModel.Instance.ImportDocuments(docSet, fileNames, importOnlyRegisteredDocument,
-                importTariffCodes, noMessages, overwriteExisting, linkPi);
+                importTariffCodes, noMessages, overwriteExisting, linkPi, log);
         }
 
 
-        public static async Task ImportEntryDataOldWay(List<string> files, string entryType, string fileFormat)
+        public static async Task ImportEntryDataOldWay(
+            List<string> files,
+            string entryType,
+            string fileFormat,
+            ILogger log)
         {
             var testFile = GetTestSalesFile(files);
             var fileTypes = await FileTypeManager.GetImportableFileType(entryType, fileFormat, testFile).ConfigureAwait(false);
             foreach (var fileType in fileTypes)
             {
-                await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
+                await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType, log).ConfigureAwait(false);
             }
         }
 

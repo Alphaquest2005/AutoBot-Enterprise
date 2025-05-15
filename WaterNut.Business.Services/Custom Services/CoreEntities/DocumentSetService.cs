@@ -30,7 +30,7 @@ namespace CoreEntities.Business.Services
     {
         public async Task DeleteDocuments(int docSetId)
         {
-            await WaterNut.DataSpace.BaseDataModel.Instance.ClearAsycudaDocumentSet(docSetId).ConfigureAwait(false);
+            await WaterNut.DataSpace.BaseDataModel.Instance.ClearAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
         }
 
         public async Task DeleteDocumentSet(int docSetId)
@@ -38,14 +38,22 @@ namespace CoreEntities.Business.Services
             await WaterNut.DataSpace.BaseDataModel.Instance.DeleteAsycudaDocumentSet(docSetId).ConfigureAwait(false);
         }
 
-        public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool onlyRegisteredDocuments, bool importTariffCodes, bool noMessages, bool overwriteExisting, bool linkPi)
+        public async Task ImportDocuments(
+            int asycudaDocumentSetId,
+            List<string> fileNames,
+            bool onlyRegisteredDocuments,
+            bool importTariffCodes,
+            bool noMessages,
+            bool overwriteExisting,
+            bool linkPi,
+            ILogger log)
         {
             var docset =
                 await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                     .ConfigureAwait(false);
             await
                 WaterNut.DataSpace.BaseDataModel.Instance.ImportDocuments(docset, fileNames, onlyRegisteredDocuments,
-                    importTariffCodes, noMessages, overwriteExisting, linkPi).ConfigureAwait(false);
+                    importTariffCodes, noMessages, overwriteExisting, linkPi, log).ConfigureAwait(false);
         }
 
         public async Task ExportDocument(string fileName, int docId)
@@ -136,7 +144,7 @@ namespace CoreEntities.Business.Services
             await WaterNut.DataSpace.CreateIM9.Instance.CleanLines(docSet, lst, perIM7).ConfigureAwait(false);
         }
 
-        public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
+        public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files, ILogger log)
         {
             var fileTypes = new CoreEntitiesContext().FileTypes
                 .Where(x => x.FileImporterInfos != null)
@@ -156,7 +164,7 @@ namespace CoreEntities.Business.Services
 
                 if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71)
                     await BaseDataModel.Instance.ImportC71(fileType.AsycudaDocumentSetId,
-                        csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
+                        csvFiles.Select(x => x.FullName).ToList(), log).ConfigureAwait(false);
 
                 fileType.AsycudaDocumentSetId = asycudaDocumentSetId;
                 await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, fileType).ConfigureAwait(false);

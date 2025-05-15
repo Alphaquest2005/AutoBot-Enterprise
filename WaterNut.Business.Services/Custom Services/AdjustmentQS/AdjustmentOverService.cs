@@ -105,14 +105,14 @@ namespace AdjustmentQS.Business.Services
                         }).ToList();
 
                     var docList = await BaseDataModel.Instance
-                        .CreateEntryItems(olst, docSet, perInvoice, false, true, false, false, false, "O")
+                        .CreateEntryItems(olst, docSet, perInvoice, false, true, false, false, false, Serilog.Log.Logger, "O")
                         .ConfigureAwait(false);
 
                     if (emailId != null)
                     {
                         BaseDataModel.StripAttachments(docList, emailId);
-                        BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId);
-                        BaseDataModel.AttachBlankC71(docList);
+                        await BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId).ConfigureAwait(false);
+                        await BaseDataModel.AttachBlankC71(docList).ConfigureAwait(false);
                     }
 
                     BaseDataModel.SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());

@@ -27,7 +27,6 @@ using CoreConsignees = CoreEntities.Business.Entities.Consignees; // Alias for C
 namespace AutoBot
 {
     using System.Diagnostics;
-
     using Serilog;
 
     public class EntryDocSetUtils
@@ -42,7 +41,7 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EX9Utils.EmailEntriesExpiringNextMonth", "ASYNC_EXPECTED");
-                await EX9Utils.EmailEntriesExpiringNextMonth().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EX9Utils.EmailEntriesExpiringNextMonth(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EX9Utils.EmailEntriesExpiringNextMonth", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -123,7 +122,7 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EX9Utils.EmailWarehouseErrors", "ASYNC_EXPECTED");
-                await EX9Utils.EmailWarehouseErrors().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EX9Utils.EmailWarehouseErrors(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EX9Utils.EmailWarehouseErrors", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -319,7 +318,7 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var docSet = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var docSet = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -418,7 +417,7 @@ namespace AutoBot
             try
             {
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var docSet = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var docSet = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -884,7 +883,7 @@ namespace AutoBot
                 var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Utils.RetryAssess", "ASYNC_EXPECTED");
-                await Utils.RetryAssess(instrFile, resultsFile, directoryName, 3).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await Utils.RetryAssess(instrFile, resultsFile, directoryName, 3, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "Utils.RetryAssess", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -970,7 +969,7 @@ namespace AutoBot
                 {
                     log.Information("INTERNAL_STEP ({MethodName} - {Stage}): InstructionResults.txt not found. Clearing entire document set.", methodName, "ClearEntireDocSet");
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.Instance.ClearAsycudaDocumentSet", "ASYNC_EXPECTED");
-                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "BaseDataModel.Instance.ClearAsycudaDocumentSet", stopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
@@ -1040,7 +1039,7 @@ namespace AutoBot
                             "BaseDataModel.Instance.DeleteAsycudaDocument", stopwatch.ElapsedMilliseconds, "Async call completed (await).", doc.Key.ASYCUDA_Id);
 
                         log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file '{FileName}'", "BaseDataModel.Instance.ImportDocuments", "ASYNC_EXPECTED");
-                        await BaseDataModel.Instance.ImportDocuments(doc.Key.AsycudaDocumentSetId.GetValueOrDefault(), new List<string>() { doc.Key.SourceFileName }, true, true, false, true, true).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                        await BaseDataModel.Instance.ImportDocuments(doc.Key.AsycudaDocumentSetId.GetValueOrDefault(), new List<string>() { doc.Key.SourceFileName }, true, true, false, true, true, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                         log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for file '{FileName}'",
                             "BaseDataModel.Instance.ImportDocuments", stopwatch.ElapsedMilliseconds, "Async call completed (await).", doc.Key.SourceFileName);
                     }
@@ -1317,7 +1316,7 @@ namespace AutoBot
             }
         }
 
-         public static async Task SyncConsigneeInDB(FileTypes ft, FileInfo[] fs)
+         public static async Task SyncConsigneeInDB(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             Console.WriteLine($"--- Logging FileType.Data at start of SyncConsigneeInDB (DocSetId: {ft.AsycudaDocumentSetId}) ---");
             if (ft.Data == null || !ft.Data.Any())
@@ -1430,7 +1429,7 @@ namespace AutoBot
             catch (Exception ex)
             {
                 Console.WriteLine($"ERROR in SyncConsigneeInDB: {ex.Message}");
-                await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
+                await BaseDataModel.EmailExceptionHandlerAsync(ex, log).ConfigureAwait(false);
             }
         }
     }

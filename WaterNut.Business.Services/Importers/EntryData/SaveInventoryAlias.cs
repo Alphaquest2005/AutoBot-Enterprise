@@ -28,7 +28,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
                 .Select(async x =>
                 {
-                    await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                    await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, log).ConfigureAwait(false);
                 }).ToList();
  
             await Task.WhenAll(tasks).ConfigureAwait(false);

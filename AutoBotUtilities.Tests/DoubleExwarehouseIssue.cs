@@ -12,6 +12,8 @@ using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
 {
+    using Serilog;
+
     [TestFixture]
     public class DoubleExwarehouseIssue
     {
@@ -42,7 +44,7 @@ namespace AutoBotUtilities.Tests
 
             var startDate = DateTime.Parse("5/1/2022");
           
-            var saleInfo =await EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate).ConfigureAwait(false);
+            var saleInfo =await EntryDocSetUtils.CreateMonthYearAsycudaDocSet(Log.Logger, startDate).ConfigureAwait(false);
 
             var docset = await BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).ConfigureAwait(false);
 
@@ -83,7 +85,7 @@ namespace AutoBotUtilities.Tests
             
 
             var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports").ConfigureAwait(false);
-            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File, ex9File }, true).ConfigureAwait(false);
+            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File, ex9File }, Log.Logger, true).ConfigureAwait(false);
         }
 
         private static async Task ImportTestFile()
@@ -94,7 +96,7 @@ namespace AutoBotUtilities.Tests
                 { "DuplicateExwarehousingIssue", "29118-8026.csv" });
 
             await Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Sales,
-                FileTypeManager.FileFormats.Csv).ConfigureAwait(false);
+                FileTypeManager.FileFormats.Csv,  Log.Logger ).ConfigureAwait(false);
         }
     }
 }

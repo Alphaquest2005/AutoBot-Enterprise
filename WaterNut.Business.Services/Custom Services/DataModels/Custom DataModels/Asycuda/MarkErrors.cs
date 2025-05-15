@@ -26,14 +26,14 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public Task Execute(int applicationSettingsId, string lst=null)
+        public async Task Execute(int applicationSettingsId, string lst=null)
         {
             var itemSets = BaseDataModel.GetItemSets(lst);
             itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage))
                 .ForAll(async x => await Execute(x).ConfigureAwait(false));
-            return Task.CompletedTask;
+           
         }
 
         public async Task Execute(List<(string ItemNumber, int InventoryItemId)> itemSetLst)

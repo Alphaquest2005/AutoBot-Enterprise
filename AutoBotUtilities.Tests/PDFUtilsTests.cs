@@ -17,6 +17,8 @@ namespace AutoBotUtilities.Tests
     using System.Collections.Generic;
     using System.Linq;
 
+    using Serilog;
+
     [TestFixture]
     public class PDFUtilsTests
     {
@@ -66,7 +68,7 @@ namespace AutoBotUtilities.Tests
                 }
                 foreach (var fileType in fileTypes)
                 {
-                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
 
                     using (var ctx = new EntryDataDSContext())
@@ -118,7 +120,7 @@ namespace AutoBotUtilities.Tests
                       Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
                       // Clear DB before each filetype test within this method
                       Infrastructure.Utils.ClearDataBase();
-                      await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                      await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
   
   
                       using (var ctx = new EntryDataDSContext())
@@ -167,7 +169,7 @@ namespace AutoBotUtilities.Tests
                      Console.WriteLine($"Testing with FileType: {fileType.Description} (ID: {fileType.Id})"); // Corrected property
                      // Clear DB before each filetype test within this method
                      Infrastructure.Utils.ClearDataBase();
-                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                     await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
  
  
                      using (var ctx = new EntryDataDSContext())
@@ -216,7 +218,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -271,7 +273,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
+                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -326,7 +328,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                var res = await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                var res = await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -383,7 +385,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -440,7 +442,7 @@ namespace AutoBotUtilities.Tests
 
                 Console.WriteLine($"Testing {Path.GetFileName(testFile)} with FileType: {fileType.Description} (ID: {fileType.Id})"); 
                 Infrastructure.Utils.ClearDataBase(); 
-                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
+                await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false);
 
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -482,7 +484,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\07252024_TEMU.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath, Log.Logger).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -494,7 +496,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\07262024_TEMU.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath, Log.Logger).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -506,7 +508,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025103631.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath, Log.Logger).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -518,7 +520,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025103721.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath, Log.Logger).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");
@@ -530,7 +532,7 @@ namespace AutoBotUtilities.Tests
         {
             var filePath = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Temu\03152025135830.pdf";
             if (!File.Exists(filePath)) { TestContext.WriteLine($"File not found: {filePath}"); return; }
-            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath).ConfigureAwait(false);
+            var text = await InvoiceReader.InvoiceReader.GetPdftxt(filePath, Log.Logger).ConfigureAwait(false);
             TestContext.WriteLine($"--- START TEXT: {Path.GetFileName(filePath)} ---");
             TestContext.WriteLine(text);
             TestContext.WriteLine($"--- END TEXT: {Path.GetFileName(filePath)} ---");

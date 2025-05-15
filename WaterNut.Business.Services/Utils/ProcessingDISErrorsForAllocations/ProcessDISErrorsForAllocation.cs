@@ -51,7 +51,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                 ed.Comment = $@"DISERROR:{s.Status}";
                 ed.Status = null;
                 await ctx.Database.ExecuteSqlCommandAsync(
-                    $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
+                    $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}").ConfigureAwait(false);
                 edlst.Add(ed);
             }
 

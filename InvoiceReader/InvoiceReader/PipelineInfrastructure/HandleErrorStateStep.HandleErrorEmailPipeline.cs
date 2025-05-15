@@ -7,6 +7,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     using System.Collections.Generic;
     using System.Diagnostics;
 
+    using Serilog;
+
     public partial class HandleErrorStateStep
     {
         // Added InvoiceProcessingContext context parameter

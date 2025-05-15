@@ -234,7 +234,7 @@ namespace InvoiceReader.PipelineInfrastructure
 
         private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoices> templates)
         {
-            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType).ConfigureAwait(false);
+            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
             return templates.Select(x => new Invoice(x){
                 FileType = context.FileType,
                 DocSet = docSet,

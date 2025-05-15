@@ -418,7 +418,7 @@ namespace AutoBot
                 {
                     _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}, FileType {FileTypeId}",
                         "ShipmentUtils.CreateShipmentEmail", "ASYNC_EXPECTED", originalFile.Name, fileType.Id);
-                    resultAllGood = await ShipmentUtils.CreateShipmentEmail(fileType, fileInfos).ConfigureAwait(false);
+                    resultAllGood = await ShipmentUtils.CreateShipmentEmail(fileType, fileInfos, _log).ConfigureAwait(false);
                     stopwatch.Stop();
                     _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: {Result}",
                         "ShipmentUtils.CreateShipmentEmail", stopwatch.ElapsedMilliseconds, "Async call completed (await).", resultAllGood);
@@ -515,9 +515,9 @@ namespace AutoBot
                 _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}",
                     "EmailDownloader.EmailDownloader.SendEmailAsync", "ASYNC_EXPECTED", file.Name);
                 await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, null, $"Unknown PDF Found",
-                    EmailDownloader.EmailDownloader.GetContacts("Developer"),
+                    EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
                     errorMessage,
-                    res2.Select(x => x.Value.FileName).Distinct().ToArray()).ConfigureAwait(false);
+                    res2.Select(x => x.Value.FileName).Distinct().ToArray(), _log).ConfigureAwait(false);
                 sendEmailStopwatch.Stop();
                 _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). For file {FileName}.",
                     "EmailDownloader.EmailDownloader.SendEmailAsync", sendEmailStopwatch.ElapsedMilliseconds, "Async call completed (await).", file.Name);

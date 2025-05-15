@@ -22,6 +22,7 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
+    using ExcelDataReader.Log;
     using Serilog;
 
     public class POUtils
@@ -414,7 +415,7 @@ namespace AutoBot
 
                             if (!adp.Any())
                             {
-                                BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                                await BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id }).ConfigureAwait(false);
                                 adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
                                     .Select(x => x.Attachments.FilePath).ToList();
                             }
@@ -735,7 +736,7 @@ namespace AutoBot
 
                     foreach (var doc in lst)
                     {
-                        await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
+                        await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc, logger).ConfigureAwait(false);
                         BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                     }
                 }
@@ -891,25 +892,25 @@ namespace AutoBot
             }
         }
 
-        public static async Task AssessPOEntry(string docReference, int asycudaDocumentSetId, Serilog.ILogger logger)
+        public static async Task AssessPOEntry(string docReference, int asycudaDocumentSetId, Serilog.ILogger log)
         {
             var stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(AssessPOEntry), new { DocReference = docReference, AsycudaDocumentSetId = asycudaDocumentSetId });
+            log.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(AssessPOEntry), new { DocReference = docReference, AsycudaDocumentSetId = asycudaDocumentSetId });
             try
             {
                 if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x =>
                         x.AsycudaDocumentSetId != asycudaDocumentSetId))
                 {
                     stopwatch.Stop();
-                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
+                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
                     return;
                 }
 
                 if (docReference == null)
                 {
                     stopwatch.Stop();
-                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
+                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
                     return;
                 }
                 var directoryName = BaseDataModel.GetDocSetDirectoryName(docReference);
@@ -917,23 +918,23 @@ namespace AutoBot
                 var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
                 int lcont;
-                var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult.lcontValue;
 
                 while (assessmentResult.success == false)
                 {
                     // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                     Utils.RunSiKuLi(directoryName, "SaveIM7", lcont.ToString(), 0, 0, 0, 0, true); // Pass true for enableDebugging
-                    assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                    assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                     lcont = assessmentResult.lcontValue;
                 }
                 stopwatch.Stop();
-                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
                 stopwatch.Stop();
-                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds, e.Message);
+                log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds, e.Message);
                 throw;
             }
         }
@@ -1027,7 +1028,7 @@ namespace AutoBot
             logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(CreatePOEntries), new { DocSetId = docSetId, EntryListCount = entrylst.Count });
             try
             {
-                await BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId).ConfigureAwait(false);
+                await BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId, logger).ConfigureAwait(false);
                 BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docSetId, 0);
 
                 var po = CurrentPOInfo(docSetId).FirstOrDefault();
@@ -1036,7 +1037,7 @@ namespace AutoBot
 
 
                 var result = await BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
-                    (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).ConfigureAwait(false);
+                    (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false, logger).ConfigureAwait(false);
                 stopwatch.Stop();
                 logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(CreatePOEntries), stopwatch.ElapsedMilliseconds);
                 return result;

@@ -91,34 +91,6 @@ namespace InvoiceReader
                 return new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>(); // Return empty list
              }
 
-            pdfLogger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                            nameof(ImportPDF), "Initialization", "Starting PDF import process.", $"FileCount: {pdfFiles.Length}, FileTypeId: {fileType.Id}, FileTypeName: {fileType.Description}", "");
-
-            List<KeyValuePair<string, (string file, string, ImportStatus Success)>> allResults = new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>();
-            int fileCounter = 0;
-
-            LogStartPDFImport(pdfFiles?.Length ?? 0, fileType, pdfLogger); // Pass logger
-
-            // Guard Clause: Check for null input array
-            if (pdfFiles == null)
-            {
-                methodStopwatch.Stop();
-                pdfLogger.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ImportPDF), "Import multiple PDF files and process them", methodStopwatch.ElapsedMilliseconds, "Input pdfFiles array is null.");
-                pdfLogger.Error(new ArgumentNullException(nameof(pdfFiles)), "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ImportPDF), "Input validation", methodStopwatch.ElapsedMilliseconds, "Input pdfFiles array is null.");
-                return new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>(); // Return empty list
-             }
-              // Guard Clause: Check for null fileType
-             if (fileType == null)
-             {
-                methodStopwatch.Stop();
-                pdfLogger.Error(new ArgumentNullException(nameof(fileType)), "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ImportPDF), "Import multiple PDF files and process them", methodStopwatch.ElapsedMilliseconds, "Input fileType is null.");
-                 pdfLogger.Error(new ArgumentNullException(nameof(fileType)), "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                     nameof(ImportPDF), "Input validation", methodStopwatch.ElapsedMilliseconds, "Input fileType is null.");
-                return new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>(); // Return empty list
-             }
 
             pdfLogger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                             nameof(ImportPDF), "Initialization", "Starting PDF import process.", $"FileCount: {pdfFiles.Length}, FileTypeId: {fileType.Id}, FileTypeName: {fileType.Description}", "");
@@ -359,7 +331,7 @@ namespace InvoiceReader
                     "InvoiceProcessingPipeline.RunPipeline", "Yes");
                 try
                 {
-                    pipeResult = await pipe.RunPipeline().ConfigureAwait(false);
+                    pipeResult = await pipe.RunPipeline(logger).ConfigureAwait(false);
                     pipelineExecutionStopwatch.Stop();
                     logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                             "InvoiceProcessingPipeline.RunPipeline", pipelineExecutionStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -506,7 +478,7 @@ namespace InvoiceReader
              try
              {
                   logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]", nameof(GetPdftxt), "StepExecution", "Executing GetPdfTextStep.", $"FileName: {fileFullName}");
-                 stepResult = await pdfStep.Execute(context, logger).ConfigureAwait(false); // Pass logger to step execution
+                 stepResult = await pdfStep.Execute(context).ConfigureAwait(false); // Pass logger to step execution
                   stepExecutionStopwatch.Stop();
                   logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                        "GetPdfTextStep.Execute", stepExecutionStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -550,9 +522,9 @@ namespace InvoiceReader
              return null; // Indicate failure
          }
      }
-        public static bool IsInvoiceDocument(Invoices invoice, string fileText, string fileName)
+        public static bool IsInvoiceDocument(Invoices invoice, string fileText, string fileName, ILogger logger)
         {
-            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice), fileText, fileName);
+            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice), fileText, fileName, logger);
         }
 
         private static void LogStartPDFImport(int fileCount, FileTypes fileType, ILogger logger)

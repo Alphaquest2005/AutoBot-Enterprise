@@ -1,5 +1,7 @@
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
+
     public partial class HandleErrorStateStep
     {
         private static bool HandleUnsuccessfulImport(ILogger logger, string filePath) // Add logger parameter

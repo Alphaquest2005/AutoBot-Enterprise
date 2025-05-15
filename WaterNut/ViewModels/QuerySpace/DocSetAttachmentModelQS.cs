@@ -10,6 +10,8 @@ using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {
+    using Serilog;
+
     public partial class DocSetAttachmentViewModel : AsycudaDocumentSetAttachmentsViewModel_AutoGen
     {
         private static readonly DocSetAttachmentViewModel instance;
@@ -107,7 +109,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 return;
             }
             await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType,
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, Log.Logger).ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.AsycudaDocumentSetAttachmentsChanged, null,
                          new NotificationEventArgs(MessageToken.AsycudaDocumentSetAttachmentsChanged));

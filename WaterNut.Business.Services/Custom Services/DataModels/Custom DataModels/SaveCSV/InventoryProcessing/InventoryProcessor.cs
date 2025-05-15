@@ -65,7 +65,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)));
                     foreach (var x in existingItemCodes)
                     {
-                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false);
                     }
 
 
@@ -73,7 +73,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)));
                     foreach (var x in existingAliasCodes)
                     {
-                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false);
                     }
 
 
@@ -89,7 +89,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)));
                     foreach (var x in newItemCodes)
                     {
-                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false);
                     }
 
 
@@ -97,7 +97,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)));
                     foreach (var x in newAliasCodes)
                     {
-                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                        await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false);
                     }
                     return true;
 

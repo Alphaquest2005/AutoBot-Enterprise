@@ -72,14 +72,14 @@ namespace AutoBot
                     {
                         var errorReportingClient = Utils.Client ?? new EmailDownloader.Client { Email = "default-error-reporter@example.com", CompanyName = "ErrorReporter" };
                         string[] devContacts = { "developer@example.com" }; // Fallback
-                        try { devContacts = EmailDownloader.EmailDownloader.GetContacts("Developer"); } 
+                        try { devContacts = EmailDownloader.EmailDownloader.GetContacts("Developer", Log.Logger); } 
                         catch (Exception contactEx) {
                             Log.Warning(contactEx, "INTERNAL_STEP (Main - ErrorHandling): Failed to get developer contacts for error reporting.");
                         }
 
                         Log.Information("INTERNAL_STEP (Main - ErrorHandling): Attempting to send error email to {DevContacts}.", (object)devContacts);
                         EmailDownloader.EmailDownloader.SendEmailAsync(errorReportingClient, null, $"Bug Found in AutoBot",
-                             devContacts, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>(), CancellationToken.None)
+                             devContacts, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>(), Log.Logger, CancellationToken.None)
                              .GetAwaiter().GetResult();
                         Log.Information("INTERNAL_STEP (Main - ErrorHandling): Successfully sent error email.");
                     }
@@ -183,7 +183,7 @@ namespace AutoBot
                             var emailProcessingStopwatch = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", 
                                 $"EmailProcessor.ProcessEmailsAsync for AppSetting {appSetting.ApplicationSettingsId}", "ASYNC_EXPECTED");
-                            await EmailProcessor.ProcessEmailsAsync(appSetting, timeBeforeImport, ctx, cancellationToken).ConfigureAwait(false);
+                            await EmailProcessor.ProcessEmailsAsync(appSetting, timeBeforeImport, ctx , cancellationToken, Log.Logger).ConfigureAwait(false);
                             emailProcessingStopwatch.Stop();
                             Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                 $"EmailProcessor.ProcessEmailsAsync for AppSetting {appSetting.ApplicationSettingsId}", emailProcessingStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -259,7 +259,7 @@ namespace AutoBot
                         Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                         try
                         {
-                            SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke();
+                            SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(Log.Logger);
                             invokeTimer.Stop();
                             Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                 operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -312,7 +312,7 @@ namespace AutoBot
                     Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                     try
                     {
-                        SessionsUtils.SessionActions[endActionDetail.Actions.Name].Invoke();
+                        SessionsUtils.SessionActions[endActionDetail.Actions.Name].Invoke(Log.Logger);
                         invokeTimer.Stop();
                         Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                             operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -370,7 +370,7 @@ namespace AutoBot
                                 Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                                 try
                                 {
-                                    SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke();
+                                    SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(Log.Logger);
                                     invokeTimer.Stop();
                                     Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                         operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -407,7 +407,7 @@ namespace AutoBot
                             var invokeTimer = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                             try {
-                                SessionsUtils.SessionActions[im7ActionDetail.Actions.Name].Invoke();
+                                SessionsUtils.SessionActions[im7ActionDetail.Actions.Name].Invoke(Log.Logger);
                                 invokeTimer.Stop();
                                 Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                     operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -435,7 +435,7 @@ namespace AutoBot
                             var invokeTimer = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                             try {
-                                SessionsUtils.SessionActions[exActionDetail.Actions.Name].Invoke();
+                                SessionsUtils.SessionActions[exActionDetail.Actions.Name].Invoke(Log.Logger);
                                 invokeTimer.Stop();
                                 Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                     operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");

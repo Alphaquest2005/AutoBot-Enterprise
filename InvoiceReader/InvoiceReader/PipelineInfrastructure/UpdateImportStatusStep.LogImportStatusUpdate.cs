@@ -1,5 +1,7 @@
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
+
     public partial class UpdateImportStatusStep
     {
         private static bool LogImportStatusUpdate(ILogger logger, ImportStatus importStatus, string filePath, int? templateId) // Add logger parameter

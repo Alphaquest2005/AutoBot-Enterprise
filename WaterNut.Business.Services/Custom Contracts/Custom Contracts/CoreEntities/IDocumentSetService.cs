@@ -21,8 +21,15 @@ namespace CoreEntities.Business.Services
         Task DeleteDocumentSet(int docSetId);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool onlyRegisteredDocuments, bool importTariffCodes, bool noMessages,
-            bool overwriteExisting, bool linkPi);
+        Task ImportDocuments(
+            int asycudaDocumentSetId,
+            List<string> fileNames,
+            bool onlyRegisteredDocuments,
+            bool importTariffCodes,
+            bool noMessages,
+            bool overwriteExisting,
+            bool linkPi,
+            ILogger log);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
         Task ExportDocument(string fileName, int docId);
@@ -55,7 +62,7 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task AttachDocuments(int asycudaDocumentSetId, List<string> files);
+        Task AttachDocuments(int asycudaDocumentSetId, List<string> files, ILogger log);
 
     }
 }

@@ -2,6 +2,8 @@ using System.Linq;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
+
     public partial class UpdateImportStatusStep
     {
         private static bool IsImportDataPresent(ILogger logger, InvoiceProcessingContext context) // Add logger parameter

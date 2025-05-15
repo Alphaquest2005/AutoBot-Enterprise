@@ -97,7 +97,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = (IEnumerable<FileTypes>)await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
 
                     using (var ctx = new EntryDataDSContext())
@@ -133,7 +133,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType, log).Import(testFile, log).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, log).Import(testFile).ConfigureAwait(false);
 
                 }
                 AssertPOExists();

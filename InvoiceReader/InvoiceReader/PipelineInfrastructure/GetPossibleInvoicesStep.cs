@@ -127,7 +127,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     if (tmp.OcrInvoices == null)
                     {
                         context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.Id}");
+                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.OcrInvoices.Id}");
                         return false;
                     }
 

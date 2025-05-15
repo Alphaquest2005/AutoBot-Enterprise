@@ -17,7 +17,9 @@ using EntryDataModel = WaterNut.QuerySpace.EntryDataQS.ViewModels.EntryDataModel
 
 namespace WaterNut.Views
 {
-	/// <summary>
+    using Serilog;
+
+    /// <summary>
 	/// Interaction logic for PurchaseOrders.xaml
 	/// </summary>
 	public partial class EntryData : UserControl
@@ -74,22 +76,22 @@ namespace WaterNut.Views
        
         private async void ImportSales(object sender, MouseButtonEventArgs e)
         {
-            await im.SaveCSV("Sales").ConfigureAwait(false);
+            await im.SaveCSV("Sales", Log.Logger).ConfigureAwait(false);
         }       
 
         private async void ImportPO(object sender, MouseButtonEventArgs e)
         {
-            await im.SaveCSV("PO").ConfigureAwait(false);
+            await im.SaveCSV("PO", Log.Logger).ConfigureAwait(false);
         }
 
 	    private async void ImportInv(object sender, MouseButtonEventArgs e)
 	    {
-	        await im.SaveCSV("INV").ConfigureAwait(false);
+	        await im.SaveCSV("INV", Log.Logger).ConfigureAwait(false);
         }
 
         private async void ImportOPS(object sender, MouseButtonEventArgs e)
         {
-            await im.SaveCSV("OPS").ConfigureAwait(false);
+            await im.SaveCSV("OPS", Log.Logger).ConfigureAwait(false);
         }
 
 
@@ -205,18 +207,18 @@ namespace WaterNut.Views
 
 	    private async void ImportADJ(object sender, MouseButtonEventArgs e)
 	    {
-	        await AdjustmentExModel.Instance.Import("ADJ").ConfigureAwait(false);
+	        await AdjustmentExModel.Instance.Import("ADJ", Log.Logger).ConfigureAwait(false);
         }
 
 	    private async void ImportDIS(object sender, MouseButtonEventArgs e)
 	    {
-	        await AdjustmentExModel.Instance.Import("DIS").ConfigureAwait(false);
+	        await AdjustmentExModel.Instance.Import("DIS", Log.Logger).ConfigureAwait(false);
 	    }
 
 
         private async void Import(object sender, MouseButtonEventArgs e)
         {
-            await AdjustmentExModel.Instance.Import("Unknown").ConfigureAwait(false);
+            await AdjustmentExModel.Instance.Import("Unknown", Log.Logger).ConfigureAwait(false);
         }
     }
 }

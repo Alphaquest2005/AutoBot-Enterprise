@@ -22,7 +22,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 new GetRawXSalesData(_importSettings,lines),
                 new SaveXSales(_importSettings)
             });
-            await importer.Execute(new List<BetterExpando>()).ConfigureAwait(false);
+            await importer.Execute(new List<BetterExpando>(), log).ConfigureAwait(false);
             return lines;
         }
  

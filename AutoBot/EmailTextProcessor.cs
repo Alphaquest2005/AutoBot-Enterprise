@@ -38,8 +38,7 @@ public class EmailTextProcessor
 
             foreach (var file in csvFiles)
             {
-                using (log.ForContext("CurrentFile", file.Name).OperationAt(operationName, "ProcessingFile")) // Add file context
-                {
+                
                     log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Reading lines from file {FileName}.", operationName, "ReadFile", file.Name);
                     // INVOKING_OPERATION for File.ReadAllLines
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "File.ReadAllLines", "SYNC_EXPECTED");
@@ -116,7 +115,7 @@ public class EmailTextProcessor
                         log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing DB statement.", operationName, "ExecuteDbStatement");
                         // INVOKING_OPERATION for SyncConsigneeInDB
                         log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.SyncConsigneeInDB", "ASYNC_EXPECTED");
-                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles).ConfigureAwait(false);
+                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles, log).ConfigureAwait(false);
                         log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "EntryDocSetUtils.SyncConsigneeInDB", "Async call completed (await).");
 
                         // INVOKING_OPERATION for ExecuteSqlCommand
@@ -129,7 +128,7 @@ public class EmailTextProcessor
                     {
                          log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No DB statement to execute for file {FileName}.", operationName, "ExecuteDbStatement", file.Name);
                     }
-                } // End using log.ForContext("CurrentFile", file.Name)
+                
             } // End foreach file
 
             stopwatch.Stop();

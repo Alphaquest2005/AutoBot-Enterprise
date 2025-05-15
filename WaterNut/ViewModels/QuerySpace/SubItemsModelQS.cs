@@ -8,6 +8,8 @@ using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {
+    using Serilog;
+
     public partial class SubItemsModelQS : SubItemsViewModel_AutoGen
     {
         private static readonly SubItemsModelQS instance;
@@ -28,7 +30,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
          internal async Task SaveCSV(string fileType)
          {
 
-             await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType, BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+             await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType, BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, Log.Logger).ConfigureAwait(false);
 
              MessageBus.Default.BeginNotify(MessageToken.SubItemsChanged, null,
                            new NotificationEventArgs(MessageToken.SubItemsChanged));

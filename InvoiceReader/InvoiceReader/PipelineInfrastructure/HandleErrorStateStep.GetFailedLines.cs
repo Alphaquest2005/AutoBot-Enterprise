@@ -5,6 +5,7 @@ using MoreLinq;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
 
     public partial class HandleErrorStateStep
     {

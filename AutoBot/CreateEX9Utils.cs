@@ -34,13 +34,13 @@ namespace AutoBot
                 // Console.WriteLine("Create Ex9"); // Remove Console.WriteLine
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED");
-                var saleInfoTuple = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                var saleInfoTuple = await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) SaleInfoFound: {SaleInfoFound}",
-                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfoTuple != null);
+                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await).", saleInfoTuple.DocSet != null);
 
 
                 log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Checking if document set exists or has data.", methodName, "CheckDocSetData");
-                if (saleInfoTuple.DocSet.AsycudaDocumentSetId == 0 || !HasData(saleInfoTuple)) // Need to check if HasData accepts ILogger
+                if (saleInfoTuple.DocSet.AsycudaDocumentSetId == 0 || !HasData(log, saleInfoTuple)) // Need to check if HasData accepts ILogger
                 {
                     log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): Document set ID is 0 or no data found. Returning empty list.", methodName, "NoDocSetOrData");
                     stopwatch.Stop();
@@ -67,14 +67,14 @@ namespace AutoBot
                 {
                     log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Overwrite is true. Clearing document set with ID {DocSetId}.", methodName, "ClearDocSet", docSet.AsycudaDocumentSetId);
                     log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for DocSetId {DocSetId}", "BaseDataModel.Instance.ClearAsycudaDocumentSet", "ASYNC_EXPECTED", docSet.AsycudaDocumentSetId);
-                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(docSet.AsycudaDocumentSetId).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(docSet.AsycudaDocumentSetId, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                     log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for DocSetId {DocSetId}",
                         "BaseDataModel.Instance.ClearAsycudaDocumentSet", stopwatch.ElapsedMilliseconds, "Async call completed (await).", docSet.AsycudaDocumentSetId);
                 }
 
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CreateFilterExpression", "SYNC_EXPECTED");
-                var filterExpression = CreateFilterExpression(saleInfoTuple); // Need to check if this method accepts ILogger
+                var filterExpression = CreateFilterExpression(log, saleInfoTuple); // Need to check if this method accepts ILogger
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) FilterExpression: {FilterExpression}",
                     "CreateFilterExpression", stopwatch.ElapsedMilliseconds, "Sync call returned.", filterExpression);
 

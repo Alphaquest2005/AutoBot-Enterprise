@@ -16,6 +16,8 @@ namespace AutoBotUtilities.Tests
     using System.Collections.Generic;
     using System.Linq;
 
+    using Serilog;
+
     [TestFixture]
     public class XlsxUtilsTests
     {
@@ -61,7 +63,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -110,7 +112,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -156,7 +158,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -212,7 +214,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -264,7 +266,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -295,7 +297,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes =await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Dis, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -326,7 +328,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 
@@ -358,7 +360,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, Log.Logger).Import(testFile).ConfigureAwait(false);
 
                 }
 

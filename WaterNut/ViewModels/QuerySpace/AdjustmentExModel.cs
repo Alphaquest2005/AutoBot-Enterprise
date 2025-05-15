@@ -10,6 +10,8 @@ using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 {
+    using Serilog;
+
     public class AdjustmentExModel : AdjustmentExViewModel_AutoGen
     {
         private string _entryDataDateFilter;
@@ -108,7 +110,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
 
-        public async Task Import(string fileType)
+        public async Task Import(string fileType, ILogger log)
         {
             StatusModel.Timer("Importing Adjustments");
             if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx == null)
@@ -118,7 +120,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
 
             await SaveCSV.Instance.SaveCSVFile(fileType,
-                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId)
+                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, log)
                 .ConfigureAwait(false);
             // only for DIS don't bother for ADJ
            // await AdjustmentShortDetailsModel.Instance.AutoMatch().ConfigureAwait(false); 

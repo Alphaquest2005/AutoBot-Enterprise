@@ -37,24 +37,24 @@ namespace AutoBot
                 {"Xlsx2csv",  (log, ft, fs) => XLSXProcessor.Xlsx2csv(fs, new List < FileTypes >() { ft }, log) }, // Signature needs update in XLSXProcessor
                 {"SaveInfo", (log, ft, fs) => EmailTextProcessor.Execute(log, fs, ft) }, // Pass log to EmailTextProcessor.Execute (already updated)
                 {"CleanupEntries",(log, ft, fs) => EntryDocSetUtils.CleanupEntries() }, // Signature needs update in EntryDocSetUtils
-                {"SubmitToCustoms",(log, ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) }, // Signature needs update in SubmitSalesXmlToCustomsUtils
+                {"SubmitToCustoms",(log, ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1, log) }, // Signature needs update in SubmitSalesXmlToCustomsUtils
                 {"MapUnClassifiedItems", (log, ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs, log) }, // Signature needs update in ShipmentUtils
                 {"UpdateSupplierInfo", (log, ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) }, // Signature needs update in ShipmentUtils
-                {"ImportPDF", (log, ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(log, fs, ft, log) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() }, // Signature needs update in InvoiceReader.InvoiceReader
+                {"ImportPDF", (log, ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(fs, ft, log) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() }, // Signature needs update in InvoiceReader.InvoiceReader
                 {"CreateShipmentEmail", (log, types, infos) => ShipmentUtils.CreateShipmentEmail(types, infos, log) }, // Signature needs update in ShipmentUtils
                 //{"SaveAttachments",(log, ft, fs) => SaveAttachments(fs, ft) }, // Signature needs update if uncommented
 
                 //{"AttachToDocSetByRef", (log, ft, fs) => AttachToDocSetByRef(ft.AsycudaDocumentSetId) }, // Signature needs update if uncommented
 
 
-                {"SyncConsigneeInDB", (log, types, infos) => EntryDocSetUtils.SyncConsigneeInDB(types, infos) }, // Signature needs update in EntryDocSetUtils
+                {"SyncConsigneeInDB", (log, types, infos) => EntryDocSetUtils.SyncConsigneeInDB(types, infos, log) }, // Signature needs update in EntryDocSetUtils
 
                 {"ClearDocSetEntries",(log, ft, fs) => EntryDocSetUtils.ClearDocSetEntries(log ,ft) }, // Signature needs update in EntryDocSetUtils
 
                 {"SubmitDocSetUnclassifiedItems",(log, ft, fs) => ShipmentUtils.SubmitDocSetUnclassifiedItems(ft, log) }, // Signature needs update in ShipmentUtils
                 {"AllocateDocSetDiscrepancies",(log, ft, fs) => DISUtils.AllocateDocSetDiscrepancies(ft, log) }, // Signature needs update in DISUtils
                 {"CleanupDocSetDiscpancies",(log, ft, fs) => DISUtils.CleanupDocSetDiscpancies(ft, log) }, // Signature needs update in DISUtils
-                {"RecreateDocSetDiscrepanciesEntries", (log, ft, fs) => DISUtils.RecreateDocSetDiscrepanciesEntries(ft) }, // Signature needs update in DISUtils
+                {"RecreateDocSetDiscrepanciesEntries", (log, ft, fs) => DISUtils.RecreateDocSetDiscrepanciesEntries(ft, log ) }, // Signature needs update in DISUtils
                 {"ExportDocSetDiscpancyEntries", (log, ft, fs) => DISUtils.ExportDocSetDiscpancyEntries("DIS",ft) }, // Signature needs update in DISUtils
                 {"SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms", (log, ft, fs) => DISUtils.SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(ft, log) }, // Signature needs update in DISUtils
                 {"AssessDiscrepancyExecutions", (log, ft, fs) => DISUtils.AssessDiscrepancyExecutions(ft, fs, log) }, // Signature needs update in DISUtils
@@ -65,8 +65,8 @@ namespace AutoBot
                 }, // Signature needs update in SubmitSalesToCustomsUtils
 
 
-                {"SubmitMissingInvoices",  (log, ft, fs) => Utils.SubmitMissingInvoices(ft) }, // Signature needs update in Utils
-                {"SubmitIncompleteEntryData",(log, ft, fs) => Utils.SubmitIncompleteEntryData(ft) }, // Signature needs update in Utils
+                {"SubmitMissingInvoices",  (log, ft, fs) => Utils.SubmitMissingInvoices(ft, log) }, // Signature needs update in Utils
+                {"SubmitIncompleteEntryData",(log, ft, fs) => Utils.SubmitIncompleteEntryData(ft, log) }, // Signature needs update in Utils
                 {"SubmitUnclassifiedItems",(log, ft, fs) => ShipmentUtils.SubmitUnclassifiedItems(ft, log) }, // Signature needs update in ShipmentUtils
                 {"SubmitInadequatePackages",(log, ft, fs) => ShipmentUtils.SubmitInadequatePackages(ft, log) }, // Signature needs update in ShipmentUtils
                 {"SubmitIncompleteSuppliers",(log, ft, fs) => ShipmentUtils.SubmitIncompleteSuppliers(ft, log) }, // Signature needs update in ShipmentUtils
@@ -76,7 +76,7 @@ namespace AutoBot
                 {"AssessLicense",(log, ft, fs) => LICUtils.AssessLicense(ft) }, // Signature needs update in LICUtils
                 {"DownLoadC71", (log, ft, fs) => C71Utils.DownLoadC71(ft) }, // Signature needs update in C71Utils
                 {"DownLoadLicense", (log, ft, fs) => LICUtils.DownLoadLicence(false, ft) }, // Signature needs update in LICUtils
-                { "ImportC71", (log, ft, fs) => C71Utils.ImportC71(ft) }, // Signature needs update in C72Utils
+                { "ImportC71", (log, ft, fs) => C71Utils.ImportC71(ft, log) }, // Signature needs update in C72Utils
                 {"ImportLicense", (log, ft, fs) => LICUtils.ImportLicense(ft) }, // Signature needs update in LICUtils
 
                 { "AttachToDocSetByRef",(log, ft, fs) => EntryDocSetUtils.AttachToDocSetByRef(log, ft) }, // Signature needs update in EntryDocSetUtils
@@ -86,7 +86,7 @@ namespace AutoBot
                 {"DeletePONumber", (log, ft, fs) => POUtils.DeletePONumber(ft, fs, log) }, // Signature needs update in POUtils
                 { "SubmitPOs", (log, ft, fs) => POUtils.SubmitPOs(log) }, // Signature needs update in POUtils
                 {"SubmitEntryCIF", (log, types, infos) => EntryDocSetUtils.SubmitEntryCIF(log,types, infos) }, // Signature needs update in EntryDocSetUtils
-                {"SubmitBlankLicenses", (log, ft, fs) => LICUtils.SubmitBlankLicenses(ft) }, // Signature needs update in LICUtils
+                {"SubmitBlankLicenses", (log, ft, fs) => LICUtils.SubmitBlankLicenses(ft, log) }, // Signature needs update in LICUtils
                 {"ProcessUnknownCSVFileType", (log, ft,fs) => CSVUtils.ProcessUnknownCSVFileType(ft, fs) }, // Signature needs update in CSVUtils
                // {"ProcessUnknownPDFFileType", (log, ft,fs) => PDFUtils.ProcessUnknownPDFFileType(ft, fs) }, // Signature needs update if uncommented
                 {"ImportUnAttachedSummary", (log, ft, fs) => ShipmentUtils.ImportUnAttachedSummary(ft, fs, log) }, // Signature needs update in ShipmentUtils
@@ -99,7 +99,7 @@ namespace AutoBot
                 {"EmailEntriesExpiringNextMonth", (log, ft, fs) => EntryDocSetUtils.EmailEntriesExpiringNextMonth(log) }, // Signature needs update in EntryDocSetUtils
                 {"RecreateEx9", (log, types, infos) => EX9Utils.RecreateEx9(log, types, infos) },// // Signature needs update in EX9Utils
                 {"UpdateRegEx", (log, ft, fs) => UpdateInvoice.UpdateRegEx(ft,fs, log) }, // Signature needs update in UpdateInvoice
-                {"ImportWarehouseErrors", (log, ft, fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)}, // Signature needs update in ImportWarehouseErrorsUtils
+                {"ImportWarehouseErrors", (log, ft, fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1, log)}, // Signature needs update in ImportWarehouseErrorsUtils
                 {"Kill", (log, ft, fs) => Utils.Kill(ft, fs) }, // Signature needs update in Utils
                 {"Continue", (log, ft, fs) => { return Task.Run(() => { });}}, // No change needed in lambda body
                 {"LinkPDFs", (log, ft,fs) => PDFUtils.LinkPDFs()}, // Signature needs update in PDFUtils
@@ -108,7 +108,7 @@ namespace AutoBot
                 {"SubmitDiscrepanciesToCustoms", (log, types, infos) => DISUtils.SubmitDiscrepanciesToCustoms(types, infos, log) }, // Signature needs update in DISUtils
                 {"ClearShipmentData", (log, ft, fs) => ShipmentUtils.ClearShipmentData(ft, fs) }, // Signature needs update in ShipmentUtils
                 {"ImportPOEntries", (log, ft, fs) => DocumentUtils.ImportPOEntries(log,false) }, // Signature needs update in DocumentUtils
-                {"ImportAllAsycudaDocumentsInDataFolder", (log, ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) }, // Signature needs update in ImportAllAsycudaDocumentsInDataFolderUtils
+                {"ImportAllAsycudaDocumentsInDataFolder", (log, ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false, log) }, // Signature needs update in ImportAllAsycudaDocumentsInDataFolderUtils
                 {"ImportEntries",(log, ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString(), log) }, // Signature needs update in DocumentUtils
                 {"ImportShipmentInfoFromTxt", (log, types, infos) => ShipmentUtils.ImportShipmentInfoFromTxt(types, infos, log) }, // Added mapping for new action, Signature needs update in ShipmentUtils
 

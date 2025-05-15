@@ -6,6 +6,8 @@ using OCR.Business.Entities;
 namespace WaterNut.DataSpace.PipelineInfrastructure{
     using System.Diagnostics;
 
+    using Serilog;
+
     public partial class GetPossibleInvoicesStep
 {
     public static bool IsInvoiceDocument(Invoice invoice, string fileText, string filePath, ILogger logger) // Add logger parameter

@@ -11,7 +11,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             _utilsLogger.Debug("Attempting to send email for File: {FilePath}", file);
             try
             {
-                var contacts = EmailDownloader.EmailDownloader.GetContacts("Developer");
+                var contacts = EmailDownloader.EmailDownloader.GetContacts("Developer", _utilsLogger);
                 _utilsLogger.Debug("Sending email to {ContactCount} developer contacts for File: {FilePath}",
                     contacts?.Count() ?? 0, file);
                 // Consider logging subject and body length for debugging, but avoid logging full body unless necessary (PII)
@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     (file != null ? 1 : 0) + (txtFile != null ? 1 : 0));
 
                 await EmailDownloader.EmailDownloader.SendEmailAsync(client, null, "Template Template Not found!",
-                    contacts, body, new[] { file, txtFile }.Where(f => f != null).ToArray()).ConfigureAwait(false); // Filter null attachments
+                    contacts, body, new[] { file, txtFile }.Where(f => f != null).ToArray(), _utilsLogger).ConfigureAwait(false); // Filter null attachments
 
                 _utilsLogger.Information("Successfully sent email regarding File: {FilePath}", file);
             }

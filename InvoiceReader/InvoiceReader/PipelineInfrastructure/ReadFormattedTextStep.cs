@@ -28,17 +28,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             context.Logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
                 nameof(ReadFormattedTextStep), $"Reading formatted text for file: {filePath}");
 
-            // Basic context validation (null check)
-            if (context == null)
-            {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<ReadFormattedTextStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Read formatted PDF text based on template structure", 0, "ReadFormattedTextStep executed with null context.");
-                Log.ForContext<ReadFormattedTextStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ReadFormattedTextStep), "Context validation", 0, "ReadFormattedTextStep executed with null context.");
-                // Cannot add error as context is null
-                return Task.FromResult(false);
-            }
+          
              if (context.Templates == null || !context.Templates.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -55,9 +45,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallSuccess = true; // Track if at least one template was read successfully
 
-            string filePath = context.FilePath ?? "Unknown"; // Safe now due to null check above
-
-            foreach (var template in context.Templates)
+          foreach (var template in context.Templates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";

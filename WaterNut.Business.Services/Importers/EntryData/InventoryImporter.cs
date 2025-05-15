@@ -60,7 +60,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
                 ),
             });
  
-            var res = await _importer.Execute(new List<InventoryDataItem>()).ConfigureAwait(false);
+            var res = await _importer.Execute(new List<InventoryDataItem>(), log).ConfigureAwait(false);
  
  
             return lines;

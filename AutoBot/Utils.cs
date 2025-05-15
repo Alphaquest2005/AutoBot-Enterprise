@@ -69,6 +69,7 @@ using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
 namespace AutoBot
 {
+    using ExcelDataReader.Log;
     using Serilog;
 
     public partial class Utils
@@ -163,11 +164,11 @@ namespace AutoBot
 
                // Replace Wait() with await ConfigureAwait(false)
                // ProcessDisErrorsForAllocation.Execute is synchronous, remove await and ConfigureAwait
-               new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+               await new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                    .Execute(
                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                        strLst
-                   ); // Removed await and ConfigureAwait
+                   ).ConfigureAwait(false); // Removed await and ConfigureAwait
 
                // Replace Wait() with await ConfigureAwait(false)
                await new OldSalesAllocator()
@@ -176,7 +177,7 @@ namespace AutoBot
 
                // Replace Wait() with await ConfigureAwait(false)
                await new MarkErrors()
-                   .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, TODO).ConfigureAwait(false);
+                   .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
            }
            catch (Exception e)
@@ -248,14 +249,14 @@ namespace AutoBot
                         {
                             log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
                                 "FileTypeManager.SendBackTooBigEmail", "ASYNC_EXPECTED", file.Name);
-                            await FileTypeManager.SendBackTooBigEmail(file, fileType).ConfigureAwait(false);
+                            await FileTypeManager.SendBackTooBigEmail(file, fileType, log).ConfigureAwait(false);
                             log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
                                 "FileTypeManager.SendBackTooBigEmail", "Async call completed (await).", file.Name);
                         }
 
                         log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
                             "GetReference", "SYNC_EXPECTED", file.Name); // This is not async, so SYNC_EXPECTED
-                        var reference = GetReference(file, ctx);
+                        var reference = GetReference(file, ctx, log);
                         log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) Reference: {Reference} for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
                             "GetReference", "Sync call returned.", reference, file.Name);
 
@@ -286,7 +287,7 @@ namespace AutoBot
 
                         log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
                             "AddUpdateEmailAttachments", "SYNC_EXPECTED", file.Name); // This is not async, so SYNC_EXPECTED
-                        AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference);
+                        AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference, log);
                         log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
                             "AddUpdateEmailAttachments", "Sync call returned.", file.Name);
 
@@ -295,7 +296,7 @@ namespace AutoBot
                         {
                             log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName} and DocSetId {DocSetId}", // INVOKING_OPERATION
                                 "EntryDocSetUtils.AddUpdateDocSetAttachement", "SYNC_EXPECTED", file.Name, fileType.AsycudaDocumentSetId); // This is not async, so SYNC_EXPECTED
-                            EntryDocSetUtils.AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference);
+                            EntryDocSetUtils.AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference, log);
                             log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName} and DocSetId {DocSetId}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
                                 "EntryDocSetUtils.AddUpdateDocSetAttachement", "Sync call returned.", file.Name, fileType.AsycudaDocumentSetId);
                         }
@@ -329,7 +330,7 @@ namespace AutoBot
             string operationName = nameof(AddUpdateEmailAttachments);
             var stopwatch = Stopwatch.StartNew(); // Start stopwatch
             log.Information("METHOD_ENTRY: {MethodName}. Context: {Context}", // METHOD_ENTRY log
-                operationName, new { FileTypeId = fileType?.Id, EmailId = email?.EmailId, FileName = file?.Name, AttachmentId = attachment?.AttachmentId, Reference = reference });
+                operationName, new { FileTypeId = fileType?.Id, EmailId = email?.EmailId, FileName = file?.Name, AttachmentId = attachment?.Id, Reference = reference });
 
             try
             {
@@ -436,7 +437,7 @@ namespace AutoBot
         }
 
 
-        public static async Task<(bool success, int lcontValue)> AssessComplete(string instrFile, string resultsFile)
+        public static async Task<(bool success, int lcontValue)> AssessComplete(string instrFile, string resultsFile, ILogger log)
         {
             int lcontValue = 0;
             try
@@ -489,7 +490,7 @@ namespace AutoBot
                             {
                                 if (r[0] == "Screenshot")
                                 {
-                                    await SubmitScriptErrors(r[1]).ConfigureAwait(false);
+                                    await SubmitScriptErrors(r[1], log).ConfigureAwait(false);
                                     // Assuming true indicates an action was taken, even on error path,
                                     // or that the process should be considered "complete" for this iteration.
                                     // If AssessComplete's "true" means "overall success", this might need adjustment.
@@ -524,7 +525,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitScriptErrors(string file)
+        public static async Task SubmitScriptErrors(string file, ILogger log)
         {
             try
             {
@@ -550,7 +551,7 @@ namespace AutoBot
                     var msg =  EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]
                     {
                         file
-                    });
+                    }, log);
                     await EmailDownloader.EmailDownloader.SendEmailInternalAsync(Client, msg).ConfigureAwait(false);
                 }
             }
@@ -573,33 +574,33 @@ namespace AutoBot
             }
         }
 
-        public static async Task RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes)
+        public static async Task RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes, ILogger log)
         {
             var lcont = 0;
             for (int i = 0; i < trytimes; i++)
             {
-                var assessmentResult1 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                var assessmentResult1 = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult1.lcontValue;
                 if (assessmentResult1.success == true) break;
             
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
-                var assessmentResult2 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                var assessmentResult2 = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult2.lcontValue;
                 if(assessmentResult2.success == true) break;
             }
         }
 
-        public static async Task Assess(string instrFile, string resultsFile, string directoryName)
+        public static async Task Assess(string instrFile, string resultsFile, string directoryName, ILogger log)
         {
             var lcont = 0;
-            var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+            var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
             lcont = assessmentResult.lcontValue;
             while (assessmentResult.success == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
-                assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult.lcontValue;
             }
         }
@@ -773,7 +774,7 @@ namespace AutoBot
         }
 
      
-        public static async Task SubmitMissingInvoices(FileTypes ft)
+        public static async Task SubmitMissingInvoices(FileTypes ft, ILogger log)
         {
             try
             {
@@ -818,11 +819,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 
@@ -835,7 +836,7 @@ namespace AutoBot
                     }
 
                 }
-                await SubmitMissingInvoicePDFs(ft).ConfigureAwait(false);
+                await SubmitMissingInvoicePDFs(ft, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -853,7 +854,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitMissingInvoicePDFs(FileTypes ft)
+        public static async Task SubmitMissingInvoicePDFs(FileTypes ft, ILogger log)
         {
             try
             {
@@ -899,11 +900,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices PDF Attachments",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 
@@ -924,7 +925,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitIncompleteEntryData(FileTypes ft)
+        public static async Task SubmitIncompleteEntryData(FileTypes ft, ILogger log)
         {
             try
             {
@@ -969,11 +970,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Incomplete Template Data",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Template Data", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Template Data", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 

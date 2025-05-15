@@ -16,6 +16,8 @@ using DocumentDS.Business.Entities; // For DocumentDSContext & AsycudaDocumentSe
 
 namespace AutoBotUtilities.Tests
 {
+    using Serilog;
+
     [TestFixture]
     [Category("Integration.Sikuli")] // Add category to optionally exclude GUI tests
     public class SikuliIntegrationTests
@@ -52,7 +54,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task SaveIM7_Script_ExecutesSuccessfully()
+        public async Task SaveIM7_Script_ExecutesSuccessfully(ILogger log)
         {
             // Arrange
             Console.WriteLine("Starting SaveIM7 Integration Test...");
@@ -79,7 +81,7 @@ namespace AutoBotUtilities.Tests
             Assert.That(fileTypes.Any(), Is.True, "No PO FileType found for 02679.xlsx");
             var poFileType = fileTypes.First(); // Assuming only one matches
 
-            await new FileTypeImporter(poFileType).Import(testFile).ConfigureAwait(false);
+            await new FileTypeImporter(poFileType, log).Import(testFile).ConfigureAwait(false);
             Console.WriteLine("PO Import completed.");
 
             // 2. Retrieve the created AsycudaDocumentSet details from DB
@@ -118,7 +120,7 @@ namespace AutoBotUtilities.Tests
             // Act
             Console.WriteLine($"Triggering POUtils.AssessPOEntry for DocSetId: {testDocSetId}, Ref: {testDocReference}...");
             // Call the identified trigger method
-            await POUtils.AssessPOEntry(testDocReference, testDocSetId).ConfigureAwait(false);
+            await POUtils.AssessPOEntry(testDocReference, testDocSetId, log).ConfigureAwait(false);
             Console.WriteLine("POUtils.AssessPOEntry call completed.");
 
             // Assert

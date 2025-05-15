@@ -552,7 +552,7 @@ namespace AutoBot
                     foreach (var pdf in pdfs)
                     {
                         // Await the async call
-                        var str = await InvoiceReader.InvoiceReader.GetPdftxt(pdf.FullName).ConfigureAwait(false);
+                        var str = await InvoiceReader.InvoiceReader.GetPdftxt(pdf.FullName, log).ConfigureAwait(false);
                         if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
                     }
                     foreach (var invoice in invoices)
@@ -578,14 +578,14 @@ namespace AutoBot
                                    $"\r\n" +
                                    InvoiceReader.InvoiceReader.CommandsTxt;
 
-                        var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key)).ToList();
+                        var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key, log)).ToList();
                         
                         res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
                        
 
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Template Template Not found!",
-                             EmailDownloader.EmailDownloader.GetContacts("Developer", log), body, res1).ConfigureAwait(false);
+                             EmailDownloader.EmailDownloader.GetContacts("Developer", log), body, res1, log).ConfigureAwait(false);
 
                         fileTypes.ProcessNextStep.Add("Kill");
 

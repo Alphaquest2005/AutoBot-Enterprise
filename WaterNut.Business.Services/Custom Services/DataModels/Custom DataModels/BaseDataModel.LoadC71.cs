@@ -11,9 +11,11 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.DataSpace;
 
+using Serilog;
+
 public partial class BaseDataModel
 {
-    private void LoadC71(AsycudaDocumentSet docSet, string file, ref ConcurrentQueue<Exception> exceptions)
+    private void LoadC71(AsycudaDocumentSet docSet, string file, ref ConcurrentQueue<Exception> exceptions, ILogger log)
     {
         try
         {
@@ -27,8 +29,8 @@ public partial class BaseDataModel
                 if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
                 {
                     BaseDataModel.EmailExceptionHandlerAsync(new ApplicationException(
-                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}"),
-                        true).GetAwaiter().GetResult();
+                            $"Could not import file - '{file}. The file is for another warehouse {fileCode}. While this Warehouse is {declarants.First().DeclarantCode}"),
+                         log, true).GetAwaiter().GetResult();
                     return;
                 }
             }

@@ -12,6 +12,8 @@ using AdjustmentQS.Client.Entities;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
 
+using Serilog;
+
 using SimpleMvvmToolkit;
 
 using WaterNut.QuerySpace.AdjustmentQS;
@@ -79,7 +81,7 @@ public partial class AdjustmentsView : UserControl
 
     private async void ImportAdjustments(object sender, MouseButtonEventArgs e)
     {
-        await this.im.Import("ADJ").ConfigureAwait(false);
+        await this.im.Import("ADJ", Log.Logger).ConfigureAwait(false);
     }
 
     private void ItemList_SelectionChanged(object sender, SelectionChangedEventArgs e)

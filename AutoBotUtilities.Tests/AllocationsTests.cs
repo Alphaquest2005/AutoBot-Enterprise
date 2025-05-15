@@ -810,7 +810,7 @@ namespace AutoBotUtilities.Tests
                 itemSets
                     .AsParallel()
                     .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage))
-                    .ForAll(async x => await new MarkErrors().Execute(x, TODO).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
+                    .ForAll(async x => await new MarkErrors().Execute(x).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
                                                                                                                                                                 // .ForEach(async x => await new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(false, x).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
 
                 timer.Stop();

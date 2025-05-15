@@ -21,6 +21,8 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class LICUtils
     {
         public static async Task ImportLicense(FileTypes ft)
@@ -448,11 +450,11 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitBlankLicenses(FileTypes ft)
+        public static async Task SubmitBlankLicenses(FileTypes ft, ILogger log)
         {
             try
             {
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -505,7 +507,7 @@ namespace AutoBot
                                $"Error:Blank License Description",
                                "Please Fill out the attached License Description and resend CSV...",
                                contacts.Select(x => x.EmailAddress).ToArray(),
-                               new string[] { errorfile }).ConfigureAwait(false);
+                               new string[] { errorfile }, log).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 

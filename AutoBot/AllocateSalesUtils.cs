@@ -40,7 +40,7 @@ namespace AutoBot
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "new AllocateSales().Execute", "SYNC_EXPECTED"); // .Wait() makes it sync
                 var executeStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).Wait(); // This needs refactoring to await
+                await new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).ConfigureAwait(false); // This needs refactoring to await
                 executeStopwatch.Stop();
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "new AllocateSales().Execute", executeStopwatch.ElapsedMilliseconds, "Sync call returned.");

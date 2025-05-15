@@ -32,11 +32,11 @@ namespace AutoBotUtilities
             using (LogContext.PushProperty("FileTypeId", fileType?.Id))
             using (LogContext.PushProperty("EmailId", fileType?.EmailId))
             using (LogContext.PushProperty("AsycudaDocumentSetId", fileType?.AsycudaDocumentSetId))
-            using (LogContext.PushProperty("EmailMappingId", emailMapping?.EmailMappingId))
+            using (LogContext.PushProperty("EmailMappingId", emailMapping?.Id))
             {
                 var stopwatch = Stopwatch.StartNew();
                 _log.Information("ACTION_START: {ActionName}. EmailMappingId: {EmailMappingId}, FileTypeId: {FileTypeId}, FileCount: {FileCount}", 
-                    operationName, emailMapping?.EmailMappingId, fileType?.Id, files?.Length ?? 0);
+                    operationName, emailMapping?.Id, fileType?.Id, files?.Length ?? 0);
 
                 try
                 {
@@ -85,8 +85,8 @@ namespace AutoBotUtilities
                     {
                         _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to forward error email. EmailId: {EmailIdForForward}", operationName, "ErrorForwarding", fileType?.EmailId);
                         await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
-                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
                         _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully forwarded error email.", operationName, "ErrorForwarding");
                     }
                     catch (Exception forwardEx)
@@ -99,7 +99,7 @@ namespace AutoBotUtilities
             }
         }
 
-        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Func<FileTypes, FileInfo[], Task> Action) actionInfo)
+        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Func<ILogger, FileTypes, FileInfo[], Task> Delegate) actionInfo)
         {
             string operationName = nameof(ExecuteActions);
             // This InvocationId is for this specific action execution.
@@ -159,7 +159,7 @@ namespace AutoBotUtilities
 
                                         _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (ProcessNextStep for {ActionName_Context})", 
                                             nextActionName, "ASYNC_EXPECTED", actionInfo.Name);
-                                        await nextActionAsyncFunc.Invoke(fileType, files).ConfigureAwait(false);
+                                        await nextActionAsyncFunc.Invoke(_log, fileType, files).ConfigureAwait(false);
                                         nextStopwatch.Stop();
                                         _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (ProcessNextStep for {ActionName_Context})",
                                             nextActionName, nextStopwatch.ElapsedMilliseconds, "Async call completed (await).", actionInfo.Name);
@@ -203,7 +203,7 @@ namespace AutoBotUtilities
                         _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (Main Action)", 
                             actionInfo.Name, "ASYNC_EXPECTED");
                         var mainActionInvokeStopwatch = Stopwatch.StartNew(); // Stopwatch for the main action invoke itself
-                        await actionInfo.Action.Invoke(fileType, files).ConfigureAwait(false);
+                        await actionInfo.Delegate.Invoke(_log, fileType, files).ConfigureAwait(false);
                         mainActionInvokeStopwatch.Stop();
                         _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (Main Action)",
                             actionInfo.Name, mainActionInvokeStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -228,8 +228,8 @@ namespace AutoBotUtilities
                     {
                         _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to send error email for failed action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in Action: {actionInfo.Name}",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
                         _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully sent error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
                     }
                     catch (Exception emailEx)
@@ -304,8 +304,8 @@ namespace AutoBotUtilities
                     try
                     {
                         await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType?.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
-                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
                     } catch (Exception fex) { _log.Error(fex, "Failed to forward error email during {ActionName} exception handling.", operationName); }
                     // throw; // Consider re-throwing
                 }
@@ -372,8 +372,8 @@ namespace AutoBotUtilities
                     try
                     {
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in {operationName}",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
                     } catch (Exception fex) { _log.Error(fex, "Failed to send error email during {ActionName} exception handling.", operationName); }
                     // throw; // Consider re-throwing
                 }
@@ -417,7 +417,7 @@ namespace AutoBotUtilities
                         var importPdfStopwatch = Stopwatch.StartNew();
                         
                         // Assuming InvoiceReader.InvoiceReader.ImportPDF is the correct static call path
-                        await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(droppedFilePath) }, dfileType).ConfigureAwait(false);
+                        await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(droppedFilePath) }, dfileType, _log).ConfigureAwait(false);
                         
                         importPdfStopwatch.Stop();
                         instanceLog.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for FileType {MatchedFileTypeId}",

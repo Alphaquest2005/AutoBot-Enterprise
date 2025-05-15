@@ -180,7 +180,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetFailedLinesWithLogging), "Processing", "Getting failed lines.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
-            List<Line> failedLines = GetFailedLines(template); // Pass template
+            List<Line> failedLines = GetFailedLines(logger, template); // Pass template
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetFailedLinesWithLogging), "Completion", "Initial failed lines retrieved.", $"Count: {failedLines.Count}", new { FailedLines = failedLines });
             return failedLines;
@@ -191,7 +191,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AddExistingFailedLinesWithLogging), "Processing", "Adding existing failed lines from template parts.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
-            AddExistingFailedLines(template, failedLines); // Pass template
+            AddExistingFailedLines(logger, template, failedLines); // Pass template
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AddExistingFailedLinesWithLogging), "Completion", "Total failed lines count after adding existing.", $"Count: {failedLines.Count}", new { FailedLines = failedLines });
         }
@@ -201,7 +201,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetDistinctRequiredLinesWithLogging), "Processing", "Getting distinct required lines.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
-            List<Line> allRequired = GetDistinctRequiredLines(template); // Pass template
+            List<Line> allRequired = GetDistinctRequiredLines(logger, template); // Pass template
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetDistinctRequiredLinesWithLogging), "Completion", "Distinct required lines retrieved.", $"Count: {allRequired.Count}", new { RequiredLines = allRequired });
             return allRequired;

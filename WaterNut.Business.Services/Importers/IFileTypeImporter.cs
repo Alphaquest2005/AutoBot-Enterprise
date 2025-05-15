@@ -6,6 +6,6 @@ namespace WaterNut.Business.Services.Importers
 
     public interface IFileTypeImporter
     {
-        Task Import(string fileName, ILogger log);
+        Task Import(string fileName);
     }
 }

@@ -225,7 +225,7 @@ namespace AutoBot
 
             try
             {
-                var info = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -367,7 +367,7 @@ namespace AutoBot
             {
 
 
-                var info = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
 

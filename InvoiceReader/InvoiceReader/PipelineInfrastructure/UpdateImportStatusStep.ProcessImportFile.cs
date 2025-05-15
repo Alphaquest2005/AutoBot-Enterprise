@@ -5,6 +5,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     using System.Diagnostics;
 
+    using Serilog;
+
     public partial class UpdateImportStatusStep
     {
         private static ImportStatus ProcessImportFile(ILogger logger, InvoiceProcessingContext context) // Add logger parameter
@@ -75,7 +77,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 {
                     // Use TryAdd for safety, although key should be unique per template run
                     // If TryAdd fails, overwrite the existing entry.
-                    if (!context.Imports.TryAdd(importKey, (filePath, fileDescription, importStatus)))
+                    context.Imports.Add(importKey, (filePath, fileDescription, importStatus));
+                    if (!context.Imports.ContainsKey(importKey))
                     {
                         logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                             nameof(ProcessImportFile), "DictionaryUpdate", "Failed to add entry to Imports dictionary (Key already exists?). Overwriting existing entry.", $"Key: {importKey}, Status: {importStatus}", "");

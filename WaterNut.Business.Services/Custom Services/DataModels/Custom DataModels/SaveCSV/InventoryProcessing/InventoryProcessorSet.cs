@@ -66,12 +66,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                     existingInventoryItem
                         .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false));
 
 
                     existingInventoryItem
                         .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false));
 
 
                     // Await the async method call
@@ -85,12 +85,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                     newInventoryItems
                         .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false));
 
 
                     newInventoryItems
                         .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, Log.Logger).ConfigureAwait(false));
                     return true;
                 }
                 catch (Exception e)

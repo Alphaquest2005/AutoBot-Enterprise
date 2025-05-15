@@ -12,7 +12,7 @@ public partial class BaseDataModel
 {
     public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames,
         bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting,
-        bool linkPi)
+        bool linkPi, Serilog.ILogger log)
     {
         using (var ctx = new DocumentDSContext())
         {
@@ -21,24 +21,24 @@ public partial class BaseDataModel
             if (docSet == null) throw new ApplicationException("Document Set with reference not found");
             await Task.Run(() =>
                     ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
-                        overwriteExisting, linkPi, fileNames))
+                        overwriteExisting, linkPi, fileNames, log))
                 .ConfigureAwait(false);
         }
     }
 
     public async Task ImportDocuments(AsycudaDocumentSet docSet, IEnumerable<string> fileNames,
         bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting,
-        bool linkPi)
+        bool linkPi, Serilog.ILogger log)
     {
         await Task.Run(() =>
                 ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
-                    overwriteExisting, linkPi, fileNames))
+                    overwriteExisting, linkPi, fileNames, log))
             .ConfigureAwait(false);
     }
 
     private async Task ImportDocuments(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument,
         bool importTariffCodes, bool noMessages,
-        bool overwriteExisting, bool linkPi, IEnumerable<string> fileNames)
+        bool overwriteExisting, bool linkPi, IEnumerable<string> fileNames, Serilog.ILogger log)
     {
         var exceptions = new ConcurrentQueue<Exception>();
         //Parallel.ForEach(fileNames,
@@ -56,7 +56,7 @@ public partial class BaseDataModel
                 }
                 else if (Value_declaration_form.CanLoadFromFile(f))
                 {
-                    LoadC71(docSet, f, ref exceptions);
+                    LoadC71(docSet, f, ref exceptions, log);
                 }
                 else if (Licence.CanLoadFromFile(f))
                 {

@@ -46,7 +46,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      nameof(Execute), "Skipped due to no templates", $"FilePath: {filePath}", methodStopwatch.ElapsedMilliseconds);
                  context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
                      nameof(HandleImportSuccessStateStep), $"Skipped handling import success state for file: {filePath} (no templates)", methodStopwatch.ElapsedMilliseconds);
-                 return Task.FromResult(true); // No templates to process, not a failure.
+                 return true; // No templates to process, not a failure.
             }
 
             bool overallStepSuccess = true; // Track success across all templates

@@ -41,7 +41,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(RunPipeline), "Setup", "Created steps for email pipeline.", $"StepCount: {emailPipelineSteps.Count}, File: {filePath}", "");
 
                 // Create and run the email pipeline
-                var emailPipelineRunner = new PipelineRunner<InvoiceProcessingContext>(emailPipelineSteps);
+                var emailPipelineRunner = new PipelineRunner<InvoiceProcessingContext>(emailPipelineSteps, this._logger);
                 _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(RunPipeline), "Execution", "Email PipelineRunner created.", $"File: {filePath}", "");
 

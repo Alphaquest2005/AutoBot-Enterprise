@@ -59,14 +59,14 @@ namespace AutoBot
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var removeDuplicatesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.RemoveDuplicateEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 removeDuplicatesStopwatch.Stop();
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.RemoveDuplicateEntries", removeDuplicatesStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var fixIncompleteStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.FixIncompleteEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 fixIncompleteStopwatch.Stop();
                  log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.FixIncompleteEntries", fixIncompleteStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
@@ -122,14 +122,14 @@ namespace AutoBot
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var removeDuplicatesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.RemoveDuplicateEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 removeDuplicatesStopwatch.Stop();
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.RemoveDuplicateEntries", removeDuplicatesStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var fixIncompleteStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.FixIncompleteEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 fixIncompleteStopwatch.Stop();
                  log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.FixIncompleteEntries", fixIncompleteStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
@@ -182,14 +182,14 @@ namespace AutoBot
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED");
                 var removeDuplicatesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.RemoveDuplicateEntries(log).ConfigureAwait(false);
                 removeDuplicatesStopwatch.Stop();
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.RemoveDuplicateEntries", removeDuplicatesStopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                 log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED");
                 var fixIncompleteStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
+                await EntryDocSetUtils.FixIncompleteEntries(log).ConfigureAwait(false);
                 fixIncompleteStopwatch.Stop();
                  log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.FixIncompleteEntries", fixIncompleteStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -221,7 +221,7 @@ namespace AutoBot
 
                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ImportEntries (with fileTypes and fileLst)", "ASYNC_EXPECTED");
                var importEntriesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-               if (await ImportEntries(overwriteExisting, fileTypes, fileLst).ConfigureAwait(false))
+               if (await ImportEntries(overwriteExisting, fileTypes, fileLst, log).ConfigureAwait(false))
                {
                    importEntriesStopwatch.Stop();
                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: true",
@@ -241,14 +241,14 @@ namespace AutoBot
 
                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED");
                var removeDuplicatesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-               await EntryDocSetUtils.RemoveDuplicateEntries().ConfigureAwait(false);
+               await EntryDocSetUtils.RemoveDuplicateEntries(log).ConfigureAwait(false);
                removeDuplicatesStopwatch.Stop();
                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                    "EntryDocSetUtils.RemoveDuplicateEntries", removeDuplicatesStopwatch.ElapsedMilliseconds, "Async call completed (await).");
 
                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED");
                var fixIncompleteStopwatch = System.Diagnostics.Stopwatch.StartNew();
-               await EntryDocSetUtils.FixIncompleteEntries().ConfigureAwait(false);
+               await EntryDocSetUtils.FixIncompleteEntries(log).ConfigureAwait(false);
                fixIncompleteStopwatch.Stop();
                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                    "EntryDocSetUtils.FixIncompleteEntries", fixIncompleteStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -256,7 +256,7 @@ namespace AutoBot
                stopwatch.Stop();
                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
                    methodName, stopwatch.ElapsedMilliseconds);
-               return false;
+               
            }
            catch (Exception e)
            {
@@ -265,6 +265,18 @@ namespace AutoBot
                    methodName, stopwatch.ElapsedMilliseconds, e.Message);
                throw;
            }
+        }
+
+        private static async Task<bool> ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, string filelst, ILogger log)
+        {
+            if (!fileTypes.Any()) return true;
+
+            var docSetId = await GetDefaultAsycudaDocumentSetId(log).ConfigureAwait(false);
+
+            var fileTypeFiles = GetFileTypeFiles(log, fileTypes, docSetId, filelst);
+
+            ImportEntries(overwriteExisting, fileTypeFiles, log);
+            return false;
         }
 
         private static async Task<bool> ImportEntries(bool overwriteExisting, List<FileTypes> fileTypes, ILogger log, DateTime? getMinFileDate = null) // Already instrumented, keep as is
@@ -408,7 +420,7 @@ namespace AutoBot
 
                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.GetAsycudaDocumentSet", "ASYNC_EXPECTED");
                        var getDocSetStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                       var asycudaDocumentSet = await WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.FileType.DocSetRefernece, true).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                       var asycudaDocumentSet = await WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(log, ft.FileType.DocSetRefernece, true).ConfigureAwait(false); // Need to check if this method accepts ILogger
                        getDocSetStopwatch.Stop();
                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: {DocSetSetReference}",
                            "EntryDocSetUtils.GetAsycudaDocumentSet", getDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await).", asycudaDocumentSet?.Declarant_Reference_Number);
@@ -418,7 +430,7 @@ namespace AutoBot
                        await BaseDataModel.Instance.ImportDocuments(
                            asycudaDocumentSet
                                .AsycudaDocumentSetId,
-                           ft.Files.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                           ft.Files.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
                        importDocsStopwatch.Stop();
                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                            "BaseDataModel.Instance.ImportDocuments", importDocsStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -514,11 +526,8 @@ namespace AutoBot
                 var docSetReference = GetDocSetReference(log, docSetId); // Pass log
                 log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "GetDocSetReference", "Sync call returned."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Getting application data path.", methodName, "GetAppDataPath"); // Add step log
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
                 log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Combining path components.", methodName, "CombinePath"); // Add step log
-                var result = Path.Combine(appDataPath, "WaterNut", "AsycudaDocumentSets", docSetReference);
+                var result = BaseDataModel.GetDocSetDirectoryName(docSetReference);
 
                 stopwatch.Stop(); // Stop stopwatch
                 log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Result: {ResultPath}",
@@ -544,7 +553,7 @@ namespace AutoBot
             try
             {
                 log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Getting DocSet reference from database.", methodName, "QueryDb"); // Add step log
-                using (var ctx = new CoreEntitiesContext())
+                using (var ctx = new DocumentDSContext())
                 {
                     // INVOKING_OPERATION for LINQ query
                     log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "LINQ query to get DocSet reference", "SYNC_EXPECTED");
@@ -571,13 +580,15 @@ namespace AutoBot
         {
             string methodName = nameof(GetFileCreationDate);
             log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ LastDbFileId: {LastDbFileId} }}",
-                methodName, "DocumentUtils.GetDocSetLastFileDate", lastDbFile?.AsycudaDocumentSet_AttachmentsId); // Add METHOD_ENTRY log
+                methodName, "DocumentUtils.GetDocSetLastFileDate", lastDbFile?.AttachmentId); // Add METHOD_ENTRY log
             var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
 
             try
             {
                 log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Determining file creation date.", methodName, "DetermineDate"); // Add step log
-                var result = lastDbFile?.FileCreationDate ?? DateTime.MinValue;
+                var result = lastDbFile != null
+                                 ? File.GetCreationTime(lastDbFile.Attachments.FilePath)
+                                 : DateTime.Today.AddDays(-1);
 
                 stopwatch.Stop(); // Stop stopwatch
                 log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Result: {ResultDate}",
@@ -607,8 +618,10 @@ namespace AutoBot
                 {
                     // INVOKING_OPERATION for LINQ query
                     log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "LINQ query to get last attachment", "SYNC_EXPECTED");
-                    var lastDbFile = ctx.AsycudaDocumentSet_Attachments.Where(x => x.AsycudaDocumentSetId == docSetId)
-                        .OrderByDescending(x => x.FileCreationDate).FirstOrDefault();
+                    var lastDbFile = new CoreEntitiesContext().AsycudaDocumentSet_Attachments
+                        .Include(x => x.Attachments)
+                        .OrderByDescending(x => x.AttachmentId)
+                        .FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
                     log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "LINQ query to get last attachment", "Sync call returned.");
 
                     stopwatch.Stop(); // Stop stopwatch
@@ -637,7 +650,11 @@ namespace AutoBot
             {
                 log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Getting default Asycuda Document Set ID.", methodName, "GetDefault"); // Add step log
                 // Assuming BaseDataModel.Instance.CurrentApplicationSettings is accessible and contains DefaultAsycudaDocumentSetId
-                var result = BaseDataModel.Instance.CurrentApplicationSettings.DefaultAsycudaDocumentSetId;
+                var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
+                 var result = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+                           x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                           x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ??
+                       currentSalesInfo.Item3.AsycudaDocumentSetId;
 
                 stopwatch.Stop(); // Stop stopwatch
                 log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Result: {ResultId}",
@@ -655,166 +672,6 @@ namespace AutoBot
     }
 }
 
-        private static string GetDocSetDestinationFolder(ILogger log, int docSetId) // Add ILogger parameter
-        {
-            string methodName = nameof(GetDocSetDestinationFolder);
-            log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ DocSetId: {DocSetId} }}",
-                methodName, "DocumentUtils.GetDocSetDirectoryInfo", docSetId); // Add METHOD_ENTRY log
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
 
-            try
-            {
-                log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetDocSetReference", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var result = BaseDataModel.GetDocSetDirectoryName(GetDocSetReference(log, docSetId)); // Pass log
-                log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "GetDocSetReference", "Sync call returned."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                stopwatch.Stop(); // Stop stopwatch
-                log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Folder: {FolderPath}",
-                    methodName, stopwatch.ElapsedMilliseconds, result); // Add METHOD_EXIT_SUCCESS log
-                return result;
-            }
-            catch (Exception ex) // Catch specific exception variable
-            {
-                stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
-                throw; // Re-throw the original exception
-            }
-        }
-
-        private static string GetDocSetReference(ILogger log, int docSetId) // Add ILogger parameter
-        {
-            string methodName = nameof(GetDocSetReference);
-            log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ DocSetId: {DocSetId} }}",
-                methodName, "DocumentUtils.GetDocSetDestinationFolder", docSetId); // Add METHOD_ENTRY log
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
-
-            try
-            {
-                log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "DocumentDSContext.AsycudaDocumentSets.Where(...).Select(...).First()", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var result = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)
-                    .Select(x => x.Declarant_Reference_Number).First();
-                log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}). Result: {DocSetReference}",
-                    "DocumentDSContext.AsycudaDocumentSets.Where(...).Select(...).First()", stopwatch.ElapsedMilliseconds, "Sync call returned.", result); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
-
-                stopwatch.Stop(); // Stop stopwatch
-                log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
-                    methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
-                return result;
-            }
-            catch (Exception ex) // Catch specific exception variable
-            {
-                stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
-                throw; // Re-throw the original exception
-            }
-        }
-
-        private static DateTime GetFileCreationDate(ILogger log, AsycudaDocumentSet_Attachments lastDbFile) // Add ILogger parameter
-        {
-            string methodName = nameof(GetFileCreationDate);
-            log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ LastDbFileNull: {LastDbFileNull} }}",
-                methodName, "DocumentUtils.GetDocSetLastFileDate", lastDbFile == null); // Add METHOD_ENTRY log
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
-
-            try
-            {
-                DateTime result;
-                if (lastDbFile != null)
-                {
-                    log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "File.GetCreationTime", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                    result = File.GetCreationTime(lastDbFile.Attachments.FilePath);
-                    log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}). Result: {CreationTime}",
-                        "File.GetCreationTime", stopwatch.ElapsedMilliseconds, "Sync call returned.", result); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
-                }
-                else
-                {
-                    log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Last DB file is null, using DateTime.Today.AddDays(-1).", methodName, "HandleNull"); // Add step log
-                    result = DateTime.Today.AddDays(-1);
-                }
-
-                stopwatch.Stop(); // Stop stopwatch
-                log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Result: {ResultDate}",
-                    methodName, stopwatch.ElapsedMilliseconds, result); // Add METHOD_EXIT_SUCCESS log
-                return result;
-            }
-            catch (Exception ex) // Catch specific exception variable
-            {
-                stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
-                throw; // Re-throw the original exception
-            }
-        }
-
-        private static AsycudaDocumentSet_Attachments GetAsycudaDocumentSetAttachments(ILogger log, int docSetId) // Add ILogger parameter
-        {
-            string methodName = nameof(GetAsycudaDocumentSetAttachments);
-            log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ DocSetId: {DocSetId} }}",
-                methodName, "DocumentUtils.GetDocSetLastFileDate", docSetId); // Add METHOD_ENTRY log
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
-
-            try
-            {
-                log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CoreEntitiesContext.AsycudaDocumentSet_Attachments.Include(...).OrderByDescending(...).FirstOrDefault(...)", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var result = new CoreEntitiesContext().AsycudaDocumentSet_Attachments
-                    .Include(x => x.Attachments)
-                    .OrderByDescending(x => x.AttachmentId)
-                    .FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
-                log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}). ResultNull: {ResultNull}",
-                    "CoreEntitiesContext.AsycudaDocumentSet_Attachments.Include(...).OrderByDescending(...).FirstOrDefault(...)", stopwatch.ElapsedMilliseconds, "Sync call returned.", result == null); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
-
-                stopwatch.Stop(); // Stop stopwatch
-                log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
-                    methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
-                return result;
-            }
-            catch (Exception ex) // Catch specific exception variable
-            {
-                stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
-                throw; // Re-throw the original exception
-            }
-        }
-
-        private static async Task<int> GetDefaultAsycudaDocumentSetId(ILogger log) // Add ILogger parameter
-        {
-            string methodName = nameof(GetDefaultAsycudaDocumentSetId);
-            log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{}}",
-                methodName, "DocumentUtils.ImportEntries"); // Add METHOD_ENTRY log
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
-
-            try
-            {
-                log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var currentSalesInfo = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false); // Need to check if this method accepts ILogger
-                log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                    "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
-
-                log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CoreEntitiesContext.AsycudaDocumentSetExs.FirstOrDefault(...)", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                           x.ApplicationSettingsId ==
-                           BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                           x.Declarant_Reference_Number == "Imports");
-                log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}). ResultNull: {ResultNull}",
-                    "CoreEntitiesContext.AsycudaDocumentSetExs.FirstOrDefault(...)", stopwatch.ElapsedMilliseconds, "Sync call returned.", docSet == null); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
-
-                var result = docSet?.AsycudaDocumentSetId ?? currentSalesInfo.Item3.AsycudaDocumentSetId;
-
-                stopwatch.Stop(); // Stop stopwatch
-                log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Result: {DocSetId}",
-                    methodName, stopwatch.ElapsedMilliseconds, result); // Add METHOD_EXIT_SUCCESS log
-                return result;
-            }
-            catch (Exception ex) // Catch specific exception variable
-            {
-                stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
-                throw; // Re-throw the original exception
-            }
-        }
-    }
-}
+      
