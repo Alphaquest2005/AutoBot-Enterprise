@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Serilog; // Added for ILogger
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
@@ -12,6 +13,7 @@ namespace WaterNut.DataSpace
 {
     public class CSVShipmentImporter
     {
+        private readonly ILogger _logger; // Added ILogger field
         private CSVToShipmentInvoiceConverter _csvToShipmentInvoiceConverter = new CSVToShipmentInvoiceConverter();
         private InventoryImporter _inventoryImporter = new InventoryImporter();
         private ShipmentInvoiceImporter _shipmentInvoiceImporter = new ShipmentInvoiceImporter();
@@ -20,6 +22,10 @@ namespace WaterNut.DataSpace
         {
         }
 
+        public CSVShipmentImporter(ILogger logger) // Added ILogger to constructor
+        {
+            _logger = logger; // Initialize logger
+        }
 
 
         public async Task<bool> ProcessAsync(DataFile dataFile)
@@ -84,7 +90,7 @@ namespace WaterNut.DataSpace
 
                     await _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
                         dataFile.OverWriteExisting, dataFile.EmailId,
-                        xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs).ConfigureAwait(true);
+                        xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs, _logger).ConfigureAwait(true); // Pass logger
 
                     return true;
                 }
@@ -97,7 +103,7 @@ namespace WaterNut.DataSpace
                 //return false;
             }
 
-           
+
         }
 
 

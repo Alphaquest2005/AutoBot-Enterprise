@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace EmailDownloader;
 
+using Serilog;
+
 public static partial class EmailDownloader
 {
-    public static async Task<bool> ForwardMsgToSenderAsync(int uIDAsInt, Client client, string subject, string body, string[] attachments, CancellationToken cancellationToken = default)
+    public static async Task<bool> ForwardMsgToSenderAsync(int uIDAsInt, Client client, string subject, string body, string[] attachments, ILogger logger, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -20,14 +22,14 @@ public static partial class EmailDownloader
             }
             uint uID = (uint)uIDAsInt; // Cast to uint for GetMsgAsync
 
-            MimeMessage originalMsg = await GetMsgAsync(uID, client, cancellationToken).ConfigureAwait(false);
+            MimeMessage originalMsg = await GetMsgAsync(uID, client,logger, cancellationToken).ConfigureAwait(false);
 
             if (originalMsg != null && originalMsg.MessageId != null) // Check if message was actually found and is not empty
             {
                 var senderContacts = originalMsg.From.Mailboxes.Select(x => x.Address).ToArray();
                 if (senderContacts.Any())
                 {
-                    await ForwardMsgInternalAsync(originalMsg, client, subject, body, senderContacts, attachments, cancellationToken).ConfigureAwait(false);
+                    await ForwardMsgInternalAsync(originalMsg, client, subject, body, senderContacts, attachments, cancellationToken, logger).ConfigureAwait(false); // Pass the logger
                     return true;
                 }
                 else

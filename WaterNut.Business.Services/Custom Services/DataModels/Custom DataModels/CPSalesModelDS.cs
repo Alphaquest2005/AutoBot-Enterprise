@@ -8,6 +8,8 @@ using WaterNut.DataLayer;
 
 namespace WaterNut.DataSpace
 {
+    using Serilog;
+
     using AsycudaDocumentSet = global::DocumentDS.Business.Entities.AsycudaDocumentSet;
 
     public class CPSalesModel
@@ -25,7 +27,7 @@ namespace WaterNut.DataSpace
             if (docSetId != 0)
             {
                 StatusModel.Timer("Downloading CP Sales...");
-                var sysDocSet = await GetSalesSysDocSet().ConfigureAwait(false);
+                var sysDocSet = await GetSalesSysDocSet(null).ConfigureAwait(false);
                 using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
                 {
                     ctx.ExecuteStoreCommand(@"
@@ -114,10 +116,10 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
+        public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId, ILogger log)
         {
             StatusModel.Timer("Downloading CP Sales Data...");
-            var sysDocSet = await GetSalesSysDocSet().ConfigureAwait(false);
+            var sysDocSet = await GetSalesSysDocSet(log).ConfigureAwait(false);
             using (var ctx = new WaterNutDBEntities { CommandTimeout = 0 })
             {
                 ctx.ExecuteStoreCommand(@"
@@ -206,9 +208,9 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        private static async Task<AsycudaDocumentSet> GetSalesSysDocSet()
+        private static async Task<AsycudaDocumentSet> GetSalesSysDocSet(ILogger log)
         {
-            var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet("Sales", true).ConfigureAwait(false);
+            var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(log ,"Sales", true).ConfigureAwait(false);
             if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Sales'");
             return sysDocSet;
         }

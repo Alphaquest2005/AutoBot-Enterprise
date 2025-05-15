@@ -15,6 +15,8 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class SessionsUtils
     {
         public static Dictionary<string, Func< Task>> SessionActions =>

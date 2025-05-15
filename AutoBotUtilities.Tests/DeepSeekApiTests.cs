@@ -11,7 +11,7 @@ using System.Net.Http;
 using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+using Serilog; // Added
 using System.Reflection; // Added for reflection
 
 namespace AutoBotUtilities.Tests
@@ -29,9 +29,9 @@ namespace AutoBotUtilities.Tests
             public async Task ExtractShipmentInvoice_ProcessesSampleText_ReturnsValidDocuments()
             {
                 // Arrange
-                
+
                 // Use a mock logger to prevent FileLoadException during test setup
-                var mockLogger = new Mock<ILogger<DeepSeekInvoiceApi>>();
+                var mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
                 // Use the constructor that allows injecting a logger and HttpClient
                 // Pass null for HttpClient to use the default, or a mock if needed for other tests
                 var api = new DeepSeekInvoiceApi(null); // Pass null for HttpClient, will use default
@@ -41,7 +41,7 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Fail("Could not find private field '_logger' via reflection.");
                 }
-                loggerField.SetValue(api, mockLogger.Object);
+                loggerField.SetValue(api, mockLogger.Object); // Set the mock Serilog logger
 
                 var textVariants = new List<string> { SampleText };
 
@@ -193,7 +193,7 @@ namespace AutoBotUtilities.Tests
         public async Task ClassifyItemsAsync_WithCategory_ReturnsCorrectData()
         {
             // Arrange
-            var mockLogger = new Mock<ILogger<DeepSeekApi>>();
+            var mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
             var dummyApiKey = "test-api-key"; // Not used due to mocked HTTP handler
 
             // 1. Define Mock HTTP Response (including category fields)
@@ -237,7 +237,7 @@ namespace AutoBotUtilities.Tests
 
             // 2. Instantiate DeepSeekApi (using constructor that takes logger/key)
             // We need to provide a valid base URL even though it won't be hit
-            var api = new DeepSeekApi(mockLogger.Object, dummyApiKey);
+            var api = new DeepSeekApi(mockLogger.Object, dummyApiKey); // Pass the mock Serilog logger
 
             // 3. Use Reflection to inject the mock HttpClient
             var httpClientField = typeof(DeepSeekApi).GetField("_httpClient", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -354,9 +354,9 @@ namespace AutoBotUtilities.Tests
             _mockHttpHandler = new Mock<HttpMessageHandler>();
             _mockHttpClient = new HttpClient(_mockHttpHandler.Object);
             // Use a mock logger to avoid FileLoadException during test setup
-            var mockLogger = new Mock<ILogger<DeepSeekApi>>();
+            var mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
             // Use the parameterized constructor to inject the mock logger
-            _deepSeekApi = new DeepSeekApi(mockLogger.Object, "dummy-api-key");
+            _deepSeekApi = new DeepSeekApi(mockLogger.Object, "dummy-api-key"); // Pass the mock Serilog logger
             // The mock HttpClient is injected later in the ClassifyItemsAsync_WithCategory_ReturnsCorrectData test
         }
 
@@ -402,27 +402,17 @@ Payment method: Visa
 
 hoc!
 
- 
+
 
 Y¥
 
-shapify_pay Ws
+shopify_pay Ws
 
 QUICK LINKS
 
 QUICK LINKS
 
- 
 
- 
-
- 
-
- 
-
- 
-
- 
 
 Going Viral Handbag - Silver $10.00
 Size: OS ay: 1
@@ -444,7 +434,6 @@ Discount $19.99
 
 Shipping FREE
 
-   
 
 FREE
 FASHIONNOWVAwSHes PlustcurVe MEN KIDS BEAUTY  Q ao 828 QAD @Oqgs
@@ -474,7 +463,7 @@ BLDG 115 GRE 9223
 Miami FL 33172
 United States
 
- 
+
 
 Feeling Brand New Thong 2 Pack Panties - Grey/combo $6.99
 Size: XL Oty
@@ -486,24 +475,18 @@ Nova Season Long Sleeve One Shoulder Jumpsuit - Black $19.99
 
 Size: 1X at.
 
- 
 
- 
 
 Grenada
 Simplified Declaration Form
 
- 
+
 
 To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial items
 
 WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
 
- 
 
- 
-
- 
 
 Consignee: ARTISHA CHARLES (FREIGHT 13.00 US)
 Cc Customs Office GDWBS
@@ -516,27 +499,13 @@ Insuranc 9.0
 Particulars of declaration by Importer
 Description of Goods Customs Value $EC Tariff No. Weight (kg) Supplementary
 
- 
 
- 
 
- 
 
- 
-
- 
-
- 
 
 |, the undersigned, ARTISHA CHARLES (FREIGHT 13.00 US) do hereby declare that the above particulars are true and correct.
 
- 
 
- 
-
- 
-
- 
 
 Dated this day of 20
 . Examination Required: YES / NO
@@ -545,27 +514,15 @@ tmporter/Exporter or declarant For Comptroller of Customs
 For Official Use Only
 Description of Goods Customs Value $EC Tariff No. Weight (Kg) Supplementary
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
-
- 
 
 Examination Officer
 
- 
-
 For Comptroller of Customs
-
- 
 
 
 ------------------------------------------SparseText-------------------------

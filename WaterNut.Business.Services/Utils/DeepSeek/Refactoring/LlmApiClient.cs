@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
+using Serilog; // Added
 // Removed unused usings like Newtonsoft.Json, Polly, System.Net.*, System.Text.RegularExpressions etc.
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
     /// </summary>
     public class LlmApiClient : IDisposable // Keep IDisposable if factory manages HttpClient lifetime maybe? Or remove if client is short-lived. Let's keep for now.
     {
-        private readonly ILogger<LlmApiClient> _logger;
+        private readonly Serilog.ILogger _logger; // Changed to Serilog.ILogger
         private readonly ILLMProviderStrategy _strategy;
 
         // Configuration
@@ -37,11 +37,11 @@ namespace WaterNut.Business.Services.Utils.LlmApi
 
         // --- Constructor ---
         // Expects a fully configured strategy
-        public LlmApiClient(ILLMProviderStrategy strategy, ILogger<LlmApiClient> logger)
+        public LlmApiClient(ILLMProviderStrategy strategy, Serilog.ILogger logger) // Changed ILogger<LlmApiClient> to Serilog.ILogger
         {
             _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _logger.LogInformation("LlmApiClient initialized with Strategy: {StrategyType}, Default Model: {Model}",
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // Assign the Serilog logger
+            _logger.Information("LlmApiClient initialized with Strategy: {StrategyType}, Default Model: {Model}", // Changed LogInformation to Information
                 _strategy.GetType().Name, _strategy.Model);
         }
 
@@ -54,12 +54,12 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             string itemDescription, string productCode = null, double? temperature = null,
             int? maxTokens = null, CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("GetClassificationInfoAsync called for: {Description}", TruncateForLog(itemDescription));
+            _logger.Debug("GetClassificationInfoAsync called for: {Description}", TruncateForLog(itemDescription)); // Changed LogDebug to Debug
             var response = await _strategy.GetSingleClassificationAsync(itemDescription, productCode, temperature, maxTokens, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccess || response.Result == null || !response.Result.ParsedSuccessfully)
             {
-                _logger.LogWarning("GetSingleClassificationAsync failed for '{Description}'. Error: {Error}", itemDescription, response.ErrorMessage ?? "Unknown");
+                _logger.Warning("GetSingleClassificationAsync failed for '{Description}'. Error: {Error}", itemDescription, response.ErrorMessage ?? "Unknown"); // Changed LogWarning to Warning
                 return ("ERROR", "ERROR", "ERROR", response.Cost);
             }
 
@@ -85,7 +85,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                                      .ToDictionary(g => g.Key, g => g.First());
 
             var chunks = ChunkBy(itemsToProcess.Values, MAX_ITEMS_PER_BATCH).ToList();
-            _logger.LogInformation("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}",
+            _logger.Information("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}", // Changed LogInformation to Information
                 itemsToProcess.Count, chunks.Count, _strategy.ProviderType);
 
             int chunkIndex = 0;
@@ -94,7 +94,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 chunkIndex++;
                 var chunkList = chunk.ToList(); // List of (string, string, string) tuples
                 var chunkDescriptions = chunkList.Select(i => i.ItemDescription).ToList();
-                _logger.LogDebug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count);
+                _logger.Debug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count); // Changed LogDebug to Debug
 
                 // --- Call Strategy for Batch ---
                 // Pass overrides if provided
@@ -103,7 +103,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
 
                 if (batchResponse.IsSuccess)
                 {
-                    _logger.LogInformation("Chunk {ChunkIndex} processed via batch. Cost: {Cost:C}, Success Count: {SuccessCount}, Failed Count: {FailCount}",
+                    _logger.Information("Chunk {ChunkIndex} processed via batch. Cost: {Cost:C}, Success Count: {SuccessCount}, Failed Count: {FailCount}", // Changed LogInformation to Information
                         chunkIndex, batchResponse.TotalCost, batchResponse.Results.Count, batchResponse.FailedDescriptions.Count);
 
                     // Process successful results from the batch
@@ -126,7 +126,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     {
                         if (itemsToProcess.TryGetValue(failedDesc, out var itemTuple))
                         {
-                            _logger.LogWarning("Item '{Description}' failed within successful batch {ChunkIndex}. Attempting fallback.", failedDesc, chunkIndex);
+                            _logger.Warning("Item '{Description}' failed within successful batch {ChunkIndex}. Attempting fallback.", failedDesc, chunkIndex); // Changed LogWarning to Warning
                             await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
                             itemsToProcess.Remove(failedDesc); // Mark as processed (or failed) by fallback
                         }
@@ -134,7 +134,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 }
                 else // The entire batch API call failed
                 {
-                    _logger.LogWarning("Batch API call failed for chunk {ChunkIndex}. Error: {Error}. Attempting fallback for all items in chunk.", chunkIndex, batchResponse.ErrorMessage ?? "Unknown");
+                    _logger.Warning("Batch API call failed for chunk {ChunkIndex}. Error: {Error}. Attempting fallback for all items in chunk.", chunkIndex, batchResponse.ErrorMessage ?? "Unknown"); // Changed LogWarning to Warning
                     foreach (var itemTuple in chunkList)
                     {
                         if (itemsToProcess.ContainsKey(itemTuple.ItemDescription)) // Check if not already processed by a previous successful batch (unlikely here)
@@ -145,14 +145,14 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     }
                 }
 
-                if (cancellationToken.IsCancellationRequested) { _logger.LogWarning("Cancellation requested during batch processing."); break; }
+                if (cancellationToken.IsCancellationRequested) { _logger.Warning("Cancellation requested during batch processing."); break; } // Changed LogWarning to Warning
 
             } // end foreach chunk
 
             // Safety check for any items missed (shouldn't happen with this logic, but belt-and-suspenders)
             if (itemsToProcess.Any())
             {
-                _logger.LogWarning("Found {Count} items remaining after batch/fallback loop. Processing individually.", itemsToProcess.Count);
+                _logger.Warning("Found {Count} items remaining after batch/fallback loop. Processing individually.", itemsToProcess.Count); // Changed LogWarning to Warning
                 foreach (var itemTuple in itemsToProcess.Values.ToList()) // Process remaining
                 {
                     await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
@@ -160,7 +160,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             }
 
 
-            _logger.LogInformation("Finished processing using {Strategy}. Total Estimated Cost: {TotalCost:C}. Items Processed: {ResultCount}/{InitialCount}",
+            _logger.Information("Finished processing using {Strategy}. Total Estimated Cost: {TotalCost:C}. Items Processed: {ResultCount}/{InitialCount}", // Changed LogInformation to Information
                  _strategy.ProviderType, totalCost, finalResults.Count, items.Count);
             return (finalResults, totalCost);
         }
@@ -188,11 +188,11 @@ namespace WaterNut.Business.Services.Utils.LlmApi
 
             if (fbTariff == "ERROR")
             {
-                _logger.LogWarning("Fallback processing failed for '{Description}'.", itemTuple.ItemDescription);
+                _logger.Warning("Fallback processing failed for '{Description}'.", itemTuple.ItemDescription); // Changed LogWarning to Warning
             }
             else
             {
-                _logger.LogInformation("Fallback processing successful for '{Description}'. Cost: {Cost:C}", itemTuple.ItemDescription, fbCost);
+                _logger.Information("Fallback processing successful for '{Description}'. Cost: {Cost:C}", itemTuple.ItemDescription, fbCost); // Changed LogInformation to Information
             }
         }
 
@@ -221,7 +221,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     // Since LlmApiClient doesn't directly own disposable managed objects anymore
                     // (like HttpClient), this section might be empty.
                     // Log the disposal action.
-                    _logger?.LogDebug("Disposing LlmApiClient (managed resources).");
+                    _logger?.Debug("Disposing LlmApiClient (managed resources)."); // Changed LogDebug to Debug
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

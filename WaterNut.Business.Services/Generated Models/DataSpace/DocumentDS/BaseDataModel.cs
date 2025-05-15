@@ -17,7 +17,9 @@ using System.Collections.Generic;
 
 namespace WaterNut.DataSpace.DocumentDS.DataModels
 {
-	 public partial class BaseDataModel 
+    using Serilog;
+
+    public partial class BaseDataModel 
 	{
         private static readonly BaseDataModel instance;
         static BaseDataModel()
@@ -57,14 +59,14 @@ namespace WaterNut.DataSpace.DocumentDS.DataModels
             }
         }
 
-        public async Task SaveAsycudaDocumentSet(AsycudaDocumentSet i)
+        public async Task SaveAsycudaDocumentSet(AsycudaDocumentSet i, ILogger log)
         {
             if (i == null) return;
             using (var ctx = new AsycudaDocumentSetService())
             {
                 await ctx.UpdateAsycudaDocumentSet(i).ConfigureAwait(false);
             }
-            await DataSpace.BaseDataModel.Instance.CalculateDocumentSetFreight(i.AsycudaDocumentSetId).ConfigureAwait(false);
+            await DataSpace.BaseDataModel.Instance.CalculateDocumentSetFreight(i.AsycudaDocumentSetId, log).ConfigureAwait(false);
         }
    
         public async Task<IEnumerable<AsycudaDocumentSetEntryData>> SearchAsycudaDocumentSetEntryData(List<string> lst, List<string> includeLst = null )

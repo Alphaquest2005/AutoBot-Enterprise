@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
+using Serilog; // Added
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly.Retry; // Needed for base constructor
@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
     {
         public override LLMProvider ProviderType => LLMProvider.Gemini;
 
-        private const int FALLBACK_MAX_TOKENS = 150; // Max tokens for fallback single item 
+        private const int FALLBACK_MAX_TOKENS = 150; // Max tokens for fallback single item
 
         private const string GeminiBaseUrl = "https://generativelanguage.googleapis.com/v1beta/models";
         private const string DefaultModelInternal = "gemini-1.5-flash-latest";
@@ -31,8 +31,8 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             };
 
         // Constructor passes dependencies to base
-        public GeminiStrategy(string apiKey, ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy)
-            : base(apiKey, logger, httpClient, retryPolicy)
+        public GeminiStrategy(string apiKey, Serilog.ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy) // Changed ILogger to Serilog.ILogger
+            : base(apiKey, logger, httpClient, retryPolicy) // Pass the Serilog logger to base
         {
             SetDefaultPromptsInternal(); // Ensure prompts are set
         }
@@ -81,14 +81,14 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             // Parses the *provider's* specific JSON structure to get completion text and usage
             TokenUsage usage = new TokenUsage { IsEstimated = true };
             string completion = string.Empty;
-            if (string.IsNullOrWhiteSpace(jsonResponse)) { Logger.LogWarning("[Gemini] ParseProviderResponse received empty JSON."); return (completion, usage); }
+            if (string.IsNullOrWhiteSpace(jsonResponse)) { Logger.Warning("[Gemini] ParseProviderResponse received empty JSON."); return (completion, usage); } // Changed LogWarning to Warning
             try
             {
                 JObject responseObj = JObject.Parse(jsonResponse);
                 var candidate = responseObj?["candidates"]?.FirstOrDefault();
                 completion = candidate?["content"]?["parts"]?.FirstOrDefault()?["text"]?.Value<string>() ?? string.Empty;
 
-                if (candidate?["content"]?["parts"] == null && candidate?["finishReason"]?.Value<string>() == "SAFETY") { Logger.LogError("[Gemini] Content blocked due to safety (no 'parts'). FinishReason: SAFETY"); throw new LlmApiException("[Gemini] Content blocked (FinishReason: SAFETY)."); }
+                if (candidate?["content"]?["parts"] == null && candidate?["finishReason"]?.Value<string>() == "SAFETY") { Logger.Error("[Gemini] Content blocked due to safety (no 'parts'). FinishReason: SAFETY"); throw new LlmApiException("[Gemini] Content blocked (FinishReason: SAFETY)."); } // Changed LogError to Error
 
                 var usageData = responseObj?["usageMetadata"] ?? candidate?["usageMetadata"];
                 if (usageData != null)
@@ -98,20 +98,20 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     int totalTokens = usageData["totalTokenCount"]?.Value<int>() ?? 0;
                     usage.OutputTokens = candidatesTokens > 0 ? candidatesTokens : (totalTokens - usage.InputTokens >= 0 ? totalTokens - usage.InputTokens : EstimateTokenCount(completion));
                     usage.IsEstimated = false;
-                    Logger.LogTrace("[Gemini] Parsed Usage - Input: {In}, Output: {Out}, Cand: {Cand}, Total: {Total}", usage.InputTokens, usage.OutputTokens, candidatesTokens, totalTokens);
+                    Logger.Verbose("[Gemini] Parsed Usage - Input: {In}, Output: {Out}, Cand: {Cand}, Total: {Total}", usage.InputTokens, usage.OutputTokens, candidatesTokens, totalTokens); // Changed LogTrace to Verbose
                 }
-                else { Logger.LogWarning("[Gemini] No 'usageMetadata' found in provider response. Estimating."); usage.InputTokens = 0; usage.OutputTokens = EstimateTokenCount(completion); }
+                else { Logger.Warning("[Gemini] No 'usageMetadata' found in provider response. Estimating."); usage.InputTokens = 0; usage.OutputTokens = EstimateTokenCount(completion); } // Changed LogWarning to Warning
 
                 var finishReason = candidate?["finishReason"]?.Value<string>();
-                if (finishReason != null && finishReason != "STOP" && finishReason != "MAX_TOKENS") { Logger.LogWarning("[Gemini] API response finishReason: {FinishReason}.", finishReason); if (finishReason == "SAFETY") throw new LlmApiException($"[Gemini] Content blocked (FinishReason: {finishReason})."); }
-                if (string.IsNullOrEmpty(completion) && (finishReason == "STOP" || finishReason == "MAX_TOKENS")) { Logger.LogWarning("[Gemini] Response indicates success but completion text is empty. Resp: {JsonResponse}", jsonResponse); }
+                if (finishReason != null && finishReason != "STOP" && finishReason != "MAX_TOKENS") { Logger.Warning("[Gemini] API response finishReason: {FinishReason}.", finishReason); if (finishReason == "SAFETY") throw new LlmApiException($"[Gemini] Content blocked (FinishReason: {finishReason})."); } // Changed LogWarning to Warning
+                if (string.IsNullOrEmpty(completion) && (finishReason == "STOP" || finishReason == "MAX_TOKENS")) { Logger.Warning("[Gemini] Response indicates success but completion text is empty. Resp: {JsonResponse}", jsonResponse); } // Changed LogWarning to Warning
                 else if (string.IsNullOrEmpty(completion)) { CheckAndLogApiError(responseObj); }
 
                 return (completion, usage);
             }
-            catch (JsonReaderException jsonEx) { Logger.LogError(jsonEx, "[Gemini] Failed to parse provider API response JSON."); throw new LlmApiException("Failed to parse Gemini provider JSON response.", jsonEx); }
+            catch (JsonReaderException jsonEx) { Logger.Error(jsonEx, "[Gemini] Failed to parse provider API response JSON."); throw new LlmApiException("Failed to parse Gemini provider JSON response.", jsonEx); } // Changed LogError to Error
             catch (LlmApiException) { throw; } // Don't re-wrap our own
-            catch (Exception ex) { Logger.LogError(ex, "[Gemini] Error processing provider response content/usage."); throw new LlmApiException("Error processing Gemini provider response.", ex); }
+            catch (Exception ex) { Logger.Error(ex, "[Gemini] Error processing provider response content/usage."); throw new LlmApiException("Error processing Gemini provider response.", ex); } // Changed LogError to Error
         }
 
 
@@ -139,7 +139,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 if (tariffCode == "ERROR") { response.ErrorMessage = "Failed to parse expected JSON format from LLM response."; response.IsSuccess = false; response.Result = new ClassificationResult { OriginalDescription = itemDescription, ItemNumber = finalProductCode, TariffCode = "ERROR", Category = "ERROR", CategoryHsCode = "ERROR", ParsedSuccessfully = false }; }
                 else { response.Result = new ClassificationResult { OriginalDescription = itemDescription, ItemNumber = finalProductCode, TariffCode = tariffCode, Category = category, CategoryHsCode = categoryHsCode, ParsedSuccessfully = true }; response.IsSuccess = true; }
             }
-            catch (Exception ex) { Logger.LogError(ex, "[Gemini] Unexpected error in GetSingleClassificationAsync for: {ItemDescription}", itemDescription); response.ErrorMessage = $"Unexpected error: {ex.Message}"; response.IsSuccess = false; }
+            catch (Exception ex) { Logger.Error(ex, "[Gemini] Unexpected error in GetSingleClassificationAsync for: {ItemDescription}", itemDescription); response.ErrorMessage = $"Unexpected error: {ex.Message}"; response.IsSuccess = false; } // Changed LogError to Error
             return response;
         }
 
@@ -166,11 +166,11 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 var parsedResults = ParseBatchResponseFormat(completion);
                 response.Results = parsedResults; response.IsSuccess = true;
                 var returnedDescriptions = new HashSet<string>(parsedResults.Keys);
-                foreach (var item in items) { if (!returnedDescriptions.Contains(item.ItemDescription)) { response.FailedDescriptions.Add(item.ItemDescription); Logger.LogWarning("[Gemini] Item '{Description}' requested but not in parsed batch response.", item.ItemDescription); } }
-                if (response.FailedDescriptions.Any()) { Logger.LogWarning("[Gemini] {FailCount} items failed processing within the successful batch call.", response.FailedDescriptions.Count); }
+                foreach (var item in items) { if (!returnedDescriptions.Contains(item.ItemDescription)) { response.FailedDescriptions.Add(item.ItemDescription); Logger.Warning("[Gemini] Item '{Description}' requested but not in parsed batch response.", item.ItemDescription); } } // Changed LogWarning to Warning
+                if (response.FailedDescriptions.Any()) { Logger.Warning("[Gemini] {FailCount} items failed processing within the successful batch call.", response.FailedDescriptions.Count); } // Changed LogWarning to Warning
             }
-            catch (FormatException formatEx) { Logger.LogError(formatEx, "[Gemini] Failed to parse the format of the batch response content."); response.ErrorMessage = "Failed to parse batch response format."; response.IsSuccess = false; response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); }
-            catch (Exception ex) { Logger.LogError(ex, "[Gemini] Unexpected error in GetBatchClassificationAsync."); response.ErrorMessage = $"Unexpected error: {ex.Message}"; response.IsSuccess = false; response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); }
+            catch (FormatException formatEx) { Logger.Error(formatEx, "[Gemini] Failed to parse the format of the batch response content."); response.ErrorMessage = "Failed to parse batch response format."; response.IsSuccess = false; response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); } // Changed LogError to Error
+            catch (Exception ex) { Logger.Error(ex, "[Gemini] Unexpected error in GetBatchClassificationAsync."); response.ErrorMessage = $"Unexpected error: {ex.Message}"; response.IsSuccess = false; response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); } // Changed LogError to Error
             return response;
         }
 
@@ -196,7 +196,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 { response.ErrorMessage = $"LLM returned invalid code format: '{productCode}'"; response.ProductCode = "ERROR-CODE"; }
                 else { response.ProductCode = productCode; response.IsSuccess = true; }
             }
-            catch (Exception ex) { Logger.LogError(ex, "[Gemini] Failed to generate product code for Description: {Description}", description); response.ErrorMessage = $"Unexpected error: {ex.Message}"; }
+            catch (Exception ex) { Logger.Error(ex, "[Gemini] Failed to generate product code for Description: {Description}", description); response.ErrorMessage = $"Unexpected error: {ex.Message}"; } // Changed LogError to Error
             return response;
         }
 
@@ -214,7 +214,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
         private void CheckAndLogApiError(JObject responseObj)
         {
             var error = responseObj?["error"]?["message"]?.Value<string>();
-            if (!string.IsNullOrEmpty(error)) { Logger.LogError("[Gemini] API returned an error message in response body: {ErrorMessage}", error); }
+            if (!string.IsNullOrEmpty(error)) { Logger.Error("[Gemini] API returned an error message in response body: {ErrorMessage}", error); } // Changed LogError to Error
         }
     }
 }

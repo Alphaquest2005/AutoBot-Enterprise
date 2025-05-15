@@ -22,13 +22,17 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class POUtils
     {
-        public static async Task DeletePONumber(FileTypes ft, FileInfo[] fs)
+        public static async Task DeletePONumber(FileTypes ft, FileInfo[] fs, Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(DeletePONumber), new { FileType = ft.Description, FileCount = fs.Length });
             try
             {
-                Console.WriteLine("Delete PO Numbers");
                 using (var ctx = new EntryDataDSContext())
                 {
                     ctx.Database.CommandTimeout = 10;
@@ -45,15 +49,18 @@ namespace AutoBot
 
                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(DeletePONumber), stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(DeletePONumber), stopwatch.ElapsedMilliseconds, e.Message);
                 throw;
             }
         }
 
-        private static async Task SubmitAssessPOErrors(FileTypes ft)
+        private static async Task SubmitAssessPOErrors(FileTypes ft, ILogger logger)
         {
             try
             {
@@ -97,7 +104,7 @@ namespace AutoBot
 
                     await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
                         $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
-                        poContacts, body, new string[] { summaryFile }).ConfigureAwait(false);
+                        poContacts, body, new string[] { summaryFile }, logger).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -127,11 +134,13 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitPOs()
+        public static async Task SubmitPOs(Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(SubmitPOs));
             try
             {
-                Console.WriteLine("Submit POs");
 
                 // var saleInfo = CurrentSalesInfo();
 
@@ -158,7 +167,9 @@ namespace AutoBot
 
                     if (docset == null)
                     {
-                        Console.WriteLine("SubmitPOs: docset is null. Cannot proceed with filtering TODO_SubmitPOInfo based on Declarant_Reference_Number.");
+                        logger.Warning("INTERNAL_STEP ({MethodName} - {Stage}): docset is null. Cannot proceed with filtering TODO_SubmitPOInfo based on Declarant_Reference_Number.", nameof(SubmitPOs), "CheckDocSet");
+                        stopwatch.Stop();
+                        logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds);
                         return;
                     }
 
@@ -178,51 +189,92 @@ namespace AutoBot
 
                     foreach (var doc in lst)
                     {
-                        await SubmitPOs(doc.z, doc.x.ToList(), contacts, poContacts).ConfigureAwait(false);
+                        await SubmitPOs(doc.z, doc.x.ToList(), contacts, poContacts, logger).ConfigureAwait(false);
                     }
                 }
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                throw e;
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds, e.Message);
+                throw;
             }
         }
 
-        public static async Task EmailLatestPOEntries()
+        public static async Task EmailLatestPOEntries(Serilog.ILogger logger)
         {
-            Console.WriteLine("Create Latest PO Entries");
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var docset =
-                    ctx.AsycudaDocumentSetExs.Where(x =>
-                            x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .OrderByDescending(x => x.AsycudaDocumentSetId)
-                        .FirstOrDefault();
-
-                if (docset != null)
-                {
-                    await EmailPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
-                }
-            }
-        }
-
-        public static async Task<List<DocumentCT>> RecreateLatestPOEntries()
-        {
-            Console.WriteLine("Create Latest PO Entries");
-
-            var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetLatestDocSet().ConfigureAwait(false);
-            var res = EntryDocSetUtils.GetDocSetEntryData(docSet.AsycudaDocumentSetId);
-
-
-            return await CreatePOEntries(docSet.AsycudaDocumentSetId, res).ConfigureAwait(false);
-        }
-
-        public static async Task SubmitPOs(FileTypes ft, FileInfo[] fs)
-        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(EmailLatestPOEntries));
             try
             {
-                Console.WriteLine("Submit POs");
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var docset = ctx.AsycudaDocumentSetExs
+                        .Where(
+                            x => x.ApplicationSettingsId
+                                 == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .OrderByDescending(x => x.AsycudaDocumentSetId).FirstOrDefault();
+
+                    if (docset != null)
+                    {
+                        await EmailPOEntries(docset.AsycudaDocumentSetId, logger).ConfigureAwait(false);
+                    }
+                }
+
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailLatestPOEntries), stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(EmailLatestPOEntries), stopwatch.ElapsedMilliseconds, e.Message);
+                throw;
+            }
+        }
+
+        public static async Task<List<DocumentCT>> RecreateLatestPOEntries(Serilog.ILogger logger)
+        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(RecreateLatestPOEntries));
+            try
+            {
+
+                var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetLatestDocSet().ConfigureAwait(false);
+                var res = EntryDocSetUtils.GetDocSetEntryData(docSet.AsycudaDocumentSetId);
+
+
+                var result = await CreatePOEntries(docSet.AsycudaDocumentSetId, res, logger).ConfigureAwait(false);
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(RecreateLatestPOEntries),
+                    stopwatch.ElapsedMilliseconds);
+                return result;
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(RecreateLatestPOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
+                throw;
+            }
+        }
+
+        public static async Task SubmitPOs(FileTypes ft, FileInfo[] fs, Serilog.ILogger logger)
+        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(SubmitPOs), new { FileType = ft.Description, FileCount = fs.Length });
+            try
+            {
 
                 // var saleInfo = CurrentSalesInfo();
 
@@ -287,370 +339,519 @@ namespace AutoBot
                     }
 
 
-                    await SubmitPOs(docSet, lst, contacts, poContacts).ConfigureAwait(false);
+                    await SubmitPOs(docSet, lst, contacts, poContacts, logger).ConfigureAwait(false);
                 }
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                throw e;
-            }
-        }
-
-        private static async Task SubmitPOs(AsycudaDocumentSetEx docSet, List<TODO_SubmitPOInfo> pOs, string[] contacts,
-            string[] poContacts)
-        {
-            if (!pOs.Any())
-            {
-                await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
-                    $"Document Package for {docSet.Declarant_Reference_Number}",
-                    contacts, "No Entries imported", Array.Empty<string>()).ConfigureAwait(false);
-
-               await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
-                   $"Assessed Entries for {docSet.Declarant_Reference_Number}",
-                   poContacts, "No Entries imported", Array.Empty<string>()).ConfigureAwait(false);
-                return;
-            }
-
-            using (var ctx = new CoreEntitiesContext())
-            {
-                try
-                {
-                    //var pdfs = Enumerable
-                    //    .Select<AsycudaDocumentSet_Attachments, string>(docSet.AsycudaDocumentSet_Attachments,
-                    //        x => x.Attachments.FilePath)
-                    //    .Where(x => x.ToLower().EndsWith(".pdf"))
-                    //    .ToList();
-
-                    var Assessedpdfs = new List<string>();
-
-                    var pdfs = new List<string>();
-
-                    var poInfo =
-                        Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(
-                            CurrentPOInfo(docSet.AsycudaDocumentSetId));
-                    if (!Directory.Exists(poInfo.Item2)) return;
-                    foreach (var itm in pOs)
-                    {
-                        List<string> ndp = new List<string>();
-                        var newEntry = ctx.AsycudaDocuments.FirstOrDefault(x =>
-                            x.ReferenceNumber == itm.Reference &&
-                            (x.ImportComplete == null || x.ImportComplete == false));
-                        if (newEntry != null)
-                        {
-                            ndp = ctx.AsycudaDocument_Attachments
-                                .Where(x => x.AsycudaDocumentId == newEntry.ASYCUDA_Id)
-                                .GroupBy(x => x.Attachments.Reference)
-                                .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
-                                .Select(x => x.Attachments.FilePath)
-                                .Where(x => x.ToLower().EndsWith(".pdf"))
-                                .ToList();
-                        }
-
-
-                        var adp = ctx.AsycudaDocument_Attachments
-                            .Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
-                            .GroupBy(x => x.Attachments.Reference)
-                            .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
-                            .Select(x => x.Attachments.FilePath)
-                            .Where(x => x.ToLower().EndsWith(".pdf"))
-                            .ToList();
-
-                        if (!adp.Any())
-                        {
-                            BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
-                            adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
-                                .Select(x => x.Attachments.FilePath).ToList();
-                        }
-
-                        pdfs.AddRange(ndp);
-                        pdfs.AddRange(adp);
-                        Assessedpdfs.AddRange(adp);
-                    }
-
-                    pdfs = pdfs.Distinct().ToList();
-                    Assessedpdfs = Assessedpdfs.Distinct().ToList();
-
-                    var body =
-                        $"Please see attached documents entries for {docSet.Declarant_Reference_Number}.\r\n" +
-                        $"\r\n" +
-                        $"Please open the attached email to view Email Thread.\r\n" +
-                        $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
-                        $"\r\n" +
-                        $"Regards,\r\n" +
-                        $"AutoBot";
-
-
-                    var xRes = Enumerable.Select<TODO_SubmitPOInfo, AssessedEntryInfo>(pOs, x =>
-                        new AssessedEntryInfo()
-                        {
-                            DocumentType = x.DocumentType,
-                            CNumber = x.CNumber,
-                            Reference = x.Reference,
-                            Date = x.Date.ToString(),
-                            PONumber = x.PONumber,
-                            Invoice = x.SupplierInvoiceNo,
-                            Taxes = x.Totals_taxes.GetValueOrDefault().ToString("C"),
-                            CIF = x.Total_CIF.ToString("C"),
-                            BillingLine = x.BillingLine
-                        }).ToList();
-
-
-                    var summaryFile = Path.Combine(poInfo.Item2, "Summary.csv");
-                    if (File.Exists(summaryFile)) File.Delete(summaryFile);
-                    var errRes =
-                        new ExportToCSV<AssessedEntryInfo, List<AssessedEntryInfo>>
-                        {
-                            dataToPrint = xRes
-                        };
-                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
-                    {
-                        await Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
-                            TaskCreationOptions.None, sta).ConfigureAwait(false);
-                    }
-
-                    pdfs.Add(summaryFile);
-                    Assessedpdfs.Add(summaryFile);
-
-
-                    var emailIds = pOs.FirstOrDefault().EmailId;
-
-                    if (emailIds == null)
-                    {
-                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
-                            $"Document Package for {docSet.Declarant_Reference_Number}",
-                            contacts, body, pdfs.ToArray()).ConfigureAwait(false);
-
-                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
-                            $"Assessed Entries for {docSet.Declarant_Reference_Number}",
-                            poContacts, body, Assessedpdfs.ToArray()).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds, Utils.Client,
-                            $"Document Package for {docSet.Declarant_Reference_Number}", body, contacts,
-                            pdfs.ToArray()).ConfigureAwait(false);
-
-                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds, Utils.Client,
-                            $"Assessed Entries for {docSet.Declarant_Reference_Number}", body, poContacts,
-                            Assessedpdfs.ToArray()).ConfigureAwait(false);
-                    }
-
-                    foreach (var item in pOs)
-                    {
-                        var sfile = Queryable.FirstOrDefault(ctx.AsycudaDocuments, x =>
-                            x.ASYCUDA_Id == item.ASYCUDA_Id &&
-                            x.ApplicationSettingsId == item.ApplicationSettingsId);
-                        var eAtt = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
-                            x.Attachments.FilePath == sfile.SourceFileName);
-                        if (eAtt == null)
-                        {
-                            var att = ctx.Attachments.OrderByDescending(x => x.Id)
-                                .FirstOrDefault(x => x.FilePath == sfile.SourceFileName);
-                            eAtt = new AsycudaDocumentSet_Attachments(true)
-                            {
-                                AsycudaDocumentSetId = item.AsycudaDocumentSetId,
-                                AttachmentId = att.Id,
-                                DocumentSpecific = true,
-                                FileDate = DateTime.Now,
-                                EmailId = att.EmailId,
-                            };
-                            ctx.AsycudaDocumentSet_Attachments.Add(eAtt);
-                        }
-
-                        ctx.AttachmentLog.Add(new AttachmentLog(true)
-                        {
-                            DocSetAttachment = eAtt.Id,
-                            AsycudaDocumentSet_Attachments = eAtt,
-                            Status = "Submit PO Entries",
-                            TrackingState = TrackingState.Added
-                        });
-                    }
-
-                    await ctx.SaveChangesAsync().ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
-        }
-
-        public static async Task ExportPOEntries()
-        {
-            try
-            {
-                Console.WriteLine("Export PO Entries");
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    foreach (var docset in
-                             ctx.TODO_PODocSetToExport
-                                 .Where(x => x.ApplicationSettingsId ==
-                                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
-                    {
-                        await ExportPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds, e.Message);
                 throw;
             }
         }
 
-        public static async Task ExportLatestPOEntries()
+        private static async Task SubmitPOs(AsycudaDocumentSetEx docSet, List<TODO_SubmitPOInfo> pOs, string[] contacts,
+            string[] poContacts, Serilog.ILogger logger)
         {
-            Console.WriteLine("Export Latest PO Entries");
-            using (var ctx = new CoreEntitiesContext())
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(SubmitPOs), new { DocSetId = docSet.AsycudaDocumentSetId, POsCount = pOs.Count });
+            try
             {
-                var docset =
-                    ctx.AsycudaDocumentSetExs.Where(x =>
-                            x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .OrderByDescending(x => x.AsycudaDocumentSetId)
-                        .FirstOrDefault();
-                if (docset != null)
+                if (!pOs.Any())
+            {
+                await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
+                    $"Document Package for {docSet.Declarant_Reference_Number}",
+                    contacts, "No Entries imported", Array.Empty<string>(), logger).ConfigureAwait(false);
+
+               await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
+                   $"Assessed Entries for {docSet.Declarant_Reference_Number}",
+                   poContacts, "No Entries imported", Array.Empty<string>(), logger).ConfigureAwait(false);
+                return;
+            }
+
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    await ExportPOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
+                    try
+                    {
+                        //var pdfs = Enumerable
+                        //    .Select<AsycudaDocumentSet_Attachments, string>(docSet.AsycudaDocumentSet_Attachments,
+                        //        x => x.Attachments.FilePath)
+                        //    .Where(x => x.ToLower().EndsWith(".pdf"))
+                        //    .ToList();
+
+                        var Assessedpdfs = new List<string>();
+
+                        var pdfs = new List<string>();
+
+                        var poInfo =
+                            Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(
+                                CurrentPOInfo(docSet.AsycudaDocumentSetId));
+                        if (!Directory.Exists(poInfo.Item2)) return;
+                        foreach (var itm in pOs)
+                        {
+                            List<string> ndp = new List<string>();
+                            var newEntry = ctx.AsycudaDocuments.FirstOrDefault(
+                                x => x.ReferenceNumber == itm.Reference
+                                     && (x.ImportComplete == null || x.ImportComplete == false));
+                            if (newEntry != null)
+                            {
+                                ndp = ctx.AsycudaDocument_Attachments
+                                    .Where(x => x.AsycudaDocumentId == newEntry.ASYCUDA_Id)
+                                    .GroupBy(x => x.Attachments.Reference)
+                                    .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
+                                    .Select(x => x.Attachments.FilePath).Where(x => x.ToLower().EndsWith(".pdf"))
+                                    .ToList();
+                            }
+
+
+                            var adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
+                                .GroupBy(x => x.Attachments.Reference)
+                                .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
+                                .Select(x => x.Attachments.FilePath).Where(x => x.ToLower().EndsWith(".pdf")).ToList();
+
+                            if (!adp.Any())
+                            {
+                                BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                                adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
+                                    .Select(x => x.Attachments.FilePath).ToList();
+                            }
+
+                            pdfs.AddRange(ndp);
+                            pdfs.AddRange(adp);
+                            Assessedpdfs.AddRange(adp);
+                        }
+
+                        pdfs = pdfs.Distinct().ToList();
+                        Assessedpdfs = Assessedpdfs.Distinct().ToList();
+
+                        var body = $"Please see attached documents entries for {docSet.Declarant_Reference_Number}.\r\n"
+                                   + $"\r\n" + $"Please open the attached email to view Email Thread.\r\n"
+                                   + $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n"
+                                   + $"\r\n" + $"Regards,\r\n" + $"AutoBot";
+
+
+                        var xRes = Enumerable.Select<TODO_SubmitPOInfo, AssessedEntryInfo>(
+                            pOs,
+                            x => new AssessedEntryInfo()
+                                     {
+                                         DocumentType = x.DocumentType,
+                                         CNumber = x.CNumber,
+                                         Reference = x.Reference,
+                                         Date = x.Date.ToString(),
+                                         PONumber = x.PONumber,
+                                         Invoice = x.SupplierInvoiceNo,
+                                         Taxes = x.Totals_taxes.GetValueOrDefault().ToString("C"),
+                                         CIF = x.Total_CIF.ToString("C"),
+                                         BillingLine = x.BillingLine
+                                     }).ToList();
+
+
+                        var summaryFile = Path.Combine(poInfo.Item2, "Summary.csv");
+                        if (File.Exists(summaryFile)) File.Delete(summaryFile);
+                        var errRes = new ExportToCSV<AssessedEntryInfo, List<AssessedEntryInfo>> { dataToPrint = xRes };
+                        using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                        {
+                            await Task.Factory.StartNew(
+                                () => errRes.SaveReport(summaryFile),
+                                CancellationToken.None,
+                                TaskCreationOptions.None,
+                                sta).ConfigureAwait(false);
+                        }
+
+                        pdfs.Add(summaryFile);
+                        Assessedpdfs.Add(summaryFile);
+
+
+                        var emailIds = pOs.FirstOrDefault().EmailId;
+
+                        if (emailIds == null)
+                        {
+                            await EmailDownloader.EmailDownloader.SendEmailAsync(
+                                Utils.Client,
+                                "",
+                                $"Document Package for {docSet.Declarant_Reference_Number}",
+                                contacts,
+                                body,
+                                pdfs.ToArray(), logger).ConfigureAwait(false);
+
+                            await EmailDownloader.EmailDownloader.SendEmailAsync(
+                                Utils.Client,
+                                "",
+                                $"Assessed Entries for {docSet.Declarant_Reference_Number}",
+                                poContacts,
+                                body,
+                                Assessedpdfs.ToArray(), logger).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await EmailDownloader.EmailDownloader.ForwardMsgAsync(
+                                emailIds,
+                                Utils.Client,
+                                $"Document Package for {docSet.Declarant_Reference_Number}",
+                                body,
+                                contacts,
+                                pdfs.ToArray(), logger).ConfigureAwait(false);
+
+                            await EmailDownloader.EmailDownloader.ForwardMsgAsync(
+                                emailIds,
+                                Utils.Client,
+                                $"Assessed Entries for {docSet.Declarant_Reference_Number}",
+                                body,
+                                poContacts,
+                                Assessedpdfs.ToArray(), logger).ConfigureAwait(false);
+                        }
+
+                        foreach (var item in pOs)
+                        {
+                            var sfile = Queryable.FirstOrDefault(
+                                ctx.AsycudaDocuments,
+                                x => x.ASYCUDA_Id == item.ASYCUDA_Id
+                                     && x.ApplicationSettingsId == item.ApplicationSettingsId);
+                            var eAtt = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(
+                                x => x.Attachments.FilePath == sfile.SourceFileName);
+                            if (eAtt == null)
+                            {
+                                var att = ctx.Attachments.OrderByDescending(x => x.Id)
+                                    .FirstOrDefault(x => x.FilePath == sfile.SourceFileName);
+                                eAtt = new AsycudaDocumentSet_Attachments(true)
+                                           {
+                                               AsycudaDocumentSetId = item.AsycudaDocumentSetId,
+                                               AttachmentId = att.Id,
+                                               DocumentSpecific = true,
+                                               FileDate = DateTime.Now,
+                                               EmailId = att.EmailId,
+                                           };
+                                ctx.AsycudaDocumentSet_Attachments.Add(eAtt);
+                            }
+
+                            ctx.AttachmentLog.Add(
+                                new AttachmentLog(true)
+                                    {
+                                        DocSetAttachment = eAtt.Id,
+                                        AsycudaDocumentSet_Attachments = eAtt,
+                                        Status = "Submit PO Entries",
+                                        TrackingState = TrackingState.Added
+                                    });
+                        }
+
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        stopwatch.Stop();
+                        logger.Information(
+                            "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                            nameof(SubmitPOs),
+                            stopwatch.ElapsedMilliseconds);
+                    }
+
+
+                    
                 }
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(SubmitPOs), stopwatch.ElapsedMilliseconds, e.Message);
+                throw;
             }
         }
 
-        public static async Task RecreatePOEntries()
+        public static async Task ExportPOEntries(Serilog.ILogger logger)
         {
-            Console.WriteLine("Create PO Entries");
-            using (var ctx = new CoreEntitiesContext())
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(ExportPOEntries));
+            try
             {
-                var docset =
-                    ctx.TODO_PODocSet
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .OrderByDescending(x => x.AsycudaDocumentSetId)
-                        .FirstOrDefault();
-                if (docset != null)
+                using (var ctx = new CoreEntitiesContext())
                 {
-                   await RecreatePOEntries(docset.AsycudaDocumentSetId).ConfigureAwait(false);
+                    foreach (var docset in ctx.TODO_PODocSetToExport.Where(
+                                 x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                          .ApplicationSettingsId))
+                    {
+                        await ExportPOEntries(docset.AsycudaDocumentSetId, logger).ConfigureAwait(false);
+                    }
                 }
+
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ExportPOEntries),
+                    stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ExportPOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
+                throw;
             }
         }
 
-        public static async Task AssessPOEntries(FileTypes ft)
+        public static async Task ExportLatestPOEntries(Serilog.ILogger logger)
         {
-            Console.WriteLine("Assessing PO Entries");
-            using (var ctx = new CoreEntitiesContext())
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(ExportLatestPOEntries));
+            try
             {
-                var res = ctx.TODO_PODocSetToAssess
-                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId) //ft.AsycudaDocumentSetId == 0 ||
-                    .ToList();
-                foreach (var doc in res)
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    await AssessPOEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId).ConfigureAwait(false);
+                    var docset = ctx.AsycudaDocumentSetExs
+                        .Where(
+                            x => x.ApplicationSettingsId
+                                 == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .OrderByDescending(x => x.AsycudaDocumentSetId).FirstOrDefault();
+                    if (docset != null)
+                    {
+                        await ExportPOEntries(docset.AsycudaDocumentSetId, logger).ConfigureAwait(false);
+                    }
+
+                    stopwatch.Stop();
+                    logger.Information(
+                        "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(ExportLatestPOEntries),
+                        stopwatch.ElapsedMilliseconds);
                 }
             }
-
-            await SubmitAssessPOErrors(ft).ConfigureAwait(false);
-        }
-
-        public static async Task ClearPOEntries()
-        {
-            Console.WriteLine("Clear PO Entries");
-
-            // var saleInfo = CurrentSalesInfo();
-
-
-            using (var ctx = new CoreEntitiesContext())
+            catch (Exception e)
             {
-                var lst = ctx.TODO_PODocSetToExport.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .GroupBy(x => x.AsycudaDocumentSetId)
-                    //.Where(x => x.Key != null)
-                    .Select(x => x.Key)
-                    .Distinct()
-                    .ToList();
-
-                foreach (var doc in lst)
-                {
-                    await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
-                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
-                }
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(ExportLatestPOEntries), stopwatch.ElapsedMilliseconds, e.Message);
+                throw;
             }
         }
 
-        public static async Task RecreatePOEntries(int asycudaDocumentSetId)
+        public static async Task RecreatePOEntries(Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(RecreatePOEntries));
+            try
+            {
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var docset = ctx.TODO_PODocSet
+                        .Where(
+                            x => x.ApplicationSettingsId
+                                 == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .OrderByDescending(x => x.AsycudaDocumentSetId).FirstOrDefault();
+                    if (docset != null)
+                    {
+                        await RecreatePOEntries(docset.AsycudaDocumentSetId, logger).ConfigureAwait(false);
+                    }
+                }
+
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(RecreatePOEntries),
+                    stopwatch.ElapsedMilliseconds);
+
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(RecreatePOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
+                throw;
+            }
+        }
+
+        public static async Task AssessPOEntries(FileTypes ft, Serilog.ILogger logger)
+        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information(
+                "METHOD_ENTRY: {MethodName}. Context: {@MethodContext}",
+                nameof(AssessPOEntries),
+                new { FileType = ft.Description });
+            try
+            {
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var res = ctx.TODO_PODocSetToAssess
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId) //ft.AsycudaDocumentSetId == 0 ||
+                        .ToList();
+                    foreach (var doc in res)
+                    {
+                        await AssessPOEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId, logger)
+                            .ConfigureAwait(false);
+                    }
+                }
+
+                await SubmitAssessPOErrors(ft, logger).ConfigureAwait(false);
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(AssessPOEntries),
+                    stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(AssessPOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
+                throw;
+            }
+        }
+
+        public static async Task ClearPOEntries(Serilog.ILogger logger)
+        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}", nameof(ClearPOEntries));
+            try
+            {
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var lst = ctx.TODO_PODocSetToExport
+                        .Where(
+                            x => x.ApplicationSettingsId
+                                 == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .GroupBy(x => x.AsycudaDocumentSetId)
+                        //.Where(x => x.Key != null)
+                        .Select(x => x.Key).Distinct().ToList();
+
+                    foreach (var doc in lst)
+                    {
+                        await BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).ConfigureAwait(false);
+                        BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    }
+                }
+
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ClearPOEntries),
+                    stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ClearPOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
+                throw;
+            }
+        }
+
+        public static async Task RecreatePOEntries(int asycudaDocumentSetId, Serilog.ILogger logger)
+        {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information(
+                "METHOD_ENTRY: {MethodName}. Context: {@MethodContext}",
+                nameof(RecreatePOEntries),
+                new { AsycudaDocumentSetId = asycudaDocumentSetId });
             try
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault())
                     {
-                        if (ctx.TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
+                        if (ctx.TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId))
+                        {
+                            stopwatch.Stop();
+                            logger.Information(
+                                "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                                nameof(RecreatePOEntries),
+                                stopwatch.ElapsedMilliseconds);
+                            return;
+                        }
                     }
 
-                    Console.WriteLine("RecreatePOEntries");
 
-
-                    var res = ctx.ToDo_POToXML_Recreate.Where(x =>
-                            x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                            x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                        .GroupBy(x => x.AsycudaDocumentSetId)
-                        .Select(x => new
-                        {
-                            DocSetId = x.Key,
-                            Entrylst = x.Select(z => z.EntryDataDetailsId).ToList()
-                        })
+                    var res = ctx.ToDo_POToXML_Recreate
+                        .Where(
+                            x => x.ApplicationSettingsId
+                                 == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                 && x.AsycudaDocumentSetId == asycudaDocumentSetId).GroupBy(x => x.AsycudaDocumentSetId)
+                        .Select(x => new { DocSetId = x.Key, Entrylst = x.Select(z => z.EntryDataDetailsId).ToList() })
                         .ToList();
                     foreach (var docSetId in res)
                     {
-                       await CreatePOEntries(docSetId.DocSetId, docSetId.Entrylst).ConfigureAwait(false);
+                        await CreatePOEntries(docSetId.DocSetId, docSetId.Entrylst, logger).ConfigureAwait(false);
                     }
                 }
+
+                stopwatch.Stop();
+                logger.Information(
+                    "METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(RecreatePOEntries),
+                    stopwatch.ElapsedMilliseconds);
             }
+
+
+
+
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                stopwatch.Stop();
+                logger.Error(
+                    e,
+                    "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(RecreatePOEntries),
+                    stopwatch.ElapsedMilliseconds,
+                    e.Message);
                 throw;
             }
         }
 
-        public static async Task ExportPOEntries(int asycudaDocumentSetId)
+        public static async Task ExportPOEntries(int asycudaDocumentSetId, Serilog.ILogger logger)
         {
-            using (var ctx = new DocumentDSContext())
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(ExportPOEntries), new { AsycudaDocumentSetId = asycudaDocumentSetId });
+            try
             {
-                try
+                using (var ctx = new DocumentDSContext())
                 {
                     IQueryable<xcuda_ASYCUDA> docs;
                     var defaultCustomsOperation = BaseDataModel.GetDefaultCustomsOperation();
-                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true)
+                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault())
                     {
                         if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x =>
-                                x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
-                        Console.WriteLine("Export PO Entries");
-                        docs = ctx.xcuda_ASYCUDA
-                            .Include(x => x.xcuda_Declarant)
-                            .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId ==
-                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
-                                        asycudaDocumentSetId
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                        &&  x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == defaultCustomsOperation);
+                                x.AsycudaDocumentSetId != asycudaDocumentSetId))
+                        {
+                            stopwatch.Stop();
+                            logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(ExportPOEntries), stopwatch.ElapsedMilliseconds);
+                            return;
+                        }
                     }
-                    else
-                    {
-                        docs = ctx.xcuda_ASYCUDA
-                            .Include(x => x.xcuda_Declarant)
-                            .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId ==
-                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
-                                        asycudaDocumentSetId
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
-                                                .CustomsOperationId == defaultCustomsOperation);
-                    }
+
+                    docs = ctx.xcuda_ASYCUDA
+                        .Include(x => x.xcuda_Declarant)
+                        .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                    && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
+                                    asycudaDocumentSetId
+                                    && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
+                                    && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
+                                            .CustomsOperationId == defaultCustomsOperation);
 
                     var res = docs.GroupBy(x => new
                         {
@@ -679,26 +880,38 @@ namespace AutoBot
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
-                    throw;
-                }
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(ExportPOEntries), stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(ExportPOEntries), stopwatch.ElapsedMilliseconds, ex.Message);
+                throw;
             }
         }
 
-        public static async Task AssessPOEntry(string docReference, int asycudaDocumentSetId)
+        public static async Task AssessPOEntry(string docReference, int asycudaDocumentSetId, Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(AssessPOEntry), new { DocReference = docReference, AsycudaDocumentSetId = asycudaDocumentSetId });
             try
             {
                 if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x =>
                         x.AsycudaDocumentSetId != asycudaDocumentSetId))
                 {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
                     return;
                 }
 
-                if (docReference == null) return;
+                if (docReference == null)
+                {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
+                    return;
+                }
                 var directoryName = BaseDataModel.GetDocSetDirectoryName(docReference);
                 var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
                 var instrFile = Path.Combine(directoryName, "Instructions.txt");
@@ -714,15 +927,22 @@ namespace AutoBot
                     assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
                     lcont = assessmentResult.lcontValue;
                 }
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(AssessPOEntry), stopwatch.ElapsedMilliseconds, e.Message);
                 throw;
             }
         }
 
-        public static async Task EmailPOEntries(int asycudaDocumentSetId)
+        public static async Task EmailPOEntries(int asycudaDocumentSetId, Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(EmailPOEntries), new { AsycudaDocumentSetId = asycudaDocumentSetId });
             try
             {
                 var contacts = new CoreEntitiesContext().Contacts
@@ -731,11 +951,21 @@ namespace AutoBot
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .ToList();
 
-                if (!contacts.Any() || BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true) return;
+                if (!contacts.Any() || BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault())
+                {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds);
+                    return;
+                }
                 //if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
                 var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
                     x.AsycudaDocumentSetId == asycudaDocumentSetId); //CurrentPOInfo();
-                if (docSet == null) return;
+                if (docSet == null)
+                {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds);
+                    return;
+                }
                 //foreach (var poInfo in lst.Where(x => x.Item1.AsycudaDocumentSetId == asycudaDocumentSetId))
                 //{
 
@@ -743,14 +973,23 @@ namespace AutoBot
 
                 var reference = docSet.Declarant_Reference_Number;
                 var directory = BaseDataModel.GetDocSetDirectoryName(reference);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds);
+                    return;
+                }
                 var sourcefiles = Directory.GetFiles(directory, "*.xml");
 
                 var emailres = new FileInfo(Path.Combine(directory, "EmailResults.txt"));
                 var instructions = new FileInfo(Path.Combine(directory, "Instructions.txt"));
-                if (!instructions.Exists) return;
+                if (!instructions.Exists)
+                {
+                    stopwatch.Stop();
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds);
+                    return;
+                }
                 if (emailres.Exists) File.Delete(emailres.FullName);
-                Console.WriteLine("Emailing Po Entries");
                 string[] files;
                 if (File.Exists(emailres.FullName))
                 {
@@ -767,19 +1006,25 @@ namespace AutoBot
 
                 if (files.Length > 0)
                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory, $"Entries for {reference}",
-                        contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", files).ConfigureAwait(false);
+                        contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", files, logger).ConfigureAwait(false);
 
                 //}
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                stopwatch.Stop();
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(EmailPOEntries), stopwatch.ElapsedMilliseconds, e.Message);
                 throw;
             }
         }
 
-        public static async Task<List<DocumentCT>> CreatePOEntries(int docSetId, List<int> entrylst)
+        public static async Task<List<DocumentCT>> CreatePOEntries(int docSetId, List<int> entrylst, Serilog.ILogger logger)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            logger.Information("METHOD_ENTRY: {MethodName}. Context: {@MethodContext}", nameof(CreatePOEntries), new { DocSetId = docSetId, EntryListCount = entrylst.Count });
             try
             {
                 await BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId).ConfigureAwait(false);
@@ -790,14 +1035,19 @@ namespace AutoBot
                 if (File.Exists(insts)) File.Delete(insts);
 
 
-                return await BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
+                var result = await BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
                     (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).ConfigureAwait(false);
+                stopwatch.Stop();
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", nameof(CreatePOEntries), stopwatch.ElapsedMilliseconds);
+                return result;
             }
             catch (Exception ex)
             {
+                stopwatch.Stop();
+                logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", nameof(CreatePOEntries), stopwatch.ElapsedMilliseconds, ex.Message);
                 await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found",
-                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{ex.Message}\r\n{ex.StackTrace}",
-                    Array.Empty<string>()).ConfigureAwait(false);
+                    EmailDownloader.EmailDownloader.GetContacts("Developer", logger), $"{ex.Message}\r\n{ex.StackTrace}",
+                    Array.Empty<string>(), logger).ConfigureAwait(false);
                 throw;
             }
         }

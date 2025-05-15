@@ -7,7 +7,6 @@ using System.Linq;
 using AllocationQS.Client.Entities;
 using AllocationQS.Client.Services;
 //using WaterNut.Client.Services;
-using AllocationQS.Client.Services;
 
 using System;
 

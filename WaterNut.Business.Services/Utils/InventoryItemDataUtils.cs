@@ -1,7 +1,9 @@
 ﻿using System; // Added for Type and Convert
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http; // Added for HttpClient
 using System.Text;
+using System.Threading; // Added for CancellationToken
 using System.Threading.Tasks;
 using AllocationDS.Business.Services;
 using Core.Common.Extensions;
@@ -9,12 +11,15 @@ using Core.Common.Utils;
 using InventoryDS.Business.Entities;
 using InventoryQS.Business.Services;
 using MoreLinq.Extensions;
+using Polly; // Added for Policy
+using Polly.Retry; // Added for AsyncRetryPolicy
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Business.Services.Utils.LlmApi;
 using WaterNut.Business.Services.Utils.SavingInventoryItems;
 using WaterNut.DataSpace;
+using Serilog; // Added Serilog using
 
 namespace WaterNut.Business.Services.Utils
 {
@@ -38,27 +43,31 @@ namespace WaterNut.Business.Services.Utils
         }
 
 
+        // Modified to accept ILogger
         public static async Task<List<InventoryDataItem>> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
-            InventorySource inventorySource)
+            InventorySource inventorySource, ILogger log)
         {
             var inventoryItems =
                 InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string) x.Key.ItemNumber).ToList());
 
 
-            var newInventoryItems = await CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems).ConfigureAwait(false);
+            // Pass the logger to CreateNewInventoryData
+            var newInventoryItems = await CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems, log).ConfigureAwait(false);
 
 
             return newInventoryItems;
         }
 
+        // Modified to accept ILogger
         public static async Task<List<InventoryDataItem>> CreateNewInventoryData(InventorySource inventorySource,
-            List<InventoryData> validItems, List<InventoryItem> inventoryItems)
+            List<InventoryData> validItems, List<InventoryItem> inventoryItems, ILogger log)
         {
             var newInventoryItemData = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
             var newInventoryItems = new List<InventoryDataItem>();
             foreach (var itemData in newInventoryItemData)
             {
-                newInventoryItems.Add(await CreateInventoryItem(inventorySource, itemData).ConfigureAwait(false));
+                // Pass the logger to CreateInventoryItem
+                newInventoryItems.Add(await CreateInventoryItem(inventorySource, itemData, log).ConfigureAwait(false));
             }
 
             await new SaveInventoryItemsSelector().Execute(newInventoryItems).ConfigureAwait(false);
@@ -103,16 +112,18 @@ namespace WaterNut.Business.Services.Utils
                 .ToList();
         }
 
+        // Modified to accept ILogger
         public static async Task<InventoryDataItem> CreateInventoryItem(InventorySource inventorySource,
-            InventoryData item)
+            InventoryData item, ILogger log)
         {
             try
             {
 
                 //create a function that call deepseek api with item description and return tariff code
-                
+
+                // Pass the logger to GetTariffCode
                 string keyTariffCode = inventorySource.Name != "POS" && string.IsNullOrEmpty(item.Key.TariffCode)
-                    ? await GetTariffCode(item).ConfigureAwait(false)//GetTariffCodeValue(item)
+                    ? await GetTariffCode(item, log).ConfigureAwait(false)//GetTariffCodeValue(item)
                     : item.Key.TariffCode;
 
                 // Use helper method to safely get values
@@ -181,18 +192,21 @@ namespace WaterNut.Business.Services.Utils
         }
 
 
-        private static async Task<string> GetTariffCode(InventoryData item)
+        // Modified to accept ILogger
+        private static async Task<string> GetTariffCode(InventoryData item, ILogger log)
         {
             // Use the helper for the description passed to the API as well
             var description = await GetDynamicStringValueAsync(item.Key.ItemDescription).ConfigureAwait(false);
-            var suspectedTariffCode = await GetClassificationInfo(description);
+            // Pass the logger to GetClassificationInfo
+            var suspectedTariffCode = await GetClassificationInfo(description, log);
             return await InventoryItemsExService.GetTariffCode(suspectedTariffCode.Item1).ConfigureAwait(false);
         }
 
-        private static async Task<dynamic> GetClassificationInfo(dynamic description)
+        // Modified to accept ILogger
+        private static async Task<dynamic> GetClassificationInfo(dynamic description, ILogger log)
         {
             var desiredProvider = LLMProvider.DeepSeek;
-            var client = LlmApiClientFactory.CreateClient(desiredProvider);
+            var client = LlmApiClientFactory.CreateClient(desiredProvider, log, new System.Net.Http.HttpClient());
             var classificationInfo = await client.GetClassificationInfoAsync(description).ConfigureAwait(false);
             return classificationInfo; //await new DeepSeekApi().GetClassificationInfoAsync(description).ConfigureAwait(false);
         }

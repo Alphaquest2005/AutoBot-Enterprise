@@ -126,7 +126,6 @@
     <PackageReference Include="Z.EntityFramework.Extensions" Version="8.103.1" /> <!-- Reverted to specific version for license compatibility -->
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
 <!-- <PackageReference Include="MockQueryable.Moq" Version="6.0.1" /> --> <!-- Removed as manual mocking is used -->
 </ItemGroup>
 

@@ -19,6 +19,8 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace CoreEntities.Business.Services
 {
+    using Serilog;
+
     [Export(typeof(IAsycudaSalesAllocationsExService))]
     [Export(typeof(IBusinessService))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
@@ -57,7 +59,7 @@ namespace CoreEntities.Business.Services
             await WaterNut.DataSpace.BaseDataModel.Instance.ExportDocSet(docSetId, directoryName, true).ConfigureAwait(false);
         }
 
-        public async Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx)
+        public async Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx, ILogger log)
         {
             try
             {
@@ -84,7 +86,7 @@ namespace CoreEntities.Business.Services
                 //docset.TotalPackages = asycudaDocumentSetEx.TotalPackages;
                 docset.TotalWeight = (double?)asycudaDocumentSetEx.TotalWeight;
                 
-                await WaterNut.DataSpace.DocumentDS.DataModels.BaseDataModel.Instance.SaveAsycudaDocumentSet(docset)
+                await WaterNut.DataSpace.DocumentDS.DataModels.BaseDataModel.Instance.SaveAsycudaDocumentSet(docset, log)
                     .ConfigureAwait(false);
             }
             catch (Exception e)

@@ -26,13 +26,15 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class DISUtils
     {
         private static readonly int _databaseCommandTimeout = 30;
         private static readonly int __ColumnWidth = 15;
         private static readonly int _tripleLongDatabaseCommandTimeout = _databaseCommandTimeout* 3;
 
-        public static async Task AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs)
+        public static async Task AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             try
             {
@@ -51,7 +53,7 @@ namespace AutoBot
                                     x.ReferenceNumber == reference && x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                 ?.AsycudaDocumentSetEx;
-                            if(doc != null) await EntryDocSetUtils.AssessEntries(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId).ConfigureAwait(false);
+                            if(doc != null) await EntryDocSetUtils.AssessEntries(log, doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId).ConfigureAwait(false);
                         }
 
                     }
@@ -65,7 +67,7 @@ namespace AutoBot
 
         }
 
-        public static async Task ReSubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs)
+        public static async Task ReSubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             try
             {
@@ -73,7 +75,7 @@ namespace AutoBot
                 var lst =await GetSubmitEntryData(ft).ConfigureAwait(false);
                 var toBeProcessed =
                     Enumerable.Where<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>( lst, x => (emailId.Contains("Submit") || x.Key == emailId) || ft.Data.Any(z => x.Any(q => q.CNumber == z.Value )));
-                await SubmitDiscrepanciesToCustoms(toBeProcessed).ConfigureAwait(false);
+                await SubmitDiscrepanciesToCustoms(toBeProcessed, log).ConfigureAwait(false);
 
                
             }
@@ -85,7 +87,7 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs)
+        public static async Task SubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             try
             {
@@ -103,7 +105,7 @@ namespace AutoBot
                         .ToList()
 
                         .GroupBy(x => x.EmailId);
-                   await SubmitDiscrepanciesToCustoms(lst).ConfigureAwait(false);
+                   await SubmitDiscrepanciesToCustoms(lst, log).ConfigureAwait(false);
 
                 }
             }
@@ -115,7 +117,7 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitDiscrepanciesToCustoms()
+        public static async Task SubmitDiscrepanciesToCustoms(ILogger log)
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -129,7 +131,7 @@ namespace AutoBot
                     .ToList()
 
                     .GroupBy(x => x.EmailId);
-                await SubmitDiscrepanciesToCustoms(lst).ConfigureAwait(false);
+                await SubmitDiscrepanciesToCustoms(lst, log).ConfigureAwait(false);
 
             }
         }
@@ -159,12 +161,13 @@ namespace AutoBot
             }
         }
 
-        public static async Task<IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>> GetSubmitEntryData()
+        public static async Task<IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>> GetSubmitEntryData(
+            ILogger log)
         {
             try
             {
 
-                var saleInfo = await BaseDataModel.CurrentSalesInfo(0).ConfigureAwait(false);
+                var saleInfo = await BaseDataModel.CurrentSalesInfo(log, 0).ConfigureAwait(false);
 
                 var cplst = BaseDataModel.Instance.Customs_Procedures
                     .Where(x => x.CustomsOperation.Name == "Exwarehouse" || (x.CustomsOperation.Name == "Warehouse" && x.Stock == true)).Select(x => x.CustomsProcedure).ToList();
@@ -238,7 +241,9 @@ namespace AutoBot
             }
         }
 
-        private static async Task SubmitDiscrepanciesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
+        private static async Task SubmitDiscrepanciesToCustoms(
+            IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst,
+            ILogger log)
         {
             try
             {
@@ -256,7 +261,7 @@ namespace AutoBot
                    
                     foreach (var data in lst)
                     {
-                        await CreateDiscrepancyEmail(data, contacts).ConfigureAwait(false);
+                        await CreateDiscrepancyEmail(data, contacts, log).ConfigureAwait(false);
                     }
 
                 }
@@ -268,7 +273,10 @@ namespace AutoBot
             }
         }
 
-        private static async Task CreateDiscrepancyEmail(IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data, string[] contacts)
+        private static async Task CreateDiscrepancyEmail(
+            IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data,
+            string[] contacts,
+            ILogger log)
         {
             
                 var cNumbers = GetCNumbers(data);
@@ -314,7 +322,7 @@ namespace AutoBot
                 var summaryFile = CreateSummaryFile(cNumbers, directory);
                 pdfs.Add(summaryFile);
 
-                await SendDiscrepancyEmail(cNumbers, data, contacts, body, pdfs).ConfigureAwait(false);
+                await SendDiscrepancyEmail(cNumbers, data, contacts, body, pdfs, log).ConfigureAwait(false);
 
                 AttachDocumentsPerEmail(cNumbers);
 
@@ -450,7 +458,7 @@ namespace AutoBot
             return summaryFile;
         }
 
-        private static async Task SendDiscrepancyEmail(List<TODO_SubmitDiscrepanciesToCustoms> emailIds, IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data, string[] contacts, string body, List<string> pdfs)
+        private static async Task SendDiscrepancyEmail(List<TODO_SubmitDiscrepanciesToCustoms> emailIds, IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data, string[] contacts, string body, List<string> pdfs, ILogger log)
         {
             string reference = emailIds.First().ReferenceNumber.Substring(0, emailIds.First().ReferenceNumber.IndexOf('-'));
 
@@ -458,12 +466,12 @@ namespace AutoBot
             {
                 await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                     $"Assessed Shipping Discrepancy Entries: {reference}",
-                    contacts, body, pdfs.ToArray()).ConfigureAwait(false);
+                    contacts, body, pdfs.ToArray(), log).ConfigureAwait(false);
             }
             else
             {
                 await EmailDownloader.EmailDownloader.ForwardMsgAsync(data.Key, Utils.Client,
-                    $"Assessed Shipping Discrepancy Entries: {reference}", body, contacts, pdfs.ToArray()).ConfigureAwait(false);
+                    $"Assessed Shipping Discrepancy Entries: {reference}", body, contacts, pdfs.ToArray(), log).ConfigureAwait(false);
             }
         }
 
@@ -535,7 +543,7 @@ namespace AutoBot
         }
 
     
-        public static async Task SubmitDiscrepanciesPreAssessmentReportToCustoms()
+        public static async Task SubmitDiscrepanciesPreAssessmentReportToCustoms(ILogger log)
         {
             try
             {
@@ -544,7 +552,7 @@ namespace AutoBot
                 Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
 
 
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(log,-1).ConfigureAwait(false);
                 var directory = info.Item4;
 
                
@@ -563,7 +571,7 @@ namespace AutoBot
                     attachments.AddRange(AttachExecutions(goodadj, directory));
                     if (attachments.Any())
                     {
-                       await SendDiscrepancyPreAssessmentEmail(totaladjustments, errBreakdown, goodadj, directory, contacts, attachments).ConfigureAwait(false);
+                       await SendDiscrepancyPreAssessmentEmail(totaladjustments, errBreakdown, goodadj, directory, contacts, attachments, log).ConfigureAwait(false);
                     }
                 
             }
@@ -574,13 +582,19 @@ namespace AutoBot
             }
         }
 
-        private static async Task<bool> SendDiscrepancyPreAssessmentEmail(List<TODO_TotalAdjustmentsToProcess> totaladjustments, List<IGrouping<string, SubmitDiscrepanciesErrorReport>> errBreakdown, List<DiscrepancyPreExecutionReport> goodadj,
-            string directory, string[] contacts, List<string> attachments)
+        private static async Task<bool> SendDiscrepancyPreAssessmentEmail(
+            List<TODO_TotalAdjustmentsToProcess> totaladjustments,
+            List<IGrouping<string, SubmitDiscrepanciesErrorReport>> errBreakdown,
+            List<DiscrepancyPreExecutionReport> goodadj,
+            string directory,
+            string[] contacts,
+            List<string> attachments,
+            ILogger log)
         {
             var body = CreateDiscrepancyPreAssesmentEmailBody(totaladjustments, errBreakdown, goodadj);
             await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
                 $"Discrepancy Pre-Assessment Report for  {totaladjustments.Min(x => x.EffectiveDate)} To: {totaladjustments.Max(x => x.EffectiveDate)}",
-                contacts.ToArray(), body, attachments.ToArray()).ConfigureAwait(false);
+                contacts.ToArray(), body, attachments.ToArray(), log).ConfigureAwait(false);
             return true;
         }
 
@@ -761,7 +775,7 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(FileTypes fileType)
+        public static async Task SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(FileTypes fileType, ILogger log)
         {
             try
             {
@@ -799,7 +813,7 @@ namespace AutoBot
                    
                     if (attachments.Any())
                     {
-                        await SendDocSetDiscrepancyEmail(fileType, errors, totaladjustments, errBreakdown, goodadj, docset, contacts, attachments).ConfigureAwait(false);
+                        await SendDocSetDiscrepancyEmail(fileType, errors, totaladjustments, errBreakdown, goodadj, docset, contacts, attachments, log).ConfigureAwait(false);
                     }
                 
             }
@@ -810,13 +824,21 @@ namespace AutoBot
             }
         }
 
-        private static async Task SendDocSetDiscrepancyEmail(FileTypes fileType, List<SubmitDiscrepanciesErrorReport> errors, List<TODO_TotalAdjustmentsToProcess> totaladjustments,
-            List<IGrouping<string, SubmitDiscrepanciesErrorReport>> errBreakdown, List<DiscrepancyPreExecutionReport> goodadj, AsycudaDocumentSetEx docset, string[] contacts, List<string> attachments)
+        private static async Task SendDocSetDiscrepancyEmail(
+            FileTypes fileType,
+            List<SubmitDiscrepanciesErrorReport> errors,
+            List<TODO_TotalAdjustmentsToProcess> totaladjustments,
+            List<IGrouping<string, SubmitDiscrepanciesErrorReport>> errBreakdown,
+            List<DiscrepancyPreExecutionReport> goodadj,
+            AsycudaDocumentSetEx docset,
+            string[] contacts,
+            List<string> attachments,
+            ILogger log)
         {
             var body = CreateDiscrepancyWithErrorsEmailBody(errors, totaladjustments, errBreakdown, goodadj);
             await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, Utils.Client,
                 $"Discrepancy Pre-Assessment Report for  {docset.Declarant_Reference_Number}", body, contacts,
-                attachments.ToArray()).ConfigureAwait(false);
+                attachments.ToArray(), log).ConfigureAwait(false);
         }
 
         private static string CreateDiscrepancyWithErrorsEmailBody(List<SubmitDiscrepanciesErrorReport> errors, List<TODO_TotalAdjustmentsToProcess> totaladjustments, List<IGrouping<string, SubmitDiscrepanciesErrorReport>> errBreakdown,
@@ -1000,7 +1022,7 @@ namespace AutoBot
 
         }
 
-        public static async Task CleanupDocSetDiscpancies(FileTypes fileType)
+        public static async Task CleanupDocSetDiscpancies(FileTypes fileType, ILogger log)
         {
             try
             {
@@ -1028,7 +1050,7 @@ namespace AutoBot
                                    $"Regards,\r\n" +
                                    $"AutoBot";
                         await EmailDownloader.EmailDownloader.SendBackMsgAsync(fileType.EmailId, Utils.Client,
-                            body).ConfigureAwait(false);
+                            body, log).ConfigureAwait(false);
 
 
 
@@ -1075,7 +1097,7 @@ namespace AutoBot
             return ADJUtils.CreateAdjustmentEntries(true,"DIS", fileType);
         }
 
-        public static async Task AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs)
+        public static async Task AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             Console.WriteLine("Assess Discrepancy Entries");
 
@@ -1094,7 +1116,7 @@ namespace AutoBot
                     .GroupBy(x => new { x.AsycudaDocumentSetId, x.Declarant_Reference_Number }).ToList();
                 foreach (var doc in lst)
                 {
-                    await EntryDocSetUtils.AssessEntries(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId).ConfigureAwait(false);
+                    await EntryDocSetUtils.AssessEntries(log, doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId).ConfigureAwait(false);
                 }
 
             }
@@ -1103,7 +1125,7 @@ namespace AutoBot
 
 
         // Change signature to async Task
-        public static async Task AllocateDocSetDiscrepancies(FileTypes fileType)
+        public static async Task AllocateDocSetDiscrepancies(FileTypes fileType, ILogger log)
         {
             try
             {
@@ -1143,11 +1165,11 @@ namespace AutoBot
                 // Replace Wait() with await ConfigureAwait(false)
                 await new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst).ConfigureAwait(false);
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, shortlst, log).ConfigureAwait(false);
 
                 // Replace Wait() with await ConfigureAwait(false)
                 await new MarkErrors()
-                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
+                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, log, shortlst)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
@@ -1368,7 +1390,7 @@ namespace AutoBot
             return new AdjustmentShortService().AutoMatch(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, true);
         }
 
-        public static async Task AssessDiscpancyEntries()
+        public static async Task AssessDiscpancyEntries(ILogger log)
         {
             Console.WriteLine("Assess Discrepancy Entries");
 
@@ -1387,7 +1409,7 @@ namespace AutoBot
                 foreach (var doc in lst)
                 {
 
-                   await POUtils.AssessPOEntry(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId).ConfigureAwait(false);
+                   await POUtils.AssessPOEntry(doc.Key.Declarant_Reference_Number, doc.Key.AsycudaDocumentSetId, log).ConfigureAwait(false);
                 }
 
             }

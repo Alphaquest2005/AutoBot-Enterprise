@@ -9,9 +9,11 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.DataSpace;
 
+using Serilog;
+
 public partial class BaseDataModel
 {
-    public async Task CalculateDocumentSetFreight(int asycudaDocumentSetId)
+    public async Task CalculateDocumentSetFreight(int asycudaDocumentSetId, ILogger log)
     {
         var currency = "";
         double totalfob = 0;
@@ -92,9 +94,9 @@ public partial class BaseDataModel
                     if (!string.IsNullOrEmpty(BaseDataModel.GetClient().Email))
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null,
                             $"Bug Found",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer"),
+                            EmailDownloader.EmailDownloader.GetContacts("Developer", log),
                             $"Weight Used Exceed Total Weight! - DocSet:{asycudaDocumentSet?.Declarant_Reference_Number} TotalWeight:{totalWeight}",
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            Array.Empty<string>(), log).ConfigureAwait(false);
                     weightmsgSent = true;
                 }
 

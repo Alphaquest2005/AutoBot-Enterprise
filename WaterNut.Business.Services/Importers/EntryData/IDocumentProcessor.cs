@@ -4,8 +4,10 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public interface IDocumentProcessor
     {
-        Task<List<dynamic>> Execute(List<dynamic> lines);
+        Task<List<dynamic>> Execute(List<dynamic> lines, ILogger log);
     }
 }

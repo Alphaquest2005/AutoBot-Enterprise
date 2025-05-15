@@ -6,6 +6,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class SaveRawEntryData : IProcessor<RawEntryData>
     {
         private readonly ImportSettings _importSettings;
@@ -16,7 +18,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             
         }
  
-        public async Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
+        public async Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data, ILogger log)
         {
             var dataFile = new DataFile(_importSettings.FileType, _importSettings.DocSet, _importSettings.OverWrite,
                 _importSettings.EmailId, _importSettings.DroppedFilePath, new List<dynamic>());

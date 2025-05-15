@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 ﻿using Core.Common.Extensions;
 using EntryDataDS.Business.Entities;
 using Invoices = OCR.Business.Entities.Invoices;
@@ -49,7 +50,7 @@ namespace WaterNut.DataSpace
                 if (_formattedPdfText != value)
                 {
                     _formattedPdfText = value;
-                    _logger.Debug("Template Property Changed: FormattedPdfText. Length = {NewValueLength}", value?.Length ?? 0);
+                    _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Template Property Changed: FormattedPdfText. Length = {NewValueLength}", nameof(Invoice), "PropertySet", value?.Length ?? 0);
                 }
             }
         }
@@ -63,7 +64,7 @@ namespace WaterNut.DataSpace
                 if (_csvLines != value)
                 {
                     _csvLines = value;
-                    _logger.Debug("Template Property Changed: CsvLines. Count = {NewValueCount}", value?.Count ?? 0);
+                    _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Template Property Changed: CsvLines. Count = {NewValueCount}", nameof(Invoice), "PropertySet", value?.Count ?? 0);
                 }
             }
         }
@@ -77,7 +78,7 @@ namespace WaterNut.DataSpace
                 if (_failedLines != value)
                 {
                     _failedLines = value;
-                    _logger.Debug("Template Property Changed: FailedLines. Count = {NewValueCount}", value?.Count ?? 0);
+                    _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Template Property Changed: FailedLines. Count = {NewValueCount}", nameof(Invoice), "PropertySet", value?.Count ?? 0);
                 }
             }
         }
@@ -88,10 +89,10 @@ namespace WaterNut.DataSpace
             get
             {
                  int? invoiceId = this.OcrInvoices?.Id;
-                 _logger.Verbose("Evaluating Template Success for InvoiceId: {InvoiceId}", invoiceId);
+                 _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Evaluating Template Success for InvoiceId: {InvoiceId}", nameof(Invoice), "PropertyGet", invoiceId);
                  // Added null check for Parts collection itself and individual parts
                  bool success = this.Parts?.All(x => x != null && x.Success) ?? true; // Default to true if Parts is null? Or false? Assuming true.
-                 _logger.Verbose("Template Success evaluation result: {Success}. Part Count: {PartCount}", success, this.Parts?.Count ?? 0);
+                 _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Template Success evaluation result: {Success}. Part Count: {PartCount}", nameof(Invoice), "PropertyGet", success, this.Parts?.Count ?? 0);
                  return success;
             }
         }
@@ -99,8 +100,9 @@ namespace WaterNut.DataSpace
         {
              get
              {
+                  var propertyStopwatch = Stopwatch.StartNew();
                   int? invoiceId = this.OcrInvoices?.Id;
-                  _logger.Verbose("Evaluating Template Lines property for InvoiceId: {InvoiceId}", invoiceId);
+                  _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Evaluating Template Lines property for InvoiceId: {InvoiceId}", nameof(Invoice), "PropertyGet", invoiceId);
                   List<Line> lines = null;
                   try
                   {
@@ -113,11 +115,15 @@ namespace WaterNut.DataSpace
                                 )
                                 .Where(l => l?.OCR_Lines != null) // Filter out lines where key selector resulted in null
                                 .ToList();
-                        _logger.Verbose("Generated {LineCount} distinct lines for InvoiceId: {InvoiceId}", lines.Count, invoiceId);
+                        _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Generated {LineCount} distinct lines for InvoiceId: {InvoiceId}", nameof(Invoice), "PropertyGet", lines.Count, invoiceId);
+                        propertyStopwatch.Stop();
+                        _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Lines property evaluation completed. Duration: {DurationMs}ms.", nameof(Invoice), "PropertyGet", propertyStopwatch.ElapsedMilliseconds);
                   }
                   catch (Exception ex)
                   {
-                       _logger.Error(ex, "Error evaluating Lines property for InvoiceId: {InvoiceId}", invoiceId);
+                       propertyStopwatch.Stop();
+                       _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error evaluating Lines property for InvoiceId: {InvoiceId}",
+                           nameof(Invoice) + " - LinesProperty", propertyStopwatch.ElapsedMilliseconds, invoiceId);
                        lines = new List<Line>(); // Return empty list on error
                   }
                   return lines;
@@ -127,52 +133,62 @@ namespace WaterNut.DataSpace
 
         public Invoice(Invoices ocrInvoices)
         {
-             int? invoiceId = ocrInvoices?.Id;
-             _logger.Debug("Constructing Template object for OcrInvoices Id: {InvoiceId}", invoiceId);
+            var methodStopwatch = Stopwatch.StartNew();
+            int? invoiceId = ocrInvoices?.Id;
+            _logger.Information("ACTION_START: {ActionName}. Context: [OcrInvoicesId: {InvoiceId}]",
+                nameof(Invoice), invoiceId);
 
              // Null check input
              if (ocrInvoices == null)
              {
-                  _logger.Error("Template constructor called with null OcrInvoices object. Cannot initialize.");
+                  methodStopwatch.Stop();
+                  _logger.Error("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: Null OcrInvoices object.",
+                      nameof(Invoice), methodStopwatch.ElapsedMilliseconds);
                   throw new ArgumentNullException(nameof(ocrInvoices), "OcrInvoices object cannot be null.");
              }
 
             OcrInvoices = ocrInvoices;
-             _logger.Verbose("Assigned OcrInvoices (Id: {InvoiceId}) to Template property.", invoiceId);
+             _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Assigned OcrInvoices (Id: {InvoiceId}) to Template property.", nameof(Invoice), "Assignment", invoiceId);
 
             // Initialize Parts collection safely
             try
             {
-                 _logger.Debug("Filtering and selecting Parts for InvoiceId: {InvoiceId}", invoiceId);
+                 _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Filtering and selecting Parts for InvoiceId: {InvoiceId}", nameof(Invoice), "PartsInitialization", invoiceId);
                  if (ocrInvoices.Parts == null)
                  {
-                      _logger.Warning("OcrInvoices Id: {InvoiceId} has a null Parts collection. Template will have no parts.", invoiceId);
+                      _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): OcrInvoices Id: {InvoiceId} has a null Parts collection. Template will have no parts.", nameof(Invoice), "PartsInitialization", invoiceId);
                       this.Parts = new List<Part>(); // Initialize to empty list
                  }
                  else
                  {
-                     _logger.Verbose("Filtering criteria: Part is not null AND ((Has ParentParts AND No ChildParts) OR (No ParentParts AND No ChildParts))");
+                     _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Filtering criteria: Part is not null AND ((Has ParentParts AND No ChildParts) OR (No ParentParts AND No ChildParts))", nameof(Invoice), "PartsInitialization");
                      // Added null checks within LINQ for safety
                      this.Parts = ocrInvoices.Parts
                          .Where(x => x != null && // Check part is not null
                                      ( (x.ParentParts != null && x.ParentParts.Any() && (x.ChildParts == null || !x.ChildParts.Any())) || // Condition 1 (safe checks)
                                        ((x.ParentParts == null || !x.ParentParts.Any()) && (x.ChildParts == null || !x.ChildParts.Any())) ) // Condition 2 (safe checks)
-                               )
+                                )
                          .Select(z => {
-                              _logger.Verbose("Creating Part object for OCR_Part Id: {PartId}", z.Id);
+                              _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Creating Part object for OCR_Part Id: {PartId}", nameof(Invoice), "PartCreation", z.Id);
                               // Assuming Part constructor handles potential errors/logging
                               return new Part(z);
                               })
                          .ToList();
                  }
-                  _logger.Information("Initialized InvoiceId: {InvoiceId} with {PartCount} selected Parts.", invoiceId, this.Parts?.Count ?? 0);
+                  _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Initialized InvoiceId: {InvoiceId} with {PartCount} selected Parts.", nameof(Invoice), "PartsInitialization", invoiceId, this.Parts?.Count ?? 0);
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex, "Error during Parts initialization in Template constructor for OcrInvoices Id: {InvoiceId}", invoiceId);
+                 methodStopwatch.Stop();
+                 _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error during Parts initialization in Template constructor for OcrInvoices Id: {InvoiceId}",
+                     nameof(Invoice) + " - PartsInitialization", methodStopwatch.ElapsedMilliseconds, invoiceId);
                  this.Parts = new List<Part>(); // Ensure Parts is not null even on error
-                 // throw; // Optionally re-throw
+                 throw; // Re-throw after logging
             }
+
+            methodStopwatch.Stop();
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms.",
+                nameof(Invoice), methodStopwatch.ElapsedMilliseconds);
         }
 
         // Static members - logging might be less relevant unless initialization is complex

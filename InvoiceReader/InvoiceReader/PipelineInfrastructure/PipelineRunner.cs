@@ -6,17 +6,20 @@ using System; // Added
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using System.Diagnostics;
+
     public class PipelineRunner<TContext>
     {
-        private static readonly ILogger _logger = Log.ForContext<PipelineRunner<TContext>>();
+        private readonly ILogger _logger; // Use instance logger
 
         private readonly IReadOnlyList<IPipelineStep<TContext>> _steps;
         private readonly string _pipelineName;
 
-        public PipelineRunner(IEnumerable<IPipelineStep<TContext>> steps, string pipelineName = "Unnamed Pipeline")
+        public PipelineRunner(IEnumerable<IPipelineStep<TContext>> steps, ILogger logger, string pipelineName = "Unnamed Pipeline")
         {
             _steps = steps?.ToList() ?? new List<IPipelineStep<TContext>>();
             _pipelineName = pipelineName;
+            _logger = logger; // Assign the passed logger
             LogPipelineInitialization();
         }
 
@@ -32,14 +35,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                  // Log an error if the context is expected to be InvoiceProcessingContext but isn't.
                  // This shouldn't happen if used correctly but is a safeguard.
-                 _logger.Error("{PipelineName} received context of type {ContextType} but expected InvoiceProcessingContext for error reporting.", _pipelineName, context?.GetType().Name ?? "null");
+                 _logger.Error("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                     nameof(Run), "ContextValidation", "Pipeline received unexpected context type for error reporting.", $"Expected: {typeof(InvoiceProcessingContext).Name}, Received: {context?.GetType().Name ?? "null"}", new { PipelineName = _pipelineName });
                  // We might not be able to add to context.Errors here, depending on the actual type.
                  // Consider throwing an exception or returning false based on desired strictness.
                  return false; // Stop if context type is wrong for error handling
             }
 
 
-            _logger.Information("Starting execution of {PipelineName}.", _pipelineName);
+            _logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                $"{_pipelineName}Execution", $"Starting execution of pipeline: {_pipelineName}");
 
             int stepCounter = 0;
             bool overallSuccess = true; // Tracks if all steps succeeded
@@ -48,7 +53,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 stepCounter++;
                 string stepName = GetStepName(step, stepCounter);
-                 LogStepProcessing(stepCounter, stepName); // Moved logging here
+                LogStepProcessing(stepCounter, stepName); // Moved logging here
 
                 if (step == null)
                 {
@@ -75,7 +80,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogPipelineInitialization()
         {
-            _logger.Debug("{PipelineName} runner initialized with {StepCount} steps.", _pipelineName, _steps.Count);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(PipelineRunner<TContext>), "Initialization", "Pipeline runner initialized.", $"PipelineName: {_pipelineName}, StepCount: {_steps.Count}", "");
             if (_steps.Count == 0)
             {
                 LogZeroStepsWarning();
@@ -84,7 +90,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogZeroStepsWarning()
         {
-            _logger.Warning("{PipelineName} runner initialized with zero steps.", _pipelineName);
+            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(PipelineRunner<TContext>), "Initialization", "Pipeline runner initialized with zero steps.", $"PipelineName: {_pipelineName}", "Expected steps for execution.");
         }
 
         private bool ValidateContext(TContext context)
@@ -99,55 +106,69 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogNullContextError()
         {
-            _logger.Error("{PipelineName} cannot run with a null context.", _pipelineName);
+            _logger.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                nameof(Run), "Execute pipeline steps", 0, $"{_pipelineName} cannot run with a null context.");
+            _logger.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                $"{_pipelineName}Execution", "Context validation", 0, $"{_pipelineName} cannot run with a null context.");
         }
 
 
 
         private void LogNullStepWarning(int stepCounter)
         {
-            _logger.Warning("Skipping null step at position {StepNumber} in {PipelineName}.", stepCounter, _pipelineName);
+            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "StepExecution", "Skipping null step.", $"PipelineName: {_pipelineName}, StepNumber: {stepCounter}", "Null step encountered in pipeline definition.");
         }
 
         // Renamed and made async, includes error handling and context update
         private async Task<bool> ExecuteStepAsync(IPipelineStep<TContext> step, TContext context, InvoiceProcessingContext invoiceContext, string stepName, int stepCounter)
         {
+            var stepStopwatch = Stopwatch.StartNew(); // Start stopwatch for step execution
             try
             {
-                LogStepExecutionStart(stepName);
+                LogStepExecutionStart(stepName, stepCounter);
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                    $"Step {stepCounter} ({stepName})", "ASYNC_EXPECTED"); // Log before step execution
                 bool stepResult = await step.Execute(context).ConfigureAwait(false); // Use await
+                stepStopwatch.Stop(); // Stop stopwatch on success or reported failure
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    $"Step {stepCounter} ({stepName})", stepStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after step execution returns control
 
                 if (!stepResult)
                 {
                     // Step indicated failure without throwing an exception
                     string failureMessage = $"Step {stepCounter} ({stepName}) in {_pipelineName} reported failure (returned false).";
-                    LogStepFailure(stepName, stepCounter); // Log the failure
+                    LogStepFailure(stepName, stepCounter, stepStopwatch.ElapsedMilliseconds); // Log the failure with duration
                     invoiceContext?.AddError(failureMessage); // Add error to context if possible
                     return false; // Indicate failure, stop pipeline
                 }
 
-                LogStepSuccess(stepName, stepCounter);
+                LogStepSuccess(stepName, stepCounter, stepStopwatch.ElapsedMilliseconds);
                 return true; // Indicate success, continue pipeline
             }
             catch (Exception ex)
             {
+                stepStopwatch.Stop(); // Stop stopwatch on exception
                 // Exception occurred during step execution
                 string errorMessage = $"Error executing Step {stepCounter} ({stepName}) in {_pipelineName}: {ex.Message}";
-                LogStepExecutionError(ex, stepName, stepCounter); // Log the error with exception details
+                LogStepExecutionError(ex, stepName, stepCounter, stepStopwatch.ElapsedMilliseconds); // Log the error with exception details and duration
                 invoiceContext?.AddError(errorMessage); // Add error to context if possible
                 return false; // Indicate failure, stop pipeline
             }
         }
 
-        private void LogStepExecutionStart(string stepName)
+        private void LogStepExecutionStart(string stepName, int stepCounter)
         {
-            _logger.Verbose("Executing step {StepName}...", stepName);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "StepExecution", "Executing pipeline step.", $"PipelineName: {_pipelineName}, StepNumber: {stepCounter}, StepName: {stepName}", "");
         }
 
-        private void LogStepExecutionError(Exception ex, string stepName, int stepCounter)
+        private void LogStepExecutionError(Exception ex, string stepName, int stepCounter, long durationMs)
         {
-            _logger.Error(ex, "Error executing Step {StepNumber} ({StepName}) in {PipelineName}. Stopping pipeline execution.",
-                stepCounter, stepName, _pipelineName);
+            _logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                $"Step {stepCounter} ({stepName})", "Execute pipeline step", durationMs, $"Error executing step. Error: {ex.Message}");
+            _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                $"{_pipelineName}Execution - Step {stepCounter}", "Step execution", durationMs, $"Error executing Step {stepCounter} ({stepName}). Stopping pipeline execution. Error: {ex.Message}");
         }
 
         // GetStepName remains largely the same, just logging call moved inside Run loop
@@ -159,21 +180,28 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogStepProcessing(int stepCounter, string stepName)
         {
-            _logger.Verbose("Processing step {StepNumber}: {StepName} in {PipelineName}.", stepCounter, stepName, _pipelineName);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "StepProcessing", "Processing pipeline step.", $"PipelineName: {_pipelineName}, StepNumber: {stepCounter}, StepName: {stepName}", "");
         }
 
         // Removed HandleStepResult as its logic is now integrated into ExecuteStepAsync
 
-        private void LogStepFailure(string stepName, int stepCounter)
+        private void LogStepFailure(string stepName, int stepCounter, long durationMs)
         {
-            _logger.Warning("Step {StepNumber} ({StepName}) in {PipelineName} returned false. Stopping pipeline execution.",
-                stepCounter, stepName, _pipelineName);
+            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "StepResult", "Pipeline step reported failure (returned false).", $"PipelineName: {_pipelineName}, StepNumber: {stepCounter}, StepName: {stepName}", "");
+            _logger.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                $"Step {stepCounter} ({stepName})", "Execute pipeline step", durationMs, "Step reported failure (returned false).");
+            _logger.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                $"{_pipelineName}Execution - Step {stepCounter}", "Step result check", durationMs, $"Step {stepCounter} ({stepName}) reported failure. Stopping pipeline execution.");
         }
 
-        private void LogStepSuccess(string stepName, int stepCounter)
+        private void LogStepSuccess(string stepName, int stepCounter, long durationMs)
         {
-            _logger.Information("Step {StepNumber} ({StepName}) in {PipelineName} completed successfully.",
-                stepCounter, stepName, _pipelineName);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "StepResult", "Pipeline step completed successfully.", $"PipelineName: {_pipelineName}, StepNumber: {stepCounter}, StepName: {stepName}", "");
+            _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                $"Step {stepCounter} ({stepName})", "Execute pipeline step", "", durationMs);
         }
 
         // Updated LogPipelineCompletion to use overallSuccess flag
@@ -181,21 +209,36 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             if (overallSuccess)
             {
-                LogPipelineSuccess();
+                LogPipelineSuccess(stepCounter);
             }
-            // else case is handled by LogPipelinePrematureStop called within the loop
-            // We could add a final "Pipeline finished with errors" log here if needed.
-             _logger.Information("{PipelineName} finished execution. Overall Success: {OverallSuccess}", _pipelineName, overallSuccess);
+            else
+            {
+                // LogPipelinePrematureStop is called within the loop when a step fails
+                // Add a final log indicating pipeline finished with errors
+                LogPipelineFinishedWithErrors(stepCounter);
+            }
+             _logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                 $"{_pipelineName}Execution", $"Pipeline finished execution. Overall Success: {overallSuccess}", 0); // Duration will be added in the calling method
         }
 
-        private void LogPipelineSuccess()
+        private void LogPipelineSuccess(int stepCount)
         {
-            _logger.Information("{PipelineName} completed all {StepCount} steps successfully.", _pipelineName, _steps.Count);
+            _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                nameof(Run), "Execute pipeline steps", $"OverallSuccess: true, StepsCompleted: {stepCount}", 0); // Duration will be added in the calling method
         }
 
         private void LogPipelinePrematureStop(int stepCounter)
         {
-            _logger.Warning("{PipelineName} execution stopped prematurely after Step {StepNumber}.", _pipelineName, stepCounter);
+            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Run), "PipelineControlFlow", "Pipeline execution stopped prematurely.", $"PipelineName: {_pipelineName}, StoppedAfterStep: {stepCounter}", "");
+        }
+
+        private void LogPipelineFinishedWithErrors(int stepCounter)
+        {
+             _logger.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                 nameof(Run), "Execute pipeline steps", 0, $"Pipeline finished with errors after step {stepCounter}."); // Duration will be added in the calling method
+             _logger.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                 $"{_pipelineName}Execution", "Pipeline execution with errors", 0, $"Pipeline finished with errors after step {stepCounter}."); // Duration will be added in the calling method
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class ProcessorPipline<T> : IProcessor<T>
     {
         private readonly List<IProcessor<T>> _processors;
@@ -15,7 +17,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _processors = processors;
         }
  
-        public async Task<Result<List<T>>> Execute(List<T> data) => await _processors.Aggregate((o, n) => ChainedProcessorConstruction.Then(o, n)).Execute(data).ConfigureAwait(false);
+        public async Task<Result<List<T>>> Execute(List<T> data, ILogger log) => await _processors.Aggregate((o, n) => ChainedProcessorConstruction.Then(o, n)).Execute(data).ConfigureAwait(false);
     }
     
 }

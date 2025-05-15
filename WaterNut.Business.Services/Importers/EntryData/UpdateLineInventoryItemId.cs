@@ -6,9 +6,11 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class UpdateLineInventoryItemId : IProcessor<InventoryDataItem>
     {
-        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data, ILogger log)
         {
             var inventoryDataItems = data.Select(x =>
                 {

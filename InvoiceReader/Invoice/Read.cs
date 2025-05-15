@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 ﻿using MoreLinq;
 using Core.Common.Extensions; // Added for ForEach
 using System.Collections.Generic; // Added
@@ -19,16 +20,22 @@ namespace WaterNut.DataSpace
         // Primary Read method accepting list of lines
         public List<dynamic> Read(List<string> text)
         {
+            var methodStopwatch = Stopwatch.StartNew();
             int? invoiceId = this.OcrInvoices?.Id;
             string invoiceName = this.OcrInvoices?.Name ?? "Unknown";
             int inputLineCount = text?.Count ?? 0;
             string methodName = nameof(Read) + "(List<string>)";
-            _logger.Information(
-                "Entering {MethodName} for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'. Received {LineCount} lines.",
+            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, Name: '{InvoiceName}', InputLineCount: {InputLineCount}]",
                 methodName, invoiceId, invoiceName, inputLineCount);
 
             // --- Input Validation ---
-            if (ValidateInput(text, methodName, invoiceId, out var read)) return read;
+            if (ValidateInput(text, methodName, invoiceId, out var read))
+            {
+                methodStopwatch.Stop();
+                _logger.Information("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: Input validation failed.",
+                    methodName, methodStopwatch.ElapsedMilliseconds);
+                return read;
+            }
 
             // --- Main Processing ---
             List<dynamic>
@@ -37,128 +44,143 @@ namespace WaterNut.DataSpace
             {
                 ExtractValues(text, methodName, inputLineCount, invoiceId);
                 ////////////////////////
-                
-                if (ProcessValues(methodName, invoiceId, finalResult, out var finalResultList, out var list)) return list;
+
+                if (ProcessValues(methodName, invoiceId, finalResult, out var finalResultList, out var list))
+                {
+                    methodStopwatch.Stop();
+                    _logger.Information("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: No lines extracted.",
+                        methodName, methodStopwatch.ElapsedMilliseconds);
+                    return list;
+                }
 
                 ////////////////////
 
-                return ReturnFinalResults(finalResultList, methodName, invoiceId, finalResult);
+                var result = ReturnFinalResults(finalResultList, methodName, invoiceId, finalResult);
+
+                methodStopwatch.Stop();
+                _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultInstanceCount: {ResultInstanceCount}",
+                    methodName, methodStopwatch.ElapsedMilliseconds, (result?.Count > 0 && result[0] is List<IDictionary<string, object>> resultList) ? resultList.Count : 0);
+                return result;
             }
             catch (Exception e)
             {
-                LogReadError(e, methodName, invoiceId, invoiceName);
+                methodStopwatch.Stop();
+                _logger.Error(e, "ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Unhandled exception during processing for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'.",
+                    methodName, methodStopwatch.ElapsedMilliseconds, invoiceId, invoiceName);
                 throw; // Re-throw original exception to signal failure
             }
         }
 
-        private static void LogReadError(Exception e, string methodName, int? invoiceId, string invoiceName)
-        {
-            _logger.Error(e,
-                "{MethodName}: Unhandled exception during processing for InvoiceId: {InvoiceId}, Name: '{InvoiceName}'.",
-                methodName, invoiceId, invoiceName);
-            // Success property evaluation happens later based on Part success.
-            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to exception.", methodName,
-                invoiceId);
-        }
+        // Removed LogReadError as its logic is integrated into the catch block above.
 
         private bool ValidateInput(List<string> text, string methodName, int? invoiceId, out List<dynamic> read)
-        { 
+        {
+            var validationStopwatch = Stopwatch.StartNew();
+            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}]",
+                nameof(ValidateInput), invoiceId);
+
             var emptyResult = new List<dynamic> { new List<IDictionary<string, object>>() };
             read = emptyResult;
             if (text == null)
             {
-                return LogNullTextIssue(methodName, invoiceId);
+                validationStopwatch.Stop();
+                _logger.Error("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: Called with null text list. Cannot proceed.",
+                    nameof(ValidateInput), validationStopwatch.ElapsedMilliseconds);
+                return true;
             }
 
             if (this.Parts == null)
             {
-                return LogNullPartsIssue(methodName, invoiceId);
+                validationStopwatch.Stop();
+                _logger.Error("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: Template Parts collection is null. Cannot proceed.",
+                    nameof(ValidateInput), validationStopwatch.ElapsedMilliseconds);
+                return true;
             }
 
-            return LogValidationPassed(methodName, invoiceId);
-        }
-
-        private static bool LogValidationPassed(string methodName, int? invoiceId)
-        {
-            _logger.Verbose("{MethodName}: Input validation passed for InvoiceId: {InvoiceId}.", methodName, invoiceId);
+            validationStopwatch.Stop();
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Result: Input validation passed.",
+                nameof(ValidateInput), validationStopwatch.ElapsedMilliseconds);
             return false;
         }
 
-        private static bool LogNullPartsIssue(string methodName, int? invoiceId)
-        {
-            _logger.Error(
-                "{MethodName}: Template Parts collection is null for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.",
-                methodName, invoiceId);
-                
-            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to null Parts collection.",
-                methodName, invoiceId);
-                
-            return true;
-        }
-
-        private static bool LogNullTextIssue(string methodName, int? invoiceId)
-        {
-            _logger.Error(
-                "{MethodName}: Called with null text list for InvoiceId: {InvoiceId}. Cannot proceed. Returning empty structure.",
-                methodName, invoiceId);
-               
-            _logger.Information("Exiting {MethodName} for InvoiceId: {InvoiceId} due to null text list.",
-                methodName, invoiceId);
-                
-            return true;
-        }
+        // Removed LogValidationPassed, LogNullPartsIssue, LogNullTextIssue as their logic is integrated into ValidateInput.
 
         private static List<dynamic> ReturnFinalResults(List<IDictionary<string, object>> finalResultList, string methodName, int? invoiceId, List<dynamic> finalResult)
         {
+            var methodStopwatch = Stopwatch.StartNew();
+            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, FinalResultListCount: {FinalResultListCount}]",
+                nameof(ReturnFinalResults), invoiceId, finalResultList?.Count ?? 0);
+
             if (!finalResultList.Any())
             {
-                _logger.Warning(
-                    "{MethodName}: No instances assembled after SetPartLineValues for InvoiceId: {InvoiceId}. Returning empty list structure.",
-                    methodName, invoiceId);
+                methodStopwatch.Stop();
+                _logger.Warning("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: No instances assembled after SetPartLineValues. Returning empty list structure.",
+                    nameof(ReturnFinalResults), methodStopwatch.ElapsedMilliseconds);
                 // finalResult is already the empty structure
-                _logger.Information(
-                    "Exiting {MethodName} for InvoiceId: {InvoiceId} because no instances were assembled.",
-                    methodName, invoiceId); // Corrected methodId to methodName
                 return finalResult;
             }
 
             // --- Success ---
             finalResult = new List<dynamic> { finalResultList }; // Wrap the final list
-            _logger.Information(
-                "Exiting {MethodName} successfully for InvoiceId: {InvoiceId}. Returning {InstanceCount} assembled instances.",
-                methodName, invoiceId, finalResultList.Count);
+            methodStopwatch.Stop();
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Returning {InstanceCount} assembled instances.",
+                nameof(ReturnFinalResults), methodStopwatch.ElapsedMilliseconds, finalResultList.Count);
             return finalResult;
         }
 
         private bool ProcessValues(string methodName, int? invoiceId, List<dynamic> finalResult, out List<IDictionary<string, object>> finalResultList, out List<dynamic> list)
         {
+            var methodStopwatch = Stopwatch.StartNew();
+            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}]",
+                nameof(ProcessValues), invoiceId);
+
             list = new List<dynamic>();
             finalResultList = new List<IDictionary<string, object>>();
             // --- Post-Iteration Processing ---
             CallAddMissingRequiredFieldValues(methodName, invoiceId);
 
             // Check if any values were extracted (using the Lines property which has logging)
-            if (WereLinesExtracted(methodName, invoiceId, finalResult, ref list)) return true;
+            if (WereLinesExtracted(methodName, invoiceId, finalResult, ref list))
+            {
+                methodStopwatch.Stop();
+                _logger.Information("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: No lines extracted.",
+                    nameof(ProcessValues), methodStopwatch.ElapsedMilliseconds);
+                return true;
+            }
 
 
             // --- Result Assembly ---
             var ores = AssembleResults(methodName, invoiceId);
 
-            return FlattenResults(methodName, out finalResultList, ores);
+            var result = FlattenResults(methodName, out finalResultList, ores);
+
+            methodStopwatch.Stop();
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms.",
+                nameof(ProcessValues), methodStopwatch.ElapsedMilliseconds);
+            return result;
         }
 
         private static bool FlattenResults(string methodName, out List<IDictionary<string, object>> finalResultList, List<List<IDictionary<string, object>>> ores)
         {
+            var methodStopwatch = Stopwatch.StartNew();
+            _logger.Information("ACTION_START: {ActionName}. Context: [OresCount: {OresCount}]",
+                nameof(FlattenResults), ores?.Count ?? 0);
+
             // Flatten the results from all parts safely
             finalResultList = ores
                 .SelectMany(x => x ?? Enumerable.Empty<IDictionary<string, object>>()) // Safe SelectMany
                 .Where(d => d != null) // Filter out potential null dictionaries
                 .ToList();
-            _logger.Debug("{MethodName}: Flattened results. Final instance count: {FinalCount}", methodName,
-                finalResultList.Count);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Flattened results. Final instance count: {FinalCount}",
+                nameof(FlattenResults), "Flattening", finalResultList.Count);
             // Log the content of finalResultList
-            _logger.Verbose("{MethodName}: Content of finalResultList before final check: {@FinalResultList}", methodName, finalResultList);
-            return false;
+            _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Content of finalResultList before final check: {@FinalResultList}",
+                nameof(FlattenResults), "ContentCheck", finalResultList);
+
+            methodStopwatch.Stop();
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultCount: {ResultCount}",
+                nameof(FlattenResults), methodStopwatch.ElapsedMilliseconds, finalResultList.Count);
+            return false; // This method doesn't indicate failure, just returns the flattened list
         }
 
         private List<List<IDictionary<string, object>>> AssembleResults(string methodName, int? invoiceId)

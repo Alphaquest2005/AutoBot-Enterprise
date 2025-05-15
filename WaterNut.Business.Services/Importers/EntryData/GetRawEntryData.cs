@@ -5,6 +5,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class GetRawEntryData : IProcessor<RawEntryData>
     {
         private readonly ImportSettings _importSettings;
@@ -16,7 +18,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _lines = lines;
         }
  
-        public Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data)
+        public Task<Result<List<RawEntryData>>> Execute(List<RawEntryData> data, ILogger log)
         {
             return  Task.FromResult(new Result<List<RawEntryData>>(RawEntryDataExtractor.CreateRawEntryData(this._lines, this._importSettings.DocSet, this._importSettings.EmailId, this._importSettings.FileType, this._importSettings.DroppedFilePath),true,""));
         }

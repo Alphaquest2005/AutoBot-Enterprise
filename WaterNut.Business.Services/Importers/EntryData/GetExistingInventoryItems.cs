@@ -11,6 +11,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class GetExistingInventoryItems : IProcessor<InventoryDataItem>
     {
         private readonly FileTypes _fileType;
@@ -22,7 +24,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
  
-        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data, ILogger log)
         {
  
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);

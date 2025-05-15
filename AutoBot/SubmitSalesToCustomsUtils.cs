@@ -14,9 +14,11 @@ using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class SubmitSalesToCustomsUtils
     {
-        public static async Task SubmitSalesToCustoms() => await SubmitSalesToCustoms(GetSalesDataToSubmit()).ConfigureAwait(false);
+        public static async Task SubmitSalesToCustoms(ILogger log) => await SubmitSalesToCustoms(GetSalesDataToSubmit(), log).ConfigureAwait(false);
 
         private static IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> GetSalesDataToSubmit()
         {
@@ -55,9 +57,11 @@ namespace AutoBot
             }
         }
 
-        public static async Task ReSubmitSalesToCustoms(FileTypes ft, FileInfo[] fs) => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData(ft).ConfigureAwait(false)).ConfigureAwait(false);
+        public static async Task ReSubmitSalesToCustoms(FileTypes ft, FileInfo[] fs, ILogger log) => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData(ft).ConfigureAwait(false), log).ConfigureAwait(false);
 
-        private static async Task SubmitSalesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
+        private static async Task SubmitSalesToCustoms(
+            IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst,
+            ILogger log)
         {
             try
             {
@@ -85,7 +89,7 @@ namespace AutoBot
 
                  
                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Assessed Ex-Warehoused Entries",
-                       contacts, body, pdfs.ToArray()).ConfigureAwait(false);
+                       contacts, body, pdfs.ToArray(), log).ConfigureAwait(false);
               
                     UpdateAttachmentLog(RES);
             }
@@ -180,6 +184,6 @@ namespace AutoBot
                 .Distinct()
                 .ToArray();
 
-        public static async Task ReSubmitSalesToCustoms() => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData().ConfigureAwait(false)).ConfigureAwait(false);
+        public static async Task ReSubmitSalesToCustoms(ILogger log) => await SubmitSalesToCustoms(await DISUtils.GetSubmitEntryData(log).ConfigureAwait(false), log).ConfigureAwait(false);
     }
 }

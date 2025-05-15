@@ -7,6 +7,8 @@ using MoreLinq;
 using WaterNut.Business.Services.Utils;
 using WaterNut.Business.Services.Utils.SavingInventoryItems;
 using WaterNut.DataSpace;
+using Serilog; // Added Serilog using
+using Serilog.Context; // Added Serilog.Context using
 
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.InventoryProcessing
@@ -17,80 +19,85 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
-            try
+            // Added LogContext for logging within this method
+            using (LogContext.PushProperty("InventoryProcessorSet", nameof(Execute)))
             {
-
-
-            var existingInventoryItem = InventoryItemDataUtils.GetExistingInventoryItemFromData(inventoryDataList, inventorySource);
-
-            existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
-                .Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
-                .ForEach(x =>
+                try
                 {
-                    x.Item.StartTracking();
-                    x.Item.TariffCode = x.Data.Key.TariffCode;
-                });
 
-            existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
-                .Where(x => string.IsNullOrEmpty(x.Data.Key.ItemDescription))
-                .ForEach(x => x.Data.Data.ForEach(z =>
+
+                    var existingInventoryItem = InventoryItemDataUtils.GetExistingInventoryItemFromData(inventoryDataList, inventorySource);
+
+                    existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
+                        .Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
+                        .ForEach(x =>
+                        {
+                            x.Item.StartTracking();
+                            x.Item.TariffCode = x.Data.Key.TariffCode;
+                        });
+
+                    existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
+                        .Where(x => string.IsNullOrEmpty(x.Data.Key.ItemDescription))
+                        .ForEach(x => x.Data.Data.ForEach(z =>
+                        {
+                            x.Item.StartTracking();
+                            z.ItemDescription = x.Item.Description;
+                        }));
+
+                    existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
+                        .Where(x => !string.IsNullOrEmpty(x.Data.Key.ItemDescription))
+                        .ForEach(x =>
+                        {
+                            x.Item.StartTracking();
+                            x.Item.Description = x.Data.Key.ItemDescription;
+                        });
+
+
+                    var newInventorySources = existingInventoryItem
+                        .Where(i => i.Item.InventoryItemSources.All(x => x.InventorySourceId != inventorySource.Id))
+                        .Select(x => InventorySourceProcessor.CreateInventoryItemSource(inventorySource, x.Item))
+                        .ToList();
+                    new InventorySourceProcessor().SaveInventoryItemSource(newInventorySources);
+
+                    await new SaveInventoryItemsSelector().Execute(existingInventoryItem).ConfigureAwait(false);
+                    ///////////////
+
+                    existingInventoryItem.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
+
+                    existingInventoryItem
+                        .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+
+
+                    existingInventoryItem
+                        .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+
+
+                    // Await the async method call
+                    // Pass Log.Logger as the ILogger argument
+                    var newInventoryItems = await InventoryItemDataUtils.GetNewInventoryItemFromData(inventoryDataList, inventorySource, Log.Logger).ConfigureAwait(false);
+
+
+
+                    // Revert to iterating over x.Data.Data
+                    newInventoryItems.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
+
+                    newInventoryItems
+                        .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+
+
+                    newInventoryItems
+                        .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
+                        .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
+                    return true;
+                }
+                catch (Exception e)
                 {
-                    x.Item.StartTracking();
-                    z.ItemDescription = x.Item.Description;
-                }));
-
-            existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
-                .Where(x => !string.IsNullOrEmpty(x.Data.Key.ItemDescription))
-                .ForEach(x =>
-                {
-                    x.Item.StartTracking();
-                    x.Item.Description = x.Data.Key.ItemDescription;
-                });
-
-
-            var newInventorySources = existingInventoryItem
-                .Where(i => i.Item.InventoryItemSources.All(x => x.InventorySourceId != inventorySource.Id))
-                .Select(x => InventorySourceProcessor.CreateInventoryItemSource(inventorySource, x.Item))
-                .ToList();
-             new InventorySourceProcessor().SaveInventoryItemSource(newInventorySources);
-
-           await new SaveInventoryItemsSelector().Execute(existingInventoryItem).ConfigureAwait(false);
-            ///////////////
-
-            existingInventoryItem.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
-
-            existingInventoryItem
-                .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
-
-
-            existingInventoryItem
-                .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
-
-
-            // Await the async method call
-            var newInventoryItems = await InventoryItemDataUtils.GetNewInventoryItemFromData(inventoryDataList, inventorySource).ConfigureAwait(false);
-
-
-
-            // Revert to iterating over x.Data.Data
-            newInventoryItems.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));
-
-            newInventoryItems
-                .Select(x => (DataItem: x, Code: InventoryCodesProcessor.GetInventoryItemCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
-
-
-            newInventoryItems
-                .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
-                .ForEach(x => InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false));
-            return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
+                    Console.WriteLine(e);
+                    return false;
+                }
             }
 
         }

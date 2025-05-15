@@ -7,7 +7,8 @@ using CounterPointQS.Business.Entities;
 
 namespace CounterPointQS.Business.Services
 {
-    
+    using Serilog;
+
     public partial interface ICounterPointSalesService
     {
         [OperationContract]
@@ -16,7 +17,7 @@ namespace CounterPointQS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId);
+        Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId, ILogger log);
 
     }
 }

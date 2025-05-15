@@ -10,11 +10,15 @@ using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.DataSpace
 {
+    using Serilog;
+
     public class InventoryCodesProcessor
     {
-        public static async Task SaveInventoryCodes(InventorySource inventorySource,
+        public static async Task SaveInventoryCodes(
+            InventorySource inventorySource,
             List<(string SupplierItemNumber, string SupplierItemDescription)> itemCodes,
-            InventoryItem i)
+            InventoryItem i,
+            ILogger log)
         {
             try
             {
@@ -41,7 +45,7 @@ namespace WaterNut.DataSpace
                                  TariffCode: ""), // Assuming TariffCode is not available here
                                 new List<dynamic>() // Assuming no raw data items needed here
                             );
-                            var inventoryDataItem = await InventoryItemDataUtils.CreateInventoryItem(inventorySource, inventoryData).ConfigureAwait(false);
+                            var inventoryDataItem = await InventoryItemDataUtils.CreateInventoryItem(inventorySource, inventoryData, log).ConfigureAwait(false);
                             invItem = inventoryDataItem.Item; // Get the created InventoryItem
                             ctx.InventoryItems.Add(invItem);
                            // ctx.SaveChanges(); // Consider if saving immediately is needed or batch save later

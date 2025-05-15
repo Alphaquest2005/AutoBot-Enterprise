@@ -9,6 +9,8 @@ using CoreEntities.Business.Entities;
 
 namespace CoreEntities.Business.Services
 {
+    using Serilog;
+
     [ServiceContract(Namespace = "http://www.insight-software.com/WaterNut")]
     public partial interface IDocumentSetService : IBusinessService
     {
@@ -29,7 +31,7 @@ namespace CoreEntities.Business.Services
         Task ExportDocSet(int docSetId, string directoryName);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx);
+        Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx, ILogger log);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]

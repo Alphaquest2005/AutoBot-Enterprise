@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
+using Serilog; // Added
 using Newtonsoft.Json; // Required for serialization in PostRequestAsync
 using Newtonsoft.Json.Linq; // Required for parsing in helper methods
 using Polly; // Required for AsyncRetryPolicy using
@@ -21,7 +21,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
     {
         // Dependencies injected by concrete class constructors
         protected readonly string ApiKey;
-        protected readonly ILogger Logger;
+        protected readonly Serilog.ILogger Logger;
         protected readonly HttpClient HttpClient;
         protected readonly AsyncRetryPolicy RetryPolicy;
 
@@ -49,10 +49,10 @@ namespace WaterNut.Business.Services.Utils.LlmApi
         public abstract ModelPricing? GetPricing(string modelName);
         public abstract string GetDefaultModelName();
 
-        protected LlmStrategyBase(string apiKey, ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy)
+        protected LlmStrategyBase(string apiKey, Serilog.ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy)
         {
             ApiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger)); // Assign the Serilog logger
             HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient)); // Assign the injected client
             RetryPolicy = retryPolicy ?? throw new ArgumentNullException(nameof(retryPolicy));
             Model = GetDefaultModelName(); // Initialize model
@@ -74,15 +74,15 @@ namespace WaterNut.Business.Services.Utils.LlmApi
 
             if (string.IsNullOrWhiteSpace(prompt))
             {
-                Logger.LogWarning("[{Provider}] ExecuteProviderApiCallAsync called with empty prompt.", ProviderType);
+                Logger.Warning("[{Provider}] ExecuteProviderApiCallAsync called with empty prompt.", ProviderType); // Changed LogWarning to Warning
                 return (string.Empty, usage, "Empty prompt provided.", false);
             }
 
             int safeMaxTokens = CalculateSafeMaxTokens(prompt, maxTokensOverride);
             double temp = temperatureOverride ?? DefaultTemperature;
 
-            Logger.LogTrace("[{Provider}] Sending API request. Model: {Model}, Temp: {Temperature}, MaxTokens: {MaxTokens}", ProviderType, Model, temp, safeMaxTokens);
-            Logger.LogDebug("[{Provider}] Prompt Length: {PromptLength} chars, Est. Input Tokens: {InputTokens}", ProviderType, prompt.Length, usage.InputTokens);
+            Logger.Verbose("[{Provider}] Sending API request. Model: {Model}, Temp: {Temperature}, MaxTokens: {MaxTokens}", ProviderType, Model, temp, safeMaxTokens); // Changed LogTrace to Trace
+            Logger.Debug("[{Provider}] Prompt Length: {PromptLength} chars, Est. Input Tokens: {InputTokens}", ProviderType, prompt.Length, usage.InputTokens); // Changed LogDebug to Debug
 
             string jsonResponse = null;
             try
@@ -100,12 +100,12 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 return (sanitizedCompletion, usage, null, true); // Success
             }
             // Catch specific exceptions from PostRequestAsync or ParseProviderResponse
-            catch (RateLimitException rle) { Logger.LogError(rle, "[{Provider}] API rate limit exceeded after retries. Status: {StatusCode}", ProviderType, rle.StatusCode); return (string.Empty, usage, $"Rate Limit Exceeded (HTTP {rle.StatusCode})", false); }
-            catch (HttpRequestException httpEx) { var sc = httpEx.Data.Contains("StatusCode") ? httpEx.Data["StatusCode"] : "N/A"; Logger.LogError(httpEx, "[{Provider}] HTTP request failed after retries. Status: {StatusCode}", ProviderType, sc); return (string.Empty, usage, $"HTTP Request Failed (Status: {sc})", false); }
-            catch (TaskCanceledException tcEx) { if (cancellationToken.IsCancellationRequested) { Logger.LogWarning("[{Provider}] API request cancelled by user.", ProviderType); return (string.Empty, usage, "Request Cancelled", false); } else { Logger.LogError(tcEx, "[{Provider}] API request timed out after retries.", ProviderType); return (string.Empty, usage, "Request Timeout", false); } }
-            catch (JsonException jsonEx) { Logger.LogError(jsonEx, "[{Provider}] Failed to parse JSON content from API response. Response: {JsonResponse}", ProviderType, TruncateForLog(jsonResponse ?? "N/A", 500)); return (string.Empty, usage, "Invalid JSON response from API.", false); }
-            catch (LlmApiException apiEx) { Logger.LogError(apiEx, "[{Provider}] Provider-specific API Exception.", ProviderType); return (string.Empty, usage, $"API Error: {apiEx.Message}", false); } // Catch errors thrown by ParseProviderResponse (like safety blocks)
-            catch (Exception ex) { Logger.LogError(ex, "[{Provider}] An unexpected error occurred during API call.", ProviderType); return (string.Empty, usage, $"Unexpected Error: {ex.Message}", false); }
+            catch (RateLimitException rle) { Logger.Error(rle, "[{Provider}] API rate limit exceeded after retries. Status: {StatusCode}", ProviderType, rle.StatusCode); return (string.Empty, usage, $"Rate Limit Exceeded (HTTP {rle.StatusCode})", false); } // Changed LogError to Error
+            catch (HttpRequestException httpEx) { var sc = httpEx.Data.Contains("StatusCode") ? httpEx.Data["StatusCode"] : "N/A"; Logger.Error(httpEx, "[{Provider}] HTTP request failed after retries. Status: {StatusCode}", ProviderType, sc); return (string.Empty, usage, $"HTTP Request Failed (Status: {sc})", false); } // Changed LogError to Error
+            catch (TaskCanceledException tcEx) { if (cancellationToken.IsCancellationRequested) { Logger.Warning("[{Provider}] API request cancelled by user.", ProviderType); return (string.Empty, usage, "Request Cancelled", false); } else { Logger.Error(tcEx, "[{Provider}] API request timed out after retries.", ProviderType); return (string.Empty, usage, "Request Timeout", false); } } // Changed LogWarning to Warning and LogError to Error
+            catch (JsonException jsonEx) { Logger.Error(jsonEx, "[{Provider}] Failed to parse JSON content from API response. Response: {JsonResponse}", ProviderType, TruncateForLog(jsonResponse ?? "N/A", 500)); return (string.Empty, usage, "Invalid JSON response from API.", false); } // Changed LogError to Error
+            catch (LlmApiException apiEx) { Logger.Error(apiEx, "[{Provider}] Provider-specific API Exception.", ProviderType); return (string.Empty, usage, $"API Error: {apiEx.Message}", false); } // Catch errors thrown by ParseProviderResponse (like safety blocks) // Changed LogError to Error
+            catch (Exception ex) { Logger.Error(ex, "[{Provider}] An unexpected error occurred during API call.", ProviderType); return (string.Empty, usage, $"Unexpected Error: {ex.Message}", false); } // Changed LogError to Error
         }
 
 
@@ -126,7 +126,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     {
                         addAuthAction(requestMessage, ApiKey); // Apply auth using delegate
 
-                        Logger.LogDebug("[{Provider}] Attempting HTTP POST to {Url}. Request size: {Size} bytes.", ProviderType, requestMessage.RequestUri, jsonRequest.Length);
+                        Logger.Debug("[{Provider}] Attempting HTTP POST to {Url}. Request size: {Size} bytes.", ProviderType, requestMessage.RequestUri, jsonRequest.Length); // Changed LogDebug to Debug
                         try
                         {
                             response = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                             if (!response.IsSuccessStatusCode)
                             { var finalHttpEx = new HttpRequestException($"[{ProviderType}] API req failed (non-retryable) status {(int)response.StatusCode}: {TruncateForLog(responseContent)}"); finalHttpEx.Data["StatusCode"] = (int)response.StatusCode; throw finalHttpEx; }
 
-                            Logger.LogDebug("[{Provider}] PostRequestAsync successful (Status {StatusCode}). Resp size: {Size} bytes.", ProviderType, (int)response.StatusCode, responseContent.Length);
+                            Logger.Debug("[{Provider}] PostRequestAsync successful (Status {StatusCode}). Resp size: {Size} bytes.", ProviderType, (int)response.StatusCode, responseContent.Length); // Changed LogDebug to Debug
                             return responseContent;
                         }
                         // Ensure response is disposed even if ReadAsStringAsync fails
@@ -172,11 +172,11 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             if (usage == null) return 0m;
             var modelPricing = GetPricing(Model); // Get pricing via strategy's implementation
 
-            if (modelPricing == null) { Logger.LogWarning("[{Provider}] Pricing info not found for Model '{Model}'. Cannot calculate cost.", ProviderType, Model); return 0m; }
+            if (modelPricing == null) { Logger.Warning("[{Provider}] Pricing info not found for Model '{Model}'. Cannot calculate cost.", ProviderType, Model); return 0m; } // Changed LogWarning to Warning
             decimal inputCost = ((decimal)usage.InputTokens / 1_000_000m) * modelPricing.InputPricePerMillionTokens;
             decimal outputCost = ((decimal)usage.OutputTokens / 1_000_000m) * modelPricing.OutputPricePerMillionTokens;
             decimal totalCost = inputCost + outputCost;
-            Logger.LogDebug("[{Provider}] Cost Calc - Input: {In}, Output: {Out}, Estimated: {IsEst}, Total Cost: {TotalCost:C}", ProviderType, usage.InputTokens, usage.OutputTokens, usage.IsEstimated, totalCost);
+            Logger.Debug("[{Provider}] Cost Calc - Input: {In}, Output: {Out}, Estimated: {IsEst}, Total Cost: {TotalCost:C}", ProviderType, usage.InputTokens, usage.OutputTokens, usage.IsEstimated, totalCost); // Changed LogDebug to Debug
             return totalCost;
         }
 
@@ -191,16 +191,16 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             var promptTokenEstimate = EstimateTokenCount(prompt);
             var availableForResponse = MAX_TOKENS_PER_REQUEST_LOCAL - promptTokenEstimate - TOKEN_BUFFER_LOCAL;
 
-            if (availableForResponse < MIN_RESPONSE_TOKENS_LOCAL) { Logger.LogWarning("[{Provider}] Prompt tokens ({PromptTokens}) + buffer ({TokenBuffer}) leaves less than MIN_RESPONSE_TOKENS for response. Forcing minimum.", ProviderType, promptTokenEstimate, TOKEN_BUFFER_LOCAL); availableForResponse = MIN_RESPONSE_TOKENS_LOCAL; }
+            if (availableForResponse < MIN_RESPONSE_TOKENS_LOCAL) { Logger.Warning("[{Provider}] Prompt tokens ({PromptTokens}) + buffer ({TokenBuffer}) leaves less than MIN_RESPONSE_TOKENS for response. Forcing minimum.", ProviderType, promptTokenEstimate, TOKEN_BUFFER_LOCAL); availableForResponse = MIN_RESPONSE_TOKENS_LOCAL; } // Changed LogWarning to Warning
 
             int finalMaxTokens = availableForResponse;
-            if (requestedMax.HasValue && requestedMax.Value < finalMaxTokens) { finalMaxTokens = requestedMax.Value; Logger.LogTrace("[{Provider}] CalculateSafeMaxTokens: Capping available ({Available}) by requested ({Requested}).", ProviderType, availableForResponse, requestedMax.Value); }
-            else if (requestedMax.HasValue) { Logger.LogTrace("[{Provider}] CalculateSafeMaxTokens: Requested ({Requested}) >= available ({Available}). Using available.", ProviderType, requestedMax.Value, availableForResponse); }
-            else { Logger.LogTrace("[{Provider}] CalculateSafeMaxTokens: No requested max. Using available ({Available}).", ProviderType, availableForResponse); }
+            if (requestedMax.HasValue && requestedMax.Value < finalMaxTokens) { finalMaxTokens = requestedMax.Value; Logger.Verbose("[{Provider}] CalculateSafeMaxTokens: Capping available ({Available}) by requested ({Requested}).", ProviderType, availableForResponse, requestedMax.Value); } // Changed LogTrace to Trace
+            else if (requestedMax.HasValue) { Logger.Verbose("[{Provider}] CalculateSafeMaxTokens: Requested ({Requested}) >= available ({Available}). Using available.", ProviderType, requestedMax.Value, availableForResponse); } // Changed LogTrace to Trace
+            else { Logger.Verbose("[{Provider}] CalculateSafeMaxTokens: No requested max. Using available ({Available}).", ProviderType, availableForResponse); } // Changed LogTrace to Trace
 
             finalMaxTokens = Math.Min(finalMaxTokens, ABSOLUTE_MAX_RESPONSE_LOCAL);
             finalMaxTokens = Math.Max(MIN_RESPONSE_TOKENS_LOCAL, finalMaxTokens);
-            Logger.LogTrace("[{Provider}] CalculateSafeMaxTokens: PromptEst={PromptEst}, Requested={Req}, Available={Avail}, Final={Final}", ProviderType, promptTokenEstimate, requestedMax?.ToString() ?? "null", availableForResponse, finalMaxTokens);
+            Logger.Verbose("[{Provider}] CalculateSafeMaxTokens: PromptEst={PromptEst}, Requested={Req}, Available={Avail}, Final={Final}", ProviderType, promptTokenEstimate, requestedMax?.ToString() ?? "null", availableForResponse, finalMaxTokens); // Changed LogTrace to Trace
             return finalMaxTokens;
         }
 
@@ -251,7 +251,7 @@ Product List:";
         protected (string TariffCode, string Category, string CategoryTariffCode) ParseSingleItemResponseFormat(string jsonContent)
         {
             string tariffCode = "00000000"; string category = "N/A"; string categoryHsCode = "00000000";
-            if (string.IsNullOrWhiteSpace(jsonContent)) { Logger.LogWarning("[{Provider}] ParseSingleItemResponseFormat received empty content.", ProviderType); return (tariffCode, category, categoryHsCode); }
+            if (string.IsNullOrWhiteSpace(jsonContent)) { Logger.Warning("[{Provider}] ParseSingleItemResponseFormat received empty content.", ProviderType); return (tariffCode, category, categoryHsCode); } // Changed LogWarning to Warning
             bool fixApplied; string jsonToParse = TryFixJson(jsonContent.Trim(), out fixApplied);
             try
             {
@@ -264,15 +264,15 @@ Product List:";
                     tariffCode = SanitizeTariffCode("SingleItemParse", hsCodeRaw, "ItemHS");
                     category = string.IsNullOrWhiteSpace(categoryRaw) ? "N/A" : categoryRaw.Trim();
                     categoryHsCode = SanitizeTariffCode("SingleItemParse", categoryHsCodeRaw, "CategoryHS");
-                    Logger.LogDebug("[{Provider}] Parsed single item response format (Fix Applied: {FixApplied}): HS={HS}, Cat={Cat}, CatHS={CatHS}", ProviderType, fixApplied, tariffCode, category, categoryHsCode);
+                    Logger.Debug("[{Provider}] Parsed single item response format (Fix Applied: {FixApplied}): HS={HS}, Cat={Cat}, CatHS={CatHS}", ProviderType, fixApplied, tariffCode, category, categoryHsCode); // Changed LogDebug to Debug
                 }
-                else { Logger.LogWarning("[{Provider}] Could not find expected 'items' array structure in single item content (Fix Applied: {FixApplied}). JSON: {Json}. Attempting Regex fallback.", ProviderType, fixApplied, TruncateForLog(jsonToParse)); tariffCode = ParseHsCodeFromText(jsonToParse); }
+                else { Logger.Warning("[{Provider}] Could not find expected 'items' array structure in single item content (Fix Applied: {FixApplied}). JSON: {Json}. Attempting Regex fallback.", ProviderType, fixApplied, TruncateForLog(jsonToParse)); tariffCode = ParseHsCodeFromText(jsonToParse); } // Changed LogWarning to Warning
             }
-            catch (JsonReaderException jsonEx) { Logger.LogWarning(jsonEx, "[{Provider}] Failed to parse JSON for single item format (Fix Applied: {FixApplied}), falling back to regex for HS code only. Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); tariffCode = ParseHsCodeFromText(jsonToParse); }
+            catch (JsonReaderException jsonEx) { Logger.Warning(jsonEx, "[{Provider}] Failed to parse JSON for single item format (Fix Applied: {FixApplied}), falling back to regex for HS code only. Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); tariffCode = ParseHsCodeFromText(jsonToParse); } // Changed LogWarning to Warning
             // IMPORTANT: Catch specific exceptions first, then general Exception
-            catch (LlmApiException) { throw; } // Don't wrap our own specific exceptions
-            catch (FormatException fx) { Logger.LogError(fx, "[{Provider}] Formatting error parsing single item format (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return ("ERROR", "ERROR", "ERROR"); } // Return ERROR on format issue
-            catch (Exception ex) { Logger.LogError(ex, "[{Provider}] Unexpected error parsing single item format (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return ("ERROR", "ERROR", "ERROR"); }
+            catch (LlmApiException) { throw; } // Don't re-wrap our own specific exceptions
+            catch (FormatException fx) { Logger.Error(fx, "[{Provider}] Formatting error parsing single item format (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return ("ERROR", "ERROR", "ERROR"); } // Return ERROR on format issue // Changed LogError to Error
+            catch (Exception ex) { Logger.Error(ex, "[{Provider}] Unexpected error parsing single item format (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return ("ERROR", "ERROR", "ERROR"); } // Changed LogError to Error
             return (tariffCode, category, categoryHsCode);
         }
 
@@ -280,23 +280,23 @@ Product List:";
         {
             var results = new Dictionary<string, ClassificationResult>();
             string originalTrimmed = jsonContent?.Trim() ?? string.Empty;
-            if (string.IsNullOrEmpty(originalTrimmed)) { Logger.LogWarning("[{Provider}] ParseBatchResponseFormat received empty or null JSON content.", ProviderType); return results; }
+            if (string.IsNullOrEmpty(originalTrimmed)) { Logger.Warning("[{Provider}] ParseBatchResponseFormat received empty or null JSON content.", ProviderType); return results; } // Changed LogWarning to Warning
 
             bool fixApplied; string jsonToParse = TryFixJson(originalTrimmed, out fixApplied);
             try
             {
                 JObject parsedObject = JObject.Parse(jsonToParse);
-                if (!(parsedObject["items"] is JArray itemsArray)) { Logger.LogWarning("[{Provider}] Batch response content JSON does not contain 'items' array (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return results; }
+                if (!(parsedObject["items"] is JArray itemsArray)) { Logger.Warning("[{Provider}] Batch response content JSON does not contain 'items' array (Fix Applied: {FixApplied}). Content: {JsonContent}", ProviderType, fixApplied, TruncateForLog(jsonToParse)); return results; } // Changed LogWarning to Warning
 
                 int itemCount = 0;
                 foreach (var itemToken in itemsArray)
                 {
                     itemCount++;
                     ClassificationResult itemResult = new ClassificationResult { ParsedSuccessfully = false };
-                    if (!(itemToken is JObject itemObj)) { Logger.LogWarning("[{Provider}] Item #{ItemIndex} in batch 'items' array was not a JSON object: {ItemToken}", ProviderType, itemCount, TruncateForLog(itemToken.ToString())); continue; }
+                    if (!(itemToken is JObject itemObj)) { Logger.Warning("[{Provider}] Item #{ItemIndex} in batch 'items' array was not a JSON object: {ItemToken}", ProviderType, itemCount, TruncateForLog(itemToken.ToString())); continue; } // Changed LogWarning to Warning
 
                     string originalDescription = itemObj.TryGetValue("original_description", StringComparison.OrdinalIgnoreCase, out var descToken) ? descToken.Value<string>() : null;
-                    if (string.IsNullOrWhiteSpace(originalDescription)) { Logger.LogWarning("[{Provider}] Skipping item #{ItemIndex} in batch response format due to missing 'original_description'. Item JSON: {ItemJson}", ProviderType, itemCount, TruncateForLog(itemToken.ToString())); continue; }
+                    if (string.IsNullOrWhiteSpace(originalDescription)) { Logger.Warning("[{Provider}] Skipping item #{ItemIndex} in batch response format due to missing 'original_description'. Item JSON: {ItemJson}", ProviderType, itemCount, TruncateForLog(itemToken.ToString())); continue; } // Changed LogWarning to Warning
                     itemResult.OriginalDescription = originalDescription;
 
                     string productCode = itemObj.TryGetValue("product_code", StringComparison.OrdinalIgnoreCase, out var codeToken) ? codeToken.Value<string>() : null;
@@ -310,16 +310,16 @@ Product List:";
                     itemResult.CategoryHsCode = SanitizeTariffCode(originalDescription, categoryHsCode, "CategoryHS");
                     itemResult.ParsedSuccessfully = true;
 
-                    if (!results.ContainsKey(originalDescription)) { results.Add(originalDescription, itemResult); Logger.LogTrace("[{Provider}] Parsed batch item #{ItemIndex}: Desc='{Desc}'", ProviderType, itemCount, TruncateForLog(originalDescription, 50)); }
-                    else { Logger.LogWarning("[{Provider}] Duplicate original_description '{Description}' found in batch response format (Item #{ItemIndex}). Keeping first.", ProviderType, TruncateForLog(originalDescription, 50), itemCount); }
+                    if (!results.ContainsKey(originalDescription)) { results.Add(originalDescription, itemResult); Logger.Verbose("[{Provider}] Parsed batch item #{ItemIndex}: Desc='{Desc}'", ProviderType, itemCount, TruncateForLog(originalDescription, 50)); } // Changed LogTrace to Trace
+                    else { Logger.Warning("[{Provider}] Duplicate original_description '{Description}' found in batch response format (Item #{ItemIndex}). Keeping first.", ProviderType, TruncateForLog(originalDescription, 50), itemCount); } // Changed LogWarning to Warning
                 }
-                if (fixApplied && results.Any()) Logger.LogInformation("[{Provider}] Successfully parsed {ItemCount} items from format after applying JSON fix.", ProviderType, results.Count);
-                else if (results.Any()) Logger.LogDebug("[{Provider}] Successfully parsed {ItemCount} items from batch response format (Fix applied: {FixApplied}).", ProviderType, results.Count, fixApplied);
-                else Logger.LogWarning("[{Provider}] Parsed batch format JSON but found no valid items in 'items' array (Fix Applied: {FixApplied}).", ProviderType, fixApplied);
+                if (fixApplied && results.Any()) Logger.Information("[{Provider}] Successfully parsed {ItemCount} items from format after applying JSON fix.", ProviderType, results.Count); // Changed LogInformation to Information
+                else if (results.Any()) Logger.Debug("[{Provider}] Successfully parsed {ItemCount} items from batch response format (Fix applied: {FixApplied}).", ProviderType, results.Count, fixApplied); // Changed LogDebug to Debug
+                else Logger.Warning("[{Provider}] Parsed batch format JSON but found no valid items in 'items' array (Fix Applied: {FixApplied}).", ProviderType, fixApplied); // Changed LogWarning to Warning
             }
-            catch (JsonReaderException jsonEx) { string errorContext = fixApplied ? $"OrigTrim: {TruncateForLog(originalTrimmed)}, Fixed: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}"; Logger.LogError(jsonEx, "[{Provider}] Failed to parse batch response format JSON (Fix Applied: {FixApplied}). {ErrorContext}", ProviderType, fixApplied, errorContext); throw new FormatException("Failed to parse batch response format JSON.", jsonEx); }
+            catch (JsonReaderException jsonEx) { string errorContext = fixApplied ? $"OrigTrim: {TruncateForLog(originalTrimmed)}, Fixed: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}"; Logger.Error(jsonEx, "[{Provider}] Failed to parse batch response format JSON (Fix Applied: {FixApplied}). {ErrorContext}", ProviderType, fixApplied, errorContext); throw new FormatException("Failed to parse batch response format JSON.", jsonEx); } // Changed LogError to Error
             catch (FormatException) { throw; }
-            catch (Exception ex) { string errorContext = fixApplied ? $"OrigTrim: {TruncateForLog(originalTrimmed)}, Fixed: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}"; Logger.LogError(ex, "[{Provider}] Unexpected error parsing batch response format content (Fix Applied: {FixApplied}). {ErrorContext}", ProviderType, fixApplied, errorContext); throw new LlmApiException("Unexpected error parsing batch response format content.", ex); }
+            catch (Exception ex) { string errorContext = fixApplied ? $"OrigTrim: {TruncateForLog(originalTrimmed)}, Fixed: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}"; Logger.Error(ex, "[{Provider}] Unexpected error parsing batch response format content (Fix Applied: {FixApplied}). {ErrorContext}", ProviderType, fixApplied, errorContext); throw new LlmApiException("Unexpected error parsing batch response format content.", ex); } // Changed LogError to Error
             return results;
         }
 
@@ -328,13 +328,13 @@ Product List:";
         protected string TryFixJson(string jsonContent, out bool fixApplied)
         {
             fixApplied = false; if (string.IsNullOrWhiteSpace(jsonContent)) return jsonContent; string trimmedJson = jsonContent.Trim();
-            try { JObject.Parse(trimmedJson); return trimmedJson; } catch (JsonReaderException) { Logger.LogDebug("[{Provider}] Original JSON failed to parse. Attempting fixes...", ProviderType); } catch (Exception ex) { Logger.LogError(ex, "[{Provider}] Unexpected error during initial JSON parse check. Returning original.", ProviderType); return trimmedJson; }
+            try { JObject.Parse(trimmedJson); return trimmedJson; } catch (JsonReaderException) { Logger.Debug("[{Provider}] Original JSON failed to parse. Attempting fixes...", ProviderType); } catch (Exception ex) { Logger.Error(ex, "[{Provider}] Unexpected error during initial JSON parse check. Returning original.", ProviderType); return trimmedJson; } // Changed LogDebug to Debug and LogError to Error
             string fixedJson = trimmedJson; bool currentFixApplied = false; int lastValidCharIndex = -1; int balance = 0; bool inString = false; char lastNonWhite = ' ';
             for (int i = 0; i < trimmedJson.Length; i++) { char c = trimmedJson[i]; if (c == '"' && (i == 0 || trimmedJson[i - 1] != '\\')) inString = !inString; if (!inString) { if (c == '{' || c == '[') balance++; else if (c == '}' || c == ']') balance--; if (!char.IsWhiteSpace(c)) lastNonWhite = c; if (balance == 0 && (c == '}' || c == ']')) lastValidCharIndex = i; } }
-            if (lastValidCharIndex != -1 && lastValidCharIndex < trimmedJson.Length - 1) { fixedJson = trimmedJson.Substring(0, lastValidCharIndex + 1); Logger.LogInformation("[{Provider}] Attempting JSON Fix 1 (Removed trailing chars)...", ProviderType); currentFixApplied = true; }
-            else if (trimmedJson.Contains("\"items\": [") && (!trimmedJson.EndsWith("]}") && !trimmedJson.EndsWith("]}"))) { string fixAttempt = trimmedJson; int openBrackets = fixAttempt.Count(c => c == '['); int closeBrackets = fixAttempt.Count(c => c == ']'); int openBraces = fixAttempt.Count(c => c == '{'); int closeBraces = fixAttempt.Count(c => c == '}'); if (lastNonWhite == ',') { fixAttempt = fixAttempt.TrimEnd().TrimEnd(','); if (openBraces > closeBraces) closeBraces++; } else if (lastNonWhite == '{') { if (openBraces > closeBraces) openBraces--; /*Fix potential mismatch*/} else if (lastNonWhite == '[') { if (openBrackets > closeBrackets) openBrackets--; /*Fix potential mismatch*/ } while (closeBraces < openBraces) { fixAttempt += '}'; closeBraces++; } while (closeBrackets < openBrackets) { fixAttempt += ']'; closeBrackets++; } if (fixAttempt.Count(c => c == '{') > fixAttempt.Count(c => c == '}')) fixAttempt += '}'; fixedJson = fixAttempt; Logger.LogInformation("[{Provider}] Attempting JSON Fix 2 (Appended missing brackets/braces)...", ProviderType); currentFixApplied = true; }
-            if (currentFixApplied) { try { JObject.Parse(fixedJson); Logger.LogInformation("[{Provider}] JSON Fix successful.", ProviderType); fixApplied = true; return fixedJson; } catch (JsonReaderException) { Logger.LogWarning("[{Provider}] JSON Fix attempt failed validation. Returning original potentially invalid JSON.", ProviderType); return trimmedJson; } catch (Exception ex) { Logger.LogError(ex, "[{Provider}] Unexpected error validating fixed JSON. Returning original.", ProviderType); return trimmedJson; } }
-            Logger.LogWarning("[{Provider}] No applicable JSON fix found or fix failed. Returning original potentially invalid JSON: {JsonContent}", ProviderType, TruncateForLog(trimmedJson)); return trimmedJson;
+            if (lastValidCharIndex != -1 && lastValidCharIndex < trimmedJson.Length - 1) { fixedJson = trimmedJson.Substring(0, lastValidCharIndex + 1); Logger.Information("[{Provider}] Attempting JSON Fix 1 (Removed trailing chars)...", ProviderType); currentFixApplied = true; } // Changed LogInformation to Information
+            else if (trimmedJson.Contains("\"items\": [") && (!trimmedJson.EndsWith("]}") && !trimmedJson.EndsWith("]}"))) { string fixAttempt = trimmedJson; int openBrackets = fixAttempt.Count(c => c == '['); int closeBrackets = fixAttempt.Count(c => c == ']'); int openBraces = fixAttempt.Count(c => c == '{'); int closeBraces = fixAttempt.Count(c => c == '}'); if (lastNonWhite == ',') { fixAttempt = fixAttempt.TrimEnd().TrimEnd(','); if (openBraces > closeBraces) closeBraces++; } else if (lastNonWhite == '{') { if (openBraces > closeBraces) openBraces--; /*Fix potential mismatch*/} else if (lastNonWhite == '[') { if (openBrackets > closeBrackets) openBrackets--; /*Fix potential mismatch*/ } while (closeBraces < openBraces) { fixAttempt += '}'; closeBraces++; } while (closeBrackets < openBrackets) { fixAttempt += ']'; closeBrackets++; } if (fixAttempt.Count(c => c == '{') > fixAttempt.Count(c => c == '}')) fixAttempt += '}'; fixedJson = fixAttempt; Logger.Information("[{Provider}] Attempting JSON Fix 2 (Appended missing brackets/braces)...", ProviderType); currentFixApplied = true; } // Changed LogInformation to Information
+            if (currentFixApplied) { try { JObject.Parse(fixedJson); Logger.Information("[{Provider}] JSON Fix successful.", ProviderType); fixApplied = true; return fixedJson; } catch (JsonReaderException) { Logger.Warning("[{Provider}] JSON Fix attempt failed validation. Returning original potentially invalid JSON.", ProviderType); return trimmedJson; } catch (Exception ex) { Logger.Error(ex, "[{Provider}] Unexpected error validating fixed JSON. Returning original.", ProviderType); return trimmedJson; } } // Changed LogInformation to Information, LogWarning to Warning, and LogError to Error
+            Logger.Warning("[{Provider}] No applicable JSON fix found or fix failed. Returning original potentially invalid JSON: {JsonContent}", ProviderType, TruncateForLog(trimmedJson)); return trimmedJson; // Changed LogWarning to Warning
         }
 
         protected string SanitizeApiResponse(string responseContent)
@@ -356,9 +356,9 @@ Product List:";
         {
             if (string.IsNullOrWhiteSpace(itemNumber)) return "NEW";
             var cleaned = Regex.Replace(itemNumber, @"[^\w-]", "").Trim();
-            if (string.IsNullOrEmpty(cleaned)) { Logger.LogTrace("[{Provider}] Sanitizing ItemNumber: Input '{Input}' became empty.", ProviderType, itemNumber); return "NEW"; }
-            if (cleaned.Length > 20) { cleaned = cleaned.Substring(0, 20); Logger.LogTrace("[{Provider}] Sanitizing ItemNumber: Input '{Input}' truncated to '{Cleaned}'.", ProviderType, itemNumber, cleaned); }
-            if (!Regex.IsMatch(cleaned, ItemNumberPattern)) { Logger.LogTrace("[{Provider}] Sanitizing ItemNumber: Cleaned '{Cleaned}' failed pattern '{Pattern}'.", ProviderType, cleaned, ItemNumberPattern); return "NEW"; }
+            if (string.IsNullOrEmpty(cleaned)) { Logger.Verbose("[{Provider}] Sanitizing ItemNumber: Input '{Input}' became empty.", ProviderType, itemNumber); return "NEW"; } // Changed LogTrace to Trace
+            if (cleaned.Length > 20) { cleaned = cleaned.Substring(0, 20); Logger.Verbose("[{Provider}] Sanitizing ItemNumber: Input '{Input}' truncated to '{Cleaned}'.", ProviderType, itemNumber, cleaned); } // Changed LogTrace to Trace
+            if (!Regex.IsMatch(cleaned, ItemNumberPattern)) { Logger.Verbose("[{Provider}] Sanitizing ItemNumber: Cleaned '{Cleaned}' failed pattern '{Pattern}'.", ProviderType, cleaned, ItemNumberPattern); return "NEW"; } // Changed LogTrace to Trace
             return cleaned.ToUpperInvariant();
         }
 
@@ -366,10 +366,10 @@ Product List:";
         {
             if (string.IsNullOrWhiteSpace(tariffCode)) return "00000000";
             var cleaned = Regex.Replace(tariffCode, @"\D", "");
-            if (string.IsNullOrEmpty(cleaned)) { Logger.LogTrace("[{Provider}] Invalid {FieldName} (empty after removing non-digits: '{TariffCode}') for Context '{Context}'. Returning default.", ProviderType, fieldName, tariffCode, contextIdentifier); return "00000000"; }
-            if (cleaned.Length == 8) { if (cleaned != tariffCode.Trim()) Logger.LogTrace("[{Provider}] Sanitized {FieldName} (removed non-digits from '{TariffCode}') for Context '{Context}'. Using '{CleanedValue}'.", ProviderType, fieldName, tariffCode, contextIdentifier, cleaned); else Logger.LogTrace("[{Provider}] Valid {FieldName} format '{TariffCode}' for Context '{Context}'.", ProviderType, fieldName, tariffCode, contextIdentifier); return cleaned; }
-            else if (cleaned.Length < 8) { Logger.LogWarning("[{Provider}] Invalid {FieldName} format (too short: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Padding.", ProviderType, fieldName, tariffCode, cleaned, contextIdentifier); return cleaned.PadRight(8, '0'); }
-            else { Logger.LogWarning("[{Provider}] Invalid {FieldName} format (too long: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Truncating.", ProviderType, fieldName, tariffCode, cleaned, contextIdentifier); return cleaned.Substring(0, 8); }
+            if (string.IsNullOrEmpty(cleaned)) { Logger.Verbose("[{Provider}] Invalid {FieldName} (empty after removing non-digits: '{TariffCode}') for Context '{Context}'. Returning default.", ProviderType, fieldName, tariffCode, contextIdentifier); return "00000000"; } // Changed LogTrace to Trace
+            if (cleaned.Length == 8) { if (cleaned != tariffCode.Trim()) Logger.Verbose("[{Provider}] Sanitized {FieldName} (removed non-digits from '{TariffCode}') for Context '{Context}'. Using '{CleanedValue}'.", ProviderType, fieldName, tariffCode, contextIdentifier, cleaned); else Logger.Verbose("[{Provider}] Valid {FieldName} format '{TariffCode}' for Context '{Context}'.", ProviderType, fieldName, tariffCode, contextIdentifier); return cleaned; } // Changed LogTrace to Trace
+            else if (cleaned.Length < 8) { Logger.Warning("[{Provider}] Invalid {FieldName} format (too short: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Padding.", ProviderType, fieldName, tariffCode, cleaned, contextIdentifier); return cleaned.PadRight(8, '0'); } // Changed LogWarning to Warning
+            else { Logger.Warning("[{Provider}] Invalid {FieldName} format (too long: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Truncating.", ProviderType, fieldName, tariffCode, cleaned, contextIdentifier); return cleaned.Substring(0, 8); } // Changed LogWarning to Warning
         }
 
         protected string SanitizeProductCode(string code)
@@ -389,9 +389,9 @@ Product List:";
         protected string ParseHsCodeFromText(string textContent) // Fallback if domain parsing fails
         {
             if (string.IsNullOrWhiteSpace(textContent)) return "00000000";
-            try { var pattern = @"""?(\d{8})""?"; var match = Regex.Match(textContent, pattern); if (match.Success && match.Groups.Count > 1) { var code = match.Groups[1].Value; Logger.LogDebug("[{Provider}] Extracted HS code using Regex fallback: {HsCode}", ProviderType, code); return SanitizeTariffCode("RegexFallback", code, "ItemHS_Regex"); } Logger.LogWarning("[{Provider}] Could not find 8-digit HS code using Regex pattern '{Pattern}' in text: {Text}", ProviderType, pattern, TruncateForLog(textContent, 100)); return "00000000"; }
-            catch (RegexMatchTimeoutException ex) { Logger.LogError(ex, "[{Provider}] Regex timed out parsing HS code from text.", ProviderType); return "00000000"; }
-            catch (Exception ex) { Logger.LogError(ex, "[{Provider}] Error during Regex HS code parsing from text.", ProviderType); return "00000000"; }
+            try { var pattern = @"""?(\d{8})""?"; var match = Regex.Match(textContent, pattern); if (match.Success && match.Groups.Count > 1) { var code = match.Groups[1].Value; Logger.Debug("[{Provider}] Extracted HS code using Regex fallback: {HsCode}", ProviderType, code); return SanitizeTariffCode("RegexFallback", code, "ItemHS_Regex"); } Logger.Warning("[{Provider}] Could not find 8-digit HS code using Regex pattern '{Pattern}' in text: {Text}", ProviderType, pattern, TruncateForLog(textContent, 100)); return "00000000"; } // Changed LogDebug to Debug and LogWarning to Warning
+            catch (RegexMatchTimeoutException ex) { Logger.Error(ex, "[{Provider}] Regex timed out parsing HS code from text.", ProviderType); return "00000000"; } // Changed LogError to Error
+            catch (Exception ex) { Logger.Error(ex, "[{Provider}] Error during Regex HS code parsing from text.", ProviderType); return "00000000"; } // Changed LogError to Error
         }
 
         protected string TruncateForLog(string text, int maxLength = 250)

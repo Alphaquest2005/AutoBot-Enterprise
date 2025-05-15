@@ -9,6 +9,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class SaveXSales : IProcessor<BetterExpando>
     {
         private readonly ImportSettings _importSettings;
@@ -19,7 +21,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
  
         }
  
-        public async Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data)
+        public async Task<Result<List<BetterExpando>>> Execute(List<BetterExpando> data, ILogger log)
         {
             try
             {

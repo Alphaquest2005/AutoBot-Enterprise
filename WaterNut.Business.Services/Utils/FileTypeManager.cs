@@ -15,8 +15,12 @@ using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
 {
+    using Serilog;
+    using System.Diagnostics; // Added for Stopwatch
+
     public static class FileTypeManager
     {
+        private static readonly ILogger _logger = Log.ForContext(typeof(FileTypeManager)); // Corrected ForContext usage
         private static List<FileTypes> _fileTypes;
         public static FileTypes GetFileType(FileTypes fileTypes) => Enumerable.First<FileTypes>(FileTypes(), x => x.Id == fileTypes.Id);
 
@@ -195,7 +199,7 @@ namespace WaterNut.Business.Services.Utils
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
                 .Select(async x =>
                 {
-                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true).ConfigureAwait(false);
+                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(_logger, x.DocSetRefernece, true).ConfigureAwait(false);
                     if (docSet != null)
                     {
                         x.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
@@ -219,7 +223,7 @@ namespace WaterNut.Business.Services.Utils
                 .Where(x => Regex.IsMatch(fileName, x.FilePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture))
                 .Select(async x =>
                 {
-                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true).ConfigureAwait(false);
+                    var docSet = await EntryDocSetUtils.GetAsycudaDocumentSet(_logger, x.DocSetRefernece, true).ConfigureAwait(false);
                     if (docSet != null)
                     {
                         x.AsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
@@ -227,21 +231,54 @@ namespace WaterNut.Business.Services.Utils
                     return x;
                 })
                 .ToList(); // This creates List<Task<FileTypes>>
-
+ 
             var results = await Task.WhenAll(fileTypeTasks).ConfigureAwait(false);
             return results.ToList();
         }
 
-        public static async Task SendBackTooBigEmail(FileInfo file, FileTypes fileType)
+        public static async Task SendBackTooBigEmail(FileInfo file, FileTypes fileType, ILogger log) // Added ILogger
         {
-            if (fileType.MaxFileSizeInMB != null && (file.Length / WaterNut.DataSpace.Utils._oneMegaByte) > fileType.MaxFileSizeInMB)
+            string operationName = nameof(SendBackTooBigEmail);
+            var stopwatch = Stopwatch.StartNew(); // Start stopwatch
+            log.Information("METHOD_ENTRY: {MethodName}. Context: {Context}", // METHOD_ENTRY log
+                operationName, new { FileName = file?.Name, FileTypeId = fileType?.Id, MaxFileSizeInMB = fileType?.MaxFileSizeInMB });
+
+            try
             {
-                var errTxt =
-                    "Hey,\r\n\r\n" +
-                    $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / WaterNut.DataSpace.Utils._oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
-                    "Thanks\r\n" +
-                    "AutoBot";
-                await EmailDownloader.EmailDownloader.SendBackMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), errTxt).ConfigureAwait(false);
+                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Checking file size for {FileName}.", operationName, "CheckFileSize", file?.Name); // INTERNAL_STEP
+                if (fileType.MaxFileSizeInMB != null && (file.Length / WaterNut.DataSpace.Utils._oneMegaByte) > fileType.MaxFileSizeInMB)
+                {
+                    log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): File {FileName} is too large ({FileSizeMB} MB). Max allowed: {MaxFileSizeMB} MB.", // INTERNAL_STEP (Warning level)
+                        operationName, "FileSizeExceeded", file.Name, Math.Round((double)(file.Length / WaterNut.DataSpace.Utils._oneMegaByte), 2), fileType.MaxFileSizeInMB);
+
+                    var errTxt =
+                        "Hey,\r\n\r\n" +
+                        $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / WaterNut.DataSpace.Utils._oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
+                        "Thanks\r\n" +
+                        "AutoBot";
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Prepared 'too big' email body for {FileName}.", operationName, "PrepareEmailBody", file.Name); // INTERNAL_STEP
+
+                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                        "EmailDownloader.EmailDownloader.SendBackMsgAsync", "ASYNC_EXPECTED", file.Name);
+                    await EmailDownloader.EmailDownloader.SendBackMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), errTxt, log).ConfigureAwait(false); // Added log parameter
+                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                        "EmailDownloader.EmailDownloader.SendBackMsgAsync", "Async call completed (await).", file.Name);
+                }
+                else
+                {
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): File {FileName} is within size limits.", operationName, "FileSizeOK", file?.Name); // INTERNAL_STEP
+                }
+
+                stopwatch.Stop(); // Stop stopwatch
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", // METHOD_EXIT_SUCCESS
+                    operationName, stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop(); // Stop stopwatch on error
+                log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
+                    operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                throw; // Re-throw the exception
             }
         }
 

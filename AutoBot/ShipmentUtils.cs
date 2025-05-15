@@ -25,9 +25,11 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using System.Text; // Added for StringBuilder
 namespace AutoBot
 {
+    using Serilog;
+
     public class ShipmentUtils
     {
-        public static async Task ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
+        public static async Task ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             try
             {
@@ -35,7 +37,7 @@ namespace AutoBot
                 {
                     var reference = XlsxWriter.SaveUnAttachedSummary(file);
                     ft.EmailId = reference;
-                    await CreateShipmentEmail(ft, fs).ConfigureAwait(false);
+                    await CreateShipmentEmail(ft, fs, log).ConfigureAwait(false);
                     //}
 
                 }
@@ -74,7 +76,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task<bool> CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
+        public static async Task<bool> CreateShipmentEmail(FileTypes fileType, FileInfo[] files, ILogger log)
         {
             try
             {
@@ -116,7 +118,7 @@ namespace AutoBot
 
                 var sent = false;
 
-                shipments.ForEach(async shipment => { sent = await EmailShipment(shipment).ConfigureAwait(false); });
+                shipments.ForEach(async shipment => { sent = await EmailShipment(shipment, log).ConfigureAwait(false); });
                    
               
 
@@ -133,18 +135,18 @@ namespace AutoBot
                     }
                 }
 
-                await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
+                await BaseDataModel.EmailExceptionHandlerAsync(ex, log).ConfigureAwait(false);
                 throw; // Re-throw the exception to preserve the stack trace
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                await BaseDataModel.EmailExceptionHandlerAsync(e).ConfigureAwait(false);
+                await BaseDataModel.EmailExceptionHandlerAsync(e, log).ConfigureAwait(false);
                 throw;
             }
         }
 
-        private static async Task<bool> EmailShipment(Shipment shipment)
+        private static async Task<bool> EmailShipment(Shipment shipment, ILogger log)
         {
             bool sent;
             using (var ctx = new EntryDataDSContext())
@@ -155,7 +157,7 @@ namespace AutoBot
 
                 await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                     $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
-                    shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray()).ConfigureAwait(false);
+                    shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray(), log).ConfigureAwait(false);
 
                 sent = true;
                 ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
@@ -184,7 +186,7 @@ namespace AutoBot
             return Task.CompletedTask;
         }
 
-        public static async Task MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
+        public static async Task MapUnClassifiedItems(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             Console.WriteLine("Mapping unclassified items");
             using (var ctx = new InventoryDSContext() { StartTracking = true })
@@ -210,20 +212,20 @@ namespace AutoBot
                 }
             }
 
-            EntryDocSetUtils.SetFileTypeDocSetToLatest(ft);
+            EntryDocSetUtils.SetFileTypeDocSetToLatest(log, ft);
 
         }
 
 
 
 
-        public static async Task SubmitUnclassifiedItems(FileTypes ft)
+        public static async Task SubmitUnclassifiedItems(FileTypes ft, ILogger log)
         {
 
 
             try
             {
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -274,7 +276,7 @@ namespace AutoBot
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
-                                new string[] { errorfile }).ConfigureAwait(false);
+                                new string[] { errorfile }, log).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
@@ -289,7 +291,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitDocSetUnclassifiedItems(FileTypes fileType)
+        public static async Task SubmitDocSetUnclassifiedItems(FileTypes fileType, ILogger log)
         {
 
             try
@@ -342,7 +344,7 @@ namespace AutoBot
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
-                                new string[] { errorfile }).ConfigureAwait(false);
+                                new string[] { errorfile }, log).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
@@ -357,7 +359,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitIncompleteSuppliers(FileTypes ft)
+        public static async Task SubmitIncompleteSuppliers(FileTypes ft, ILogger log)
         {
 
 
@@ -365,7 +367,7 @@ namespace AutoBot
             {
 
 
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(log, -1).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -409,7 +411,7 @@ namespace AutoBot
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
                             $"Error:InComplete Supplier Info", contacts.Select(x => x.EmailAddress).ToArray(),
                             "Please Fill out the attached Supplier Info and resend CSV...",
-                            new string[] { errorfile }).ConfigureAwait(false);
+                            new string[] { errorfile }, log).ConfigureAwait(false);
 
                     //LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
 
@@ -425,7 +427,7 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitInadequatePackages(FileTypes ft)
+        public static async Task SubmitInadequatePackages(FileTypes ft, ILogger log)
         {
 
 
@@ -464,7 +466,7 @@ namespace AutoBot
                                    $"AutoBot";
                         List<string> attlst = new List<string>();
                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", $"Shipment: {docSet.Declarant_Reference_Number}",
-                            contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                            contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
 
                         //LogDocSetAction(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages");
 
@@ -493,7 +495,7 @@ namespace AutoBot
         }
 // --- Start of Added/Corrected Methods ---
 
-        public static async Task ImportShipmentInfoFromTxt(FileTypes ft, FileInfo[] files)
+        public static async Task ImportShipmentInfoFromTxt(FileTypes ft, FileInfo[] files, ILogger log)
         {
             Console.WriteLine($"Starting ImportShipmentInfoFromTxt for FileType: {ft.Id}");
             var infoFile = files.FirstOrDefault(f => f.Name.Equals("Info.txt", StringComparison.OrdinalIgnoreCase));
@@ -710,7 +712,7 @@ namespace AutoBot
             catch (Exception ex)
             {
                  Console.WriteLine($"Error processing Info.txt and updating database: {ex.Message}\n{ex.StackTrace}");
-                 await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
+                 await BaseDataModel.EmailExceptionHandlerAsync(ex, log).ConfigureAwait(false);
                  throw;
             }
         } // End of ImportShipmentInfoFromTxt

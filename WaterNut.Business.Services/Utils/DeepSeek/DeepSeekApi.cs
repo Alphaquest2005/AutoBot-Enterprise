@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-// using Microsoft.Extensions.Logging.Abstractions; // Not strictly needed if using LoggerFactory.Create
+﻿﻿using Serilog; // Keep Serilog
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -26,7 +25,7 @@ namespace WaterNut.Business.Services.Utils
         private const int FALLBACK_MAX_TOKENS = 100; // Fallback for single item max_tokens if calculation fails
 
         private readonly HttpClient _httpClient;
-        private readonly ILogger<DeepSeekApi> _logger;
+        private readonly Serilog.ILogger _logger; // Changed to Serilog.ILogger
         private readonly string _apiKey;
         private readonly string _baseUrl;
 
@@ -51,17 +50,18 @@ namespace WaterNut.Business.Services.Utils
 
         public DeepSeekApi()
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
+            // Configure Serilog (if not already configured globally)
+            // This check prevents re-configuration if Serilog is set up elsewhere
+            if (Log.Logger.GetType().Name == "SilentLogger")
             {
-                builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("WaterNut", LogLevel.Debug) // Set your desired log level here
-                    .AddConsole()
-                    .AddDebug();
-            });
-            _logger = loggerFactory.CreateLogger<DeepSeekApi>();
-            _logger.LogDebug("Initializing DeepSeekApi using default constructor...");
+                 Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug() // Set your desired minimum log level
+                    .WriteTo.Console() // Or other sinks like File, etc.
+                    .CreateLogger();
+            }
+
+            _logger = Log.Logger.ForContext<DeepSeekApi>(); // Use Serilog's context logger
+            _logger.Debug("Initializing DeepSeekApi using default constructor with Serilog...");
 
             _apiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
                       ?? throw new InvalidOperationException("API key 'DEEPSEEK_API_KEY' not found in environment variables.");
@@ -72,15 +72,15 @@ namespace WaterNut.Business.Services.Utils
 
             SetupHttpClient();
             SetDefaultPrompts(); // Initialize both prompts
-            _logger.LogInformation("DeepSeekApi initialized successfully.");
+            _logger.Information("DeepSeekApi initialized successfully.");
         }
 
-        public DeepSeekApi(ILogger<DeepSeekApi> logger, string apiKey)
+        public DeepSeekApi(Serilog.ILogger logger, string apiKey) // Changed parameter type
         {
-            _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<DeepSeekApi>.Instance;
+            _logger = logger ?? Log.Logger.ForContext<DeepSeekApi>(); // Use provided logger or Serilog context logger
             _apiKey = !string.IsNullOrWhiteSpace(apiKey) ? apiKey
                       : throw new ArgumentNullException(nameof(apiKey), "API key cannot be null or empty.");
-            _logger.LogDebug("Initializing DeepSeekApi with provided logger and API key...");
+            _logger.Debug("Initializing DeepSeekApi with provided logger and API key...");
 
             _retryPolicy = CreateRetryPolicy();
             _baseUrl = "https://api.deepseek.com/v1";
@@ -88,7 +88,7 @@ namespace WaterNut.Business.Services.Utils
 
             SetupHttpClient();
             SetDefaultPrompts(); // Initialize both prompts
-            _logger.LogInformation("DeepSeekApi initialized successfully with provided logger.");
+            _logger.Information("DeepSeekApi initialized successfully with provided logger.");
         }
 
         // --- Retry Policy ---
@@ -97,7 +97,7 @@ namespace WaterNut.Business.Services.Utils
             Func<int, TimeSpan> calculateDelay = (retryAttempt) =>
             {
                 var delay = TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
-                _logger.LogTrace("Retry attempt {RetryCount}: Calculated delay {DelaySeconds}s", retryAttempt, delay.TotalSeconds);
+                _logger.Verbose("Retry attempt {RetryCount}: Calculated delay {DelaySeconds}s", retryAttempt, delay.TotalSeconds); // Changed LogTrace to Verbose
                 return delay;
             };
 
@@ -105,26 +105,26 @@ namespace WaterNut.Business.Services.Utils
             {
                 if (exception is RateLimitException rle)
                 {
-                    _logger.LogWarning(rle, "Retry needed due to Rate Limit (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", rle.StatusCode, calculatedDelay.TotalSeconds);
+                    _logger.Warning(rle, "Retry needed due to Rate Limit (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", rle.StatusCode, calculatedDelay.TotalSeconds);
                 }
                 else if (exception is TaskCanceledException tce)
                 {
                     if (tce.CancellationToken.IsCancellationRequested)
                     {
-                        _logger.LogWarning(tce, "Retry triggered for Task Cancellation (possibly user initiated). Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                        _logger.Warning(tce, "Retry triggered for Task Cancellation (possibly user initiated). Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
                     }
                     else
                     {
-                        _logger.LogWarning(tce, "Retry needed due to operation Timeout. Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                        _logger.Warning(tce, "Retry needed due to operation Timeout. Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
                     }
                 }
                 else if (exception is HttpRequestException httpEx && httpEx.Data.Contains("StatusCode"))
                 {
-                    _logger.LogWarning(httpEx, "Retry needed due to Server Error (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", httpEx.Data["StatusCode"], calculatedDelay.TotalSeconds);
+                    _logger.Warning(httpEx, "Retry needed due to Server Error (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", httpEx.Data["StatusCode"], calculatedDelay.TotalSeconds);
                 }
                 else
                 {
-                    _logger.LogWarning(exception, "Retry needed due to handled Transient Error ({ExceptionType}). Delaying for {DelaySeconds}s...", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
+                    _logger.Warning(exception, "Retry needed due to handled Transient Error ({ExceptionType}). Delaying for {DelaySeconds}s...", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
                 }
             };
 
@@ -252,7 +252,7 @@ Product List:";
         {
             if (string.IsNullOrWhiteSpace(itemDescription))
             {
-                _logger.LogWarning("GetClassificationInfoAsync called with empty description.");
+                _logger.Warning("GetClassificationInfoAsync called with empty description.");
                 return ("", "N/A", "00000000"); // Return default/empty values
             }
 
@@ -266,7 +266,7 @@ Product List:";
                                 .Replace("__DESCRIPTION_HERE__", cleanDescription)
                                 .Replace("__PRODUCT_CODE_HERE__", finalProductCode);
 
-                _logger.LogDebug("Generated Prompt for GetClassificationInfoAsync: {Prompt}", TruncateForLog(prompt, 200)); // Log truncated prompt
+                _logger.Debug("Generated Prompt for GetClassificationInfoAsync: {Prompt}", TruncateForLog(prompt, 200)); // Log truncated prompt
 
                 var jsonResponseContent = await GetCompletionAsync(prompt, temperature, maxTokens ?? DefaultMaxTokens, cancellationToken)
                                                 .ConfigureAwait(false);
@@ -275,7 +275,7 @@ Product List:";
             }
             catch (Exception ex) when (!(ex is HSCodeRequestException)) // Catch exceptions not already wrapped
             {
-                _logger.LogError(ex, "Failed to retrieve classification info for Description: {ItemDescription}", itemDescription);
+                _logger.Error(ex, "Failed to retrieve classification info for Description: {ItemDescription}", itemDescription);
                 // Throw a specific exception type if needed, or return defaults
                 // throw new HSCodeRequestException($"Failed to retrieve classification info for '{itemDescription}'", ex);
                 return ("", "ERROR", "ERROR"); // Indicate error in return values
@@ -308,14 +308,14 @@ Product List:";
                  )).ToList();
 
             var chunks = ChunkBy(processedItems, MAX_ITEMS_PER_BATCH).ToList();
-            _logger.LogInformation("Processing {ItemCount} valid items in {ChunkCount} chunks (Batch Size: {BatchSize}).", processedItems.Count, chunks.Count, MAX_ITEMS_PER_BATCH);
+            _logger.Information("Processing {ItemCount} valid items in {ChunkCount} chunks (Batch Size: {BatchSize}).", processedItems.Count, chunks.Count, MAX_ITEMS_PER_BATCH);
 
             int chunkIndex = 0;
             foreach (var chunk in chunks)
             {
                 chunkIndex++;
                 var chunkList = chunk.ToList(); // Materialize chunk
-                _logger.LogDebug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count);
+                _logger.Debug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count);
 
 
                 try
@@ -341,20 +341,20 @@ Product List:";
 
                             // Add the complete result (including category info from batch) to the dictionary
                             result[originalDescription] = (finalItemNumber, originalDescription, finalTariffCode, batchValues.Category, batchValues.CategoryTariffCode);
-                            _logger.LogTrace("Batch success for: '{Desc}' -> Code: {Code}, HS: {HS}, Cat: {Cat}, CatHS: {CatHS}",
+                            _logger.Verbose("Batch success for: '{Desc}' -> Code: {Code}, HS: {HS}, Cat: {Cat}, CatHS: {CatHS}",
                                 TruncateForLog(originalDescription, 50), finalItemNumber, finalTariffCode, batchValues.Category, batchValues.CategoryTariffCode);
                         }
                         else
                         {
                             // Item was in the chunk sent, but not in the response (maybe LLM truncated?)
-                            _logger.LogWarning("Item '{Description}' not found in batch result for chunk {ChunkIndex}. Attempting individual fallback.", TruncateForLog(originalDescription, 50), chunkIndex);
+                            _logger.Warning("Item '{Description}' not found in batch result for chunk {ChunkIndex}. Attempting individual fallback.", TruncateForLog(originalDescription, 50), chunkIndex);
                             await ProcessSingleItemFallback(item, result, cancellationToken).ConfigureAwait(false);
                         }
                     }
                 }
                 catch (Exception chunkEx)
                 {
-                    _logger.LogWarning(chunkEx, "Chunk {ChunkIndex} processing failed entirely. Falling back to individual item processing for this chunk.", chunkIndex);
+                    _logger.Warning(chunkEx, "Chunk {ChunkIndex} processing failed entirely. Falling back to individual item processing for this chunk.", chunkIndex);
                     // If the whole chunk fails (e.g., API error, parsing error), process each item individually
                     foreach (var item in chunkList)
                     {
@@ -368,12 +368,12 @@ Product List:";
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    _logger.LogWarning("Cancellation requested during batch processing. Aborting further chunks.");
+                    _logger.Warning("Cancellation requested during batch processing. Aborting further chunks.");
                     break; // Exit the loop if cancellation is requested
                 }
             } // End foreach chunk
 
-            _logger.LogInformation("Finished processing. Total items processed: {ResultCount}/{InitialCount}", result.Count, items.Count);
+            _logger.Information("Finished processing. Total items processed: {ResultCount}/{InitialCount}", result.Count, items.Count);
             return result;
         }
 
@@ -396,11 +396,11 @@ Product List:";
             // Avoid reprocessing if already present
             if (result.ContainsKey(description))
             {
-                _logger.LogDebug("Skipping fallback for '{Description}' as it already exists in results.", TruncateForLog(description, 50));
+                _logger.Debug("Skipping fallback for '{Description}' as it already exists in results.", TruncateForLog(description, 50));
                 return;
             }
 
-            _logger.LogDebug("Processing fallback for item: '{Description}'", TruncateForLog(description, 50));
+            _logger.Debug("Processing fallback for item: '{Description}'", TruncateForLog(description, 50));
 
             try
             {
@@ -409,7 +409,7 @@ Product List:";
                 if (itemNumber == "NEW" || string.IsNullOrWhiteSpace(itemNumber) || !Regex.IsMatch(itemNumber, ItemNumberPattern))
                 {
                     itemNumber = await GenerateProductCode(description, cancellationToken).ConfigureAwait(false);
-                    _logger.LogDebug("Generated product code via fallback for '{Desc}': {Code}", TruncateForLog(description, 50), itemNumber);
+                    _logger.Debug("Generated product code via fallback for '{Desc}': {Code}", TruncateForLog(description, 50), itemNumber);
                 }
 
                 // Attempt to get classification info using the single-item method
@@ -425,11 +425,11 @@ Product List:";
                     finalTariffCode = !string.IsNullOrWhiteSpace(retrievedTariff) && retrievedTariff != "00000000" ? retrievedTariff : "00000000"; // Fallback requires 8 zeros if failed
                     category = !string.IsNullOrWhiteSpace(retrievedCategory) ? retrievedCategory : category;
                     categoryHsCode = !string.IsNullOrWhiteSpace(retrievedCategoryHs) ? retrievedCategoryHs : categoryHsCode;
-                    _logger.LogDebug("Retrieved classification via fallback for '{Desc}': HS={HS}, Cat={Cat}, CatHS={CatHS}", TruncateForLog(description, 50), finalTariffCode, category, categoryHsCode);
+                    _logger.Debug("Retrieved classification via fallback for '{Desc}': HS={HS}, Cat={Cat}, CatHS={CatHS}", TruncateForLog(description, 50), finalTariffCode, category, categoryHsCode);
                 }
                 else
                 {
-                    _logger.LogDebug("Skipping API call in fallback for '{Desc}' as valid input HS '{InputHS}' was provided.", TruncateForLog(description, 50), finalTariffCode);
+                    _logger.Debug("Skipping API call in fallback for '{Desc}' as valid input HS '{InputHS}' was provided.", TruncateForLog(description, 50), finalTariffCode);
                 }
 
 
@@ -438,7 +438,7 @@ Product List:";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to process individual item fallback for: {Description}", description);
+                _logger.Error(ex, "Failed to process individual item fallback for: {Description}", description); // Changed LogError to Error
                 // Add error placeholders if fallback fails
                 result[description] = (item.ItemNumber == "NEW" ? "ERROR" : item.ItemNumber, // Use original item number if not 'NEW' on error
                                        description,
@@ -462,7 +462,7 @@ Product List:";
             var estimatedTotalResponseTokens = items.Count * estimatedResponseTokensPerItem;
             var responseMaxTokens = CalculateSafeMaxTokens(batchPrompt, estimatedTotalResponseTokens); // Calculate max_tokens for the response
 
-            _logger.LogDebug("Processing batch with estimated prompt tokens: {EstimatedTokens}, calculated response max_tokens: {ResponseMaxTokens}", EstimateTokenCount(batchPrompt), responseMaxTokens);
+            _logger.Debug("Processing batch with estimated prompt tokens: {EstimatedTokens}, calculated response max_tokens: {ResponseMaxTokens}", EstimateTokenCount(batchPrompt), responseMaxTokens);
 
             var jsonResponseContent = await GetCompletionAsync(batchPrompt, DefaultTemperature, responseMaxTokens, cancellationToken).ConfigureAwait(false);
 
@@ -521,11 +521,11 @@ Product List:";
             }
             catch (JsonReaderException)
             {
-                _logger.LogDebug("Original JSON failed to parse. Attempting fixes...");
+                _logger.Debug("Original JSON failed to parse. Attempting fixes...");
             }
             catch (Exception ex) // Catch other potential parsing errors
             {
-                _logger.LogError(ex, "Unexpected error during initial JSON parse check. Returning original.");
+                _logger.Error(ex, "Unexpected error during initial JSON parse check. Returning original.");
                 return trimmedJson;
             }
 
@@ -567,7 +567,7 @@ Product List:";
             if (lastValidCharIndex != -1 && lastValidCharIndex < trimmedJson.Length - 1)
             {
                 fixedJson = trimmedJson.Substring(0, lastValidCharIndex + 1);
-                _logger.LogInformation("Attempting JSON Fix 1 (Removed trailing characters): Original end: '...{OriginalEnd}', Fixed end: '...{FixedEnd}'", TruncateForLog(trimmedJson, 30), TruncateForLog(fixedJson, 30));
+                _logger.Information("Attempting JSON Fix 1 (Removed trailing characters): Original end: '...{OriginalEnd}', Fixed end: '...{FixedEnd}'", TruncateForLog(trimmedJson, 30), TruncateForLog(fixedJson, 30));
                 currentFixApplied = true;
             }
             // If still not valid, check if it seems truncated (missing closing brackets/braces)
@@ -595,7 +595,7 @@ Product List:";
                 if (fixAttempt.Count(c => c == '{') > fixAttempt.Count(c => c == '}')) fixAttempt += '}';
 
                 fixedJson = fixAttempt;
-                _logger.LogInformation("Attempting JSON Fix 2 (Appended missing brackets/braces): Original end: '...{OriginalEnd}', Fixed end: '...{FixedEnd}'", TruncateForLog(trimmedJson, 30), TruncateForLog(fixedJson, 30));
+                _logger.Information("Attempting JSON Fix 2 (Appended missing brackets/braces): Original end: '...{OriginalEnd}', Fixed end: '...{FixedEnd}'", TruncateForLog(trimmedJson, 30), TruncateForLog(fixedJson, 30));
                 currentFixApplied = true;
             }
 
@@ -606,23 +606,23 @@ Product List:";
                 try
                 {
                     JObject.Parse(fixedJson);
-                    _logger.LogInformation("JSON Fix successful.");
+                    _logger.Information("JSON Fix successful.");
                     fixApplied = true;
                     return fixedJson;
                 }
                 catch (JsonReaderException)
                 {
-                    _logger.LogWarning("JSON Fix attempt failed validation. Returning original potentially invalid JSON.");
+                    _logger.Warning("JSON Fix attempt failed validation. Returning original potentially invalid JSON.");
                     return trimmedJson; // Fix failed, return original
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Unexpected error validating fixed JSON. Returning original.");
+                    _logger.Error(ex, "Unexpected error validating fixed JSON. Returning original.");
                     return trimmedJson;
                 }
             }
 
-            _logger.LogWarning("No applicable JSON fix found or fix failed. Returning original potentially invalid JSON: {JsonContent}", TruncateForLog(trimmedJson));
+            _logger.Warning("No applicable JSON fix found or fix failed. Returning original potentially invalid JSON: {JsonContent}", TruncateForLog(trimmedJson));
             return trimmedJson; // Return original if no fixes applied or needed
         }
 
@@ -635,7 +635,7 @@ Product List:";
         {
             var result = new Dictionary<string, (string ItemNumber, string TariffCode, string Category, string CategoryTariffCode)>();
             string originalTrimmed = jsonContent?.Trim() ?? string.Empty;
-            if (string.IsNullOrEmpty(originalTrimmed)) { _logger.LogWarning("ParseBatchResponse received empty or null JSON content."); return result; }
+            if (string.IsNullOrEmpty(originalTrimmed)) { _logger.Warning("ParseBatchResponse received empty or null JSON content."); return result; }
 
             bool fixApplied;
             string jsonToParse = TryFixJson(originalTrimmed, out fixApplied);
@@ -646,7 +646,7 @@ Product List:";
 
                 if (!(parsedObject["items"] is JArray itemsArray))
                 {
-                    _logger.LogWarning("Batch response JSON does not contain 'items' array (Fix Applied: {FixApplied}). Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
+                    _logger.Warning("Batch response JSON does not contain 'items' array (Fix Applied: {FixApplied}). Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
                     // Attempt fallback regex extraction if primary structure fails but content exists
                     // This is less ideal as it won't get categories reliably
                     // Consider if this fallback is desired or if failure is better
@@ -659,7 +659,7 @@ Product List:";
                     itemCount++;
                     if (!(itemToken is JObject itemObj))
                     {
-                        _logger.LogWarning("Item #{ItemIndex} in batch 'items' array was not a JSON object: {ItemToken}", itemCount, TruncateForLog(itemToken.ToString()));
+                        _logger.Warning("Item #{ItemIndex} in batch 'items' array was not a JSON object: {ItemToken}", itemCount, TruncateForLog(itemToken.ToString()));
                         continue; // Skip non-object items
                     }
 
@@ -672,7 +672,7 @@ Product List:";
 
                     if (string.IsNullOrWhiteSpace(originalDescription))
                     {
-                        _logger.LogWarning("Skipping item #{ItemIndex} in batch response due to missing 'original_description'. Item JSON: {ItemJson}", itemCount, TruncateForLog(itemToken.ToString()));
+                        _logger.Warning("Skipping item #{ItemIndex} in batch response due to missing 'original_description'. Item JSON: {ItemJson}", itemCount, TruncateForLog(itemToken.ToString()));
                         continue;
                     }
 
@@ -687,31 +687,31 @@ Product List:";
                     if (!result.ContainsKey(originalDescription))
                     {
                         result.Add(originalDescription, (finalProductCode, finalHsCode, finalCategory, finalCategoryHsCode));
-                        _logger.LogTrace("Parsed item #{ItemIndex}: Desc='{Desc}', Code='{Code}', HS='{HS}', Cat='{Cat}', CatHS='{CatHS}'",
+                        _logger.Verbose("Parsed item #{ItemIndex}: Desc='{Desc}', Code='{Code}', HS='{HS}', Cat='{Cat}', CatHS='{CatHS}'",
                                 itemCount, TruncateForLog(originalDescription, 50), finalProductCode, finalHsCode, finalCategory, finalCategoryHsCode);
                     }
                     else
                     {
-                        _logger.LogWarning("Duplicate original_description '{Description}' found in batch response JSON (Item #{ItemIndex}). Keeping the first occurrence.", TruncateForLog(originalDescription, 50), itemCount);
+                        _logger.Warning("Duplicate original_description '{Description}' found in batch response JSON (Item #{ItemIndex}). Keeping the first occurrence.", TruncateForLog(originalDescription, 50), itemCount);
                     }
                 } // end foreach item
 
-                if (fixApplied && result.Any()) _logger.LogInformation("Successfully parsed {ItemCount} items after applying JSON fix.", result.Count);
-                else if (result.Any()) _logger.LogDebug("Successfully parsed {ItemCount} items from batch response (Fix applied: {FixApplied}).", result.Count, fixApplied);
-                else _logger.LogWarning("Parsed JSON but found no valid items in the 'items' array (Fix Applied: {FixApplied}).", fixApplied);
+                if (fixApplied && result.Any()) _logger.Information("Successfully parsed {ItemCount} items after applying JSON fix.", result.Count);
+                else if (result.Any()) _logger.Debug("Successfully parsed {ItemCount} items from batch response (Fix applied: {FixApplied}).", result.Count, fixApplied);
+                else _logger.Warning("Parsed JSON but found no valid items in the 'items' array (Fix Applied: {FixApplied}).", fixApplied);
 
             }
             catch (JsonReaderException jsonEx)
             {
                 string errorContext = fixApplied ? $"Original Trimmed: {TruncateForLog(originalTrimmed)}, Attempted Fix: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}";
-                _logger.LogError(jsonEx, "Failed to parse batch response JSON (Fix Applied: {FixApplied}). {ErrorContext}", fixApplied, errorContext);
+                _logger.Error(jsonEx, "Failed to parse batch response JSON (Fix Applied: {FixApplied}). {ErrorContext}", fixApplied, errorContext);
                 // Throw a more specific exception that the calling method (ClassifyItemsAsync) can catch to trigger fallback
                 throw new FormatException("Failed to parse batch response JSON from API.", jsonEx);
             }
             catch (Exception ex)
             {
                 string errorContext = fixApplied ? $"Original Trimmed: {TruncateForLog(originalTrimmed)}, Attempted Fix: {TruncateForLog(jsonToParse)}" : $"Content: {TruncateForLog(originalTrimmed)}";
-                _logger.LogError(ex, "Unexpected error parsing batch response content (Fix Applied: {FixApplied}). {ErrorContext}", fixApplied, errorContext);
+                _logger.Error(ex, "Unexpected error parsing batch response content (Fix Applied: {FixApplied}). {ErrorContext}", fixApplied, errorContext);
                 throw; // Re-throw unexpected errors
             }
             return result;
@@ -729,7 +729,7 @@ Product List:";
 
             if (string.IsNullOrWhiteSpace(jsonContent))
             {
-                _logger.LogWarning("ParseSingleItemResponse received empty content.");
+                _logger.Warning("ParseSingleItemResponse received empty content.");
                 return (tariffCode, category, categoryHsCode);
             }
 
@@ -753,23 +753,23 @@ Product List:";
                     category = string.IsNullOrWhiteSpace(categoryRaw) ? "N/A" : categoryRaw.Trim();
                     categoryHsCode = SanitizeTariffCode("SingleItem", categoryHsCodeRaw, "CategoryHS");
 
-                    _logger.LogDebug("Parsed single item response (Fix Applied: {FixApplied}): HS={HS}, Cat={Cat}, CatHS={CatHS}", fixApplied, tariffCode, category, categoryHsCode);
+                    _logger.Debug("Parsed single item response (Fix Applied: {FixApplied}): HS={HS}, Cat={Cat}, CatHS={CatHS}", fixApplied, tariffCode, category, categoryHsCode);
                 }
                 else
                 {
-                    _logger.LogWarning("Could not find valid 'items' array structure in single item JSON response (Fix Applied: {FixApplied}). JSON: {Json}", fixApplied, TruncateForLog(jsonToParse));
+                    _logger.Warning("Could not find valid 'items' array structure in single item JSON response (Fix Applied: {FixApplied}). JSON: {Json}", fixApplied, TruncateForLog(jsonToParse));
                     // Fallback: Try regex only for the specific HS code if JSON parsing fails structurally
                     tariffCode = ParseHsCodeFromText(jsonToParse); // Keep category info as default/NA
                 }
             }
             catch (JsonReaderException jsonEx)
             {
-                _logger.LogWarning(jsonEx, "Failed to parse JSON for single item (Fix Applied: {FixApplied}), falling back to regex for HS code only. Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
+                _logger.Warning(jsonEx, "Failed to parse JSON for single item (Fix Applied: {FixApplied}), falling back to regex for HS code only. Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
                 tariffCode = ParseHsCodeFromText(jsonToParse); // Fallback to regex only for HS code
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error parsing single item JSON (Fix Applied: {FixApplied}). Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
+                _logger.Error(ex, "Unexpected error parsing single item JSON (Fix Applied: {FixApplied}). Content: {JsonContent}", fixApplied, TruncateForLog(jsonToParse));
                 // Return error indicators
                 return ("ERROR", "ERROR", "ERROR");
             }
@@ -820,16 +820,16 @@ Product List:";
             if (cleaned.Length == 0 || cleaned.Length > 20)
             {
                 if (cleaned.Length > 20)
-                    _logger.LogTrace("Sanitizing ItemNumber: Input '{Input}' was too long, truncated.", itemNumber);
+                    _logger.Verbose("Sanitizing ItemNumber: Input '{Input}' was too long, truncated.", itemNumber);
                 else
-                    _logger.LogTrace("Sanitizing ItemNumber: Input '{Input}' became empty after cleaning.", itemNumber);
+                    _logger.Verbose("Sanitizing ItemNumber: Input '{Input}' became empty after cleaning.", itemNumber);
                 return "NEW"; // Return NEW if empty or too long after cleaning
             }
 
             // Final check against the regex pattern (redundant if cleaning is correct, but safe)
             if (!Regex.IsMatch(cleaned, ItemNumberPattern))
             {
-                _logger.LogTrace("Sanitizing ItemNumber: Input '{Input}' failed pattern match after cleaning ('{Cleaned}').", itemNumber, cleaned);
+                _logger.Verbose("Sanitizing ItemNumber: Input '{Input}' failed pattern match after cleaning ('{Cleaned}').", itemNumber, cleaned);
                 return "NEW";
             }
 
@@ -852,7 +852,7 @@ Product List:";
 
             if (string.IsNullOrEmpty(cleaned))
             {
-                _logger.LogTrace("Invalid {FieldName} (empty after removing non-digits: '{TariffCode}') for Context '{Context}'. Returning default.", fieldName, tariffCode, contextIdentifier);
+                _logger.Verbose("Invalid {FieldName} (empty after removing non-digits: '{TariffCode}') for Context '{Context}'. Returning default.", fieldName, tariffCode, contextIdentifier);
                 return "00000000";
             }
 
@@ -861,22 +861,22 @@ Product List:";
                 // If it's 8 digits, check if the original *was different* (meaning it contained non-digits)
                 if (cleaned != tariffCode.Trim())
                 {
-                    _logger.LogTrace("Sanitized {FieldName} (removed non-digits from '{TariffCode}') for Context '{Context}'. Using '{CleanedValue}'.", fieldName, tariffCode, contextIdentifier, cleaned);
+                    _logger.Verbose("Sanitized {FieldName} (removed non-digits from '{TariffCode}') for Context '{Context}'. Using '{CleanedValue}'.", fieldName, tariffCode, contextIdentifier, cleaned);
                 }
                 else
                 {
-                    _logger.LogTrace("Valid {FieldName} format '{TariffCode}' for Context '{Context}'.", fieldName, tariffCode, contextIdentifier);
+                    _logger.Verbose("Valid {FieldName} format '{TariffCode}' for Context '{Context}'.", fieldName, tariffCode, contextIdentifier);
                 }
                 return cleaned; // Return the valid 8-digit code
             }
             else if (cleaned.Length < 8)
             {
-                _logger.LogWarning("Invalid {FieldName} format (too short: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Padding with zeros.", fieldName, tariffCode, cleaned, contextIdentifier);
+                _logger.Warning("Invalid {FieldName} format (too short: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Padding with zeros.", fieldName, tariffCode, cleaned, contextIdentifier);
                 return cleaned.PadRight(8, '0');
             }
             else // cleaned.Length > 8
             {
-                _logger.LogWarning("Invalid {FieldName} format (too long: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Truncating.", fieldName, tariffCode, cleaned, contextIdentifier);
+                _logger.Warning("Invalid {FieldName} format (too long: '{TariffCode}', cleaned: '{Cleaned}') for Context '{Context}'. Truncating.", fieldName, tariffCode, cleaned, contextIdentifier);
                 return cleaned.Substring(0, 8);
             }
         }
@@ -894,7 +894,7 @@ Respond ONLY with the generated product code, nothing else.";
 
             if (string.IsNullOrWhiteSpace(description))
             {
-                _logger.LogWarning("GenerateProductCode called with empty description.");
+                _logger.Warning("GenerateProductCode called with empty description.");
                 return "GENERATED-CODE"; // Return a default placeholder
             }
 
@@ -911,7 +911,7 @@ Respond ONLY with the generated product code, nothing else.";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to generate product code via LLM for Description: {Description}", description);
+                _logger.Error(ex, "Failed to generate product code via LLM for Description: {Description}", description);
                 return "ERROR-CODE"; // Indicate failure
             }
         }
@@ -949,7 +949,7 @@ Respond ONLY with the generated product code, nothing else.";
         {
             if (string.IsNullOrWhiteSpace(prompt))
             {
-                _logger.LogWarning("GetCompletionAsync called with empty prompt.");
+                _logger.Warning("GetCompletionAsync called with empty prompt.");
                 return string.Empty;
             }
 
@@ -965,9 +965,9 @@ Respond ONLY with the generated product code, nothing else.";
                 stream = false // Not using streaming responses here
             };
 
-            _logger.LogTrace("Sending API request. Model: {Model}, Temp: {Temperature}, MaxTokens: {MaxTokens}", Model, requestBody.temperature, requestBody.max_tokens);
+            _logger.Verbose("Sending API request. Model: {Model}, Temp: {Temperature}, MaxTokens: {MaxTokens}", Model, requestBody.temperature, requestBody.max_tokens);
             // Log prompt hash or length instead of full prompt for production to avoid leaking data
-            _logger.LogDebug("Prompt Length: {PromptLength} chars", prompt.Length);
+            _logger.Debug("Prompt Length: {PromptLength} chars", prompt.Length);
 
             try
             {
@@ -981,38 +981,32 @@ Respond ONLY with the generated product code, nothing else.";
             catch (RateLimitException rle)
             {
                 // Already logged in retry policy, just rethrow if needed by caller
-                _logger.LogError(rle, "API rate limit exceeded even after retries. Status: {StatusCode}", rle.StatusCode);
+                _logger.Error(rle, "API rate limit exceeded even after retries. Status: {StatusCode}", rle.StatusCode);
                 throw; // Rethrow to indicate failure
             }
             catch (HttpRequestException httpEx)
             {
                 var sc = httpEx.Data.Contains("StatusCode") ? httpEx.Data["StatusCode"] : "N/A";
-                _logger.LogError(httpEx, "HTTP request failed even after retries. Status: {StatusCode}", sc);
+                _logger.Error(httpEx, "HTTP request failed even after retries. Status: {StatusCode}", sc);
                 throw new HSCodeRequestException($"API request failed after retries.", httpEx);
             }
             catch (TaskCanceledException tcEx)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    _logger.LogWarning("API request cancelled by user.");
+                    _logger.Warning("API request cancelled by user.");
                     throw; // Propagate cancellation
                 }
                 else
                 {
-                    _logger.LogError(tcEx, "API request timed out even after retries.");
-                    throw new TimeoutException("API request timed out after retries.", tcEx);
+                    _logger.Error(tcEx, "API request timed out even after retries.");
+                    throw new HSCodeRequestException($"API request timed out.", tcEx);
                 }
-            }
-            catch (JsonException jsonEx)
-            { // Catch parsing errors from ParseCompletionResponse
-                _logger.LogError(jsonEx, "Failed to parse JSON content from API response.");
-                throw new FormatException("Invalid JSON content received from API.", jsonEx);
             }
             catch (Exception ex)
             {
-                // Catch any other unexpected errors during the process
-                _logger.LogError(ex, "An unexpected error occurred during API completion request.");
-                throw new HSCodeRequestException("An unexpected error occurred during API completion.", ex);
+                _logger.Error(ex, "An unexpected error occurred during API request.");
+                throw new HSCodeRequestException($"An unexpected error occurred during API request: {ex.Message}", ex);
             }
         }
 
@@ -1032,7 +1026,7 @@ Respond ONLY with the generated product code, nothing else.";
             // Ensure we allow at least a minimum number of tokens for the response
             if (availableForResponse < MIN_RESPONSE_TOKENS)
             {
-                _logger.LogWarning("Prompt tokens ({PromptTokens}) + buffer ({TokenBuffer}) leaves less than minimum ({MinTokens}) for response. Forcing minimum.",
+                _logger.Warning("Prompt tokens ({PromptTokens}) + buffer ({TokenBuffer}) leaves less than minimum ({MinTokens}) for response. Forcing minimum.",
                     promptTokenEstimate, TOKEN_BUFFER, MIN_RESPONSE_TOKENS);
                 availableForResponse = MIN_RESPONSE_TOKENS;
             }
@@ -1050,7 +1044,7 @@ Respond ONLY with the generated product code, nothing else.";
             finalMaxTokens = Math.Max(MIN_RESPONSE_TOKENS, finalMaxTokens);
 
 
-            _logger.LogTrace("CalculateSafeMaxTokens: PromptEst={PromptEst}, Requested={Req}, Available={Avail}, Target={Tgt}, Final={Final}",
+            _logger.Verbose("CalculateSafeMaxTokens: PromptEst={PromptEst}, Requested={Req}, Available={Avail}, Target={Tgt}, Final={Final}",
                 promptTokenEstimate, requestedMax?.ToString() ?? "null", availableForResponse, targetMaxTokens, finalMaxTokens);
 
             return finalMaxTokens;
@@ -1063,7 +1057,7 @@ Respond ONLY with the generated product code, nothing else.";
         {
             if (string.IsNullOrWhiteSpace(jsonResponse))
             {
-                _logger.LogWarning("ParseCompletionResponse received empty JSON.");
+                _logger.Warning("ParseCompletionResponse received empty JSON.");
                 return string.Empty;
             }
             try
@@ -1075,13 +1069,13 @@ Respond ONLY with the generated product code, nothing else.";
 
                 if (content == null)
                 {
-                    _logger.LogWarning("Could not find 'choices[0].message.content' in API response JSON.");
-                    _logger.LogDebug("Response JSON structure: {JsonResponse}", TruncateForLog(jsonResponse));
+                    _logger.Warning("Could not find 'choices[0].message.content' in API response JSON.");
+                    _logger.Debug("Response JSON structure: {JsonResponse}", TruncateForLog(jsonResponse));
                     // Check for error messages in the response
                     var error = responseObj?["error"]?["message"]?.Value<string>();
                     if (!string.IsNullOrEmpty(error))
                     {
-                        _logger.LogError("API returned an error message: {ErrorMessage}", error);
+                        _logger.Error("API returned an error message: {ErrorMessage}", error);
                         throw new HSCodeRequestException($"API returned an error: {error}");
                     }
                     return string.Empty; // Return empty if content not found
@@ -1093,13 +1087,13 @@ Respond ONLY with the generated product code, nothing else.";
             // Let JsonReaderException propagate up to GetCompletionAsync for specific handling
             catch (JsonReaderException jsonEx)
             {
-                _logger.LogError(jsonEx, "Failed to parse API response JSON. Response: {JsonResponse}", TruncateForLog(jsonResponse));
+                _logger.Error(jsonEx, "Failed to parse API response JSON. Response: {JsonResponse}", TruncateForLog(jsonResponse));
                 throw; // Rethrow to be caught by GetCompletionAsync
             }
             catch (Exception ex)
             {
                 // Catch other potential errors during parsing/accessing fields
-                _logger.LogError(ex, "Error accessing content in API response JSON. Response: {JsonResponse}", TruncateForLog(jsonResponse));
+                _logger.Error(ex, "Error accessing content in API response JSON. Response: {JsonResponse}", TruncateForLog(jsonResponse));
                 throw; // Rethrow unexpected errors
             }
         }
@@ -1119,7 +1113,7 @@ Respond ONLY with the generated product code, nothing else.";
             // TryFixJson is called later during specific JSON parsing (ParseBatchResponse/ParseSingleItemResponse)
             // if (sanitized.StartsWith("{") && !sanitized.EndsWith("}"))
             // {
-            //     _logger.LogDebug("API response content appears truncated (starts with '{{' but doesn't end with '}}'). Full fixing will be attempted during parsing.");
+            //     _logger.Debug("API response content appears truncated (starts with '{{' but doesn't end with '}}'). Full fixing will be attempted during parsing.");
             // }
 
             return sanitized;
@@ -1142,7 +1136,7 @@ Respond ONLY with the generated product code, nothing else.";
                     using (var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json"))
                     using (var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions") { Content = content })
                     {
-                        _logger.LogDebug("Executing HTTP POST to {Url}. Request size: {Size} bytes.", requestMessage.RequestUri, jsonRequest.Length);
+                        _logger.Debug("Executing HTTP POST to {Url}. Request size: {Size} bytes.", requestMessage.RequestUri, jsonRequest.Length);
                         // Pass CancellationToken (ct from Polly context) to SendAsync
                         response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
 
@@ -1151,7 +1145,7 @@ Respond ONLY with the generated product code, nothing else.";
                         // --- Check status codes for triggering Polly retries ---
                         if (response.StatusCode == (HttpStatusCode)429)
                         { // Too Many Requests
-                            _logger.LogDebug("PostRequestAsync: Throwing RateLimitException for status 429.");
+                            _logger.Debug("PostRequestAsync: Throwing RateLimitException for status 429.");
                             throw new RateLimitException((int)response.StatusCode, responseContent);
                         }
                         // Server errors or specific client errors like timeout
@@ -1162,7 +1156,7 @@ Respond ONLY with the generated product code, nothing else.";
                         {
                             var httpEx = new HttpRequestException($"API request failed with retryable status {(int)response.StatusCode}. Response: {TruncateForLog(responseContent)}", null); // Inner exception is null here
                             httpEx.Data["StatusCode"] = (int)response.StatusCode;
-                            _logger.LogDebug(httpEx, "PostRequestAsync: Throwing HttpRequestException for retryable status {StatusCode}.", (int)response.StatusCode);
+                            _logger.Debug(httpEx, "PostRequestAsync: Throwing HttpRequestException for retryable status {StatusCode}.", (int)response.StatusCode);
                             throw httpEx;
                         }
 
@@ -1172,12 +1166,12 @@ Respond ONLY with the generated product code, nothing else.";
                             // Log the error details and throw an exception that won't be retried by the current policy
                             var finalHttpEx = new HttpRequestException($"API request failed with non-retryable status {(int)response.StatusCode}: {TruncateForLog(responseContent)}");
                             finalHttpEx.Data["StatusCode"] = (int)response.StatusCode;
-                            _logger.LogError(finalHttpEx, "PostRequestAsync: Unhandled non-success status code {StatusCode}. Not retrying.", (int)response.StatusCode);
+                            _logger.Error(finalHttpEx, "PostRequestAsync: Unhandled non-success status code {StatusCode}. Not retrying.", (int)response.StatusCode);
                             throw finalHttpEx; // This exception type is NOT handled by the retry policy, so it surfaces immediately
                         }
 
                         // --- Success ---
-                        _logger.LogDebug("PostRequestAsync: API request successful (Status {StatusCode}). Response size: {Size} bytes.", (int)response.StatusCode, responseContent.Length);
+                        _logger.Debug("PostRequestAsync: API request successful (Status {StatusCode}). Response size: {Size} bytes.", (int)response.StatusCode, responseContent.Length);
                         return responseContent; // Return the successful response content
                     }
                 }
@@ -1204,21 +1198,21 @@ Respond ONLY with the generated product code, nothing else.";
                 if (match.Success && match.Groups.Count > 1)
                 {
                     var code = match.Groups[1].Value;
-                    _logger.LogDebug("Extracted HS code using Regex fallback: {HsCode}", code);
+                    _logger.Debug("Extracted HS code using Regex fallback: {HsCode}", code);
                     // Final validation just to be sure
                     return SanitizeTariffCode("RegexFallback", code, "ItemHS_Regex");
                 }
-                _logger.LogWarning("Could not find 8-digit HS code using Regex pattern '{Pattern}' in text: {Text}", pattern, TruncateForLog(textContent, 100));
+                _logger.Warning("Could not find 8-digit HS code using Regex pattern '{Pattern}' in text: {Text}", pattern, TruncateForLog(textContent, 100));
                 return "00000000"; // Return default if no match
             }
             catch (RegexMatchTimeoutException ex)
             {
-                _logger.LogError(ex, "Regex timed out parsing HS code from text.");
+                _logger.Error(ex, "Regex timed out parsing HS code from text.");
                 return "00000000";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during Regex HS code parsing from text.");
+                _logger.Error(ex, "Error during Regex HS code parsing from text.");
                 return "00000000";
             }
         }
@@ -1277,7 +1271,7 @@ Respond ONLY with the generated product code, nothing else.";
                 {
                     // Dispose managed state (managed objects).
                     _httpClient?.Dispose();
-                    _logger.LogDebug("DeepSeekApi HttpClient disposed.");
+                    _logger.Debug("DeepSeekApi HttpClient disposed.");
                 }
                 // Free unmanaged resources (unmanaged objects) and override finalizer
                 // Set large fields to null

@@ -83,6 +83,8 @@ using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 
 namespace WaterNut.DataSpace
 {
+    using Serilog;
+
     public partial class BaseDataModel
     {
         //public static void AttachToDocument(List<string> attachments, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
@@ -453,7 +455,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public static async Task EmailExceptionHandlerAsync(Exception e, bool sendOnlyOnce = true )
+        public static async Task EmailExceptionHandlerAsync(Exception e, ILogger log, bool sendOnlyOnce = true)
         {
             var lastexception = false;
             var errorMessage = "Loading components";
@@ -468,8 +470,8 @@ namespace WaterNut.DataSpace
                     if (sendOnlyOnce == false || !EmailedMessagesList.Contains(exp.Message))
                     {
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{exp.Message}\r\n{exp.StackTrace}",
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            EmailDownloader.EmailDownloader.GetContacts("Developer", log), $"{exp.Message}\r\n{exp.StackTrace}",
+                            Array.Empty<string>(), log).ConfigureAwait(false);
                         EmailedMessagesList.Add(exp.Message);
                     }
 

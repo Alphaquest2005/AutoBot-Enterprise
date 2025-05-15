@@ -167,15 +167,15 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         }
 
        
-        private Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
+        private async Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
         {
             // Apply ConfigureAwait to the Task before awaiting
-            var errors =  new ProcessDISErrorsForAllocation().Execute( // Move ConfigureAwait here
-                      BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                      lst
-                          .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
-                          .Aggregate((o, n) => $"{o},{n}")
-                      ); // Correct placement
+            var errors = await new ProcessDISErrorsForAllocation().Execute( // Move ConfigureAwait here
+                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                             lst
+                                 .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
+                                 .Aggregate((o, n) => $"{o},{n}")
+                         ).ConfigureAwait(false); // Correct placement
 
 
             //var errors = await  new ProcessDISErrorsForAllocationMem().Execute(
@@ -185,7 +185,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             //              .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
             //  SaveEntryDataDetails(errors);
             //  await DeleteAllocationsForEntryDataDetails(errors).ConfigureAwait(false);
-            return Task.FromResult(errors);
+            return errors;
         }
 
         private async Task<List<EntryDataDetail>> ProcessNoDataDISForAllocation(List<EntryDataDetail> lst)

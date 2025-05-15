@@ -24,11 +24,15 @@ using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 
+using Serilog;
+
+
 namespace WaterNut.Business.Services.Importers
 {
     public static class XLSXUtils
     {
-        public static async Task ReadMISMatches(DataTable misMatches, DataTable poTemplate)
+       
+        public static async Task ReadMISMatches(DataTable misMatches, DataTable poTemplate, ILogger log)
         {
             try
             {
@@ -48,8 +52,6 @@ namespace WaterNut.Business.Services.Importers
                     //var invDetailId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
                     //var poDetailId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
                    
-
-
 
 
                     if (!string.IsNullOrEmpty(poNumber) &&
@@ -88,7 +90,7 @@ namespace WaterNut.Business.Services.Importers
                         if (poTemplateRow == null)
                         {
                             await BaseDataModel.EmailExceptionHandlerAsync(new ApplicationException(
-                                $"Mismatch PO:{poNumber} and SupplierNo{InvoiceNo} on template and mismatch sheet.")).ConfigureAwait(false);
+                                $"Mismatch PO:{poNumber} and SupplierNo{InvoiceNo} on template and mismatch sheet."), log).ConfigureAwait(false);
                             return;
                         }
 
@@ -136,7 +138,6 @@ namespace WaterNut.Business.Services.Importers
                 Console.WriteLine(e);
                 throw;
             }
-
         }
 
         private static void ImportInventoryMapping(string invItemCode, DataRow misMatch, List<object> misHeaderRow,
@@ -221,12 +222,27 @@ namespace WaterNut.Business.Services.Importers
             }
         }
 
-        public static async Task FixCSVFile(FileTypes fileType, bool? overwrite, string output)
+        public static async Task FixCSVFile(FileTypes fileType, bool? overwrite, string output, ILogger log)
         {
-          
-            await CSVUtils.FixCsv(new FileInfo(output), fileType, overwrite).ConfigureAwait(false);
-        }
+            log.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: {{ FileTypeName: {FileTypeName}, Overwrite: {Overwrite}, OutputPath: {OutputPath} }}",
+                nameof(FixCSVFile), "Fix a generated CSV file", new { FileTypeName = fileType?.FileImporterInfos?.EntryType, Overwrite = overwrite, OutputPath = output });
+            var stopwatch = Stopwatch.StartNew();
 
+            try
+            {
+                await CSVUtils.FixCsv(new FileInfo(output), fileType, overwrite, log).ConfigureAwait(false);
+                stopwatch.Stop();
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(FixCSVFile), "CSV file fixed successfully", $"FilePath: {output}", stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(FixCSVFile), "Fix a generated CSV file", stopwatch.ElapsedMilliseconds, ex.Message);
+                throw;
+            }
+        }
 
 
         public static string CreateCSVFile(FileInfo file, string fileText)

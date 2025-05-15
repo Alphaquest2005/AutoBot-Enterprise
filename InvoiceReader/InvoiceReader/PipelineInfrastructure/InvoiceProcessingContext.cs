@@ -12,7 +12,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class InvoiceProcessingContext
     {
-        private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingContext>();
+        // Remove static logger
+        // private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingContext>();
+
+        public ILogger Logger { get; set; } // Add ILogger property
 
         public string FilePath { get; set; }
 
@@ -25,7 +28,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (_fileTypeId != value)
                 {
                     _fileTypeId = value;
-                    _logger.Debug("Context Property Changed: FileTypeId = {NewValue}", value);
+                    Logger?.Debug("Context Property Changed: FileTypeId = {NewValue}", value); // Use the new Logger property
                 }
             }
         }
@@ -43,7 +46,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (_fileType != value)
                 {
                     _fileType = value;
-                    _logger.Debug("Context Property Changed: FileType = {NewValue}", value?.Description ?? "null");
+                    Logger?.Debug("Context Property Changed: FileType = {NewValue}", value?.Description ?? "null"); // Use the new Logger property
                 }
             }
         }
@@ -77,8 +80,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
                 _errors.Add(errorMessage);
-                _logger.Error("Error added to context: {ErrorMessage}", errorMessage); // Log as Error for visibility
-                _logger.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count);
+                Logger?.Error("Error added to context: {ErrorMessage}", errorMessage); // Use the new Logger property
+                Logger?.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count); // Use the new Logger property
             }
         }
 

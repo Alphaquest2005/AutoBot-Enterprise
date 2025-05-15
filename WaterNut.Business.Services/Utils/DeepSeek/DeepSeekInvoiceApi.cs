@@ -9,16 +9,17 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common.Extensions;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using Serilog; // Added Serilog
+using Serilog.Extensions;
 
 namespace WaterNut.Business.Services.Utils
 {
     public class DeepSeekInvoiceApi : IDisposable
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger<DeepSeekInvoiceApi> _logger;
+        private readonly Serilog.ILogger _logger;
         private readonly string _apiKey;
         private readonly string _baseUrl;
         private readonly AsyncRetryPolicy<HttpResponseMessage> _retryPolicy;
@@ -41,15 +42,15 @@ namespace WaterNut.Business.Services.Utils
                                 ?? throw new InvalidOperationException("API key not found in environment variables");
 
             _baseUrl = "https://api.deepseek.com/v1";
-            _logger =  LoggingConfig.CreateLogger();//logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = Log.Logger.ForContext<DeepSeekInvoiceApi>(); // Use Serilog context logger
             _httpClient = httpClient ?? new HttpClient();
 
             ConfigureHttpClient();
             SetDefaultPrompts();
- 
+
             _retryPolicy = CreateRetryPolicy(); // Call the new method
         }
- 
+
         // --- New CreateRetryPolicy method based on DeepSeekApi.cs ---
         private AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy()
         {
@@ -57,47 +58,47 @@ namespace WaterNut.Business.Services.Utils
             Func<int, TimeSpan> calculateDelay = (retryAttempt) =>
             {
                 var delay = TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
-                _logger.LogTrace("Retry attempt {RetryCount}: Calculated delay {DelaySeconds}s", retryAttempt, delay.TotalSeconds);
+                _logger.Verbose("Retry attempt {RetryCount}: Calculated delay {DelaySeconds}s", retryAttempt, delay.TotalSeconds);
                 return delay;
             };
- 
+
             // Exception-Specific Logging for Retries
             Action<DelegateResult<HttpResponseMessage>, TimeSpan> logRetryAction = (outcome, calculatedDelay) =>
             {
                 var exception = outcome.Exception; // Exception that caused the retry
                 var response = outcome.Result;     // Result if the delegate completed but triggered retry (e.g., status code)
- 
+
                 if (exception is RateLimitException rle)
                 {
-                    _logger.LogWarning(rle, "Retry needed due to Rate Limit (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", rle.StatusCode, calculatedDelay.TotalSeconds);
+                    _logger.Warning(rle, "Retry needed due to Rate Limit (HTTP {StatusCode}). Delaying for {DelaySeconds}s...", rle.StatusCode, calculatedDelay.TotalSeconds);
                 }
                 else if (exception is TaskCanceledException tce)
                 {
                     if (tce.CancellationToken.IsCancellationRequested)
                     {
-                        _logger.LogWarning(tce, "Retry triggered for Task Cancellation (possibly user initiated). Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                        _logger.Warning(tce, "Retry triggered for Task Cancellation (possibly user initiated). Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
                     }
                     else
                     {
-                        _logger.LogWarning(tce, "Retry needed due to operation Timeout. Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
+                        _logger.Warning(tce, "Retry needed due to operation Timeout. Delaying for {DelaySeconds}s...", calculatedDelay.TotalSeconds);
                     }
                 }
                 else if (exception is HttpRequestException httpEx) // Includes exceptions where Data["StatusCode"] might be set
                 {
                     // Try to get status code from Data if available, otherwise log generic HttpRequestException
                     var statusCode = httpEx.Data.Contains("StatusCode") ? httpEx.Data["StatusCode"] : "(unknown)";
-                    _logger.LogWarning(httpEx, "Retry needed due to HTTP Request Error (Code: {StatusCode}). Delaying for {DelaySeconds}s...", statusCode, calculatedDelay.TotalSeconds);
+                    _logger.Warning(httpEx, "Retry needed due to HTTP Request Error (Code: {StatusCode}). Delaying for {DelaySeconds}s...", statusCode, calculatedDelay.TotalSeconds);
                 }
                 else if (response != null) // Handle retries triggered by OrResult (status code)
                 {
-                     _logger.LogWarning("Retry needed due to Response Status Code {StatusCode}. Delaying for {DelaySeconds}s...", response.StatusCode, calculatedDelay.TotalSeconds);
+                     _logger.Warning("Retry needed due to Response Status Code {StatusCode}. Delaying for {DelaySeconds}s...", response.StatusCode, calculatedDelay.TotalSeconds);
                 }
                 else // Default logging for other handled exceptions
                 {
-                    _logger.LogWarning(exception, "Retry needed due to handled Transient Error ({ExceptionType}). Delaying for {DelaySeconds}s...", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
+                    _logger.Warning(exception, "Retry needed due to handled Transient Error ({ExceptionType}). Delaying for {DelaySeconds}s...", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
                 }
             };
- 
+
             // Build the Policy
             return Policy<HttpResponseMessage>
                .Handle<RateLimitException>()
@@ -127,7 +128,7 @@ namespace WaterNut.Business.Services.Utils
 {0}
 
 1. TEXT STRUCTURE ANALYSIS:
-   
+
    - Priority order:
      1. Item tables with prices/quantities
      2. Customs declaration forms
@@ -135,15 +136,15 @@ namespace WaterNut.Business.Services.Utils
      4. Payment/header sections
 
 2. FIELD EXTRACTION GUIDANCE:
-   - SupplierCode: 
+   - SupplierCode:
      * Source: Store/merchant name in header/footer (e.g., ""FASHIONNOWVA"")
      * NEVER use consignee name
      * Fallback: Email domain analysis (@company.com)
-   
-   - TotalDeduction: 
+
+   - TotalDeduction:
      * Look for: Coupons, credits, free shipping markers
      * Calculate: Sum of all price reductions
-   
+
    - TotalInternalFreight:
      * Combine: Shipping + Handling + Transportation fees
      * Source: ""FREIGHT"" values in consignee line
@@ -162,11 +163,11 @@ namespace WaterNut.Business.Services.Utils
    - ManifestYear/Number: Split ""Man Reg Number"" (e.g., 2024/1253 → 2024 & 1253)
 
 4. DATA VALIDATION REQUIREMENTS:
-   - Reject if: 
+   - Reject if:
      * SupplierCode == ConsigneeName
      * JSON contains unclosed brackets/braces
      * Any field is truncated mid-name
-   - Required fields: 
+   - Required fields:
      * InvoiceDetails.TariffCode (use ""000000"" if missing)
      * CustomsDeclarations.Freight (0.0 if not found)
      * CustomsDeclarations[] (must exist even if empty)
@@ -184,46 +185,46 @@ namespace WaterNut.Business.Services.Utils
 6. JSON SCHEMA WITH COMPLETION GUARANTEES:
 {{
   ""Invoices"": [{{
-    ""InvoiceNo"": ""<str>"",                    
-    ""PONumber"": ""<str|null>"",                 
-    ""InvoiceDate"": ""<YYYY-MM-DD>"",            
-    ""Currency"": ""<ISO_CODE>"",                 
-    ""SubTotal"": <float>,                       
-    ""Total"": <float>,                          
-    ""TotalDeduction"": <float|null>,            
+    ""InvoiceNo"": ""<str>"",
+    ""PONumber"": ""<str|null>"",
+    ""InvoiceDate"": ""<YYYY-MM-DD>"",
+    ""Currency"": ""<ISO_CODE>"",
+    ""SubTotal"": <float>,
+    ""Total"": <float>,
+    ""TotalDeduction"": <float|null>,
     ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
     ""TotalInternalFreight"": <float|null>,      //Shipping + Handling + Transportation fees
-    ""TotalInsurance"": <float|null>,            
-    ""SupplierCode"": ""<str>"",     //One word name that is unique eg. ""Shien"" or ""Amazon"" or ""Walmart"" 
-    ""SupplierName"": ""<str>"",     //Full Business name of supplier 
-    ""SupplierAddress"": ""<str>"",  //Full address of supplier IF NOT available use email address domain            
-    ""SupplierCountryCode"": ""<ISO3166-2>"",    
+    ""TotalInsurance"": <float|null>,
+    ""SupplierCode"": ""<str>"",     //One word name that is unique eg. ""Shien"" or ""Amazon"" or ""Walmart""
+    ""SupplierName"": ""<str>"",     //Full Business name of supplier
+    ""SupplierAddress"": ""<str>"",  //Full address of supplier IF NOT available use email address domain
+    ""SupplierCountryCode"": ""<ISO3166-2>"",
     ""InvoiceDetails"": [{{
-      ""ItemNumber"": ""<str|null>"",           
-      ""ItemDescription"": ""<str>"",           
-      ""Quantity"": <float>,                    
-      ""Cost"": <float>,                        
-      ""TotalCost"": <float>,                   
-      ""Units"": ""<str>"",                     
-      ""TariffCode"": ""<str>"",                
-      ""Discount"": <float|null>                
+      ""ItemNumber"": ""<str|null>"",
+      ""ItemDescription"": ""<str>"",
+      ""Quantity"": <float>,
+      ""Cost"": <float>,
+      ""TotalCost"": <float>,
+      ""Units"": ""<str>"",
+      ""TariffCode"": ""<str>"",
+      ""Discount"": <float|null>
     }}]
   }}],
-  
+
   ""CustomsDeclarations"": [{{
-    ""Consignee"": ""<str>"",                  
-    ""CustomsOffice"": ""<str>"",              
-    ""ManifestYear"": <int>,                   
-    ""ManifestNumber"": <int>,                 
-    ""BLNumber"": ""<str>"",                   
-    ""Freight"": <float>,                      
-    ""FreightCurrency"": ""<ISO>"",            
-    ""PackageType"": ""<str>"",                
-    ""Packages"": <int>,                       
-    ""GrossWeightKG"": <float>,               
+    ""Consignee"": ""<str>"",
+    ""CustomsOffice"": ""<str>"",
+    ""ManifestYear"": <int>,
+    ""ManifestNumber"": <int>,
+    ""BLNumber"": ""<str>"",
+    ""Freight"": <float>,
+    ""FreightCurrency"": ""<ISO>"",
+    ""PackageType"": ""<str>"",
+    ""Packages"": <int>,
+    ""GrossWeightKG"": <float>,
     ""Goods"": [{{
-      ""Description"": ""<str>"",               
-      ""TariffCode"": ""<str>""                 
+      ""Description"": ""<str>"",
+      ""TariffCode"": ""<str>""
     }}]
   }}]
 }}
@@ -253,7 +254,7 @@ namespace WaterNut.Business.Services.Utils
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to process text variant");
+                    _logger.Error(ex, "Failed to process text variant");
                 }
             }
 
@@ -273,7 +274,7 @@ namespace WaterNut.Business.Services.Utils
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Text cleaning failed");
+                _logger.Error(ex, "Text cleaning failed");
                 return rawText;
             }
         }
@@ -283,7 +284,7 @@ namespace WaterNut.Business.Services.Utils
             // Add a check for potentially incorrect input type (heuristic)
             if (text != null && (text.StartsWith("System.Threading.Tasks.Task") || text.StartsWith("System.Text.StringBuilder")))
             {
-                _logger.LogWarning("ProcessTextVariant received input that looks like a type name instead of content: {InputText}", TruncateForLog(text, 100));
+                _logger.Warning("ProcessTextVariant received input that looks like a type name instead of content: {InputText}", TruncateForLog(text, 100));
                 // Depending on desired behavior, could return empty list or throw exception here.
                 // For now, let it proceed but the log indicates the upstream issue.
             }
@@ -291,7 +292,7 @@ namespace WaterNut.Business.Services.Utils
             var escapedText = EscapeBraces(text);
             var prompt = string.Format(PromptTemplate, escapedText);
             // Log the final prompt being sent (Debug level recommended due to potential length/sensitivity)
-            _logger.LogDebug("ProcessTextVariant - Generated Prompt: {Prompt}", prompt); // Consider using TruncateForLog if prompts are very long
+            _logger.Debug("ProcessTextVariant - Generated Prompt: {Prompt}", prompt);
             var response = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
             return ParseApiResponse(response);
         }
@@ -307,9 +308,9 @@ try
     cleanJson = CleanJsonResponse(jsonResponse); // Assign inside
                 cleanJson = CleanJsonResponse(jsonResponse); // Assign to the existing variable
                 if (string.IsNullOrWhiteSpace(cleanJson)) return documents;
- 
+
                 // Log the cleaned JSON before attempting to parse
-                _logger.LogDebug("Attempting to parse cleaned JSON: {CleanJson}", TruncateForLog(cleanJson));
+                _logger.Debug("Attempting to parse cleaned JSON: {CleanJson}", TruncateForLog(cleanJson));
                 using var doc = JsonDocument.Parse(cleanJson);
                 var root = doc.RootElement;
 
@@ -322,12 +323,12 @@ try
             catch (JsonException jsonEx) // Catch specific JsonException
             {
                 // Log the parsing error along with the JSON that caused it
-                _logger.LogError(jsonEx, "Failed to parse JSON response. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse)); // Use original if cleanJson is null
+                _logger.Error(jsonEx, "Failed to parse JSON response. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse));
                 return new List<IDictionary<string, object>>(); // Return empty list on error
             }
             catch (Exception ex) // Catch any other unexpected exceptions
             {
-                _logger.LogError(ex, "Unexpected error during response parsing. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse)); // Use original if cleanJson is null
+                _logger.Error(ex, "Unexpected error during response parsing. Content was: {CleanJson}", TruncateForLog(cleanJson ?? jsonResponse));
                 return new List<IDictionary<string, object>>();
             }
         }
@@ -386,7 +387,7 @@ try
                         item["TariffCode"] = ValidateTariffCode(tariffcode.GetString());//GetStringValue(det, "TariffCode");
                     if (!jsonIsNull(det, "Discount", out var discount))
                         item["Discount"] = discount.GetDecimal();//GetNullableDecimalValue(det, "Discount");
-                   
+
                     item["ItemNumber"] = GetStringValue(det, "ItemNumber");
                     details.Add(item);
                 }
@@ -466,7 +467,7 @@ try
 
                 if (supplier.Equals(consignee, StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.LogWarning("Supplier matches consignee: {Name}. Resetting to UNKNOWN.", supplier);
+                    _logger.Warning("Supplier matches consignee: {Name}. Resetting to UNKNOWN.", supplier);
                     doc["SupplierCode"] = "UNKNOWN";
                     doc["SupplierAddress"] = null;
                 }
@@ -498,453 +499,376 @@ try
 
                     if (Math.Abs(total - calculatedTotal) > 0.01m)
                     {
-                        _logger.LogWarning("Total mismatch in invoice {InvoiceNo}: Expected {Calculated}, Actual {Actual}",
-                            doc["InvoiceNo"], calculatedTotal, total);
+                        _logger.Warning("Invoice Total mismatch for InvoiceNo {InvoiceNo}. Declared: {DeclaredTotal}, Calculated: {CalculatedTotal}",
+                            doc.TryGetValue("InvoiceNo", out var invNo) ? invNo : "N/A", total, calculatedTotal);
+                        // Decide how to handle mismatch - log, flag, or adjust?
+                        // For now, just log and keep the declared total.
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to validate totals for invoice {InvoiceNo}", doc["InvoiceNo"]);
-                }
-
-                if (string.IsNullOrEmpty(doc["SupplierCountryCode"]?.ToString()))
-                {
-                    doc["SupplierCountryCode"] = DeriveCountryCode(doc["SupplierAddress"]?.ToString());
+                    _logger.Error(ex, "Error cleaning totals for a document.");
                 }
             }
         }
 
         private string DeriveCountryCode(string address)
         {
-            if (string.IsNullOrWhiteSpace(address)) return "";
+            if (string.IsNullOrWhiteSpace(address)) return null;
 
-            var countryMatch = Regex.Match(address, @"\b([A-Z]{2})$");
-            if (countryMatch.Success) return countryMatch.Groups[1].Value;
+            // Simple heuristic: look for common country names or codes at the end of the address
+            // This is a very basic implementation and might need enhancement
+            var lowerAddress = address.ToLower();
+            if (lowerAddress.EndsWith(" usa") || lowerAddress.EndsWith(", usa") || lowerAddress.EndsWith(" united states")) return "US";
+            if (lowerAddress.EndsWith(" canada") || lowerAddress.EndsWith(", canada")) return "CA";
+            // Add more countries as needed
 
-            return address.Contains("United States") ? "US" :
-                   address.Contains("Canada") ? "CA" :
-                   address.Contains("Germany") ? "DE" : "";
+            return null; // Return null if country cannot be derived
         }
 
-        private string GetStringValue(JsonElement element, string propertyName) =>
-            element.TryGetProperty(propertyName, out var value) ? value.GetString() : null;
 
         private decimal GetDecimalValue(JsonElement element, string propertyName)
         {
-            if (!element.TryGetProperty(propertyName, out var value))
-                return 0m;
-
-            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
-                return 0m;
-
-            try
+            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
             {
-                return value.GetDecimal();
+                if (prop.TryGetDecimal(out var value)) return value;
+                if (prop.TryGetDouble(out var doubleValue)) return (decimal)doubleValue; // Handle doubles
+                if (prop.TryGetInt32(out var intValue)) return (decimal)intValue; // Handle integers
             }
-            catch (InvalidOperationException)
-            {
-                _logger.LogWarning("Failed to parse decimal value for property {PropertyName}", propertyName);
-                return 0m;
-            }
+            return 0m; // Default to 0 if property is missing, null, or not a valid number
         }
 
-        // Add this method for nullable decimals
         private decimal? GetNullableDecimalValue(JsonElement element, string propertyName)
         {
-            if (jsonIsNull(element, propertyName, out var value)) return null;
+            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
+            {
+                if (prop.TryGetDecimal(out var value)) return value;
+                if (prop.TryGetDouble(out var doubleValue)) return (decimal)doubleValue; // Handle doubles
+                if (prop.TryGetInt32(out var intValue)) return (decimal)intValue; // Handle integers
+            }
+            return null; // Return null if property is missing, null, or not a valid number
+        }
 
-            try
+        private int GetIntValue(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
             {
-                return value.GetDecimal();
+                if (prop.TryGetInt32(out var value)) return value;
+                if (prop.TryGetDouble(out var doubleValue)) return (int)doubleValue; // Handle doubles by truncating
             }
-            catch (InvalidOperationException)
+            return 0; // Default to 0
+        }
+
+        private string GetStringValue(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
             {
-                _logger.LogWarning("Failed to parse nullable decimal for property {PropertyName}", propertyName);
-                return null;
+                return prop.GetString();
             }
+            return null; // Default to null
+        }
+
+        private DateTime? ParseDate(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString)) return null;
+            if (DateTime.TryParse(dateString, out var date)) return date;
+            return null;
         }
 
         private static bool jsonIsNull(JsonElement element, string propertyName, out JsonElement value)
         {
-            if (!element.TryGetProperty(propertyName, out value))
-                return true;
-
-            if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.Undefined)
-                return true;
-            return false;
+            if (element.TryGetProperty(propertyName, out value))
+            {
+                return value.ValueKind == JsonValueKind.Null;
+            }
+            value = default; // Assign default value if property doesn't exist
+            return true; // Treat missing property as null
         }
-
-        private int GetIntValue(JsonElement element, string propertyName) =>
-            element.TryGetProperty(propertyName, out var value) ? value.GetInt32() : 0;
-
-        private DateTime? ParseDate(string dateStr) =>
-            DateTime.TryParse(dateStr, out var date) ? date : (DateTime?)null;
 
         public string ValidateTariffCode(string rawCode)
         {
-            if (string.IsNullOrWhiteSpace(rawCode)) return "";
-            var cleanCode = Regex.Replace(rawCode, @"[^\d\.\-]", "");
-            return Regex.IsMatch(cleanCode, HsCodePattern) ? cleanCode : "";
+            if (string.IsNullOrWhiteSpace(rawCode)) return "000000"; // Default if empty
+
+            // Remove non-digit characters
+            var cleaned = Regex.Replace(rawCode, @"\D", "");
+
+            if (cleaned.Length >= 6)
+            {
+                // Take the first 6 digits
+                return cleaned.Substring(0, 6);
+            }
+            else if (cleaned.Length > 0)
+            {
+                // If less than 6 but has digits, pad with zeros
+                _logger.Warning("Tariff code '{RawCode}' is too short ({Length} digits). Padding with zeros.", rawCode, cleaned.Length);
+                return cleaned.PadRight(6, '0');
+            }
+            else
+            {
+                // No digits found
+                _logger.Warning("Tariff code '{RawCode}' contains no digits. Returning default '000000'.", rawCode);
+                return "000000";
+            }
         }
+
 
         private async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
         {
+            if (_httpClient == null) throw new InvalidOperationException("HttpClient is not initialized.");
+            if (string.IsNullOrWhiteSpace(_baseUrl)) throw new InvalidOperationException("Base URL is not set.");
+
             try
             {
-                var request = new
+                var requestBody = new
                 {
                     model = Model,
                     messages = new[] { new { role = "user", content = prompt } },
-                    temperature,
-                    max_tokens = maxTokens
+                    temperature = temperature,
+                    max_tokens = maxTokens,
+                    stream = false // Not using streaming responses here
                 };
 
-                var json = JsonSerializer.Serialize(request);
+                var json = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // Use the new retry policy directly
+                // Use the retry policy for the HTTP request
                 var response = await _retryPolicy.ExecuteAsync(async () =>
                 {
                     using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
-                    requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                    // Send the request - Polly will handle retries based on HandleApiResponse throwing exceptions
+                    requestMessage.Content = content;
                     return await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 }).ConfigureAwait(false);
- 
-                // HandleApiResponse now potentially throws exceptions caught by Polly,
-                // or returns the successful content string.
+
                 return await HandleApiResponse(response).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "API request failed after retries");
-                return "";
+                _logger.Error(ex, "API request failed after retries.");
+                throw; // Re-throw the exception after logging
             }
         }
 
         private async Task<string> HandleApiResponse(HttpResponseMessage response)
         {
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            _logger.LogTrace("Raw API Response Content received: {ResponseContent}", TruncateForLog(responseContent)); // Use TruncateForLog
-            _logger.LogDebug("API Response Status: {StatusCode}", response.StatusCode);
- 
-            // --- Throw specific exceptions for Polly to handle ---
+            _logger.Debug("API Response Status: {StatusCode}", response.StatusCode);
+            _logger.Verbose("Raw API Response Content: {ResponseContent}", TruncateForLog(responseContent));
+
+            // Check for specific error status codes
             if (response.StatusCode == (HttpStatusCode)429) // Too Many Requests
             {
-                _logger.LogDebug("HandleApiResponse: Throwing RateLimitException for status 429.");
+                _logger.Warning("API rate limit exceeded (HTTP 429).");
                 throw new RateLimitException((int)response.StatusCode, $"API rate limit exceeded. Response: {responseContent}");
             }
- 
-            // Check for server errors (5xx) or specific retryable codes handled by OrResult in the policy
-            if (response.StatusCode >= HttpStatusCode.InternalServerError || HttpStatusCodesToRetry.Contains(response.StatusCode))
-            {
-                 var httpEx = new HttpRequestException($"API request failed with status {(int)response.StatusCode}. Response: {responseContent}");
-                 httpEx.Data["StatusCode"] = (int)response.StatusCode; // Add status code for logging in retry policy
-                 _logger.LogDebug(httpEx, "HandleApiResponse: Throwing HttpRequestException for retryable status {StatusCode}.", (int)response.StatusCode);
-                 throw httpEx; // Polly will catch this based on Or<HttpRequestException> or OrResult
-            }
- 
-            // If not retried by Polly but still not success, log error and return empty (or throw a non-retryable exception)
+
+            // Check for other non-success status codes
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("API Error (non-retryable): {StatusCode} - {Content}", response.StatusCode, TruncateForLog(responseContent));
-                // Depending on requirements, you might throw a different exception type here
-                // or just return empty to indicate failure after non-retryable error.
-                return ""; // Return empty for now
+                _logger.Error("API Error: {StatusCode} - {Content}", response.StatusCode, TruncateForLog(responseContent));
+                throw new HttpRequestException($"API request failed with status {(int)response.StatusCode}. Response: {responseContent}");
             }
-            // --- End Polly exception throwing ---
 
-            // Success case: Parse the actual content from the successful response
+            // Parse the successful response
             try
             {
-                 using var doc = JsonDocument.Parse(responseContent); // Parse the already read content
-                 var messageContent = doc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
-                    .GetProperty("content")
-                    .GetString();
-                 _logger.LogTrace("HandleApiResponse - Extracted content: {MessageContent}", TruncateForLog(messageContent));
-                 return messageContent;
+                using var doc = JsonDocument.Parse(responseContent);
+                var root = doc.RootElement;
+                var messageContent = root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
+
+                if (string.IsNullOrWhiteSpace(messageContent))
+                {
+                    _logger.Warning("API response content is empty or null.");
+                    return string.Empty;
+                }
+
+                _logger.Verbose("Extracted content: {MessageContent}", TruncateForLog(messageContent));
+                return messageContent;
             }
-            catch(JsonException jsonEx)
+            catch (JsonException jsonEx)
             {
-                 _logger.LogError(jsonEx, "HandleApiResponse - Failed to parse successful response JSON. Content was: {ResponseContent}", TruncateForLog(responseContent));
-                 return ""; // Or throw a specific parsing exception
+                _logger.Error(jsonEx, "Failed to parse successful API response JSON. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                throw new HttpRequestException("Failed to parse API response JSON.", jsonEx);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                 _logger.LogError(ex, "HandleApiResponse - Unexpected error parsing successful response. Content was: {ResponseContent}", TruncateForLog(responseContent));
-                 return ""; // Or throw
+                _logger.Error(ex, "Unexpected error parsing successful API response. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                throw new HttpRequestException("Error processing API response.", ex);
             }
         }
 
-        private List<IDictionary<string,object>> MergeDocuments(List<IDictionary<string, object>> documents)
+        private List<IDictionary<string, object>> MergeDocuments(List<IDictionary<string, object>> documents)
         {
-            var merged = new Dictionary<string, BetterExpando>();
+            if (documents == null || !documents.Any()) return new List<IDictionary<string, object>>();
+
+            var merged = new BetterExpando() as IDictionary<string, object>;
+            merged["Invoices"] = new List<IDictionary<string, object>>();
+            merged["CustomsDeclarations"] = new List<IDictionary<string, object>>();
 
             foreach (var doc in documents)
             {
-                var key = doc["DocumentType"] switch
+                if (doc.TryGetValue("DocumentType", out var docType))
                 {
-                    "Template" => $"INV_{doc["InvoiceNo"]}",
-                    "CustomsDeclaration" => $"CUST_{doc["BLNumber"]}",
-                    _ => Guid.NewGuid().ToString()
-                };
-
-                if (!merged.ContainsKey(key)) merged[key] = (BetterExpando)doc;
+                    if (docType.ToString() == "Template")
+                    {
+                        // Add invoice documents
+                        if (doc.TryGetValue("Invoices", out var invoices) && invoices is List<IDictionary<string, object>> invList)
+                        {
+                            ((List<IDictionary<string, object>>)merged["Invoices"]).AddRange(invList);
+                        }
+                        // Also add top-level invoice fields if they exist (handle cases where LLM doesn't nest correctly)
+                        else if (doc.ContainsKey("InvoiceNo"))
+                        {
+                             ((List<IDictionary<string, object>>)merged["Invoices"]).Add(doc);
+                        }
+                    }
+                    else if (docType.ToString() == "CustomsDeclaration")
+                    {
+                         // Add customs declaration documents
+                        if (doc.TryGetValue("CustomsDeclarations", out var customs) && customs is List<IDictionary<string, object>> customsList)
+                        {
+                            ((List<IDictionary<string, object>>)merged["CustomsDeclarations"]).AddRange(customsList);
+                        }
+                         // Also add top-level customs fields if they exist
+                        else if (doc.ContainsKey("BLNumber"))
+                        {
+                             ((List<IDictionary<string, object>>)merged["CustomsDeclarations"]).Add(doc);
+                        }
+                    }
+                }
             }
 
-            return new List<IDictionary<string, object>>(merged.Values.ToList());
+            // Simple deduplication for invoices based on InvoiceNo (basic)
+            if (merged["Invoices"] is List<IDictionary<string, object>> finalInvoices)
+            {
+                merged["Invoices"] = finalInvoices
+                    .GroupBy(inv => inv.TryGetValue("InvoiceNo", out var invNo) ? invNo?.ToString() : null)
+                    .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+                    .Select(g => g.First()) // Take the first occurrence of each unique InvoiceNo
+                    .ToList();
+            }
+
+             // Simple deduplication for customs declarations based on BLNumber (basic)
+            if (merged["CustomsDeclarations"] is List<IDictionary<string, object>> finalCustoms)
+            {
+                merged["CustomsDeclarations"] = finalCustoms
+                    .GroupBy(cd => cd.TryGetValue("BLNumber", out var blNo) ? blNo?.ToString() : null)
+                    .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+                    .Select(g => g.First()) // Take the first occurrence of each unique BLNumber
+                    .ToList();
+            }
+
+
+            return new List<IDictionary<string, object>> { merged };
         }
+
 
         private string CleanJsonResponse(string jsonResponse)
         {
-            // Step 1: Log the initial input to this method
-            _logger.LogTrace("CleanJsonResponse - Input: {JsonResponse}", jsonResponse);
-            var removedMarkdown = RemoveMarkDCleanJsonResponse(jsonResponse);
-            // Step 2: Log the result after removing markdown/BOM and finding boundaries
-            _logger.LogTrace("CleanJsonResponse - After RemoveMarkDCleanJsonResponse: {RemovedMarkdown}", removedMarkdown);
-            return HandleWrappedResponse(removedMarkdown);
+            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+
+            // Remove common markdown code block indicators and BOM
+            var cleaned = Regex.Replace(jsonResponse, @"```json|```|'''|\uFEFF", string.Empty, RegexOptions.IgnoreCase);
+
+            // Attempt to find the actual JSON object boundaries
+            var startIndex = cleaned.IndexOf('{');
+            var endIndex = cleaned.LastIndexOf('}');
+
+            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
+            {
+                _logger.Warning("No valid JSON boundaries detected in API response after initial cleaning. Content: {Content}", TruncateForLog(cleaned));
+                return string.Empty; // No valid JSON found
+            }
+
+            // Extract the potential JSON string
+            var jsonString = cleaned.Substring(startIndex, endIndex - startIndex + 1);
+
+            // Trim whitespace and potentially stray quotes/backticks from the ends
+            return jsonString.Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
         }
 
         private string HandleWrappedResponse(string jsonResponse)
         {
-            _logger.LogTrace("HandleWrappedResponse - Input: {JsonResponse}", jsonResponse);
-            if (string.IsNullOrWhiteSpace(jsonResponse))
+            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+
+            // Check if the response is wrapped in extra text or markdown
+            // This is a heuristic and might need refinement based on actual API responses
+            if (jsonResponse.TrimStart().StartsWith("```json", StringComparison.OrdinalIgnoreCase) && jsonResponse.TrimEnd().EndsWith("```"))
             {
-                _logger.LogTrace("HandleWrappedResponse - Returning empty due to null/whitespace input.");
-                return string.Empty;
+                _logger.Debug("Response appears to be wrapped in ```json markdown. Attempting to extract.");
+                return RemoveMarkDCleanJsonResponse(jsonResponse);
             }
-
-            var sanitized = new StringBuilder();
-            var stack = new Stack<char>();
-            var lastValidIndex = 0;
-
-            for (int i = 0; i < jsonResponse.Length; i++)
+            else if (jsonResponse.TrimStart().StartsWith("{") && jsonResponse.TrimEnd().EndsWith("}"))
             {
-                var c = jsonResponse[i];
-                switch (c)
+                // Looks like a raw JSON object, no wrapping
+                return jsonResponse;
+            }
+            else
+            {
+                _logger.Warning("Response does not appear to be standard JSON or ```json wrapped. Attempting aggressive cleaning.");
+                // Aggressive cleaning: try to find the first '{' and last '}'
+                var startIndex = jsonResponse.IndexOf('{');
+                var endIndex = jsonResponse.LastIndexOf('}');
+                if (startIndex != -1 && endIndex != -1 && startIndex < endIndex)
                 {
-                    case '{':
-                    case '[':
-                        stack.Push(c);
-                        sanitized.Append(c);
-                        lastValidIndex = i;
-                        break;
-
-                    case '}':
-                        if (stack.Count > 0 && stack.Peek() == '{')
-                        {
-                            stack.Pop();
-                            sanitized.Append(c);
-                            lastValidIndex = i;
-                        }
-                        break;
-
-                    case ']':
-                        if (stack.Count > 0 && stack.Peek() == '[')
-                        {
-                            stack.Pop();
-                            sanitized.Append(c);
-                            lastValidIndex = i;
-                        }
-                        break;
-
-                    default:
-                        sanitized.Append(c);
-                        break;
+                    return jsonResponse.Substring(startIndex, endIndex - startIndex + 1);
+                }
+                else
+                {
+                    _logger.Error("Aggressive cleaning failed to find JSON object boundaries. Returning empty string.");
+                    return string.Empty; // Cannot find JSON boundaries
                 }
             }
-
-            while (stack.Count > 0)
-            {
-                var opener = stack.Pop();
-                sanitized.Append(opener switch
-                {
-                    '{' => '}',
-                    '[' => ']',
-                    _ => ' '
-                });
-            }
-
-            var clean = sanitized.ToString().Trim();
-            if (clean.Length == 0 ||
-                (clean.Length > 0 && clean[0] != '{') ||
-                (clean.Length > 0 && clean[clean.Length - 1] != '}'))
-            {
-                // Log the specific string that failed validation
-                _logger.LogWarning("Invalid JSON structure after HandleWrappedResponse cleaning. String was: {Clean}", TruncateForLog(clean));
-                return string.Empty;
-            }
-
-            _logger.LogTrace("HandleWrappedResponse - Returning cleaned string: {Clean}", TruncateForLog(clean));
-            return clean;
         }
 
         private string RemoveMarkDCleanJsonResponse(string jsonResponse)
         {
-            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Input: {JsonResponse}", jsonResponse);
-            if (string.IsNullOrWhiteSpace(jsonResponse))
+            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+
+            // Remove ```json and ``` markers
+            var cleaned = Regex.Replace(jsonResponse, @"```json|```", string.Empty, RegexOptions.IgnoreCase).Trim();
+
+            // Remove BOM if present
+            if (cleaned.StartsWith("\uFEFF"))
             {
-                _logger.LogTrace("RemoveMarkDCleanJsonResponse - Returning empty due to null/whitespace input.");
-                return string.Empty;
+                cleaned = cleaned.Substring(1);
             }
 
-            var clean = Regex.Replace(jsonResponse,
-                @"```json|```|'''|\uFEFF",
-                string.Empty,
-                RegexOptions.IgnoreCase
-            );
-            _logger.LogTrace("RemoveMarkDCleanJsonResponse - After Regex Replace: {Clean}", clean);
- 
-            var startIndex = clean.IndexOf('{');
-            var endIndex = clean.LastIndexOf('}');
-            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Found startIndex: {StartIndex}, endIndex: {EndIndex}", startIndex, endIndex);
-
-            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
-            {
-                _logger.LogWarning("No valid JSON boundaries detected in string: {Clean}", clean);
-                return string.Empty;
-            }
-
-            var result = clean.Substring(startIndex, endIndex - startIndex + 1)
-                .Trim(new[] { '\n', '\r', ' ', '\t', '`', '\'', '"' });
-            _logger.LogTrace("RemoveMarkDCleanJsonResponse - Returning substring: {Result}", TruncateForLog(result));
-            return result;
+            return cleaned;
         }
-public void Dispose() => _httpClient?.Dispose();
 
-// --- Helper for logging ---
-private string TruncateForLog(string text, int maxLength = 500)
-{
-    if (string.IsNullOrEmpty(text)) return string.Empty;
-    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+        private string TruncateForLog(string text, int maxLength = 500)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+        }
+
+        // Custom Exception for Rate Limiting
+        public class RateLimitException : HttpRequestException
+        {
+            public int StatusCode { get; }
+            public RateLimitException(int statusCode, string message) : base(message) { StatusCode = statusCode; }
+            public RateLimitException(int statusCode, string message, Exception inner) : base(message, inner) { StatusCode = statusCode; }
+        }
+
+        // IDisposable implementation
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _httpClient?.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }
-
-// --- Custom Exceptions ---
-public class RateLimitException : HttpRequestException
-{
-    public int StatusCode { get; }
-    public RateLimitException(int statusCode, string message) : base(message) { StatusCode = statusCode; }
-    public RateLimitException(int statusCode, string message, Exception inner) : base(message, inner) { StatusCode = statusCode; }
-}
-// Potentially add HSCodeRequestException if needed later, similar to DeepSeekApi.cs
-
-}
-}
-
-
-
-
-
-
-//        private void SetDefaultPrompts()
-//        {
-//            PromptTemplate = @"DOCUMENT PROCESSING RULES:
-
-//0. PROCESS THIS TEXT INPUT:
-//{0}
-
-//1. TEXT STRUCTURE ANALYSIS:
-//   - Focus sections between: ""SHOP FASTER WITH THE APP"" and ""For Comptroller of Customs""
-//   - Priority order:
-//     1. Item tables with prices/quantities
-//     2. Customs declaration forms
-//     3. Address blocks
-//     4. Payment/header sections
-
-//2. FIELD EXTRACTION GUIDANCE:
-//   - SupplierCode: 
-//     * Source: Store/merchant name in header/footer (e.g., ""FASHIONNOWVA"")
-//     * NEVER use consignee name
-//     * Fallback: Email domain analysis (@company.com)
-
-//   - TotalDeduction: 
-//     * Look for: Coupons, credits, free shipping markers
-//     * Calculate: Sum of all price reductions
-
-//   - TotalInternalFreight:
-//     * Combine: Shipping + Handling + Transportation fees
-//     * Source: ""FREIGHT"" values in consignee line
-
-//3. CUSTOMS DECLARATION RULES:
-//   - Packages = Count from ""No. of Packages"" or ""Package Count""
-//   - GrossWeightKG = Numeric value from ""Gross Weight"" with KG units
-//   - Freight: Extract numeric value after ""FREIGHT""
-//   - FreightCurrency: Currency from freight context (e.g., ""US"" = USD)
-
-//4. DATA VALIDATION REQUIREMENTS:
-//   - Reject if: SupplierCode == ConsigneeName
-//   - Required fields: 
-//     * InvoiceDetails.TariffCode (use ""000000"" if missing)
-//     * CustomsDeclarations.Freight (0.0 if not found)
-
-//6. JSON STRUCTURE VALIDATION:
-//   - MUST close all arrays/objects
-//   - REQUIRED fields:
-//     * Invoices[]
-//     * CustomsDeclarations[] (can be empty)
-//   - If no customs data: 
-//     """"CustomsDeclarations"""": []
-
-//5. JSON SCHEMA WITH EXTRACTION GUIDANCE:
-//{{
-//  ""Invoices"": [{{
-//    // INVOICE HEADER DATA //
-//    ""InvoiceNo"": ""<str>"",                    // From ""Order #"" value
-//    ""PONumber"": ""<str|null>"",                 // ""PO Number"" if exists
-//    ""InvoiceDate"": ""<YYYY-MM-DD>"",            // ""Date Placed:"" value
-//    ""Currency"": ""<ISO_CODE>"",                 // Symbol analysis ($=USD)
-
-//    // FINANCIAL BREAKDOWN //
-//    ""SubTotal"": <float>,                       // Sum before deductions
-//    ""Total"": <float>,                          // Final payable amount
-//    ""TotalDeduction"": <float|null>,            // SUM(Coupons + Credits)
-//    ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
-//    ""TotalInternalFreight"": <float|null>,      // Shipping + Handling
-//    ""TotalInsurance"": <float|null>,            // Insurance fees if present
-
-//    // SUPPLIER INFORMATION //
-//    ""SupplierCode"": ""<str>"",                 // Merchant name (cleaned)
-//    ""SupplierAddress"": ""<str>"",              // From header/footer
-//    ""SupplierCountryCode"": ""<ISO3166-2>"",    // From supplier address
-
-//    // LINE ITEMS //
-//    ""InvoiceDetails"": [{{
-//      ""ItemNumber"": ""<str|null>"",           // SKU/Part number
-//      ""ItemDescription"": ""<str>"",           // Full item text
-//      ""Quantity"": <float>,                    // ""Qty:"" value
-//      ""Cost"": <float>,                        // Unit price
-//      ""TotalCost"": <float>,                   // Quantity * Cost
-//      ""Units"": ""<str>"",                     // Size→Units mapping
-//      ""TariffCode"": ""<str>"",                // From ""Tariff No."" column
-//      ""Discount"": <float|null>                // Item-level discounts
-//    }}]
-//  }}],
-
-//  ""CustomsDeclarations"": [{{
-//    // SHIPPING INFO //
-//    ""Consignee"": ""<str>"",                  // Delivery address name
-//    ""CustomsOffice"": ""<str>"",              // Customs Office field
-//    ""ManifestYear"": <int>,                   // First part of ""Man Reg Number"" Field eg. ""2024/1253"" ManifestYear = 2024 & ManifestNumber = 1253
-//    ""ManifestNumber"": <int>,                 // Second part of ""Man Reg Number"" Field eg. ""2024/1253"" ManifestYear = 2024 & ManifestNumber = 1253
-//    ""BLNumber"": ""<str>"",                   // ""WayBill Number"" value
-//    ""Freight"": <float>,                      // From ""FREIGHT"" marker
-//    ""FreightCurrency"": ""<ISO>"",            // Matches invoice currency
-//    ""PackageType"": ""<str>"",                // 'Type of Package' field
-//    ""Packages"": <int>,                       // 'Count' field
-//    ""GrossWeightKG"": <float>                 // 'WeightKG' field
-
-//    // PACKAGE DETAILS //
-//    //""PackageInfo"": {{
-//    //  ""Packages"": <int>,                      // 'Count' field
-//    //  ""GrossWeightKG"": <float>                // 'WeightKG' field
-//    //}},
-
-//    // ITEM CLASSIFICATION //
-//    ""Goods"": [{{
-//      ""Description"": ""<str>"",               // Must match invoice items
-//      ""TariffCode"": ""<str>""                 // Must match item tariff code
-//    }}]
-//  }}]
-//}}";
-//        } 

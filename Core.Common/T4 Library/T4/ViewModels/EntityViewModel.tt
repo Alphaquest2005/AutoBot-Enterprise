@@ -1,6 +1,7 @@
 ﻿
 <#@ import namespace="Core.Common.Data.Contracts" #>
 <#@ assembly name="a" #>
+<#@ import namespace="System.Collections.Generic" #>
 
 <#+ 
   // Note: You can call this method from the outside of the template,

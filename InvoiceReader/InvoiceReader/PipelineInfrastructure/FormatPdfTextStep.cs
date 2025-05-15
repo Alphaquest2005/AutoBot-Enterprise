@@ -8,106 +8,164 @@ using System.Linq; // Added for OrderBy
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using System.Diagnostics;
+
     public class FormatPdfTextStep : IPipelineStep<InvoiceProcessingContext>
     {
-        private static readonly ILogger _logger = Log.ForContext<FormatPdfTextStep>();
+        // Remove static logger
+        // private static readonly ILogger _logger = Log.ForContext<FormatPdfTextStep>();
 
         public Task<bool> Execute(InvoiceProcessingContext context)
         {
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
             string filePath = context?.FilePath ?? "Unknown";
-            LogExecutionStart(filePath);
+            context.Logger?.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(Execute), "Format extracted PDF text using identified templates", $"FilePath: {filePath}");
+
+            context.Logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                nameof(FormatPdfTextStep), $"Formatting PDF text for file: {filePath}");
 
             if (!ValidateContext(context, filePath))
             {
+                methodStopwatch.Stop(); // Stop stopwatch on validation failure
+                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(Execute), "Format extracted PDF text using identified templates", methodStopwatch.ElapsedMilliseconds, "Context validation failed.");
+                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(FormatPdfTextStep), "Context validation", methodStopwatch.ElapsedMilliseconds, "Context validation failed.");
                 return Task.FromResult(false);
             }
 
-            foreach (var template in context?.Templates)
+            bool overallSuccess = true; // Track if formatting succeeded for at least one template
+
+            if (context?.Templates != null)
             {
-                int templateId = template.OcrInvoices?.Id ?? 0;
-                LogTemplateDetails(templateId, filePath, context.PdfText.Length);
-
-                try
+                foreach (var template in context.Templates)
                 {
-                    string pdfTextString = context.PdfText.ToString();
-                    LogFormattingStart(templateId);
+                    int templateId = template.OcrInvoices?.Id ?? 0;
+                    LogTemplateDetails(context.Logger, templateId, filePath, context.PdfText.Length); // Pass logger
 
-                    ////////////////////////////////////////
-                    template.FormattedPdfText = template.Format(pdfTextString);
-                    ////////////////////////////////////////
+                    try
+                    {
+                        string pdfTextString = context.PdfText.ToString();
+                        LogFormattingStart(context.Logger, templateId); // Pass logger
 
-                    LogFormattedTextDetails(template.FormattedPdfText, templateId);
+                        context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                            $"Template.Format for Template {templateId}", "SYNC_EXPECTED"); // Log before Format call
+                        var formatStopwatch = Stopwatch.StartNew(); // Start stopwatch
+                        ////////////////////////////////////////
+                        template.FormattedPdfText = template.Format(pdfTextString);
+                        ////////////////////////////////////////
+                        formatStopwatch.Stop(); // Stop stopwatch
+                        context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                            $"Template.Format for Template {templateId}", formatStopwatch.ElapsedMilliseconds, "Sync call returned"); // Log after Format call
 
-                    LogExecutionSuccess(templateId, filePath);
-                    
-                }
-                catch (Exception ex) // Catch errors during formatting for a specific template
-                {
-                    string errorMsg = $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}: {ex.Message}";
-                    LogExecutionError(ex, templateId, filePath); // Log the error with details
-                    context.AddError(errorMsg); // Add the specific error to the context
-                    return Task.FromResult(false); // Stop processing this step and indicate failure
+                        LogFormattedTextDetails(context.Logger, template.FormattedPdfText, templateId); // Pass logger
+
+                        LogExecutionSuccess(context.Logger, templateId, filePath); // Pass logger
+                        overallSuccess = true; // At least one template formatted successfully
+                    }
+                    catch (Exception ex) // Catch errors during formatting for a specific template
+                    {
+                        string errorMsg = $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}: {ex.Message}";
+                        LogExecutionError(context.Logger, ex, templateId, filePath); // Log the error with details, pass logger
+                        context.AddError(errorMsg); // Add the specific error to the context
+                        overallSuccess = false; // Mark that at least one template failed formatting
+                        // Do NOT return false here, continue trying other templates
+                    }
                 }
             }
 
-            return Task.FromResult(true);
+            methodStopwatch.Stop(); // Stop stopwatch
+            if (overallSuccess)
+            {
+                context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(Execute), "Successfully formatted PDF text using at least one template", $"OverallSuccess: {overallSuccess}", methodStopwatch.ElapsedMilliseconds);
+                context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(FormatPdfTextStep), $"Successfully formatted PDF text for file: {filePath} using at least one template", methodStopwatch.ElapsedMilliseconds);
+            }
+            else
+            {
+                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(Execute), "Format extracted PDF text using identified templates", methodStopwatch.ElapsedMilliseconds, "Formatting failed for all templates.");
+                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(FormatPdfTextStep), "Formatting templates", methodStopwatch.ElapsedMilliseconds, "Formatting failed for all templates.");
+            }
+
+            return Task.FromResult(overallSuccess); // Return overall success status
 
         }
 
-        private void LogExecutionStart(string filePath)
+        private void LogExecutionStart(ILogger logger, string filePath) // Add logger parameter
         {
-            _logger.Debug("Executing FormatPdfTextStep for File: {FilePath}", filePath);
+            logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Execute), "Execution", "Starting FormatPdfTextStep.", $"FilePath: {filePath}", "");
         }
 
         private bool ValidateContext(InvoiceProcessingContext context, string filePath)
         {
             if (context == null)
             {
-                _logger.Error("FormatPdfTextStep executed with null context.");
+                // Cannot use context.Logger if context is null
+                Log.ForContext<FormatPdfTextStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ValidateContext), "Validate pipeline context", 0, "FormatPdfTextStep executed with null context.");
                 return false;
             }
-            if (!context.Templates.Any())
+            if (context.Templates == null || !context.Templates.Any())
             {
-                _logger.Warning("Skipping FormatPdfTextStep: No Templates for File: {FilePath}", filePath);
-                return false;
+                context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(ValidateContext), "Validation", "Skipping FormatPdfTextStep: No Templates.", $"FilePath: {filePath}", "Expected templates for formatting.");
+                // This is not a critical failure, just means no formatting will occur.
+                return true; // Treat as successful validation but no work done
             }
             if (context.PdfText == null)
             {
-                _logger.Warning("Skipping FormatPdfTextStep: PdfText (StringBuilder) is null for File: {FilePath}", filePath);
-                return false;
+                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ValidateContext), "Validate pipeline context", 0, $"Skipping FormatPdfTextStep: PdfText (StringBuilder) is null for File: {filePath}.");
+                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(FormatPdfTextStep), "Context validation", 0, $"Skipping FormatPdfTextStep: PdfText (StringBuilder) is null for File: {filePath}.");
+                context.AddError($"PdfText is null for file: {filePath}");
+                return false; // Indicate validation failure
             }
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(ValidateContext), "Validation", "Context validation successful.", $"FilePath: {filePath}", "");
             return true;
         }
 
-        private void LogTemplateDetails(int templateId, string filePath, int pdfTextLength)
+        private void LogTemplateDetails(ILogger logger, int templateId, string filePath, int pdfTextLength) // Add logger parameter
         {
-            _logger.Debug("Formatting PDF text using TemplateId: {TemplateId} for File: {FilePath}", templateId, filePath);
-            _logger.Verbose("Original PdfText Length: {Length}", pdfTextLength);
+            logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Execute), "TemplateProcessing", "Formatting PDF text using template.", $"TemplateId: {templateId}, FilePath: {filePath}, OriginalPdfTextLength: {pdfTextLength}", "");
         }
 
-        private void LogFormattingStart(int templateId)
+        private void LogFormattingStart(ILogger logger, int templateId) // Add logger parameter
         {
-            _logger.Verbose("Starting formatting using formatters for TemplateId: {TemplateId}", templateId);
+            logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Execute), "Formatting", "Starting formatting using formatters.", $"TemplateId: {templateId}", "");
         }
 
-        private void LogFormattedTextDetails(string formattedPdfText, int templateId)
+        private void LogFormattedTextDetails(ILogger logger, string formattedPdfText, int templateId) // Add logger parameter
         {
-            _logger.Verbose("Formatted PdfText Length: {Length}", formattedPdfText?.Length ?? 0);
+            logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Execute), "FormattingResult", "Formatted PdfText details.", $"TemplateId: {templateId}, FormattedPdfTextLength: {formattedPdfText?.Length ?? 0}", "");
             if (!string.IsNullOrEmpty(formattedPdfText))
             {
-                _logger.Verbose("Formatted PdfText (first 500 chars): {FormattedText}", formattedPdfText.Substring(0, Math.Min(formattedPdfText.Length, 500)));
+                logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(Execute), "FormattingResult", "Formatted PdfText snippet.", $"TemplateId: {templateId}", new { Snippet = formattedPdfText.Substring(0, Math.Min(formattedPdfText.Length, 500)) });
             }
         }
 
-        private void LogExecutionSuccess(int templateId, string filePath)
+        private void LogExecutionSuccess(ILogger logger, int templateId, string filePath) // Add logger parameter
         {
-            _logger.Information("PDF text formatted using TemplateId: {TemplateId} for File: {FilePath}.", templateId, filePath);
-            _logger.Debug("Finished executing FormatPdfTextStep successfully for File: {FilePath}", filePath);
+            logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(Execute), "TemplateCompletion", "PDF text formatted successfully using template.", $"TemplateId: {templateId}, FilePath: {filePath}", "");
         }
 
-        private void LogExecutionError(Exception ex, int templateId, string filePath)
+        private void LogExecutionError(ILogger logger, Exception ex, int templateId, string filePath) // Add logger parameter
         {
-            _logger.Error(ex, "Error formatting PDF text using TemplateId: {TemplateId} for File: {FilePath}", templateId, filePath);
+            logger?.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                nameof(Execute), "Format PDF text using template", 0, $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}. Error: {ex.Message}");
+            logger?.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                $"{nameof(FormatPdfTextStep)} - Template {templateId}", "Formatting template", 0, $"Error formatting PDF text using TemplateId: {templateId} for File: {filePath}. Error: {ex.Message}");
         }
     }
 }

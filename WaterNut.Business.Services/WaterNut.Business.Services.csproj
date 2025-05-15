@@ -936,7 +936,6 @@
     <Compile Include="Utils\DeepSeek\Refactoring\ModelPricing.cs" />
     <Compile Include="Utils\DeepSeek\Refactoring\LlmApiException.cs" />
     <Compile Include="Utils\DeepSeek\Refactoring\LlmProvider.cs" />
-    <Compile Include="Utils\DeepSeek\LoggingConfig.cs" />
     <Compile Include="Utils\DeepSeek\DeepSeekInvoiceApi.cs" />
     <Compile Include="Utils\DeepSeek\DeepSeekApi.cs" />
     <Compile Include="Utils\DeepSeek\Refactoring\ProductCodeResponse.cs" />
@@ -1617,15 +1616,6 @@
     </PackageReference>
     <PackageReference Include="ExcelDataReader.DataSet">
       <Version>3.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>9.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console">
-      <Version>9.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug">
-      <Version>9.0.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.Platforms">
       <Version>7.0.4</Version>

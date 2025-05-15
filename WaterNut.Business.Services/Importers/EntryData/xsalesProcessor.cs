@@ -4,6 +4,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class xsalesProcessor : IDocumentProcessor
     {
         private readonly ImportSettings _importSettings;
@@ -13,7 +15,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _importSettings = importSettings;
         }
  
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines, ILogger log)
         {
             var importer = new ProcessorPipline<BetterExpando>(new List<IProcessor<BetterExpando>>()
             {

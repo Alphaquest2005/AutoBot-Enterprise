@@ -8,7 +8,7 @@
 <#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\MainViewModel.tt" #>	
 <#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindow.tt" #>	
 <#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindowCS.tt" #>	
-<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindowViewModel.tt" #>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\MainWindowViewModel.tt" #><#@ import namespace="System.Linq" #>	
 
 	
 

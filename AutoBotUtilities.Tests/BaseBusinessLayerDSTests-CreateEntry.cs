@@ -22,6 +22,8 @@ using Z.EntityFramework.Extensions; // Keep for LicenseManager
 
 namespace WaterNut.Business.Services.Tests
 {
+    using Serilog;
+
     [TestFixture]
     // Renaming class to reflect specific test focus
     public class BaseBusinessLayerDSTests_CreateEntry // Consider renaming file too if this is the only test class
@@ -72,7 +74,8 @@ namespace WaterNut.Business.Services.Tests
                     {
                         // Use ToString() for fileType representation in log
                         Console.WriteLine($"DEBUG: Importing using FileType: {fileType.ToString()}");
-                        await new FileTypeImporter(fileType).Import(testFilePath).ConfigureAwait(false);
+                        
+                        await new FileTypeImporter(fileType, log).Import(testFilePath, log).ConfigureAwait(false);
                         // Use ToString() for fileType representation in log
                         Console.WriteLine($"DEBUG: Import attempted for EntryDataID: {targetEntryDataId} using FileType: {fileType.ToString()}.");
                     }

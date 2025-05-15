@@ -5,7 +5,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
-   
+    using Serilog;
+
     public class ChainedDocumentProcessor : IDocumentProcessor
     {
         private readonly IDocumentProcessor _first;
@@ -17,7 +18,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _second = second;
         }
         
-        public async Task<List<dynamic>> Execute(List<dynamic> list)
+        public async Task<List<dynamic>> Execute(List<dynamic> list, ILogger log)
         {
             var firstResult = await _first.Execute(list).ConfigureAwait(false);
             return await _second.Execute(firstResult).ConfigureAwait(false);

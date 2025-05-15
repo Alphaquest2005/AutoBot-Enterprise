@@ -25,10 +25,16 @@ using AsycudaDocumentSetService = DocumentDS.Business.Services.AsycudaDocumentSe
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
+// Serilog usings
+using Serilog;
+using Serilog.Context;
+
 namespace WaterNut.DataSpace;
 
 public partial class BaseDataModel
 {
+    private static readonly ILogger _log = Log.ForContext<BaseDataModel>(); // Add static logger
+
     public static List<List<(string ItemNumber, int InventoryItemId)>> GetItemSets(string lst)
     {
         return isDBMem
@@ -87,30 +93,83 @@ public partial class BaseDataModel
     }
 
     public static async Task<(DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)>
-        CurrentSalesInfo(int months)
+        CurrentSalesInfo(ILogger log, int months) // Add ILogger parameter
     {
-        var sessionParams = GetSessionParameterMonths(); // This remains synchronous for now
-        if (sessionParams.HasValue)
-        {
-            // If GetSessionParameterMonths could also become async and return Task<(...)?>,
-            // then this part would need await too. For now, assume it's sync.
-            // If docSet from sessionParams needs to be fetched async, that's a deeper change.
-            // The original error was in GetCurrentSalesInfo, so focusing there.
-            return sessionParams.Value;
-        }
+        string methodName = nameof(CurrentSalesInfo);
+        log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ Months: {Months} }}",
+            methodName, "EmailSalesErrorsUtils.EmailSalesErrors", months); // Add METHOD_ENTRY log
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
 
-        return await GetCurrentSalesInfo(months).ConfigureAwait(false);
+        try
+        {
+            log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Getting session parameters.", methodName, "GetSessionParameters"); // Add step log
+            var sessionParams = GetSessionParameterMonths(log); // Pass log parameter
+            if (sessionParams.HasValue)
+            {
+                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Session parameters found. Using them.", methodName, "UseSessionParameters"); // Add step log
+                stopwatch.Stop(); // Stop stopwatch
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
+                return sessionParams.Value;
+            }
+
+            log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetCurrentSalesInfo", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+            var getCurrentSalesInfoStopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var result = await GetCurrentSalesInfo(log, months).ConfigureAwait(false); // Pass log
+            getCurrentSalesInfoStopwatch.Stop();
+            log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                "GetCurrentSalesInfo", getCurrentSalesInfoStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
+
+            stopwatch.Stop(); // Stop stopwatch
+            log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
+            return result;
+        }
+        catch (Exception ex) // Catch specific exception variable
+        {
+            stopwatch.Stop(); // Stop stopwatch
+            log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
+            throw; // Re-throw the original exception
+        }
     }
 
     private static async Task<(DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)>
-        GetCurrentSalesInfo(int months)
+        GetCurrentSalesInfo(ILogger log, int months) // Add ILogger parameter
     {
-        var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(months);
-        return await EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate).ConfigureAwait(false);
+        string methodName = nameof(GetCurrentSalesInfo);
+        log.Debug("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ Months: {Months} }}",
+            methodName, "BaseDataModel.CurrentSalesInfo", months); // Add METHOD_ENTRY log
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
+
+        try
+        {
+            log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Calculating start date.", methodName, "CalculateStartDate"); // Add step log
+            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(months);
+
+            log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.CreateMonthYearAsycudaDocSet", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+            var createDocSetStopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var result = await EntryDocSetUtils.CreateMonthYearAsycudaDocSet(log, startDate).ConfigureAwait(false); // Pass log
+            createDocSetStopwatch.Stop();
+            log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                "EntryDocSetUtils.CreateMonthYearAsycudaDocSet", createDocSetStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
+
+            stopwatch.Stop(); // Stop stopwatch
+            log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
+            return result;
+        }
+        catch (Exception ex) // Catch specific exception variable
+        {
+            stopwatch.Stop(); // Stop stopwatch
+            log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
+            throw; // Re-throw the original exception
+        }
     }
 
     private static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)?
-        GetSessionParameterMonths()
+        GetSessionParameterMonths(ILogger log) // Added ILogger parameter
     {
         var parameterSet = BaseDataModel.Instance.CurrentSessionSchedule.FirstOrDefault(x =>
             x.SesseionId == BaseDataModel.Instance.CurrentSessionAction.SessionId)?.ParameterSet;
@@ -136,6 +195,7 @@ public partial class BaseDataModel
         // The primary error was in GetCurrentSalesInfo.
         var docSet = WaterNut.DataSpace.EntryDocSetUtils
             .GetAsycudaDocumentSet(
+                log, // Added log parameter
                 parameterSet.ParameterSetParameters.Select(x => x.Parameters)
                     .FirstOrDefault(x => x.Name == "AsycudaDocumentSet")?.Value ?? "Unknown", false).GetAwaiter()
             .GetResult();

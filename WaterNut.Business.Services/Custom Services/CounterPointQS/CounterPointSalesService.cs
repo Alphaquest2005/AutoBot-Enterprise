@@ -5,6 +5,7 @@ using CounterPointQS.Business.Entities;
 
 namespace CounterPointQS.Business.Services
 {
+    using Serilog;
 
     public partial class CounterPointSalesService
     {
@@ -13,10 +14,10 @@ namespace CounterPointQS.Business.Services
             await WaterNut.DataSpace.CPSalesModel.Instance.DownloadCPSales(counterPointSales, p).ConfigureAwait(false);
         }
 
-        public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
+        public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId, ILogger log)
         {
             await
-                WaterNut.DataSpace.CPSalesModel.Instance.DownloadCPSalesDateRange(startDate, endDate, docSetId)
+                WaterNut.DataSpace.CPSalesModel.Instance.DownloadCPSalesDateRange(startDate, endDate, docSetId, log)
                     .ConfigureAwait(false);
         }
     }

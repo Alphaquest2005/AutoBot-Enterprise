@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog; // Added for ILogger
 using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -15,6 +16,8 @@ using static java.util.Locale;
 
 namespace WaterNut.DataSpace
 {
+    using System.Diagnostics;
+
     public class ShipmentInvoiceImporter
     {
         static ShipmentInvoiceImporter()
@@ -25,89 +28,227 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public async Task<bool> ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
+        public async Task<bool> ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs, ILogger logger) // Added ILogger parameter
         {
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
+            logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(ProcessShipmentInvoice), "Process shipment invoice data from email or file", $"FileType: {fileType?.Description}, EmailId: {emailId}, FilePath: {droppedFilePath}, DocSetCount: {docSet?.Count ?? 0}");
+
             try
             {
+                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(ProcessShipmentInvoice), $"Processing shipment invoice from File: {droppedFilePath ?? emailId}");
+
                 var invoiceData = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
-                var shipmentInvoices = await ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData).ConfigureAwait(false);
+                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                    nameof(ProcessShipmentInvoice), "DataExtraction", "Extracted invoice data from input list.", $"RawItemCount: {invoiceData.Count}");
+
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ExtractShipmentInvoices", "ASYNC_EXPECTED");
+                var extractStopwatch = Stopwatch.StartNew();
+                var shipmentInvoices = await ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData, logger).ConfigureAwait(false); // Pass logger
+                extractStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "ExtractShipmentInvoices", extractStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
+
                 var invoices = ReduceLstByInvoiceNo(shipmentInvoices);
+                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                    nameof(ProcessShipmentInvoice), "DataReduction", "Reduced list by invoice number.", $"UniqueInvoiceCount: {invoices.Count}");
+
                 var goodInvoices = invoices.Where(x => x.InvoiceDetails.All(z => !string.IsNullOrEmpty(z.ItemDescription)))
                                             .Where(x => x.InvoiceDetails.Any())
                                             .ToList();
+                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                    nameof(ProcessShipmentInvoice), "DataFiltering", "Filtered for good invoices.", $"GoodInvoiceCount: {goodInvoices.Count}");
 
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SaveInvoicePOsAsync", "ASYNC_EXPECTED");
+                var saveStopwatch = Stopwatch.StartNew();
                 await SaveInvoicePOsAsync(invoicePOs, goodInvoices).ConfigureAwait(false);
+                saveStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "SaveInvoicePOsAsync", saveStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
+
+                methodStopwatch.Stop(); // Stop stopwatch on success
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ProcessShipmentInvoice), "Shipment invoice processed successfully", $"ProcessedGoodInvoiceCount: {goodInvoices.Count}", methodStopwatch.ElapsedMilliseconds);
+                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(ProcessShipmentInvoice), $"Successfully processed {goodInvoices.Count} good invoices", methodStopwatch.ElapsedMilliseconds);
+
                 return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                methodStopwatch.Stop(); // Stop stopwatch on failure
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ProcessShipmentInvoice), "Process shipment invoice data from email or file", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
+                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ProcessShipmentInvoice), "Overall shipment invoice processing", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
+                Console.WriteLine(e); // Keep Console.WriteLine for now
                 return false;
             }
         }
-
-        private static async Task<List<ShipmentInvoice>> ExtractShipmentInvoices(FileTypes fileType, string emailId, string droppedFilePath, List<IDictionary<string, object>> itms)
+ 
+        private static async Task<List<ShipmentInvoice>> ExtractShipmentInvoices(FileTypes fileType, string emailId, string droppedFilePath, List<IDictionary<string, object>> itms, ILogger logger) // Added ILogger parameter
         {
-            var tasks = itms.Select(x => (IDictionary<string, object>)x)
-                .Where(x => x != null && x.Any())
-                .Select(ProcessInvoiceItem)
-                .Where(x => x != null)
-                .ToList();
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
+            logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(ExtractShipmentInvoices), "Extract shipment invoices from raw data", $"FileType: {fileType?.Description}, EmailId: {emailId}, FilePath: {droppedFilePath}, RawItemCount: {itms?.Count ?? 0}");
 
-            var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-            return results.Where(x => x != null).ToList();
-
-            async Task<ShipmentInvoice> ProcessInvoiceItem(IDictionary<string, object> x)
+            try
             {
-                var invoice = new ShipmentInvoice();
+                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(ExtractShipmentInvoices), $"Extracting shipment invoices from {itms?.Count ?? 0} raw items");
 
-                if (x["InvoiceDetails"] == null) return null;// throw new ApplicationException("Template Details is null");
-            
-                var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-                    .Where(z => z != null)
-                    .Where(z => z.ContainsKey("ItemDescription"))
-                    .Select(z => (
-                        ItemNumber: z["ItemNumber"]?.ToString(),
-                        ItemDescription: z["ItemDescription"].ToString(),
-                        TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : ""
-                    )).ToList();
+                var tasks = itms.Select(x => (IDictionary<string, object>)x)
+                    .Where(x => x != null && x.Any())
+                    .Select(x => ProcessInvoiceItem(x, logger)) // Pass logger to ProcessInvoiceItem
+                    .Where(x => x != null)
+                    .ToList();
 
-                var classifiedItms = await InventoryItemsExService.ClassifiedItms(items).ConfigureAwait(false);
+                if (!tasks.Any())
+                {
+                     logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation}",
+                        nameof(ExtractShipmentInvoices), "TaskCreation", "InvoiceItemTasks", "No valid invoice items found to process.");
+                }
 
-                invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
-                invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ? x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
-                invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
-                invoice.InvoiceDate = x.ContainsKey("InvoiceDate") ? DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue;
-                invoice.InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null;
-                invoice.SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null;
-                invoice.ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count;
-                invoice.SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null;
-                invoice.SupplierName = (x.ContainsKey("SupplierName") ? x["SupplierName"]?.ToString() : null) ?? (x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null);
-                invoice.SupplierAddress = x.ContainsKey("SupplierAddress") ? x["SupplierAddress"]?.ToString() : null;
-                invoice.SupplierCountry = x.ContainsKey("SupplierCountryCode") ? x["SupplierCountryCode"]?.ToString() : null;
-                invoice.FileLineNumber = itms.IndexOf(x) + 1;
-                invoice.Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null;
-                invoice.TotalInternalFreight = x.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(x["TotalInternalFreight"].ToString()) : (double?)null;
-                invoice.TotalOtherCost = x.ContainsKey("TotalOtherCost") ? Convert.ToDouble(x["TotalOtherCost"].ToString()) : (double?)null;
-                invoice.TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null;
-                invoice.TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null;
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Task.WhenAll(ProcessInvoiceItem tasks)", "ASYNC_EXPECTED");
+                var whenAllStopwatch = Stopwatch.StartNew();
+                var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+                whenAllStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "Task.WhenAll(ProcessInvoiceItem tasks)", whenAllStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
 
-                invoice.InvoiceDetails = ProcessInvoiceDetails(x, classifiedItms);
-                invoice.InvoiceExtraInfo = ProcessExtraInfo(x);
+                var validResults = results.Where(x => x != null).ToList();
+                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                    nameof(ExtractShipmentInvoices), "TaskCompletion", "Completed processing invoice item tasks.", $"ValidInvoiceCount: {validResults.Count}");
 
-                invoice.EmailId = emailId;
-                invoice.SourceFile = droppedFilePath;
-                invoice.FileTypeId = fileType.Id;
-                invoice.TrackingState = TrackingState.Added;
+                methodStopwatch.Stop(); // Stop stopwatch on success
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ExtractShipmentInvoices), "Shipment invoices extracted successfully", $"ExtractedInvoiceCount: {validResults.Count}", methodStopwatch.ElapsedMilliseconds);
+                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(ExtractShipmentInvoices), $"Successfully extracted {validResults.Count} shipment invoices", methodStopwatch.ElapsedMilliseconds);
 
-                return invoice;
+                return validResults;
             }
+            catch (Exception e)
+            {
+                methodStopwatch.Stop(); // Stop stopwatch on failure
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ExtractShipmentInvoices), "Extract shipment invoices from raw data", methodStopwatch.ElapsedMilliseconds, $"Error extracting shipment invoices: {e.Message}");
+                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ExtractShipmentInvoices), "Shipment invoice extraction process", methodStopwatch.ElapsedMilliseconds, $"Error extracting shipment invoices: {e.Message}");
+                Console.WriteLine(e); // Keep Console.WriteLine for now
+                throw;
+            }
+ 
+            async Task<ShipmentInvoice> ProcessInvoiceItem(IDictionary<string, object> x, ILogger itemLogger) // Added ILogger parameter
+            {
+                var itemMethodStopwatch = Stopwatch.StartNew(); // Start stopwatch for item method
+                itemLogger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                    nameof(ProcessInvoiceItem), "Process a single invoice item dictionary", $"Keys: {string.Join(",", x?.Keys ?? Enumerable.Empty<string>())}");
 
+                try
+                {
+                    itemLogger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                        nameof(ProcessInvoiceItem), $"Processing invoice item with keys: {string.Join(",", x?.Keys ?? Enumerable.Empty<string>())}");
+
+                    var invoice = new ShipmentInvoice();
+ 
+                    if (x["InvoiceDetails"] == null)
+                    {
+                        itemLogger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                            nameof(ProcessInvoiceItem), "Validation", "InvoiceDetails is null, skipping item.", "");
+                        itemMethodStopwatch.Stop(); // Stop stopwatch
+                        itemLogger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                            nameof(ProcessInvoiceItem), "Skipped item due to null InvoiceDetails", "Returned null", itemMethodStopwatch.ElapsedMilliseconds);
+                        itemLogger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                            nameof(ProcessInvoiceItem), "Skipped item due to null InvoiceDetails", "Returned null", itemMethodStopwatch.ElapsedMilliseconds);
+                        return null; // throw new ApplicationException("Template Details is null");
+                    }
+                
+                    var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                        .Where(z => z != null)
+                        .Where(z => z.ContainsKey("ItemDescription"))
+                        .Select(z => (
+                            ItemNumber: z["ItemNumber"]?.ToString(),
+                            ItemDescription: z["ItemDescription"].ToString(),
+                            TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : ""
+                        )).ToList();
+
+                    if (!items.Any())
+                    {
+                         itemLogger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation}",
+                            nameof(ProcessInvoiceItem), "ItemExtraction", "ExtractedItems", "No valid items found within InvoiceDetails.");
+                    }
+
+                    itemLogger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "InventoryItemsExService.ClassifiedItms", "ASYNC_EXPECTED");
+                    var classifiedStopwatch = Stopwatch.StartNew();
+                    var classifiedItms = await InventoryItemsExService.ClassifiedItms(items, itemLogger).ConfigureAwait(false); // Pass logger
+                    classifiedStopwatch.Stop();
+                    itemLogger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "InventoryItemsExService.ClassifiedItms", classifiedStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
+ 
+                    invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
+                    invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ? x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
+                    invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
+                    invoice.InvoiceDate = x.ContainsKey("InvoiceDate") ? DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue;
+                    invoice.InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null;
+                    invoice.SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null;
+                    invoice.ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count;
+                    invoice.SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null;
+                    invoice.SupplierName = (x.ContainsKey("SupplierName") ? x["SupplierName"]?.ToString() : null) ?? (x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null);
+                    invoice.SupplierAddress = x.ContainsKey("SupplierAddress") ? x["SupplierAddress"]?.ToString() : null;
+                    invoice.SupplierCountry = x.ContainsKey("SupplierCountryCode") ? x["SupplierCountryCode"]?.ToString() : null;
+                    invoice.FileLineNumber = itms.IndexOf(x) + 1;
+                    invoice.Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null;
+                    invoice.TotalInternalFreight = x.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(x["TotalInternalFreight"].ToString()) : (double?)null;
+                    invoice.TotalOtherCost = x.ContainsKey("TotalOtherCost") ? Convert.ToDouble(x["TotalOtherCost"].ToString()) : (double?)null;
+                    invoice.TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null;
+                    invoice.TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null;
+ 
+                    itemLogger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ProcessInvoiceDetails", "SYNC_EXPECTED");
+                    var processDetailsStopwatch = Stopwatch.StartNew();
+                    invoice.InvoiceDetails = ProcessInvoiceDetails(x, classifiedItms);
+                    processDetailsStopwatch.Stop();
+                    itemLogger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "ProcessInvoiceDetails", processDetailsStopwatch.ElapsedMilliseconds, "Sync call returned");
+
+                    itemLogger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ProcessExtraInfo", "SYNC_EXPECTED");
+                    var processExtraInfoStopwatch = Stopwatch.StartNew();
+                    invoice.InvoiceExtraInfo = ProcessExtraInfo(x);
+                    processExtraInfoStopwatch.Stop();
+                    itemLogger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "ProcessExtraInfo", processExtraInfoStopwatch.ElapsedMilliseconds, "Sync call returned");
+ 
+                    invoice.EmailId = emailId;
+                    invoice.SourceFile = droppedFilePath;
+                    invoice.FileTypeId = fileType.Id;
+                    invoice.TrackingState = TrackingState.Added;
+ 
+                    itemMethodStopwatch.Stop(); // Stop stopwatch on success
+                    itemLogger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(ProcessInvoiceItem), "Invoice item processed successfully", $"InvoiceNo: {invoice.InvoiceNo}, ItemCount: {invoice.InvoiceDetails.Count}", itemMethodStopwatch.ElapsedMilliseconds);
+                    itemLogger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(ProcessInvoiceItem), $"Successfully processed invoice item for InvoiceNo: {invoice.InvoiceNo}", itemMethodStopwatch.ElapsedMilliseconds);
+
+                    return invoice;
+                }
+                catch (Exception e)
+                {
+                    itemMethodStopwatch.Stop(); // Stop stopwatch on failure
+                    itemLogger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(ProcessInvoiceItem), "Process a single invoice item dictionary", itemMethodStopwatch.ElapsedMilliseconds, $"Error processing invoice item: {e.Message}");
+                    itemLogger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(ProcessInvoiceItem), "Invoice item processing", itemMethodStopwatch.ElapsedMilliseconds, $"Error processing invoice item: {e.Message}");
+                    Console.WriteLine(e); // Keep Console.WriteLine for now
+                    throw;
+                }
+            }
+ 
             List<InvoiceDetails> ProcessInvoiceDetails(IDictionary<string, object> x, Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> classifiedItms)
             {
                 if (!x.ContainsKey("InvoiceDetails"))
                     return new List<InvoiceDetails>();
-
+ 
                 return ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                     .Where(z => z != null)
                     .Where(z => z.ContainsKey("ItemDescription") && z["ItemDescription"] != null)
@@ -116,7 +257,7 @@ namespace WaterNut.DataSpace
                         var details = new InvoiceDetails();
                         var qty = z.ContainsKey("Quantity") ? Convert.ToDouble(z["Quantity"].ToString()) : 1;
                         details.Quantity = qty;
-
+ 
                         var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString())
                             ? classifiedItms[z["ItemDescription"].ToString()]
                             : (
@@ -126,9 +267,9 @@ namespace WaterNut.DataSpace
                                 Category: string.Empty,
                                 CategoryTariffCode: string.Empty
                             );
-
+ 
                         var dbCategoryTariffs = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == classifiedItm.Category);
-
+ 
                         details.ItemNumber = classifiedItm.ItemNumber;
                         details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
                         details.TariffCode = classifiedItm.TariffCode;
@@ -167,12 +308,12 @@ namespace WaterNut.DataSpace
                         return details;
                     }).ToList();
             }
-
+ 
             List<InvoiceExtraInfo> ProcessExtraInfo(IDictionary<string, object> x)
             {
                 if (!x.ContainsKey("ExtraInfo"))
                     return new List<InvoiceExtraInfo>();
-
+ 
                 return ((List<IDictionary<string, object>>)x["ExtraInfo"])
                     .Where(z => z.Keys.Any())
                     .SelectMany(z => z)

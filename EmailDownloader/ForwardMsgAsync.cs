@@ -9,12 +9,14 @@ using MimeKit;
 
 namespace EmailDownloader;
 
+using Serilog;
+
 public static partial class EmailDownloader
 {
     // GetMessageOrDefaultAsync was an internal helper, GetMsgAsync now encapsulates its logic
     // If GetMessageOrDefaultAsync was used elsewhere, it would also need this short-lived client pattern or accept a client.
 
-    public static async Task<bool> ForwardMsgAsync(string emailId, Client clientDetails, string subject, string body, string[] contacts, string[] attachments, CancellationToken cancellationToken = default)
+    public static async Task<bool> ForwardMsgAsync(string emailId, Client clientDetails, string subject, string body, string[] contacts, string[] attachments, ILogger log, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -35,22 +37,22 @@ public static partial class EmailDownloader
             if (uIDNumeric == null || uIDNumeric.Value == 0)
             {
                 // Email not found in DB or UID is invalid, send a new email
-                await SendEmailAsync(clientDetails, null, subject, contacts, body, attachments, cancellationToken).ConfigureAwait(false);
+                await SendEmailAsync(clientDetails, null, subject, contacts, body, attachments,log,  cancellationToken).ConfigureAwait(false);
                 return true;
             }
 
             // uIDNumeric.Value is now uint
-            MimeMessage originalMsg = await GetMsgAsync(uIDNumeric.Value, clientDetails, cancellationToken).ConfigureAwait(false);
+            MimeMessage originalMsg = await GetMsgAsync(uIDNumeric.Value, clientDetails,log, cancellationToken).ConfigureAwait(false);
 
             if (originalMsg == null)
             {
                 Console.WriteLine($"ForwardMsgAsync: Original message for EmailId '{emailId}' (UID {uIDNumeric.Value}) not found. Sending as new email.");
                 // Optionally, send as a new email if the original can't be fetched
-                await SendEmailAsync(clientDetails, null, subject, contacts, body, attachments, cancellationToken).ConfigureAwait(false);
+                await SendEmailAsync(clientDetails, null, subject, contacts, body, attachments,log, cancellationToken).ConfigureAwait(false);
                 return false; // Or true depending on desired behavior
             }
 
-            await ForwardMsgInternalAsync(originalMsg, clientDetails, subject, body, contacts, attachments, cancellationToken).ConfigureAwait(false);
+            await ForwardMsgInternalAsync(originalMsg, clientDetails, subject, body, contacts, attachments, cancellationToken, log).ConfigureAwait(false); // Pass the logger
             return true;
         }
         catch (OperationCanceledException) { throw; }
@@ -66,14 +68,14 @@ public static partial class EmailDownloader
     /// <summary>
     /// Fetches a specific MimeMessage by its UID using a new, short-lived ImapClient connection.
     /// </summary>
-    private static async Task<MimeMessage> GetMsgAsync(uint uID, Client clientDetails, CancellationToken cancellationToken = default)
+    private static async Task<MimeMessage> GetMsgAsync(uint uID, Client clientDetails, ILogger logger, CancellationToken cancellationToken = default)
     {
         // Create a new client instance for this specific operation
         ImapClient imapClient = null;
         try
         {
             // GetOpenImapClientAsync connects, authenticates, and opens Inbox
-            imapClient = await GetOpenImapClientAsync(clientDetails, cancellationToken).ConfigureAwait(false);
+            imapClient = await GetOpenImapClientAsync(clientDetails, logger, cancellationToken).ConfigureAwait(false);
             if (imapClient == null)
             {
                 Console.WriteLine($"GetMsgAsync: Failed to get open IMAP client for UID {uID}.");

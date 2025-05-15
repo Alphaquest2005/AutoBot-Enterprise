@@ -28,6 +28,8 @@ using MoreEnumerable = MoreLinq.MoreEnumerable;
 
 namespace WaterNut.Business.Services.Utils
 {
+    using Serilog;
+
     public class CSVUtils
     {
         
@@ -53,13 +55,13 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        public static async Task SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType)
+        public static async Task SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType, ILogger log)
         {
             Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
-            foreach (var file in csvFiles) await TryImportFile(fileType, file).ConfigureAwait(false);
+            foreach (var file in csvFiles) await TryImportFile(fileType, file, log).ConfigureAwait(false);
         }
 
-        private static async Task TryImportFile(FileTypes fileType, FileInfo file)
+        private static async Task TryImportFile(FileTypes fileType, FileInfo file, ILogger log)
         {
             try
             {
@@ -67,17 +69,17 @@ namespace WaterNut.Business.Services.Utils
             }
             catch (Exception e)
             {
-                await EmailCSVImportError(file, e).ConfigureAwait(false);
+                await EmailCSVImportError(file, e, log).ConfigureAwait(false);
             }
         }
 
-        private static async Task EmailCSVImportError(FileInfo file, Exception e)
+        private static async Task EmailCSVImportError(FileInfo file, Exception e, ILogger log)
         {
            
                 if (IsErrorLogSent(file)) return;
                 var att = GetCSVOriginalFileAttachments(file);
                 var body = CreateCSVErrorEmailBody(file, e);
-                await EmailDownloader.EmailDownloader.SendBackMsgAsync(att?.EmailId, BaseDataModel.GetClient(), body).ConfigureAwait(false);
+                await EmailDownloader.EmailDownloader.SendBackMsgAsync(att?.EmailId, BaseDataModel.GetClient(), body, log).ConfigureAwait(false);
                 if(att != null) SaveErrorLog(att);
             
         }
@@ -127,7 +129,7 @@ namespace WaterNut.Business.Services.Utils
                 && x.Status == "Sender Informed of Error");
         }
 
-        public static async Task ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
+        public static async Task ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType, ILogger log)
         {
             Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
             foreach (var file in csvFiles)
@@ -161,7 +163,7 @@ namespace WaterNut.Business.Services.Utils
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
                                 .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
-                            await EmailDownloader.EmailDownloader.SendBackMsgAsync(emailId, BaseDataModel.GetClient(), body).ConfigureAwait(false);
+                            await EmailDownloader.EmailDownloader.SendBackMsgAsync(emailId, BaseDataModel.GetClient(), body, log).ConfigureAwait(false);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = att.Id,
@@ -203,7 +205,7 @@ namespace WaterNut.Business.Services.Utils
             //return str;
         }
 
-        public static async Task FixCsv(FileInfo file, FileTypes fileType, bool? overwrite)
+        public static async Task FixCsv(FileInfo file, FileTypes fileType, bool? overwrite, ILogger log)
         {
 
             var dic = FileTypeManager.PreCalculatedFileTypeMappings(fileType);
@@ -213,10 +215,10 @@ namespace WaterNut.Business.Services.Utils
 
                 if (GetDataRows(file, fileType, out var table, out var dRows, out var header)) return; // not right file type
 
-                await ImportRows(file, fileType, dic, dRows, header, table).ConfigureAwait(false);
+                await ImportRows(file, fileType, dic, dRows, header, table, log).ConfigureAwait(false);
 
                 
-                await ImportFile(file, fileType, overwrite, table).ConfigureAwait(false);
+                await ImportFile(file, fileType, overwrite, table, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -497,21 +499,33 @@ namespace WaterNut.Business.Services.Utils
 
         }
 
-        private static async Task ImportFile(FileInfo file, FileTypes fileType, bool? overwrite, ConcurrentDictionary<int, string> table)
+        private static async Task ImportFile(
+            FileInfo file,
+            FileTypes fileType,
+            bool? overwrite,
+            ConcurrentDictionary<int, string> table,
+            ILogger log)
         {
             var output = CreateFile(file, table);
             if (fileType.ChildFileTypes.Any())
             {
-                await ImportChildFileTypes(fileType, overwrite, output).ConfigureAwait(false);
+                await ImportChildFileTypes(fileType, overwrite, output, log).ConfigureAwait(false);
             }
             else
             {
-                await SaveCsv(new FileInfo[] { new FileInfo(output) }, fileType).ConfigureAwait(false);
+                await SaveCsv(new FileInfo[] { new FileInfo(output) }, fileType, log).ConfigureAwait(false);
             }
         }
 
-        private static async Task ImportRows(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, List<DataRow> dRows, DataRow header,
-            ConcurrentDictionary<int, string> table)
+        private static async Task ImportRows(
+            FileInfo file,
+            FileTypes fileType,
+            Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>,
+                IDictionary<string, object>, string>> dic,
+            List<DataRow> dRows,
+            DataRow header,
+            ConcurrentDictionary<int, string> table,
+            ILogger log)
         {
             var mappingMailSent = false;
             // Using Task.Run for parallel processing within an async method
@@ -524,7 +538,7 @@ namespace WaterNut.Business.Services.Utils
                 if (fileType.FileTypeMappings.Any())
                 {
                     mappingMailSent =
-                        await UpdateRowWithFileMapping(file, fileType, dic, mappingMailSent, header, row_no, drow, row).ConfigureAwait(false);
+                        await UpdateRowWithFileMapping(file, fileType, dic, mappingMailSent, header, row_no, drow, row, log).ConfigureAwait(false);
                 }
                 else
                 {
@@ -537,7 +551,7 @@ namespace WaterNut.Business.Services.Utils
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        private static async Task ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
+        private static async Task ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output, ILogger log)
         {
             foreach (var cfileType in fileType.ChildFileTypes.Where(x => x.FileTypeMappings.Any() && x.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv))
             {
@@ -546,7 +560,7 @@ namespace WaterNut.Business.Services.Utils
                 cfileTypes.EmailId = fileType.EmailId;
                 cfileTypes.OverwriteFiles = overwrite;
                 var fileInfos = new FileInfo[] { new FileInfo(output) };
-                await SaveCsv(fileInfos, cfileTypes).ConfigureAwait(false);
+                await SaveCsv(fileInfos, cfileTypes, log).ConfigureAwait(false);
             }
         }
 
@@ -598,8 +612,17 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        private static async Task<bool> UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, bool mappingMailSent,
-            DataRow header, int row_no, DataRow drow, Dictionary<string, string> row)
+        private static async Task<bool> UpdateRowWithFileMapping(
+            FileInfo file,
+            FileTypes fileType,
+            Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>,
+                IDictionary<string, object>, string>> dic,
+            bool mappingMailSent,
+            DataRow header,
+            int row_no,
+            DataRow drow,
+            Dictionary<string, string> row,
+            ILogger log)
         {
             var fileTypeMappingsByOriginalName = OrderFileTypeMappingsByOriginalName(fileType).ToList();
             var fileTypeMappings = fileTypeMappingsByOriginalName
@@ -616,7 +639,7 @@ namespace WaterNut.Business.Services.Utils
                 foreach (var map in maps)
                 {
                     mappingMailSent =
-                        await CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no).ConfigureAwait(false);
+                        await CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no, log).ConfigureAwait(false);
 
                     if(GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val) && row_no == 0) break;
 
@@ -635,7 +658,7 @@ namespace WaterNut.Business.Services.Utils
                         RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 }
 
-                val = await ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow).ConfigureAwait(false);
+                val = await ProcessValue(file, fileType, dic, val, row_no, header, mapping, row, drow, log).ConfigureAwait(false);
 
                 row = UpdateRow(row, mapping, row_no, val);
             }
@@ -678,8 +701,18 @@ namespace WaterNut.Business.Services.Utils
             return row;
         }
 
-        private static async Task<string> ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, string val, int row_no,
-            DataRow header, FileTypeMappings mapping, Dictionary<string, string> row, DataRow drow)
+        private static async Task<string> ProcessValue(
+            FileInfo file,
+            FileTypes fileType,
+            Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>,
+                IDictionary<string, object>, string>> dic,
+            string val,
+            int row_no,
+            DataRow header,
+            FileTypeMappings mapping,
+            Dictionary<string, string> row,
+            DataRow drow,
+            ILogger log)
         {
             var errLst = new List<string>();
             if (val == "{NULL}") return val;
@@ -734,8 +767,8 @@ namespace WaterNut.Business.Services.Utils
                 await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,
                     BaseDataModel.GetClient(), $"Bug Found",
                     errLst.Aggregate((o,n) => o + "\r\n" + n),
-                     EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
-                ).ConfigureAwait(false);
+                     EmailDownloader.EmailDownloader.GetContacts("Developer", log), Array.Empty<string>()
+                , log).ConfigureAwait(false);
 
             return val;
         }
@@ -787,8 +820,17 @@ namespace WaterNut.Business.Services.Utils
             return res;
         }
 
-        private static async Task<bool> CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, DataRow header,
-            string map, FileTypeMappings mapping, bool mappingMailSent, int row_no)
+        private static async Task<bool> CheckingRequiredFields(
+            FileInfo file,
+            FileTypes fileType,
+            Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>,
+                IDictionary<string, object>, string>> dic,
+            DataRow header,
+            string map,
+            FileTypeMappings mapping,
+            bool mappingMailSent,
+            int row_no,
+            ILogger log)
         {
             if (!header.ItemArray.Contains(map.ToUpper()) &&
                 !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
@@ -799,7 +841,7 @@ namespace WaterNut.Business.Services.Utils
                     await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId,
                         BaseDataModel.GetClient(), $"Bug Found",
                         $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                         EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
+                         EmailDownloader.EmailDownloader.GetContacts("Developer", log), Array.Empty<string>(), log
                     ).ConfigureAwait(false);
                     mappingMailSent = true;
                     return mappingMailSent;
