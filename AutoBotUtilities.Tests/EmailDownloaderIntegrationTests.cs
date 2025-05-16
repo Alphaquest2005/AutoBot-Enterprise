@@ -1,5 +1,7 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics; // Added for Stopwatch
+using Serilog.Context; // Added for LogContext
 using System.Data.Entity; // Keep if needed for older EF interactions, check necessity
 using System.IO;
 using System.Linq;
@@ -366,250 +368,316 @@ public class EmailDownloaderIntegrationTests
     [Test, Order(6)]
     public async Task ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest()
     {
-        Log.Information("=== Test Started: ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest ===");
-
-        // --- Arrange ---
-        Log.Debug("Verifying test PDF file exists at {FilePath}", TestPdfFilePath);
-        Assert.That(File.Exists(TestPdfFilePath), Is.True, $"Test PDF file not found at: {TestPdfFilePath}");
-
-        string uniqueContent = Guid.NewGuid().ToString();
-        string testSubject = $"PDF Import Test {uniqueContent}"; // Matches mapping pattern
-        string testBody = "Integration test email with PDF attachment for ProcessEmailsAsync.";
-        string invoiceNumberToVerify = "114-7827932-2029910"; // Example invoice number from the PDF
-
-        // 1. Database Cleanup (EntryDataDSContext - Target DB)
-        Log.Information("Cleaning up previous test data for InvoiceNo: {InvoiceNumber} in EntryDataDS...", invoiceNumberToVerify);
-        try
-        {
-            using (var entryCtx = new EntryDataDSContext()) // Ensure connection string is correct
-            {
-                // Use explicit loading or disable lazy loading if needed for related entities
-                var existingDetails = await entryCtx.ShipmentInvoiceDetails
-                                          .Where(d => d.Invoice.InvoiceNo == invoiceNumberToVerify)
-                                          .ToListAsync().ConfigureAwait(false);
-                if (existingDetails.Any())
-                {
-                    Log.Debug("Removing {Count} existing ShipmentInvoiceDetails.", existingDetails.Count);
-                    entryCtx.ShipmentInvoiceDetails.RemoveRange(existingDetails);
-                }
-
-                var existingInvoice = await entryCtx.ShipmentInvoice
-                                          .FirstOrDefaultAsync(i => i.InvoiceNo == invoiceNumberToVerify).ConfigureAwait(false);
-                if (existingInvoice != null)
-                {
-                    Log.Debug("Removing existing ShipmentInvoice.");
-                    entryCtx.ShipmentInvoice.Remove(existingInvoice);
-                }
-                await entryCtx.SaveChangesAsync().ConfigureAwait(false);
-                Log.Information("EntryDataDS cleanup complete.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error during EntryDataDS database cleanup.");
-            Assert.Fail($"Database cleanup failed: {ex.Message}");
-        }
-
-        // 2. Send Test Email
-        Log.Information("Sending test email with PDF attachment...");
-        await this.SendTestEmailAsync(testSubject, testBody, new[] { TestPdfFilePath }).ConfigureAwait(false);
-
-        // 3. Simulate Initial Download & Get Email UID
-        Log.Information("Simulating initial email download to get UID and verify attachment presence...");
-        EmailProcessingResult processedEmailResult = null;
-        ImapClient imapClientForDownload = null;
-        string downloadedPdfPath = null;
-        UniqueId targetEmailUid = UniqueId.Invalid; // Store the UID here
+        var stopwatch = Stopwatch.StartNew();
+        var invocationId = Guid.NewGuid().ToString();
+        LogContext.PushProperty("InvocationId", invocationId);
+Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; SourceIteration: {SourceLLMIterationId}", "ObjectiveConfirmation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest", "User confirmed the iteration objective: Make this test pass.", "LLM_Iter_0.1");
+        Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; SourceIteration: {SourceLLMIterationId}", "Analysis", "PlanStep_1.1", "Reading EmailDownloaderIntegrationTests.cs for initial instrumentation planning.", "LLM_Iter_0.1_PlanStep_4.6");
+        Log.Information("ACTION_START: ActionName: {ActionName}; InvocationId: {InvocationId}", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution", invocationId);
+        Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Entry", "Added InvocationId setup and ACTION_START log.", "InvocationId and ACTION_START logged at test start.", "LLM_Iter_0.1_PlanStep_4.6");
+        Log.Information("METHOD_ENTRY: MethodName: {MethodName}; InvocationId: {InvocationId}", nameof(ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest), invocationId);
+        Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Entry", "Added METHOD_ENTRY log.", "METHOD_ENTRY logged.", "LLM_Iter_0.1_PlanStep_4.6");
+        Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; InvocationId: {InvocationId}", "Test execution commencing for ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest", invocationId); // Adapted original log
 
         try
         {
-            imapClientForDownload = await this.GetTestImapClientAsync(CancellationToken.None).ConfigureAwait(false);
-            Assert.That(imapClientForDownload, Is.Not.Null, "IMAP client for initial download failed.");
+            // --- Arrange ---
+Log.Information("ACTION_START: ActionName: {ActionName}; InvocationId: {InvocationId}; ParentAction: {ParentAction}", "ArrangePhase_ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest", invocationId, "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution");
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_Start", "Added ACTION_START for Arrange phase.", "ACTION_START for ArrangePhase logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.1");
+            Log.Debug("Verifying test PDF file exists at {FilePath}", TestPdfFilePath);
+            Assert.That(File.Exists(TestPdfFilePath), Is.True, $"Test PDF file not found at: {TestPdfFilePath}");
+Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; FileName: {FileName}; FileExists: {FileExists}; InvocationId: {InvocationId}", "Verified test PDF file existence", TestPdfFilePath, File.Exists(TestPdfFilePath), invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_PdfFileVerification", "Added INTERNAL_STEP for PDF file verification.", "INTERNAL_STEP for PDF file verification logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.2");
 
-            // Use StreamEmailResultsAsync to find the email and simulate download logic
-            var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForDownload, _testClientForDownloader, _log, CancellationToken.None);
-            foreach (var emailTask in streamEmailResultsAsync) // Use await foreach
+            string uniqueContent = Guid.NewGuid().ToString();
+            string testSubject = $"PDF Import Test {uniqueContent}"; // Matches mapping pattern
+            string testBody = "Integration test email with PDF attachment for ProcessEmailsAsync.";
+            string invoiceNumberToVerify = "114-7827932-2029910"; // Example invoice number from the PDF
+
+Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; TargetInvoiceNumber: {TargetInvoiceNumber}; InvocationId: {InvocationId}", "Starting database cleanup for EntryDataDS", invoiceNumberToVerify, invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_DbCleanupStart", "Added INTERNAL_STEP for database cleanup start.", "INTERNAL_STEP for database cleanup start logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.3");
+            // 1. Database Cleanup (EntryDataDSContext - Target DB)
+            Log.Information("Cleaning up previous test data for InvoiceNo: {InvoiceNumber} in EntryDataDS...", invoiceNumberToVerify);
+            try
             {
-                var result = await emailTask.ConfigureAwait(false);
-                if (result != null && result.EmailKey.EmailMessage?.Subject == testSubject)
+                using (var entryCtx = new EntryDataDSContext()) // Ensure connection string is correct
                 {
-                    processedEmailResult = result;
-                    Log.Information("Found and processed test email during initial download simulation: Subject='{Subject}', UID={Uid}", testSubject, result.EmailKey.UidString);
-
-                    // *** Store the UID ***
-                    if (!UniqueId.TryParse(result.EmailKey.UidString, out targetEmailUid))
+                    // Use explicit loading or disable lazy loading if needed for related entities
+                    var existingDetails = await entryCtx.ShipmentInvoiceDetails
+                                               .Where(d => d.Invoice.InvoiceNo == invoiceNumberToVerify)
+                                               .ToListAsync().ConfigureAwait(false);
+                    if (existingDetails.Any())
                     {
-                        Log.Error("Failed to parse UID string '{UidString}' from processed email result.", result.EmailKey.UidString);
-                        Assert.Fail($"Could not parse UID '{result.EmailKey.UidString}' needed for the test.");
+                        Log.Debug("Removing {Count} existing ShipmentInvoiceDetails.", existingDetails.Count);
+                        entryCtx.ShipmentInvoiceDetails.RemoveRange(existingDetails);
                     }
-                    Log.Debug("Successfully parsed target email UID: {Uid}", targetEmailUid);
 
-                    // Simulate storing the email record (optional but good practice for test completeness)
-                    if (result.EmailKey.EmailMessage != null && !string.IsNullOrEmpty(result.EmailKey.UidString))
+                    var existingInvoice = await entryCtx.ShipmentInvoice
+                                               .FirstOrDefaultAsync(i => i.InvoiceNo == invoiceNumberToVerify).ConfigureAwait(false);
+                    if (existingInvoice != null)
                     {
-                        await this.SimulateStoringEmailInDb(result.EmailKey.EmailMessage, result.EmailKey.UidString, _testClientForDownloader.ApplicationSettingsId).ConfigureAwait(false);
+                        Log.Debug("Removing existing ShipmentInvoice.");
+                        entryCtx.ShipmentInvoice.Remove(existingInvoice);
                     }
-                    else Log.Warning("Could not simulate storing email in DB due to missing EmailMessage or UidString.");
-
-                    // Verify attachment info
-                    Assert.That(processedEmailResult.AttachedFiles, Is.Not.Null.And.Not.Empty, "No attached files found in processed result.");
-                    var pdfAttachmentInfo = processedEmailResult.AttachedFiles.FirstOrDefault(f => f.Name?.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ?? false);
-                    Assert.That(pdfAttachmentInfo, Is.Not.Null, "PDF attachment info not found in result.");
-
-                    // Verify file exists on disk (assuming StreamEmailResultsAsync saved it)
-                    string subjectIdTrimmed = processedEmailResult.EmailKey.SubjectIdentifier?.Trim();
-                    string uidString = processedEmailResult.EmailKey.UidString;
-                    Assert.That(!string.IsNullOrEmpty(subjectIdTrimmed), "SubjectIdentifier is empty.");
-                    Assert.That(!string.IsNullOrEmpty(uidString), "UID string is empty.");
-
-                    string expectedDir = Path.Combine(_testDataFolder, subjectIdTrimmed, uidString);
-                    downloadedPdfPath = Path.Combine(expectedDir, pdfAttachmentInfo.Name);
-                    Log.Debug("Checking for downloaded PDF at: {PdfPath}", downloadedPdfPath);
-                    Assert.That(File.Exists(downloadedPdfPath), Is.True, $"Downloaded PDF not found at expected path: {downloadedPdfPath}.");
-                    Log.Information("Verified downloaded PDF exists at: {PdfPath}", downloadedPdfPath);
-
-                    break; // Found the target email
+                    await entryCtx.SaveChangesAsync().ConfigureAwait(false);
+                    Log.Information("EntryDataDS cleanup complete.");
                 }
             }
-            Assert.That(processedEmailResult, Is.Not.Null, $"Test email '{testSubject}' not found/processed during initial download simulation.");
-            Assert.That(targetEmailUid.IsValid, Is.True, "Target Email UID was not successfully obtained.");
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error during EntryDataDS database cleanup.");
+                Assert.Fail($"Database cleanup failed: {ex.Message}");
+            }
+            Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; TargetInvoiceNumber: {TargetInvoiceNumber}; InvocationId: {InvocationId}", "Finished database cleanup for EntryDataDS", invoiceNumberToVerify, invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_DbCleanupEnd", "Added INTERNAL_STEP for database cleanup end.", "INTERNAL_STEP for database cleanup end logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.3");
 
+            Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; EmailSubject: {EmailSubject}; AttachmentsCount: {AttachmentsCount}; InvocationId: {InvocationId}", "Preparing to send test email with PDF attachment", testSubject, 1, invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_SendEmailStart", "Added INTERNAL_STEP for starting send test email.", "INTERNAL_STEP for send test email start logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.4");
+
+            // 2. Send Test Email
+            Log.Information("Sending test email with PDF attachment...");
+            await this.SendTestEmailAsync(testSubject, testBody, new[] { TestPdfFilePath }).ConfigureAwait(false);
+
+            // 3. Simulate Initial Download & Get Email UID
+            Log.Information("Simulating initial email download to get UID and verify attachment presence...");
+            EmailProcessingResult processedEmailResult = null;
+            ImapClient imapClientForDownload = null;
+Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; InvocationId: {InvocationId}", "Starting simulation of initial email download to get UID and verify attachment presence", invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_SimulateDownloadStart", "Added INTERNAL_STEP for starting initial email download simulation.", "INTERNAL_STEP for initial email download simulation start logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.5");
+            string downloadedPdfPath = null;
+            UniqueId targetEmailUid = UniqueId.Invalid; // Store the UID here
+
+            try
+            {
+                imapClientForDownload = await this.GetTestImapClientAsync(CancellationToken.None).ConfigureAwait(false);
+                Assert.That(imapClientForDownload, Is.Not.Null, "IMAP client for initial download failed.");
+
+                // Use StreamEmailResultsAsync to find the email and simulate download logic
+                var streamEmailResultsAsync = EmailDownloader.EmailDownloader.StreamEmailResultsAsync(imapClientForDownload, _testClientForDownloader, _log, CancellationToken.None);
+                foreach (var emailTask in streamEmailResultsAsync) // Use await foreach
+                {
+                    var result = await emailTask.ConfigureAwait(false);
+                    if (result != null && result.EmailKey.EmailMessage?.Subject == testSubject)
+                    {
+                        processedEmailResult = result;
+                        Log.Information("Found and processed test email during initial download simulation: Subject='{Subject}', UID={Uid}", testSubject, result.EmailKey.UidString);
+
+                        // *** Store the UID ***
+                        if (!UniqueId.TryParse(result.EmailKey.UidString, out targetEmailUid))
+                        {
+                            Log.Error("Failed to parse UID string '{UidString}' from processed email result.", result.EmailKey.UidString);
+                            Assert.Fail($"Could not parse UID '{result.EmailKey.UidString}' needed for the test.");
+                        }
+                        Log.Debug("Successfully parsed target email UID: {Uid}", targetEmailUid);
+
+                        // Simulate storing the email record (optional but good practice for test completeness)
+                        if (result.EmailKey.EmailMessage != null && !string.IsNullOrEmpty(result.EmailKey.UidString))
+                        {
+                            await this.SimulateStoringEmailInDb(result.EmailKey.EmailMessage, result.EmailKey.UidString, _testClientForDownloader.ApplicationSettingsId).ConfigureAwait(false);
+                        }
+                        else Log.Warning("Could not simulate storing email in DB due to missing EmailMessage or UidString.");
+
+                        // Verify attachment info
+                        Assert.That(processedEmailResult.AttachedFiles, Is.Not.Null.And.Not.Empty, "No attached files found in processed result.");
+                        var pdfAttachmentInfo = processedEmailResult.AttachedFiles.FirstOrDefault(f => f.Name?.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ?? false);
+                        Assert.That(pdfAttachmentInfo, Is.Not.Null, "PDF attachment info not found in result.");
+
+                        // Verify file exists on disk (assuming StreamEmailResultsAsync saved it)
+                        string subjectIdTrimmed = processedEmailResult.EmailKey.SubjectIdentifier?.Trim();
+                        string uidString = processedEmailResult.EmailKey.UidString;
+                        Assert.That(!string.IsNullOrEmpty(subjectIdTrimmed), "SubjectIdentifier is empty.");
+                        Assert.That(!string.IsNullOrEmpty(uidString), "UID string is empty.");
+
+                        string expectedDir = Path.Combine(_testDataFolder, subjectIdTrimmed, uidString);
+                        downloadedPdfPath = Path.Combine(expectedDir, pdfAttachmentInfo.Name);
+                        Log.Debug("Checking for downloaded PDF at: {PdfPath}", downloadedPdfPath);
+                        Assert.That(File.Exists(downloadedPdfPath), Is.True, $"Downloaded PDF not found at expected path: {downloadedPdfPath}.");
+                        Log.Information("Verified downloaded PDF exists at: {PdfPath}", downloadedPdfPath);
+
+                        break; // Found the target email
+                    }
+                }
+                Assert.That(processedEmailResult, Is.Not.Null, $"Test email '{testSubject}' not found/processed during initial download simulation.");
+                Assert.That(targetEmailUid.IsValid, Is.True, "Target Email UID was not successfully obtained.");
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error during initial email download simulation phase.");
+                Assert.Fail($"Initial email download simulation failed: {ex.Message}");
+            }
+            finally
+            {
+                // Disconnect the client used for the initial download simulation
+                if (imapClientForDownload != null && imapClientForDownload.IsConnected)
+                {
+                    Log.Debug("Disconnecting IMAP client used for initial download simulation.");
+                    await imapClientForDownload.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false);
+                }
+                imapClientForDownload?.Dispose();
+            }
+            Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; EmailSubject: {EmailSubject}; TargetEmailUid: {TargetEmailUid}; DownloadedPdfPath: {DownloadedPdfPath}; InvocationId: {InvocationId}", "Finished simulation of initial email download", testSubject, targetEmailUid.ToString(), downloadedPdfPath, invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_SimulateDownloadEnd", "Added INTERNAL_STEP for finishing initial email download simulation.", "INTERNAL_STEP for initial email download simulation end logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.5");
+
+Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; TargetEmailUid: {TargetEmailUid}; InvocationId: {InvocationId}", "Starting to mark email as UNREAD", targetEmailUid.ToString(), invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_MarkUnreadStart", "Added INTERNAL_STEP for starting to mark email as UNREAD.", "INTERNAL_STEP for marking email as UNREAD start logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.6");
+            // **** NEW STEP: Mark the Email as UNREAD before calling ProcessEmailsAsync ****
+            Log.Information("Attempting to mark email UID {Uid} as UNREAD before calling ProcessEmailsAsync.", targetEmailUid);
+            ImapClient markUnreadClient = null;
+            try
+            {
+                // Create a new client instance for this specific operation
+                markUnreadClient = new ImapClient();
+                await markUnreadClient.ConnectAsync(_resolvedImapServer, _resolvedImapPort, _resolvedImapOptions, CancellationToken.None).ConfigureAwait(false);
+                await markUnreadClient.AuthenticateAsync(_dbConfiguredEmailAddress, _dbConfiguredEmailPassword, CancellationToken.None).ConfigureAwait(false);
+
+                // Open Inbox in ReadWrite mode to modify flags
+                await markUnreadClient.Inbox.OpenAsync(FolderAccess.ReadWrite, CancellationToken.None).ConfigureAwait(false);
+
+                // Remove the Seen flag (mark as unread)
+                await markUnreadClient.Inbox.RemoveFlagsAsync(targetEmailUid, MessageFlags.Seen, true, CancellationToken.None).ConfigureAwait(false); // silent=true
+
+                Log.Information("Successfully marked email UID {Uid} as UNREAD.", targetEmailUid);
+
+                await markUnreadClient.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and fail the test if marking unread fails
+                Log.Error(ex, "Failed to mark email UID {Uid} as UNREAD.", targetEmailUid);
+                if (markUnreadClient != null && markUnreadClient.IsConnected)
+                {
+                    try { await markUnreadClient.DisconnectAsync(false, CancellationToken.None).ConfigureAwait(false); } catch { /* Ignore */ }
+                }
+                Assert.Fail($"Failed to mark email as unread before ProcessEmailsAsync call: {ex.Message}");
+            }
+            finally
+            {
+                markUnreadClient?.Dispose(); // Ensure disposal
+            }
+            Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; TargetEmailUid: {TargetEmailUid}; MarkedAsUnread: {MarkedAsUnread}; InvocationId: {InvocationId}", "Finished marking email as UNREAD", targetEmailUid.ToString(), true, invocationId); // Assuming success if no exception
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_MarkUnreadEnd", "Added INTERNAL_STEP for finishing marking email as UNREAD.", "INTERNAL_STEP for marking email as UNREAD end logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.6");
+
+            Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; ApplicationSettingsId: {ApplicationSettingsId}; InvocationId: {InvocationId}", "Starting preparation for ProcessEmailsAsync call (loading ApplicationSettings)", _dbConfiguredApplicationSettingsId, invocationId);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_PrepareProcessEmailsStart", "Added INTERNAL_STEP for starting preparation for ProcessEmailsAsync call.", "INTERNAL_STEP for ProcessEmailsAsync preparation start logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.7");
+
+
+            // 4. Prepare for ProcessEmailsAsync call
+            Log.Information("Preparing to call EmailProcessor.ProcessEmailsAsync...");
+            ApplicationSettings appSetting = null;
+            CoreEntitiesContext ctxForProcess = null;
+            try
+            {
+                ctxForProcess = new CoreEntitiesContext(); // Fresh context
+
+                appSetting = await ctxForProcess.ApplicationSettings
+                                 .Include(x => x.FileTypes)
+                                 .Include(x => x.Declarants)
+                                 .Include("FileTypes.FileTypeReplaceRegex")
+                                 .Include("FileTypes.FileImporterInfos")
+                                 .Include(x => x.EmailMapping)
+                                 .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
+                                 .Include("EmailMapping.EmailMappingRexExs")
+                                 .Include("EmailMapping.EmailMappingActions.Actions")
+                                 .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
+                                 .FirstOrDefaultAsync(a => a.ApplicationSettingsId == _dbConfiguredApplicationSettingsId).ConfigureAwait(false);
+
+                Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; ApplicationSettingsId: {ApplicationSettingsId}; AppSettingLoaded: {AppSettingLoaded}; InvocationId: {InvocationId}", "Finished preparation for ProcessEmailsAsync call", _dbConfiguredApplicationSettingsId, appSetting != null, invocationId);
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ArrangePhase_PrepareProcessEmailsEnd", "Added INTERNAL_STEP for finishing preparation for ProcessEmailsAsync call.", "INTERNAL_STEP for ProcessEmailsAsync preparation end logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.1.7");
+                Assert.That(appSetting, Is.Not.Null, $"Failed to retrieve ApplicationSettings ID: {_dbConfiguredApplicationSettingsId}");
+                Log.Debug("Retrieved ApplicationSettings: ID={AppSettingId}, Name='{SoftwareName}'", appSetting.ApplicationSettingsId, appSetting.SoftwareName);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving ApplicationSettings for ProcessEmailsAsync.");
+                ctxForProcess?.Dispose();
+                Assert.Fail($"Failed to prepare for ProcessEmailsAsync: {ex.Message}");
+            }
+            Log.Information("ACTION_START: ActionName: {ActionName}; InvocationId: {InvocationId}; ParentAction: {ParentAction}", "ActPhase_ProcessEmailsAsync", invocationId, "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution");
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_Start", "Added ACTION_START for Act phase (ProcessEmailsAsync call).", "ACTION_START for ActPhase logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.1");
+
+            DateTime beforeImport = DateTime.Now.AddMinutes(-1); // Time before the processor runs
+Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; AppSettingId: {AppSettingId}; BeforeImportTime: {BeforeImportTime}; InvocationId: {InvocationId}", "Preparing to call EmailProcessor.ProcessEmailsAsync", appSetting.ApplicationSettingsId, beforeImport, invocationId);
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_ProcessEmailsAsync_PreCall", "Added INTERNAL_STEP before ProcessEmailsAsync call.", "INTERNAL_STEP logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.2");
+                Log.Information("EXTERNAL_CALL_START: ExternalSystem: {ExternalSystem}; Operation: {Operation}; AppSettingId: {AppSettingId}; InvocationId: {InvocationId}", "EmailProcessingLogic", "ProcessEmailsAsync", appSetting.ApplicationSettingsId, invocationId);
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_ProcessEmailsAsync_ExternalCallStart", "Added EXTERNAL_CALL_START for ProcessEmailsAsync.", "EXTERNAL_CALL_START logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.3");
+            CancellationToken cancellationToken = CancellationToken.None;
+
+            // --- Act ---
+            Log.Information("Calling EmailProcessor.ProcessEmailsAsync for AppSetting ID: {AppSettingId}...", appSetting.ApplicationSettingsId);
+Log.Information("EXTERNAL_CALL_END: ExternalSystem: {ExternalSystem}; Operation: {Operation}; AppSettingId: {AppSettingId}; Success: {Success}; InvocationId: {InvocationId}", "EmailProcessingLogic", "ProcessEmailsAsync", appSetting.ApplicationSettingsId, true, invocationId); // Assuming success if no exception
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_ProcessEmailsAsync_ExternalCallEnd", "Added EXTERNAL_CALL_END for ProcessEmailsAsync.", "EXTERNAL_CALL_END logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.4");
+                Log.Information("INTERNAL_STEP: StepDescription: {StepDescription}; AppSettingId: {AppSettingId}; InvocationId: {InvocationId}", "EmailProcessor.ProcessEmailsAsync finished", appSetting.ApplicationSettingsId, invocationId);
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_ProcessEmailsAsync_PostCall", "Added INTERNAL_STEP after ProcessEmailsAsync call.", "INTERNAL_STEP logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.5");
+            try
+            {
+                // Ensure EmailProcessor.ProcessEmailsAsync is accessible (public/internal+InternalsVisibleTo)
+                await EmailProcessor.ProcessEmailsAsync(appSetting, beforeImport, ctxForProcess, cancellationToken, Log.Logger).ConfigureAwait(false); // Assuming EmailProcessor class
+                Log.Information("EmailProcessor.ProcessEmailsAsync call completed.");
+Log.Information("ACTION_END_SUCCESS: ActionName: {ActionName}; InvocationId: {InvocationId}; DurationMs: {DurationMs}", "ActPhase_ProcessEmailsAsync", invocationId, stopwatch.ElapsedMilliseconds); // Assuming stopwatch is still relevant for this sub-action or reset appropriately.
+                Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ActPhase_EndSuccess", "Added ACTION_END_SUCCESS for Act phase.", "ACTION_END_SUCCESS for ActPhase logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.2.6");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Exception during EmailProcessor.ProcessEmailsAsync execution.");
+Log.Information("ACTION_START: ActionName: {ActionName}; InvocationId: {InvocationId}; ParentAction: {ParentAction}", "AssertPhase_ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest", invocationId, "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution");
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "AssertPhase_Start", "Added ACTION_START for Assert phase.", "ACTION_START for AssertPhase logged.", "LLM_Iter_0.1_PlanStep_4.6_Phase2.3.1");
+                Assert.Fail($"ProcessEmailsAsync threw an exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            finally
+            {
+                ctxForProcess?.Dispose(); // Dispose context used by ProcessEmailsAsync
+            }
+
+            // --- Assert ---
+            Log.Information("Verifying import results in database (EntryDataDSContext)...");
+            try
+            {
+                using (var verifyCtx = new EntryDataDSContext()) // Ensure connection string is correct
+                {
+                    Log.Verbose("Checking for ShipmentInvoice '{InvoiceNumber}'", invoiceNumberToVerify);
+                    bool invoiceExists = await verifyCtx.ShipmentInvoice.AnyAsync(x => x.InvoiceNo == invoiceNumberToVerify, cancellationToken).ConfigureAwait(false);
+                    Assert.That(invoiceExists, Is.True, $"ShipmentInvoice '{invoiceNumberToVerify}' not created.");
+                    Log.Verbose("ShipmentInvoice found: {Exists}", invoiceExists);
+
+                    Log.Verbose("Checking for ShipmentInvoiceDetails count > 2 for '{InvoiceNumber}'", invoiceNumberToVerify);
+                    int detailCount = await verifyCtx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == invoiceNumberToVerify, cancellationToken).ConfigureAwait(false);
+                    Assert.That(detailCount > 2, Is.True, $"Expected > 2 ShipmentInvoiceDetails for '{invoiceNumberToVerify}', found {detailCount}.");
+                    Log.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
+
+                    int totalInvoices = await verifyCtx.ShipmentInvoice.CountAsync(cancellationToken).ConfigureAwait(false);
+                    int totalDetails = await verifyCtx.ShipmentInvoiceDetails.CountAsync(cancellationToken).ConfigureAwait(false);
+                    Log.Information("Verification successful. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}", totalInvoices, totalDetails);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error during database verification in EntryDataDSContext.");
+                Assert.Fail($"Database verification failed: {ex.Message}");
+            }
+
+            Log.Information("=== Test Completed Successfully: ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest ===");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error during initial email download simulation phase.");
-            Assert.Fail($"Initial email download simulation failed: {ex.Message}");
+            stopwatch.Stop(); // Stop the stopwatch on error
+            Log.Error(ex, "METHOD_EXIT_FAILURE: MethodName: {MethodName}; InvocationId: {InvocationId}; DurationMs: {DurationMs}; ExceptionType: {ExceptionType}", nameof(ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest), invocationId, stopwatch.ElapsedMilliseconds, ex.GetType().FullName);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Exit", "Added METHOD_EXIT_FAILURE log.", "METHOD_EXIT_FAILURE logged on exception.", "LLM_Iter_0.1_PlanStep_4.6");
+            Log.Error(ex, "ACTION_END_FAILURE: ActionName: {ActionName}; InvocationId: {InvocationId}; DurationMs: {DurationMs}; ExceptionType: {ExceptionType}", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution", invocationId, stopwatch.ElapsedMilliseconds, ex.GetType().FullName);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Exit", "Added ACTION_END_FAILURE log.", "ACTION_END_FAILURE logged on exception.", "LLM_Iter_0.1_PlanStep_4.6");
+            throw; // Re-throw the exception
         }
         finally
         {
-            // Disconnect the client used for the initial download simulation
-            if (imapClientForDownload != null && imapClientForDownload.IsConnected)
-            {
-                Log.Debug("Disconnecting IMAP client used for initial download simulation.");
-                await imapClientForDownload.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false);
-            }
-            imapClientForDownload?.Dispose();
+            if (stopwatch.IsRunning) stopwatch.Stop(); // Ensure stopwatch is stopped
+            Log.Information("METHOD_EXIT_SUCCESS: MethodName: {MethodName}; InvocationId: {InvocationId}; DurationMs: {DurationMs}", nameof(ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest), invocationId, stopwatch.ElapsedMilliseconds);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Exit", "Added METHOD_EXIT_SUCCESS log.", "METHOD_EXIT_SUCCESS logged on normal completion.", "LLM_Iter_0.1_PlanStep_4.6");
+            Log.Information("ACTION_END_SUCCESS: ActionName: {ActionName}; InvocationId: {InvocationId}; DurationMs: {DurationMs}", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Execution", invocationId, stopwatch.ElapsedMilliseconds);
+            Log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "Instrumentation", "ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest_Exit", "Added ACTION_END_SUCCESS log.", "ACTION_END_SUCCESS logged on normal completion.", "LLM_Iter_0.1_PlanStep_4.6");
         }
-
-        // **** NEW STEP: Mark the Email as UNREAD before calling ProcessEmailsAsync ****
-        Log.Information("Attempting to mark email UID {Uid} as UNREAD before calling ProcessEmailsAsync.", targetEmailUid);
-        ImapClient markUnreadClient = null;
-        try
-        {
-            // Create a new client instance for this specific operation
-            markUnreadClient = new ImapClient();
-            await markUnreadClient.ConnectAsync(_resolvedImapServer, _resolvedImapPort, _resolvedImapOptions, CancellationToken.None).ConfigureAwait(false);
-            await markUnreadClient.AuthenticateAsync(_dbConfiguredEmailAddress, _dbConfiguredEmailPassword, CancellationToken.None).ConfigureAwait(false);
-
-            // Open Inbox in ReadWrite mode to modify flags
-            await markUnreadClient.Inbox.OpenAsync(FolderAccess.ReadWrite, CancellationToken.None).ConfigureAwait(false);
-
-            // Remove the Seen flag (mark as unread)
-            await markUnreadClient.Inbox.RemoveFlagsAsync(targetEmailUid, MessageFlags.Seen, true, CancellationToken.None).ConfigureAwait(false); // silent=true
-
-            Log.Information("Successfully marked email UID {Uid} as UNREAD.", targetEmailUid);
-
-            await markUnreadClient.DisconnectAsync(true, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            // Log the error and fail the test if marking unread fails
-            Log.Error(ex, "Failed to mark email UID {Uid} as UNREAD.", targetEmailUid);
-            if (markUnreadClient != null && markUnreadClient.IsConnected)
-            {
-                try { await markUnreadClient.DisconnectAsync(false, CancellationToken.None).ConfigureAwait(false); } catch { /* Ignore */ }
-            }
-            Assert.Fail($"Failed to mark email as unread before ProcessEmailsAsync call: {ex.Message}");
-        }
-        finally
-        {
-            markUnreadClient?.Dispose(); // Ensure disposal
-        }
-
-
-        // 4. Prepare for ProcessEmailsAsync call
-        Log.Information("Preparing to call EmailProcessor.ProcessEmailsAsync...");
-        ApplicationSettings appSetting = null;
-        CoreEntitiesContext ctxForProcess = null;
-        try
-        {
-            ctxForProcess = new CoreEntitiesContext(); // Fresh context
-            
-            appSetting = await ctxForProcess.ApplicationSettings
-                             .Include(x => x.FileTypes)
-                             .Include(x => x.Declarants)
-                             .Include("FileTypes.FileTypeReplaceRegex")
-                             .Include("FileTypes.FileImporterInfos")
-                             .Include(x => x.EmailMapping)
-                             .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
-                             .Include("EmailMapping.EmailMappingRexExs")
-                             .Include("EmailMapping.EmailMappingActions.Actions")
-                             .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
-                             .FirstOrDefaultAsync(a => a.ApplicationSettingsId == _dbConfiguredApplicationSettingsId).ConfigureAwait(false);
-            
-            Assert.That(appSetting, Is.Not.Null, $"Failed to retrieve ApplicationSettings ID: {_dbConfiguredApplicationSettingsId}");
-            Log.Debug("Retrieved ApplicationSettings: ID={AppSettingId}, Name='{SoftwareName}'", appSetting.ApplicationSettingsId, appSetting.SoftwareName);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error retrieving ApplicationSettings for ProcessEmailsAsync.");
-            ctxForProcess?.Dispose();
-            Assert.Fail($"Failed to prepare for ProcessEmailsAsync: {ex.Message}");
-        }
-
-        DateTime beforeImport = DateTime.Now.AddMinutes(-1); // Time before the processor runs
-        CancellationToken cancellationToken = CancellationToken.None;
-
-        // --- Act ---
-        Log.Information("Calling EmailProcessor.ProcessEmailsAsync for AppSetting ID: {AppSettingId}...", appSetting.ApplicationSettingsId);
-        try
-        {
-            // Ensure EmailProcessor.ProcessEmailsAsync is accessible (public/internal+InternalsVisibleTo)
-            await EmailProcessor.ProcessEmailsAsync(appSetting, beforeImport, ctxForProcess, cancellationToken, Log.Logger).ConfigureAwait(false); // Assuming EmailProcessor class
-            Log.Information("EmailProcessor.ProcessEmailsAsync call completed.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Exception during EmailProcessor.ProcessEmailsAsync execution.");
-            Assert.Fail($"ProcessEmailsAsync threw an exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
-        }
-        finally
-        {
-            ctxForProcess?.Dispose(); // Dispose context used by ProcessEmailsAsync
-        }
-
-        // --- Assert ---
-        Log.Information("Verifying import results in database (EntryDataDSContext)...");
-        try
-        {
-            using (var verifyCtx = new EntryDataDSContext()) // Ensure connection string is correct
-            {
-                Log.Verbose("Checking for ShipmentInvoice '{InvoiceNumber}'", invoiceNumberToVerify);
-                bool invoiceExists = await verifyCtx.ShipmentInvoice.AnyAsync(x => x.InvoiceNo == invoiceNumberToVerify, cancellationToken).ConfigureAwait(false);
-                Assert.That(invoiceExists, Is.True, $"ShipmentInvoice '{invoiceNumberToVerify}' not created.");
-                Log.Verbose("ShipmentInvoice found: {Exists}", invoiceExists);
-
-                Log.Verbose("Checking for ShipmentInvoiceDetails count > 2 for '{InvoiceNumber}'", invoiceNumberToVerify);
-                int detailCount = await verifyCtx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == invoiceNumberToVerify, cancellationToken).ConfigureAwait(false);
-                Assert.That(detailCount > 2, Is.True, $"Expected > 2 ShipmentInvoiceDetails for '{invoiceNumberToVerify}', found {detailCount}.");
-                Log.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
-
-                int totalInvoices = await verifyCtx.ShipmentInvoice.CountAsync(cancellationToken).ConfigureAwait(false);
-                int totalDetails = await verifyCtx.ShipmentInvoiceDetails.CountAsync(cancellationToken).ConfigureAwait(false);
-                Log.Information("Verification successful. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}", totalInvoices, totalDetails);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error during database verification in EntryDataDSContext.");
-            Assert.Fail($"Database verification failed: {ex.Message}");
-        }
-
-        Log.Information("=== Test Completed Successfully: ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest ===");
     }
 
-
-    // --- Helper Methods ---
+    // --- Helper Methods --- // Added a comment to trigger linter refresh
     private string CleanFileNameForComparison(string originalName)
     {
         if (string.IsNullOrWhiteSpace(originalName)) return "unknown.file";
@@ -646,6 +714,7 @@ public class EmailDownloaderIntegrationTests
                         EmailId = $"simulated-{Guid.NewGuid()}",
                         MachineName = Environment.MachineName,
                         // TimeStamp = DateTime.Now // Set if required by DB
+                        // Add From and To addresses/names
                     };
                     dbCtx.Emails.Add(emailEntity);
                     await dbCtx.SaveChangesAsync().ConfigureAwait(false);
@@ -689,5 +758,4 @@ public class EmailDownloaderIntegrationTests
             catch (Exception ex) { Log.Error(ex, "Error simulating storing email for forwarding with AppEmailId: {AppEmailId}", appSpecificEmailId); }
         }
     }
-
 } // End Class

@@ -309,7 +309,11 @@ namespace EmailDownloader
                     methodName, "ReturnResult", emailEntityForResult.Subject);
                 return new EmailProcessingResult(
                     (SubjectIdentifier: subjectInfoTuple.Item1, EmailMessage: emailEntityForResult, UidString: subjectInfoTuple.Item3),
-                    lst // lst contains FileInfo for all saved parts (attachments + Info.txt)
+                    lst, // lst contains FileInfo for all saved parts (attachments + Info.txt)
+                    msg.From.Mailboxes.FirstOrDefault()?.Address, // FromAddress
+                    msg.From.Mailboxes.FirstOrDefault()?.Name, // FromName
+                    msg.To.Mailboxes.FirstOrDefault()?.Address, // ToAddress
+                    msg.To.Mailboxes.FirstOrDefault()?.Name // ToName
                 );
             }
             catch (Exception ex)

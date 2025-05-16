@@ -12,7 +12,13 @@ public class EmailProcessingResult
     public (string SubjectIdentifier, Email EmailMessage, string UidString) EmailKey { get; }
     public List<System.IO.FileInfo> AttachedFiles { get; }
 
-    public EmailProcessingResult((string SubjectIdentifier, Email EmailMessage, string UidString) emailKey, List<System.IO.FileInfo> attachedFiles)
+    // Added properties for sender and recipient information
+    public string FromAddress { get; }
+    public string FromName { get; }
+    public string ToAddress { get; }
+    public string ToName { get; }
+
+    public EmailProcessingResult((string SubjectIdentifier, Email EmailMessage, string UidString) emailKey, List<System.IO.FileInfo> attachedFiles, string fromAddress, string fromName, string toAddress, string toName)
     {
         EmailKey = emailKey;
         AttachedFiles = attachedFiles ?? new List<System.IO.FileInfo>(); // Added null check for safety, consistent with previous attempt

@@ -312,12 +312,27 @@ namespace AutoBot
                 log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", // METHOD_EXIT_SUCCESS
                     operationName, stopwatch.ElapsedMilliseconds);
             }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                stopwatch.Stop(); // Stop stopwatch on error
+                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: DbEntityValidationException occurred.", // METHOD_EXIT_FAILURE
+                    operationName, stopwatch.ElapsedMilliseconds);
+
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        log.Error("Validation Error: Property: {PropertyName}, Error: {ErrorMessage}",
+                            validationError.PropertyName, validationError.ErrorMessage);
+                    }
+                }
+                throw; // Re-throw the exception
+            }
             catch (Exception e)
             {
                 stopwatch.Stop(); // Stop stopwatch on error
                 log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
                     operationName, stopwatch.ElapsedMilliseconds, e.Message);
-                // Console.WriteLine(e); // Remove Console.WriteLine
                 throw; // Re-throw the exception
             }
         }
