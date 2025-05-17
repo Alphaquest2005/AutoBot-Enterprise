@@ -213,6 +213,7 @@ namespace AutoBot
                         log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email record not found, creating new one.", operationName, "CreateEmail"); // INTERNAL_STEP
                         oldemail = ctx.Emails.Add(new Emails(true)
                         {
+EmailId = email.EmailId, // Added EmailId
                             EmailUniqueId = email.EmailUniqueId,
                             Subject = email.Subject,
                             EmailDate = email.EmailDate,
@@ -231,6 +232,7 @@ namespace AutoBot
                         log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email record found, updating existing one.", operationName, "UpdateEmail"); // INTERNAL_STEP
                         oldemail.MachineName = Environment.MachineName;
                         oldemail.EmailUniqueId = email.EmailUniqueId;
+                        oldemail.TrackingState = TrackingState.Modified; // Set TrackingState to Modified
                     }
 
                     log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Processing {FileCount} attached files.", operationName, "ProcessFiles", csvFiles?.Length ?? 0); // INTERNAL_STEP
@@ -278,6 +280,7 @@ namespace AutoBot
                                 EmailId = email.EmailId,
                                 TrackingState = TrackingState.Added
                             };
+                            ctx.Attachments.Add(attachment); // Explicitly add new attachment to context
                         }
                         else
                         {
@@ -314,28 +317,33 @@ namespace AutoBot
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException ex)
             {
-                stopwatch.Stop(); // Stop stopwatch on error
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: DbEntityValidationException occurred.", // METHOD_EXIT_FAILURE
-                    operationName, stopwatch.ElapsedMilliseconds);
+                // META_LOG_DIRECTIVE: Type: Instrumentation; Context: Method:SaveAttachments, Catch:DbEntityValidationException; Directive: Adding diagnostic log at the start of the catch block to verify execution flow.; ExpectedChange: A new debug log will appear in the logs if code execution proceeds past the initial error log.; SourceIteration: LLM_Iter_0.2
+                log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Entered DbEntityValidationException catch block.", operationName, "CatchEntry"); // Diagnostic log
+
+                log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "ErrorAnalysis", "Method:SaveAttachments, Exception:DbEntityValidationException", "Logging detailed EntityValidationErrors to diagnose save failure.", "Logs will contain specific entity and property validation errors.", "LLM_Iter_3.1");
 
                 foreach (var validationErrors in ex.EntityValidationErrors)
                 {
+                    log.Error("INTERNAL_STEP ({MethodName} - {Stage}): Entity of type \"{EntityType}\" in state \"{EntityState}\" has validation errors.",
+                        operationName, "EntityValidationDetails", validationErrors.Entry.Entity.GetType().Name, validationErrors.Entry.State);
+
                     foreach (var validationError in validationErrors.ValidationErrors)
                     {
-                        log.Error("Validation Error: Property: {PropertyName}, Error: {ErrorMessage}",
-                            validationError.PropertyName, validationError.ErrorMessage);
+                        log.Error("INTERNAL_STEP ({MethodName} - {Stage}): Property: \"{PropertyName}\", Error: \"{ErrorMessage}\"",
+                            operationName, "EntityValidationError", validationError.PropertyName, validationError.ErrorMessage);
                     }
                 }
+
                 throw; // Re-throw the exception
             }
             catch (Exception e)
             {
-                stopwatch.Stop(); // Stop stopwatch on error
-                log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
-                    operationName, stopwatch.ElapsedMilliseconds, e.Message);
-                throw; // Re-throw the exception
-            }
-        }
+                 stopwatch.Stop(); // Stop stopwatch on error
+                 log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
+                     operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                 throw; // Re-throw the exception
+             }
+         }
 
 
 
