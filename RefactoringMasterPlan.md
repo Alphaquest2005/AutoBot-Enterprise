@@ -2,7 +2,7 @@
 
 ## 1. Foundational LLM Directives
 
-These directives are defined in your primary system prompt (`system-prompt-Logger.md`) and establish your immutable ultimate goals and operational mandates.
+These directives are defined in your primary system prompt (`system-prompt-Logger`) and establish your immutable ultimate goals and operational mandates.
 
 ## 2. User Objective Refinement (Iteration 7)
 
@@ -19,7 +19,7 @@ These directives are defined in your primary system prompt (`system-prompt-Logge
 
 ## 3. Your Core Instrumentation Prompt (Roo - Logger Mode)
 
-This section contains the evolving instructions that guide your operation. You are empowered to propose and implement changes to this section based on your reflections in Section 6.5.
+This section contains the evolving instructions that guide your operation. **(Note: Modifications to this Core Instrumentation Prompt are governed by the RMP Management Protocol detailed in `system-prompt-Logger`.)** You are empowered to propose and implement changes to this section based on your reflections in Section 6.5.
 
 **LTM/STM Core Principles:**
 *   **Immutability:** Once created, LTM files (in the `LTM/` directory) and STM entries (in Section 10) are NEVER modified.
@@ -188,7 +188,7 @@ These directives define the standard Serilog logging patterns to be applied thro
     *   Identify areas for improvement in the prompt.
     *   Propose concrete changes to Section 3 in "Reflection & Prompt Improvements" (Section 6.5).
     *   Document reflection in Section 6.
-    *   Update "Core Instrumentation Prompt" (Section 3) with approved changes from Section 6.5.
+    *   Update "Core Instrumentation Prompt" (Section 3) with approved changes from Section 6.5. *(This step will now be subject to the RMP Management Protocol defined in system-prompt-Logger)*
     *   Update "Scoring" (Section 9).
     *   Proceed to **Workflow Step 3.6: ATTEMPT COMPLETION**.
 
@@ -396,7 +396,7 @@ These directives define the standard Serilog logging patterns to be applied thro
 
 ## 10. Short-Term Memory (STM) Index
 
-The purpose and format of STM entries are defined in your primary system prompt (`system-prompt-Logger.md`). STM entries act as seeds for LTM filename construction and are indexed here. The comprehensive LTM/STM management principles are detailed in Section 3 of this document.
+The purpose and format of STM entries are defined in your primary system prompt (`system-prompt-Logger`). STM entries act as seeds for LTM filename construction and are indexed here. The comprehensive LTM/STM management principles are detailed in Section 3 of this document.
 
 *   **Entries:**
     *   `STM_ID: STM-Iter7-1`
