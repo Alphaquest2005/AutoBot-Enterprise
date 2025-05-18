@@ -538,3 +538,118 @@ The purpose and format of STM entries are defined in your primary system prompt 
     `All_Tags`: Failed, Read File, Repetition Limit, Tool Error, ToolExecutionFailure
     `Associated_LTM_File_Content_Snippet`: (Content will be added when LTM file is created during reflection)
     `Cross_References`: Failure 7.15
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for re-reading test log.",
+  "SourceIteration": 7,
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Re-read the test log file ... detailed analysis of HandleImportSuccessStateStep execution across all templates."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Consulting STM entry STM-003 based on keywords from formulated intent.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-003",
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Re-read the test log file ... detailed analysis of HandleImportSuccessStateStep execution across all templates."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveLTM_Retrieved",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Failed to retrieve LTM content for STM-003. File not found.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-003",
+  "LTM_File_Path": "LTM/LogFileLocation-FileNaming-FileSearch-Serilog-TestLogs-Resolved_Iter7_Failure7.14.md",
+  "Outcome": "Failed",
+  "Details": "File not found during read_file attempt."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for re-reading test log. Consulting STM entry STM-004.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-004",
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Re-read the test log file ... detailed analysis of HandleImportSuccessStateStep execution across all templates."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveLTM_Retrieved",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Failed to retrieve LTM content for STM-004. File not found.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-004",
+  "LTM_File_Path": "LTM/TestFailureRootCause-CodeAnalysis-HandleImportSuccessStateStep-Hypothesis-LogAnalysis-Pipeline-TestFailure-Analysis_Iter7_Failure7.13_CodeAnalysis.md",
+  "Outcome": "Failed",
+  "Details": "File not found during read_file attempt."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for re-reading test log. Consulting STM entry STM-005.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-005",
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Re-read the test log file ... detailed analysis of HandleImportSuccessStateStep execution across all templates."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveLTM_Retrieved",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Failed to retrieve LTM content for STM-005. File not found.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-005",
+  "LTM_File_Path": "LTM/ToolExecutionFailure-ReadFile-RepetitionLimit-ToolError-Failed_Iter7_Failure7.15.md",
+  "Outcome": "Failed",
+  "Details": "File not found during read_file attempt."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "PlanStepExecution_Intent",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Execute Plan Step 4.13.16.4.6.9.1: Formulate META_LOG_DIRECTIVE for re-reading test log file.",
+  "SourceIteration": 7,
+  "Content": "Re-read the test log file `AutoBotUtilities.Tests\\bin\\x64\\Debug\\net48\\Logs\\AutoBotTests-20250517.log` for detailed analysis of `HandleImportSuccessStateStep` execution across all templates."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "PlanStepExecution_Outcome",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Executed Plan Step 4.13.16.4.6.9.2: Read test log file.",
+  "SourceIteration": 7,
+  "Outcome": "Success",
+  "Details": "Successfully read test log file `AutoBotUtilities.Tests\\bin\\x64\\Debug\\net48\\Logs\\AutoBotTests-20250517.log`. Content is available for analysis.",
+  "AssociatedFilePath": "AutoBotUtilities.Tests\\bin\\x64\\Debug\\net48\\Logs\\AutoBotTests-20250517.log"
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveLTM_Retrieved",
+  "Context": "Reactive STM/LTM Consultation Sub-Workflow",
+  "Directive": "Failed to retrieve LTM content for STM-005. File not found.",
+  "SourceIteration": 7,
+  "STM_ID": "STM-005",
+  "LTM_File_Path": "LTM/ToolExecutionFailure-ReadFile-RepetitionLimit-ToolError-Failed_Iter7_Failure7.15.md",
+  "Outcome": "Failed",
+  "Details": "File not found during read_file attempt."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for analyzing test log content.",
+  "SourceIteration": 7,
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Analyze the log content to identify all templates processed by HandleImportSuccessStateStep..."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for reading the rest of the test log file.",
+  "SourceIteration": 7,
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Read the rest of the test log file ... to analyze HandleImportSuccessStateStep execution."
+}}
+META_LOG_DIRECTIVE: {{
+  "Type": "ReactiveSTM_Consultation_Triggered",
+  "Context": "Workflow Step 3.2: EXECUTE PLAN",
+  "Directive": "Executing Reactive STM/LTM Consultation Sub-Workflow triggered by formulation of PlanStepExecution_Intent for reading the rest of the test log file.",
+  "SourceIteration": 7,
+  "TriggeringDirectiveType": "PlanStepExecution_Intent",
+  "TriggeringDirectiveContentSnippet": "Read the rest of the test log file ... to analyze HandleImportSuccessStateStep execution."
+}}
