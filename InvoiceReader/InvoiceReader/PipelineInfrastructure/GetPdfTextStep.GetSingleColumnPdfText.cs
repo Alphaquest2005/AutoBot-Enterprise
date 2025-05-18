@@ -24,7 +24,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     var txt = "------------------------------------------Single Column-------------------------\r\n";
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SingleColumn", "SYNC_EXPECTED"); // Use logger from context
                     var ocrStopwatch = Stopwatch.StartNew();
-                    txt += new PdfOcr().Ocr(filePath, PageSegMode.SingleColumn);
+                    txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
                     ocrStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "PdfOcr().Ocr with SingleColumn", ocrStopwatch.ElapsedMilliseconds, "Sync call returned"); // Use logger from context

@@ -13,7 +13,6 @@ using Microsoft.Extensions.Configuration; // Added for config builder & SetBaseP
 using Serilog; // Added for logging
 using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
 
-
 namespace AutoBotUtilities.Tests
 {
     [TestFixture]
@@ -433,6 +432,8 @@ namespace AutoBotUtilities.Tests
                     {
                         _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '112-9126443-1163432'");
                         bool invoiceExists = ctx.ShipmentInvoice.Any(x => x.InvoiceNo == "112-9126443-1163432");
+_logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImportAmazoncomOrder11291264431163432, Directive: Checking invoiceExists before assertion. ExpectedChange: Log value of invoiceExists. SourceIteration: LLM_Iter_4.2");
+                        _logger.Information("Invoice existence check result: {InvoiceExists}", invoiceExists);
                         Assert.That(invoiceExists, Is.True, "ShipmentInvoice '112-9126443-1163432' not created.");
                         _logger.Verbose("ShipmentInvoice found: {Exists}", invoiceExists);
 

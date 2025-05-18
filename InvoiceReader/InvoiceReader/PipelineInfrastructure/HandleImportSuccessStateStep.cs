@@ -51,14 +51,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallStepSuccess = true; // Track success across all templates
 
-            foreach (var template in context.Templates)
+            // Iterate over MatchedTemplates instead of all Templates
+            foreach (var template in context.MatchedTemplates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Safe access
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";
                  context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                     nameof(Execute), "TemplateProcessing", "Processing template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
+                     nameof(Execute), "TemplateProcessing", "Processing matched template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
                  context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                     nameof(Execute), "TemplateProcessing", "Context details at start of template processing.", $"FilePath: {filePath}, TemplateId: {templateId}", new { Context = context });
+                     nameof(Execute), "TemplateProcessing", "Context details at start of matched template processing.", $"FilePath: {filePath}, TemplateId: {templateId}", new { Context = context });
 
                  try // Wrap processing for each template
                  {
@@ -122,6 +123,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                               $"DataFileProcessor.Process for File: {filePath}", "ASYNC_EXPECTED"); // Log before processor call
                          var processorStopwatch = Stopwatch.StartNew(); // Start stopwatch
                          // Run potentially blocking code in background thread
+context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                             nameof(Execute), "DataFileProcessing", "Calling DataFileProcessor.Process.", $"FilePath: {filePath}, FileTypeId: {fileType.Id}", new { DataFileDetails = new { FileType = dataFile?.FileType?.Description, DocSetCount = dataFile?.DocSet?.Count() } });
                          processResult = await Task.Run(() => processor.Process(dataFile)).ConfigureAwait(false);
                          processorStopwatch.Stop(); // Stop stopwatch
                          context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",

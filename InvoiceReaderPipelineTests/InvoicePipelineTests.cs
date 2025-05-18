@@ -91,6 +91,7 @@ namespace InvoiceReaderPipelineTests
                     .Enrich.FromLogContext()
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
+                    .Enrich.WithThreadId()
                     .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}")
                     .WriteTo.File(logFilePath,
                         rollingInterval: RollingInterval.Day,

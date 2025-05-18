@@ -50,7 +50,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Template"))
                 //    throw new ApplicationException("No Shipment Template Templates found");
 
-                context.Templates = possibleInvoices;
+                // Assign the identified possible invoices to the new MatchedTemplates property
+                context.MatchedTemplates = possibleInvoices;
+                // Log the identified possible invoices
                 LogPossibleInvoices(context, possibleInvoices, totalTemplateCount, filePath);
 
                 methodStopwatch.Stop();

@@ -1333,6 +1333,7 @@
     <PackageReference Include="Serialize.Linq">
       <Version>4.0.167</Version>
     </PackageReference>
+
     <PackageReference Include="Serilog.Sinks.File">
       <Version>7.0.0</Version>
     </PackageReference>
@@ -1494,7 +1495,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

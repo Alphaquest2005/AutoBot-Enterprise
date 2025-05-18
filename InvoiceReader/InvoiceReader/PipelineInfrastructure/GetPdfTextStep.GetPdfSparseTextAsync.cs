@@ -25,7 +25,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SparseText", "SYNC_EXPECTED"); // Use logger from context
                     // Assuming PdfOcr().Ocr might throw exceptions
                     var ocrStopwatch = Stopwatch.StartNew();
-                    txt += new PdfOcr().Ocr(filePath, PageSegMode.SparseText);
+                    txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SparseText); // Pass logger
                     ocrStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result Length: {Length}",
                         "PdfOcr().Ocr with SparseText", ocrStopwatch.ElapsedMilliseconds, "Sync call returned.", txt.Length); // Use logger from context

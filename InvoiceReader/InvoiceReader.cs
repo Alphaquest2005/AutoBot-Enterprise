@@ -332,6 +332,8 @@ namespace InvoiceReader
                 try
                 {
                     pipeResult = await pipe.RunPipeline(logger).ConfigureAwait(false);
+logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                                        nameof(Import), "PipelineExecution", "InvoiceProcessingPipeline.RunPipeline completed.", $"Result: {pipeResult}", "");
                     pipelineExecutionStopwatch.Stop();
                     logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                             "InvoiceProcessingPipeline.RunPipeline", pipelineExecutionStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");

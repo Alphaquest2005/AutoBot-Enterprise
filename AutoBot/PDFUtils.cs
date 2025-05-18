@@ -19,12 +19,13 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 namespace AutoBot
 {
     using Serilog;
+using Serilog.Context;
 
     public class PDFUtils
     {
         //public static Task ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
         //{
-            
+
         //}
 
         public static async Task AttachEmailPDF(FileTypes ft, FileInfo[] fs)
@@ -124,7 +125,7 @@ namespace AutoBot
                 {
                     var entries = ctx.Database.SqlQuery<TODO_ImportCompleteEntries>(
                         $"EXEC [dbo].[Stp_TODO_ImportCompleteEntries] @ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
-                       
+
                     var lst = entries
 
                         .GroupBy(x => x.AsycudaDocumentSetId)
@@ -200,15 +201,13 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    
+
                     var directoryName = StringExtensions.UpdateToCurrentUser(BaseDataModel.GetDocSetDirectoryName("Imports"));
-                   
-                    
-                        
+
 
                     var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*.pdf")
-                        .Where(x => 
-                            //Regex.IsMatch(x.FullName,@".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",RegexOptions.IgnoreCase)&& 
+                        .Where(x =>
+                            //Regex.IsMatch(x.FullName,@".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",RegexOptions.IgnoreCase)&&
                             x.LastWriteTime.ToString("d") == DateTime.Today.ToString("d")).ToArray();
 
                     foreach (var file in csvFiles)
@@ -219,8 +218,6 @@ namespace AutoBot
                         if (!mat.Success) continue;
 
                         var dfile = ctx.Attachments.Include(x => x.AsycudaDocument_Attachments).FirstOrDefault(x => x.FilePath == file.FullName);
-
-                        
 
 
                         var cnumber = mat.Groups["pCNumber"].Value;
@@ -246,13 +243,11 @@ namespace AutoBot
                             });
 
 
-
-
                       await  ctx.SaveChangesAsync().ConfigureAwait(false);
 
                     }
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -283,7 +278,7 @@ namespace AutoBot
                 { { "Template", "Shipment Template" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
-              var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName, logger).ConfigureAwait(false);  
+              var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName, logger).ConfigureAwait(false);
               var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
@@ -301,7 +296,7 @@ namespace AutoBot
                   SetFileTypeMappingDefaultValues(docFileType, doc);
 
                   var import = await ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true,  docSet,
-                      new List<dynamic>() { doc.ToList() }).ConfigureAwait(false);
+                      new List<dynamic>() { doc.ToList() }, logger).ConfigureAwait(false);
                   success.Add($"{file}-{docType}-{doc.Key}",
                       import
                           ? (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success)
@@ -311,7 +306,6 @@ namespace AutoBot
 
 
               }
-             
 
 
             }
@@ -331,23 +325,37 @@ namespace AutoBot
         }
 
         private static async Task<bool> ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
-            List<AsycudaDocumentSet> docSet, List<dynamic> csvLines)
+            List<AsycudaDocumentSet> docSet, List<dynamic> csvLines, ILogger logger)
         {
-            try
+            using (LogContext.PushProperty("Method", nameof(ImportSuccessState)))
+            using (LogContext.PushProperty("File", file))
+            using (LogContext.PushProperty("EmailId", emailId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
+            using (LogContext.PushProperty("OverwriteExisting", overWriteExisting))
+            using (LogContext.PushProperty("DocSetCount", docSet?.Count))
+            using (LogContext.PushProperty("CsvLinesCount", csvLines?.Count))
             {
-               return await new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
-                    emailId,
-                    file, csvLines)).ConfigureAwait(false);
+                logger.Information("METHOD_ENTRY: ImportSuccessState. Intention: Process imported data file.");
 
-                
+                try
+                {
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. Intention: Invoke DataFileProcessor.");
+                    var dataFile = new DataFile(fileType, docSet, overWriteExisting, emailId, file, csvLines);
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. InitialState: {DataFileState}", new { FileType = dataFile.FileType?.Description, DocSetCount = dataFile.DocSet?.Count, OverwriteExisting = dataFile.OverWriteExisting, EmailId = dataFile.EmailId, DroppedFilePath = dataFile.DroppedFilePath, DataCount = dataFile.Data?.Count });
+
+                    var processResult = await new DataFileProcessor().Process(dataFile).ConfigureAwait(false);
+
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. Outcome: {ProcessResult}", processResult);
+                    logger.Information("METHOD_EXIT_SUCCESS: ImportSuccessState. IntentionAchieved: Data processing completed. FinalState: {FinalState}", new { ProcessResult = processResult });
+                    return processResult;
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "METHOD_EXIT_FAILURE: ImportSuccessState. IntentionFailed: Data processing failed for file {FileName}.", file);
+                    Console.WriteLine(e);
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-
-
         }
     }
 }

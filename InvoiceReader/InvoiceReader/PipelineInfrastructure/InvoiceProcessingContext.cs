@@ -10,6 +10,8 @@ using WaterNut.DataSpace; // Added WaterNut.DataSpace using for Template type
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using System.Diagnostics;
+
     public class InvoiceProcessingContext
     {
         // Remove static logger
@@ -35,7 +37,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public string EmailId { get; set; }
         public bool OverWriteExisting { get; set; }
-        
+
 
         private FileTypes _fileType;
         public FileTypes FileType
@@ -59,10 +61,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
 
-
-
         public IEnumerable<Invoice> Templates { get; set; } = Enumerable.Empty<Invoice>();
 
+        // Added to store templates identified as matching the document
+        public IEnumerable<Invoice> MatchedTemplates { get; set; } = Enumerable.Empty<Invoice>();
 
 
         public Dictionary<string, (string file, string, ImportStatus Success)> Imports { get; set; } = new Dictionary<string, (string file, string, ImportStatus Success)>();
@@ -84,7 +86,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 Logger?.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count); // Use the new Logger property
             }
         }
-
 
 
         public FileInfo FileInfo { get; set; } // Added FileInfo property
