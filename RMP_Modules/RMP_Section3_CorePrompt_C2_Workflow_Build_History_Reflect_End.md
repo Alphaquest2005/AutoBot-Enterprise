@@ -3,8 +3,19 @@
 *   **Workflow Step 3.4: BUILD/TEST/FIX LOOP:**
     *   (Build/test execution and analysis will generate `META_LOG_DIRECTIVE`s, thus triggering reactive LTM consultation).
     *   Execute build command.
-    *   If build succeeds:
-        *   Log success. Proceed to test execution.
+*   If build succeeds:
+        *   Log success.
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `PlanStepExecution_Intent`, Content: "Build successful. Preparing post-build commit."
+            *   **(Internal: Execute Reactive STM/LTM Consultation Sub-Workflow).**
+        *   *Output the `PlanStepExecution_Intent` `META_LOG_DIRECTIVE`.*
+        *   Determine current Iteration Number (e.g., from RMP Section 2 sub-file).
+        *   Identify the preceding plan step or action that led to this build (e.g., from RMP Section 4 sub-file or last completed step; if unclear, use a generic "post-code-modification").
+        *   Use `execute_command` with `command: git add .` *(This stages all changes made that led to the successful build)*.
+        *   Use `execute_command` with `command: git commit -m "RMP Workflow: Iteration {CurrentIterNum} - Successful build after action: {DescriptionOfPrecedingAction}"`. *(Ensure placeholders are dynamically filled)*.
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `PlanStepExecution_Outcome`, Content: "Post-build commit completed." (If commit fails, log error details here).
+            *   **(Internal: Execute Reactive STM/LTM Consultation Sub-Workflow).**
+        *   *Output the `PlanStepExecution_Outcome` `META_LOG_DIRECTIVE`.*
+        *   Proceed to test execution.
         *   Execute test command(s) relevant to the current objective.
         *   Analyze test results.
         *   If tests pass and the functional objective is met, or if a point is reached where reflection is appropriate before full completion (e.g., end of planned work for the iteration, significant learning event), proceed to **Workflow Step 3.4.5: REQUEST & RETRIEVE TASK HISTORY**.

@@ -66,6 +66,26 @@
         *   Identify keywords, error codes, etc., from the failure.
         *   Scan STM `All_Tags` in RMP Section 10 sub-file. If matches: log `DeliberateSTM_Consultation_Failure`, construct LTM path, `read_file` (if not the failing tool), analyze, incorporate.
         *   **Fallback LTM Check:** (As in 3.1, log as `LTM_DirectConstruct_Consultation_Failure`).
+
+*   **Workflow Step 3.3: HANDLE EXECUTION FAILURE:**
+    *   Analyze failure result. (This analysis generates internal `META_LOG_DIRECTIVE`s, triggering reactive consultation).
+    *   Document failure in "Failure Tracking" (RMP Section 8 sub-file).
+    *   **If the failure was a `read_file` "File Not Found" error for an expected source code file:**
+        *   **Invoke Project Structure Management Protocol (PSM-P):** Follow the steps outlined in `system-prompt-Logger` under "Project Structure Management Protocol (PSM-P)" to locate the file using project files (`.csproj`, `.sln`) and update `ProjectStructure.md`.
+        *   This involves:
+            1.  PSM-P Step 4.1: Identify Target Entity & Project.
+            2.  PSM-P Step 4.2: Consult Existing `ProjectStructure.md`.
+            3.  PSM-P Step 4.3: Analyze Project Files.
+            4.  PSM-P Step 4.4: Update `ProjectStructure.md` with File Paths & Dependencies.
+            5.  PSM-P Step 4.5 (if file found): Analyze Source Code File for Class/Member Details.
+            6.  PSM-P Step 4.6 (if file found): Update `ProjectStructure.md` with Class/Member Details.
+        *   If the file is successfully located and `ProjectStructure.md` is updated:
+            *   Formulate a sub-plan to re-attempt reading the file using the now verified path from `ProjectStructure.md`.
+            *   Update "Your Plan" (RMP Section 4 sub-file) with this sub-plan.
+            *   Proceed back to **Workflow Step 3.2 EXECUTE PLAN** to execute the sub-plan.
+        *   If the file genuinely cannot be found even after PSM-P (and PSM-P Step 6: Handling Non-Existence is actioned):
+            *   The failure remains unresolved. Proceed with standard failure diagnosis below.
+    *   **Deliberate STM/LTM Review for Failure Diagnosis (for this failure or if PSM-P did not resolve "File Not Found"):**
     *   Based on analysis (informed by deliberate and reactive LTM), formulate a sub-plan. This formulation triggers reactive LTM consultation.
     *   Update "Your Plan" (RMP Section 4 sub-file).
     *   Proceed back to **Workflow Step 3.2 EXECUTE PLAN**.
