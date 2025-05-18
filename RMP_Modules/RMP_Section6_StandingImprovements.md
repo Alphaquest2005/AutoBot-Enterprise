@@ -1,0 +1,8 @@
+### Standing Improvement Ideas & Considerations (for Core Prompt & Processes)
+
+*   Evaluate the effectiveness and potential overhead of reactive LTM consultation. Consider tuning keyword extraction from `META_LOG_DIRECTIVE`s or the matching threshold for STM `All_Tags`.
+*   Clarify if the `META_LOG_DIRECTIVE`s logging the reactive LTM consultation process itself should be excluded from triggering further reactive consultations to prevent deep, non-productive recursion. (Current note in `RMP_Section3_CorePrompt_A_LTM_STM.md` addresses this generally, but specific scenarios might need refinement).
+*   Refine the optional step of updating `Associated_STM_ID(s)` in LTM files: assess its value versus complexity.
+*   Consider a structured format for LTM file content (e.g., specific YAML frontmatter or sections) to make parsing/extraction of specific sections (like `Cross_References` or `Generalizable_Lessons_Learned`) easier if needed for future advanced LTM querying.
+*   Clarify how to robustly parse/utilize the `task_history_iter<CurrentIterNum>.txt` if its format varies or is very large. For now, assume it's readable text and I'll extract key `META_LOG_DIRECTIVE`s and code diffs.
+*   The instruction "Add explicit instruction in Section 3.3 and Section 3.2 to ensure immediate tool execution when a workflow step requires it, to prevent system errors" has been incorporated into the workflow step definitions in `RMP_Section3_CorePrompt_C1_Workflow_Init_Plan_Exec.md`.
