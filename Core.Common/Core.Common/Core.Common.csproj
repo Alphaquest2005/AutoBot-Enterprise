@@ -100,6 +100,7 @@
     <Compile Include="Extensions\Dictionary2CSV.cs" />
     <Compile Include="Extensions\DynamicExtensions.cs" />
     <Compile Include="Extensions\IEnumeratorToList.cs" />
+    <Compile Include="Extensions\LogFilterState.cs" />
     <Compile Include="Extensions\LoggingCategories.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
     <Compile Include="Extensions\Result.cs" />
