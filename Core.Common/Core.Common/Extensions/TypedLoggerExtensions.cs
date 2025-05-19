@@ -1,12 +1,12 @@
 ﻿using Serilog;
 using Serilog.Context;
-using Serilog.Events; // <<< --- ADD THIS LINE --- <<<
+using Serilog.Events; // Required for LogEventLevel
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic; // Required for List
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Core.Common.Extensions
+namespace Core.Common.Extensions // Your specified namespace
 {
     public static class TypedLoggerExtensions
     {
@@ -23,7 +23,10 @@ namespace Core.Common.Extensions
         }
 
         // --- METHOD BOUNDARY ---
-        public static void LogMethodEntry(this ILogger logger, string invocationId, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogMethodEntry(this ILogger logger, string invocationId,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -33,7 +36,10 @@ namespace Core.Common.Extensions
             }
         }
 
-        public static void LogMethodExitSuccess(this ILogger logger, string invocationId, long durationMs, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogMethodExitSuccess(this ILogger logger, string invocationId, long durationMs,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -44,7 +50,10 @@ namespace Core.Common.Extensions
             }
         }
 
-        public static void LogMethodExitFailure(this ILogger logger, string invocationId, long durationMs, Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogMethodExitFailure(this ILogger logger, string invocationId, long durationMs, Exception ex,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -58,7 +67,10 @@ namespace Core.Common.Extensions
         }
 
         // --- ACTION BOUNDARY ---
-        public static void LogActionStart(this ILogger logger, string invocationId, string actionName, string parentAction = null, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogActionStart(this ILogger logger, string invocationId, string actionName, string parentAction = null,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -79,7 +91,10 @@ namespace Core.Common.Extensions
             }
         }
 
-        public static void LogActionEndSuccess(this ILogger logger, string invocationId, string actionName, long durationMs, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogActionEndSuccess(this ILogger logger, string invocationId, string actionName, long durationMs,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -92,7 +107,10 @@ namespace Core.Common.Extensions
             }
         }
 
-        public static void LogActionEndFailure(this ILogger logger, string invocationId, string actionName, long durationMs, Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogActionEndFailure(this ILogger logger, string invocationId, string actionName, long durationMs, Exception ex,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -107,26 +125,39 @@ namespace Core.Common.Extensions
         }
 
         // --- INTERNAL STEP ---
-        public static void LogInternalStep(this ILogger logger, string invocationId, string messageTemplate, params object[] propertyValues)
+        public static void LogInternalStep(this ILogger logger, string invocationId, string messageTemplate,
+                                           [CallerMemberName] string memberName = "",
+                                           [CallerFilePath] string sourceFilePath = "",
+                                           [CallerLineNumber] int sourceLineNumber = 0,
+                                           params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", LogCategory.InternalStep)
-                      .Debug(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", LogCategory.InternalStep)
+                    .Debug(messageTemplate, propertyValues);
             }
         }
 
-        public static void LogInternalStepVerbose(this ILogger logger, string invocationId, string messageTemplate, params object[] propertyValues)
+        public static void LogInternalStepVerbose(this ILogger logger, string invocationId, string messageTemplate,
+                                                  [CallerMemberName] string memberName = "",
+                                                  [CallerFilePath] string sourceFilePath = "",
+                                                  [CallerLineNumber] int sourceLineNumber = 0,
+                                                  params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", LogCategory.InternalStep)
-                      .Verbose(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", LogCategory.InternalStep)
+                    .Verbose(messageTemplate, propertyValues);
             }
         }
 
         // --- EXTERNAL CALL ---
-        public static void LogExternalCallStart(this ILogger logger, string invocationId, string externalSystem, string operation, object parameters = null, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogExternalCallStart(this ILogger logger, string invocationId, string externalSystem, string operation, object parameters = null,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -147,7 +178,10 @@ namespace Core.Common.Extensions
             }
         }
 
-        public static void LogExternalCallEnd(this ILogger logger, string invocationId, string externalSystem, string operation, bool success, long durationMs, object result = null, Exception ex = null, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogExternalCallEnd(this ILogger logger, string invocationId, string externalSystem, string operation, bool success, long durationMs, object result = null, Exception ex = null,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -187,7 +221,9 @@ namespace Core.Common.Extensions
             LogEventLevel level,
             string type, string context, string directive, string sourceIteration,
             string expectedChange = null, object details = null, string invocationId = null,
-            [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             using (PushInvocationId(invocationId))
             {
@@ -210,68 +246,103 @@ namespace Core.Common.Extensions
                 if (details != null)
                 {
                     log = log.ForContext("MetaDetails", details, destructureObjects: true);
-                    // If MetaDetails is simple, add to template. If complex, {@MetaDetails} is better.
-                    // For now, assume it's complex and pulled from context.
                     messageTemplateParts.Add("MetaDetails: {@MetaDetails}");
                 }
 
                 log.Write(level, string.Join(", ", messageTemplateParts), logArgs.ToArray());
             }
         }
-        public static void LogMetaDirective(this ILogger logger, string type, string context, string directive, string sourceIteration, string expectedChange = null, object details = null, string invocationId = null, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void LogMetaDirective(this ILogger logger, string type, string context, string directive, string sourceIteration, string expectedChange = null, object details = null, string invocationId = null,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
-            // Default to Warning level for simpler LogMetaDirective call
             logger.LogMetaDirective(LogEventLevel.Warning, type, context, directive, sourceIteration, expectedChange, details, invocationId, memberName, sourceFilePath, sourceLineNumber);
         }
 
-        // --- GENERIC CATEGORIZED LOGGING (invocationId is optional and uses LogContext) ---
-        public static void LogInfoCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        // --- GENERIC CATEGORIZED LOGGING ---
+        public static void LogInfoCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null,
+                                              [CallerMemberName] string memberName = "",
+                                              [CallerFilePath] string sourceFilePath = "",
+                                              [CallerLineNumber] int sourceLineNumber = 0,
+                                              params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Information(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Information(messageTemplate, propertyValues);
             }
         }
-        public static void LogDebugCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogDebugCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null,
+                                               [CallerMemberName] string memberName = "",
+                                               [CallerFilePath] string sourceFilePath = "",
+                                               [CallerLineNumber] int sourceLineNumber = 0,
+                                               params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Debug(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Debug(messageTemplate, propertyValues);
             }
         }
-        public static void LogVerboseCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogVerboseCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null,
+                                                 [CallerMemberName] string memberName = "",
+                                                 [CallerFilePath] string sourceFilePath = "",
+                                                 [CallerLineNumber] int sourceLineNumber = 0,
+                                                 params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Verbose(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Verbose(messageTemplate, propertyValues);
             }
         }
-        public static void LogWarningCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogWarningCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null,
+                                                 [CallerMemberName] string memberName = "",
+                                                 [CallerFilePath] string sourceFilePath = "",
+                                                 [CallerLineNumber] int sourceLineNumber = 0,
+                                                 params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Warning(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Warning(messageTemplate, propertyValues);
             }
         }
-        public static void LogWarningCategorized(this ILogger logger, LogCategory category, Exception ex, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogWarningCategorized(this ILogger logger, LogCategory category, Exception ex, string messageTemplate, string invocationId = null,
+                                                 [CallerMemberName] string memberName = "",
+                                                 [CallerFilePath] string sourceFilePath = "",
+                                                 [CallerLineNumber] int sourceLineNumber = 0,
+                                                 params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Warning(ex, messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Warning(ex, messageTemplate, propertyValues);
             }
         }
-        public static void LogErrorCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogErrorCategorized(this ILogger logger, LogCategory category, string messageTemplate, string invocationId = null,
+                                               [CallerMemberName] string memberName = "",
+                                               [CallerFilePath] string sourceFilePath = "",
+                                               [CallerLineNumber] int sourceLineNumber = 0,
+                                               params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Error(messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Error(messageTemplate, propertyValues);
             }
         }
-        public static void LogErrorCategorized(this ILogger logger, LogCategory category, Exception ex, string messageTemplate, string invocationId = null, params object[] propertyValues)
+        public static void LogErrorCategorized(this ILogger logger, LogCategory category, Exception ex, string messageTemplate, string invocationId = null,
+                                               [CallerMemberName] string memberName = "",
+                                               [CallerFilePath] string sourceFilePath = "",
+                                               [CallerLineNumber] int sourceLineNumber = 0,
+                                               params object[] propertyValues)
         {
             using (PushInvocationId(invocationId))
             {
-                logger.ForContext("LogCategory", category).Error(ex, messageTemplate, propertyValues);
+                GetConfiguredLogger(logger, memberName, sourceFilePath, sourceLineNumber)
+                    .ForContext("LogCategory", category).Error(ex, messageTemplate, propertyValues);
             }
         }
     }

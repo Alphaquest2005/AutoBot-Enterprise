@@ -58,58 +58,71 @@ namespace AutoBotUtilities.Tests
         {
             _logOutput = new StringWriter();
 
-            // ... (LogFilterState setup remains the same) ...
+            // Reset LogFilterState to defaults before each test
+            LogFilterState.TargetSourceContextForDetails = null;
+            LogFilterState.TargetMethodNameForDetails = null;
+            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+            LogFilterState.EnabledCategoryLevels = new Dictionary<LogCategory, LogEventLevel>
+            {
+                { LogCategory.MethodBoundary, LogEventLevel.Information },
+                { LogCategory.ActionBoundary, LogEventLevel.Information },
+                { LogCategory.ExternalCall, LogEventLevel.Information },
+                { LogCategory.StateChange, LogEventLevel.Information },
+                { LogCategory.Security, LogEventLevel.Information },
+                { LogCategory.MetaLog, LogEventLevel.Warning },
+                { LogCategory.InternalStep, LogEventLevel.Warning },
+                { LogCategory.DiagnosticDetail, LogEventLevel.Warning },
+                { LogCategory.Performance, LogEventLevel.Warning },
+                { LogCategory.Undefined, LogEventLevel.Information }
+            };
 
             _testLogger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
-                // Use the custom StringWriterSink
+                .Enrich.WithProperty("TestName", TestContext.CurrentContext.Test.Name)
                 .WriteTo.Sink(new StringWriterSink(_logOutput,
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] {Message:lj}{NewLine}{Properties}{NewLine}"))
-                .WriteTo.NUnitOutput(restrictedToMinimumLevel: LogEventLevel.Verbose)
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}{Properties}{NewLine}"))
+                .WriteTo.NUnitOutput(restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}")
                 .Filter.ByIncludingOnly(evt =>
                 {
                     LogCategory category = LogCategory.Undefined;
-                    // ... (category extraction) ...
-                    string sourceContext = evt.Properties.ContainsKey("SourceContext") ? evt.Properties["SourceContext"].ToString().Trim('"') : "NULL_SC";
-                    string memberName = evt.Properties.ContainsKey("MemberName") ? evt.Properties["MemberName"].ToString().Trim('"') : "NULL_MN";
-                    string message = evt.RenderMessage(); // Get the rendered message for easier identification
+                    string sourceContext = evt.Properties.TryGetValue("SourceContext", out var scP) && scP is ScalarValue scV && scV.Value != null ? scV.Value.ToString().Trim('"') : "";
+                    string memberName = evt.Properties.TryGetValue("MemberName", out var mnP) && mnP is ScalarValue mnV && mnV.Value != null ? mnV.Value.ToString().Trim('"') : "";
 
-                    Console.WriteLine($"FILTER CHECK: SC='{sourceContext}', MN='{memberName}', Cat='{category}', Lvl='{evt.Level}', Msg='{message}'");
-                    Console.WriteLine($"  TargetSC='{LogFilterState.TargetSourceContextForDetails}', TargetMN='{LogFilterState.TargetMethodNameForDetails}', DetailLvl='{LogFilterState.DetailTargetMinimumLevel}'");
+                    if (evt.Properties.TryGetValue("LogCategory", out var categoryProp) &&
+                        categoryProp is ScalarValue svCat &&
+                        svCat.Value is LogCategory catVal)
+                    {
+                        category = catVal;
+                    }
+                    else if (evt.Properties.TryGetValue("LogCategory", out var categoryPropStr) &&
+                               categoryPropStr is ScalarValue svCatStr &&
+                               svCatStr.Value != null &&
+                               Enum.TryParse<LogCategory>(svCatStr.Value.ToString().Trim('"'), out var catValStr))
+                    {
+                        category = catValStr;
+                    }
 
-                    bool decision = false;
-                    // 1. Targeted Troubleshooting Mode
                     if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
-                        sourceContext != null && // Check sourceContext is not null before Contains
+                        !string.IsNullOrEmpty(sourceContext) && // Ensure sourceContext is not null before Contains
                         sourceContext.Contains(LogFilterState.TargetSourceContextForDetails))
                     {
-                        Console.WriteLine("  TARGET_SC_MATCH");
                         bool methodMatch = string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
-                                           (memberName != null && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase));
+                                           (!string.IsNullOrEmpty(memberName) && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase));
 
                         if (methodMatch)
                         {
-                            Console.WriteLine("  TARGET_MN_MATCH (or no MN target)");
-                            decision = evt.Level >= LogFilterState.DetailTargetMinimumLevel;
-                            Console.WriteLine($"    DETAIL_FILTER_DECISION: {decision} (EvtLvl: {evt.Level} >= DetailLvl: {LogFilterState.DetailTargetMinimumLevel})");
-                            return decision;
-                        }
-                        else
-                        {
-                            Console.WriteLine("  TARGET_MN_MISMATCH");
+                            return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
                         }
                     }
 
-                    // 2. General Category/Level Check
-                    if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var enabledMinLevel))
+                    if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var enabledMinLevelForCategory))
                     {
-                        decision = evt.Level >= enabledMinLevel;
-                        Console.WriteLine($"  CATEGORY_FILTER_DECISION: {decision} (Cat: {category}, EvtLvl: {evt.Level} >= EnabledLvl: {enabledMinLevel})");
-                        return decision;
+                        return evt.Level >= enabledMinLevelForCategory;
                     }
 
-                    Console.WriteLine("  NO_MATCH_DEFAULT_EXCLUDE");
                     return false;
                 })
                 .CreateLogger();
@@ -158,39 +171,35 @@ namespace AutoBotUtilities.Tests
         {
             LogFilterState.TargetSourceContextForDetails = typeof(TestDummyClass).FullName;
             LogFilterState.TargetMethodNameForDetails = nameof(TestDummyClass.MethodA);
-            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose; // Target set to Verbose
+            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 
             var dummy = new TestDummyClass(_testLogger);
             var anotherDummy = new AnotherTestDummyClass(_testLogger);
             string invId = "test-inv-02";
 
-            // Act
             dummy.MethodA(invId);
             anotherDummy.DoWork(invId);
 
             string output = _logOutput.ToString();
-            Console.WriteLine("--- Test02 Output (Strict DetailTargetMinimumLevel) ---");
+            Console.WriteLine("--- Test02 Output (After Extension Fix + Corrected Asserts) ---");
             Console.WriteLine(output);
 
             // For MethodA (Targeted, DetailTargetMinimumLevel = Verbose):
-            // Only Verbose level and higher logs from MethodA should appear.
-            Assert.That(output, Does.Not.Contain("METHOD_ENTRY: MethodName: MethodA"), "MethodA Entry (Info) should be filtered out by DetailTargetMinLevel=Verbose");
-            Assert.That(output, Does.Not.Contain("Inside MethodA - step 1 (debug)"), "MethodA Debug step should be filtered out by DetailTargetMinLevel=Verbose");
-            Assert.That(output, Does.Contain("Inside MethodA - step 2 (verbose)"), "MethodA Verbose step should be present"); // This is Verbose >= Verbose
-            Assert.That(output, Does.Not.Contain("METHOD_EXIT_SUCCESS: MethodName: MethodA"), "MethodA Exit (Info) should be filtered out by DetailTargetMinLevel=Verbose");
+            // ALL logs from MethodA at Verbose level or numerically higher (i.e., less severe or equal) should appear.
+            Assert.That(output, Does.Contain("METHOD_ENTRY: MethodName: MethodA"), "MethodA Entry (Info) should be present");
+            Assert.That(output, Does.Contain("Inside MethodA - step 1 (debug)"), "MethodA Debug step should be present");
+            Assert.That(output, Does.Contain("Inside MethodA - step 2 (verbose)"), "MethodA Verbose step should be present");
+            Assert.That(output, Does.Contain("METHOD_EXIT_SUCCESS: MethodName: MethodA"), "MethodA Exit (Info) should be present");
 
             // For MethodB (called by MethodA, SourceContext is TestDummyClass, but MemberName is MethodB, so it's NOT the specific method target):
-            // MethodB logs fall back to the general LogFilterState.EnabledCategoryLevels.
-            // MethodBoundary category is Information by default.
-            // DiagnosticDetail category (for its debug log) is Warning by default.
-            Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_ENTRY: MethodName: MethodB"), "MethodB Entry (Info) should appear based on EnabledCategoryLevels");
-            Assert.That(output, Does.Not.Contain("Detail from MethodB"), "MethodB Debug detail (DiagnosticDetail) should be filtered out by EnabledCategoryLevels default of Warning");
-            Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_EXIT_SUCCESS: MethodName: MethodB"), "MethodB Exit (Info) should appear based on EnabledCategoryLevels");
+            // Falls to general category filter.
+            Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_ENTRY: MethodName: MethodB"));
+            Assert.That(output, Does.Not.Contain("Detail from MethodB"), "MethodB Debug detail (DiagnosticDetail) should be filtered by EnabledCategoryLevels default");
+            Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_EXIT_SUCCESS: MethodName: MethodB"));
 
             // For AnotherTestDummyClass (Not targeted):
-            // Governed by LogFilterState.EnabledCategoryLevels.
             Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_ENTRY: MethodName: DoWork"));
-            Assert.That(output, Does.Contain($"[{LogCategory.StateChange}]").And.Contain("State changed in AnotherTestDummyClass")); // StateChange is Information by default
+            Assert.That(output, Does.Contain($"[{LogCategory.StateChange}]").And.Contain("State changed in AnotherTestDummyClass"));
             Assert.That(output, Does.Contain($"[{LogCategory.MethodBoundary}]").And.Contain("METHOD_EXIT_SUCCESS: MethodName: DoWork"));
         }
 
