@@ -1,10 +1,12 @@
-﻿using NUnit.Framework;
+﻿﻿using NUnit.Framework;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.NUnit; // Or use a StringWriter/TestOutputHelper approach
+using Serilog.Core;
 using System;
 using System.IO;
 using Core.Common.Extensions; // For LogCategory, TypedLoggerExtensions, LogFilterState
+using static Core.Common.Extensions.LogLevelOverride;
 
 
 namespace AutoBotUtilities.Tests
@@ -416,5 +418,99 @@ namespace AutoBotUtilities.Tests
             Assert.That(output, Does.Match(op2StepPattern), "Operation2 Step X log line incorrect.");
             Assert.That(output, Does.Match(op2StepPropertiesPattern), "Operation2 Step X properties incorrect or InvocationId missing.");
         }
+
+        [Test]
+        public void LogLevelOverride_ShouldFilterLogsCorrectly()
+        {
+            var testSink = new TestSink();
+            var logger = new LoggerConfiguration()
+                .MinimumLevel.Fatal() // Set global minimum to Verbose to allow filtering down to Verbose
+                .WriteTo.Sink(testSink)
+                .Filter.ByIncludingOnly(evt =>
+                {
+                    // If there's an active override, use it
+                    if (LogLevelOverride.CurrentLevelOverride.HasValue)
+                    {
+                        return evt.Level >= LogLevelOverride.CurrentLevelOverride.Value;
+                    }
+
+                    // Otherwise, fall back to default filtering (e.g., allow all for this test)
+                    // For this specific test, we want to ensure the override is the primary filter.
+                    // So, if no override, let everything pass to ensure the override is truly controlling.
+                    return true;
+                })
+                .CreateLogger();
+
+            // Test 1: No override, all logs should pass (due to `return true` in filter)
+            logger.Verbose("Verbose message 1");
+            logger.Debug("Debug message 1");
+            logger.Information("Information message 1");
+            Assert.That(testSink.EmittedEvents.Count, Is.EqualTo(3), "Expected 3 events with no override");
+            testSink.Clear();
+
+
+            // Test 2: Override to Information, only Information and above should pass
+            using (LogLevelOverride.Begin(LogEventLevel.Information))
+            {
+                logger.Verbose("Verbose message 2");
+                logger.Debug("Debug message 2");
+                logger.Information("Information message 2");
+                logger.Warning("Warning message 2");
+            }
+            Assert.That(testSink.EmittedEvents.Count, Is.EqualTo(2), "Expected 2 events with Information override");
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Information), Is.True);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Warning), Is.True);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Verbose), Is.False);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Debug), Is.False);
+            testSink.Clear();
+
+            // Test 3: Override to Debug, Debug and above should pass
+            using (LogLevelOverride.Begin(LogEventLevel.Debug))
+            {
+                logger.Verbose("Verbose message 3");
+                logger.Debug("Debug message 3");
+                logger.Information("Information message 3");
+            }
+            Assert.That(testSink.EmittedEvents.Count, Is.EqualTo(2), "Expected 2 events with Debug override");
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Debug), Is.True);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Information), Is.True);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Verbose), Is.False);
+            testSink.Clear();
+
+            // Test 4: Override to Verbose, all should pass
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            {
+                logger.Verbose("Verbose message 4");
+                logger.Debug("Debug message 4");
+            }
+            Assert.That(testSink.EmittedEvents.Count, Is.EqualTo(2), "Expected 2 events with Verbose override");
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Verbose), Is.True);
+            Assert.That(testSink.EmittedEvents.Any(e => e.Level == LogEventLevel.Debug), Is.True);
+            testSink.Clear();
+        }
+
+
     }
+
+    // Custom sink to capture log events for assertion
+public class TestSink : ILogEventSink
+    {
+        private readonly List<LogEvent> _emittedEvents = new List<LogEvent>();
+        public IReadOnlyList<LogEvent> EmittedEvents => _emittedEvents;
+
+        public void Emit(LogEvent logEvent)
+        {
+            _emittedEvents.Add(logEvent);
+        }
+
+        public void Clear()
+        {
+            _emittedEvents.Clear();
+        }
+    }
+
+       
+    
+
+
 }

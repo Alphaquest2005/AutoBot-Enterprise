@@ -1,9 +1,25 @@
-## 6. Reflection & Prompt Improvements (Iteration 7)
+# 6. Reflection & Prompt Improvements (Current Iteration 7)
 
-*   **Iteration 7 Reflection Summary (To be completed at end of iteration):**
-    *   Analysis of the task history for Iteration 7 identified a critical operational learning: the failure to immediately use a required tool after a workflow step caused a system error and interruption. This highlights the need for stricter adherence to the workflow's tool usage requirements.
+## Iteration Objective: "initialize RMP for new user objective"
 
-*   **6.5 Proposed Core Instrumentation Prompt Improvements (to be reviewed and integrated at end of Iteration 7, following RMP-MP defined in `system-prompt-Logger`):**
-    *   (Existing proposals from prior to Iteration 7 start)
-    *   Refine the `Distinguisher_Source` strategy for LTM filenames to clearly indicate evolutionary relationships (e.g., `_FollowUpSTM-XXX_IterN` vs. `_IterN_AttemptM`).
-    *   Evaluate the process for integrating task history analysis into reflection, ensuring it effectively informs LTM/STM creation and prompt improvements. *(This is a standing item to consider each iteration).*
+### 6.1. Overall Iteration Summary:
+(Summarize the iteration's progress, key challenges, and successes.)
+
+### 6.2. Performance Analysis:
+*   **Adherence to Plan:** (How well was the plan followed? Any deviations and why?)
+*   **Efficiency:** (Was the iteration efficient? Any bottlenecks or areas for improvement?)
+*   **Accuracy:** (Were the changes accurate and effective?)
+
+### 6.3. Learnings & Insights:
+*   **Technical Learnings:** (New technical knowledge gained, e.g., about the codebase, tools, or patterns.)
+*   **Process Learnings:** (Insights into the effectiveness of the RMP, protocols, or workflow.)
+*   **Unexpected Discoveries:** (Any surprising findings or issues encountered.)
+
+### 6.4. Failure Analysis (if applicable):
+(If any failures occurred, analyze their root causes and how they were addressed.)
+
+### 6.5. Proposed Improvements to Core Instrumentation Prompt (RMP Section 3) & System Protocols:
+(Based on the reflection, propose concrete, actionable improvements to your own guiding instructions or the system protocols. This is where self-improvement happens.)
+
+### 6.6. LTM/STM Candidates:
+(Identify key learnings or patterns that should be formalized into new LTM entries or indexed in STM.)

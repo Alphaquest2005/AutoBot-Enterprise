@@ -102,6 +102,7 @@
     <Compile Include="Extensions\IEnumeratorToList.cs" />
     <Compile Include="Extensions\LogFilterState.cs" />
     <Compile Include="Extensions\LoggingCategories.cs" />
+    <Compile Include="Extensions\LogLevelOverride.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
     <Compile Include="Extensions\Result.cs" />
     <Compile Include="Extensions\ResultExtensions.cs" />

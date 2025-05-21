@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog.Events; // Added for LogEventLevel
+using Core.Common.Extensions; // Added for LogFilterState
 using NUnit.Framework;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities; // Needed for EntryDataDSContext
@@ -38,6 +40,39 @@ namespace AutoBotUtilities.Tests
                     .Enrich.FromLogContext() // Enrichers
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
+                    .Filter.ByIncludingOnly(evt =>
+                    {
+                        // Extract LogCategory, SourceContext, MemberName
+                        var hasCategory = evt.Properties.TryGetValue("LogCategory", out var categoryValue);
+                        var category = hasCategory && categoryValue is ScalarValue sv && sv.Value is LogCategory lc ? lc : LogCategory.Undefined;
+
+                        var hasSourceContext = evt.Properties.TryGetValue("SourceContext", out var sourceContextValue);
+                        var sourceContext = hasSourceContext ? sourceContextValue.ToString().Trim('\"') : null;
+
+                        var hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
+                        var memberName = hasMemberName ? memberNameValue.ToString().Trim('\"') : null;
+
+                        // Check if this event is from the targeted source context and method for detailed logging
+                        if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
+                            sourceContext != null &&
+                            sourceContext.StartsWith(LogFilterState.TargetSourceContextForDetails))
+                        {
+                            if (string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
+                                (memberName != null && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
+                            }
+                        }
+
+                        // Default filtering based on category levels
+                        if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var minLevel))
+                        {
+                            return evt.Level >= minLevel;
+                        }
+
+                        // If category not defined in EnabledCategoryLevels, default to Information
+                        return evt.Level >= LogEventLevel.Information;
+                    })
                     .WriteTo.Console() // Console Sink
                    // .WriteTo.NUnit()   // Add NUnit Sink
                     .WriteTo.File(logFilePath, // File Sink
@@ -390,6 +425,12 @@ namespace AutoBotUtilities.Tests
             Console.SetOut(TestContext.Progress);
             try
             {
+                // Configure LogFilterState for targeted logging
+                LogFilterState.TargetSourceContextForDetails = "InvoiceReader";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+                _logger.Information("LogFilterState configured: TargetSourceContextForDetails='{TargetContext}', DetailTargetMinimumLevel='{DetailLevel}'",
+                                    LogFilterState.TargetSourceContextForDetails, LogFilterState.DetailTargetMinimumLevel);
+
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
