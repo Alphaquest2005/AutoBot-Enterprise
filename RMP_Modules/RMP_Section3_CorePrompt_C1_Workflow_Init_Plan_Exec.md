@@ -3,90 +3,137 @@
 **Workflow Steps:**
 
 *   **Workflow Step -1: INITIATE ITERATION CYCLE:**
-    *   Read the main `RefactoringMasterPlan.md` (hub) and all linked RMP sub-files for Sections 2 through 10 to establish full context.
-    *   Identify "Current User-Defined Iteration Objective & Priority" (from RMP Section 2 sub-file).
-    *   Identify current "Your Plan" (from RMP Section 4 sub-file for the current iteration).
-    *   Identify current "Failure Tracking" (from RMP Section 8 sub-file).
-    *   Identify current "Escalation" status (from RMP Section 7 sub-file).
-    *   Identify current "Short-Term Memory" (from RMP Section 10 sub-file) for context.
-    *   If Escalation is active, wait for user input.
-    *   If Escalation is not active, proceed to **Workflow Step 3.0: INITIAL ITERATION COMMIT**.
+    *   **1. System Prompt Assimilation:** Internally process `system-prompt-Logger` to load all foundational directives and protocols.
+    *   **2. RMP Context Loading:**
+        *   `read_file` the main `RefactoringMasterPlan.md` (hub).
+        *   Based on the hub, sequentially `read_file` all linked RMP sub-files for Sections 2 through 10 to establish full iteration context. This includes:
+            *   `RMP_Modules/RMP_Section2_UserObjective_Iter<CurrentIterNum>.md`
+            *   `RMP_Modules/RMP_Section3_CorePrompt_Hub.md` and all its linked parts (A, B, C1, C2, D).
+            *   `RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md` (current or from previous session).
+            *   `RMP_Modules/RMP_Task_Header_Iter<CurrentIterNum>.md` (if exists from previous session).
+            *   `RMP_Modules/RMP_Task_Footer_Iter<CurrentIterNum>.md` (if exists from previous session).
+            *   `RMP_Modules/RMP_TaskExecutionLog_Iter<CurrentIterNum>.md` (if exists, create if not when first meta-log is appended).
+            *   `RMP_Modules/RMP_Section5_LogAnalysis_Iter<CurrentIterNum>.md`.
+            *   `RMP_Modules/RMP_Section6_Reflection_Iter<CurrentIterNum>.md` & `RMP_Modules/RMP_Section6_StandingImprovements.md`.
+            *   `RMP_Modules/RMP_Section7_Escalation.md`.
+            *   `RMP_Modules/RMP_Section8_FailureTracking.md`.
+            *   `RMP_Modules/RMP_Section10_STM_Iter<CurrentIterNum>.md`.
+    *   **3. Initial State Identification:**
+        *   Confirm "Current User-Defined Iteration Objective & Priority".
+        *   Note current state of "User Task Plan", "Failure Tracking", "Escalation", "STM".
+    *   **4. Proceed based on Escalation Status:**
+        *   If Escalation is active (per `RMP_Modules/RMP_Section7_Escalation.md`), await user input.
+        *   If Escalation is not active, proceed to **Workflow Step 3.0: INITIAL ITERATION COMMIT**.
 
 *   **Workflow Step 3.0: INITIAL ITERATION COMMIT:**
-    *   **Formulate `META_LOG_DIRECTIVE`** Type: `PlanStepExecution_Intent`, Content: "Preparing for initial iteration commit after loading RMP and identifying objective."
+    *   **Formulate `META_LOG_DIRECTIVE`** Type: `PlanStepExecution_Intent`, Context: "INITIAL ITERATION COMMIT", Directive: "Preparing for initial iteration commit after loading RMP and identifying objective."
         *   **(Internal: Execute Reactive STM/LTM Consultation Sub-Workflow).**
-    *   *Output the `PlanStepExecution_Intent` `META_LOG_DIRECTIVE`.*
-    *   Determine current Iteration Number (e.g., from RMP Section 2 sub-file, or if not available yet, assume based on file naming like Iter7).
+    *   *Output the `PlanStepExecution_Intent` `META_LOG_DIRECTIVE`.* **Then, use `insert_content` to append the full, formatted `META_LOG_DIRECTIVE` string to `RMP_Modules/RMP_TaskExecutionLog_Iter<CurrentIterNum>.md` (creating file if it doesn't exist).**
+    *   Determine current Iteration Number (e.g., from RMP Section 2 sub-file).
     *   Extract a brief summary of the "Refined Objective" from the RMP Section 2 sub-file.
-    *   Use `execute_command` with `command: git add .` (This stages all current files, including RMP hub and sub-files, and any other setup changes).
+    *   Use `execute_command` with `command: git add .` (Stages all current files, including new/updated RMP files).
     *   Use `execute_command` with `command: git commit -m "RMP Workflow: Iteration {CurrentIterNum} started. Objective: {ObjectiveSummary}"`. *(Ensure placeholders are dynamically filled)*.
     *   **Formulate `META_LOG_DIRECTIVE`** Type: `PlanStepExecution_Outcome`, Content: "Initial iteration commit completed." (If commit fails, log error details here).
         *   **(Internal: Execute Reactive STM/LTM Consultation Sub-Workflow).**
-    *   *Output the `PlanStepExecution_Outcome` `META_LOG_DIRECTIVE`.*
+    *   *Output the `PlanStepExecution_Outcome` `META_LOG_DIRECTIVE`.* **Append to Task Execution Log.**. Use `insert_content` to append it
     *   Proceed to **Workflow Step 3.1: PLAN ITERATION**.
 
-*   **Workflow Step 3.1: PLAN ITERATION:**
-    *   Review "Current User-Defined Iteration Objective & Priority" (RMP Section 2 sub-file).
-    *   Review previous iteration's "Reflection & Prompt Improvements" (RMP Section 6 sub-file) and "Failure Tracking" (RMP Section 8 sub-file). (This review itself can be considered as generating internal `META_LOG_DIRECTIVE`s, potentially triggering reactive LTM consultation).
-    *   **Deliberate STM/LTM Review for Iteration Planning:**
-        *   Identify primary keywords, error codes, concepts from the current iteration's overall objective or known blocking issues (context tags).
-        *   Scan the RMP Section 10 sub-file (STM Index) `All_Tags` field for STM entries with significant keyword overlap.
-        *   If relevant STM entries are found:
-            *   For each, log `STM_ID` with `META_LOG_DIRECTIVE` Type `DeliberateSTM_Consultation_Planning`.
-            *   Construct `LTM_File_Path` from STM seeds, `read_file` LTM.
-            *   Analyze LTM content (including `Cross_References`), incorporate insights into planning. Log retrieved LTM path.
-        *   **Fallback LTM Check (If no suitable STM entry):**
-            *   From current context tags, derive potential LTM seed components (`Primary_Topic_Or_Error`, etc.).
-            *   Attempt to construct a hypothetical `LTM_File_Path`.
-            *   Use `read_file`. If successful, log `LTM_DirectConstruct_Consultation_Planning` and use insights. Else, log no direct LTM found.
-    *   Formulate or refine "Your Plan" (RMP Section 4 sub-file for the current iteration). Each part of this formulation (e.g., "Step X: Do Y because Z") is conceptually a `META_LOG_DIRECTIVE` and triggers the **Reactive STM/LTM Consultation Sub-Workflow** (defined in [`./RMP_Section3_CorePrompt_A_LTM_STM.md`](./RMP_Section3_CorePrompt_A_LTM_STM.md)).
-    *   Document the plan in the RMP Section 4 sub-file.
-    *   Proceed to **Workflow Step 3.2: EXECUTE PLAN**.
+*   **Workflow Step 3.1: PLAN ITERATION (Adhering to "Iteration Task Checklists Protocol"):**
+    *   **1. Populate and Process Task Header:**
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `SystemActivity`, Context: "PLAN ITERATION - Task Header Setup", Directive: "Initiating Task Header processing. Reading seed checklist from system-prompt-Logger."
+        *   *Output META_LOG_DIRECTIVE.* **Append to Task Execution Log.**
+        *   Use `read_file` to get the "Seed Task Header Checklist" content from `system-prompt-Logger`.
+        *   Use `write_to_file` to create/overwrite `RMP_Modules/RMP_Task_Header_Iter<CurrentIterNum>.md` with this seed content. (This RMP file modification is subject to RMP-MP, including pre/post commits and integrity checks if the checklist definition itself were to change).
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `SystemActivity`, Context: "PLAN ITERATION - Task Header Setup", Directive: "Populated RMP_Task_Header_Iter<CurrentIterNum>.md. Proceeding to process checklist items."
+        *   *Output META_LOG_DIRECTIVE.* **Append to Task Execution Log.**
+        *   Meticulously execute and verify each item (H1-H5) in `RMP_Task_Header_Iter<CurrentIterNum>.md`. For each item:
+            *   Log intent, action(s) taken for verification, and outcome using `META_LOG_DIRECTIVE`s (and append them to Task Execution Log).
+            *   Update its status, start/end times, and notes/verification details directly in the `RMP_Task_Header_Iter<CurrentIterNum>.md` file (using `apply_diff` or `write_to_file` for the whole file, subject to RMP-MP).
+        *   **CRITICAL:** Confirm all Task Header items are "Completed" (or "Skipped/NA" with justification). Any "Failed" items MUST be resolved (potentially by making their resolution the first steps of the User Task Plan) or escalated. Any identified prerequisites (e.g., logging filter setup from H3.2, PSM-P update from H3.1, TDRP applicability from H3.4) MUST inform the User Task Plan.
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `SystemActivity`, Context: "PLAN ITERATION - Task Header Completion", Directive: "All items in RMP_Task_Header_Iter<CurrentIterNum>.md processed and verified. Findings will inform User Task Plan."
+        *   *Output META_LOG_DIRECTIVE.* **Append to Task Execution Log.**
+    *   **2. Review Core Inputs for User Task Plan:**
+        *   Review "Current User-Defined Iteration Objective & Priority" (from `RMP_Modules/RMP_Section2_UserObjective_Iter<CurrentIterNum>.md`).
+        *   Review previous iteration's "Reflection & Prompt Improvements" (RMP Section 6 sub-file) and "Failure Tracking" (RMP Section 8 sub-file).
+        *   Review notes and insights from the completed `RMP_Task_Header_Iter<CurrentIterNum>.md`.
+    *   **3. Formulate User Task Plan (`RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md` - as per "Iteration Task Checklists Protocol" Point 2 in `system-prompt-Logger`):**
+        *   **a. Initial Brainstorming & Analysis (Internal, log summary as META_LOG_DIRECTIVE):** Brainstorm approaches, select primary strategy, proactively identify roadblocks/dependencies, briefly consider 1-2 high-level alternatives.
+        *   **b. Detailed Plan Formulation:** Formulate the step-by-step plan in `RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md`. Ensure plan adheres to Content Mandates (actionable steps, proactive PSM-P for code interaction/design, potential `new_task` segmentation for complex phases, tool usage, `META_LOG_DIRECTIVE`s, LTM/STM consultations, Task Header findings, roadblock mitigations).
+
+        This also includes integrating steps from the Test-Driven Refactoring Protocol (TDRP) if Task Header item H3.4 identified its applicability (e.g., for large files or complex methods).
+
+        Each part of this plan formulation is conceptually a `META_LOG_DIRECTIVE` and triggers Reactive STM/LTM Consultation Sub-Workflow** (defined in [`./RMP_Section3_CorePrompt_A_LTM_STM.md`](./RMP_Section3_CorePrompt_A_LTM_STM.md)).
+    *   **4. Pre-Execution Validation of User Task Plan (CRITICAL - as per "Iteration Task Checklists Protocol" Point 2.C in `system-prompt-Logger`):**
+        *   Perform a validation review of `RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md` against all criteria: Alignment with User Objective, Consideration of Roadblocks/Alternatives, Consistency with All Protocols, No Contradictions, Optimization Potential, Adherence to Foundational/Operational Goals, and Viability for Footer Tasks. Use self-questioning as a technique.
+        *   If validation reveals issues, refine the plan and re-validate until it passes.
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `SystemActivity`, Context: "PLAN ITERATION - User Task Plan Validation", Directive: "User Task Plan (`RMP_UserTask_Plan_Iter<CurrentIterNum>.md`) formulated and validated successfully." (or "User Task Plan refined and validated.")
+        *   *Output META_LOG_DIRECTIVE.* **Append to Task Execution Log.**
+    *   **5. Proceed:**
+        *   Proceed to **Workflow Step 3.2: EXECUTE PLAN**.
 
 *   **Workflow Step 3.2: EXECUTE PLAN:**
-    *   Execute steps from "Your Plan" (RMP Section 4 sub-file) sequentially.
+    *   Execute steps from "Your Plan" (`RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md`) sequentially.
     *   For each step:
         *   Use appropriate tool(s). **Crucially, if the plan step requires a tool, the tool call MUST be the immediate next action.**
-        *   Before modifying existing files, ALWAYS `read_file`.
-        *   **Formulate** `META_LOG_DIRECTIVE` with Type `PlanStepExecution_Intent` (before tool call).
-        *   **Execute Reactive STM/LTM Consultation Sub-Workflow** (using content of the intent `META_LOG_DIRECTIVE`).
-        *   *Output the `PlanStepExecution_Intent` `META_LOG_DIRECTIVE`.*
+        *   Before modifying existing files (code or RMP), ALWAYS `read_file` (unless creating a new file with `write_to_file`).
+        *   **Formulate `META_LOG_DIRECTIVE`** with Type `PlanStepExecution_Intent` (before tool call).
+        *   **Execute Reactive STM/LTM Consultation Sub-Workflow**.
+        *   *Output the `PlanStepExecution_Intent` `META_LOG_DIRECTIVE`.* **Append to Task Execution Log.**
         *   Execute the tool.
         *   Analyze the result.
-        *   **Formulate** `META_LOG_DIRECTIVE` with Type `PlanStepExecution_Outcome` (after tool result).
-        *   **Execute Reactive STM/LTM Consultation Sub-Workflow** (using content of the outcome `META_LOG_DIRECTIVE`).
-        *   *Output the `PlanStepExecution_Outcome` `META_LOG_DIRECTIVE`.*
-        *   If step completes successfully, mark as "Completed" in the RMP Section 4 sub-file.
+        *   **Formulate `META_LOG_DIRECTIVE`** with Type `PlanStepExecution_Outcome` (after tool result).
+        *   **Execute Reactive STM/LTM Consultation Sub-Workflow**.
+        *   *Output the `PlanStepExecution_Outcome` `META_LOG_DIRECTIVE`.* **Append to Task Execution Log.**
+        *   If step completes successfully, mark as "Completed" in `RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md` (using `apply_diff` or `write_to_file`, subject to RMP-MP).
         *   If step fails, immediately proceed to **Workflow Step 3.3: HANDLE EXECUTION FAILURE**.
+        *   *(If a plan step involves initiating a sub-task via `new_task` as per Hierarchical Task Management Protocol, follow that protocol for initiating and later verifying the sub-task.)*
 
 *   **Workflow Step 3.3: HANDLE EXECUTION FAILURE:**
-    *   Analyze failure result. (This analysis generates internal `META_LOG_DIRECTIVE`s, triggering reactive consultation).
-    *   Document failure in "Failure Tracking" (RMP Section 8 sub-file).
-    *   **Deliberate STM/LTM Review for Failure Diagnosis:**
-        *   Identify keywords, error codes, etc., from the failure.
-        *   Scan STM `All_Tags` in RMP Section 10 sub-file. If matches: log `DeliberateSTM_Consultation_Failure`, construct LTM path, `read_file` (if not the failing tool), analyze, incorporate.
-        *   **Fallback LTM Check:** (As in 3.1, log as `LTM_DirectConstruct_Consultation_Failure`).
+    *   **1. Initial Failure Logging & Documentation:**
+        *   **Formulate `META_LOG_DIRECTIVE`** Type: `SystemActivity`, Context: "HANDLE EXECUTION FAILURE - Analysis Start", Directive: "Execution of previous plan step failed. Analyzing failure result."
+        *   *Output META_LOG_DIRECTIVE.* **Append to Task Execution Log (`RMP_Modules/RMP_TaskExecutionLog_Iter<CurrentIterNum>.md`).**
+        *   Carefully analyze the complete failure result (e.g., compiler error messages and codes, test runner output with stack traces, tool error messages, unexpected file content).
+        *   Document the failure comprehensively in "Failure Tracking" (`RMP_Modules/RMP_Section8_FailureTracking.md`), including type, description, detailed error output, and initial diagnosis. (This RMP file modification is subject to RMP-MP and involves its own meta-logging to the Task Execution Log).
 
-*   **Workflow Step 3.3: HANDLE EXECUTION FAILURE:**
-    *   Analyze failure result. (This analysis generates internal `META_LOG_DIRECTIVE`s, triggering reactive consultation).
-    *   Document failure in "Failure Tracking" (RMP Section 8 sub-file).
-    *   **If the failure was a `read_file` "File Not Found" error for an expected source code file:**
-        *   **Invoke Project Structure Management Protocol (PSM-P):** Follow the steps outlined in `system-prompt-Logger` under "Project Structure Management Protocol (PSM-P)" to locate the file using project files (`.csproj`, `.sln`) and update `ProjectStructure.md`.
-        *   This involves:
-            1.  PSM-P Step 4.1: Identify Target Entity & Project.
-            2.  PSM-P Step 4.2: Consult Existing `ProjectStructure.md`.
-            3.  PSM-P Step 4.3: Analyze Project Files.
-            4.  PSM-P Step 4.4: Update `ProjectStructure.md` with File Paths & Dependencies.
-            5.  PSM-P Step 4.5 (if file found): Analyze Source Code File for Class/Member Details.
-            6.  PSM-P Step 4.6 (if file found): Update `ProjectStructure.md` with Class/Member Details.
-        *   If the file is successfully located and `ProjectStructure.md` is updated:
-            *   Formulate a sub-plan to re-attempt reading the file using the now verified path from `ProjectStructure.md`.
-            *   Update "Your Plan" (RMP Section 4 sub-file) with this sub-plan.
-            *   Proceed back to **Workflow Step 3.2 EXECUTE PLAN** to execute the sub-plan.
-        *   If the file genuinely cannot be found even after PSM-P (and PSM-P Step 6: Handling Non-Existence is actioned):
-            *   The failure remains unresolved. Proceed with standard failure diagnosis below.
-    *   **Deliberate STM/LTM Review for Failure Diagnosis (for this failure or if PSM-P did not resolve "File Not Found"):**
-    *   Based on analysis (informed by deliberate and reactive LTM), formulate a sub-plan. This formulation triggers reactive LTM consultation.
-    *   Update "Your Plan" (RMP Section 4 sub-file).
-    *   Proceed back to **Workflow Step 3.2 EXECUTE PLAN**.
-    *   If a specific failure persists after three distinct attempts (distinct solution strategies, potentially informed by different LTM paths), proceed to **Workflow Step 3.1.5: INITIATE ESCALATE PROTOCOL** (defined in [`./RMP_Section3_CorePrompt_C2_Workflow_Build_History_Reflect_End.md`](./RMP_Section3_CorePrompt_C2_Workflow_Build_History_Reflect_End.md)).
+    *   **2. Specific Failure Type Triage & Initial Response:**
+        *   **a. If "File Not Found" for an expected source code file (e.g., during `read_file`):**
+            *   **Invoke Project Structure Management Protocol (PSM-P) as the PRIMARY method:** Follow steps in `system-prompt-Logger` (PSM-P section) to locate the file using project files (`.csproj`, `.sln`) and update/create `ProjectStructure.md`. **PSM-P must be attempted before resorting to general directory searches for source code files.**
+            *   Log PSM-P actions with `META_LOG_DIRECTIVE`s (appended to Task Execution Log).
+            *   If PSM-P successfully locates the file: Formulate a sub-plan to re-attempt the original action (e.g., reading the file) using the verified path. Update User Task Plan and proceed to **Workflow Step 3.2 EXECUTE PLAN**. *(Return from failure handling for this specific case if resolved).*
+            *   If PSM-P confirms the file genuinely does not exist as part of the project structure: Note this. The failure remains unresolved by PSM-P. Proceed to general diagnosis (Point 3 below).
+        *   **b. If Build Error indicating Missing/Undefined Type, Namespace, or Member (e.g., CS0246, CS0103, CS0117):**
+            *   **Invoke Project Structure Management Protocol (PSM-P) for Verification:**
+                1.  Identify the missing entity and the file/project where it's expected or referenced.
+                2.  Consult `ProjectStructure.md` (PSM-P Step 4.2).
+                3.  If not found/verified, analyze relevant `.csproj` and `.sln` files (PSM-P Step 4.3) to check for missing file references, incorrect project dependencies, or if the file containing the definition is not compiled.
+                4.  If a file path is found/verified, analyze the source code file (PSM-P Step 4.5) to confirm if the class/member definition actually exists and matches the expected signature.
+                5.  Update `ProjectStructure.md` (PSM-P Steps 4.4 & 4.6).
+            *   Log PSM-P actions with `META_LOG_DIRECTIVE`s (appended to Task Execution Log).
+            *   If PSM-P reveals the cause (e.g., missing `using` directive, incorrect member name/signature, file not included in project, missing project reference): Formulate a sub-plan to correct the issue (e.g., add `using`, correct call, edit `.csproj`). Update User Task Plan and proceed to **Workflow Step 3.2 EXECUTE PLAN**. *(Return from failure handling if directly resolved).*
+            *   If PSM-P confirms the entity is genuinely undefined in the expected scope: Proceed to general diagnosis (Point 3 below).
+        *   **c. For Other Failures (Test Assertion Failures, Unexpected Tool Behavior, Runtime Exceptions not covered above, etc.):**
+            *   Proceed directly to general diagnosis (Point 3 below).
+
+    *   **3. General Failure Diagnosis & Investigation:**
+        *   **a. Logging System Check & Adjustment (If detailed logs are needed for diagnosis):**
+            *   **Verify Filter Implementation:** As per `system-prompt-Logger`, review Serilog config in the current execution context to confirm the dynamic filter (using `LogFilterState`) is active. Log verification (to Task Execution Log). If not active, this may be a sub-problem to address first, or diagnosis must rely on existing log verbosity.
+            *   **Adjust `LogFilterState` (If filter active):** To get more detailed logs from relevant components, consider modifying `Core.Common.Extensions.LogFilterState` properties (`TargetSourceContextForDetails`, `TargetMethodNameForDetails`, `DetailTargetMinimumLevel`). Log any changes made to `LogFilterState` (to Task Execution Log). **Remember to reset `LogFilterState` to defaults after this specific troubleshooting session for the failure.**
+            *   If adjustments to `LogFilterState` were made, it may be necessary to re-run the failing operation/test to capture the more detailed logs before proceeding with deep analysis. This re-run would be a specific step in a formulated sub-plan.
+        *   **b. Deliberate STM/LTM Review for Broader Insights:**
+            *   Identify keywords, error codes, behavioral patterns from the failure and surrounding logs.
+            *   Scan STM `All_Tags` in `RMP_Modules/RMP_Section10_STM_Iter<CurrentIterNum>.md`.
+            *   If matches found: Log `DeliberateSTM_Consultation_Failure` (to Task Execution Log), construct LTM path(s), `read_file` LTM(s), analyze content (including `Cross_References`), and incorporate insights into diagnostic reasoning.
+            *   **Fallback LTM Check:** If no suitable STM entry, attempt direct LTM construction/retrieval based on failure context. Log as `LTM_DirectConstruct_Consultation_Failure` (to Task Execution Log).
+        *   **c. Analyze available information:** This includes error messages, stack traces, existing logs (now potentially more detailed), STM/LTM insights, and relevant source code (verified via PSM-P if applicable).
+
+    *   **4. Sub-Plan Formulation to Address Failure:**
+        *   Based on all analysis from Points 1-3, formulate a precise, step-by-step sub-plan to correct the identified root cause of the failure.
+        *   This sub-plan formulation triggers Reactive STM/LTM Consultation.
+        *   The sub-plan may involve code changes, configuration changes, or further focused investigation.
+
+    *   **5. Update User Task Plan & Proceed:**
+        *   Integrate the new sub-plan into the main "Your Plan" (`RMP_Modules/RMP_UserTask_Plan_Iter<CurrentIterNum>.md`).
+        *   Proceed back to **Workflow Step 3.2 EXECUTE PLAN** to execute this sub-plan.
+
+    *   **6. Persistent Failure Check (Loop Control):**
+        *   If this specific failure (or failure to achieve a particular sub-goal related to it) persists after **three distinct, well-reasoned, and documented solution attempts** (each attempt consisting of diagnosis, sub-plan, and execution), then proceed to **Workflow Step 3.1.5: INITIATE ESCALATE PROTOCOL** (defined in `RMP_Modules/RMP_Section3_CorePrompt_C2_Workflow_Build_History_Reflect_End.md`).
