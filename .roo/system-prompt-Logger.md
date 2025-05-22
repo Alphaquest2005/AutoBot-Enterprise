@@ -428,7 +428,7 @@ Adherence to this PSM-P is crucial. `ProjectStructure.md` and project manifest f
     *   **Verification:** Build the solution. Run the characterization test(s) created in TDRP.2. They MUST still pass.
 
 4.  **TDRP.4: Instrument with Typed Logging:**
-    *   **Action:** Within the isolated method, refactor existing log calls and/or add new logging using the `TypedLoggerExtensions` to ensure clear visibility of its execution flow, inputs, key internal states, and outputs/return values. Use appropriate `LogCategory` and Serilog levels.
+    *   **Action:** Within the isolated method (or relevant sections if not isolating the whole method), refactor existing log calls and/or add new logging using the `TypedLoggerExtensions`. This instrumentation MUST be within a `using (LogLevelOverride.Begin(LogEventLevel.Verbose)) { ... }` block (or `Debug` if sufficient) to ensure these new logs can be emitted and captured. Ensure clear visibility of its execution flow, inputs, key internal states, and outputs/return values. Use appropriate `LogCategory` and Serilog levels as defined by the chosen `TypedLoggerExtensions` method.
     *   **Verification:** Build. Run characterization test(s). They MUST still pass.
 
 5.  **TDRP.5: Refactor for Internal Quality (While Characterization Tests Pass):**
@@ -535,25 +535,35 @@ To maintain a persistent, structured, and easily reviewable record of my interna
 This section outlines the established Serilog-based typed logging and dynamic filtering system. Adherence to this system is crucial for consistent observability, efficient diagnostics, and managing log context window constraints.
 
 **1. System Overview & Purpose:**
-The system uses typed `ILogger` extension methods (defined in `Core.Common.Extensions.TypedLoggerExtensions`) to categorize logs semantically using the `Core.Common.Extensions.LogCategory` enum and to enrich them with consistent contextual information. A dynamic filter, controlled by the static `Core.Common.Extensions.LogFilterState` class, allows for:
-    *   **Default View:** Minimal "proof of execution" logs (e.g., method/action boundaries at `Information` level).
-    *   **Troubleshooting View:** Highly detailed, verbose logging for specific, targeted C# classes or methods, activated by modifying `LogFilterState` properties at runtime.
-This approach minimizes default log volume (aiding context window management) while maximizing information during targeted debugging, without requiring code changes or restarts to toggle verbosity.
+The system uses:
+    *   **`LevelOverridableLogger` and `LogLevelOverride`:** To control log event emission at a scope level. The main Serilog logger (inner logger) is configured with a very high minimum level (e.g., `Fatal`) to suppress most existing, non-compliant logs. `LevelOverridableLogger` wraps this inner logger. `using (LogLevelOverride.Begin(desiredLevel))` statements are used around specific code blocks to temporarily allow logs of `desiredLevel` (and higher) to be emitted by the `LevelOverridableLogger` instance for that scope.
+    *   **Typed `ILogger` extension methods (defined in `Core.Common.Extensions.TypedLoggerExtensions`):** To categorize logs semantically using the `Core.Common.Extensions.LogCategory` enum and to enrich them with consistent contextual information. These extensions operate on an `ILogger` instance which MUST be a `LevelOverridableLogger`.
+    *   **Dynamic filter, controlled by the static `Core.Common.Extensions.LogFilterState` class:** This filter acts upon the logs *emitted* by `LevelOverridableLogger`. It allows for:
+        *   **Default View:** Minimal "proof of execution" logs (e.g., method/action boundaries at `Information` level).
+        *   **Troubleshooting View:** Highly detailed, verbose logging for specific, targeted C# classes or methods, activated by modifying `LogFilterState` properties at runtime.
+
+This two-gate approach (Scope Override -> Dynamic Filter) minimizes default log volume while maximizing information during targeted debugging, without requiring code changes or restarts to toggle verbosity once instrumentation is in place.
 
 **2. Core Components (Located in `Core.Common.Extensions` namespace):**
-*   **`LoggingCategories.cs` -> `LogCategory` (Enum):** Defines semantic log types (`Undefined`, `MethodBoundary`, `ActionBoundary`, `InternalStep`, `ExternalCall`, `DiagnosticDetail`, `Performance`, `StateChange`, `Security`, `MetaLog`). Log events are tagged with one of these.
-*   **`TypedLoggerExtensions.cs` -> `TypedLoggerExtensions` (Static Class):** Provides `ILogger` extension methods (e.g., `_log.LogMethodEntry(invocationId)`). These methods automatically enrich events with `LogCategory`, `MemberName`, `SourceFilePath`, `SourceLineNumber`, and handle `InvocationId` (via `LogContext`). **These extensions MUST be used for all new application logging.**
-*   **`LogFilterState.cs` -> `LogFilterState` (Static Class):** Dynamically controls filter behavior:
-    *   `EnabledCategoryLevels` (Dictionary<LogCategory, Serilog.Events.LogEventLevel>): Maps each `LogCategory` to a default minimum `LogEventLevel` for the "Default View".
-    *   `TargetSourceContextForDetails` (string): Full class name for detailed logging.
-    *   `TargetMethodNameForDetails` (string): Optional method name within `TargetSourceContextForDetails`.
-    *   `DetailTargetMinimumLevel` (Serilog.Events.LogEventLevel): Minimum level (e.g., `Verbose`) for output from the active target.
+*   **`LogLevelOverride.cs` -> `LogLevelOverride` (Static Class):** Manages a thread-local (AsyncLocal) override for `LogEventLevel`. `LogLevelOverride.Begin(level)` pushes an override, and its `Dispose()` (from `IDisposable`) reverts it.
+*   **`LevelOverridableLogger.cs` -> `LevelOverridableLogger` (Class implementing `Serilog.ILogger`):** Wraps a standard `Serilog.Core.Logger`. When its `Write` or `IsEnabled` methods are called, it first checks `LogLevelOverride.CurrentLevel`.
+    *   If an override is active, it uses the override level to decide if the log event should be emitted (bypassing the inner logger's minimum level for this event).
+    *   If no override is active, it defers to the wrapped inner logger's behavior (which will typically suppress logs due to its high minimum level).
+*   **`LoggingCategories.cs` -> `LogCategory` (Enum):** Defines semantic log types.
+*   **`TypedLoggerExtensions.cs` -> `TypedLoggerExtensions` (Static Class):** Provides `ILogger` extension methods. **These extensions MUST be used for all new application logging and operate on an `ILogger` instance that is a `LevelOverridableLogger`.**
+*   **`LogFilterState.cs` -> `LogFilterState` (Static Class):** Dynamically controls the second gate of filtering behavior for logs already emitted by `LevelOverridableLogger`. Properties include `EnabledCategoryLevels`, `TargetSourceContextForDetails`, etc.
 
-**3. Serilog Filter Configuration (Example in `TypedLoggingFilterTests.cs` `[SetUp]`, apply similarly in main application logger setup):**
-    *   Global Serilog `MinimumLevel` should be `Verbose`.
-    *   Add `.Enrich.FromLogContext()`.
-    *   Add `.Filter.ByIncludingOnly(evt => { /* Filter Predicate Logic */ })`.
-    *   **Filter Predicate Logic (Conceptual):**
+**3. Serilog Filter Configuration (Conceptual - actual setup in application's logger configuration):**
+    *   **Inner Serilog Logger:**
+        *   Configured with a high global `MinimumLevel` (e.g., `Serilog.Events.LogEventLevel.Fatal`).
+        *   This is the logger instance passed to the `LevelOverridableLogger` constructor.
+    *   **`LevelOverridableLogger` Instance:**
+        *   This becomes the primary `ILogger` used by the application (e.g., set as `Log.Logger` or injected via DI).
+    *   **Dynamic Filter (applied to `LevelOverridableLogger`'s output):**
+        *   The `LevelOverridableLogger` instance (or a logger derived from it) is configured with Serilog's `.Filter.ByIncludingOnly(evt => { /* Filter Predicate Logic based on LogFilterState */ })`.
+        *   Global Serilog `MinimumLevel` for *this filtering pipeline stage* should be `Verbose` to allow `LogFilterState` full control over what to include from the events passed by `LevelOverridableLogger`.
+        *   Add `.Enrich.FromLogContext()`.
+    *   **Filter Predicate Logic (Conceptual - for `LogFilterState`):**
         1.  Extract `LogCategory`, `SourceContext`, `MemberName` from `evt.Properties`.
         2.  **If** (`LogFilterState.TargetSourceContextForDetails` matches `evt.SourceContext`) AND (`LogFilterState.TargetMethodNameForDetails` matches `evt.MemberName` OR is null/empty):
             *   Include event if `evt.Level >= LogFilterState.DetailTargetMinimumLevel`.
@@ -563,24 +573,32 @@ This approach minimizes default log volume (aiding context window management) wh
 
 **4. Usage Protocol for Logging & Diagnostics:**
 *   **Default Logging (Proof of Execution):**
-    *   Ensure `LogFilterState.TargetSourceContextForDetails = null;`
-    *   Output is governed by `LogFilterState.EnabledCategoryLevels`.
+    *   Code sections (e.g., public methods) intended for "proof of execution" logging must be wrapped: `using (LogLevelOverride.Begin(LogEventLevel.Information))` (or the level of the boundary logs).
+    *   `LogFilterState.TargetSourceContextForDetails = null;`
+    *   Output is then governed by `LogFilterState.EnabledCategoryLevels`.
 *   **Targeted Troubleshooting (e.g., `MyNamespace.MyClass.MyMethod`):**
-    1.  Set `LogFilterState.TargetSourceContextForDetails = "MyNamespace.MyClass";`
-    2.  Set `LogFilterState.TargetMethodNameForDetails = "MyMethod";`
-    3.  Set `LogFilterState.DetailTargetMinimumLevel = Serilog.Events.LogEventLevel.Verbose;`
-    4.  Execute scenario. Analyze detailed logs from target; concise logs from elsewhere.
-    5.  **Crucial:** Reset `LogFilterState` values to defaults after troubleshooting.
+    1.  Inside the target method/scope, ensure a `using (LogLevelOverride.Begin(LogEventLevel.Verbose))` (or `Debug`) block wraps the area of interest to allow detailed logs to be emitted.
+    2.  Set `LogFilterState.TargetSourceContextForDetails = "MyNamespace.MyClass";`
+    3.  Set `LogFilterState.TargetMethodNameForDetails = "MyMethod";`
+    4.  Set `LogFilterState.DetailTargetMinimumLevel = Serilog.Events.LogEventLevel.Verbose;`
+    5.  Execute scenario. Analyze detailed logs from target; concise logs from elsewhere.
+    6.  **Crucial:** Reset `LogFilterState` values to defaults after troubleshooting.
 *   **Adding New Logs:**
+    *   Wrap the relevant code scope with `using (LogLevelOverride.Begin(appropriateLevel)) { ... }`. The `appropriateLevel` should be low enough (e.g., `Verbose`) to allow all `TypedLoggerExtensions` calls within that block to pass the first gate.
     *   Use methods from `TypedLoggerExtensions` (e.g., `_log.LogMethodEntry(invocationId);`, `_log.LogInternalStep(invocationId, "Detail: {Data}", dataValue);`).
-    *   Select the extension that matches the semantic meaning and desired default level. For generic messages, use `LogInfoCategorized`, `LogDebugCategorized` etc., specifying the `LogCategory`.
+    *   Select the extension that matches the semantic meaning. For generic messages, use `LogInfoCategorized`, `LogDebugCategorized` etc., specifying the `LogCategory`.
     *   Pass `invocationId` where available.
 
-**5. Progressive Logging Refactoring Strategy:**
-    *   Existing static `Log.LEVEL(...)` calls in the codebase SHOULD be refactored to use the new `_log.TypedExtensionMethod(...)` pattern **progressively**.
-    *   **Trigger for Refactoring:** When a module, class, or method comes under active review, debugging, or modification as part of an iteration's objective.
-    *   **Process:** Replace old static log calls with appropriate `TypedLoggerExtensions` calls, ensuring correct parameter mapping (especially for `params object[]` using `propertyValues: new object[]{...}` if needed by the extension's signature) and passing `invocationId`.
-    *   This refactoring is part of the coding/debugging task for that area. Do NOT attempt to refactor the entire codebase's logging at once unless specifically directed.
+## Progressive Logging Refactoring Strategy
+
+*   Existing static `Log.LEVEL(...)` calls in the codebase SHOULD be refactored to use the new `_log.TypedExtensionMethod(...)` pattern **progressively**. These old calls will largely be suppressed by the `LevelOverridableLogger`'s wrapped inner logger having a high minimum level (e.g., `Fatal`).
+*   **Trigger for Refactoring:** When a module, class, or method comes under active review, debugging, or modification as part of an iteration's objective.
+*   **Process:**
+    1.  Identify the scope for new/refactored logging (e.g., an entire method, or a specific block).
+    2.  Wrap this scope with `using (LogLevelOverride.Begin(desiredMinLevelForScope)) { ... }`. `desiredMinLevelForScope` should typically be `LogEventLevel.Verbose` or `LogEventLevel.Debug` to ensure all new typed logs (Information, Debug, Verbose, etc.) within this block are *candidates* for emission and subsequent filtering by `LogFilterState`.
+    3.  Replace old static log calls within this wrapped scope with appropriate `TypedLoggerExtensions` calls, ensuring correct parameter mapping and passing `invocationId`.
+    4.  The `ILogger` instance (`_log`) used by `TypedLoggerExtensions` MUST be an instance of `LevelOverridableLogger`.
+*   This refactoring is part of the coding/debugging task for that area. Do NOT attempt to refactor the entire codebase's logging at once unless specifically directed.
 
 ## Iteration Lifecycle Management Protocol (ILMP)
 
