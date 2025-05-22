@@ -10,16 +10,24 @@ This plan outlines the steps to achieve the objective. Each step will be execute
     *   Read `AutoBotUtilities.Tests\EmailDownloaderIntegrationTests.cs` to understand the `ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest()` method's logic, setup, and assertions.
     *   Consult `ProjectStructure.md` (PSM-P) to locate the test file and any related source files (e.g., `EmailProcessor.cs`, PDF import logic). If `ProjectStructure.md` is incomplete for these areas, update it.
     *   Log `META_LOG_DIRECTIVE` for intent and outcome.
+    *   **Status:** Completed. Test logic, setup, and assertion points understood. Test involves sending an email with a PDF, simulating download, marking unread, then calling `EmailProcessor.ProcessEmailsAsync` and verifying database entries.
 
 2.  **Execute the Test & Capture Initial Output:**
     *   Run the specific test `ProcessEmailsAsync_ImportsPdfFromEmail_IntegrationTest()` using the provided command.
     *   Capture the full output, including any error messages or stack traces.
     *   Log `META_LOG_DIRECTIVE` for intent and outcome.
+    *   **Status:** Completed. Test executed, but failed with extensive error logs. Initial run was too verbose, subsequent run with `MinimumLevel.Error` still produced large output due to repeated errors.
 
 3.  **Analyze Initial Test Output:**
     *   Review the captured test output for immediate clues about the failure.
     *   Check for any existing application logs generated during the test run.
     *   Log `META_LOG_DIRECTIVE` for analysis and initial findings.
+    *   **Status:** In Progress.
+    *   **Findings:**
+        *   **Primary Error:** Repeated `System.ArgumentException: An item with the same key has already been added.` originating from `AutoBotUtilities.ImportUtils.ProcessImportFile`. This suggests `ProcessImportFile` is being called multiple times for the same file/template combination, or the key generation is flawed.
+        *   **Secondary Error:** `Error added to context: All 9 required lines appear to have failed for File: ... TemplateId: 3.` This indicates a template processing failure for a specific PDF and template. This might be a symptom of the primary issue (e.g., retries leading to duplicate key attempts).
+        *   **Observation:** The test run is still very long due to the sheer volume of these errors being logged. This is not an infinite loop, but a high frequency of discrete error events.
+    *   **Next Action:** Investigate `AutoBotUtilities.ImportUtils.ProcessImportFile` to understand how the `Imports` dictionary is managed and how keys are generated. Also, examine the call stack leading to `ProcessImportFile` to see why it might be called repeatedly for the same key.
 
 ### Phase 2: Logging Instrumentation & Debugging
 

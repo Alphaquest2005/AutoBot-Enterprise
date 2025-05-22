@@ -249,8 +249,9 @@ namespace WaterNut.DataSpace
 
         private void ExtractValues(List<string> text, string methodName, int inputLineCount, int? invoiceId)
         {
+            _logger.Verbose("{MethodName}: ExtractValues called. Input text: {@Text}", methodName, text); // Log input text
             var lineCount = 0;
-            var section = ""; // Current section name  
+            var section = ""; // Current section name
             LogStartIteration(methodName, inputLineCount, invoiceId);
 
             // --- Line Iteration ---  
@@ -274,6 +275,7 @@ namespace WaterNut.DataSpace
 
         private void ProcessParts(string methodName, int lineCount, string section, List<InvoiceLine> iLine)
         {
+            _logger.Verbose("{MethodName}: ProcessParts called. Input iLine: {@ILine}", methodName, iLine); // Log iLine
             LogCallingPartRead(methodName, lineCount, this.Parts.Count, section);
             Parts.ForEach(part =>
             {
@@ -295,8 +297,16 @@ namespace WaterNut.DataSpace
             int? partId = ((WaterNut.DataSpace.Part)part).OCR_Part?.Id;
             LogPartReadStart(methodName, lineCount, partId, section);
 
+            // Log inputs to part.Read()
+            _logger.Verbose("{MethodName}: Calling part.Read() for PartId: {PartId}. Input iLine: {@ILine}, Section: '{Section}', Instance: {Instance}",
+                methodName, partId, iLine, section, part.Instance);
+
             part.Read(iLine, section, part.Instance);// need to call itself passing its own instance again to set the currenteffectiveinstance
                         
+            // Log outputs from part.Read()
+            _logger.Verbose("{MethodName}: part.Read() returned for PartId: {PartId}. Part Values: {@PartValues}",
+                methodName, partId, ((WaterNut.DataSpace.Part)part).Values);
+
             LogPartReadEnd(methodName, lineCount, partId);
             LogPartValues(methodName, lineCount, partId, ((WaterNut.DataSpace.Part)part).Values);
         }

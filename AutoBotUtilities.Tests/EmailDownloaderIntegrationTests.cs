@@ -52,20 +52,26 @@ namespace AutoBotUtilities.Tests
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            LogFilterState.TargetSourceContextForDetails = null;
-            LogFilterState.TargetMethodNameForDetails = null;
-            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+            LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.PipelineInfrastructure.ReadFormattedTextStep";
+            LogFilterState.TargetMethodNameForDetails = "Execute";
+            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose; // Set to Verbose for detailed debugging
             LogFilterState.EnabledCategoryLevels = new Dictionary<LogCategory, LogEventLevel>
             {
-                { LogCategory.MethodBoundary, LogEventLevel.Information }, { LogCategory.ActionBoundary, LogEventLevel.Information },
-                { LogCategory.ExternalCall, LogEventLevel.Information }, { LogCategory.StateChange, LogEventLevel.Information },
-                { LogCategory.Security, LogEventLevel.Information }, { LogCategory.MetaLog, LogEventLevel.Warning },
-                { LogCategory.InternalStep, LogEventLevel.Warning }, { LogCategory.DiagnosticDetail, LogEventLevel.Warning },
-                { LogCategory.Performance, LogEventLevel.Warning }, { LogCategory.Undefined, LogEventLevel.Information }
+                { LogCategory.MethodBoundary, LogEventLevel.Information },
+                { LogCategory.ActionBoundary, LogEventLevel.Information },
+                { LogCategory.ExternalCall, LogEventLevel.Information },
+                { LogCategory.StateChange, LogEventLevel.Information },
+                { LogCategory.Security, LogEventLevel.Information },
+                { LogCategory.MetaLog, LogEventLevel.Warning },
+                { LogCategory.InternalStep, LogEventLevel.Information }, // Changed from Warning to Information
+                { LogCategory.DiagnosticDetail, LogEventLevel.Information }, // Changed from Warning to Information
+                { LogCategory.Performance, LogEventLevel.Warning },
+                { LogCategory.Undefined, LogEventLevel.Information }
             };
 
             _log = new LoggerConfiguration()
-                .MinimumLevel.Verbose().Enrich.FromLogContext().Enrich.WithProperty("TestFixture", nameof(EmailDownloaderIntegrationTests))
+                .MinimumLevel.Error() // Changed to Verbose to allow all logs to pass to the filter
+                .Enrich.FromLogContext().Enrich.WithProperty("TestFixture", nameof(EmailDownloaderIntegrationTests))
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.NUnitOutput(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}")
                 .WriteTo.File("EmailDownloaderIntegrationTests.log", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}{Properties:j}{NewLine}{Exception}")
