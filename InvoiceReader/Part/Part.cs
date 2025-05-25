@@ -99,7 +99,7 @@ namespace WaterNut.DataSpace
             _logger.Verbose("{MethodName}: Initializing ChildParts for PartId: {PartId}...", methodName, partId);
             try
             {
-                var childParts = part.ParentParts?
+                var childParts = part.ChildParts?
                     .Where(pp => pp?.ChildPart != null)
                     .Select(x =>
                     {

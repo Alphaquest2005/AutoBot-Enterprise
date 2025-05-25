@@ -84,8 +84,11 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                                      .GroupBy(i => i.ItemDescription)
                                      .ToDictionary(g => g.Key, g => g.First());
 
+            // NEW: Create a mapping from cleaned descriptions back to original descriptions
+            var cleanedToOriginalMapping = new Dictionary<string, string>();
+
             var chunks = ChunkBy(itemsToProcess.Values, MAX_ITEMS_PER_BATCH).ToList();
-            _logger.Information("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}", // Changed LogInformation to Information
+            _logger.Information("Processing {ItemCount} items in {ChunkCount} chunks using {Strategy}",
                 itemsToProcess.Count, chunks.Count, _strategy.ProviderType);
 
             int chunkIndex = 0;
@@ -94,26 +97,68 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                 chunkIndex++;
                 var chunkList = chunk.ToList(); // List of (string, string, string) tuples
                 var chunkDescriptions = chunkList.Select(i => i.ItemDescription).ToList();
-                _logger.Debug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count); // Changed LogDebug to Debug
+                _logger.Debug("Processing chunk {ChunkIndex}/{ChunkCount} with {ItemCount} items.", chunkIndex, chunks.Count, chunkList.Count);
+
+                // NEW: Pre-populate the mapping for this chunk
+                foreach (var item in chunkList)
+                {
+                    var cleanedDescription = CleanDescription(item.ItemDescription);
+                    if (!cleanedToOriginalMapping.ContainsKey(cleanedDescription))
+                    {
+                        cleanedToOriginalMapping[cleanedDescription] = item.ItemDescription;
+                    }
+                }
 
                 // --- Call Strategy for Batch ---
-                // Pass overrides if provided
                 var batchResponse = await _strategy.GetBatchClassificationAsync(chunkList, temperature, maxTokens, cancellationToken).ConfigureAwait(false);
                 totalCost += batchResponse.TotalCost;
 
                 if (batchResponse.IsSuccess)
                 {
-                    _logger.Information("Chunk {ChunkIndex} processed via batch. Cost: {Cost:C}, Success Count: {SuccessCount}, Failed Count: {FailCount}", // Changed LogInformation to Information
+                    _logger.Information("Chunk {ChunkIndex} processed via batch. Cost: {Cost:C}, Success Count: {SuccessCount}, Failed Count: {FailCount}",
                         chunkIndex, batchResponse.TotalCost, batchResponse.Results.Count, batchResponse.FailedDescriptions.Count);
 
                     // Process successful results from the batch
                     foreach (var kvp in batchResponse.Results)
                     {
-                        string originalDescription = kvp.Key;
+                        string returnedDescription = kvp.Key;
                         ClassificationResult classifiedItem = kvp.Value;
+
+                        // NEW: Try to find the original description using the mapping
+                        string originalDescription = returnedDescription;
+                        if (cleanedToOriginalMapping.TryGetValue(returnedDescription, out string mappedOriginal))
+                        {
+                            originalDescription = mappedOriginal;
+                        }
+                        else
+                        {
+                            // Fallback: try to find by exact match in itemsToProcess
+                            if (!itemsToProcess.ContainsKey(returnedDescription))
+                            {
+                                // Try to find by similarity or partial match
+                                var possibleMatch = itemsToProcess.Keys.FirstOrDefault(k =>
+                                    CleanDescription(k) == returnedDescription ||
+                                    k.Contains(returnedDescription) ||
+                                    returnedDescription.Contains(CleanDescription(k)));
+
+                                if (possibleMatch != null)
+                                {
+                                    originalDescription = possibleMatch;
+                                    _logger.Debug("Mapped cleaned description '{Cleaned}' to original '{Original}' via similarity match.",
+                                        returnedDescription, originalDescription);
+                                }
+                                else
+                                {
+                                    _logger.Warning("Could not map returned description '{Returned}' to any original description.", returnedDescription);
+                                    continue; // Skip this result
+                                }
+                            }
+                        }
+
+                        // Use the original description as the key
                         finalResults[originalDescription] = (
                             classifiedItem.ItemNumber,
-                            originalDescription, // Use key as description
+                            originalDescription, // Use original description, not the cleaned one
                             classifiedItem.TariffCode,
                             classifiedItem.Category,
                             classifiedItem.CategoryHsCode
@@ -121,23 +166,30 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                         itemsToProcess.Remove(originalDescription); // Mark as processed
                     }
 
-                    // Handle items that failed *within* the successful batch call (e.g., parsing error for one item)
+                    // Handle items that failed *within* the successful batch call
                     foreach (string failedDesc in batchResponse.FailedDescriptions)
                     {
-                        if (itemsToProcess.TryGetValue(failedDesc, out var itemTuple))
+                        // NEW: Map failed description back to original
+                        string originalFailedDesc = failedDesc;
+                        if (cleanedToOriginalMapping.TryGetValue(failedDesc, out string mappedOriginalFailed))
                         {
-                            _logger.Warning("Item '{Description}' failed within successful batch {ChunkIndex}. Attempting fallback.", failedDesc, chunkIndex); // Changed LogWarning to Warning
+                            originalFailedDesc = mappedOriginalFailed;
+                        }
+
+                        if (itemsToProcess.TryGetValue(originalFailedDesc, out var itemTuple))
+                        {
+                            _logger.Warning("Item '{Description}' failed within successful batch {ChunkIndex}. Attempting fallback.", originalFailedDesc, chunkIndex);
                             await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
-                            itemsToProcess.Remove(failedDesc); // Mark as processed (or failed) by fallback
+                            itemsToProcess.Remove(originalFailedDesc);
                         }
                     }
                 }
                 else // The entire batch API call failed
                 {
-                    _logger.Warning("Batch API call failed for chunk {ChunkIndex}. Error: {Error}. Attempting fallback for all items in chunk.", chunkIndex, batchResponse.ErrorMessage ?? "Unknown"); // Changed LogWarning to Warning
+                    _logger.Warning("Batch API call failed for chunk {ChunkIndex}. Error: {Error}. Attempting fallback for all items in chunk.", chunkIndex, batchResponse.ErrorMessage ?? "Unknown");
                     foreach (var itemTuple in chunkList)
                     {
-                        if (itemsToProcess.ContainsKey(itemTuple.ItemDescription)) // Check if not already processed by a previous successful batch (unlikely here)
+                        if (itemsToProcess.ContainsKey(itemTuple.ItemDescription))
                         {
                             await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
                             itemsToProcess.Remove(itemTuple.ItemDescription);
@@ -145,24 +197,47 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     }
                 }
 
-                if (cancellationToken.IsCancellationRequested) { _logger.Warning("Cancellation requested during batch processing."); break; } // Changed LogWarning to Warning
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    _logger.Warning("Cancellation requested during batch processing.");
+                    break;
+                }
+            }
 
-            } // end foreach chunk
-
-            // Safety check for any items missed (shouldn't happen with this logic, but belt-and-suspenders)
+            // Safety check for any items missed
             if (itemsToProcess.Any())
             {
-                _logger.Warning("Found {Count} items remaining after batch/fallback loop. Processing individually.", itemsToProcess.Count); // Changed LogWarning to Warning
-                foreach (var itemTuple in itemsToProcess.Values.ToList()) // Process remaining
+                _logger.Warning("Found {Count} items remaining after batch/fallback loop. Processing individually.", itemsToProcess.Count);
+                foreach (var itemTuple in itemsToProcess.Values.ToList())
                 {
                     await ProcessSingleItemFallbackAndAddCost(itemTuple, finalResults, totalCost, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-
-            _logger.Information("Finished processing using {Strategy}. Total Estimated Cost: {TotalCost:C}. Items Processed: {ResultCount}/{InitialCount}", // Changed LogInformation to Information
+            _logger.Information("Finished processing using {Strategy}. Total Estimated Cost: {TotalCost:C}. Items Processed: {ResultCount}/{InitialCount}",
                  _strategy.ProviderType, totalCost, finalResults.Count, items.Count);
             return (finalResults, totalCost);
+        }
+
+        // NEW: Helper method to clean descriptions (should match what the LLM API does)
+        private string CleanDescription(string description)
+        {
+            if (string.IsNullOrEmpty(description)) return description;
+
+            // Common cleaning operations that LLM APIs might perform:
+            // - Remove backslashes
+            // - Remove or escape quotes
+            // - Normalize whitespace
+            // - Remove other problematic characters
+
+            return description
+                .Replace("\\", "")           // Remove backslashes
+                .Replace("\"", "'")          // Replace double quotes with single quotes
+                .Replace("\t", " ")          // Replace tabs with spaces
+                .Replace("\r", "")           // Remove carriage returns
+                .Replace("\n", " ")          // Replace newlines with spaces
+                .Trim()                      // Remove leading/trailing whitespace
+                .Replace("  ", " ");         // Normalize multiple spaces to single space
         }
 
         // --- Private Helper Methods ---

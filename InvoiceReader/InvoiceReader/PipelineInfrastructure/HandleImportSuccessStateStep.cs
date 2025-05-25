@@ -37,7 +37,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(HandleImportSuccessStateStep), "Context validation", 0, "HandleImportSuccessStateStep executed with null context.");
                 return false;
             }
-             if (context.Templates == null || !context.Templates.Any())
+             if (!context.MatchedTemplates.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "Validation", "Skipping HandleImportSuccessStateStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates for processing.");

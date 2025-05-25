@@ -49,7 +49,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Removed static context assignment: _context = context;
              
              // Check for templates - if none, step succeeds vacuously.
-             if (context.Templates == null || !context.Templates.Any())
+             if (!context.MatchedTemplates.Any())
              {
                   context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                       nameof(Execute), "Validation", "Skipping HandleErrorStateStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates for error handling.");
@@ -63,7 +63,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallStepSuccess = true; // Track success across all templates
 
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Safe access
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";

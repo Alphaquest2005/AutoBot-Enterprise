@@ -12,6 +12,8 @@ using WaterNut.DataSpace.PipelineInfrastructure;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using Microsoft.Office.Interop.Excel;
+using System.Data.Entity.Core.Objects; // For MergeOption
+using System.Data.Entity.Infrastructure; // For IObjectContextAdapter
 
 namespace InvoiceReader.PipelineInfrastructure
 {
@@ -78,12 +80,24 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
-        public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context,
-            Expression<Func<Invoices, bool>> templateExpression)
+        public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context, Func<Invoice, bool> templateExpression)
         {
-            var activeTemplatesQuery = GetActiveTemplatesQuery(new OCRContext(), templateExpression);
-            var templates = await activeTemplatesQuery.ToListAsync().ConfigureAwait(false);
-            return await GetContextTemplates(context, templates).ConfigureAwait(false);
+            var templates = _allTemplates.Where(templateExpression).ToList();
+            return await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
+        }
+
+        private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
+        {
+            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
+            return templates.Select(x =>
+                {
+                    x.FileType = context.FileType;
+                    x.DocSet = docSet;
+                    x.FilePath = context.FilePath;
+                    x.EmailId = context.EmailId;
+
+                    return x;
+                }).ToList();
         }
 
 
@@ -115,35 +129,31 @@ namespace InvoiceReader.PipelineInfrastructure
                                 nameof(GetTemplates), "Querying", "Loading templates from database.", $"Database: {ctx.Database.Connection.Database}, Server: {ctx.Database.Connection.DataSource}, FilePath: {filePath}", "");
 
                             
-                            // Load all active templates
-                            context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                                "GetActiveTemplatesQuery", "SYNC_EXPECTED"); // Log before query execution
-                            var queryStopwatch = Stopwatch.StartNew(); // Start stopwatch for query
-                            var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
-                            var templates = activeTemplatesQuery.ToList(); // Execute query
-                            queryStopwatch.Stop(); // Stop stopwatch after query
-                            context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                                "GetActiveTemplatesQuery", queryStopwatch.ElapsedMilliseconds, "Sync call returned"); // Log after query execution
-
+                            var templates = GetAllTemplates(context, ctx);
 
                             if (templates.Any())
                             {
                                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                    nameof(GetTemplates), "QueryResults", "Found active templates.", $"Count: {templates.Count}", "");
+                                    nameof(GetTemplates), "QueryResults", "Found active templates.", $"Count: {templates.Count()}", "");
                                 foreach (var t in templates)
                                 {
                                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                        nameof(GetTemplates), "TemplateDetails", "Template details.", $"TemplateId: {t.Id}, TemplateName: {t.Name ?? "null"}, PartCount: {t.Parts?.Count ?? 0}, IsActive: {t.IsActive}", "");
+                                        nameof(GetTemplates), "TemplateDetails", "Template details.", $"TemplateId: {t.OcrInvoices.Id}, TemplateName: {t.OcrInvoices.Name ?? "null"}, PartCount: {t.Parts?.Count ?? 0}, IsActive: {t.OcrInvoices.IsActive}", "");
                                 }
-                                context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                                    "GetContextTemplates", "ASYNC_EXPECTED"); // Log before GetContextTemplates
-                                var contextTemplatesStopwatch = Stopwatch.StartNew(); // Start stopwatch
-                                context.Templates = await GetContextTemplates(context, templates).ConfigureAwait(false);
-                                contextTemplatesStopwatch.Stop(); // Stop stopwatch
-                                context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                                    "GetContextTemplates", contextTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after GetContextTemplates
 
-                                _allTemplates = context.Templates;
+                                /////////////////////////////////// Move this step to possible invoices because we only getting the invoices once!
+                                //context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                                //    "GetContextTemplates", "ASYNC_EXPECTED"); // Log before GetContextTemplates
+                                //var contextTemplatesStopwatch = Stopwatch.StartNew(); // Start stopwatch
+
+                                //context.Templates = await GetContextTemplates(context, templates).ConfigureAwait(false);
+                                
+                                //contextTemplatesStopwatch.Stop(); // Stop stopwatch
+                                //context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                                //    "GetContextTemplates", contextTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after GetContextTemplates
+
+                                context.Templates = templates;
+                                _allTemplates = templates;
 
                                 methodStopwatch.Stop(); // Stop stopwatch on success
                                 context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
@@ -232,21 +242,41 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
-        private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoices> templates)
+        public static IEnumerable<Invoice> GetAllTemplates(InvoiceProcessingContext context, OCRContext ctx)
         {
-            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
-            return templates.Select(x => new Invoice(x){
-                FileType = context.FileType,
-                DocSet = docSet,
-                FilePath = context.FilePath,
-                EmailId = context.EmailId,
+            // Load all active templates
+            context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                "GetActiveTemplatesQuery", "SYNC_EXPECTED"); // Log before query execution
+            var queryStopwatch = Stopwatch.StartNew(); // Start stopwatch for query
 
-            }).ToList();
+            // Disable lazy loading and proxy creation to prevent "already been loaded" errors with complex object graphs
+            //var initialLazyLoadingEnabled = ctx.Configuration.LazyLoadingEnabled;
+            //var initialProxyCreationEnabled = ctx.Configuration.ProxyCreationEnabled;
+            //ctx.Configuration.LazyLoadingEnabled = false;
+            //ctx.Configuration.ProxyCreationEnabled = false;
+
+            var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
+            var templates = activeTemplatesQuery.Select(x => new Invoice(x)).ToList(); // activeTemplatesQuery is already a List
+
+           
+
+
+            //// Re-enable lazy loading and proxy creation
+            //ctx.Configuration.LazyLoadingEnabled = initialLazyLoadingEnabled;
+            //ctx.Configuration.ProxyCreationEnabled = initialProxyCreationEnabled;
+            queryStopwatch.Stop(); // Stop stopwatch after query
+            context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                "GetActiveTemplatesQuery", queryStopwatch.ElapsedMilliseconds, "Sync call returned"); // Log after query execution
+            return templates;
         }
 
-        public static IQueryable<Invoices> GetActiveTemplatesQuery(OCRContext ctx, Expression<Func<Invoices, bool>> exp)
+
+
+        public static List<Invoices> GetActiveTemplatesQuery(OCRContext ctx, Expression<Func<Invoices, bool>> exp)
         {
-            var activeTemplatesQuery = ctx.Invoices
+
+            var activeTemplates = ctx.Invoices
+                .AsNoTracking()
                 .Include(x => x.Parts)
                 .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
                 .Include("RegEx.RegEx")
@@ -255,8 +285,8 @@ namespace InvoiceReader.PipelineInfrastructure
                 .Include("Parts.Start.RegularExpressions")
                 .Include("Parts.End.RegularExpressions")
                 .Include("Parts.PartTypes")
-                .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
-                .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
+                //.Include("Parts.ChildParts.ChildPart.Start.RegularExpressions") // Commented out as per user instruction
+                //.Include("Parts.ParentParts.ParentPart.Start.RegularExpressions") // Commented out as per user instruction
                 .Include("Parts.Lines.RegularExpressions")
                 .Include("Parts.Lines.Fields.FieldValue")
                 .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
@@ -267,8 +297,188 @@ namespace InvoiceReader.PipelineInfrastructure
                 .Where(x => x.IsActive)
                 .Where(x => x.ApplicationSettingsId ==
                                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                .Where(exp);
-            return activeTemplatesQuery;
+                .Where(exp)
+                .ToList(); // Materialize the query to a List
+                           // 2. Create a dictionary of ALL UNIQUE Part instances that were initially loaded.
+                           // These are our canonical Part objects.
+            if (!activeTemplates.Any()) return activeTemplates;
+
+            // --- Store original top-level part IDs for each invoice ---
+            // This is crucial to know which parts should be directly under each invoice later.
+            var invoiceOriginalPartIds = activeTemplates.ToDictionary(
+                inv => inv.Id, // Assuming Invoice has an Id
+                inv => inv.Parts?.Select(p => p.Id).ToList() ?? new List<int>()
+            );
+
+            // 2. Populate canonicalParts dictionary (Your existing Step 2 code)
+            var canonicalParts = new Dictionary<int, Parts>();
+            foreach (var invoice in activeTemplates)
+            {
+                if (invoice.Parts != null)
+                {
+                    foreach (var part in invoice.Parts)
+                    {
+                        if (part != null && !canonicalParts.ContainsKey(part.Id))
+                        {
+                            part.ChildParts = new List<ChildParts>(); // Initialize collections
+                            part.ParentParts = new List<ChildParts>();
+                            canonicalParts.Add(part.Id, part);
+                        }
+                        // If a part instance was already added from another invoice (unlikely if parts are distinct per invoice initially),
+                        // the existing instance in canonicalParts is fine.
+                    }
+                }
+            }
+
+            if (!canonicalParts.Any())
+            {
+                // If no parts were loaded at all, clear any potentially empty Parts collections on invoices
+                // (though they should be from the .Include if parts existed)
+                foreach (var invoice in activeTemplates) { invoice.Parts = new List<Parts>(); }
+                return activeTemplates;
+            }
+
+            var allInitiallyLoadedPartIds = canonicalParts.Keys.ToList();
+
+            // 3. Load ALL ChildParts linking entities (Your existing Step 3 code)
+            // We need to ensure we get all links that could form the hierarchy,
+            // even if some parts in the hierarchy were not directly in `allInitiallyLoadedPartIds`.
+            // This might require iteratively finding all related part IDs.
+
+            var allRelevantPartIdsInHierarchy = new HashSet<int>(allInitiallyLoadedPartIds);
+            bool newIdsAddedInIteration;
+            int maxIterations = 10; // Safety break for very deep or circular structures
+            int currentIteration = 0;
+
+            do
+            {
+                newIdsAddedInIteration = false;
+                currentIteration++;
+                // Find IDs of parts that are linked to current 'allRelevantPartIdsInHierarchy' but not yet in it.
+                var newlyDiscoveredRelatedPartIds = ctx.ChildParts
+                    .AsNoTracking()
+                    .Where(link => (allRelevantPartIdsInHierarchy.Contains(link.ParentPartId) && !allRelevantPartIdsInHierarchy.Contains(link.ChildPartId)) ||
+                                   (allRelevantPartIdsInHierarchy.Contains(link.ChildPartId) && !allRelevantPartIdsInHierarchy.Contains(link.ParentPartId)))
+                    .SelectMany(link => new[] { link.ParentPartId, link.ChildPartId })
+                    .Distinct()
+                    .ToList();
+
+                foreach (var id in newlyDiscoveredRelatedPartIds)
+                {
+                    if (allRelevantPartIdsInHierarchy.Add(id)) // .Add returns true if the item was new
+                    {
+                        newIdsAddedInIteration = true;
+                    }
+                }
+            } while (newIdsAddedInIteration && currentIteration < maxIterations);
+
+
+            List<ChildParts> allLinks = ctx.ChildParts
+                .AsNoTracking()
+                // Use the fully discovered set of relevant part IDs for fetching links
+                .Where(link => allRelevantPartIdsInHierarchy.Contains(link.ParentPartId) && allRelevantPartIdsInHierarchy.Contains(link.ChildPartId))
+                .Include(link => link.ChildPart.Start.Select(s => s.RegularExpressions))
+                .Include(link => link.ChildPart.End.Select(s => s.RegularExpressions))
+                .Include(link => link.ParentPart.Start.Select(s => s.RegularExpressions))
+                .Include(link => link.ParentPart.End.Select(s => s.RegularExpressions))
+                .ToList();
+
+            // 4. Process links to build hierarchy in canonicalParts (Your existing Step 4 code)
+            foreach (var linkFromServer in allLinks)
+            {
+                Parts canonicalParent = null;
+                Parts canonicalChild = null;
+
+                if (!canonicalParts.TryGetValue(linkFromServer.ParentPartId, out canonicalParent))
+                {
+                    if (linkFromServer.ParentPart != null)
+                    {
+                        canonicalParent = linkFromServer.ParentPart;
+                        canonicalParent.ChildParts = new List<ChildParts>();
+                        canonicalParent.ParentParts = new List<ChildParts>();
+                        canonicalParts.Add(canonicalParent.Id, canonicalParent);
+                    }
+                }
+
+                if (!canonicalParts.TryGetValue(linkFromServer.ChildPartId, out canonicalChild))
+                {
+                    if (linkFromServer.ChildPart != null)
+                    {
+                        canonicalChild = linkFromServer.ChildPart;
+                        canonicalChild.ChildParts = new List<ChildParts>();
+                        canonicalChild.ParentParts = new List<ChildParts>();
+                        canonicalParts.Add(canonicalChild.Id, canonicalChild);
+                    }
+                }
+
+                if (canonicalParent != null && canonicalChild != null)
+                {
+                    ChildParts currentLink = linkFromServer;
+                    currentLink.ParentPart = canonicalParent;
+                    currentLink.ChildPart = canonicalChild;
+
+                    if (canonicalParent.ChildParts.All(l => l.Id != currentLink.Id))
+                    {
+                        canonicalParent.ChildParts.Add(currentLink);
+                    }
+                    if (canonicalChild.ParentParts.All(l => l.Id != currentLink.Id))
+                    {
+                        canonicalChild.ParentParts.Add(currentLink);
+                    }
+                }
+            }
+
+            // 5. Rebuild Invoice.Parts collections using canonical, fully-stitched Part objects.
+            //    Only include parts that were originally direct children of the invoice AND
+            //    are now considered "top-level" within that invoice's context (i.e., their ParentPart,
+            //    if it exists, was NOT one of the other original parts of THIS invoice).
+
+            foreach (var invoice in activeTemplates)
+            {
+                var newTopLevelInvoiceParts = new List<Parts>();
+                if (invoiceOriginalPartIds.TryGetValue(invoice.Id, out var originalPartIdsForThisInvoiceSet))
+                {
+                    // Convert to HashSet for efficient lookups of original parts of this invoice
+                    var originalPartIdsLookup = new HashSet<int>(originalPartIdsForThisInvoiceSet);
+
+                    foreach (var partId in originalPartIdsForThisInvoiceSet)
+                    {
+                        if (canonicalParts.TryGetValue(partId, out var canonicalPartInstance))
+                        {
+                            // Check if this part is truly top-level for THIS invoice.
+                            // A part is top-level if none of its ParentParts (linking entities)
+                            // point to a ParentPart (actual Part entity) whose ID is also in
+                            // originalPartIdsForThisInvoiceSet (excluding itself, though self-parenting is unlikely here).
+                            bool isTopLevelForThisInvoice = true;
+                            if (canonicalPartInstance.ParentParts != null)
+                            {
+                                foreach (var parentLink in canonicalPartInstance.ParentParts)
+                                {
+                                    // parentLink is a ChildParts (linking) entity
+                                    // parentLink.ParentPart is the actual parent Part entity
+                                    if (parentLink.ParentPart != null &&
+                                        parentLink.ParentPart.Id != canonicalPartInstance.Id && // Not a self-reference check
+                                        originalPartIdsLookup.Contains(parentLink.ParentPart.Id))
+                                    {
+                                        // This part has a parent that was ALSO an original part of this invoice.
+                                        // Therefore, this part is not top-level for this invoice.
+                                        isTopLevelForThisInvoice = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (isTopLevelForThisInvoice)
+                            {
+                                newTopLevelInvoiceParts.Add(canonicalPartInstance);
+                            }
+                        }
+                    }
+                }
+                invoice.Parts = newTopLevelInvoiceParts; // Replace the old list with the new one.
+            }
+
+            return activeTemplates;
         }
 
         /*
@@ -310,5 +520,6 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 */
+
     }
 }

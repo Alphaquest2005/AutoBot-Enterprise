@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public ChangeTrackingCollection<AsycudaSalesAllocations_XcudaItemsToAllocate> ChangeTracker
+        public new ChangeTrackingCollection<AsycudaSalesAllocations_XcudaItemsToAllocate> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public void StartTracking()
+         public new void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<AsycudaSalesAllocations_XcudaItemsToAllocate>(this);
         }

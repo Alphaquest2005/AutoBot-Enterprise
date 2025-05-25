@@ -31,13 +31,13 @@ namespace WaterNut.DataSpace
 
                _logger.Debug("INTERNAL_STEP: {MethodName} - Invoking Action. Intention: Look up and invoke action based on file format and entry type. CurrentState: {{FileFormat}}, {{EntryType}}",
                    nameof(Process), dataFile.FileType.FileImporterInfos.Format, dataFile.FileType.FileImporterInfos.EntryType);
-               return await _dataFileActions
+              var res =  await _dataFileActions
                        [dataFile.FileType.FileImporterInfos.Format]
                    [dataFile.FileType.FileImporterInfos.EntryType]
                    .Invoke(dataFile).ConfigureAwait(false);
 
                _logger.Information("METHOD_EXIT: {MethodName}. Result: {Result}", nameof(Process), true);
-                return true; // Assuming Invoke returns true on success
+                return res; // Assuming Invoke returns true on success
             }
             catch (Exception e)
             {

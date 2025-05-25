@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<Actions>> GetActions(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Actions>> GetActions(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<Actions> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<Actions> GetActionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<Actions> GetActionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return Task.FromResult<Actions>(null); 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 Actions entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public Task<IEnumerable<Actions>> GetActionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Actions>> GetActionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Actions>>(new List<Actions>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Actions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Actions>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Actions>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public Task<IEnumerable<Actions>> GetActionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Actions>> GetActionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<Actions>>(new List<Actions>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Actions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Actions>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Actions>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -278,8 +278,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<Actions>> GetActionsByBatch(string exp,
-                                                            int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Actions>> GetActionsByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Actions>>(new List<Actions>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Actions>();
 
 
                 var batchSize = 500;
@@ -337,7 +337,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -353,8 +353,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<Actions>> GetActionsByBatchExpressionLst(List<string> expLst,
-                                                                         int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Actions>> GetActionsByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -363,7 +363,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<Actions>>(new List<Actions>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Actions>();
 
 
                 var batchSize = 500;
@@ -412,7 +412,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -429,7 +429,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<Actions> UpdateActions(Actions entity)
+        public async Task<Actions> UpdateActions(Actions entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -441,7 +441,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -486,7 +486,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -499,10 +499,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<Actions> CreateActions(Actions entity)
+        public async Task<Actions> CreateActions(Actions entity)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace CoreEntities.Business.Services
                 dbContext.Actions.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -529,7 +529,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<bool> DeleteActions(string Id)
+        public async Task<bool> DeleteActions(string Id)
         {
             try
             {
@@ -539,12 +539,12 @@ namespace CoreEntities.Business.Services
                 Actions entity = dbContext.Actions
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.Actions.Attach(entity);
                     dbContext.Actions.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -600,23 +600,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<Actions>)dbContext.Actions; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -635,26 +635,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.Actions
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.Actions
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.Actions
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.Actions
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -672,33 +672,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public Task<IEnumerable<Actions>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<Actions>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Actions>>(new List<Actions>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Actions>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<Actions>>(dbContext.Actions
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.Actions
+										.AsNoTracking()
+                                        .OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<Actions>>(dbContext.Actions
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.Actions
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -782,18 +782,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Actions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -802,18 +802,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Actions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -919,8 +919,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<Actions>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                         CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<Actions>> LoadRangeSelectMany<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -931,14 +931,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<Actions>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -947,8 +947,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Actions>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                     CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<Actions>> LoadRangeSelect<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -959,14 +959,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<Actions>>(set
-                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -999,21 +999,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Actions>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-                                                                        string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<Actions>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<Actions>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<Actions>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<Actions>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<Actions>)dbContext.Set<T>()
@@ -1025,7 +1025,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<Actions>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1034,21 +1034,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Actions>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-                                                                    string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<Actions>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<Actions>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<Actions>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<Actions>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<Actions>)dbContext.Set<T>()
@@ -1060,7 +1060,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<Actions>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1171,18 +1171,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Actions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1191,18 +1191,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Actions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

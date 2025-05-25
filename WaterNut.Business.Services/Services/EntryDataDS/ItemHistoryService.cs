@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<ItemHistory>> GetItemHistory(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ItemHistory>> GetItemHistory(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace EntryDataDS.Business.Services
                     IEnumerable<ItemHistory> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public Task<ItemHistory> GetItemHistoryByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ItemHistory> GetItemHistoryByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return Task.FromResult<ItemHistory>(null); 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 ItemHistory entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<ItemHistory>> GetItemHistoryByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ItemHistory>> GetItemHistoryByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ItemHistory>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<ItemHistory>> GetItemHistoryByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ItemHistory>> GetItemHistoryByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ItemHistory>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public Task<IEnumerable<ItemHistory>> GetItemHistoryByExpressionNav(string exp,
-                                                                            Dictionary<string, string> navExp,
-                                                                            List<string> includesLst = null, bool tracking = true)
+		public async Task<IEnumerable<ItemHistory>> GetItemHistoryByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ItemHistory>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(aentities); 
+                        return aentities; 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<ItemHistory>>(entities); 
+                        return entities; 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<ItemHistory>> GetItemHistoryByBatch(string exp,
-                                                                    int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace EntryDataDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ItemHistory>();
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace EntryDataDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<ItemHistory>> GetItemHistoryByBatchExpressionLst(List<string> expLst,
-                                                                                 int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace EntryDataDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ItemHistory>();
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace EntryDataDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public Task<ItemHistory> UpdateItemHistory(ItemHistory entity)
+        public async Task<ItemHistory> UpdateItemHistory(ItemHistory entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace EntryDataDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace EntryDataDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<ItemHistory> CreateItemHistory(ItemHistory entity)
+        public async Task<ItemHistory> CreateItemHistory(ItemHistory entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace EntryDataDS.Business.Services
                 dbContext.ItemHistory.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public Task<bool> DeleteItemHistory(string Id)
+        public async Task<bool> DeleteItemHistory(string Id)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace EntryDataDS.Business.Services
                 ItemHistory entity = dbContext.ItemHistory
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.ItemHistory.Attach(entity);
                     dbContext.ItemHistory.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace EntryDataDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<ItemHistory>)dbContext.ItemHistory; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (EntryDataDSContext dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.ItemHistory
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.ItemHistory
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.ItemHistory
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.ItemHistory
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<ItemHistory>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ItemHistory>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ItemHistory>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<ItemHistory>>(dbContext.ItemHistory
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.ItemHistory
+										.AsNoTracking()
+                                        .OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<ItemHistory>>(dbContext.ItemHistory
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.ItemHistory
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(dbContext.ItemHistory
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.ItemHistory
+										.AsNoTracking()
+                                        .Count();
                     }
-                    return Task.FromResult(dbContext.ItemHistory.Where(exp == "All" || exp == null ? "Id != null" : exp)
-                        .AsNoTracking()
-                        .Count());
+                    return dbContext.ItemHistory.Where(exp == "All" || exp == null ? "Id != null" : exp)
+											.AsNoTracking()
+                                            .Count();
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemHistory>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemHistory>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public Task<IEnumerable<ItemHistory>> LoadRangeNav(int startIndex, int count, string exp,
-                                                             Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public async Task<IEnumerable<ItemHistory>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<ItemHistory>>(new List<ItemHistory>());
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ItemHistory>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return Task.FromResult<IEnumerable<ItemHistory>>(set
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
+                        return set
+									.AsNoTracking()
+                                    .OrderBy(y => y.Id)
  
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                                    .Skip(startIndex)
+                                    .Take(count)
+									.ToList();
                     }
-                    return Task.FromResult<IEnumerable<ItemHistory>>(set//dbContext.ItemHistory
-                        .AsNoTracking()
-                        .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                        .OrderBy(y => y.Id)
+                    return set//dbContext.ItemHistory
+								.AsNoTracking()
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
-                        .Skip(startIndex)
-                        .Take(count)
-                        .ToList());
+                                .Skip(startIndex)
+                                .Take(count)
+								.ToList();
 
 
                 }
@@ -836,8 +836,8 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<ItemHistory>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<ItemHistory>> LoadRangeSelectMany<T>(int startIndex, int count,
+            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace EntryDataDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<ItemHistory>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<ItemHistory>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                         EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<ItemHistory>> LoadRangeSelect<T>(int startIndex, int count,
+            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace EntryDataDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<ItemHistory>>(set
-                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<ItemHistory>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
-                                                                            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<ItemHistory>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<ItemHistory>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<ItemHistory>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<ItemHistory>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<ItemHistory>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<ItemHistory>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<ItemHistory>> GetWhereSelect<T>(EntryDataDSContext dbContext,
-                                                                        string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<ItemHistory>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<ItemHistory>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<ItemHistory>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<ItemHistory>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<ItemHistory>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<ItemHistory>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -986,7 +986,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<ItemHistory>> GetItemHistoryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1014,7 +1014,7 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<ItemHistory>> GetItemHistoryByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1042,7 +1042,7 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<ItemHistory>> GetItemHistoryByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1054,7 +1054,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1070,7 +1070,7 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<ItemHistory>> GetItemHistoryByTransactionId(string TransactionId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ItemHistory>> GetItemHistoryByTransactionId(string TransactionId, List<string> includesLst = null)
         {
             try
             {
@@ -1082,7 +1082,7 @@ namespace EntryDataDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.TransactionId.ToString() == TransactionId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1134,24 +1134,24 @@ namespace EntryDataDS.Business.Services
              }
          }
 
-        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.ItemHistory.Any()) return Task.FromResult<decimal>(0);
+                    if (!dbContext.ItemHistory.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(Convert.ToDecimal(dbContext.ItemHistory
-                                                                     .AsNoTracking()
-                                                                     .Sum(field)??0));
+                        return Convert.ToDecimal(dbContext.ItemHistory
+										.AsNoTracking()
+                                        .Sum(field)??0);
                     }
-                    return Task.FromResult(Convert.ToDecimal(dbContext.ItemHistory.Where(exp == "All" || exp == null ? "Id != null" : exp)
-                                                                 .AsNoTracking()
-                                                                 .Sum(field)??0));
+                    return Convert.ToDecimal(dbContext.ItemHistory.Where(exp == "All" || exp == null ? "Id != null" : exp)
+											.AsNoTracking()
+                                            .Sum(field)??0);
                 }
                 
             }
@@ -1182,18 +1182,18 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemHistory>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1202,18 +1202,18 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemHistory>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

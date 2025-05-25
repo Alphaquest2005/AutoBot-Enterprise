@@ -9,11 +9,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AllocationQS.Client.Entities;
-using AllocationQS.Client.Repositories;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
 using SimpleMvvmToolkit;
+using AllocationQS.Client.Repositories;
+using AllocationQS.Client.Entities;
 
 
 

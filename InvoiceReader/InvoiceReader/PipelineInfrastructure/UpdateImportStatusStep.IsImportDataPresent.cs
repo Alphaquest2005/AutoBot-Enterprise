@@ -12,7 +12,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(IsImportDataPresent), "Validation", "Checking if required data is present for import status update.", "", "");
             // Check each property and log which one is missing if any
             // Context null check happens in Execute
-            if (context?.Templates == null || !context.Templates.Any())
+            if (!context.MatchedTemplates.Any())
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(IsImportDataPresent), "Validation", "Required data missing: Templates collection is null or empty.", "", "");
@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             // Check Template.OcrInvoices as it's used later
             // Corrected logging for null OcrInvoices
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                 if (template?.OcrInvoices == null)
                 {

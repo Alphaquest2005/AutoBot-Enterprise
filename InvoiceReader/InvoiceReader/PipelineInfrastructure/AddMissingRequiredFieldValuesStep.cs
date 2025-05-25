@@ -38,7 +38,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(AddMissingRequiredFieldValuesStep), "Context validation", 0, "AddMissingRequiredFieldValuesStep executed with null context.");
                 return Task.FromResult(false);
             }
-             if (context.Templates == null || !context.Templates.Any())
+             if ( !context.MatchedTemplates.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "Validation", "Skipping AddMissingRequiredFieldValuesStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates with extracted data.");
@@ -52,7 +52,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallStepSuccess = true; // Track success across all templates
 
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Safe access
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";

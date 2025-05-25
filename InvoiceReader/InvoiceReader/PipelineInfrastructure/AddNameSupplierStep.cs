@@ -36,7 +36,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(AddNameSupplierStep), "Context validation", 0, "AddNameSupplierStep executed with null context.");
                 return Task.FromResult(false);
             }
-             if (context.Templates == null || !context.Templates.Any())
+             if (!context.MatchedTemplates.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "Validation", "Skipping AddNameSupplierStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates with extracted data.");
@@ -50,7 +50,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool anyTemplateProcessedSuccessfully = false; // Track if at least one template was processed without critical error
 
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Safe access
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";

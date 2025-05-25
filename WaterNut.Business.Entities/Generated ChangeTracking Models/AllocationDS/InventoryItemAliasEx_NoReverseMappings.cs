@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public ChangeTrackingCollection<InventoryItemAliasEx_NoReverseMappings> ChangeTracker
+        public new ChangeTrackingCollection<InventoryItemAliasEx_NoReverseMappings> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public void StartTracking()
+         public new void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<InventoryItemAliasEx_NoReverseMappings>(this);
         }

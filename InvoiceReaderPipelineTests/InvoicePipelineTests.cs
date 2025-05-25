@@ -21,8 +21,8 @@ namespace InvoiceReaderPipelineTests
         {
             var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\one amazon with muliple invoice details sections.pdf";
             var expectedInvoiceNo = "114-7827932-2029910";
-            Func<int, bool> expectedDetailCountAssertion = count => count == 8;
-            string assertionDescription = "equal to 8";
+            Func<int, bool> expectedDetailCountAssertion = count => count == 10;
+            string assertionDescription = "equal to 10";
 
             await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription, _logger).ConfigureAwait(false);
         }

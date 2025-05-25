@@ -32,7 +32,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(ReadFormattedTextStep), $"Reading formatted text for file: {filePath}");
 
                
-                 if (context.Templates == null || !context.Templates.Any())
+                 if (!context.MatchedTemplates.Any())
                 {
                      context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                          nameof(Execute), "Validation", "Skipping ReadFormattedTextStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates for reading.");
@@ -48,7 +48,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 bool overallSuccess = true; // Track if at least one template was read successfully
 
-              foreach (var template in context.Templates)
+              foreach (var template in context.MatchedTemplates)
                 {
                      int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
                      string templateName = template?.OcrInvoices?.Name ?? "Unknown";

@@ -273,8 +273,6 @@ namespace EntryDataDS.Business.Entities
         public ShipmentInvoiceDetailsItemAlias ItemAlias { get; set; }
         [DataMember]
         public InvoiceDetailsVolume Volume { get; set; }
-        [DataMember]
-        public CategoryTariffs CategoryTariffs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

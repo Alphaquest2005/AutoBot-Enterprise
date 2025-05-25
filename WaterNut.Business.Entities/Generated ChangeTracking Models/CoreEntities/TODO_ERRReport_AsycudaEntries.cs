@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public ChangeTrackingCollection<TODO_ERRReport_AsycudaEntries> ChangeTracker
+        public new ChangeTrackingCollection<TODO_ERRReport_AsycudaEntries> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public void StartTracking()
+         public new void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<TODO_ERRReport_AsycudaEntries>(this);
         }

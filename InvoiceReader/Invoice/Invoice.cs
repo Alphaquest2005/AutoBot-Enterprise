@@ -164,17 +164,18 @@ namespace WaterNut.DataSpace
                      _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Filtering criteria: Part is not null AND ((Has ParentParts AND No ChildParts) OR (No ParentParts AND No ChildParts))", nameof(Invoice), "PartsInitialization");
                      // Added null checks within LINQ for safety
                      this.Parts = ocrInvoices.Parts
-                         .Where(x => x != null && // Check part is not null
-                                     ( (x.ParentParts != null && x.ParentParts.Any() && (x.ChildParts == null || !x.ChildParts.Any())) || // Condition 1 (safe checks)
-                                       ((x.ParentParts == null || !x.ParentParts.Any()) && (x.ChildParts == null || !x.ChildParts.Any())) ) // Condition 2 (safe checks)
-                                )
-                         .Select(z => {
-                              _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Creating Part object for OCR_Part Id: {PartId}", nameof(Invoice), "PartCreation", z.Id);
-                              // Assuming Part constructor handles potential errors/logging
-                              return new Part(z);
-                              })
+                         //.Where(x => x != null && // Check part is not null
+                         //            ( (x.ParentParts != null && x.ParentParts.Any() && (x.ChildParts == null || !x.ChildParts.Any())) || // Condition 1 (safe checks)
+                         //              ((x.ParentParts == null || !x.ParentParts.Any()) && (x.ChildParts == null || !x.ChildParts.Any())) ) // Condition 2 (safe checks)
+                         //       )
+                         .Select(z =>
+                         {
+                             _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Creating Part object for OCR_Part Id: {PartId}", nameof(Invoice), "PartCreation", z.Id);
+                             // Assuming Part constructor handles potential errors/logging
+                             return new Part(z);
+                         })
                          .ToList();
-                 }
+                }
                   _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Initialized InvoiceId: {InvoiceId} with {PartCount} selected Parts.", nameof(Invoice), "PartsInitialization", invoiceId, this.Parts?.Count ?? 0);
             }
             catch (Exception ex)

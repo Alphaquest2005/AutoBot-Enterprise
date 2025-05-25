@@ -53,7 +53,7 @@ namespace InventoryQS.Business.Services
             var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
             logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
                 nameof(ClassifiedItms), "Classify inventory items using AI or existing data", $"ItemCount: {Itms?.Count ?? 0}");
-
+            logger.Information("METHOD_ENTRY: {MethodName}. Input Parameters {@Itms}.", Itms);
             try
             {
                 logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
@@ -85,6 +85,7 @@ namespace InventoryQS.Business.Services
                 logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
                     nameof(ClassifiedItms), $"Successfully classified {res.Count} items", methodStopwatch.ElapsedMilliseconds);
 
+                logger.Information("METHOD_ENTRY: {MethodName}. Output Parameters {@res}.", res);
                 return res;
             }
             catch (Exception e)

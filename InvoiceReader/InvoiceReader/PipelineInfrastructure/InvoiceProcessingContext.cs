@@ -94,14 +94,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public List<Line> FailedLines
         {
-            get { return this.Templates.SelectMany(x => x.FailedLines ?? x.Parts.SelectMany(z => z.FailedLines).ToList()).ToList(); }
+            get { return this.MatchedTemplates.SelectMany(x => x.FailedLines ?? x.Parts.SelectMany(z => z.FailedLines).ToList()).ToList(); }
         }
 
         public ImportStatus ImportStatus
         {
             get
             {
-                var res = this.Templates.Select(x => x.ImportStatus).ToList();
+                var res = this.MatchedTemplates.Select(x => x.ImportStatus).ToList();
                 if (res.Count == 0)
                 {
                     return ImportStatus.Failed;

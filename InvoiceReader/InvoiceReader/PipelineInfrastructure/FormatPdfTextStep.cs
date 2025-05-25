@@ -37,9 +37,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallSuccess = true; // Track if formatting succeeded for at least one template
 
-            if (context?.Templates != null)
+            if (context?.MatchedTemplates != null)
             {
-                foreach (var template in context.Templates)
+                foreach (var template in context.MatchedTemplates)
                 {
                     int templateId = template.OcrInvoices?.Id ?? 0;
                     LogTemplateDetails(context.Logger, templateId, filePath, context.PdfText.Length); // Pass logger
@@ -110,7 +110,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(ValidateContext), "Validate pipeline context", 0, "FormatPdfTextStep executed with null context.");
                 return false;
             }
-            if (context.Templates == null || !context.Templates.Any())
+            if (!context.MatchedTemplates.Any())
             {
                 context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(ValidateContext), "Validation", "Skipping FormatPdfTextStep: No Templates.", $"FilePath: {filePath}", "Expected templates for formatting.");

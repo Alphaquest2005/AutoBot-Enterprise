@@ -28,9 +28,8 @@
               this.Property(t => t.Discount).HasColumnName("Discount");
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(12);
               this.Property(t => t.Category).HasColumnName("Category").HasMaxLength(50);
-              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").IsRequired().HasMaxLength(12);
+              this.Property(t => t.CategoryTariffCode).HasColumnName("CategoryTariffCode").HasMaxLength(12);
               this.HasRequired(t => t.Invoice).WithMany(t =>(ICollection<InvoiceDetails>) t.InvoiceDetails).HasForeignKey(d => d.ShipmentInvoiceId);
-              this.HasOptional(t => t.CategoryTariffs).WithMany(t =>(ICollection<InvoiceDetails>) t.ShipmentInvoiceDetails).HasForeignKey(d => d.Category);
               this.HasMany(t => t.POItems).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
               this.HasOptional(t => t.ItemAlias).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
               this.HasOptional(t => t.Volume).WithRequired(t => (InvoiceDetails)t.ShipmentInvoiceDetails);

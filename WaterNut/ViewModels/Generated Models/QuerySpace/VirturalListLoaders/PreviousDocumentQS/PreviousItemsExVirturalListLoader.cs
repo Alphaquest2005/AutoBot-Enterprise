@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using PreviousDocumentQS.Client.Entities;
-using PreviousDocumentQS.Client.Repositories;
 using SimpleMvvmToolkit;
+using PreviousDocumentQS.Client.Repositories;
+using PreviousDocumentQS.Client.Entities;
 
 
 

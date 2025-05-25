@@ -12,21 +12,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(HasMissingRequiredData), "Validation", "Checking for missing required data in context.", "", "");
             // Check each property and log which one is missing if any
             // Context null check happens in Execute
-            if (context?.Templates == null || !context.Templates.Any())
+            if (!context.MatchedTemplates.Any())
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(HasMissingRequiredData), "Validation", "Missing required data: Templates collection is null or empty.", "", "");
                 return true;
             }
 
-            if (context.Templates.Select(x => x.CsvLines).All(x => x == null))
+            if (context.MatchedTemplates.Select(x => x.CsvLines).All(x => x == null))
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(HasMissingRequiredData), "Validation", "Missing required data: CsvLines for all templates is Empty.", "", "");
                 return true;
             }
 
-            if (!context.Templates.Select(x => x.DocSet).Any())
+            if (!context.MatchedTemplates.Select(x => x.DocSet).Any())
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(HasMissingRequiredData), "Validation", "Missing required data: DocSet is null.", "", "");
@@ -54,7 +54,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 return true;
             }
             //Todo: Create test to test this condition
-            if (context.Templates.Select(x => x.FormattedPdfText).All(string.IsNullOrEmpty)) // Simplified check
+            if (context.MatchedTemplates.Select(x => x.FormattedPdfText).All(string.IsNullOrEmpty)) // Simplified check
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(HasMissingRequiredData), "Validation", "Missing required data: FormattedPdfText is null or empty for all templates.", "", "");

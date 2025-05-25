@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<Customs_Procedure>> GetCustoms_Procedure(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_Procedure(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AllocationDS.Business.Services
                     IEnumerable<Customs_Procedure> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public Task<Customs_Procedure> GetCustoms_ProcedureByKey(string Customs_ProcedureId, List<string> includesLst = null, bool tracking = true)
+        public async Task<Customs_Procedure> GetCustoms_ProcedureByKey(string Customs_ProcedureId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Customs_ProcedureId))return Task.FromResult<Customs_Procedure>(null); 
+			   if(string.IsNullOrEmpty(Customs_ProcedureId))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Customs_ProcedureId);
 				var set = AddIncludes(includesLst, dbContext);
                 Customs_Procedure entity = set.AsNoTracking().SingleOrDefault(x => x.Customs_ProcedureId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Customs_Procedure>>(new List<Customs_Procedure>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Customs_Procedure>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<Customs_Procedure>>(new List<Customs_Procedure>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Customs_Procedure>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -266,8 +266,8 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBatch(string exp,
-                                                                                int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Customs_Procedure>>(new List<Customs_Procedure>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Customs_Procedure>();
 
 
                 var batchSize = 500;
@@ -325,7 +325,7 @@ namespace AllocationDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -341,8 +341,8 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBatchExpressionLst(List<string> expLst,
-                                                                                             int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -351,7 +351,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<Customs_Procedure>>(new List<Customs_Procedure>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Customs_Procedure>();
 
 
                 var batchSize = 500;
@@ -400,7 +400,7 @@ namespace AllocationDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -417,7 +417,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public Task<Customs_Procedure> UpdateCustoms_Procedure(Customs_Procedure entity)
+        public async Task<Customs_Procedure> UpdateCustoms_Procedure(Customs_Procedure entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
@@ -429,7 +429,7 @@ namespace AllocationDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -474,7 +474,7 @@ namespace AllocationDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -487,10 +487,10 @@ namespace AllocationDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<Customs_Procedure> CreateCustoms_Procedure(Customs_Procedure entity)
+        public async Task<Customs_Procedure> CreateCustoms_Procedure(Customs_Procedure entity)
         {
             try
             {
@@ -500,7 +500,7 @@ namespace AllocationDS.Business.Services
                 dbContext.Customs_Procedure.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -517,7 +517,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<bool> DeleteCustoms_Procedure(string Customs_ProcedureId)
+        public async Task<bool> DeleteCustoms_Procedure(string Customs_ProcedureId)
         {
             try
             {
@@ -527,12 +527,12 @@ namespace AllocationDS.Business.Services
                 Customs_Procedure entity = dbContext.Customs_Procedure
 													.SingleOrDefault(x => x.Customs_ProcedureId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.Customs_Procedure.Attach(entity);
                     dbContext.Customs_Procedure.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -588,23 +588,23 @@ namespace AllocationDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<Customs_Procedure>)dbContext.Customs_Procedure; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -623,26 +623,26 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (AllocationDSContext dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.Customs_Procedure
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.Customs_Procedure
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.Customs_Procedure
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.Customs_Procedure
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -660,33 +660,33 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<Customs_Procedure>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<Customs_Procedure>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<Customs_Procedure>>(new List<Customs_Procedure>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Customs_Procedure>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(dbContext.Customs_Procedure
-                            .AsNoTracking()
-                            .OrderBy(y => y.Customs_ProcedureId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.Customs_Procedure
+										.AsNoTracking()
+                                        .OrderBy(y => y.Customs_ProcedureId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<Customs_Procedure>>(dbContext.Customs_Procedure
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Customs_ProcedureId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.Customs_Procedure
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Customs_ProcedureId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -764,18 +764,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Customs_Procedure>()
                 .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
                 .Distinct()
                 .OrderBy("Customs_ProcedureId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -784,18 +784,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Customs_Procedure>()
                 .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
                 .Distinct()
                 .OrderBy("Customs_ProcedureId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -889,8 +889,8 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<Customs_Procedure>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                   AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<Customs_Procedure>> LoadRangeSelectMany<T>(int startIndex, int count,
+            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -901,14 +901,14 @@ namespace AllocationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<Customs_Procedure>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Customs_ProcedureId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -917,8 +917,8 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Customs_Procedure>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                               AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<Customs_Procedure>> LoadRangeSelect<T>(int startIndex, int count,
+            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -929,14 +929,14 @@ namespace AllocationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<Customs_Procedure>>(set
-                   .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Customs_ProcedureId)
+               return set
+                .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Customs_ProcedureId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -969,21 +969,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Customs_Procedure>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
-                                                                                  string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<Customs_Procedure>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<Customs_Procedure>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<Customs_Procedure>()
-                    .Where(exp == "All" || exp == null?"Customs_ProcedureId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<Customs_Procedure>()
+							.Where(exp == "All" || exp == null?"Customs_ProcedureId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<Customs_Procedure>)dbContext.Set<T>()
@@ -995,7 +995,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<Customs_Procedure>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1004,21 +1004,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<Customs_Procedure>> GetWhereSelect<T>(AllocationDSContext dbContext,
-                                                                              string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<Customs_Procedure>> GetWhereSelect<T>(AllocationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<Customs_Procedure>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<Customs_Procedure>()
-                    .Where(exp == "All" || exp == null?"Customs_ProcedureId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<Customs_Procedure>()
+							.Where(exp == "All" || exp == null?"Customs_ProcedureId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<Customs_Procedure>)dbContext.Set<T>()
@@ -1030,7 +1030,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<Customs_Procedure>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1039,7 +1039,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByDocument_TypeId(string Document_TypeId, List<string> includesLst = null)
+			        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByDocument_TypeId(string Document_TypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1052,7 +1052,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1068,7 +1068,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1081,7 +1081,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.BondTypeId.ToString() == BondTypeId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1097,7 +1097,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
         {
             try
             {
@@ -1110,7 +1110,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.CustomsOperationId.ToString() == CustomsOperationId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1222,18 +1222,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Customs_Procedure>()
                 .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
                 .Distinct()
                 .OrderBy("Customs_ProcedureId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1242,18 +1242,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Customs_Procedure>()
                 .Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
                 .Distinct()
                 .OrderBy("Customs_ProcedureId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

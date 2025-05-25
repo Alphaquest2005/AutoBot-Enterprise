@@ -40,7 +40,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(UpdateImportStatusStep), "Context validation", 0, "UpdateImportStatusStep executed with null context.");
                 return Task.FromResult(false);
             }
-             if (context.Templates == null || !context.Templates.Any())
+             if (!context.MatchedTemplates.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "Validation", "Skipping UpdateImportStatusStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates for status update.");
@@ -54,7 +54,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             bool overallStepSuccess = true; // Track success across all templates
 
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                  int? templateId = template?.OcrInvoices?.Id; // Safe access
                  string templateName = template?.OcrInvoices?.Name ?? "Unknown";

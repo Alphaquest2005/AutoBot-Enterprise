@@ -58,9 +58,16 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
-                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "01987.pdf" });
-                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
+                var testFile = @"D:\OneDrive\Clients\WebSource\Emails\Downloads\Test cases\01987.pdf";
+                
+
+                if (!File.Exists(testFile))
+                {
+                    
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                 if (!fileTypes.Any())
                 {
                     Assert.Fail($"No suitable PDF FileType found for: {testFile}");
@@ -73,18 +80,16 @@ namespace AutoBotUtilities.Tests
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        Assert.Multiple(() =>
-                        {
-
-                            Assert.Equals(ctx.ShipmentInvoice.Count(), 1);
-                            Assert.Equals(ctx.ShipmentInvoiceDetails.Count(), 8);
-                        });
+                        var invoiceCount = ctx.ShipmentInvoice.Count(x => x.InvoiceNo == "8251357168");
+                        var invoiceDetailsCount = ctx.ShipmentInvoiceDetails.AsQueryable().Count(x => x.Invoice.InvoiceNo == "8251357168");
+                        Assert.That(invoiceCount, Is.EqualTo(1) , "Invoice found");
+                        Assert.That(invoiceDetailsCount, Is.EqualTo(8), "8 Invoice details found");
+                        
                     }
 
 
                 }
-
-                Assert.That(true);
+               
             }
             catch (Exception e)
             {

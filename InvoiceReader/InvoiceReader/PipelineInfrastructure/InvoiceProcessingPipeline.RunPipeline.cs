@@ -43,7 +43,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 }
                 else
                 {
-                    if (_context.Templates.Any(x => x.CsvLines == null || !x.CsvLines.Any() || x.Success == false))
+                    if (_context.MatchedTemplates.Any(x => x.CsvLines == null || !x.CsvLines.Any() || x.Success == false))
                     {
                         LogProcessingErrorPipeline(filePath);
                         var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);

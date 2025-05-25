@@ -65,7 +65,7 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItem(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItem(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace DocumentItemDS.Business.Services
                     IEnumerable<xcuda_PreviousItem> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace DocumentItemDS.Business.Services
         }
 
 
-        public Task<xcuda_PreviousItem> Getxcuda_PreviousItemByKey(string PreviousItem_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<xcuda_PreviousItem> Getxcuda_PreviousItemByKey(string PreviousItem_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(PreviousItem_Id))return Task.FromResult<xcuda_PreviousItem>(null); 
+			   if(string.IsNullOrEmpty(PreviousItem_Id))return null; 
               using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(PreviousItem_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 xcuda_PreviousItem entity = set.AsNoTracking().SingleOrDefault(x => x.PreviousItem_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace DocumentItemDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(new List<xcuda_PreviousItem>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_PreviousItem>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(new List<xcuda_PreviousItem>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_PreviousItem>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -272,8 +272,8 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByBatch(string exp,
-                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace DocumentItemDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(new List<xcuda_PreviousItem>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_PreviousItem>();
 
 
                 var batchSize = 500;
@@ -331,7 +331,7 @@ namespace DocumentItemDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -347,8 +347,8 @@ namespace DocumentItemDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByBatchExpressionLst(List<string> expLst,
-                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace DocumentItemDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(new List<xcuda_PreviousItem>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_PreviousItem>();
 
 
                 var batchSize = 500;
@@ -406,7 +406,7 @@ namespace DocumentItemDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -423,7 +423,7 @@ namespace DocumentItemDS.Business.Services
         }
 
 
-        public Task<xcuda_PreviousItem> Updatexcuda_PreviousItem(xcuda_PreviousItem entity)
+        public async Task<xcuda_PreviousItem> Updatexcuda_PreviousItem(xcuda_PreviousItem entity)
         { 
             using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
@@ -435,7 +435,7 @@ namespace DocumentItemDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -480,7 +480,7 @@ namespace DocumentItemDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -493,10 +493,10 @@ namespace DocumentItemDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<xcuda_PreviousItem> Createxcuda_PreviousItem(xcuda_PreviousItem entity)
+        public async Task<xcuda_PreviousItem> Createxcuda_PreviousItem(xcuda_PreviousItem entity)
         {
             try
             {
@@ -506,7 +506,7 @@ namespace DocumentItemDS.Business.Services
                 dbContext.xcuda_PreviousItem.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -523,7 +523,7 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-        public Task<bool> Deletexcuda_PreviousItem(string PreviousItem_Id)
+        public async Task<bool> Deletexcuda_PreviousItem(string PreviousItem_Id)
         {
             try
             {
@@ -533,12 +533,12 @@ namespace DocumentItemDS.Business.Services
                 xcuda_PreviousItem entity = dbContext.xcuda_PreviousItem
 													.SingleOrDefault(x => x.PreviousItem_Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.xcuda_PreviousItem.Attach(entity);
                     dbContext.xcuda_PreviousItem.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -594,23 +594,23 @@ namespace DocumentItemDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<xcuda_PreviousItem>)dbContext.xcuda_PreviousItem; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -629,26 +629,26 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (DocumentItemDSContext dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.xcuda_PreviousItem
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.xcuda_PreviousItem
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.xcuda_PreviousItem
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.xcuda_PreviousItem
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -666,33 +666,33 @@ namespace DocumentItemDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<xcuda_PreviousItem>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<xcuda_PreviousItem>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(new List<xcuda_PreviousItem>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_PreviousItem>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(dbContext.xcuda_PreviousItem
-                            .AsNoTracking()
-                            .OrderBy(y => y.PreviousItem_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xcuda_PreviousItem
+										.AsNoTracking()
+                                        .OrderBy(y => y.PreviousItem_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(dbContext.xcuda_PreviousItem
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.PreviousItem_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xcuda_PreviousItem
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.PreviousItem_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -773,18 +773,18 @@ namespace DocumentItemDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_PreviousItem>()
                 .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
                 .OrderBy("PreviousItem_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -793,18 +793,18 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_PreviousItem>()
                 .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
                 .OrderBy("PreviousItem_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -904,8 +904,8 @@ namespace DocumentItemDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<xcuda_PreviousItem>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                    DocumentItemDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xcuda_PreviousItem>> LoadRangeSelectMany<T>(int startIndex, int count,
+            DocumentItemDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -916,14 +916,14 @@ namespace DocumentItemDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.PreviousItem_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -932,8 +932,8 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xcuda_PreviousItem>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                DocumentItemDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xcuda_PreviousItem>> LoadRangeSelect<T>(int startIndex, int count,
+            DocumentItemDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -944,14 +944,14 @@ namespace DocumentItemDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(set
-                   .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.PreviousItem_Id)
+               return set
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.PreviousItem_Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -984,21 +984,21 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xcuda_PreviousItem>> GetWhereSelectMany<T>(DocumentItemDSContext dbContext,
-                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xcuda_PreviousItem>> GetWhereSelectMany<T>(DocumentItemDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<xcuda_PreviousItem>()
-                    .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<xcuda_PreviousItem>()
+							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xcuda_PreviousItem>)dbContext.Set<T>()
@@ -1010,7 +1010,7 @@ namespace DocumentItemDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1019,21 +1019,21 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xcuda_PreviousItem>> GetWhereSelect<T>(DocumentItemDSContext dbContext,
-                                                                               string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xcuda_PreviousItem>> GetWhereSelect<T>(DocumentItemDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<xcuda_PreviousItem>()
-                    .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<xcuda_PreviousItem>()
+							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xcuda_PreviousItem>)dbContext.Set<T>()
@@ -1045,7 +1045,7 @@ namespace DocumentItemDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xcuda_PreviousItem>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1054,7 +1054,7 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<xcuda_PreviousItem>> Getxcuda_PreviousItemByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1067,7 +1067,7 @@ namespace DocumentItemDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1182,18 +1182,18 @@ namespace DocumentItemDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_PreviousItem>()
                 .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
                 .OrderBy("PreviousItem_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1202,18 +1202,18 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(DocumentItemDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_PreviousItem>()
                 .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
                 .OrderBy("PreviousItem_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             string filePath = context.FilePath;
             ImportStatus finalStatus = ImportStatus.Failed; // Default to Failed
 
-            foreach (var template in context.Templates)
+            foreach (var template in context.MatchedTemplates)
             {
                 int templateId = template.OcrInvoices.Id; // Already checked not null
                 string templateName = template.OcrInvoices.Name ?? "UnknownName";

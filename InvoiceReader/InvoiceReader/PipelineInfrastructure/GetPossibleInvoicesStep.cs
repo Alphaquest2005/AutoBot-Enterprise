@@ -57,9 +57,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 methodStopwatch.Stop();
                 context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                    nameof(Execute), "Successfully identified possible invoice templates", $"PossibleInvoiceCount: {context.Templates?.Count() ?? 0}", methodStopwatch.ElapsedMilliseconds);
+                    nameof(Execute), "Successfully identified possible invoice templates", $"PossibleInvoiceCount: {context.MatchedTemplates?.Count() ?? 0}", methodStopwatch.ElapsedMilliseconds);
                 context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                    nameof(GetPossibleInvoicesStep), $"Successfully identified {context.Templates?.Count() ?? 0} possible invoices for file: {filePath}", methodStopwatch.ElapsedMilliseconds);
+                    nameof(GetPossibleInvoicesStep), $"Successfully identified {context.MatchedTemplates?.Count() ?? 0} possible invoices for file: {filePath}", methodStopwatch.ElapsedMilliseconds);
                 return true;
             }
             catch (Exception ex)
@@ -71,7 +71,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 context.Logger?.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                     nameof(GetPossibleInvoicesStep), "Processing templates", methodStopwatch.ElapsedMilliseconds, errorMessage);
                 context.AddError(errorMessage);
-                context.Templates = new List<Invoice>();
+                context.MatchedTemplates = new List<Invoice>();
                 return false;
             }
         }
@@ -181,7 +181,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                 "GetTemplatesStep.GetTemplates (Refresh)", "ASYNC_EXPECTED");
             var getTemplatesStopwatch = Stopwatch.StartNew();
-            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.Id)).ConfigureAwait(false);
+            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.OcrInvoices.Id)).ConfigureAwait(false);
             getTemplatesStopwatch.Stop();
             context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                 "GetTemplatesStep.GetTemplates (Refresh)", getTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");

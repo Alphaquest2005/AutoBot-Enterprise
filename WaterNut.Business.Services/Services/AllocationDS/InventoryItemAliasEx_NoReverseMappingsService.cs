@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappings(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappings(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AllocationDS.Business.Services
                     IEnumerable<InventoryItemAliasEx_NoReverseMappings> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public Task<InventoryItemAliasEx_NoReverseMappings> GetInventoryItemAliasEx_NoReverseMappingsByKey(string AliasId, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItemAliasEx_NoReverseMappings> GetInventoryItemAliasEx_NoReverseMappingsByKey(string AliasId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AliasId))return Task.FromResult<InventoryItemAliasEx_NoReverseMappings>(null); 
+			   if(string.IsNullOrEmpty(AliasId))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(AliasId);
 				var set = AddIncludes(includesLst, dbContext);
                 InventoryItemAliasEx_NoReverseMappings entity = set.AsNoTracking().SingleOrDefault(x => x.AliasId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(new List<InventoryItemAliasEx_NoReverseMappings>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAliasEx_NoReverseMappings>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(new List<InventoryItemAliasEx_NoReverseMappings>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItemAliasEx_NoReverseMappings>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -260,8 +260,8 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByBatch(string exp,
-                                                                                                                          int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(new List<InventoryItemAliasEx_NoReverseMappings>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAliasEx_NoReverseMappings>();
 
 
                 var batchSize = 500;
@@ -319,7 +319,7 @@ namespace AllocationDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -335,8 +335,8 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByBatchExpressionLst(List<string> expLst,
-                                                                                                                                       int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace AllocationDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(new List<InventoryItemAliasEx_NoReverseMappings>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItemAliasEx_NoReverseMappings>();
 
 
                 var batchSize = 500;
@@ -394,7 +394,7 @@ namespace AllocationDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -411,7 +411,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public Task<InventoryItemAliasEx_NoReverseMappings> UpdateInventoryItemAliasEx_NoReverseMappings(InventoryItemAliasEx_NoReverseMappings entity)
+        public async Task<InventoryItemAliasEx_NoReverseMappings> UpdateInventoryItemAliasEx_NoReverseMappings(InventoryItemAliasEx_NoReverseMappings entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
@@ -423,7 +423,7 @@ namespace AllocationDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -468,7 +468,7 @@ namespace AllocationDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -481,10 +481,10 @@ namespace AllocationDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<InventoryItemAliasEx_NoReverseMappings> CreateInventoryItemAliasEx_NoReverseMappings(InventoryItemAliasEx_NoReverseMappings entity)
+        public async Task<InventoryItemAliasEx_NoReverseMappings> CreateInventoryItemAliasEx_NoReverseMappings(InventoryItemAliasEx_NoReverseMappings entity)
         {
             try
             {
@@ -494,7 +494,7 @@ namespace AllocationDS.Business.Services
                 dbContext.InventoryItemAliasEx_NoReverseMappings.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -511,7 +511,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public Task<bool> DeleteInventoryItemAliasEx_NoReverseMappings(string AliasId)
+        public async Task<bool> DeleteInventoryItemAliasEx_NoReverseMappings(string AliasId)
         {
             try
             {
@@ -521,12 +521,12 @@ namespace AllocationDS.Business.Services
                 InventoryItemAliasEx_NoReverseMappings entity = dbContext.InventoryItemAliasEx_NoReverseMappings
 													.SingleOrDefault(x => x.AliasId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.InventoryItemAliasEx_NoReverseMappings.Attach(entity);
                     dbContext.InventoryItemAliasEx_NoReverseMappings.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -582,23 +582,23 @@ namespace AllocationDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<InventoryItemAliasEx_NoReverseMappings>)dbContext.InventoryItemAliasEx_NoReverseMappings; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -617,26 +617,26 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (AllocationDSContext dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.InventoryItemAliasEx_NoReverseMappings
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.InventoryItemAliasEx_NoReverseMappings
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.InventoryItemAliasEx_NoReverseMappings
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.InventoryItemAliasEx_NoReverseMappings
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -654,33 +654,33 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(new List<InventoryItemAliasEx_NoReverseMappings>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAliasEx_NoReverseMappings>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(dbContext.InventoryItemAliasEx_NoReverseMappings
-                            .AsNoTracking()
-                            .OrderBy(y => y.AliasId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.InventoryItemAliasEx_NoReverseMappings
+										.AsNoTracking()
+                                        .OrderBy(y => y.AliasId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(dbContext.InventoryItemAliasEx_NoReverseMappings
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.AliasId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.InventoryItemAliasEx_NoReverseMappings
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.AliasId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -755,18 +755,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
                 .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
                 .OrderBy("AliasId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -775,18 +775,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
                 .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
                 .OrderBy("AliasId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -874,8 +874,8 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                                        AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRangeSelectMany<T>(int startIndex, int count,
+            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -886,14 +886,14 @@ namespace AllocationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.AliasId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -902,8 +902,8 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                                    AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> LoadRangeSelect<T>(int startIndex, int count,
+            AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -914,14 +914,14 @@ namespace AllocationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(set
-                   .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.AliasId)
+               return set
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.AliasId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -954,21 +954,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
-                                                                                                       string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
-                    .Where(exp == "All" || exp == null?"AliasId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
+							.Where(exp == "All" || exp == null?"AliasId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<InventoryItemAliasEx_NoReverseMappings>)dbContext.Set<T>()
@@ -980,7 +980,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -989,21 +989,21 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetWhereSelect<T>(AllocationDSContext dbContext,
-                                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetWhereSelect<T>(AllocationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
-                    .Where(exp == "All" || exp == null?"AliasId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
+							.Where(exp == "All" || exp == null?"AliasId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<InventoryItemAliasEx_NoReverseMappings>)dbContext.Set<T>()
@@ -1015,7 +1015,7 @@ namespace AllocationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<InventoryItemAliasEx_NoReverseMappings>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1024,7 +1024,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1036,7 +1036,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1052,7 +1052,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
         {
             try
             {
@@ -1064,7 +1064,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1080,7 +1080,7 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByAliasItemId(string AliasItemId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<InventoryItemAliasEx_NoReverseMappings>> GetInventoryItemAliasEx_NoReverseMappingsByAliasItemId(string AliasItemId, List<string> includesLst = null)
         {
             try
             {
@@ -1092,7 +1092,7 @@ namespace AllocationDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AliasItemId.ToString() == AliasItemId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1201,18 +1201,18 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
                 .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
                 .OrderBy("AliasId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1221,18 +1221,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(AllocationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemAliasEx_NoReverseMappings>()
                 .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
                 .OrderBy("AliasId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
