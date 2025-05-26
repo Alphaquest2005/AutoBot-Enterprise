@@ -340,3 +340,26 @@ __pycache__/
 /WaterNut.Business.Entities/Generated Interface Implementation/AllocationDS/IEntryDataDetail/EntryDataDetails-Joseph-PC.cs
 /WaterNut.Business.Entities/Generated Interface Implementation/AllocationDS/IEntryDataDetail/EntryDataDetails-Joseph-PC-2.cs
 /Roo-Code-main
+
+# Added by Claude Task Master
+# Logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+# Environment variables
+.env
+# Editor directories and files
+.idea
+.vscode
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+.DS_Store
+# Task files
+tasks.json
+tasks/ 

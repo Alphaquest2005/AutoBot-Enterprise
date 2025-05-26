@@ -1,0 +1,64 @@
+# AutoBot-Enterprise OCR Enhancement PRD
+## Generated using Augment Context Analysis
+
+### Project Overview
+Enhance the existing OCR correction system based on comprehensive codebase analysis.
+
+### Current System Analysis (Context-Driven)
+
+#### Existing Components Identified:
+1. **OCRCorrectionRules Table**: Database-driven correction patterns
+2. **ShipmentUtils.cs**: Correction orchestration with AttemptImportCorrection()
+3. **EmailProcessor.cs**: Email processing workflow integration
+4. **ImportIssueLog**: Detailed issue tracking and resolution logging
+5. **OCRContext**: Entity Framework context for OCR operations
+
+#### Current Correction Capabilities:
+- Amazon: Missing shipping charges and tax amounts
+- TEMU: Coupon deductions and shipping fees
+- General: Currency parsing and number formatting
+
+### Enhancement Requirements
+
+#### 1. Expand Correction Rules (Priority: High)
+- Add Shein-specific correction patterns
+- Implement Alibaba invoice corrections
+- Create dynamic rule learning system
+
+#### 2. Improve Success Rate Tracking (Priority: Medium)
+- Enhance SuccessCount/FailureCount metrics in OCRCorrectionRules
+- Add detailed analytics dashboard
+- Implement A/B testing for correction patterns
+
+#### 3. Advanced Pattern Recognition (Priority: High)
+- Machine learning-based pattern detection
+- Context-aware field mapping
+- Multi-language invoice support
+
+#### 4. Integration Enhancements (Priority: Medium)
+- Real-time correction feedback loop
+- Automated rule generation from failed cases
+- Enhanced logging and monitoring
+
+### Technical Implementation
+
+#### Database Changes:
+- Extend OCRCorrectionRules with ML confidence scores
+- Add new tables for pattern learning
+- Enhance ImportIssueLog with correction analytics
+
+#### Code Modifications:
+- Extend ShipmentUtils correction methods
+- Add new correction algorithms
+- Integrate with existing EmailProcessor workflow
+
+### Success Metrics
+- Increase correction success rate from current baseline to 95%
+- Reduce manual intervention by 80%
+- Improve processing speed by 50%
+
+### Dependencies
+- Existing OCR infrastructure
+- EmailProcessor workflow
+- Database schema (OCRCorrectionRules, ImportIssueLog)
+- ShipmentUtils correction framework

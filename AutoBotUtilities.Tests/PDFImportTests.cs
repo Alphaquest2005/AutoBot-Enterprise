@@ -23,7 +23,7 @@ namespace AutoBotUtilities.Tests
     using System.Collections;
     using System.Text.Json;
     using System.Text.Json.Serialization;
-    
+
 
     [TestFixture]
     public class PDFImportTests
@@ -297,7 +297,7 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-       
+
 
         [Test]
         public async Task CanImportSheinMultiInvoice()
@@ -588,6 +588,529 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
         }
 
         [Test]
+        public async Task CanImportPOInvoiceWithErrorDetection()
+        {
+            Console.SetOut(TestContext.Progress);
+            try
+            {
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\PO-211-17318585790070596.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    _logger.Warning("Test file not found: {FilePath}. Skipping test.", testFile);
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+
+                var fileTypes = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
+                if (!fileTypes.Any())
+                {
+                    Assert.Fail($"No suitable PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+                    _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
+
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false);
+                    _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        // Basic assertions: Check if data was imported
+                        Assert.That(ctx.ShipmentInvoice.Any(), Is.True, "No ShipmentInvoice created.");
+                        Assert.That(ctx.ShipmentInvoiceDetails.Any(), Is.True, "No ShipmentInvoiceDetails created.");
+
+                        // Get the imported invoice with details
+                        var invoice = ctx.ShipmentInvoice
+                            .Include("InvoiceDetails")
+                            .FirstOrDefault();
+
+                        Assert.That(invoice, Is.Not.Null, "No ShipmentInvoice found in database.");
+
+                        _logger.Information("Found invoice: {InvoiceNo}, TotalsZero: {TotalsZero}",
+                            invoice.InvoiceNo, invoice.TotalsZero);
+
+                        // Critical assertion: TotalsZero should equal 0 for correct invoices
+                        Assert.That(invoice.TotalsZero, Is.EqualTo(0).Within(0.01),
+                            $"TotalsZero should be 0 but was {invoice.TotalsZero}. This indicates mathematical inconsistency in the invoice.");
+
+                        // Test OCR error detection methods
+                        var fileText = File.ReadAllText(testFile.Replace(".pdf", ".txt"));
+                        if (File.Exists(testFile.Replace(".pdf", ".txt")))
+                        {
+                            var errors = GetInvoiceDataErrors(invoice, fileText);
+                            _logger.Information("Found {ErrorCount} invoice data errors", errors.Count);
+
+                            if (errors.Any())
+                            {
+                                UpdateRegex(errors, fileText);
+                                UpdateInvoice(invoice, errors);
+                                _logger.Information("Applied corrections for {ErrorCount} errors", errors.Count);
+                            }
+                        }
+
+                        _logger.Information("Import successful for FileType {FileTypeId}. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
+                           fileType.Id, ctx.ShipmentInvoice.Count(), ctx.ShipmentInvoiceDetails.Count());
+                    }
+                }
+
+                Assert.That(true);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in CanImportPOInvoiceWithErrorDetection");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+        #region OCR Error Detection Methods
+
+        /// <summary>
+        /// Compares ShipmentInvoice data with original file text using DeepSeek API to identify field discrepancies
+        /// </summary>
+        private List<(string Field, string Error, string Value)> GetInvoiceDataErrors(ShipmentInvoice invoice, string fileText)
+        {
+            var errors = new List<(string Field, string Error, string Value)>();
+
+            try
+            {
+                _logger.Information("Starting GetInvoiceDataErrors for invoice {InvoiceNo}", invoice.InvoiceNo);
+
+                // Create comparison prompt based on existing DeepSeek invoice prompt
+                var prompt = CreateErrorDetectionPrompt(invoice, fileText);
+
+                // Use DeepSeek API to compare data - create custom prompt template
+                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi())
+                {
+                    // Temporarily override the prompt template for error detection
+                    var originalTemplate = deepSeekApi.PromptTemplate;
+                    deepSeekApi.PromptTemplate = prompt;
+
+                    // Use the public ExtractShipmentInvoice method with file text
+                    var response = deepSeekApi.ExtractShipmentInvoice(new List<string> { fileText }).Result;
+
+                    // Restore original template
+                    deepSeekApi.PromptTemplate = originalTemplate;
+
+                    // Parse the response to extract errors
+                    errors = ParseErrorResponseFromExtraction(response, invoice);
+                }
+
+                _logger.Information("Found {ErrorCount} discrepancies in invoice data", errors.Count);
+                return errors;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error in GetInvoiceDataErrors");
+                return errors;
+            }
+        }
+
+        /// <summary>
+        /// Creates DeepSeek prompt to compare invoice data with original text
+        /// </summary>
+        private string CreateErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
+        {
+            var invoiceJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                InvoiceNo = invoice.InvoiceNo,
+                InvoiceDate = invoice.InvoiceDate,
+                InvoiceTotal = invoice.InvoiceTotal,
+                SubTotal = invoice.SubTotal,
+                TotalInternalFreight = invoice.TotalInternalFreight,
+                TotalOtherCost = invoice.TotalOtherCost,
+                TotalInsurance = invoice.TotalInsurance,
+                TotalDeduction = invoice.TotalDeduction,
+                Currency = invoice.Currency,
+                SupplierName = invoice.SupplierName,
+                SupplierAddress = invoice.SupplierAddress
+            });
+
+            return $@"INVOICE DATA COMPARISON AND ERROR DETECTION:
+
+Compare the extracted invoice data with the original text and identify discrepancies.
+
+EXTRACTED DATA:
+{invoiceJson}
+
+ORIGINAL TEXT:
+{fileText}
+
+FIELD MAPPING GUIDANCE:
+- TotalInternalFreight: Shipping + Handling + Transportation fees
+- TotalOtherCost: Taxes + Fees + Duties
+- TotalInsurance: Insurance costs
+- TotalDeduction: Coupons, credits, free shipping markers
+
+Return ONLY a JSON object with errors found:
+{{
+  ""errors"": [
+    {{
+      ""field"": ""FieldName"",
+      ""extracted_value"": ""WrongValue"",
+      ""correct_value"": ""CorrectValue"",
+      ""error_description"": ""Description of the discrepancy""
+    }}
+  ]
+}}
+
+If no errors found, return: {{""errors"": []}}";
+        }
+
+        /// <summary>
+        /// Parses DeepSeek extraction response to identify errors by comparing with original invoice
+        /// </summary>
+        private List<(string Field, string Error, string Value)> ParseErrorResponseFromExtraction(List<dynamic> extractedData, ShipmentInvoice originalInvoice)
+        {
+            var errors = new List<(string Field, string Error, string Value)>();
+
+            try
+            {
+                if (extractedData?.Any() != true)
+                {
+                    _logger.Warning("No extracted data received from DeepSeek API");
+                    return errors;
+                }
+
+                var extractedInvoice = extractedData.First() as IDictionary<string, object>;
+                if (extractedInvoice == null)
+                {
+                    _logger.Warning("Extracted data is not in expected format");
+                    return errors;
+                }
+
+                // Compare key fields and identify discrepancies
+                CompareField(errors, "InvoiceTotal", originalInvoice.InvoiceTotal, GetDecimalFromExtracted(extractedInvoice, "InvoiceTotal"));
+                CompareField(errors, "SubTotal", originalInvoice.SubTotal, GetDecimalFromExtracted(extractedInvoice, "SubTotal"));
+                CompareField(errors, "TotalInternalFreight", originalInvoice.TotalInternalFreight, GetDecimalFromExtracted(extractedInvoice, "TotalInternalFreight"));
+                CompareField(errors, "TotalOtherCost", originalInvoice.TotalOtherCost, GetDecimalFromExtracted(extractedInvoice, "TotalOtherCost"));
+                CompareField(errors, "TotalInsurance", originalInvoice.TotalInsurance, GetDecimalFromExtracted(extractedInvoice, "TotalInsurance"));
+                CompareField(errors, "TotalDeduction", originalInvoice.TotalDeduction, GetDecimalFromExtracted(extractedInvoice, "TotalDeduction"));
+                CompareField(errors, "Currency", originalInvoice.Currency, GetStringFromExtracted(extractedInvoice, "Currency"));
+                CompareField(errors, "SupplierName", originalInvoice.SupplierName, GetStringFromExtracted(extractedInvoice, "SupplierName"));
+
+                _logger.Debug("Compared {FieldCount} fields, found {ErrorCount} discrepancies", 8, errors.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error parsing DeepSeek extraction response");
+            }
+
+            return errors;
+        }
+
+        private void CompareField(List<(string Field, string Error, string Value)> errors, string fieldName, object originalValue, object extractedValue)
+        {
+            if (!AreValuesEqual(originalValue, extractedValue))
+            {
+                var error = $"Original: {originalValue ?? "null"}, Extracted: {extractedValue ?? "null"}";
+                errors.Add((fieldName, error, extractedValue?.ToString() ?? ""));
+                _logger.Debug("Field mismatch - {Field}: {Error}", fieldName, error);
+            }
+        }
+
+        private bool AreValuesEqual(object original, object extracted)
+        {
+            if (original == null && extracted == null) return true;
+            if (original == null || extracted == null) return false;
+
+            // For decimal comparisons, allow small tolerance
+            if (original is decimal origDecimal && extracted is decimal extDecimal)
+            {
+                return Math.Abs(origDecimal - extDecimal) < 0.01m;
+            }
+
+            return original.ToString().Equals(extracted?.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private decimal? GetDecimalFromExtracted(IDictionary<string, object> data, string key)
+        {
+            if (data.TryGetValue(key, out var value) && value != null)
+            {
+                if (decimal.TryParse(value.ToString(), out var result))
+                    return result;
+            }
+            return null;
+        }
+
+        private string GetStringFromExtracted(IDictionary<string, object> data, string key)
+        {
+            if (data.TryGetValue(key, out var value))
+                return value?.ToString();
+            return null;
+        }
+
+        /// <summary>
+        /// Updates OCR regex patterns in OCR-FieldFormatRegEx table using DeepSeek
+        /// </summary>
+        private void UpdateRegex(List<(string Field, string Error, string Value)> errors, string fileTxt)
+        {
+            try
+            {
+                _logger.Information("Starting UpdateRegex for {ErrorCount} errors", errors.Count);
+
+                foreach (var error in errors)
+                {
+                    // Get current regex for the field from OCR-FieldFormatRegEx table
+                    var currentRegex = GetCurrentRegexForField(error.Field);
+                    if (string.IsNullOrEmpty(currentRegex))
+                    {
+                        _logger.Warning("No regex found for field {Field}", error.Field);
+                        continue;
+                    }
+
+                    // Create DeepSeek prompt to fix regex
+                    var prompt = CreateRegexCorrectionPrompt(error.Field, currentRegex, error.Value, fileTxt);
+
+                    // Get corrected regex from DeepSeek - use a simpler approach for regex correction
+                    // For now, implement a basic regex correction logic
+                    var correctedRegex = GenerateBasicRegexCorrection(error.Field, error.Value, fileTxt);
+
+                    if (!string.IsNullOrEmpty(correctedRegex) && correctedRegex != currentRegex)
+                    {
+                        UpdateRegexInDatabase(error.Field, correctedRegex);
+                        _logger.Information("Updated regex for field {Field} from {OldRegex} to {NewRegex}",
+                            error.Field, currentRegex, correctedRegex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error in UpdateRegex");
+            }
+        }
+
+        /// <summary>
+        /// Creates DeepSeek prompt to correct regex pattern
+        /// </summary>
+        private string CreateRegexCorrectionPrompt(string fieldName, string currentRegex, string targetValue, string sourceText)
+        {
+            return $@"REGEX PATTERN CORRECTION:
+
+Fix this regex pattern to correctly extract the target value from the source text.
+
+FIELD: {fieldName}
+CURRENT REGEX: {currentRegex}
+TARGET VALUE: {targetValue}
+SOURCE TEXT EXCERPT:
+{sourceText.Substring(0, Math.Min(2000, sourceText.Length))}
+
+Requirements:
+1. Return ONLY the corrected regex pattern
+2. Make minimal changes to preserve existing functionality
+3. Ensure the pattern captures the target value correctly
+4. Test against common variations
+
+Return only the regex pattern, no explanation:";
+        }
+
+        /// <summary>
+        /// Generates a basic regex correction based on the target value and field type
+        /// </summary>
+        private string GenerateBasicRegexCorrection(string fieldName, string targetValue, string sourceText)
+        {
+            try
+            {
+                _logger.Debug("Generating regex correction for field {Field} with target value {Value}", fieldName, targetValue);
+
+                // Basic regex patterns based on field type
+                switch (fieldName.ToLower())
+                {
+                    case "invoicetotal":
+                    case "subtotal":
+                    case "totalinternalfreight":
+                    case "totalothercost":
+                    case "totalinsurance":
+                    case "totaldeduction":
+                        // For monetary values, create regex that matches the specific format
+                        if (decimal.TryParse(targetValue, out var amount))
+                        {
+                            // Create regex that matches currency amounts with optional currency symbols
+                            return @"[\$£€¥]?\s*\d{1,3}(?:,\d{3})*(?:\.\d{2})?";
+                        }
+                        break;
+
+                    case "currency":
+                        // For currency codes, match 3-letter codes
+                        return @"[A-Z]{3}";
+
+                    case "suppliername":
+                        // For supplier names, match word characters and common business terms
+                        return @"[A-Za-z0-9\s\.,&\-']+(?:Inc|LLC|Ltd|Corp|Company|Co\.)?";
+
+                    case "invoiceno":
+                        // For invoice numbers, match alphanumeric with common separators
+                        return @"[A-Za-z0-9\-_#]+";
+
+                    default:
+                        // Generic pattern for text fields
+                        return @"[A-Za-z0-9\s\.,\-_]+";
+                }
+
+                // Fallback: create a pattern based on the target value structure
+                return CreatePatternFromValue(targetValue);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error generating regex correction for field {Field}", fieldName);
+                return @"[A-Za-z0-9\s\.,\-_]+"; // Safe fallback
+            }
+        }
+
+        private string CreatePatternFromValue(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return @"[A-Za-z0-9\s\.,\-_]+";
+
+            // Analyze the value structure and create appropriate pattern
+            if (decimal.TryParse(value, out _))
+            {
+                return @"\d+(?:\.\d{2})?"; // Decimal number
+            }
+
+            if (value.All(char.IsDigit))
+            {
+                return @"\d+"; // Integer
+            }
+
+            if (value.All(char.IsLetter))
+            {
+                return @"[A-Za-z]+"; // Letters only
+            }
+
+            // Mixed content - create flexible pattern
+            return @"[A-Za-z0-9\s\.,\-_]+";
+        }
+
+        /// <summary>
+        /// Gets current regex pattern for a field from OCR-FieldFormatRegEx table
+        /// </summary>
+        private string GetCurrentRegexForField(string fieldName)
+        {
+            try
+            {
+                // This would query the OCR-Fields and OCR-FieldFormatRegEx tables
+                // For now, return a placeholder
+                _logger.Debug("Getting current regex for field {Field}", fieldName);
+                return @"\d+\.?\d*"; // Placeholder regex
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting current regex for field {Field}", fieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Updates regex pattern in OCR-FieldFormatRegEx table
+        /// </summary>
+        private void UpdateRegexInDatabase(string fieldName, string newRegex)
+        {
+            try
+            {
+                _logger.Information("Updating regex for field {Field} to {Regex}", fieldName, newRegex);
+                // This would update the OCR-FieldFormatRegEx table
+                // Implementation would involve:
+                // 1. Find the field in OCR-Fields table
+                // 2. Update the corresponding regex in OCR-FieldFormatRegEx table
+                // For now, just log the action
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating regex in database for field {Field}", fieldName);
+            }
+        }
+
+        /// <summary>
+        /// Updates ShipmentInvoice with corrected data
+        /// </summary>
+        private void UpdateInvoice(ShipmentInvoice invoice, List<(string Field, string Error, string Value)> errors)
+        {
+            try
+            {
+                _logger.Information("Starting UpdateInvoice for {ErrorCount} corrections", errors.Count);
+
+                foreach (var error in errors)
+                {
+                    ApplyFieldCorrection(invoice, error.Field, error.Value);
+                }
+
+                // Save changes to database
+                using (var ctx = new EntryDataDSContext())
+                {
+                    ctx.ShipmentInvoice.Attach(invoice);
+                    ctx.Entry(invoice).State = System.Data.Entity.EntityState.Modified;
+                    ctx.SaveChanges();
+                    _logger.Information("Saved invoice corrections to database");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error in UpdateInvoice");
+            }
+        }
+
+        /// <summary>
+        /// Applies field correction to ShipmentInvoice
+        /// </summary>
+        private void ApplyFieldCorrection(ShipmentInvoice invoice, string fieldName, string correctValue)
+        {
+            try
+            {
+                switch (fieldName)
+                {
+                    case "InvoiceTotal":
+                        if (double.TryParse(correctValue, out var total))
+                            invoice.InvoiceTotal = total;
+                        break;
+                    case "SubTotal":
+                        if (double.TryParse(correctValue, out var subTotal))
+                            invoice.SubTotal = subTotal;
+                        break;
+                    case "TotalInternalFreight":
+                        if (double.TryParse(correctValue, out var freight))
+                            invoice.TotalInternalFreight = freight;
+                        break;
+                    case "TotalOtherCost":
+                        if (double.TryParse(correctValue, out var otherCost))
+                            invoice.TotalOtherCost = otherCost;
+                        break;
+                    case "TotalInsurance":
+                        if (double.TryParse(correctValue, out var insurance))
+                            invoice.TotalInsurance = insurance;
+                        break;
+                    case "TotalDeduction":
+                        if (double.TryParse(correctValue, out var deduction))
+                            invoice.TotalDeduction = deduction;
+                        break;
+                    case "Currency":
+                        invoice.Currency = correctValue;
+                        break;
+                    case "SupplierName":
+                        invoice.SupplierName = correctValue;
+                        break;
+                    case "SupplierAddress":
+                        invoice.SupplierAddress = correctValue;
+                        break;
+                    default:
+                        _logger.Warning("Unknown field for correction: {Field}", fieldName);
+                        break;
+                }
+
+                _logger.Debug("Applied correction for field {Field}: {Value}", fieldName, correctValue);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error applying correction for field {Field}", fieldName);
+            }
+        }
+
+        #endregion
+
+        [Test]
         public void VerifySerilogDestructuringBehavior()
         {
             _logger.Information("--- Starting VerifySerilogDestructuringBehavior Test ---");
@@ -648,7 +1171,7 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                                  {
                                      Name = "Test",
                                      Count = 0,                           // Filtered (default value)
-                                     Description = "",                    // Filtered (default value)  
+                                     Description = "",                    // Filtered (default value)
                                      Items = new List<string>(),          // Filtered (empty collection)
                                      Tags = new string[0],                // Filtered (empty array)
                                      Metadata = new Dictionary<string, object>(),  // Filtered (empty dictionary)

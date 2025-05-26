@@ -17,7 +17,7 @@ namespace AutoBot
 {
     public class FileUtils
     {
-       
+
         public static Dictionary<string, Func<ILogger, FileTypes, FileInfo[], Task>> FileActions =>
             new Dictionary<string, Func<ILogger, FileTypes, FileInfo[], Task>>(WaterNut.DataSpace.Utils.ignoreCase)
             {
@@ -111,7 +111,7 @@ namespace AutoBot
                 {"ImportAllAsycudaDocumentsInDataFolder", (log, ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false, log) }, // Signature needs update in ImportAllAsycudaDocumentsInDataFolderUtils
                 {"ImportEntries",(log, ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString(), log) }, // Signature needs update in DocumentUtils
                 {"ImportShipmentInfoFromTxt", (log, types, infos) => ShipmentUtils.ImportShipmentInfoFromTxt(types, infos, log) }, // Added mapping for new action, Signature needs update in ShipmentUtils
-
+                {"CorrectImportIssues", (log, ft, fs) => ShipmentUtils.CorrectImportIssues(ft, fs, log) }, // New action for correcting import issues
 
             };
             // Removed extra closing brace here

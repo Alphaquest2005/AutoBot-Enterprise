@@ -16,8 +16,12 @@ using static java.util.Locale;
 
 namespace WaterNut.DataSpace
 {
+    using System.Data.Entity.Infrastructure.Design;
     using System.Data.SqlClient;
     using System.Diagnostics;
+    using System.IO;
+
+    using MoreLinq;
 
     public class ShipmentInvoiceImporter
     {
@@ -47,6 +51,10 @@ namespace WaterNut.DataSpace
                 logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ExtractShipmentInvoices", "ASYNC_EXPECTED");
                 var extractStopwatch = Stopwatch.StartNew();
                 var shipmentInvoices = await ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData, logger).ConfigureAwait(false); // Pass logger
+
+
+
+
                 extractStopwatch.Stop();
                 logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "ExtractShipmentInvoices", extractStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -61,9 +69,13 @@ namespace WaterNut.DataSpace
                 logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                     nameof(ProcessShipmentInvoice), "DataFiltering", "Filtered for good invoices.", $"GoodInvoiceCount: {goodInvoices.Count}");
 
+
+                //Create Shipment Invoice Corrector
+                var correctedInvoices = CorrectInvoices(goodInvoices, droppedFilePath);
+
                 logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SaveInvoicePOsAsync", "ASYNC_EXPECTED");
                 var saveStopwatch = Stopwatch.StartNew();
-                await SaveInvoicePOsAsync(invoicePOs, goodInvoices).ConfigureAwait(false);
+                await SaveInvoicePOsAsync(invoicePOs, correctedInvoices).ConfigureAwait(false);
                 saveStopwatch.Stop();
                 logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "SaveInvoicePOsAsync", saveStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -87,7 +99,191 @@ namespace WaterNut.DataSpace
                 return false;
             }
         }
- 
+
+        private List<ShipmentInvoice> CorrectInvoices(List<ShipmentInvoice> goodInvoices, string droppedFilePath)
+        {
+            goodInvoices.Where(x => x.TotalsZero != 0)
+                .ForEach(
+                    x =>
+                        {
+                            var fileTxt = File.ReadAllText(droppedFilePath + ".txt");
+                            List<(string Field, string Error, string Value)> errors = GetInvoiceDataErrors(x, fileTxt);
+                            UpdateInvoice(x,errors);
+                            UpdateRegex(errors, fileTxt);
+
+                        });
+            return goodInvoices;
+        }
+
+        private void UpdateRegex(List<(string Field, string Error, string Value)> errors, string fileTxt)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        private void UpdateInvoice(ShipmentInvoice shipmentInvoice, List<(string Field, string Error, string Value)> errors)
+        {
+            if (shipmentInvoice == null || errors == null || !errors.Any())
+                return;
+
+            foreach (var error in errors)
+            {
+                try
+                {
+                    // Apply corrections based on the field name and corrected value
+                    switch (error.Field.ToUpperInvariant())
+                    {
+                        case "TOTALINTERNALFREIGHT":
+                            if (double.TryParse(error.Value, out var internalFreight))
+                            {
+                                shipmentInvoice.TotalInternalFreight = internalFreight;
+                            }
+                            break;
+
+                        case "TOTALOTHERCOST":
+                            if (double.TryParse(error.Value, out var otherCost))
+                            {
+                                shipmentInvoice.TotalOtherCost = otherCost;
+                            }
+                            break;
+
+                        case "TOTALINSURANCE":
+                            if (double.TryParse(error.Value, out var insurance))
+                            {
+                                shipmentInvoice.TotalInsurance = insurance;
+                            }
+                            break;
+
+                        case "TOTALDEDUCTION":
+                            if (double.TryParse(error.Value, out var deduction))
+                            {
+                                shipmentInvoice.TotalDeduction = deduction;
+                            }
+                            break;
+
+                        case "INVOICETOTAL":
+                            if (double.TryParse(error.Value, out var invoiceTotal))
+                            {
+                                shipmentInvoice.InvoiceTotal = invoiceTotal;
+                            }
+                            break;
+
+                        case "SUBTOTAL":
+                            if (double.TryParse(error.Value, out var subTotal))
+                            {
+                                shipmentInvoice.SubTotal = subTotal;
+                            }
+                            break;
+
+                        default:
+                            // Log unhandled field types for future enhancement
+                            Console.WriteLine($"Unhandled field correction: {error.Field} = {error.Value}");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but continue processing other corrections
+                    Console.WriteLine($"Error applying correction for field {error.Field}: {ex.Message}");
+                }
+            }
+
+            // Mark the invoice as modified for Entity Framework tracking
+            shipmentInvoice.TrackingState = TrackingState.Modified;
+        }
+
+        private List<(string Field, string Error, string Value)> GetInvoiceDataErrors(
+            ShipmentInvoice shipmentInvoice,
+            string fileTxt)
+        {
+            var errors = new List<(string Field, string Error, string Value)>();
+
+            try
+            {
+                if (shipmentInvoice == null || string.IsNullOrEmpty(fileTxt))
+                    return errors;
+
+                // Create comparison prompt based on existing DeepSeek invoice prompt
+                var prompt = CreateErrorDetectionPrompt(shipmentInvoice, fileTxt);
+
+                // Use DeepSeek API to compare data - create custom prompt template
+                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi())
+                {
+                    // Temporarily override the prompt template for error detection
+                    var originalTemplate = deepSeekApi.PromptTemplate;
+                    deepSeekApi.PromptTemplate = prompt;
+
+                    // Use the public ExtractShipmentInvoice method with file text
+                    var response = deepSeekApi.ExtractShipmentInvoice(new List<string> { fileTxt }).Result;
+
+                    // Restore original template
+                    deepSeekApi.PromptTemplate = originalTemplate;
+
+                    // Parse the response to extract errors
+                    errors = ParseErrorResponseFromExtraction(response, shipmentInvoice);
+                }
+
+                return errors;
+            }
+            catch (Exception ex)
+            {
+                // Log the error but continue processing
+                Console.WriteLine($"Error in GetInvoiceDataErrors: {ex.Message}");
+                return errors;
+            }
+        }
+
+        /// <summary>
+        /// Creates DeepSeek prompt to compare invoice data with original text
+        /// </summary>
+        private string CreateErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
+        {
+            var invoiceJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                InvoiceNo = invoice.InvoiceNo,
+                InvoiceDate = invoice.InvoiceDate,
+                InvoiceTotal = invoice.InvoiceTotal,
+                SubTotal = invoice.SubTotal,
+                TotalInternalFreight = invoice.TotalInternalFreight,
+                TotalOtherCost = invoice.TotalOtherCost,
+                TotalInsurance = invoice.TotalInsurance,
+                TotalDeduction = invoice.TotalDeduction,
+                Currency = invoice.Currency,
+                SupplierName = invoice.SupplierName,
+                SupplierAddress = invoice.SupplierAddress
+            });
+
+            return $@"INVOICE DATA COMPARISON AND ERROR DETECTION:
+
+Compare the extracted invoice data with the original text and identify discrepancies.
+
+EXTRACTED DATA:
+{invoiceJson}
+
+ORIGINAL TEXT:
+{fileText}
+
+FIELD MAPPING GUIDANCE:
+- TotalInternalFreight: Shipping + Handling + Transportation fees
+- TotalOtherCost: Taxes + Fees + Duties
+- TotalInsurance: Insurance costs
+- TotalDeduction: Coupons, credits, free shipping markers
+
+Return ONLY a JSON object with errors found:
+{{
+  ""errors"": [
+    {{
+      ""field"": ""FieldName"",
+      ""extracted_value"": ""WrongValue"",
+      ""correct_value"": ""CorrectValue"",
+      ""error_description"": ""Description of the discrepancy""
+    }}
+  ]
+}}
+
+If no errors found, return: {{""errors"": []}}";
+        }
+
         private static async Task<List<ShipmentInvoice>> ExtractShipmentInvoices(FileTypes fileType, string emailId, string droppedFilePath, List<IDictionary<string, object>> itms, ILogger logger) // Added ILogger parameter
         {
             var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
@@ -140,7 +336,7 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e); // Keep Console.WriteLine for now
                 throw;
             }
- 
+
             async Task<ShipmentInvoice> ProcessInvoiceItem(IDictionary<string, object> x, ILogger itemLogger) // Added ILogger parameter
             {
                 var itemMethodStopwatch = Stopwatch.StartNew(); // Start stopwatch for item method
@@ -153,7 +349,7 @@ namespace WaterNut.DataSpace
                         nameof(ProcessInvoiceItem), $"Processing invoice item with keys: {string.Join(",", x?.Keys ?? Enumerable.Empty<string>())}");
 
                     var invoice = new ShipmentInvoice();
- 
+
                     if (x["InvoiceDetails"] == null)
                     {
                         itemLogger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
@@ -165,7 +361,7 @@ namespace WaterNut.DataSpace
                             nameof(ProcessInvoiceItem), "Skipped item due to null InvoiceDetails", "Returned null", itemMethodStopwatch.ElapsedMilliseconds);
                         return null; // throw new ApplicationException("Template Details is null");
                     }
-                
+
                     var items = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                         .Where(z => z != null)
                         .Where(z => z.ContainsKey("ItemDescription"))
@@ -187,7 +383,7 @@ namespace WaterNut.DataSpace
                     classifiedStopwatch.Stop();
                     itemLogger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "InventoryItemsExService.ClassifiedItms", classifiedStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
- 
+
                     invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
                     invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ? x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
                     invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
@@ -205,7 +401,7 @@ namespace WaterNut.DataSpace
                     invoice.TotalOtherCost = x.ContainsKey("TotalOtherCost") ? Convert.ToDouble(x["TotalOtherCost"].ToString()) : (double?)null;
                     invoice.TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null;
                     invoice.TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null;
- 
+
                     itemLogger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ProcessInvoiceDetails", "SYNC_EXPECTED");
                     var processDetailsStopwatch = Stopwatch.StartNew();
                     invoice.InvoiceDetails = ProcessInvoiceDetails(x, classifiedItms);
@@ -219,12 +415,12 @@ namespace WaterNut.DataSpace
                     processExtraInfoStopwatch.Stop();
                     itemLogger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         "ProcessExtraInfo", processExtraInfoStopwatch.ElapsedMilliseconds, "Sync call returned");
- 
+
                     invoice.EmailId = emailId;
                     invoice.SourceFile = droppedFilePath;
                     invoice.FileTypeId = fileType.Id;
                     invoice.TrackingState = TrackingState.Added;
- 
+
                     itemMethodStopwatch.Stop(); // Stop stopwatch on success
                     itemLogger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
                         nameof(ProcessInvoiceItem), "Invoice item processed successfully", $"InvoiceNo: {invoice.InvoiceNo}, ItemCount: {invoice.InvoiceDetails.Count}", itemMethodStopwatch.ElapsedMilliseconds);
@@ -244,12 +440,12 @@ namespace WaterNut.DataSpace
                     throw;
                 }
             }
- 
+
             List<InvoiceDetails> ProcessInvoiceDetails(IDictionary<string, object> x, Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)> classifiedItms)
             {
                 if (!x.ContainsKey("InvoiceDetails"))
                     return new List<InvoiceDetails>();
- 
+
                 return ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                     .Where(z => z != null)
                     .Where(z => z.ContainsKey("ItemDescription") && z["ItemDescription"] != null)
@@ -258,7 +454,7 @@ namespace WaterNut.DataSpace
                         var details = new InvoiceDetails();
                         var qty = z.ContainsKey("Quantity") ? Convert.ToDouble(z["Quantity"].ToString()) : 1;
                         details.Quantity = qty;
- 
+
                         var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString())
                             ? classifiedItms[z["ItemDescription"].ToString()]
                             : (
@@ -268,9 +464,9 @@ namespace WaterNut.DataSpace
                                 Category: string.Empty,
                                 CategoryTariffCode: string.Empty
                             );
- 
+
                         var dbCategoryTariffs = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == classifiedItm.Category);
- 
+
                         details.ItemNumber = classifiedItm.ItemNumber;
                         details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
                         details.TariffCode = classifiedItm.TariffCode;
@@ -309,12 +505,12 @@ namespace WaterNut.DataSpace
                         return details;
                     }).ToList();
             }
- 
+
             List<InvoiceExtraInfo> ProcessExtraInfo(IDictionary<string, object> x)
             {
                 if (!x.ContainsKey("ExtraInfo"))
                     return new List<InvoiceExtraInfo>();
- 
+
                 return ((List<IDictionary<string, object>>)x["ExtraInfo"])
                     .Where(z => z.Keys.Any())
                     .SelectMany(z => z)
@@ -417,7 +613,7 @@ namespace WaterNut.DataSpace
                 USING (SELECT @Category AS Category, @TariffCode AS TariffCode) AS source
                 ON target.Category = source.Category AND target.TariffCode = source.TariffCode
                 WHEN NOT MATCHED THEN
-                    INSERT (Category, TariffCode) 
+                    INSERT (Category, TariffCode)
                     VALUES (source.Category, source.TariffCode);";
 
                     await ctx.Database.ExecuteSqlCommandAsync(sql,
@@ -438,193 +634,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-        //csharp// Using anonymous type
-        //    var results = await(from id in ctx.InvoiceDetails
-        //    join ct in ctx.CategoryTariffs on new { id.Category, TariffCode = id.CategoryTariffCode
-        //}
-        //equals new { ct.Category, ct.TariffCode
-        //}
-        //select new { InvoiceDetail = id, CategoryTariff = ct })
-        //.ToListAsync();
-
-        //// Using tuple (C# 7+)
-        //var results = await (from id in ctx.InvoiceDetails
-        //                     join ct in ctx.CategoryTariffs on new { id.Category, TariffCode = id.CategoryTariffCode }
-        //                         equals new { ct.Category, ct.TariffCode }
-        //                     select new ValueTuple<InvoiceDetails, CategoryTariffs>(id, ct))
-        //    .ToListAsync();
-
-        //public bool ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
-        //{
-        //    try
-        //    {
-        //        var invoiceData = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
-        //        var shipmentInvoices = ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData);
-        //        var invoices = ReduceLstByInvoiceNo(shipmentInvoices);
-        //        var goodInvoices = invoices.Where(x => x.InvoiceDetails.All(z => !string.IsNullOrEmpty(z.ItemDescription)))
-        //                                                            .Where(x => x.InvoiceDetails.Any())
-        //                                                            .ToList();
-
-        //        SaveInvoicePOs(invoicePOs, goodInvoices);
-        //        return true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        return false;
-        //        //throw;
-        //    }
-        //}
-
-        //private static List<ShipmentInvoice> ExtractShipmentInvoices(FileTypes fileType, string emailId, string droppedFilePath, List<IDictionary<string, object>> itms)
-        //{
-        //    var lstdata = itms.Select(x => (IDictionary<string, object>)x)
-        //        .Where(x => x != null && x.Any())
-        //        .Select(x =>
-        //        {
-        //            var invoice = new ShipmentInvoice();
-
-        //            var Itms = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-        //                .Where(z => z != null)
-        //                .Where(z => z.ContainsKey("ItemDescription"))
-        //                .Select(z =>
-        //                {
-        //                    //return a named tuple with item number,item description and tariffcode
-        //                    return (ItemNumber: z["ItemNumber"]!=null ? z["ItemNumber"].ToString() : null,
-        //                        ItemDescription: z["ItemDescription"].ToString(),
-        //                        TariffCode: x.ContainsKey("TariffCode") ? x["TariffCode"]?.ToString() : "");
-        //                }).ToList();
-
-        //            var classifiedItms = InventoryItemsExService.ClassifiedItms(Itms).Result;
-
-        //            invoice.ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
-        //            invoice.InvoiceNo = x.ContainsKey("InvoiceNo") && x["InvoiceNo"] != null ?  x["InvoiceNo"].ToString().Truncate(50) : "Unknown";
-        //            invoice.PONumber = x.ContainsKey("PONumber") && x["PONumber"] != null ? x["PONumber"].ToString() : null;
-        //            invoice.InvoiceDate = x.ContainsKey("InvoiceDate") ?  DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue;
-        //            invoice.InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null; //Because of MPI not
-        //            invoice.SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null;
-        //            invoice.ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count;
-        //            invoice.SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null;
-        //            invoice.SupplierName = (x.ContainsKey("SupplierName") ? x["SupplierName"]?.ToString() : null)??(x.ContainsKey("SupplierCode") ? x["SupplierCode"]?.ToString() : null);
-        //            invoice.SupplierAddress = x.ContainsKey("SupplierAddress") ? x["SupplierAddress"]?.ToString() : null;
-        //            invoice.SupplierCountry = x.ContainsKey("SupplierCountryCode") ? x["SupplierCountryCode"]?.ToString() : null;
-        //            invoice.FileLineNumber = itms.IndexOf(x) + 1;
-        //            invoice.Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null;
-        //            invoice.TotalInternalFreight = x.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(x["TotalInternalFreight"].ToString()) : (double?)null;
-        //            invoice.TotalOtherCost = x.ContainsKey("TotalOtherCost")? Convert.ToDouble(x["TotalOtherCost"].ToString()): (double?) null;
-        //            invoice.TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null;
-        //            invoice.TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null;
-        //            invoice.InvoiceDetails = !x.ContainsKey("InvoiceDetails") ? new List<InvoiceDetails>() : ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-        //                .Where(z => z != null)
-        //                .Where(z => z.ContainsKey("ItemDescription") && z["ItemDescription"] != null)
-
-        //                .Select(z =>
-        //                {
-        //                    var details = new InvoiceDetails();
-        //                    var qty = z.ContainsKey("Quantity")
-        //                        ? Convert.ToDouble(z["Quantity"].ToString())
-        //                        : 1;
-        //                    details.Quantity = qty;
-        //                    var classifiedItm = classifiedItms.ContainsKey(z["ItemDescription"].ToString())
-        //                            ? classifiedItms[z["ItemDescription"].ToString()]
-        //                            : (ItemNumber:z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20) : null,
-        //                                ItemDescription: z["ItemDescription"].ToString().Truncate(255),
-        //                                TariffCode: z.ContainsKey("TariffCode") ? z["TariffCode"].ToString().ToUpper().Truncate(20) : null);
-        //                    details.ItemNumber = classifiedItm.ItemNumber;//z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
-        //                    details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
-        //                    details.TariffCode = classifiedItm.TariffCode;
-        //                    details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;
-        //                    details.Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(qty) == 0 ? 1 : Convert.ToDouble(qty));
-        //                    details.TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(qty);
-        //                    details.Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0;
-        //                    details.Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null;
-        //                    details.SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1;
-        //                    details.LineNumber = z.ContainsKey("Instance") ? Convert.ToInt32(z["Instance"].ToString()) :((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1;
-        //                    details.FileLineNumber = z.ContainsKey("FileLineNumber") ? Convert.ToInt32(z["FileLineNumber"].ToString()) : -1;
-        //                    details.Section = z.ContainsKey("Section") ? z["Section"].ToString( ): null;
-        //                    details.InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null;
-        //                    details.TrackingState = TrackingState.Added;
-        //                    return details;
-        //                }).ToList();
-        //            invoice.InvoiceExtraInfo = !x.ContainsKey("ExtraInfo")? new List<InvoiceExtraInfo>(): ((List<IDictionary<string, object>>)x["ExtraInfo"])
-        //                .Where(z => z.Keys.Any())
-        //                .SelectMany(z => z)
-        //                .Where(z => z.Value != null)
-        //                .Select(z =>
-        //                {
-        //                    var info = new InvoiceExtraInfo();
-        //                    info.Info = z.Key.ToString();
-        //                    info.Value = z.Value.ToString();
-        //                    info.TrackingState = TrackingState.Added;
-        //                    return info;
-        //                }).ToList();
-        //            invoice.EmailId = emailId;
-        //            invoice.SourceFile = droppedFilePath;
-        //            invoice.FileTypeId = fileType.Id;
-        //            invoice.TrackingState = TrackingState.Added;
-        //            return invoice;
-        //        }).ToList();
-        //    return lstdata;
-        //}
-
-
-        //private static void SaveInvoicePOs(Dictionary<string, string> invoicePOs, List<ShipmentInvoice> lst)
-        //{
-        //    using (var ctx = new EntryDataDSContext())
-        //    {
-
-        //        foreach (var invoice in lst)
-        //        {
-
-        //            var existingManifest =
-        //                ctx.ShipmentInvoice.FirstOrDefault(
-        //                    x => x.InvoiceNo == invoice.InvoiceNo);
-        //            if (existingManifest != null)
-        //                ctx.ShipmentInvoice.Remove(existingManifest);
-
-        //            invoice.InvoiceDetails = AutoFixImportErrors(invoice);
-        //            invoice.ImportedLines = invoice.InvoiceDetails.Count;
-
-        //            if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
-        //            {
-        //                invoice.SubTotal = invoice.ImportedSubTotal;
-        //            }
-
-        //            if (!invoice.InvoiceDetails.Any())
-        //                continue;
-
-        //            if (invoicePOs != null && lst.Count > 1 && invoice != lst.First())
-        //            {
-        //                invoice.SourceFile = invoice.SourceFile.Replace($"{invoicePOs[lst.First().InvoiceNo]}",
-        //                    invoicePOs[invoice.InvoiceNo]);
-        //            }
-        //            //Todo: figure out how to merge the invoice details
-        //            //if (overWriteExisting)
-        //            //{
-        //            var existing = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
-        //            if (existing != null)
-        //            {
-        //                ctx.ShipmentInvoice.Remove(existing);
-        //            }
-        //            ctx.ShipmentInvoice.Add(invoice);
-        //            //}
-        //            //else
-        //            //{
-
-        //            //}
-
-
-        //            ctx.SaveChanges();
-
-        //            //----------ALLOW IMPORTS AND CHANGE THE XLSX TO HIGHLIGHT ERRORS
-        //            //if (invoice.ImportedTotalDifference > 0.001 )
-        //            //    throw new ApplicationException(
-        //            //        $"Imported Total Difference for Template > 0: {invoice.ImportedTotalDifference}");
-        //        }
-
-
-        //    }
-        //}
 
         private List<ShipmentInvoice> ReduceLstByInvoiceNo(List<ShipmentInvoice> lstData)
         {
