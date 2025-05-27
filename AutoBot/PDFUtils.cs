@@ -340,7 +340,7 @@ using Serilog.Context;
                 try
                 {
                     logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. Intention: Invoke DataFileProcessor.");
-                    var dataFile = new DataFile(fileType, docSet, overWriteExisting, emailId, file, csvLines);
+                    var dataFile = new DataFile(fileType, docSet, overWriteExisting, emailId, file, csvLines, null);
                     logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. InitialState: {DataFileState}", new { FileType = dataFile.FileType?.Description, DocSetCount = dataFile.DocSet?.Count, OverwriteExisting = dataFile.OverWriteExisting, EmailId = dataFile.EmailId, DroppedFilePath = dataFile.DroppedFilePath, DataCount = dataFile.Data?.Count });
 
                     var processResult = await new DataFileProcessor().Process(dataFile).ConfigureAwait(false);

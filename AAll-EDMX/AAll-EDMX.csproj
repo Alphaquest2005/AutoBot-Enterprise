@@ -92,11 +92,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AllViewModels.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AllViewModels.tt</DependentUpon>
-    </Compile>
     <Compile Include="EF6\AllBusinessMappings1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -539,11 +534,13 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FieldValue.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_PartLineFields.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\PartTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\RecuringPart.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\RegularExpressions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Start.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\PreviousDocumentDS\EntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\PreviousDocumentDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\PreviousDocumentDS\PreviousEntry.cs
@@ -990,11 +987,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_PartLineFields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRCorrectionLearning.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\RecuringPart.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\RegularExpressions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Start.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\vw_OCRCorrectionAnalysis.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\PreviousEntry.map.cs
@@ -1450,11 +1449,13 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\PartTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\RecuringPart.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\RegularExpressions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Start.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\PreviousDocumentDS\EntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\PreviousDocumentDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\PreviousDocumentDS\PreviousEntry.cs
@@ -1887,11 +1888,13 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\PartTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\RecuringPart.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\RegularExpressions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Start.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\PreviousDocumentDS\EntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\PreviousDocumentDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\PreviousDocumentDS\PreviousEntry.cs
@@ -2324,11 +2327,13 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\PartTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\RecuringPart.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\RegularExpressions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Start.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\PreviousDocumentDS\PreviousEntry.cs
@@ -2761,11 +2766,13 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Start.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentDS\PreviousEntry.cs
@@ -2962,11 +2969,13 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\PartTypes.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\RecuringPart.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\RegularExpressions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Start.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs
@@ -3144,11 +3153,13 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\PartTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\RecuringPart.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\RegularExpressions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Start.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs
@@ -3328,11 +3339,13 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Start.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousItemsEx.cs
@@ -3506,11 +3519,13 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\PartTypes.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\RecuringPart.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\RegularExpressions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Start.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\PreviousDocumentQS\PreviousItemsEx.cs
@@ -3684,11 +3699,13 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\PartTypes.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\RecuringPart.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\RegularExpressions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Start.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\PreviousDocumentQS\PreviousItemsEx.cs
@@ -3862,11 +3879,13 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Start.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousItemsEx.cs
@@ -4040,11 +4059,13 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FieldValue.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_PartLineFields.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCRCorrectionLearning.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\PartTypes.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\RecuringPart.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\RegularExpressions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Start.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\vw_OCRCorrectionAnalysis.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\PreviousDocumentQS\PreviousDocument.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\PreviousDocumentQS\PreviousDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\PreviousDocumentQS\PreviousItemsEx.cs
@@ -4501,11 +4522,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_PartLineFields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRCorrectionLearning.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\RecuringPart.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\RegularExpressions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Start.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\vw_OCRCorrectionAnalysis.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\PreviousEntry.map.cs
@@ -5177,11 +5200,13 @@
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_FieldMappingsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_FieldValueService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_PartLineFieldsService.cs
+..\WaterNut.Business.Services\Contracts\OCR\IOCRCorrectionLearningService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IPartsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IPartTypesService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IRecuringPartService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IRegularExpressionsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IStartService.cs
+..\WaterNut.Business.Services\Contracts\OCR\Ivw_OCRCorrectionAnalysisService.cs
 ..\WaterNut.Business.Services\Contracts\PreviousDocumentDS\IEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\PreviousDocumentDS\IEntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Contracts\PreviousDocumentDS\IPreviousEntryService.cs
@@ -5614,11 +5639,13 @@
 ..\WaterNut.Business.Services\Services\OCR\OCR_FieldMappingsService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCR_FieldValueService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCR_PartLineFieldsService.cs
+..\WaterNut.Business.Services\Services\OCR\OCRCorrectionLearningService.cs
 ..\WaterNut.Business.Services\Services\OCR\PartsService.cs
 ..\WaterNut.Business.Services\Services\OCR\PartTypesService.cs
 ..\WaterNut.Business.Services\Services\OCR\RecuringPartService.cs
 ..\WaterNut.Business.Services\Services\OCR\RegularExpressionsService.cs
 ..\WaterNut.Business.Services\Services\OCR\StartService.cs
+..\WaterNut.Business.Services\Services\OCR\vw_OCRCorrectionAnalysisService.cs
 ..\WaterNut.Business.Services\Services\PreviousDocumentDS\EntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\PreviousDocumentDS\EntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Services\PreviousDocumentDS\PreviousEntryService.cs
@@ -5809,11 +5836,13 @@
 ..\WaterNut.Client.Contracts\OCR\IOCR_FieldMappingsService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCR_FieldValueService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCR_PartLineFieldsService.cs
+..\WaterNut.Client.Contracts\OCR\IOCRCorrectionLearningService.cs
 ..\WaterNut.Client.Contracts\OCR\IPartsService.cs
 ..\WaterNut.Client.Contracts\OCR\IPartTypesService.cs
 ..\WaterNut.Client.Contracts\OCR\IRecuringPartService.cs
 ..\WaterNut.Client.Contracts\OCR\IRegularExpressionsService.cs
 ..\WaterNut.Client.Contracts\OCR\IStartService.cs
+..\WaterNut.Client.Contracts\OCR\Ivw_OCRCorrectionAnalysisService.cs
 ..\WaterNut.Client.Contracts\PreviousDocumentQS\IPreviousDocumentItemService.cs
 ..\WaterNut.Client.Contracts\PreviousDocumentQS\IPreviousDocumentService.cs
 ..\WaterNut.Client.Contracts\PreviousDocumentQS\IPreviousItemsExService.cs
@@ -5987,11 +6016,13 @@
 ..\WaterNut.Client.Services\OCR\OCR_FieldMappingsClient.cs
 ..\WaterNut.Client.Services\OCR\OCR_FieldValueClient.cs
 ..\WaterNut.Client.Services\OCR\OCR_PartLineFieldsClient.cs
+..\WaterNut.Client.Services\OCR\OCRCorrectionLearningClient.cs
 ..\WaterNut.Client.Services\OCR\PartsClient.cs
 ..\WaterNut.Client.Services\OCR\PartTypesClient.cs
 ..\WaterNut.Client.Services\OCR\RecuringPartClient.cs
 ..\WaterNut.Client.Services\OCR\RegularExpressionsClient.cs
 ..\WaterNut.Client.Services\OCR\StartClient.cs
+..\WaterNut.Client.Services\OCR\vw_OCRCorrectionAnalysisClient.cs
 ..\WaterNut.Client.Services\PreviousDocumentQS\PreviousDocumentClient.cs
 ..\WaterNut.Client.Services\PreviousDocumentQS\PreviousDocumentItemClient.cs
 ..\WaterNut.Client.Services\PreviousDocumentQS\PreviousItemsExClient.cs
@@ -6184,12 +6215,14 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_PartLineFieldsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCRCorrectionLearningViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\vw_OCRCorrectionAnalysisViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentItemViewModel.cs
@@ -6356,11 +6389,13 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_PartLineFieldsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRCorrectionLearningTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\vw_OCRCorrectionAnalysisTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousItemsExTotals.cs
@@ -6524,11 +6559,13 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_PartLineFieldsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRCorrectionLearningVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\vw_OCRCorrectionAnalysisVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousItemsExVirturalListLoader.cs

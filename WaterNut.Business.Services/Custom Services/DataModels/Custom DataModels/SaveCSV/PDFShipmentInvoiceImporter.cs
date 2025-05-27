@@ -28,12 +28,12 @@ namespace WaterNut.DataSpace
                 if (dataFile.FileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.ShipmentInvoice
                     || dataFile.FileType.FileImporterInfos.Format != FileTypeManager.FileFormats.PDF) return false;
 
-                
+
                  return await _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet,
                     dataFile.OverWriteExisting, dataFile.EmailId,
                     dataFile.DroppedFilePath, dataFile.Data, null, _logger).ConfigureAwait(false); // Pass logger
 
-                
+
             }
             catch (Exception e)
             {
@@ -41,7 +41,7 @@ namespace WaterNut.DataSpace
                 //throw;
                 return false;
             }
-            
+
         }
 
         private Task ImportInventory(DataFile dataFile)
@@ -50,7 +50,7 @@ namespace WaterNut.DataSpace
                 Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
                         ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"]))
                     .Where(x => x != null)
-                    .SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+                    .SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), dataFile.Template);
 
             return _inventoryImporter.ImportInventory( file);
         }

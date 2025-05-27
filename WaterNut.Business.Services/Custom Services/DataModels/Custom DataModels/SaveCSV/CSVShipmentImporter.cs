@@ -81,7 +81,7 @@ namespace WaterNut.DataSpace
                         dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
                         dataFile.DroppedFilePath, xeslst.SelectMany(x =>
                             ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                            ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+                            ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), dataFile.Template);
 
                     await _inventoryImporter.ImportInventory(file).ConfigureAwait(false);
 

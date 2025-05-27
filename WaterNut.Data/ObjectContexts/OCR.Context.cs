@@ -85,6 +85,10 @@ namespace OCR.Business.Entities
      
         public DbSet<Fields> Fields { get; set; }
      
+        public DbSet<OCRCorrectionLearning> OCRCorrectionLearning { get; set; }
+     
+        public DbSet<vw_OCRCorrectionAnalysis> vw_OCRCorrectionAnalysis { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -126,6 +130,10 @@ namespace OCR.Business.Entities
             modelBuilder.Configurations.Add(new OCR_PartLineFieldsMap());
          
             modelBuilder.Configurations.Add(new FieldsMap());
+         
+            modelBuilder.Configurations.Add(new OCRCorrectionLearningMap());
+         
+            modelBuilder.Configurations.Add(new vw_OCRCorrectionAnalysisMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

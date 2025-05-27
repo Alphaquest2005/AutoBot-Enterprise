@@ -142,7 +142,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                      }
                      context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                          nameof(Execute), "DataFileProcessing", "DataFileProcessor finished.", $"FilePath: {filePath}, Success: {processResult}", "");
-                     
+
                      if (!LogImportProcessingOutcome(context.Logger, processResult, filePath)) // Checks result and logs, pass logger
                      {
                           // LogImportProcessingOutcome logs the error, add context error here
@@ -187,7 +187,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                      nameof(HandleImportSuccessStateStep), "Processing templates", methodStopwatch.ElapsedMilliseconds, "Handling import success state failed for at least one template.");
             }
-            
+
             return overallStepSuccess;
         }
 
@@ -198,8 +198,17 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              // Check each property and log which one is missing if any
              // Context null check happens in Execute
              if (Invoice?.FileType == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: FileType is null.", "", ""); return true; }
-             if (Invoice?.DocSet == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: DocSet is null.", "", ""); return true; }
-             
+
+             // DEBUG: Add detailed logging for DocSet
+             if (Invoice?.DocSet == null) {
+                 logger?.Error("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                     nameof(IsRequiredDataMissing), "Validation", "CRITICAL: DocSet is null - this should have been populated by GetDocSets call!", $"TemplateId: {Invoice?.OcrInvoices?.Id}, FileType: {Invoice?.FileType?.Id}", "");
+                 return true; // This is a real error - DocSet should not be null
+             }
+
+             logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                 nameof(IsRequiredDataMissing), "Validation", "DocSet is present.", $"DocSetCount: {Invoice.DocSet.Count}, TemplateId: {Invoice?.OcrInvoices?.Id}", "");
+
              // Check Template.OcrInvoices as it's used in ResolveFileType
              if (Invoice?.OcrInvoices == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: Template.OcrInvoices is null.", "", ""); return true; }
              if (Invoice?.CsvLines == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: CsvLines is null.", "", ""); return true; }
@@ -207,7 +216,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              if (string.IsNullOrEmpty(Invoice?.EmailId)) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: EmailId is null or empty.", "", ""); return true; }
 
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                 nameof(IsRequiredDataMissing), "Validation", "Required data is present.", "", "");
+                 nameof(IsRequiredDataMissing), "Validation", "All required data is present.", "", "");
              return false; // All required data is present
         }
 
@@ -298,6 +307,10 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
               DataFile dataFile = null;
               try
               {
+                  // DEBUG: Add detailed logging for DocSet state
+                  logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                      nameof(CreateDataFile), "Creation", "DocSet validation.", $"DocSetIsNull: {template?.DocSet == null}, DocSetCount: {template?.DocSet?.Count ?? 0}, TemplateId: {template?.OcrInvoices?.Id}", "");
+
                   // Ensure DocSet is not null before accessing its properties if needed by DataFile constructor
                   if (template?.DocSet == null || !template.DocSet.Any()) {
                       logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
@@ -305,9 +318,15 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                       return null;
                   }
 
+                  // Package OCR template with line values for OCR correction
+                  var lineValues = template.Lines?.Where(line => line?.Values != null)
+                      .SelectMany(line => line.Values)
+                      .ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ??
+                      new Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>>();
+
                   dataFile = new DataFile(fileType, template.DocSet, template.OverWriteExisting,
                                                     template.EmailId,
-                                                    template.FilePath, template.CsvLines);
+                                                    template.FilePath, template.CsvLines, (template.OcrInvoices, lineValues));
                    logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                        nameof(CreateDataFile), "Creation", "DataFile object created successfully.", $"FilePath: {filePath}", "");
               }

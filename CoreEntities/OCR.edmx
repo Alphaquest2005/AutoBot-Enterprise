@@ -39,6 +39,34 @@
           <Property Name="ParentPartId" Type="int" Nullable="false" />
           <Property Name="ChildPartId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="OCRCorrectionLearning">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FieldName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="OriginalError" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CorrectValue" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="LineText" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="WindowText" Type="nvarchar(max)" />
+          <Property Name="ExistingRegex" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CorrectionType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NewRegexPattern" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ReplacementPattern" Type="nvarchar" MaxLength="500" />
+          <Property Name="DeepSeekReasoning" Type="nvarchar(max)" />
+          <Property Name="Confidence" Type="decimal" Precision="3" Scale="2" />
+          <Property Name="InvoiceType" Type="nvarchar" MaxLength="100" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="FieldId" Type="int" />
+          <Property Name="Success" Type="bit" Nullable="false" />
+          <Property Name="ErrorMessage" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="ProcessingTimeMs" Type="int" />
+          <Property Name="DeepSeekPrompt" Type="nvarchar(max)" />
+          <Property Name="DeepSeekResponse" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="OCR-End">
           <Key>
             <PropertyRef Name="Id" />
@@ -197,6 +225,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartLineFields' does 
           <Property Name="FieldId" Type="int" Nullable="false" />
           <Property Name="ParentId" Type="int" />
           <Property Name="LineId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_OCRCorrectionAnalysis">
+          <Key>
+            <PropertyRef Name="FieldName" />
+            <PropertyRef Name="CorrectionType" />
+          </Key>
+          <Property Name="FieldName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CorrectionType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TotalCorrections" Type="int" />
+          <Property Name="AvgConfidence" Type="decimal" Precision="38" Scale="6" />
+          <Property Name="SuccessfulCorrections" Type="int" />
+          <Property Name="FailedCorrections" Type="int" />
+          <Property Name="SuccessRate" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="FirstCorrection" Type="datetime2" Precision="7" />
+          <Property Name="LastCorrection" Type="datetime2" Precision="7" />
         </EntityType>
         <Association Name="FK_OCR_FailedFields_OCR_FailedLines">
           <End Role="OCR_FailedLines" Type="Self.OCR_FailedLines" Multiplicity="1">
@@ -563,6 +608,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartLineFields' does 
           <EntitySet Name="OCR_FailedFields" EntityType="Self.OCR_FailedFields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR_FailedLines" EntityType="Self.OCR_FailedLines" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-ChildPart" EntityType="Self.OCR-ChildPart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCRCorrectionLearning" EntityType="Self.OCRCorrectionLearning" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-End" EntityType="Self.OCR-End" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldFormatRegEx" EntityType="Self.OCR-FieldFormatRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldMappings" EntityType="Self.OCR-FieldMappings" Schema="dbo" store:Type="Tables" />
@@ -595,6 +641,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartLineFields' does 
 [OCR-PartLineFields].[ParentId] AS [ParentId], 
 [OCR-PartLineFields].[LineId] AS [LineId]
 FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_OCRCorrectionAnalysis" EntityType="Self.vw_OCRCorrectionAnalysis" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_OCRCorrectionAnalysis].[FieldName] AS [FieldName], 
+[vw_OCRCorrectionAnalysis].[CorrectionType] AS [CorrectionType], 
+[vw_OCRCorrectionAnalysis].[TotalCorrections] AS [TotalCorrections], 
+[vw_OCRCorrectionAnalysis].[AvgConfidence] AS [AvgConfidence], 
+[vw_OCRCorrectionAnalysis].[SuccessfulCorrections] AS [SuccessfulCorrections], 
+[vw_OCRCorrectionAnalysis].[FailedCorrections] AS [FailedCorrections], 
+[vw_OCRCorrectionAnalysis].[SuccessRate] AS [SuccessRate], 
+[vw_OCRCorrectionAnalysis].[FirstCorrection] AS [FirstCorrection], 
+[vw_OCRCorrectionAnalysis].[LastCorrection] AS [LastCorrection]
+FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_OCR_FailedFields_OCR_FailedLines" Association="Self.FK_OCR_FailedFields_OCR_FailedLines">
             <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
@@ -837,6 +896,8 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
             <End Role="OCR_Fields" EntitySet="Fields" />
             <End Role="OCR_FieldValue" EntitySet="OCR_FieldValue" />
           </AssociationSet>
+          <EntitySet Name="OCRCorrectionLearning" EntityType="WaterNutDBModel.OCRCorrectionLearning" />
+          <EntitySet Name="vw_OCRCorrectionAnalysis" EntityType="WaterNutDBModel.vw_OCRCorrectionAnalysis" />
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -1435,6 +1496,49 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="OCRCorrectionLearning">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalError" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectValue" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="LineText" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="WindowText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ExistingRegex" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NewRegexPattern" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="ReplacementPattern" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DeepSeekReasoning" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Confidence" Type="Decimal" Precision="3" Scale="2" />
+          <Property Name="InvoiceType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FieldId" Type="Int32" />
+          <Property Name="Success" Type="Boolean" Nullable="false" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessingTimeMs" Type="Int32" />
+          <Property Name="DeepSeekPrompt" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeepSeekResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vw_OCRCorrectionAnalysis">
+          <Key>
+            <PropertyRef Name="FieldName" />
+            <PropertyRef Name="CorrectionType" />
+          </Key>
+          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCorrections" Type="Int32" />
+          <Property Name="AvgConfidence" Type="Decimal" Precision="38" Scale="6" />
+          <Property Name="SuccessfulCorrections" Type="Int32" />
+          <Property Name="FailedCorrections" Type="Int32" />
+          <Property Name="SuccessRate" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="FirstCorrection" Type="DateTime" Precision="7" />
+          <Property Name="LastCorrection" Type="DateTime" Precision="7" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1642,6 +1746,50 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
                 <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="LineId" ColumnName="LineId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCRCorrectionLearning">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCRCorrectionLearning">
+              <MappingFragment StoreEntitySet="OCRCorrectionLearning">
+                <ScalarProperty Name="DeepSeekResponse" ColumnName="DeepSeekResponse" />
+                <ScalarProperty Name="DeepSeekPrompt" ColumnName="DeepSeekPrompt" />
+                <ScalarProperty Name="ProcessingTimeMs" ColumnName="ProcessingTimeMs" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="Success" ColumnName="Success" />
+                <ScalarProperty Name="FieldId" ColumnName="FieldId" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="InvoiceType" ColumnName="InvoiceType" />
+                <ScalarProperty Name="Confidence" ColumnName="Confidence" />
+                <ScalarProperty Name="DeepSeekReasoning" ColumnName="DeepSeekReasoning" />
+                <ScalarProperty Name="ReplacementPattern" ColumnName="ReplacementPattern" />
+                <ScalarProperty Name="NewRegexPattern" ColumnName="NewRegexPattern" />
+                <ScalarProperty Name="CorrectionType" ColumnName="CorrectionType" />
+                <ScalarProperty Name="ExistingRegex" ColumnName="ExistingRegex" />
+                <ScalarProperty Name="WindowText" ColumnName="WindowText" />
+                <ScalarProperty Name="LineText" ColumnName="LineText" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CorrectValue" ColumnName="CorrectValue" />
+                <ScalarProperty Name="OriginalError" ColumnName="OriginalError" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_OCRCorrectionAnalysis">
+            <EntityTypeMapping TypeName="WaterNutDBModel.vw_OCRCorrectionAnalysis">
+              <MappingFragment StoreEntitySet="vw_OCRCorrectionAnalysis">
+                <ScalarProperty Name="LastCorrection" ColumnName="LastCorrection" />
+                <ScalarProperty Name="FirstCorrection" ColumnName="FirstCorrection" />
+                <ScalarProperty Name="SuccessRate" ColumnName="SuccessRate" />
+                <ScalarProperty Name="FailedCorrections" ColumnName="FailedCorrections" />
+                <ScalarProperty Name="SuccessfulCorrections" ColumnName="SuccessfulCorrections" />
+                <ScalarProperty Name="AvgConfidence" ColumnName="AvgConfidence" />
+                <ScalarProperty Name="TotalCorrections" ColumnName="TotalCorrections" />
+                <ScalarProperty Name="CorrectionType" ColumnName="CorrectionType" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

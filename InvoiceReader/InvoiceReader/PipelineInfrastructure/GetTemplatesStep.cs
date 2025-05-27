@@ -82,19 +82,75 @@ namespace InvoiceReader.PipelineInfrastructure
 
         public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context, Func<Invoice, bool> templateExpression)
         {
-            var templates = _allTemplates.Where(templateExpression).ToList();
-            return await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                "GetTemplates", "TemplateFiltering", "ENTRY: Filtering templates with expression.", $"AllTemplatesCount: {_allTemplates?.Count() ?? 0}", "");
+
+            var templates = (_allTemplates ?? Enumerable.Empty<Invoice>()).Where(templateExpression).ToList();
+
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                "GetTemplates", "TemplateFiltering", "Templates filtered.", $"FilteredCount: {templates.Count}, AllTemplatesCount: {_allTemplates?.Count() ?? 0}", "");
+
+            context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                $"GetContextTemplates for {templates.Count} templates", "ASYNC_EXPECTED");
+
+            var result = await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
+
+            context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. DocSet result: {DocSetResult}",
+                $"GetContextTemplates for {templates.Count} templates",
+                result?.Count > 0 && result[0].DocSet != null ? $"DocSet assigned with {result[0].DocSet.Count} items" : "DocSet is NULL");
+
+            return result;
         }
 
         private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
         {
-            var docSet = context.DocSet ?? await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(GetContextTemplates), "DocSetRetrieval", "ENTRY: Getting DocSets for templates.", $"FileTypeId: {context.FileType?.Id}, ContextDocSetIsNull: {context.DocSet == null}, TemplateCount: {templates.Count}", "");
+
+            // DEBUG: Log detailed FileType information
+            if (context.FileType == null)
+            {
+                context.Logger?.Error("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(GetContextTemplates), "DocSetRetrieval", "CRITICAL: FileType is null - cannot get DocSets!", "", "");
+                return templates; // Return templates without DocSet assignment
+            }
+
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(GetContextTemplates), "DocSetRetrieval", "FileType details.", $"FileTypeId: {context.FileType.Id}, DocSetRefernece: '{context.FileType.DocSetRefernece}', AsycudaDocumentSetId: {context.FileType.AsycudaDocumentSetId}, CopyEntryData: {context.FileType.CopyEntryData}", "");
+
+            var docSet = context.DocSet;
+            if (docSet == null)
+            {
+                context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                    $"WaterNut.DataSpace.Utils.GetDocSets for FileTypeId: {context.FileType?.Id}", "ASYNC_EXPECTED");
+
+                try
+                {
+                    docSet = await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
+                    context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. DocSet result: {DocSetResult}",
+                        $"WaterNut.DataSpace.Utils.GetDocSets for FileTypeId: {context.FileType?.Id}",
+                        docSet == null ? "NULL" : $"Count: {docSet.Count}");
+                }
+                catch (Exception ex)
+                {
+                    context.Logger?.Error(ex, "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                        nameof(GetContextTemplates), "DocSetRetrieval", "ERROR: GetDocSets threw exception!", $"FileTypeId: {context.FileType?.Id}, Error: {ex.Message}", "");
+                    docSet = null; // Ensure docSet is null on error
+                }
+            }
+
+            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(GetContextTemplates), "DocSetRetrieval", "DocSet retrieved.", $"DocSetIsNull: {docSet == null}, DocSetCount: {docSet?.Count ?? 0}, TemplateCount: {templates.Count}", "");
+
             return templates.Select(x =>
                 {
                     x.FileType = context.FileType;
                     x.DocSet = docSet;
                     x.FilePath = context.FilePath;
                     x.EmailId = context.EmailId;
+
+                    context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                        nameof(GetContextTemplates), "TemplateSetup", "Template configured.", $"TemplateId: {x.OcrInvoices?.Id}, DocSetAssigned: {x.DocSet != null}, DocSetCount: {x.DocSet?.Count ?? 0}", "");
 
                     return x;
                 }).ToList();
@@ -128,7 +184,7 @@ namespace InvoiceReader.PipelineInfrastructure
                             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                                 nameof(GetTemplates), "Querying", "Loading templates from database.", $"Database: {ctx.Database.Connection.Database}, Server: {ctx.Database.Connection.DataSource}, FilePath: {filePath}", "");
 
-                            
+
                             var templates = GetAllTemplates(context, ctx);
 
                             if (templates.Any())
@@ -147,7 +203,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                 //var contextTemplatesStopwatch = Stopwatch.StartNew(); // Start stopwatch
 
                                 //context.Templates = await GetContextTemplates(context, templates).ConfigureAwait(false);
-                                
+
                                 //contextTemplatesStopwatch.Stop(); // Stop stopwatch
                                 //context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                 //    "GetContextTemplates", contextTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after GetContextTemplates
@@ -165,7 +221,7 @@ namespace InvoiceReader.PipelineInfrastructure
 
                             context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                                 nameof(GetTemplates), "QueryResults", "No active templates found in database.", "", "");
-                            
+
                             // Diagnostic check - see if there are any templates at all
                             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                                 "Check for any templates", "ASYNC_EXPECTED"); // Log before AnyAsync
@@ -258,7 +314,7 @@ namespace InvoiceReader.PipelineInfrastructure
             var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
             var templates = activeTemplatesQuery.Select(x => new Invoice(x)).ToList(); // activeTemplatesQuery is already a List
 
-           
+
 
 
             //// Re-enable lazy loading and proxy creation

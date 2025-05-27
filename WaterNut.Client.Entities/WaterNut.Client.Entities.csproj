@@ -271,6 +271,7 @@
     <Compile Include="Generated Client Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldMappings.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
     <Compile Include="Generated Client Entities\OCR\RegularExpressions.cs" />
     <Compile Include="Generated Client Entities\OCR\Start.cs" />
+    <Compile Include="Generated Client Entities\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs" />
@@ -449,6 +451,7 @@
     <Compile Include="Generated Constructors Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
     <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FieldMappings.cs" />
@@ -459,6 +462,7 @@
     <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated Constructors Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated Constructors Models\OCR\Start.cs" />
+    <Compile Include="Generated Constructors Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentQS\PreviousItemsEx.cs" />
@@ -627,6 +631,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
@@ -637,6 +642,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Start.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousItemsEx.cs" />
@@ -809,6 +815,7 @@
     <Compile Include="Generated MyNavProp Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldMappings.cs" />
@@ -819,6 +826,7 @@
     <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Start.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousItemsEx.cs" />

@@ -67,11 +67,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldMappingsIDChanged, OnCurrentOCR_FieldMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, OnCurrentOCR_PartLineFieldsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCRCorrectionLearningIDChanged, OnCurrentOCRCorrectionLearningIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRegularExpressionsIDChanged, OnCurrentRegularExpressionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentStartIDChanged, OnCurrentStartIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.Currentvw_OCRCorrectionAnalysisIDChanged, OnCurrentvw_OCRCorrectionAnalysisIDChanged);
        
 
 			// Recieve messages for Current Object Changed
@@ -89,11 +91,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<OCR_FieldMappings>(MessageToken.CurrentOCR_FieldMappingsChanged, OnCurrentOCR_FieldMappingsChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
                         RegisterToReceiveMessages<OCR_PartLineFields>(MessageToken.CurrentOCR_PartLineFieldsChanged, OnCurrentOCR_PartLineFieldsChanged);
+                        RegisterToReceiveMessages<OCRCorrectionLearning>(MessageToken.CurrentOCRCorrectionLearningChanged, OnCurrentOCRCorrectionLearningChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
                         RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
                         RegisterToReceiveMessages<Start>(MessageToken.CurrentStartChanged, OnCurrentStartChanged);
+                        RegisterToReceiveMessages<vw_OCRCorrectionAnalysis>(MessageToken.Currentvw_OCRCorrectionAnalysisChanged, OnCurrentvw_OCRCorrectionAnalysisChanged);
     
                 // Receive messages for cached collections for purpose of refreshing cache
              
@@ -491,6 +495,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentOCRCorrectionLearningIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCRCorrectionLearningRepository ctx = new OCRCorrectionLearningRepository())
+                            {
+                                CurrentOCRCorrectionLearning = await ctx.GetOCRCorrectionLearning(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCRCorrectionLearning);
+                        }
+
+                        private  string _currentOCRCorrectionLearningID = "";
+                        public string CurrentOCRCorrectionLearningID
+                        {
+                            get
+                            {
+                                return _currentOCRCorrectionLearningID;
+                            }
+                            set
+                            {
+                                if (_currentOCRCorrectionLearningID != value)
+                                {
+                                    _currentOCRCorrectionLearningID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCRCorrectionLearningID)) BeginSendMessage(MessageToken.CurrentOCRCorrectionLearningIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCRCorrectionLearningIDChanged, _currentOCRCorrectionLearningID));
+                                    NotifyPropertyChanged(x => this.CurrentOCRCorrectionLearningID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentPartsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (PartsRepository ctx = new PartsRepository())
@@ -623,6 +654,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentStartID)) BeginSendMessage(MessageToken.CurrentStartIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentStartIDChanged, _currentStartID));
                                     NotifyPropertyChanged(x => this.CurrentStartID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentvw_OCRCorrectionAnalysisIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (vw_OCRCorrectionAnalysisRepository ctx = new vw_OCRCorrectionAnalysisRepository())
+                            {
+                                Currentvw_OCRCorrectionAnalysis = await ctx.Getvw_OCRCorrectionAnalysis(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => Currentvw_OCRCorrectionAnalysis);
+                        }
+
+                        private  string _currentvw_OCRCorrectionAnalysisID = "";
+                        public string Currentvw_OCRCorrectionAnalysisID
+                        {
+                            get
+                            {
+                                return _currentvw_OCRCorrectionAnalysisID;
+                            }
+                            set
+                            {
+                                if (_currentvw_OCRCorrectionAnalysisID != value)
+                                {
+                                    _currentvw_OCRCorrectionAnalysisID = value;
+                                    if (!string.IsNullOrEmpty(_currentvw_OCRCorrectionAnalysisID)) BeginSendMessage(MessageToken.Currentvw_OCRCorrectionAnalysisIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.Currentvw_OCRCorrectionAnalysisIDChanged, _currentvw_OCRCorrectionAnalysisID));
+                                    NotifyPropertyChanged(x => this.Currentvw_OCRCorrectionAnalysisID);  
                                 }
                             }
                         }
@@ -1344,6 +1402,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
+        internal void OnCurrentOCRCorrectionLearningChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCRCorrectionLearning> e)
+        {
+            //CurrentOCRCorrectionLearning = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCRCorrectionLearning);
+        }
+
+        private  OCRCorrectionLearning _currentOCRCorrectionLearning;
+        public OCRCorrectionLearning CurrentOCRCorrectionLearning
+        {
+            get
+            {
+                return _currentOCRCorrectionLearning;
+            }
+            set
+            {
+                if (_currentOCRCorrectionLearning != value)
+                {
+                    _currentOCRCorrectionLearning = value;
+                    BeginSendMessage(MessageToken.CurrentOCRCorrectionLearningChanged,
+                                                     new NotificationEventArgs<OCRCorrectionLearning>(MessageToken.CurrentOCRCorrectionLearningChanged, _currentOCRCorrectionLearning)); 
+                    NotifyPropertyChanged(x => this.CurrentOCRCorrectionLearning);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCRCorrectionLearning> _vcurrentOCRCorrectionLearning;
+        public VirtualListItem<OCRCorrectionLearning> VCurrentOCRCorrectionLearning
+        {
+            get
+            {
+                return _vcurrentOCRCorrectionLearning;
+            }
+            set
+            {
+                if (_vcurrentOCRCorrectionLearning != value)
+                {
+                    _vcurrentOCRCorrectionLearning = value;
+					if(_vcurrentOCRCorrectionLearning != null) CurrentOCRCorrectionLearning = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCRCorrectionLearning);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentPartsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Parts> e)
         {
             //CurrentParts = e.Data;
@@ -1598,6 +1706,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentStart = value;
 					if(_vcurrentStart != null) CurrentStart = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentStart);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentvw_OCRCorrectionAnalysisChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<vw_OCRCorrectionAnalysis> e)
+        {
+            //Currentvw_OCRCorrectionAnalysis = e.Data;
+            NotifyPropertyChanged(m => this.Currentvw_OCRCorrectionAnalysis);
+        }
+
+        private  vw_OCRCorrectionAnalysis _currentvw_OCRCorrectionAnalysis;
+        public vw_OCRCorrectionAnalysis Currentvw_OCRCorrectionAnalysis
+        {
+            get
+            {
+                return _currentvw_OCRCorrectionAnalysis;
+            }
+            set
+            {
+                if (_currentvw_OCRCorrectionAnalysis != value)
+                {
+                    _currentvw_OCRCorrectionAnalysis = value;
+                    BeginSendMessage(MessageToken.Currentvw_OCRCorrectionAnalysisChanged,
+                                                     new NotificationEventArgs<vw_OCRCorrectionAnalysis>(MessageToken.Currentvw_OCRCorrectionAnalysisChanged, _currentvw_OCRCorrectionAnalysis)); 
+                    NotifyPropertyChanged(x => this.Currentvw_OCRCorrectionAnalysis);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<vw_OCRCorrectionAnalysis> _vcurrentvw_OCRCorrectionAnalysis;
+        public VirtualListItem<vw_OCRCorrectionAnalysis> VCurrentvw_OCRCorrectionAnalysis
+        {
+            get
+            {
+                return _vcurrentvw_OCRCorrectionAnalysis;
+            }
+            set
+            {
+                if (_vcurrentvw_OCRCorrectionAnalysis != value)
+                {
+                    _vcurrentvw_OCRCorrectionAnalysis = value;
+					if(_vcurrentvw_OCRCorrectionAnalysis != null) Currentvw_OCRCorrectionAnalysis = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentvw_OCRCorrectionAnalysis);                    
                 }
             }
         }

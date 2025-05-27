@@ -94,6 +94,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string OCR_PartLineFieldsDeleted = "OCR_PartLineFieldsDeleted";
 			public const string OCR_PartLineFieldsCreated = "OCR_PartLineFieldsCreated";
 			public const string OCR_PartLineFieldsUpdated = "OCR_PartLineFieldsUpdated";
+			public const string OCRCorrectionLearningFilterExpressionChanged = "OCRCorrectionLearningFilterExpressionChanged";
+			public const string SelectedOCRCorrectionLearningChanged = "SelectedOCRCorrectionLearningChanged";
+            public const string OCRCorrectionLearningChanged = "OCRCorrectionLearningChanged";
+			public const string OCRCorrectionLearningDeleted = "OCRCorrectionLearningDeleted";
+			public const string OCRCorrectionLearningCreated = "OCRCorrectionLearningCreated";
+			public const string OCRCorrectionLearningUpdated = "OCRCorrectionLearningUpdated";
 			public const string PartsFilterExpressionChanged = "PartsFilterExpressionChanged";
 			public const string SelectedPartsChanged = "SelectedPartsChanged";
             public const string PartsChanged = "PartsChanged";
@@ -124,6 +130,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string StartDeleted = "StartDeleted";
 			public const string StartCreated = "StartCreated";
 			public const string StartUpdated = "StartUpdated";
+			public const string vw_OCRCorrectionAnalysisFilterExpressionChanged = "vw_OCRCorrectionAnalysisFilterExpressionChanged";
+			public const string Selectedvw_OCRCorrectionAnalysisChanged = "Selectedvw_OCRCorrectionAnalysisChanged";
+            public const string vw_OCRCorrectionAnalysisChanged = "vw_OCRCorrectionAnalysisChanged";
+			public const string vw_OCRCorrectionAnalysisDeleted = "vw_OCRCorrectionAnalysisDeleted";
+			public const string vw_OCRCorrectionAnalysisCreated = "vw_OCRCorrectionAnalysisCreated";
+			public const string vw_OCRCorrectionAnalysisUpdated = "vw_OCRCorrectionAnalysisUpdated";
   
 
           // public const string ChildPartsChanged = "ChildPartsChanged";
@@ -140,11 +152,13 @@ namespace WaterNut.QuerySpace.OCR
           // public const string OCR_FieldMappingsChanged = "OCR_FieldMappingsChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
           // public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
+          // public const string OCRCorrectionLearningChanged = "OCRCorrectionLearningChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
           // public const string RecuringPartChanged = "RecuringPartChanged";
           // public const string RegularExpressionsChanged = "RegularExpressionsChanged";
           // public const string StartChanged = "StartChanged";
+          // public const string vw_OCRCorrectionAnalysisChanged = "vw_OCRCorrectionAnalysisChanged";
  
 
    
@@ -176,6 +190,8 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_PartLineFieldsChanged = "CurrentOCR_PartLineFieldsChanged";
    
+           public const string CurrentOCRCorrectionLearningChanged = "CurrentOCRCorrectionLearningChanged";
+   
            public const string CurrentPartsChanged = "CurrentPartsChanged";
    
            public const string CurrentPartTypesChanged = "CurrentPartTypesChanged";
@@ -185,6 +201,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentRegularExpressionsChanged = "CurrentRegularExpressionsChanged";
    
            public const string CurrentStartChanged = "CurrentStartChanged";
+   
+           public const string Currentvw_OCRCorrectionAnalysisChanged = "Currentvw_OCRCorrectionAnalysisChanged";
     
 
    
@@ -216,6 +234,8 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_PartLineFieldsIDChanged = "OnCurrentOCR_PartLineFieldsIDChanged";
    
+           public const string CurrentOCRCorrectionLearningIDChanged = "OnCurrentOCRCorrectionLearningIDChanged";
+   
            public const string CurrentPartsIDChanged = "OnCurrentPartsIDChanged";
    
            public const string CurrentPartTypesIDChanged = "OnCurrentPartTypesIDChanged";
@@ -225,6 +245,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentRegularExpressionsIDChanged = "OnCurrentRegularExpressionsIDChanged";
    
            public const string CurrentStartIDChanged = "OnCurrentStartIDChanged";
+   
+           public const string Currentvw_OCRCorrectionAnalysisIDChanged = "OnCurrentvw_OCRCorrectionAnalysisIDChanged";
       
     }
 }		

@@ -266,6 +266,7 @@
     <Compile Include="OCR\IInvoiceRegExService.cs" />
     <Compile Include="OCR\IInvoicesService.cs" />
     <Compile Include="OCR\ILinesService.cs" />
+    <Compile Include="OCR\IOCRCorrectionLearningService.cs" />
     <Compile Include="OCR\IOCR_FailedFieldsService.cs" />
     <Compile Include="OCR\IOCR_FailedLinesService.cs" />
     <Compile Include="OCR\IOCR_FieldMappingsService.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="OCR\IRecuringPartService.cs" />
     <Compile Include="OCR\IRegularExpressionsService.cs" />
     <Compile Include="OCR\IStartService.cs" />
+    <Compile Include="OCR\Ivw_OCRCorrectionAnalysisService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousDocumentItemService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousDocumentService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousItemsExService.cs" />

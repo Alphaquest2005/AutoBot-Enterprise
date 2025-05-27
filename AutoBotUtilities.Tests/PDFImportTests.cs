@@ -573,6 +573,12 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                         Assert.That(detailCount == 2, Is.True, $"Expected = 2 ShipmentInvoiceDetails, but found {detailCount}.");
                         _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
 
+                        // Check TotalsZero property - should be 0 when OCR correction is working properly
+                        var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "112-9126443-1163432");
+                        Assert.That(invoice, Is.Not.Null, "ShipmentInvoice should exist for TotalsZero check.");
+                        _logger.Information("TotalsZero value: {TotalsZero}", invoice.TotalsZero);
+                        Assert.That(invoice.TotalsZero, Is.EqualTo(0), $"Expected TotalsZero = 0, but found {invoice.TotalsZero}. OCR correction should ensure proper totals calculation.");
+
                         _logger.Information("Import successful for FileType {FileTypeId}. Total Invoices: {InvoiceCount}, Total Details: {DetailCount}",
                            fileType.Id, ctx.ShipmentInvoice.Count(), ctx.ShipmentInvoiceDetails.Count());
                     }

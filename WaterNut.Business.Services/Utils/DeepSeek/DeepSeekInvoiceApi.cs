@@ -612,6 +612,15 @@ try
         }
 
 
+        /// <summary>
+        /// Public method for getting responses from DeepSeek API
+        /// Used by OCRCorrectionService and other components
+        /// </summary>
+        public async Task<string> GetResponseAsync(string prompt)
+        {
+            return await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
+        }
+
         private async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
         {
             if (_httpClient == null) throw new InvalidOperationException("HttpClient is not initialized.");
