@@ -13,6 +13,19 @@ namespace WaterNut.DataSpace
 {
     using System.IO;
 
+    /// <summary>
+    /// Result of applying an OCR correction
+    /// </summary>
+    public class CorrectionResult
+    {
+        public string FieldName { get; set; }
+        public string OldRegex { get; set; }
+        public string NewRegex { get; set; }
+        public string CorrectionType { get; set; }
+        public bool Success { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
 
 
     /// <summary>
@@ -27,6 +40,245 @@ namespace WaterNut.DataSpace
         {
             _deepSeekApi = new DeepSeekInvoiceApi();
         }
+
+        /// <summary>
+        /// Static method to check if invoice totals are correct (TotalsZero = 0)
+        /// </summary>
+        public static bool TotalsZero(ShipmentInvoice invoice)
+        {
+            if (invoice == null) return false;
+
+            var totalsZero = (invoice.InvoiceTotal ?? 0) -
+                           ((invoice.SubTotal ?? 0) +
+                            (invoice.TotalInternalFreight ?? 0) +
+                            (invoice.TotalOtherCost ?? 0) +
+                            (invoice.TotalInsurance ?? 0) -
+                            (invoice.TotalDeduction ?? 0));
+
+            return Math.Abs(totalsZero) < 0.01;
+        }
+
+        /// <summary>
+        /// Static method to correct invoices using DeepSeek OCR error detection
+        /// </summary>
+        public static async Task<bool> CorrectInvoices(ShipmentInvoice invoice, string fileText)
+        {
+            try
+            {
+                if (invoice == null || string.IsNullOrEmpty(fileText))
+                    return false;
+
+                var service = new OCRCorrectionService();
+                var errors = await service.GetInvoiceDataErrorsAsync(invoice, fileText);
+
+                if (errors?.Any() == true)
+                {
+                    // Apply corrections to the invoice
+                    await service.ApplyCorrectionsToInvoiceAsync(invoice, errors);
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CorrectInvoices: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets invoice data errors by comparing with file text using DeepSeek
+        /// </summary>
+        public async Task<List<(string Field, string Error, string Value)>> GetInvoiceDataErrorsAsync(
+            ShipmentInvoice invoice,
+            string fileText)
+        {
+            var errors = new List<(string Field, string Error, string Value)>();
+
+            try
+            {
+                // Check header fields
+                CheckHeaderFieldErrors(invoice, fileText, errors);
+
+                // Check invoice details if available
+                CheckInvoiceDetailErrors(invoice, fileText, errors);
+
+                return errors;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetInvoiceDataErrorsAsync: {ex.Message}");
+                return errors;
+            }
+        }
+
+        /// <summary>
+        /// Applies corrections to the invoice based on detected errors
+        /// </summary>
+        private async Task ApplyCorrectionsToInvoiceAsync(
+            ShipmentInvoice invoice,
+            List<(string Field, string Error, string Value)> errors)
+        {
+            foreach (var error in errors)
+            {
+                try
+                {
+                    // Use DeepSeek to get the correct value
+                    var correctedValue = await GetCorrectedValueAsync(error, invoice);
+                    if (correctedValue != null)
+                    {
+                        ApplyFieldCorrection(invoice, error.Field, correctedValue);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error applying correction for field {error.Field}: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets corrected value for a field using DeepSeek
+        /// </summary>
+        private async Task<object> GetCorrectedValueAsync(
+            (string Field, string Error, string Value) error,
+            ShipmentInvoice invoice)
+        {
+            var prompt = CreateFieldCorrectionPrompt(error.Field, error.Error, error.Value);
+            var response = await _deepSeekApi.GetResponseAsync(prompt);
+
+            return ParseCorrectedValueResponse(response, error.Field);
+        }
+
+        /// <summary>
+        /// Creates a prompt for DeepSeek to correct a specific field value
+        /// </summary>
+        private string CreateFieldCorrectionPrompt(string fieldName, string error, string incorrectValue)
+        {
+            return $@"FIELD VALUE CORRECTION
+
+Fix the OCR error in this field value:
+
+FIELD: {fieldName}
+INCORRECT VALUE: {incorrectValue}
+ERROR DESCRIPTION: {error}
+
+COMMON OCR CORRECTIONS:
+- Comma/period: 10,00 → 10.00
+- Character mix-ups: L → 1, O → 0, 4 → 1
+- Missing decimals: 1000 → 10.00
+- Format issues: $166,30 → $166.30
+
+Return ONLY the corrected value in JSON format:
+{{
+  ""corrected_value"": ""fixed_value""
+}}";
+        }
+
+        /// <summary>
+        /// Parses DeepSeek response to extract corrected value
+        /// </summary>
+        private object ParseCorrectedValueResponse(string response, string fieldName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(response)) return null;
+
+                var jsonMatch = Regex.Match(response, @"\{[^}]*\}", RegexOptions.Singleline);
+                if (!jsonMatch.Success) return null;
+
+                var jsonDoc = System.Text.Json.JsonDocument.Parse(jsonMatch.Value);
+                var root = jsonDoc.RootElement;
+
+                if (root.TryGetProperty("corrected_value", out var valueElement))
+                {
+                    var correctedValue = valueElement.GetString();
+
+                    // Try to parse as appropriate type based on field name
+                    if (IsNumericField(fieldName) && decimal.TryParse(correctedValue?.Replace("$", "").Replace(",", ""), out var decimalValue))
+                    {
+                        return decimalValue;
+                    }
+
+                    return correctedValue;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error parsing corrected value response: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Determines if a field should contain numeric values
+        /// </summary>
+        private bool IsNumericField(string fieldName)
+        {
+            var numericFields = new[] {
+                "InvoiceTotal", "SubTotal", "TotalInternalFreight",
+                "TotalOtherCost", "TotalInsurance", "TotalDeduction"
+            };
+            return numericFields.Contains(fieldName, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Applies a field correction to the invoice
+        /// </summary>
+        private void ApplyFieldCorrection(ShipmentInvoice invoice, string fieldName, object correctedValue)
+        {
+            try
+            {
+                switch (fieldName.ToLower())
+                {
+                    case "invoicetotal":
+                        if (correctedValue is decimal invoiceTotal)
+                            invoice.InvoiceTotal = (double)invoiceTotal;
+                        break;
+                    case "subtotal":
+                        if (correctedValue is decimal subTotal)
+                            invoice.SubTotal = (double)subTotal;
+                        break;
+                    case "totalinternalfreight":
+                        if (correctedValue is decimal freight)
+                            invoice.TotalInternalFreight = (double)freight;
+                        break;
+                    case "totalothercost":
+                        if (correctedValue is decimal otherCost)
+                            invoice.TotalOtherCost = (double)otherCost;
+                        break;
+                    case "totalinsurance":
+                        if (correctedValue is decimal insurance)
+                            invoice.TotalInsurance = (double)insurance;
+                        break;
+                    case "totaldeduction":
+                        if (correctedValue is decimal deduction)
+                            invoice.TotalDeduction = (double)deduction;
+                        break;
+                    case "invoiceno":
+                        if (correctedValue is string invoiceNo)
+                            invoice.InvoiceNo = invoiceNo;
+                        break;
+                    case "suppliername":
+                        if (correctedValue is string supplierName)
+                            invoice.SupplierName = supplierName;
+                        break;
+                    case "currency":
+                        if (correctedValue is string currency)
+                            invoice.Currency = currency;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error applying field correction for {fieldName}: {ex.Message}");
+            }
+        }
+
+
 
 
         public List<ShipmentInvoice> CorrectInvoices(List<ShipmentInvoice> goodInvoices, string droppedFilePath)
@@ -717,6 +969,8 @@ If no errors found, return: {{""errors"": []}}";
             return lineInfo;
         }
 
+
+
         /// <summary>
         /// Creates a window of lines around the target line
         /// </summary>
@@ -774,6 +1028,8 @@ If no errors found, return: {{""errors"": []}}";
 
             return ParseCorrectionStrategyResponse(response);
         }
+
+
 
         /// <summary>
         /// Splits text into lines, removing empty entries
