@@ -205,7 +205,8 @@ namespace CoreEntities.Client.Repositories
                      // ActionDocSetLogs = new System.Collections.ObjectModel.ObservableCollection<ActionDocSetLogs>(res.ActionDocSetLogs.Select(y => new ActionDocSetLogs(y))),    
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
                      // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
-                  // Customs_Procedure = (res.Customs_Procedure != null?new Customs_Procedure(res.Customs_Procedure): null)    
+                  // Customs_Procedure = (res.Customs_Procedure != null?new Customs_Procedure(res.Customs_Procedure): null),    
+                  // Consignees = (res.Consignees != null?new Consignees(res.Consignees): null)    
                   };
                     }
                     else

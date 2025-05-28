@@ -150,6 +150,7 @@
           <Property Name="Document_TypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="NeedsC71" Type="bit" />
         </EntityType>
         <EntityType Name="ExportTemplate">
           <Key>
@@ -439,7 +440,7 @@
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="CAP" Type="nvarchar" MaxLength="20" />
           <Property Name="Additional_information" Type="nvarchar" MaxLength="20" />
-          <Property Name="Comments_free_text" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments_free_text" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="xcuda_Global_taxes">
           <Key>
@@ -2386,6 +2387,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Document_Type" ToRole="Customs_Procedure" />
+          <Property Name="NeedsC71" Type="Boolean" />
         </EntityType>
         <EntityType Name="ExportTemplate">
           <Key>
@@ -2651,7 +2653,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="CAP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Additional_information" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Comments_free_text" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments_free_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_ASYCUDA_General_information" FromRole="xcuda_General_information" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Country" Relationship="WaterNutDBModel.FK_xcuda_Country_xcuda_General_information" FromRole="xcuda_General_information" ToRole="xcuda_Country" />
         </EntityType>
@@ -4166,6 +4168,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="Document_Type">
             <EntityTypeMapping TypeName="WaterNutDBModel.Document_Type">
               <MappingFragment StoreEntitySet="Document_Type">
+                <ScalarProperty Name="NeedsC71" ColumnName="NeedsC71" />
                 <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
                 <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
                 <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />

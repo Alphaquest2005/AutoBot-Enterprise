@@ -287,6 +287,7 @@
     <Compile Include="Generated Repositories\OCR\InvoiceRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCRCorrectionLearningRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedLinesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldMappingsRepository.cs" />
@@ -297,6 +298,7 @@
     <Compile Include="Generated Repositories\OCR\RecuringPartRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RegularExpressionsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\StartRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\vw_OCRCorrectionAnalysisRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQSRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQS\PreviousDocumentItemRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQS\PreviousDocumentRepository.cs" />

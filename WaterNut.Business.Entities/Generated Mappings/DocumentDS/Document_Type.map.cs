@@ -16,6 +16,7 @@
               this.Property(t => t.Document_TypeId).HasColumnName("Document_TypeId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Type_of_declaration).HasColumnName("Type_of_declaration").HasMaxLength(10);
               this.Property(t => t.Declaration_gen_procedure_code).HasColumnName("Declaration_gen_procedure_code").HasMaxLength(10);
+              this.Property(t => t.NeedsC71).HasColumnName("NeedsC71");
               this.HasMany(t => t.Customs_Procedure).WithRequired(t => (Document_Type)t.Document_Type);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

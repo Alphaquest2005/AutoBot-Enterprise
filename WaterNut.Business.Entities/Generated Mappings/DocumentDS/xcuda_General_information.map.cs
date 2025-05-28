@@ -17,7 +17,7 @@
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.CAP).HasColumnName("CAP").HasMaxLength(20);
               this.Property(t => t.Additional_information).HasColumnName("Additional_information").HasMaxLength(20);
-              this.Property(t => t.Comments_free_text).HasColumnName("Comments_free_text").HasMaxLength(255);
+              this.Property(t => t.Comments_free_text).HasColumnName("Comments_free_text");
               this.HasRequired(t => t.xcuda_ASYCUDA).WithOptional(t => (xcuda_General_information)t.xcuda_General_information);
               this.HasOptional(t => t.xcuda_Country).WithRequired(t => (xcuda_General_information)t.xcuda_General_information);
              // Tracking Properties

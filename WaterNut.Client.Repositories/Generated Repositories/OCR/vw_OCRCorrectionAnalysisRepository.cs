@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using Invoices = OCR.Client.Entities.Invoices;
+using vw_OCRCorrectionAnalysis = OCR.Client.Entities.vw_OCRCorrectionAnalysis;
 
 namespace OCR.Client.Repositories 
 {
    
-    public partial class InvoicesRepository : BaseRepository<InvoicesRepository>
+    public partial class vw_OCRCorrectionAnalysisRepository : BaseRepository<vw_OCRCorrectionAnalysisRepository>
     {
 
-       private static readonly InvoicesRepository instance;
-       static InvoicesRepository()
+       private static readonly vw_OCRCorrectionAnalysisRepository instance;
+       static vw_OCRCorrectionAnalysisRepository()
         {
-            instance = new InvoicesRepository();
+            instance = new vw_OCRCorrectionAnalysisRepository();
         }
 
-       public static InvoicesRepository Instance
+       public static vw_OCRCorrectionAnalysisRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<Invoices>> Invoices(List<string> includesLst = null)
+        public async Task<IEnumerable<vw_OCRCorrectionAnalysis>> vw_OCRCorrectionAnalysis(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<Invoices>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<vw_OCRCorrectionAnalysis>().AsEnumerable();
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-                        var res = await t.GetInvoices(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.Getvw_OCRCorrectionAnalysis(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
+                            return res.Select(x => new vw_OCRCorrectionAnalysis(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace OCR.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<Invoices>> GetInvoicesByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<vw_OCRCorrectionAnalysis>> Getvw_OCRCorrectionAnalysisByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Invoices>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<vw_OCRCorrectionAnalysis>().AsEnumerable();
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-					    IEnumerable<DTO.Invoices> res = null;
+					    IEnumerable<DTO.vw_OCRCorrectionAnalysis> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetInvoices(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.Getvw_OCRCorrectionAnalysis(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetInvoicesByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.Getvw_OCRCorrectionAnalysisByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
+                            return res.Select(x => new vw_OCRCorrectionAnalysis(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace OCR.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<Invoices>> GetInvoicesByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<vw_OCRCorrectionAnalysis>> Getvw_OCRCorrectionAnalysisByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Invoices>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<vw_OCRCorrectionAnalysis>().AsEnumerable();
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-					    IEnumerable<DTO.Invoices> res = null;
+					    IEnumerable<DTO.vw_OCRCorrectionAnalysis> res = null;
                        
-                        res = await t.GetInvoicesByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.Getvw_OCRCorrectionAnalysisByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
+                            return res.Select(x => new vw_OCRCorrectionAnalysis(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace OCR.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<Invoices>> GetInvoicesByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<vw_OCRCorrectionAnalysis>> Getvw_OCRCorrectionAnalysisByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Invoices>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<vw_OCRCorrectionAnalysis>().AsEnumerable();
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-					    IEnumerable<DTO.Invoices> res = null;
+					    IEnumerable<DTO.vw_OCRCorrectionAnalysis> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetInvoices(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.Getvw_OCRCorrectionAnalysis(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetInvoicesByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.Getvw_OCRCorrectionAnalysisByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
+                            return res.Select(x => new vw_OCRCorrectionAnalysis(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,21 +191,16 @@ namespace OCR.Client.Repositories
         }
 
 
-        public async Task<Invoices> GetInvoices(string id, List<string> includesLst = null)
+        public async Task<vw_OCRCorrectionAnalysis> Getvw_OCRCorrectionAnalysis(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new InvoicesClient())
+                 using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-                        var res = await t.GetInvoicesByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.Getvw_OCRCorrectionAnalysisByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new Invoices(res)
-                    {
-                     // Parts = new System.Collections.ObjectModel.ObservableCollection<Parts>(res.Parts.Select(y => new Parts(y))),    
-                     // RegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.RegEx.Select(y => new InvoiceRegEx(y))),    
-                     // InvoiceIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceIdentificatonRegEx>(res.InvoiceIdentificatonRegEx.Select(y => new InvoiceIdentificatonRegEx(y)))    
-                  };
+                            return new vw_OCRCorrectionAnalysis(res);
                     }
                     else
                     {
@@ -224,7 +219,7 @@ namespace OCR.Client.Repositories
             }
         }
 
-        public async Task<Invoices> UpdateInvoices(Invoices entity)
+        public async Task<vw_OCRCorrectionAnalysis> Updatevw_OCRCorrectionAnalysis(vw_OCRCorrectionAnalysis entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -232,10 +227,10 @@ namespace OCR.Client.Repositories
             {
                 try
                 {
-                    using (var t = new InvoicesClient())
+                    using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
      
-                        var updatedEntity =  await t.UpdateInvoices(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.Updatevw_OCRCorrectionAnalysis(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -261,13 +256,13 @@ namespace OCR.Client.Repositories
 
         }
 
-        public async Task<Invoices> CreateInvoices(Invoices entity)
+        public async Task<vw_OCRCorrectionAnalysis> Createvw_OCRCorrectionAnalysis(vw_OCRCorrectionAnalysis entity)
         {
             try
             {   
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                     {
-                        return new Invoices(await t.CreateInvoices(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new vw_OCRCorrectionAnalysis(await t.Createvw_OCRCorrectionAnalysis(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -281,13 +276,13 @@ namespace OCR.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteInvoices(string id)
+        public async Task<bool> Deletevw_OCRCorrectionAnalysis(string id)
         {
             try
             {
-             using (var t = new InvoicesClient())
+             using (var t = new vw_OCRCorrectionAnalysisClient())
                 {
-                    return await t.DeleteInvoices(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.Deletevw_OCRCorrectionAnalysis(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -301,13 +296,13 @@ namespace OCR.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedInvoices(IEnumerable<string> selectedInvoices)
+        public async Task<bool> RemoveSelectedvw_OCRCorrectionAnalysis(IEnumerable<string> selectedvw_OCRCorrectionAnalysis)
         {
             try
             {
-                using (var ctx = new InvoicesClient())
+                using (var ctx = new vw_OCRCorrectionAnalysisClient())
                 {
-                    return await ctx.RemoveSelectedInvoices(selectedInvoices).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedvw_OCRCorrectionAnalysis(selectedvw_OCRCorrectionAnalysis).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -324,21 +319,21 @@ namespace OCR.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<Invoices>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<vw_OCRCorrectionAnalysis>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<Invoices>, int>(new List<Invoices>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<vw_OCRCorrectionAnalysis>, int>(new List<vw_OCRCorrectionAnalysis>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                 {
 
-                    IEnumerable<DTO.Invoices> res = null;
+                    IEnumerable<DTO.vw_OCRCorrectionAnalysis> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -347,7 +342,7 @@ namespace OCR.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<Invoices>, int>(res.Select(x => new Invoices(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<vw_OCRCorrectionAnalysis>, int>(res.Select(x => new vw_OCRCorrectionAnalysis(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -366,68 +361,12 @@ namespace OCR.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-             if (FileTypeId == "0") return null;
-            try
-            {
-                 using (InvoicesClient t = new InvoicesClient())
-                    {
-                        var res = await t.GetInvoicesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-             if (ApplicationSettingsId == "0") return null;
-            try
-            {
-                 using (InvoicesClient t = new InvoicesClient())
-                    {
-                        var res = await t.GetInvoicesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new Invoices(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
-         
+        
 		public decimal SumField(string whereExp, string sumExp)
         {
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -448,7 +387,7 @@ namespace OCR.Client.Repositories
         {
             try
             {
-                using (var t = new InvoicesClient())
+                using (var t = new vw_OCRCorrectionAnalysisClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

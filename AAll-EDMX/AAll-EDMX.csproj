@@ -4644,6 +4644,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentLogRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\CancelledEntriesLstRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ConsigneesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ContactsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Customs_ProcedureInOutRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs
@@ -4714,6 +4715,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetToAssessErrorsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetToAssessRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ToDo_POToXML_RecreateRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitAllXMLToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs
@@ -4770,12 +4772,13 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FieldMappingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FieldValueRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_PartLineFieldsRepository.cs
-..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCRFileTypesRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCRCorrectionLearningRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\PartsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\PartTypesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\RecuringPartRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\RegularExpressionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\StartRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\OCR\vw_OCRCorrectionAnalysisRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCRRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\PreviousDocumentQS\PreviousDocumentItemRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\PreviousDocumentQS\PreviousDocumentRepository.cs

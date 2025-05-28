@@ -360,7 +360,7 @@ namespace CoreEntities.Client.Repositories
             }
             catch (Exception)
             {
-                    Debugger.Break();
+                Debugger.Break();
                 throw;
             }
         }

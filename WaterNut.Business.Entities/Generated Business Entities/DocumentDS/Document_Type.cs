@@ -71,6 +71,21 @@ namespace DocumentDS.Business.Entities
         }
         string _declaration_gen_procedure_code;
         [DataMember]
+        public Nullable<bool> NeedsC71 
+        {
+            get
+            {
+                return _needsc71;
+            }
+            set
+            {
+                _needsc71 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _needsc71;
+        [DataMember]
         public List<Customs_Procedure> Customs_Procedure { get; set; }
 
  //       [DataMember]

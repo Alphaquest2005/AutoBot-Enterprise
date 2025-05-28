@@ -361,7 +361,35 @@ namespace EntryDataQS.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailById(string Id, List<string> includesLst = null)
+        {
+             if (Id == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailById(Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try
