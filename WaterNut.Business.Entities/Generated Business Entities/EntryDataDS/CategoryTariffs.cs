@@ -20,11 +20,6 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class CategoryTariffs : BaseEntity<CategoryTariffs>, ITrackable 
     {
-        partial void AutoGenStartUp() //CategoryTariffs()
-        {
-            this.ShipmentInvoiceDetails = new List<InvoiceDetails>();
-        }
-
         [DataMember]
         public string Category 
         {
@@ -55,8 +50,6 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _tariffcode;
-        [DataMember]
-        public List<InvoiceDetails> ShipmentInvoiceDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

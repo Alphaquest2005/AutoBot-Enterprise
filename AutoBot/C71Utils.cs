@@ -16,9 +16,12 @@ using TODO_C71ToCreate = ValuationDS.Business.Entities.TODO_C71ToCreate;
 
 namespace AutoBot
 {
+    using ExcelDataReader.Log;
+    using Serilog;
+
     public class C71Utils
     {
-        public static async Task ImportC71(FileTypes ft)
+        public static async Task ImportC71(FileTypes ft, ILogger log)
         {
             
                 
@@ -32,13 +35,16 @@ namespace AutoBot
                     .ToList();
                 foreach (var poInfo in docSets)
                 {
-                    await ImportC71(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId).ConfigureAwait(false);
+                    await ImportC71(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId, log).ConfigureAwait(false);
 
                 }
             }
         }
 
-        public static async Task<bool> ImportC71(string declarant_Reference_Number, int asycudaDocumentSetId)
+        public static async Task<bool> ImportC71(
+            string declarant_Reference_Number,
+            int asycudaDocumentSetId,
+            ILogger log)
         {
             try
             {
@@ -74,7 +80,7 @@ namespace AutoBot
                     if (csvFiles.Any())
                     {
                         await BaseDataModel.Instance.ImportC71(asycudaDocumentSetId,
-                            csvFiles.Select(x => x.FullName).ToList()).ConfigureAwait(false);
+                            csvFiles.Select(x => x.FullName).ToList(), log).ConfigureAwait(false);
                         ft.AsycudaDocumentSetId = asycudaDocumentSetId;
                         //BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
                     }
@@ -353,7 +359,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task ReImportC71()
+        public static async Task ReImportC71(ILogger log)
         {
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -367,7 +373,7 @@ namespace AutoBot
                         .FirstOrDefault();
                 if (docset != null)
                 {
-                    await C71Utils.ImportC71(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId).ConfigureAwait(false);
+                    await C71Utils.ImportC71(docset.Declarant_Reference_Number, docset.AsycudaDocumentSetId, log).ConfigureAwait(false);
                 }
             }
         }

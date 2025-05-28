@@ -6,6 +6,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class MergedDocumentProcessor : IDocumentProcessor
     {
         private readonly IDocumentProcessor _first;
@@ -17,10 +19,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _second = second;
         }
  
-        public async Task<List<dynamic>> Execute(List<dynamic> list)
+        public async Task<List<dynamic>> Execute(List<dynamic> list, ILogger log)
         {
-            var firstResult = await _first.Execute(list).ConfigureAwait(false);
-            var secondResult = await _second.Execute(list).ConfigureAwait(false);
+            var firstResult = await _first.Execute(list, log).ConfigureAwait(false);
+            var secondResult = await _second.Execute(list, log).ConfigureAwait(false);
             return firstResult.Union(secondResult).ToList();
         }
     }
@@ -36,10 +38,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _second = second;
         }
  
-        public async Task<Result<List<T>>> Execute(List<T> data)
+        public async Task<Result<List<T>>> Execute(List<T> data, ILogger log)
         {
-            var secondResults = await _second.Execute(data).ConfigureAwait(false);
-            var firstResults = await _first.Execute(data).ConfigureAwait(false);
+            var secondResults = await _second.Execute(data, log).ConfigureAwait(false);
+            var firstResults = await _first.Execute(data, log).ConfigureAwait(false);
             if (firstResults.IsSuccess && secondResults.IsSuccess) return new Result<List<T>>(firstResults.Value.Union(secondResults.Value).ToList(),true, "");
             if (firstResults.IsSuccess) return firstResults;
             if (secondResults.IsSuccess) return secondResults;

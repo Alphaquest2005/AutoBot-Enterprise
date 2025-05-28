@@ -21,6 +21,8 @@ using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDoc
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class SalesUtils
     {
         public static async Task ClearAllocations()
@@ -29,7 +31,7 @@ namespace AutoBot
                 .ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
         }
 
-        public static async Task SubmitUnknownDFPComments()
+        public static async Task SubmitUnknownDFPComments(ILogger log)
         {
             try
             {
@@ -63,7 +65,7 @@ namespace AutoBot
 
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                             $"Shipment: {docSet.Declarant_Reference_Number}",
-                            contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                            contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                     }
                 }
             }
@@ -73,7 +75,7 @@ namespace AutoBot
             }
         }
 
-        public static Task ReDownloadSalesFiles() => EX9Utils.DownloadSalesFiles(100, "IM7History", true);
+        public static Task ReDownloadSalesFiles(ILogger log) => EX9Utils.DownloadSalesFiles(log,100, "IM7History", true);
 
         public static Task RebuildSalesReport() => BuildSalesReportClass.Instance.ReBuildSalesReports();
 

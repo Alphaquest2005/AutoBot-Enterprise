@@ -65,7 +65,7 @@ namespace InventoryQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsEx(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsEx(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace InventoryQS.Business.Services
                     IEnumerable<EntryDataDetailsEx> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace InventoryQS.Business.Services
         }
 
 
-        public Task<EntryDataDetailsEx> GetEntryDataDetailsExByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<EntryDataDetailsEx> GetEntryDataDetailsExByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return Task.FromResult<EntryDataDetailsEx>(null); 
+			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
               using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
 				var set = AddIncludes(includesLst, dbContext);
                 EntryDataDetailsEx entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace InventoryQS.Business.Services
         }
 
 
-		 public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(new List<EntryDataDetailsEx>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace InventoryQS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(new List<EntryDataDetailsEx>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EntryDataDetailsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -260,8 +260,8 @@ namespace InventoryQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatch(string exp,
-                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace InventoryQS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(new List<EntryDataDetailsEx>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
 
 
                 var batchSize = 500;
@@ -319,7 +319,7 @@ namespace InventoryQS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -335,8 +335,8 @@ namespace InventoryQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatchExpressionLst(List<string> expLst,
-                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace InventoryQS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(new List<EntryDataDetailsEx>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EntryDataDetailsEx>();
 
 
                 var batchSize = 500;
@@ -394,7 +394,7 @@ namespace InventoryQS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -411,7 +411,7 @@ namespace InventoryQS.Business.Services
         }
 
 
-        public Task<EntryDataDetailsEx> UpdateEntryDataDetailsEx(EntryDataDetailsEx entity)
+        public async Task<EntryDataDetailsEx> UpdateEntryDataDetailsEx(EntryDataDetailsEx entity)
         { 
             using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
               {
@@ -423,7 +423,7 @@ namespace InventoryQS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -468,7 +468,7 @@ namespace InventoryQS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -481,10 +481,10 @@ namespace InventoryQS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<EntryDataDetailsEx> CreateEntryDataDetailsEx(EntryDataDetailsEx entity)
+        public async Task<EntryDataDetailsEx> CreateEntryDataDetailsEx(EntryDataDetailsEx entity)
         {
             try
             {
@@ -494,7 +494,7 @@ namespace InventoryQS.Business.Services
                 dbContext.EntryDataDetailsEx.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -511,7 +511,7 @@ namespace InventoryQS.Business.Services
             }
         }
 
-        public Task<bool> DeleteEntryDataDetailsEx(string EntryDataDetailsId)
+        public async Task<bool> DeleteEntryDataDetailsEx(string EntryDataDetailsId)
         {
             try
             {
@@ -521,12 +521,12 @@ namespace InventoryQS.Business.Services
                 EntryDataDetailsEx entity = dbContext.EntryDataDetailsEx
 													.SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.EntryDataDetailsEx.Attach(entity);
                     dbContext.EntryDataDetailsEx.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -582,23 +582,23 @@ namespace InventoryQS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<EntryDataDetailsEx>)dbContext.EntryDataDetailsEx; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -617,26 +617,26 @@ namespace InventoryQS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (InventoryQSContext dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.EntryDataDetailsEx
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.EntryDataDetailsEx
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.EntryDataDetailsEx
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.EntryDataDetailsEx
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -654,33 +654,33 @@ namespace InventoryQS.Business.Services
             }
         }
         
-        public Task<IEnumerable<EntryDataDetailsEx>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<EntryDataDetailsEx>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(new List<EntryDataDetailsEx>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(dbContext.EntryDataDetailsEx
-                            .AsNoTracking()
-                            .OrderBy(y => y.EntryDataDetailsId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.EntryDataDetailsEx
+										.AsNoTracking()
+                                        .OrderBy(y => y.EntryDataDetailsId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(dbContext.EntryDataDetailsEx
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.EntryDataDetailsId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.EntryDataDetailsEx
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.EntryDataDetailsId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -755,18 +755,18 @@ namespace InventoryQS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EntryDataDetailsEx>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -775,18 +775,18 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EntryDataDetailsEx>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -874,8 +874,8 @@ namespace InventoryQS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                    InventoryQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelectMany<T>(int startIndex, int count,
+            InventoryQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -886,14 +886,14 @@ namespace InventoryQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryDataDetailsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -902,8 +902,8 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                InventoryQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelect<T>(int startIndex, int count,
+            InventoryQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -914,14 +914,14 @@ namespace InventoryQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(set
-                   .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.EntryDataDetailsId)
+               return set
+                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.EntryDataDetailsId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -954,21 +954,21 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelectMany<T>(InventoryQSContext dbContext,
-                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelectMany<T>(InventoryQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<EntryDataDetailsEx>()
-                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<EntryDataDetailsEx>()
+							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<EntryDataDetailsEx>)dbContext.Set<T>()
@@ -980,7 +980,7 @@ namespace InventoryQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -989,21 +989,21 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelect<T>(InventoryQSContext dbContext,
-                                                                               string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelect<T>(InventoryQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<EntryDataDetailsEx>()
-                    .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<EntryDataDetailsEx>()
+							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<EntryDataDetailsEx>)dbContext.Set<T>()
@@ -1015,7 +1015,7 @@ namespace InventoryQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<EntryDataDetailsEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1024,7 +1024,7 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryDataId(string EntryDataId, List<string> includesLst = null)
+			        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryDataId(string EntryDataId, List<string> includesLst = null)
         {
             try
             {
@@ -1036,7 +1036,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1052,7 +1052,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -1064,7 +1064,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1080,7 +1080,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1092,7 +1092,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1108,7 +1108,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1120,7 +1120,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1136,7 +1136,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1148,7 +1148,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1164,7 +1164,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1176,7 +1176,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1192,7 +1192,7 @@ namespace InventoryQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
         {
             try
             {
@@ -1204,7 +1204,7 @@ namespace InventoryQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1313,18 +1313,18 @@ namespace InventoryQS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EntryDataDetailsEx>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1333,18 +1333,18 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(InventoryQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EntryDataDetailsEx>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

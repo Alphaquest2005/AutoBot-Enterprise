@@ -4,23 +4,25 @@
     <TargetFramework>net48</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>latest</LangVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <UserSecretsId>8fcde603-0ca2-485d-9a02-fecb3607a01a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Asycuda421.xsd" />
-    <None Remove="SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
-    <None Remove="SQLBlackBox\AdhocChange.sql" />
-    <None Remove="SQLBlackBox\AdjustFileGrowth.sql" />
-    <None Remove="SQLBlackBox\CallHighImpactIndexProc.txt" />
-    <None Remove="SQLBlackBox\CleanBackupHistory.sql" />
-    <None Remove="SQLBlackBox\CreateHighImpactFinal.sql" />
-    <None Remove="SQLBlackBox\dropIndexDupes.sql" />
-    <None Remove="SQLBlackBox\IndexUsageStatistics.txt" />
-    <None Remove="SQLBlackBox\IterateOverDatabases.txt" />
-    <None Remove="SQLBlackBox\RemoveBBIndexesFinal.sql" />
-    <None Remove="SQLBlackBox\RemoveUnusedIndexes.sql" />
-    <None Remove="SQLBlackBox\SmatIndexRebuild.sql" />
-    <None Remove="SQLBlackBox\UpdateStats.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
+    <None Remove="Infrastructure\SQLBlackBox\AdhocChange.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\AdjustFileGrowth.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\CallHighImpactIndexProc.txt" />
+    <None Remove="Infrastructure\SQLBlackBox\CleanBackupHistory.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\CreateHighImpactFinal.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\dropIndexDupes.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\IndexUsageStatistics.txt" />
+    <None Remove="Infrastructure\SQLBlackBox\IterateOverDatabases.txt" />
+    <None Remove="Infrastructure\SQLBlackBox\RemoveBBIndexesFinal.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\RemoveUnusedIndexes.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\SmatIndexRebuild.sql" />
+    <None Remove="Infrastructure\SQLBlackBox\UpdateStats.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,43 +30,43 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="SQLBlackBox\AddHighImpactIndexesStoredProc.txt">
+    <Content Include="Infrastructure\SQLBlackBox\AddHighImpactIndexesStoredProc.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\AdhocChange.sql">
+    <Content Include="Infrastructure\SQLBlackBox\AdhocChange.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\AdjustFileGrowth.sql">
+    <Content Include="Infrastructure\SQLBlackBox\AdjustFileGrowth.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\CallHighImpactIndexProc.txt">
+    <Content Include="Infrastructure\SQLBlackBox\CallHighImpactIndexProc.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\CleanBackupHistory.sql">
+    <Content Include="Infrastructure\SQLBlackBox\CleanBackupHistory.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\CreateHighImpactFinal.sql">
+    <Content Include="Infrastructure\SQLBlackBox\CreateHighImpactFinal.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\dropIndexDupes.sql">
+    <Content Include="Infrastructure\SQLBlackBox\dropIndexDupes.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\IndexUsageStatistics.txt">
+    <Content Include="Infrastructure\SQLBlackBox\IndexUsageStatistics.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\IterateOverDatabases.txt">
+    <Content Include="Infrastructure\SQLBlackBox\IterateOverDatabases.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\RemoveBBIndexesFinal.sql">
+    <Content Include="Infrastructure\SQLBlackBox\RemoveBBIndexesFinal.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\RemoveUnusedIndexes.sql">
+    <Content Include="Infrastructure\SQLBlackBox\RemoveUnusedIndexes.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\SmatIndexRebuild.sql">
+    <Content Include="Infrastructure\SQLBlackBox\SmatIndexRebuild.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SQLBlackBox\UpdateStats.sql">
+    <Content Include="Infrastructure\SQLBlackBox\UpdateStats.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -89,35 +91,41 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Crypto.dll" Version="1.8.1" />
+    <PackageReference Include="Destructurama.SystemTextJson" Version="0.1.0" />
     <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="ILogger.Moq" Version="2.0.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="PdfPig" Version="0.1.10" />
     <PackageReference Include="Polly" Version="8.5.2" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5" />
+    <PackageReference Include="Serilog.Enrichers.GlobalLogContext" Version="3.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <!-- Added Serilog Configuration Packages -->
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" /> <!-- Downgraded for net48 -->
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" /> <!-- Match dependency -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" /> <!-- Match dependency -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" /> <!-- Match dependency -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" /> <!-- Match dependency -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" /> <!-- Match dependency -->
     <!-- End Added Packages -->
     <!-- Added Serilog Enrichers -->
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.NUnit" Version="1.0.3" />
-    <PackageReference Include="System.Text.Json" Version="9.0.4.0" />
+    <PackageReference Include="Serilog.Sinks.TestCorrelator" Version="4.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.5" />
     <!-- End Added Enrichers -->
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.6.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.6.1" CopyLocal="true" />
+    <!-- Explicitly adding 4.0.3.0 with CopyLocal to ensure it's copied for the binding redirect -->
+    <!-- Removed duplicate System.ValueTuple -->
     <PackageReference Include="Tesseract" Version="5.2.0" />
     <PackageReference Include="TesserNet" Version="0.8.0" />
     <PackageReference Include="TesserNet.System.Drawing" Version="0.8.0" />
@@ -126,9 +134,8 @@
     <PackageReference Include="Z.EntityFramework.Extensions" Version="8.103.1" /> <!-- Reverted to specific version for license compatibility -->
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
 <!-- <PackageReference Include="MockQueryable.Moq" Version="6.0.1" /> --> <!-- Removed as manual mocking is used -->
-</ItemGroup>
+ </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AutoBot\AutoBotUtilities.csproj" />

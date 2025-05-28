@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public ChangeTrackingCollection<xcuda_Weight> ChangeTracker
+        public new ChangeTrackingCollection<xcuda_Weight> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public void StartTracking()
+         public new void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<xcuda_Weight>(this);
         }

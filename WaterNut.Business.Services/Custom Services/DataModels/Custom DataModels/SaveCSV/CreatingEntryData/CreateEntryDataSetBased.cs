@@ -6,12 +6,13 @@ using EntryDataDS.Business.Entities;
 using MoreLinq;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.EntryDataCreating;
 using WaterNut.DataSpace;
+using Serilog;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.CreatingEntryData
 {
     public class CreateEntryDataSetBased : ICreateEntryDataProcessor
     {
-        public async Task Execute(DataFile dataFile, List<RawEntryData> goodLst)
+        public async Task Execute(DataFile dataFile, List<RawEntryData> goodLst, ILogger log)
         {
 
             if (!goodLst.Any()) return;
@@ -57,7 +58,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                await DataSpace.BaseDataModel.EmailExceptionHandlerAsync(e).ConfigureAwait(false);
+                await DataSpace.BaseDataModel.EmailExceptionHandlerAsync(e, log, true).ConfigureAwait(false);
 
             }
 

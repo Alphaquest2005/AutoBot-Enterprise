@@ -6,6 +6,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class GetSupplierData : IProcessor<SupplierData>
     {
         private readonly List<dynamic> _lines;
@@ -15,7 +17,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _lines = lines;
         }
  
-        public Task<Result<List<SupplierData>>> Execute(List<SupplierData> data)
+        public Task<Result<List<SupplierData>>> Execute(List<SupplierData> data, ILogger log)
         {
             var supplierDatas = _lines
                 .GroupBy(x => (x.SupplierCode, x.SupplierName, x.SupplierAddress, x.CountryCode ))

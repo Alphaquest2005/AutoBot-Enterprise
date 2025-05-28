@@ -8,6 +8,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers
 {
+    using Serilog;
+
     public class MisMatchesProcessor : IProcessor<DataTable>
     {
         private readonly FileTypes _fileType;
@@ -18,11 +20,11 @@ namespace WaterNut.Business.Services.Importers
             
         }
         
-        public async Task<Result<List<DataTable>>> Execute(List<DataTable> data)
+        public async Task<Result<List<DataTable>>> Execute(List<DataTable> data, ILogger log)
         {
              if (data.Any(x => x.TableName == "MisMatches") && data.Any(x => x.TableName == "POTemplate"))
-                await XLSXUtils.ReadMISMatches(data.First(x => x.TableName == "MisMatches"), data.First(x => x.TableName == "POTemplate")).ConfigureAwait(false);
-             return Task.FromResult(new Result<List<DataTable>>(data, true, "")).Result; // Wrap in Task.FromResult
+                await XLSXUtils.ReadMISMatches(data.First(x => x.TableName == "MisMatches"), data.First(x => x.TableName == "POTemplate"), log).ConfigureAwait(false);
+            return await Task.FromResult(new Result<List<DataTable>>(data, true, "")).ConfigureAwait(false); // Wrap in Task.FromResult
         }
     }
 }

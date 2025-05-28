@@ -65,7 +65,7 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<PreviousEntry>> GetPreviousEntries(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<PreviousEntry>> GetPreviousEntries(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace PreviousDocumentDS.Business.Services
                     IEnumerable<PreviousEntry> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-        public Task<PreviousEntry> GetPreviousEntryByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<PreviousEntry> GetPreviousEntryByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Item_Id))return Task.FromResult<PreviousEntry>(null); 
+			   if(string.IsNullOrEmpty(Item_Id))return null; 
               using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 PreviousEntry entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<PreviousEntry>>(new List<PreviousEntry>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<PreviousEntry>>(new List<PreviousEntry>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PreviousEntry>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -278,8 +278,8 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByBatch(string exp,
-                                                                          int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace PreviousDocumentDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<PreviousEntry>>(new List<PreviousEntry>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
 
 
                 var batchSize = 500;
@@ -337,7 +337,7 @@ namespace PreviousDocumentDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -353,8 +353,8 @@ namespace PreviousDocumentDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByBatchExpressionLst(List<string> expLst,
-                                                                                       int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<PreviousEntry>> GetPreviousEntriesByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -363,7 +363,7 @@ namespace PreviousDocumentDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<PreviousEntry>>(new List<PreviousEntry>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PreviousEntry>();
 
 
                 var batchSize = 500;
@@ -412,7 +412,7 @@ namespace PreviousDocumentDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -429,7 +429,7 @@ namespace PreviousDocumentDS.Business.Services
         }
 
 
-        public Task<PreviousEntry> UpdatePreviousEntry(PreviousEntry entity)
+        public async Task<PreviousEntry> UpdatePreviousEntry(PreviousEntry entity)
         { 
             using ( var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
               {
@@ -441,7 +441,7 @@ namespace PreviousDocumentDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -486,7 +486,7 @@ namespace PreviousDocumentDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -499,10 +499,10 @@ namespace PreviousDocumentDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<PreviousEntry> CreatePreviousEntry(PreviousEntry entity)
+        public async Task<PreviousEntry> CreatePreviousEntry(PreviousEntry entity)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace PreviousDocumentDS.Business.Services
                 dbContext.PreviousEntries.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -529,7 +529,7 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-        public Task<bool> DeletePreviousEntry(string Item_Id)
+        public async Task<bool> DeletePreviousEntry(string Item_Id)
         {
             try
             {
@@ -539,12 +539,12 @@ namespace PreviousDocumentDS.Business.Services
                 PreviousEntry entity = dbContext.PreviousEntries
 													.SingleOrDefault(x => x.Item_Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.PreviousEntries.Attach(entity);
                     dbContext.PreviousEntries.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -600,23 +600,23 @@ namespace PreviousDocumentDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<PreviousEntry>)dbContext.PreviousEntries; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -635,26 +635,26 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (PreviousDocumentDSContext dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.PreviousEntries
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.PreviousEntries
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.PreviousEntries
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.PreviousEntries
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -672,33 +672,33 @@ namespace PreviousDocumentDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<PreviousEntry>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<PreviousEntry>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<PreviousEntry>>(new List<PreviousEntry>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(dbContext.PreviousEntries
-                            .AsNoTracking()
-                            .OrderBy(y => y.Item_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.PreviousEntries
+										.AsNoTracking()
+                                        .OrderBy(y => y.Item_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<PreviousEntry>>(dbContext.PreviousEntries
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Item_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.PreviousEntries
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Item_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -782,18 +782,18 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<PreviousEntry>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -802,18 +802,18 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<PreviousEntry>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -919,8 +919,8 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<PreviousEntry>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                               PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<PreviousEntry>> LoadRangeSelectMany<T>(int startIndex, int count,
+            PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -931,14 +931,14 @@ namespace PreviousDocumentDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<PreviousEntry>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Item_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -947,8 +947,8 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<PreviousEntry>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                           PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<PreviousEntry>> LoadRangeSelect<T>(int startIndex, int count,
+            PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -959,14 +959,14 @@ namespace PreviousDocumentDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<PreviousEntry>>(set
-                   .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Item_Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Item_Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -999,21 +999,21 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<PreviousEntry>> GetWhereSelectMany<T>(PreviousDocumentDSContext dbContext,
-                                                                              string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<PreviousEntry>> GetWhereSelectMany<T>(PreviousDocumentDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<PreviousEntry>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<PreviousEntry>()
-                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<PreviousEntry>()
+							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<PreviousEntry>)dbContext.Set<T>()
@@ -1025,7 +1025,7 @@ namespace PreviousDocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<PreviousEntry>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1034,21 +1034,21 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<PreviousEntry>> GetWhereSelect<T>(PreviousDocumentDSContext dbContext,
-                                                                          string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<PreviousEntry>> GetWhereSelect<T>(PreviousDocumentDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<PreviousEntry>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<PreviousEntry>()
-                    .Where(exp == "All" || exp == null?"Item_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<PreviousEntry>()
+							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<PreviousEntry>)dbContext.Set<T>()
@@ -1060,7 +1060,7 @@ namespace PreviousDocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<PreviousEntry>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1069,7 +1069,7 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<PreviousEntry>> GetPreviousEntryByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<PreviousEntry>> GetPreviousEntryByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1082,7 +1082,7 @@ namespace PreviousDocumentDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1098,7 +1098,7 @@ namespace PreviousDocumentDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<PreviousEntry>> GetPreviousEntryByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<PreviousEntry>> GetPreviousEntryByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
         {
             try
             {
@@ -1111,7 +1111,7 @@ namespace PreviousDocumentDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1229,18 +1229,18 @@ namespace PreviousDocumentDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<PreviousEntry>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1249,18 +1249,18 @@ namespace PreviousDocumentDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(PreviousDocumentDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<PreviousEntry>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

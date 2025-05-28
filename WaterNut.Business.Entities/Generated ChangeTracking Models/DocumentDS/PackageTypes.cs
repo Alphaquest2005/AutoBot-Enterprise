@@ -22,7 +22,7 @@ using TrackableEntities.Client;
 
         [NotMapped]
         [IgnoreDataMember]
-        public ChangeTrackingCollection<PackageTypes> ChangeTracker
+        public new ChangeTrackingCollection<PackageTypes> ChangeTracker
         {
             get
             {
@@ -30,7 +30,7 @@ using TrackableEntities.Client;
             }
         }
 
-         public void StartTracking()
+         public new void StartTracking()
         {
             _changeTracker = new ChangeTrackingCollection<PackageTypes>(this);
         }

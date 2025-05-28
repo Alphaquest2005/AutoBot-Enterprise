@@ -11,15 +11,17 @@ namespace AutoBot
 {
     using System.Threading.Tasks;
 
+    using Serilog;
+
     public class ImportAllAsycudaDocumentsInDataFolderUtils
     {
-        public static async Task ImportAllAsycudaDocumentsInDataFolder(bool overwriteExisting)
+        public static async Task ImportAllAsycudaDocumentsInDataFolder(bool overwriteExisting, ILogger log)
         {
             try
             {
                 Console.WriteLine("Import All Asycuda Documents in DataFolder");
 
-                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true).ConfigureAwait(false);
+                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -28,7 +30,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task ImportAllZeroItemsInDataFolder(bool overwriteExisting)
+        public static async Task ImportAllZeroItemsInDataFolder(bool overwriteExisting, ILogger log)
         {
             try
             {
@@ -37,7 +39,7 @@ namespace AutoBot
                     .Select(x => x.SourceFileName).ToList();
                
 
-                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, zeroitems, true, true, true, overwriteExisting, true).ConfigureAwait(false);
+                await BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, zeroitems, true, true, true, overwriteExisting, true, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {

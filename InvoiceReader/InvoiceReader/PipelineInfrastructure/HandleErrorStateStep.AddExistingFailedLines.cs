@@ -4,23 +4,23 @@ using System.Linq;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
 
     public partial class HandleErrorStateStep
     {
-        private static void AddExistingFailedLines(Invoice template, List<Line> failedlines)
+        private static void AddExistingFailedLines(ILogger logger, Invoice template, List<Line> failedlines) // Add logger parameter
         {
           
 
 
                 int? templateId = template?.OcrInvoices?.Id;
-                _logger.Verbose("Adding existing failed lines from template parts for TemplateId: {TemplateId}",
-                    templateId);
+                logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(AddExistingFailedLines), "Processing", "Adding existing failed lines from template parts.", $"TemplateId: {templateId}", "");
                 // Null checks
                 if (template?.Parts == null || failedlines == null)
                 {
-                    _logger.Warning(
-                        "Cannot add existing failed lines: Template.Parts or target failedlines list is null for TemplateId: {TemplateId}",
-                        templateId);
+                    logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                        nameof(AddExistingFailedLines), "Validation", "Cannot add existing failed lines: Template.Parts or target failedlines list is null.", $"TemplateId: {templateId}", "");
                     return;
                 }
 
@@ -33,17 +33,24 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         .ToList();
 
                     int countAdded = existingFailed.Count;
-                    _logger.Verbose(
-                        "Found {Count} existing failed lines in Template Parts to add for TemplateId: {TemplateId}",
-                        countAdded, templateId);
+                    logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                        nameof(AddExistingFailedLines), "Processing", "Found existing failed lines in Template Parts to add.", $"Count: {countAdded}, TemplateId: {templateId}", new { ExistingFailedLines = existingFailed });
                     if (countAdded > 0)
                     {
                         failedlines.AddRange(existingFailed);
+                        logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                            nameof(AddExistingFailedLines), "Completion", "Added existing failed lines to the list.", $"TotalFailedLinesCount: {failedlines.Count}", "");
+                    }
+                    else
+                    {
+                        logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                            nameof(AddExistingFailedLines), "Completion", "No existing failed lines found in Template Parts to add.", $"TemplateId: {templateId}", "");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Error adding existing failed lines for TemplateId: {TemplateId}", templateId);
+                    logger?.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(AddExistingFailedLines), "Add existing failed lines from template parts", 0, $"Error adding existing failed lines for TemplateId: {templateId}. Error: {ex.Message}");
                 }
             
         }

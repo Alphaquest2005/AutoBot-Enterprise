@@ -8,6 +8,8 @@ using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
 
 namespace AutoBotUtilities.Tests
 {
+    using Serilog;
+
     [TestFixture]
     public class BaseDataModelTests
     {
@@ -51,7 +53,7 @@ namespace AutoBotUtilities.Tests
                     @"D:\OneDrive\Clients\Columbian\Emails\Imports\IM4-GDSGO-17482.xml"
                 };
 
-                await Infrastructure.Utils.ImportDocuments(docSet, fileNames).ConfigureAwait(false);
+                await Infrastructure.Utils.ImportDocuments(docSet, fileNames, Log.Logger).ConfigureAwait(false);
 
                 Assert.That(true);
             }

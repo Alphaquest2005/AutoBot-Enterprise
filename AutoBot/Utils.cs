@@ -69,7 +69,8 @@ using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
 namespace AutoBot
 {
-   
+    using ExcelDataReader.Log;
+    using Serilog;
 
     public partial class Utils
     {
@@ -163,11 +164,11 @@ namespace AutoBot
 
                // Replace Wait() with await ConfigureAwait(false)
                // ProcessDisErrorsForAllocation.Execute is synchronous, remove await and ConfigureAwait
-               new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+               await new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                    .Execute(
                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                        strLst
-                   ); // Removed await and ConfigureAwait
+                   ).ConfigureAwait(false); // Removed await and ConfigureAwait
 
                // Replace Wait() with await ConfigureAwait(false)
                await new OldSalesAllocator()
@@ -188,118 +189,278 @@ namespace AutoBot
        }
 
 
-        public static async Task SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email)
+        public static async Task SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email, ILogger log) // Added ILogger
         {
+            string operationName = nameof(SaveAttachments);
+            var stopwatch = Stopwatch.StartNew(); // Start stopwatch
+            log.Information("METHOD_ENTRY: {MethodName}. Context: {Context}", // METHOD_ENTRY log
+                operationName, new { FileCount = csvFiles?.Length ?? 0, FileTypeId = fileType?.Id, EmailId = email?.EmailId });
+
             try
             {
-
+                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Starting attachment saving process.", operationName, "Start"); // INTERNAL_STEP
 
                 using (var ctx = new CoreEntitiesContext() { StartTracking = true })
                 {
+                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", // INVOKING_OPERATION
+                        "ctx.Emails.Include(\"EmailAttachments.Attachments\").FirstOrDefault", "SYNC_EXPECTED"); // This is not async, so SYNC_EXPECTED
                     var oldemail = ctx.Emails.Include("EmailAttachments.Attachments").FirstOrDefault(x => x.EmailId == email.EmailId);
+                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) EmailFound: {EmailFound}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                        "ctx.Emails.Include(\"EmailAttachments.Attachments\").FirstOrDefault", "Sync call returned.", oldemail != null);
+
                     if (oldemail == null)
                     {
+                        log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email record not found, creating new one.", operationName, "CreateEmail"); // INTERNAL_STEP
                         oldemail = ctx.Emails.Add(new Emails(true)
                         {
+EmailId = email.EmailId, // Added EmailId
                             EmailUniqueId = email.EmailUniqueId,
-                            EmailId = email.EmailId,
                             Subject = email.Subject,
                             EmailDate = email.EmailDate,
                             MachineName = Environment.MachineName,
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                             TrackingState = TrackingState.Added
                         });
-                        ctx.SaveChanges();
+                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", // INVOKING_OPERATION
+                            "ctx.SaveChanges (for new email)", "SYNC_EXPECTED");
+                        ctx.SaveChanges(); // This is not async, so SYNC_EXPECTED
+                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                            "ctx.SaveChanges (for new email)", "Sync call returned.");
                     }
                     else
                     {
+                        log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email record found, updating existing one.", operationName, "UpdateEmail"); // INTERNAL_STEP
                         oldemail.MachineName = Environment.MachineName;
                         oldemail.EmailUniqueId = email.EmailUniqueId;
+                        oldemail.TrackingState = TrackingState.Modified; // Set TrackingState to Modified
                     }
+
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Processing {FileCount} attached files.", operationName, "ProcessFiles", csvFiles?.Length ?? 0); // INTERNAL_STEP
+                    if (csvFiles == null || csvFiles.Length == 0)
+                    {
+                         log.Warning("INTERNAL_STEP ({MethodName} - {Stage}): Processing collection '{CollectionName}'. Item count: 0. {EmptyCollectionExpectation}",
+                             operationName, "ProcessFiles", "csvFiles", "No files provided to save.");
+                    }
+
 
                     foreach (var file in csvFiles)
                     {
+                        log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Processing file: {FileName}", operationName, "ProcessSingleFile", file.Name); // INTERNAL_STEP
 
                         if (fileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.Unknown)
                         {
-                            await FileTypeManager.SendBackTooBigEmail(file, fileType).ConfigureAwait(false);
+                            log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                                "FileTypeManager.SendBackTooBigEmail", "ASYNC_EXPECTED", file.Name);
+                            await FileTypeManager.SendBackTooBigEmail(file, fileType, log).ConfigureAwait(false);
+                            log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                                "FileTypeManager.SendBackTooBigEmail", "Async call completed (await).", file.Name);
                         }
 
-                        var reference = GetReference(file, ctx);
+                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                            "GetReference", "SYNC_EXPECTED", file.Name); // This is not async, so SYNC_EXPECTED
+                        var reference = GetReference(file, ctx, log);
+                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) Reference: {Reference} for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                            "GetReference", "Sync call returned.", reference, file.Name);
 
+
+                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                            "ctx.Attachments.FirstOrDefault", "SYNC_EXPECTED", file.Name); // This is not async, so SYNC_EXPECTED
                         Attachments attachment = ctx.Attachments.FirstOrDefault(x => x.FilePath == file.FullName);
+                         log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) AttachmentFound: {AttachmentFound} for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                            "ctx.Attachments.FirstOrDefault", "Sync call returned.", attachment != null, file.Name);
+
                         if(attachment == null)
-                        attachment = new Attachments(true)
                         {
-                            FilePath = file.FullName,
-                            DocumentCode = fileType.DocumentCode,
-                            Reference = reference,
-                            EmailId = email.EmailId,
-                            TrackingState = TrackingState.Added
-                        };
+                            log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Attachment record not found, creating new one for file {FileName}.", operationName, "CreateAttachment", file.Name); // INTERNAL_STEP
+                            attachment = new Attachments(true)
+                            {
+                                FilePath = file.FullName,
+                                DocumentCode = fileType.DocumentCode,
+                                Reference = reference,
+                                EmailId = email.EmailId,
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.Attachments.Add(attachment); // Explicitly add new attachment to context
+                        }
+                        else
+                        {
+                             log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Attachment record found, updating existing one for file {FileName}.", operationName, "UpdateAttachment", file.Name); // INTERNAL_STEP
+                        }
 
 
-                        AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference);
+                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                            "AddUpdateEmailAttachments", "SYNC_EXPECTED", file.Name); // This is not async, so SYNC_EXPECTED
+                        AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference, log);
+                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                            "AddUpdateEmailAttachments", "Sync call returned.", file.Name);
 
-                        if (fileType.AsycudaDocumentSetId != 0) EntryDocSetUtils.AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference);
+
+                        if (fileType.AsycudaDocumentSetId != 0)
+                        {
+                            log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName} and DocSetId {DocSetId}", // INVOKING_OPERATION
+                                "EntryDocSetUtils.AddUpdateDocSetAttachement", "SYNC_EXPECTED", file.Name, fileType.AsycudaDocumentSetId); // This is not async, so SYNC_EXPECTED
+                            EntryDocSetUtils.AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference, log);
+                            log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName} and DocSetId {DocSetId}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                                "EntryDocSetUtils.AddUpdateDocSetAttachement", "Sync call returned.", file.Name, fileType.AsycudaDocumentSetId);
+                        }
+                         else
+                        {
+                             log.Information("INTERNAL_STEP ({MethodName} - {Stage}): AsycudaDocumentSetId is 0. Skipping EntryDocSetUtils.AddUpdateDocSetAttachement for file {FileName}.", operationName, "SkipDocSetAttachment", file.Name); // INTERNAL_STEP
+                        }
 
                     }
 
-
                 }
+                stopwatch.Stop(); // Stop stopwatch
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", // METHOD_EXIT_SUCCESS
+                    operationName, stopwatch.ElapsedMilliseconds);
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                // META_LOG_DIRECTIVE: Type: Instrumentation; Context: Method:SaveAttachments, Catch:DbEntityValidationException; Directive: Adding diagnostic log at the start of the catch block to verify execution flow.; ExpectedChange: A new debug log will appear in the logs if code execution proceeds past the initial error log.; SourceIteration: LLM_Iter_0.2
+                log.Debug("INTERNAL_STEP ({MethodName} - {Stage}): Entered DbEntityValidationException catch block.", operationName, "CatchEntry"); // Diagnostic log
+
+                log.Warning("META_LOG_DIRECTIVE: Type: {MetaType}; Context: {MetaContext}; Directive: {MetaDirective}; ExpectedChange: {ExpectedBehavioralChange}; SourceIteration: {SourceLLMIterationId}", "ErrorAnalysis", "Method:SaveAttachments, Exception:DbEntityValidationException", "Logging detailed EntityValidationErrors to diagnose save failure.", "Logs will contain specific entity and property validation errors.", "LLM_Iter_3.1");
+
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    log.Error("INTERNAL_STEP ({MethodName} - {Stage}): Entity of type \"{EntityType}\" in state \"{EntityState}\" has validation errors.",
+                        operationName, "EntityValidationDetails", validationErrors.Entry.Entity.GetType().Name, validationErrors.Entry.State);
+
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        log.Error("INTERNAL_STEP ({MethodName} - {Stage}): Property: \"{PropertyName}\", Error: \"{ErrorMessage}\"",
+                            operationName, "EntityValidationError", validationError.PropertyName, validationError.ErrorMessage);
+                    }
+                }
+
+                throw; // Re-throw the exception
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
+                 stopwatch.Stop(); // Stop stopwatch on error
+                 log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
+                     operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                 throw; // Re-throw the exception
+             }
+         }
 
 
 
         private static void AddUpdateEmailAttachments(FileTypes fileType, Email email, Emails oldemail, FileInfo file,
-            CoreEntitiesContext ctx, Attachments attachment, string reference)
+            CoreEntitiesContext ctx, Attachments attachment, string reference, ILogger log) // Added ILogger
         {
-            var emailAttachement =
-                oldemail.EmailAttachments.FirstOrDefault(x => x.Attachments.FilePath == file.FullName);
+            string operationName = nameof(AddUpdateEmailAttachments);
+            var stopwatch = Stopwatch.StartNew(); // Start stopwatch
+            log.Information("METHOD_ENTRY: {MethodName}. Context: {Context}", // METHOD_ENTRY log
+                operationName, new { FileTypeId = fileType?.Id, EmailId = email?.EmailId, FileName = file?.Name, AttachmentId = attachment?.Id, Reference = reference });
+
+            try
+            {
+                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                    "oldemail.EmailAttachments.FirstOrDefault", "SYNC_EXPECTED", file?.Name); // This is not async, so SYNC_EXPECTED
+                var emailAttachement =
+                    oldemail.EmailAttachments.FirstOrDefault(x => x.Attachments.FilePath == file.FullName);
+                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) EmailAttachmentFound: {EmailAttachmentFound} for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                    "oldemail.EmailAttachments.FirstOrDefault", "Sync call returned.", emailAttachement != null, file?.Name);
 
 
-            if (emailAttachement == null)
-            {
-                ctx.EmailAttachments.Add(
-                    new EmailAttachments(true)
-                    {
-                        Attachments = attachment,
-                        DocumentSpecific = fileType.DocumentSpecific,
-                        EmailId = email.EmailId,
-                        FileTypeId = fileType.Id,
-                        TrackingState = TrackingState.Added
-                    });
+                if (emailAttachement == null)
+                {
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email attachment record not found, creating new one for file {FileName}.", operationName, "CreateEmailAttachment", file?.Name); // INTERNAL_STEP
+                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for file {FileName}", // INVOKING_OPERATION
+                        "ctx.EmailAttachments.Add", "SYNC_EXPECTED", file?.Name); // This is not async, so SYNC_EXPECTED
+                    ctx.EmailAttachments.Add(
+                        new EmailAttachments(true)
+                        {
+                            Attachments = attachment,
+                            DocumentSpecific = fileType.DocumentSpecific,
+                            EmailId = email.EmailId,
+                            FileTypeId = fileType.Id,
+                            TrackingState = TrackingState.Added
+                        });
+                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) for file {FileName}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                        "ctx.EmailAttachments.Add", "Sync call returned.", file?.Name);
+                }
+                else
+                {
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Email attachment record found, updating existing one for file {FileName}.", operationName, "UpdateEmailAttachment", file?.Name); // INTERNAL_STEP
+                    emailAttachement.DocumentSpecific = fileType.DocumentSpecific;
+                    emailAttachement.EmailId = email.EmailId;
+                    emailAttachement.FileTypeId = fileType.Id;
+                    emailAttachement.Attachments.Reference = reference;
+                    emailAttachement.Attachments.DocumentCode = fileType.DocumentCode;
+                    emailAttachement.Attachments.EmailId = email.EmailId;
+                }
+
+                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", // INVOKING_OPERATION
+                    "ctx.SaveChanges (for email attachment)", "SYNC_EXPECTED"); // This is not async, so SYNC_EXPECTED
+                ctx.SaveChanges();
+                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                    "ctx.SaveChanges (for email attachment)", "Sync call returned.");
+
+                stopwatch.Stop(); // Stop stopwatch
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", // METHOD_EXIT_SUCCESS
+                    operationName, stopwatch.ElapsedMilliseconds);
             }
-            else
+            catch (Exception e)
             {
-                emailAttachement.DocumentSpecific = fileType.DocumentSpecific;
-                emailAttachement.EmailId = email.EmailId;
-                emailAttachement.FileTypeId = fileType.Id;
-                emailAttachement.Attachments.Reference = reference;
-                emailAttachement.Attachments.DocumentCode = fileType.DocumentCode;
-                emailAttachement.Attachments.EmailId = email.EmailId;
+                stopwatch.Stop(); // Stop stopwatch on error
+                log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
+                    operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                throw; // Re-throw the exception
             }
-            ctx.SaveChanges();
         }
 
-        private static string GetReference(FileInfo file, CoreEntitiesContext ctx)
+        private static string GetReference(FileInfo file, CoreEntitiesContext ctx, ILogger log) // Added ILogger
         {
-            var newReference = file.Name.Replace(file.Extension, "");
+            string operationName = nameof(GetReference);
+            var stopwatch = Stopwatch.StartNew(); // Start stopwatch
+            log.Information("METHOD_ENTRY: {MethodName}. Context: {Context}", // METHOD_ENTRY log
+                operationName, new { FileName = file?.Name });
 
-            var existingRefCount = ctx.Attachments.Select(x => x.Reference)
-                .Where(x => x.Contains(newReference)).Count();
-            if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
-            return newReference;
+            try
+            {
+                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Generating initial reference from file name {FileName}.", operationName, "GenerateInitialReference", file?.Name); // INTERNAL_STEP
+                var newReference = file.Name.Replace(file.Extension, "");
+                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Initial reference generated: {InitialReference}", operationName, "InitialReferenceGenerated", newReference); // INTERNAL_STEP
+
+
+                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for reference {Reference}", // INVOKING_OPERATION
+                    "ctx.Attachments.Select(x => x.Reference).Where(x => x.Contains(newReference)).Count()", "SYNC_EXPECTED", newReference); // This is not async, so SYNC_EXPECTED
+                var existingRefCount = ctx.Attachments.Select(x => x.Reference)
+                    .Where(x => x.Contains(newReference)).Count();
+                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance}) ExistingReferenceCount: {ExistingReferenceCount} for reference {Reference}", // OPERATION_INVOKED_AND_CONTROL_RETURNED
+                    "ctx.Attachments.Select(x => x.Reference).Where(x => x.Contains(newReference)).Count()", "Sync call returned.", existingRefCount, newReference);
+
+
+                if (existingRefCount > 0)
+                {
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Existing references found. Appending count to reference.", operationName, "AppendCount"); // INTERNAL_STEP
+                    newReference = $"{existingRefCount + 1}-{newReference}";
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Updated reference: {UpdatedReference}", operationName, "UpdatedReference", newReference); // INTERNAL_STEP
+                }
+                else
+                {
+                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): No existing references found. Using initial reference.", operationName, "NoExistingReferences"); // INTERNAL_STEP
+                }
+
+                stopwatch.Stop(); // Stop stopwatch
+                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms. Generated Reference: {GeneratedReference}", // METHOD_EXIT_SUCCESS
+                    operationName, stopwatch.ElapsedMilliseconds, newReference);
+                return newReference;
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop(); // Stop stopwatch on error
+                log.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}", // METHOD_EXIT_FAILURE
+                    operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                throw; // Re-throw the exception
+            }
         }
 
 
-        public static async Task<(bool success, int lcontValue)> AssessComplete(string instrFile, string resultsFile)
+        public static async Task<(bool success, int lcontValue)> AssessComplete(string instrFile, string resultsFile, ILogger log)
         {
             int lcontValue = 0;
             try
@@ -352,7 +513,7 @@ namespace AutoBot
                             {
                                 if (r[0] == "Screenshot")
                                 {
-                                    await SubmitScriptErrors(r[1]).ConfigureAwait(false);
+                                    await SubmitScriptErrors(r[1], log).ConfigureAwait(false);
                                     // Assuming true indicates an action was taken, even on error path,
                                     // or that the process should be considered "complete" for this iteration.
                                     // If AssessComplete's "true" means "overall success", this might need adjustment.
@@ -387,7 +548,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitScriptErrors(string file)
+        public static async Task SubmitScriptErrors(string file, ILogger log)
         {
             try
             {
@@ -413,7 +574,7 @@ namespace AutoBot
                     var msg =  EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]
                     {
                         file
-                    });
+                    }, log);
                     await EmailDownloader.EmailDownloader.SendEmailInternalAsync(Client, msg).ConfigureAwait(false);
                 }
             }
@@ -436,33 +597,33 @@ namespace AutoBot
             }
         }
 
-        public static async Task RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes)
+        public static async Task RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes, ILogger log)
         {
             var lcont = 0;
             for (int i = 0; i < trytimes; i++)
             {
-                var assessmentResult1 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                var assessmentResult1 = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult1.lcontValue;
                 if (assessmentResult1.success == true) break;
             
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
-                var assessmentResult2 = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                var assessmentResult2 = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult2.lcontValue;
                 if(assessmentResult2.success == true) break;
             }
         }
 
-        public static async Task Assess(string instrFile, string resultsFile, string directoryName)
+        public static async Task Assess(string instrFile, string resultsFile, string directoryName, ILogger log)
         {
             var lcont = 0;
-            var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+            var assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
             lcont = assessmentResult.lcontValue;
             while (assessmentResult.success == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
-                assessmentResult = await Utils.AssessComplete(instrFile, resultsFile).ConfigureAwait(false);
+                assessmentResult = await Utils.AssessComplete(instrFile, resultsFile, log).ConfigureAwait(false);
                 lcont = assessmentResult.lcontValue;
             }
         }
@@ -636,7 +797,7 @@ namespace AutoBot
         }
 
      
-        public static async Task SubmitMissingInvoices(FileTypes ft)
+        public static async Task SubmitMissingInvoices(FileTypes ft, ILogger log)
         {
             try
             {
@@ -681,11 +842,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 
@@ -698,7 +859,7 @@ namespace AutoBot
                     }
 
                 }
-                await SubmitMissingInvoicePDFs(ft).ConfigureAwait(false);
+                await SubmitMissingInvoicePDFs(ft, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -716,7 +877,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitMissingInvoicePDFs(FileTypes ft)
+        public static async Task SubmitMissingInvoicePDFs(FileTypes ft, ILogger log)
         {
             try
             {
@@ -762,11 +923,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Missing Invoices PDF Attachments",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 
@@ -787,7 +948,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitIncompleteEntryData(FileTypes ft)
+        public static async Task SubmitIncompleteEntryData(FileTypes ft, ILogger log)
         {
             try
             {
@@ -832,11 +993,11 @@ namespace AutoBot
                         if (emailIds.Key == null)
                         {
                            await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Error:Incomplete Template Data",
-                               contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                               contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
                         }
                         else
                         {
-                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Template Data", body, contacts, attlst.ToArray()).ConfigureAwait(false);
+                           await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client, "Error:Incomplete Template Data", body, contacts, attlst.ToArray(), log).ConfigureAwait(false);
                         }
 
 

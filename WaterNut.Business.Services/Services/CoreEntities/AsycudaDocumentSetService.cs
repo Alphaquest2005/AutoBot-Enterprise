@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSet(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSet(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<AsycudaDocumentSet> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<AsycudaDocumentSet> GetAsycudaDocumentSetByKey(string AsycudaDocumentSetId, List<string> includesLst = null, bool tracking = true)
+        public async Task<AsycudaDocumentSet> GetAsycudaDocumentSetByKey(string AsycudaDocumentSetId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AsycudaDocumentSetId))return Task.FromResult<AsycudaDocumentSet>(null); 
+			   if(string.IsNullOrEmpty(AsycudaDocumentSetId))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
 				var set = AddIncludes(includesLst, dbContext);
                 AsycudaDocumentSet entity = set.AsNoTracking().SingleOrDefault(x => x.AsycudaDocumentSetId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(new List<AsycudaDocumentSet>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSet>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(new List<AsycudaDocumentSet>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSet>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -284,8 +284,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByBatch(string exp,
-                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -294,7 +294,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(new List<AsycudaDocumentSet>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSet>();
 
 
                 var batchSize = 500;
@@ -343,7 +343,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -359,8 +359,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByBatchExpressionLst(List<string> expLst,
-                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(new List<AsycudaDocumentSet>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSet>();
 
 
                 var batchSize = 500;
@@ -418,7 +418,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -435,7 +435,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<AsycudaDocumentSet> UpdateAsycudaDocumentSet(AsycudaDocumentSet entity)
+        public async Task<AsycudaDocumentSet> UpdateAsycudaDocumentSet(AsycudaDocumentSet entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -447,7 +447,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -492,7 +492,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -505,10 +505,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(AsycudaDocumentSet entity)
+        public async Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(AsycudaDocumentSet entity)
         {
             try
             {
@@ -518,7 +518,7 @@ namespace CoreEntities.Business.Services
                 dbContext.AsycudaDocumentSet.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -535,7 +535,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<bool> DeleteAsycudaDocumentSet(string AsycudaDocumentSetId)
+        public async Task<bool> DeleteAsycudaDocumentSet(string AsycudaDocumentSetId)
         {
             try
             {
@@ -545,12 +545,12 @@ namespace CoreEntities.Business.Services
                 AsycudaDocumentSet entity = dbContext.AsycudaDocumentSet
 													.SingleOrDefault(x => x.AsycudaDocumentSetId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.AsycudaDocumentSet.Attach(entity);
                     dbContext.AsycudaDocumentSet.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -572,14 +572,14 @@ namespace CoreEntities.Business.Services
             try
             {
                 StatusModel.StartStatusUpdate("Removing AsycudaDocumentSet", lst.Count());
-                var t = Task.Run(async () =>
+                var t = Task.Run(() =>
                 {
                     using (var ctx = new AsycudaDocumentSetService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            await ctx.DeleteAsycudaDocumentSet(item).ConfigureAwait(false);
+                            ctx.DeleteAsycudaDocumentSet(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -606,23 +606,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<AsycudaDocumentSet>)dbContext.AsycudaDocumentSet; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -641,26 +641,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.AsycudaDocumentSet
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.AsycudaDocumentSet
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.AsycudaDocumentSet
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.AsycudaDocumentSet
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -678,33 +678,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public Task<IEnumerable<AsycudaDocumentSet>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<AsycudaDocumentSet>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(new List<AsycudaDocumentSet>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSet>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(dbContext.AsycudaDocumentSet
-                            .AsNoTracking()
-                            .OrderBy(y => y.AsycudaDocumentSetId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.AsycudaDocumentSet
+										.AsNoTracking()
+                                        .OrderBy(y => y.AsycudaDocumentSetId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(dbContext.AsycudaDocumentSet
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.AsycudaDocumentSetId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.AsycudaDocumentSet
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.AsycudaDocumentSetId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -791,18 +791,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -811,18 +811,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -934,8 +934,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<AsycudaDocumentSet>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                    CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSet>> LoadRangeSelectMany<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -946,14 +946,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.AsycudaDocumentSetId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -962,8 +962,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaDocumentSet>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSet>> LoadRangeSelect<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -974,14 +974,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(set
-                   .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.AsycudaDocumentSetId)
+               return set
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.AsycudaDocumentSetId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1014,21 +1014,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaDocumentSet>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-                                                                                   string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSet>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<AsycudaDocumentSet>()
-                    .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<AsycudaDocumentSet>()
+							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaDocumentSet>)dbContext.Set<T>()
@@ -1040,7 +1040,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1049,21 +1049,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaDocumentSet>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-                                                                               string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSet>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<AsycudaDocumentSet>()
-                    .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<AsycudaDocumentSet>()
+							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaDocumentSet>)dbContext.Set<T>()
@@ -1075,7 +1075,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<AsycudaDocumentSet>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1084,7 +1084,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1098,7 +1098,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1114,7 +1114,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
         {
             try
             {
@@ -1128,7 +1128,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1249,18 +1249,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1269,18 +1269,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

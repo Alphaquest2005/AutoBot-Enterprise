@@ -5,6 +5,7 @@
 <#@ import namespace="System.Data.SqlClient" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #>
 <#+
 // <copyright file="Template1.tt" company="">
 //  Copyright © . All Rights Reserved.

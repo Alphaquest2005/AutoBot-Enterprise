@@ -4,6 +4,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class ChainedProcessor<T> : IProcessor<T>
     {
         private readonly IProcessor<T> _first;
@@ -15,10 +17,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _second = second;
         }
  
-        public async Task<Result<List<T>>> Execute(List<T> data)
+        public async Task<Result<List<T>>> Execute(List<T> data, ILogger log)
         {
-            var firstResult = await _first.Execute(data).ConfigureAwait(false);
-            var results = firstResult.IsSuccess && _second == null ? firstResult : await _second.Execute(firstResult.Value).ConfigureAwait(false);
+            var firstResult = await _first.Execute(data, log).ConfigureAwait(false);
+            var results = firstResult.IsSuccess && _second == null ? firstResult : await _second.Execute(firstResult.Value, log).ConfigureAwait(false);
             return results;
         }
     }

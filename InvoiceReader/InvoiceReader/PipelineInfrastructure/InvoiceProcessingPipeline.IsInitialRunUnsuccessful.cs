@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
 
             // Safe check for CsvLines
-            if (_context.Templates == null || !_context.Templates.Any())
+            if (!_context.MatchedTemplates.Any())
             {
                 _logger.Warning("Initial run considered unsuccessful: CsvLines is null.");
                 _context.AddError("Initial run considered unsuccessful: No Templates!");
@@ -29,7 +29,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
 
             // Safe check for CsvLines count using Any()
-            if (_context.Templates.All(x => x.CsvLines == null || !x.CsvLines.Any()))
+            if (_context.MatchedTemplates.All(x => x.CsvLines == null || !x.CsvLines.Any()))
             {
                 _logger.Warning($"Initial run considered unsuccessful: CsvLines count is 0.");
                 _context.AddError("Initial run considered unsuccessful: No Imports!");

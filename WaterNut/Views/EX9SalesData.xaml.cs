@@ -17,7 +17,9 @@ using Ex9SalesDataModel = WaterNut.QuerySpace.SalesDataQS.ViewModels.Ex9SalesDat
 
 namespace WaterNut.Views
 {
-	/// <summary>
+    using Serilog;
+
+    /// <summary>
 	/// Interaction logic for Ex9SalesData.xaml
 	/// </summary>
 	public partial class Ex9SalesData : UserControl
@@ -174,9 +176,9 @@ namespace WaterNut.Views
             im.ViewAll();
         }
 
-	    private void AutoImportSales(object sender, MouseButtonEventArgs e)
+	    private async void AutoImportSales(object sender, MouseButtonEventArgs e)
 	    {
-	        EX9Utils.DownloadSalesFiles(2, "IM7History");
+	      await EX9Utils.DownloadSalesFiles(Log.Logger, 2, "IM7History").ConfigureAwait(false);
         }
 	}
 }

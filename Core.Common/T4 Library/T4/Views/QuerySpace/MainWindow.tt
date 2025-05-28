@@ -1,4 +1,5 @@
-﻿<#+
+﻿<#@ import namespace="System.Collections.Generic" #>
+<#+
 // <copyright file="Template1.tt" company="">
 //  Copyright © . All Rights Reserved.
 // </copyright>

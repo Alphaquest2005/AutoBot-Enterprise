@@ -11,9 +11,12 @@ using WaterNut.DataSpace;
 
 namespace AutoBotUtilities
 {
+    using ExcelDataReader.Log;
+    using Serilog;
+
     public static class XLSXProcessor
     {
-        public static async Task Xlsx2csv(FileInfo[] files, List<FileTypes> fileTypes, bool? overwrite = null )
+        public static async Task Xlsx2csv(FileInfo[] files, List<FileTypes> fileTypes, ILogger log, bool? overwrite = null )
         {
             try
             {
@@ -23,7 +26,7 @@ namespace AutoBotUtilities
                     var result = XLSXUtils.ExtractTables(file);
 
 
-                    if (result.Tables.Contains("MisMatches") && result.Tables.Contains("POTemplate")) await XLSXUtils.ReadMISMatches(result.Tables["MisMatches"], result.Tables["POTemplate"]).ConfigureAwait(false);
+                    if (result.Tables.Contains("MisMatches") && result.Tables.Contains("POTemplate")) await XLSXUtils.ReadMISMatches(result.Tables["MisMatches"], result.Tables["POTemplate"], log).ConfigureAwait(false);
 
                     var mainTable = result.Tables[0];
                     var rows = XLSXUtils.FixupDataSet(mainTable);
@@ -32,7 +35,7 @@ namespace AutoBotUtilities
                     {
                         var fileText = XLSXUtils.GetText(fileType, rows, result.Tables[0]);
 
-                        if (await ProcessUnknownFileType(fileType, file, rows).ConfigureAwait(false)) continue;
+                        if (await ProcessUnknownFileType(fileType, file, rows, log).ConfigureAwait(false)) continue;
 
                         // all xlsx suppose to have child filetypes
                         if (!fileType.ChildFileTypes.Any())
@@ -40,7 +43,7 @@ namespace AutoBotUtilities
 
                         var output = XLSXUtils.CreateCSVFile(file, fileText);
 
-                       await XLSXUtils.FixCSVFile(fileType, overwrite, output).ConfigureAwait(false);
+                       await XLSXUtils.FixCSVFile(fileType, overwrite, output, log).ConfigureAwait(false);
                     }
                 }
 
@@ -52,11 +55,15 @@ namespace AutoBotUtilities
         }
 
 
-        public static async Task<bool> ProcessUnknownFileType(FileTypes fileType, FileInfo file, List<DataRow> rows)
+        public static async Task<bool> ProcessUnknownFileType(
+            FileTypes fileType,
+            FileInfo file,
+            List<DataRow> rows,
+            ILogger log)
         {
             if (fileType.ChildFileTypes.FirstOrDefault(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown) != null)
             {
-                await FileTypeManager.SendBackTooBigEmail(file, fileType).ConfigureAwait(false);
+                await FileTypeManager.SendBackTooBigEmail(file, fileType, log).ConfigureAwait(false);
 
                 var rFileType = await XLSXUtils.DetectFileType(fileType, file, rows).ConfigureAwait(false);
                 if (fileType.Id != rFileType.Id)

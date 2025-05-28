@@ -8,23 +8,26 @@ using CoreEntities.Business.Entities;
 using WaterNut.Business.Services.Importers.EntryData;
 using WaterNut.Business.Services.Utils;
 using System.Threading.Tasks;
- 
+using Serilog; // Added Serilog using
+
 namespace WaterNut.Business.Services.Importers
 {
     public class CSVImporter : IImporter
     {
         public FileTypes FileType { get; private set; }
+        private readonly ILogger _logger; // Added private ILogger field
 
-        public CSVImporter(FileTypes fileType)
+        public CSVImporter(FileTypes fileType, ILogger logger) // Added ILogger parameter to constructor
         {
             FileType = fileType;
+            _logger = logger; // Assign logger to private field
         }
 
-        public async Task Import(string fileName, bool overWrite)
+        public async Task Import(string fileName, bool overWrite, ILogger log) // Removed ILogger parameter
         {
             try
             {
-                var docSet = await DataSpace.Utils.GetDocSets(FileType).ConfigureAwait(false);
+                var docSet = await DataSpace.Utils.GetDocSets(FileType, _logger).ConfigureAwait(false); // Use private logger field
                 var lines = GetFileLines(fileName);
                 var header = GetHeadings(lines);
                 var emailId = DataSpace.Utils.GetExistingEmailId(fileName, FileType);
@@ -39,15 +42,15 @@ namespace WaterNut.Business.Services.Importers
                 var importSettings = new ImportSettings(fileType, docSet, overWrite, fileName, emailId);
 
                 await EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
-                    .Execute(data).ConfigureAwait(false);
+                    .Execute(data, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
- 
- 
+
+
         }
 
 
@@ -77,7 +80,7 @@ namespace WaterNut.Business.Services.Importers
             return pTxt;
         }
 
-        private static string GetRawFileText(string droppedFilePath) => File.ReadAllText(droppedFilePath).Replace("�", " ");
+        private static string GetRawFileText(string droppedFilePath) => File.ReadAllText(droppedFilePath).Replace("", " ");
 
         public  IEnumerable<string> GetHeadings(IEnumerable<string> lines)
         {

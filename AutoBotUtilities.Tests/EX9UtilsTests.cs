@@ -14,6 +14,8 @@ namespace AutoBotUtilities.Tests
     using System.Collections.Generic;
     using System.Linq;
 
+    using Serilog;
+
     [TestFixture]
     public class EX9UtilsTests
     {
@@ -44,7 +46,7 @@ namespace AutoBotUtilities.Tests
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.That(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
-                await EX9Utils.ImportXSalesFiles(testFile).ConfigureAwait(false);
+                await EX9Utils.ImportXSalesFiles(testFile, Log.Logger).ConfigureAwait(false);
                 using (var ctx = new EntryDataDSContext())
                 {
                     Assert.Multiple(() =>
@@ -67,7 +69,7 @@ namespace AutoBotUtilities.Tests
             try
             {
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
-                var fileType = await EX9Utils.GetxSalesFileType(testFile).ConfigureAwait(false);
+                var fileType = await EX9Utils.GetxSalesFileType(Log.Logger, testFile).ConfigureAwait(false);
                 Assert.Equals(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)

@@ -65,7 +65,7 @@ namespace ValuationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segment(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segment(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace ValuationDS.Business.Services
                     IEnumerable<xC71_Identification_segment> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace ValuationDS.Business.Services
         }
 
 
-        public Task<xC71_Identification_segment> GetxC71_Identification_segmentByKey(string Identification_segment_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<xC71_Identification_segment> GetxC71_Identification_segmentByKey(string Identification_segment_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Identification_segment_Id))return Task.FromResult<xC71_Identification_segment>(null); 
+			   if(string.IsNullOrEmpty(Identification_segment_Id))return null; 
               using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Identification_segment_Id);
 				var set = AddIncludes(includesLst, dbContext);
                 xC71_Identification_segment entity = set.AsNoTracking().SingleOrDefault(x => x.Identification_segment_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace ValuationDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xC71_Identification_segment>>(new List<xC71_Identification_segment>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xC71_Identification_segment>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace ValuationDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xC71_Identification_segment>>(new List<xC71_Identification_segment>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xC71_Identification_segment>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -278,8 +278,8 @@ namespace ValuationDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByBatch(string exp,
-                                                                                                    int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace ValuationDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xC71_Identification_segment>>(new List<xC71_Identification_segment>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xC71_Identification_segment>();
 
 
                 var batchSize = 500;
@@ -337,7 +337,7 @@ namespace ValuationDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -353,8 +353,8 @@ namespace ValuationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByBatchExpressionLst(List<string> expLst,
-                                                                                                                 int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xC71_Identification_segment>> GetxC71_Identification_segmentByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -363,7 +363,7 @@ namespace ValuationDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xC71_Identification_segment>>(new List<xC71_Identification_segment>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xC71_Identification_segment>();
 
 
                 var batchSize = 500;
@@ -412,7 +412,7 @@ namespace ValuationDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -429,7 +429,7 @@ namespace ValuationDS.Business.Services
         }
 
 
-        public Task<xC71_Identification_segment> UpdatexC71_Identification_segment(xC71_Identification_segment entity)
+        public async Task<xC71_Identification_segment> UpdatexC71_Identification_segment(xC71_Identification_segment entity)
         { 
             using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
@@ -441,7 +441,7 @@ namespace ValuationDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -486,7 +486,7 @@ namespace ValuationDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -499,10 +499,10 @@ namespace ValuationDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<xC71_Identification_segment> CreatexC71_Identification_segment(xC71_Identification_segment entity)
+        public async Task<xC71_Identification_segment> CreatexC71_Identification_segment(xC71_Identification_segment entity)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace ValuationDS.Business.Services
                 dbContext.xC71_Identification_segment.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -529,7 +529,7 @@ namespace ValuationDS.Business.Services
             }
         }
 
-        public Task<bool> DeletexC71_Identification_segment(string Identification_segment_Id)
+        public async Task<bool> DeletexC71_Identification_segment(string Identification_segment_Id)
         {
             try
             {
@@ -539,12 +539,12 @@ namespace ValuationDS.Business.Services
                 xC71_Identification_segment entity = dbContext.xC71_Identification_segment
 													.SingleOrDefault(x => x.Identification_segment_Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.xC71_Identification_segment.Attach(entity);
                     dbContext.xC71_Identification_segment.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -600,23 +600,23 @@ namespace ValuationDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<xC71_Identification_segment>)dbContext.xC71_Identification_segment; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -635,26 +635,26 @@ namespace ValuationDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (ValuationDSContext dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.xC71_Identification_segment
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.xC71_Identification_segment
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.xC71_Identification_segment
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.xC71_Identification_segment
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -672,33 +672,33 @@ namespace ValuationDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<xC71_Identification_segment>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<xC71_Identification_segment>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xC71_Identification_segment>>(new List<xC71_Identification_segment>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xC71_Identification_segment>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(dbContext.xC71_Identification_segment
-                            .AsNoTracking()
-                            .OrderBy(y => y.Identification_segment_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xC71_Identification_segment
+										.AsNoTracking()
+                                        .OrderBy(y => y.Identification_segment_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<xC71_Identification_segment>>(dbContext.xC71_Identification_segment
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Identification_segment_Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xC71_Identification_segment
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Identification_segment_Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -782,18 +782,18 @@ namespace ValuationDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xC71_Identification_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -802,18 +802,18 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xC71_Identification_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -919,8 +919,8 @@ namespace ValuationDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<xC71_Identification_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                             ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xC71_Identification_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
+            ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -931,14 +931,14 @@ namespace ValuationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<xC71_Identification_segment>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Identification_segment_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -947,8 +947,8 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xC71_Identification_segment>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                         ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xC71_Identification_segment>> LoadRangeSelect<T>(int startIndex, int count,
+            ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -959,14 +959,14 @@ namespace ValuationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<xC71_Identification_segment>>(set
-                   .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Identification_segment_Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Identification_segment_Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -999,21 +999,21 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xC71_Identification_segment>> GetWhereSelectMany<T>(ValuationDSContext dbContext,
-                                                                                            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xC71_Identification_segment>> GetWhereSelectMany<T>(ValuationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xC71_Identification_segment>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<xC71_Identification_segment>()
-                    .Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<xC71_Identification_segment>()
+							.Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xC71_Identification_segment>)dbContext.Set<T>()
@@ -1025,7 +1025,7 @@ namespace ValuationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xC71_Identification_segment>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1034,21 +1034,21 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xC71_Identification_segment>> GetWhereSelect<T>(ValuationDSContext dbContext,
-                                                                                        string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xC71_Identification_segment>> GetWhereSelect<T>(ValuationDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xC71_Identification_segment>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<xC71_Identification_segment>()
-                    .Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<xC71_Identification_segment>()
+							.Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xC71_Identification_segment>)dbContext.Set<T>()
@@ -1060,7 +1060,7 @@ namespace ValuationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xC71_Identification_segment>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1171,18 +1171,18 @@ namespace ValuationDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xC71_Identification_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1191,18 +1191,18 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xC71_Identification_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

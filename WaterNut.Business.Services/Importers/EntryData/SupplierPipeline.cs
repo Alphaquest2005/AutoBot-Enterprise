@@ -4,6 +4,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class SupplierPipeline : IDocumentProcessor
     {
         
@@ -11,7 +13,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
  
        
  
-        public async Task<List<dynamic>> Execute(List<dynamic> lines)
+        public async Task<List<dynamic>> Execute(List<dynamic> lines, ILogger log)
         {
             _importer = new ProcessorPipline<SupplierData>(new List<IProcessor<SupplierData>>()
             {
@@ -20,7 +22,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
  
             });
             
-            await _importer.Execute(new List<SupplierData>()).ConfigureAwait(false);
+            await _importer.Execute(new List<SupplierData>(), log).ConfigureAwait(false);
             return lines;
         }
     }

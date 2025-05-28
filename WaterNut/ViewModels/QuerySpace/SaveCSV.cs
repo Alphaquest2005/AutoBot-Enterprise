@@ -20,7 +20,9 @@ using xcuda_Supplementary_unit = CoreEntities.Business.Entities.xcuda_Supplement
 
 namespace WaterNut.QuerySpace
 {
-   public class SaveCSV
+    using Serilog;
+
+    public class SaveCSV
     {
         private static readonly SaveCSV instance;
         static SaveCSV()
@@ -34,7 +36,7 @@ namespace WaterNut.QuerySpace
             get { return instance; }
         }
 
-       public async Task SaveCSVFile(string fileType, int asycudaDocumentSetId)
+       public async Task SaveCSVFile(string fileType, int asycudaDocumentSetId, ILogger log)
         {
             //import asycuda xml id and details
             var od = new OpenFileDialog
@@ -86,7 +88,7 @@ namespace WaterNut.QuerySpace
                         //        FileTypeManager.FileFormats.Xlsx, f);
 
                         fileTypes.ForEach(x => x.AsycudaDocumentSetId = asycudaDocumentSetId);
-                        await XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(fileName)}, fileTypes, overwrite).ConfigureAwait(false);
+                        await XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(fileName)}, fileTypes, log, overwrite).ConfigureAwait(false);
                     }
                    
 

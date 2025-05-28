@@ -65,7 +65,7 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodes(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodes(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace EntryDataQS.Business.Services
                     IEnumerable<EmptyFullCode> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace EntryDataQS.Business.Services
         }
 
 
-        public Task<EmptyFullCode> GetEmptyFullCodeByKey(string EmptyFullCodeId, List<string> includesLst = null, bool tracking = true)
+        public async Task<EmptyFullCode> GetEmptyFullCodeByKey(string EmptyFullCodeId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EmptyFullCodeId))return Task.FromResult<EmptyFullCode>(null); 
+			   if(string.IsNullOrEmpty(EmptyFullCodeId))return null; 
               using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EmptyFullCodeId);
 				var set = AddIncludes(includesLst, dbContext);
                 EmptyFullCode entity = set.AsNoTracking().SingleOrDefault(x => x.EmptyFullCodeId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace EntryDataQS.Business.Services
         }
 
 
-		 public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmptyFullCode>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmptyFullCode>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpressionNav(string exp,
-                                                                                 Dictionary<string, string> navExp,
-                                                                                 List<string> includesLst = null, bool tracking = true)
+		public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmptyFullCode>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(aentities); 
+                        return aentities; 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(entities); 
+                        return entities; 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByBatch(string exp,
-                                                                         int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace EntryDataQS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmptyFullCode>();
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace EntryDataQS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace EntryDataQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByBatchExpressionLst(List<string> expLst,
-                                                                                      int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EmptyFullCode>> GetEmptyFullCodesByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace EntryDataQS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmptyFullCode>();
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace EntryDataQS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace EntryDataQS.Business.Services
         }
 
 
-        public Task<EmptyFullCode> UpdateEmptyFullCode(EmptyFullCode entity)
+        public async Task<EmptyFullCode> UpdateEmptyFullCode(EmptyFullCode entity)
         { 
             using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace EntryDataQS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace EntryDataQS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace EntryDataQS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<EmptyFullCode> CreateEmptyFullCode(EmptyFullCode entity)
+        public async Task<EmptyFullCode> CreateEmptyFullCode(EmptyFullCode entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace EntryDataQS.Business.Services
                 dbContext.EmptyFullCodes.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-        public Task<bool> DeleteEmptyFullCode(string EmptyFullCodeId)
+        public async Task<bool> DeleteEmptyFullCode(string EmptyFullCodeId)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace EntryDataQS.Business.Services
                 EmptyFullCode entity = dbContext.EmptyFullCodes
 													.SingleOrDefault(x => x.EmptyFullCodeId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.EmptyFullCodes.Attach(entity);
                     dbContext.EmptyFullCodes.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace EntryDataQS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<EmptyFullCode>)dbContext.EmptyFullCodes; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (EntryDataQSContext dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.EmptyFullCodes
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.EmptyFullCodes
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.EmptyFullCodes
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.EmptyFullCodes
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace EntryDataQS.Business.Services
             }
         }
         
-        public Task<IEnumerable<EmptyFullCode>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<EmptyFullCode>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmptyFullCode>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(dbContext.EmptyFullCodes
-                            .AsNoTracking()
-                            .OrderBy(y => y.EmptyFullCodeId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.EmptyFullCodes
+										.AsNoTracking()
+                                        .OrderBy(y => y.EmptyFullCodeId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(dbContext.EmptyFullCodes
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.EmptyFullCodeId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.EmptyFullCodes
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.EmptyFullCodeId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace EntryDataQS.Business.Services
             }
         }
 
-		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(dbContext.EmptyFullCodes
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.EmptyFullCodes
+										.AsNoTracking()
+                                        .Count();
                     }
-                    return Task.FromResult(dbContext.EmptyFullCodes.Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
-                        .AsNoTracking()
-                        .Count());
+                    return dbContext.EmptyFullCodes.Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
+											.AsNoTracking()
+                                            .Count();
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EmptyFullCode>()
                 .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
                 .Distinct()
                 .OrderBy("EmptyFullCodeId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EmptyFullCode>()
                 .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
                 .Distinct()
                 .OrderBy("EmptyFullCodeId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		  public Task<IEnumerable<EmptyFullCode>> LoadRangeNav(int startIndex, int count, string exp,
-                                                               Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public async Task<IEnumerable<EmptyFullCode>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<EmptyFullCode>>(new List<EmptyFullCode>());
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EmptyFullCode>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return Task.FromResult<IEnumerable<EmptyFullCode>>(set
-                            .AsNoTracking()
-                            .OrderBy(y => y.EmptyFullCodeId)
+                        return set
+									.AsNoTracking()
+                                    .OrderBy(y => y.EmptyFullCodeId)
  
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                                    .Skip(startIndex)
+                                    .Take(count)
+									.ToList();
                     }
-                    return Task.FromResult<IEnumerable<EmptyFullCode>>(set//dbContext.EmptyFullCodes
-                        .AsNoTracking()
-                        .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
-                        .OrderBy(y => y.EmptyFullCodeId)
+                    return set//dbContext.EmptyFullCodes
+								.AsNoTracking()
+                                .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
+								.OrderBy(y => y.EmptyFullCodeId)
  
-                        .Skip(startIndex)
-                        .Take(count)
-                        .ToList());
+                                .Skip(startIndex)
+                                .Take(count)
+								.ToList();
 
 
                 }
@@ -836,8 +836,8 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<EmptyFullCode>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                               EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<EmptyFullCode>> LoadRangeSelectMany<T>(int startIndex, int count,
+            EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace EntryDataQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<EmptyFullCode>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EmptyFullCodeId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EmptyFullCode>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                           EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<EmptyFullCode>> LoadRangeSelect<T>(int startIndex, int count,
+            EntryDataQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace EntryDataQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<EmptyFullCode>>(set
-                   .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.EmptyFullCodeId)
+               return set
+                .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.EmptyFullCodeId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EmptyFullCode>> GetWhereSelectMany<T>(EntryDataQSContext dbContext,
-                                                                              string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<EmptyFullCode>> GetWhereSelectMany<T>(EntryDataQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<EmptyFullCode>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<EmptyFullCode>()
-                    .Where(exp == "All" || exp == null?"EmptyFullCodeId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<EmptyFullCode>()
+							.Where(exp == "All" || exp == null?"EmptyFullCodeId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<EmptyFullCode>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace EntryDataQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<EmptyFullCode>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<EmptyFullCode>> GetWhereSelect<T>(EntryDataQSContext dbContext,
-                                                                          string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<EmptyFullCode>> GetWhereSelect<T>(EntryDataQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<EmptyFullCode>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<EmptyFullCode>()
-                    .Where(exp == "All" || exp == null?"EmptyFullCodeId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<EmptyFullCode>()
+							.Where(exp == "All" || exp == null?"EmptyFullCodeId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<EmptyFullCode>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace EntryDataQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<EmptyFullCode>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1022,24 +1022,24 @@ namespace EntryDataQS.Business.Services
              }
          }
 
-        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.EmptyFullCodes.Any()) return Task.FromResult<decimal>(0);
+                    if (!dbContext.EmptyFullCodes.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(Convert.ToDecimal(dbContext.EmptyFullCodes
-                                                                     .AsNoTracking()
-                                                                     .Sum(field)??0));
+                        return Convert.ToDecimal(dbContext.EmptyFullCodes
+										.AsNoTracking()
+                                        .Sum(field)??0);
                     }
-                    return Task.FromResult(Convert.ToDecimal(dbContext.EmptyFullCodes.Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
-                                                                 .AsNoTracking()
-                                                                 .Sum(field)??0));
+                    return Convert.ToDecimal(dbContext.EmptyFullCodes.Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
+											.AsNoTracking()
+                                            .Sum(field)??0);
                 }
                 
             }
@@ -1070,18 +1070,18 @@ namespace EntryDataQS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EmptyFullCode>()
                 .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
                 .Distinct()
                 .OrderBy("EmptyFullCodeId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1090,18 +1090,18 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(EntryDataQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EmptyFullCode>()
                 .Where(exp == "All" || exp == null ? "EmptyFullCodeId != null" : exp)
                 .Distinct()
                 .OrderBy("EmptyFullCodeId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

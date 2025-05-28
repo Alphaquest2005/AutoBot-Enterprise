@@ -18,6 +18,8 @@ using BaseViewModel = WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel;
 
 namespace WaterNut
 {
+    using Serilog;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -393,7 +395,7 @@ namespace WaterNut
             await AllocationsModel.Instance.EX9AllSales(true).ConfigureAwait(false);
         }
 
-        private void ImportExpiredEntries(object sender, MouseButtonEventArgs e)
+        private async void ImportExpiredEntries(object sender, MouseButtonEventArgs e)
         {
             var od = new OpenFileDialog
             {
@@ -410,7 +412,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        EntryDocSetUtils.ImportExpiredEntires(f);
+                        await EntryDocSetUtils.ImportExpiredEntires(Log.Logger, f).ConfigureAwait(false);
                     }
                     catch (Exception Ex)
                     {
@@ -443,7 +445,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        await EX9Utils.ImportXSalesFiles(f).ConfigureAwait(false);
+                        await EX9Utils.ImportXSalesFiles(f, Log.Logger).ConfigureAwait(false);
                     }
                     catch (Exception Ex)
                     {

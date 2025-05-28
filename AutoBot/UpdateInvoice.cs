@@ -14,12 +14,14 @@ using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class UpdateInvoice
     {
-        public static async Task UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
+        public static async Task UpdateRegEx(FileTypes fileTypes, FileInfo[] files, ILogger log)
         {
             
-            var regExCommands = RegExCommands(fileTypes);
+            var regExCommands = RegExCommands(fileTypes, log);
 
             foreach (var info in files.Where(x => x.Extension == ".txt"))
             {
@@ -52,7 +54,9 @@ namespace AutoBot
             }
         }
 
-        private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(FileTypes fileTypes)
+        private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(
+            FileTypes fileTypes,
+            ILogger log)
         {
             var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(WaterNut.DataSpace.Utils.ignoreCase)
             {
@@ -78,7 +82,7 @@ namespace AutoBot
                 },
                 {
                     "RequestInvoice",
-                    (async (paramInfo) => { await RequestInvoice(paramInfo, fileTypes).ConfigureAwait(false); },
+                    (async (paramInfo) => { await RequestInvoice(paramInfo, fileTypes, log).ConfigureAwait(false); },
                         new string[] { "Name" }
                     )
                 },
@@ -533,7 +537,7 @@ namespace AutoBot
         }
 
         // Change signature to async Task
-        private static async Task RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes)
+        private static async Task RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes, ILogger log)
         {
             try
             {
@@ -548,7 +552,7 @@ namespace AutoBot
                     foreach (var pdf in pdfs)
                     {
                         // Await the async call
-                        var str = await InvoiceReader.InvoiceReader.GetPdftxt(pdf.FullName).ConfigureAwait(false);
+                        var str = await InvoiceReader.InvoiceReader.GetPdftxt(pdf.FullName, log).ConfigureAwait(false);
                         if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
                     }
                     foreach (var invoice in invoices)
@@ -574,14 +578,14 @@ namespace AutoBot
                                    $"\r\n" +
                                    InvoiceReader.InvoiceReader.CommandsTxt;
 
-                        var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key)).ToList();
+                        var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key, log)).ToList();
                         
                         res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
                        
 
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Template Template Not found!",
-                             EmailDownloader.EmailDownloader.GetContacts("Developer"), body, res1).ConfigureAwait(false);
+                             EmailDownloader.EmailDownloader.GetContacts("Developer", log), body, res1, log).ConfigureAwait(false);
 
                         fileTypes.ProcessNextStep.Add("Kill");
 

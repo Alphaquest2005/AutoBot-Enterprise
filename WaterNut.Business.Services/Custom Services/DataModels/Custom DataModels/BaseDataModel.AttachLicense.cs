@@ -103,8 +103,8 @@ public partial class BaseDataModel
                                 itm.TariffCode == lic.Commodity_code.Truncate(8))
                             {
                                 rtotal += itm.ItemQuantity.GetValueOrDefault();
-                                AttachToDocument(new List<int> { al.Key.Id },
-                                    itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+                                await AttachToDocument(new List<int> { al.Key.Id },
+                                    itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id).ConfigureAwait(false);
                                 allocatedItms.Add(itm);
                             }
                         }

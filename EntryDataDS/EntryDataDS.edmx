@@ -34,6 +34,7 @@
         <EntityType Name="CategoryTariffs">
           <Key>
             <PropertyRef Name="Category" />
+            <PropertyRef Name="TariffCode" />
           </Key>
           <Property Name="Category" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
@@ -519,7 +520,7 @@
           <Property Name="SalesFactor" Type="float" Nullable="false" />
           <Property Name="Discount" Type="float" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="12" />
-          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="CategoryTariffCode" Type="nvarchar" MaxLength="12" />
           <Property Name="Category" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails-Volume">
@@ -1089,19 +1090,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Key>
             <PropertyRef Name="PODetailsId" />
             <PropertyRef Name="INVDetailsId" />
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             <PropertyRef Name="CategoryTariffCode" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="PODetailsId" Type="int" Nullable="false" />
           <Property Name="INVDetailsId" Type="int" Nullable="false" />
@@ -1811,18 +1812,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Principal>
             <Dependent Role="ShipmentFreightDetails">
               <PropertyRef Name="FreightId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ShipmentInvoiceDetails_CategoryTariffs">
-          <End Role="CategoryTariffs" Type="Self.CategoryTariffs" Multiplicity="0..1" />
-          <End Role="ShipmentInvoiceDetails" Type="Self.ShipmentInvoiceDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CategoryTariffs">
-              <PropertyRef Name="Category" />
-            </Principal>
-            <Dependent Role="ShipmentInvoiceDetails">
-              <PropertyRef Name="Category" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2593,10 +2582,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
             <End Role="ShipmentFreightDetails" EntitySet="ShipmentFreightDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_ShipmentInvoiceDetails_CategoryTariffs" Association="Self.FK_ShipmentInvoiceDetails_CategoryTariffs">
-            <End Role="CategoryTariffs" EntitySet="CategoryTariffs" />
-            <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_ShipmentInvoiceDetails_ShipmentInvoice" Association="Self.FK_ShipmentInvoiceDetails_ShipmentInvoice">
             <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
             <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
@@ -3037,10 +3022,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
           </AssociationSet>
           <EntitySet Name="CategoryTariffs" EntityType="WaterNutDBModel.CategoryTariffs" />
-          <AssociationSet Name="FK_ShipmentInvoiceDetails_CategoryTariffs" Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs">
-            <End Role="CategoryTariffs" EntitySet="CategoryTariffs" />
-            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
-          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -3848,8 +3829,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Discount" Type="Double" />
           <Property Name="TariffCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
           <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CategoryTariffCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CategoryTariffs" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs" FromRole="InvoiceDetails" ToRole="CategoryTariffs" />
+          <Property Name="CategoryTariffCode" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -5326,23 +5306,11 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
         <EntityType Name="CategoryTariffs">
           <Key>
             <PropertyRef Name="Category" />
+            <PropertyRef Name="TariffCode" />
           </Key>
           <Property Name="Category" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ShipmentInvoiceDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_CategoryTariffs" FromRole="CategoryTariffs" ToRole="InvoiceDetails" />
         </EntityType>
-        <Association Name="FK_ShipmentInvoiceDetails_CategoryTariffs">
-          <End Type="WaterNutDBModel.CategoryTariffs" Role="CategoryTariffs" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CategoryTariffs">
-              <PropertyRef Name="Category" />
-            </Principal>
-            <Dependent Role="InvoiceDetails">
-              <PropertyRef Name="Category" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

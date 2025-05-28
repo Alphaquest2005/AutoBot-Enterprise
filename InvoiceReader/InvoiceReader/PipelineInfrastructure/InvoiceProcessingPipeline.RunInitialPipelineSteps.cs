@@ -30,13 +30,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogRunInitialPipelineSteps(string filePath)
         {
-            _logger.Debug("Starting RunInitialPipelineSteps for File: {FilePath}", filePath);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunInitialPipelineSteps), "Execution", "Starting execution of initial pipeline steps.", $"FilePath: {filePath}", "");
         }
 
         private PipelineRunner<InvoiceProcessingContext> CreatePipelineRunner(List<IPipelineStep<InvoiceProcessingContext>> initialSteps)
         {
-            var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps, "Initial Pipeline");
-            _logger.Verbose("Initial PipelineRunner created.");
+            var initialRunner = new PipelineRunner<InvoiceProcessingContext>(initialSteps, _logger, "Initial Pipeline"); // Pass the instance logger
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(CreatePipelineRunner), "Creation", "Initial PipelineRunner created.", "", "");
             return initialRunner;
         }
 
@@ -50,12 +52,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         private void LogPipelineCompletion(bool success)
         {
-            _logger.Debug("Initial PipelineRunner finished. Overall Success: {Success}", success);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "Completion", "PipelineRunner finished.", $"OverallSuccess: {success}", "");
         }
 
         private void LogPipelineError(Exception ex, string filePath)
         {
-            _logger.Error(ex, "Error during RunInitialPipelineSteps for File: {FilePath}", filePath);
+            _logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                nameof(RunInitialPipelineSteps), "Run initial pipeline steps", 0, $"Error during initial pipeline steps execution for File: {filePath}. Error: {ex.Message}");
+            _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                nameof(RunInitialPipelineSteps), "Initial steps execution", 0, $"Error during initial pipeline steps execution for File: {filePath}. Error: {ex.Message}");
         }
     }
 }

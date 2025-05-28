@@ -12,6 +12,8 @@ using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
 {
+    using Serilog;
+
     [TestFixture]
     public class DoAutoMatchTest
     {
@@ -109,7 +111,7 @@ namespace AutoBotUtilities.Tests
                 { "Discrepancy", "IM7-GDSGO-19810.xml" });
 
             var docSet = await WaterNut.DataSpace.EntryDocSetUtils.GetDocSet("Imports").ConfigureAwait(false);
-            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File }).ConfigureAwait(false);
+            await Infrastructure.Utils.ImportDocuments(docSet, new List<string>() { im7File }, Log.Logger).ConfigureAwait(false);
         }
 
         private static async Task ImportTestFile()
@@ -120,7 +122,7 @@ namespace AutoBotUtilities.Tests
                 { "Discrepancy", "CALA MARINE - Customs-test.csv" });
 
            await Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { disFile }, FileTypeManager.EntryTypes.Unknown,
-               FileTypeManager.FileFormats.Csv).ConfigureAwait(false);
+               FileTypeManager.FileFormats.Csv, Log.Logger).ConfigureAwait(false);
         }
     }
 }

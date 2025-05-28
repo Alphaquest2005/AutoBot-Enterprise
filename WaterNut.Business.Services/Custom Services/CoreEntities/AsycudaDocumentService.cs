@@ -9,6 +9,7 @@ using DocumentDS.Business.Services;
 using DocumentItemDS.Business.Services;
 using WaterNut.Business.Entities;
 using WaterNut.DataSpace;
+using Serilog;
 
 namespace CoreEntities.Business.Services
 {
@@ -69,7 +70,7 @@ namespace CoreEntities.Business.Services
             await WaterNut.DataSpace.BaseDataModel.Instance.SaveDocumentCt.Execute(ct).ConfigureAwait(false);
         }
 
-        public async Task DeleteDocument(int asycudaDocumentId)
+        public async Task DeleteDocument(int asycudaDocumentId, ILogger log)
         {
             xcuda_ASYCUDA doc = null;
             using (var ctx = new xcuda_ASYCUDAService())
@@ -77,7 +78,7 @@ namespace CoreEntities.Business.Services
                 doc = await ctx.Getxcuda_ASYCUDAByKey(asycudaDocumentId.ToString(), new List<string>() { "xcuda_ASYCUDA_ExtendedProperties" }).ConfigureAwait(false);
             }
             await BaseDataModel.Instance.DeleteAsycudaDocument(doc).ConfigureAwait(false);
-            await BaseDataModel.Instance.CalculateDocumentSetFreight(doc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId).ConfigureAwait(false);
+            await BaseDataModel.Instance.CalculateDocumentSetFreight(doc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId, log).ConfigureAwait(false);
         }
 
         public async Task ExportDocument(string fileName, int asycudaDocumentId)

@@ -11,11 +11,10 @@
     {
         public CategoryTariffsMap()
         {                        
-              this.HasKey(t => t.Category);        
+              this.HasKey(t => new {t.Category, t.TariffCode});        
               this.ToTable("CategoryTariffs");
               this.Property(t => t.Category).HasColumnName("Category").IsRequired().HasMaxLength(50);
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").IsRequired().HasMaxLength(12);
-              this.HasMany(t => t.ShipmentInvoiceDetails).WithOptional(t => t.CategoryTariffs).HasForeignKey(d => d.Category);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

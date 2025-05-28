@@ -3,12 +3,15 @@ using InvoiceReader.PipelineInfrastructure;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using System.Linq;
+
     public partial class InvoiceProcessingPipeline
     {
-        private static List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineSteps()
+        private List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineSteps()
         {
-            _logger.Debug("Initializing initial pipeline steps (FormatPdfTextStep, ReadFormattedTextStep).");
-            // Initial steps: Format and Read
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(InitializePipelineSteps), "Initialization", "Initializing initial pipeline steps.", "", "");
+            // Initial steps: GetTemplates, GetPdfText, GetPossibleInvoices, Format and Read
             var steps = new List<IPipelineStep<InvoiceProcessingContext>>
             {
                 new GetTemplatesStep(),
@@ -19,7 +22,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 new ReadFormattedTextStep() // Assuming this step exists
 
             };
-            _logger.Verbose("Initial pipeline steps created. Count: {Count}", steps.Count);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(InitializePipelineSteps), "StepsCreated", "Initial pipeline steps created.", $"StepCount: {steps.Count}", new { Steps = steps.Select(step => step.GetType().Name) });
             return steps;
         }
     }

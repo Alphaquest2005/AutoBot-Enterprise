@@ -13,6 +13,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class GetInventoryItems : IProcessor<InventoryDataItem>
     {
         public readonly List<dynamic> _lines;
@@ -26,7 +28,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
 
-        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data, ILogger log)
         {
             var rawData = InventoryItemDataUtils.CreateItemGroupList(_lines);
  

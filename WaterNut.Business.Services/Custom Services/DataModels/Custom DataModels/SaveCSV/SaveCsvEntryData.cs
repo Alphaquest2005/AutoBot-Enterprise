@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-        
+
 
         public async Task Extract(RawDataFile rawDataFile)
         {
@@ -42,12 +42,12 @@ namespace WaterNut.DataSpace
 
         private static DataFile CreateCSVDataFile(RawDataFile rawDataFile)
         {
-            
+
             var fileType = FileTypeManager.GetHeadingFileType(rawDataFile.Headings, rawDataFile.FileType);
 
             var data = new CSVDataExtractor(fileType, rawDataFile.Lines, rawDataFile.Headings, rawDataFile.EmailId).Execute();
 
-            var dataFile = new DataFile(fileType, rawDataFile.DocSet, rawDataFile.OverWriteExisting, rawDataFile.EmailId, rawDataFile.DroppedFilePath, data);
+            var dataFile = new DataFile(fileType, rawDataFile.DocSet, rawDataFile.OverWriteExisting, rawDataFile.EmailId, rawDataFile.DroppedFilePath, data, null);
             return dataFile;
         }
     }

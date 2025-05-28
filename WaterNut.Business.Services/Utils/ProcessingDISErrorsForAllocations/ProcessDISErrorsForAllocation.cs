@@ -11,7 +11,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
 {
     public class ProcessDISErrorsForAllocation
     {
-        public List<EntryDataDetail> Execute(int applicationSettingsId, string res) // Removed async Task<>
+        public async Task<List<EntryDataDetail>> Execute(int applicationSettingsId, string res) // Removed async Task<>
         {
             try
             {
@@ -29,7 +29,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                         .ToList();
 
                     // looking for 'INT/YBA473/3GL'
-                    return Execute(lst, ctx);
+                    return await Execute(lst, ctx).ConfigureAwait(false);
                 }
             }
             catch (Exception)
@@ -39,7 +39,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
 
         }
 
-        private static List<EntryDataDetail> Execute(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
+        private static async Task<List<EntryDataDetail>> Execute(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
         {
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
             var edlst = new List<EntryDataDetail>();
@@ -50,12 +50,12 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                 ed.QtyAllocated = 0;
                 ed.Comment = $@"DISERROR:{s.Status}";
                 ed.Status = null;
-                ctx.Database.ExecuteSqlCommand(
-                    $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
+                await ctx.Database.ExecuteSqlCommandAsync(
+                    $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}").ConfigureAwait(false);
                 edlst.Add(ed);
             }
 
-            ctx.SaveChanges();
+            await ctx.SaveChangesAsync().ConfigureAwait(false);
             return edlst;
         }
     }

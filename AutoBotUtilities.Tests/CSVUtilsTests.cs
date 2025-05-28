@@ -16,6 +16,8 @@ namespace AutoBotUtilities.Tests
     using System.Collections.Generic;
     using System.Linq;
 
+    using Serilog;
+
     [TestFixture]
     public class CSVUtilsTests
     {
@@ -49,7 +51,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task CanImportPOFileOldWay()
+        public async Task CanImportPOFileOldWay(ILogger log)
         {
             try
             {
@@ -58,7 +60,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType).ConfigureAwait(false);
+                    await CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType, log).ConfigureAwait(false);
 
 
                     AssertPOExists();
@@ -95,7 +97,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = (IEnumerable<FileTypes>)await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType).ConfigureAwait(false);
+                    await PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType, Log.Logger).ConfigureAwait(false);
 
 
                     using (var ctx = new EntryDataDSContext())
@@ -121,7 +123,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task CanImportPOFile()
+        public async Task CanImportPOFile(ILogger log)
         {
             try
             {
@@ -131,7 +133,7 @@ namespace AutoBotUtilities.Tests
                 var fileTypes = await Infrastructure.Utils.GetPOCSVFileType(testFile).ConfigureAwait(false);
                 foreach (var fileType in fileTypes)
                 {
-                    await new FileTypeImporter(fileType).Import(testFile).ConfigureAwait(false);
+                    await new FileTypeImporter(fileType, log).Import(testFile).ConfigureAwait(false);
 
                 }
                 AssertPOExists();

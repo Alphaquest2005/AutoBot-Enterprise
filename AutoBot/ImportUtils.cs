@@ -1,299 +1,444 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Diagnostics; // Added for Stopwatch
+using System.Diagnostics; 
 using System.Linq;
 using System.Threading.Tasks;
 using AutoBot;
 using CoreEntities.Business.Entities;
 using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
+
+// Serilog usings
+using Serilog;
+using Serilog.Context;
+
 namespace AutoBotUtilities
 {
     using System.Text.RegularExpressions;
-
     using WaterNut.Business.Services.Utils;
-
-    using Utils = WaterNut.DataSpace.Utils;
+    // Using Utils = WaterNut.DataSpace.Utils; // This specific alias might conflict if WaterNut.DataSpace.Utils is also a class name. Let's be explicit or remove if not strictly needed.
 
     public class ImportUtils
     {
-        
-
+        private static readonly ILogger _log = Log.ForContext<ImportUtils>();
 
         public static async Task ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
-            try
-            {
-                var missingActions = emailMapping.EmailMappingActions.Where(x => x.Actions.IsDataSpecific == true
-                                                                             && !FileUtils.FileActions.ContainsKey(x.Actions.Name)).ToList();
+            string operationName = nameof(ExecuteEmailMappingActions);
+            string operationInvocationId = Guid.NewGuid().ToString();
 
-                if (missingActions.Any())
+            // It's good to have FileType context if available
+            using (LogContext.PushProperty("OperationInvocationId", operationInvocationId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
+            using (LogContext.PushProperty("EmailId", fileType?.EmailId))
+            using (LogContext.PushProperty("AsycudaDocumentSetId", fileType?.AsycudaDocumentSetId))
+            using (LogContext.PushProperty("EmailMappingId", emailMapping?.Id))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                _log.Information("ACTION_START: {ActionName}. EmailMappingId: {EmailMappingId}, FileTypeId: {FileTypeId}, FileCount: {FileCount}", 
+                    operationName, emailMapping?.Id, fileType?.Id, files?.Length ?? 0);
+
+                try
                 {
-                    throw new ApplicationException(
-                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                    if (emailMapping == null)
+                    {
+                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): EmailMapping is null. Cannot execute actions.", operationName, "ParameterValidation");
+                        stopwatch.Stop();
+                        _log.Information("ACTION_END_SUCCESS: {ActionName} (Validation Failed: No EmailMapping). Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                        return;
+                    }
+
+                    var missingActions = emailMapping.EmailMappingActions
+                        .Where(x => x.Actions.IsDataSpecific == true && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
+                        .ToList();
+
+                    if (missingActions.Any())
+                    {
+                        string missingActionsStr = string.Join(", ", missingActions.Select(x => x.Actions.Name));
+                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
+                        throw new ApplicationException($"The following actions were missing: {missingActionsStr}");
+                    }
+
+                    var actionsToPerform = emailMapping.EmailMappingActions.OrderBy(x => x.Id)
+                        .Where(x => x.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                        .Where(x => FileUtils.FileActions.ContainsKey(x.Actions.Name)) // Ensure action delegate exists
+                        .Select(x => (Name: x.Actions.Name, Delegate: FileUtils.FileActions[x.Actions.Name]))
+                        .ToList();
+                    
+                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} email mapping actions to execute.", operationName, "ActionEnumeration", actionsToPerform.Count);
+
+                    foreach (var actionInfo in actionsToPerform)
+                    {
+                        // ExecuteActions will log its own start/end and details
+                        await ExecuteActions(fileType, files, actionInfo).ConfigureAwait(false);
+                    }
+                    
+                    stopwatch.Stop();
+                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
-
-                emailMapping.EmailMappingActions.OrderBy(x => x.Id)
-                    .Where(x => x.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
-                    .Select(x => (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
-                    .ForEach(async x => { await ExecuteActions(fileType, files, x).ConfigureAwait(false); });
-
-            }
-            catch (Exception e)
-            {
-                await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found",
-                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                    Array.Empty<string>()).ConfigureAwait(false);
+                catch (Exception e)
+                {
+                    stopwatch.Stop();
+                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                        operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                    try
+                    {
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to forward error email. EmailId: {EmailIdForForward}", operationName, "ErrorForwarding", fileType?.EmailId);
+                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully forwarded error email.", operationName, "ErrorForwarding");
+                    }
+                    catch (Exception forwardEx)
+                    {
+                        _log.Error(forwardEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to forward error email.", operationName, "ErrorForwarding");
+                    }
+                    // Rethrowing to allow higher-level handlers if necessary, or it could be handled here.
+                    // For now, let's assume the error email is sufficient notification from this level.
+                }
             }
         }
 
-
-
-        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files,
-                                                (string Name, Func<FileTypes, FileInfo[], Task> Action) x)
+        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Func<ILogger, FileTypes, FileInfo[], Task> Delegate) actionInfo)
         {
-            var contextInfo = $"FTID: {fileType.Id}, EmailId: {fileType.EmailId ?? "N/A"}, DocSetId: {(fileType.AsycudaDocumentSetId == 0 ? "N/A" : fileType.AsycudaDocumentSetId.ToString())}, Ref: {fileType.DocSetRefernece ?? "N/A"}";
-            Console.WriteLine($"Action START: {x.Name} | Context: [{contextInfo}]");
-            var stopwatch = Stopwatch.StartNew();
+            string operationName = nameof(ExecuteActions);
+            // This InvocationId is for this specific action execution.
+            // It will inherit the OperationInvocationId from the caller (e.g., ExecuteEmailMappingActions) via LogContext.
+            string actionInvocationId = Guid.NewGuid().ToString();
 
-            // Declare isContinue here so it's accessible for the final check
-            bool isContinueProcessingMainAction = true; // Default to true, ProcessNextStep logic might set it to false
-
-            try
+            using (LogContext.PushProperty("ActionInvocationId", actionInvocationId))
+            using (LogContext.PushProperty("ActionName", actionInfo.Name)) // Add ActionName to context
             {
-                // --- ProcessNextStep Logic ---
-                if (fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
+                var contextProperties = new {
+                    FileTypeId = fileType?.Id,
+                    EmailId = fileType?.EmailId,
+                    AsycudaDocumentSetId = fileType?.AsycudaDocumentSetId == 0 ? (int?)null : fileType?.AsycudaDocumentSetId,
+                    DocSetReference = fileType?.DocSetRefernece
+                };
+
+                _log.Information("ACTION_START: {ActionName_Context}. Context: {ActionContextProperties}, FileCount: {FileCount}", 
+                    actionInfo.Name, contextProperties, files?.Length ?? 0);
+                var stopwatch = Stopwatch.StartNew();
+                
+                bool isContinueProcessingMainAction = true;
+
+                try
                 {
-                    bool hitContinueInLoop = false; // Tracks if "Continue" action was encountered in the loop
-
-                    while (fileType.ProcessNextStep.Any())
+                    if (fileType != null && fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                     {
-                        var nextActionName = fileType.ProcessNextStep.First();
-                        if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextActionAsyncFunc))
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Starting ProcessNextStep sequence for Action {ActionName_Context}. Initial steps: {ProcessNextStepList}",
+                            operationName, "ProcessNextStepStart", actionInfo.Name, string.Join(",", fileType.ProcessNextStep));
+                        bool hitContinueInLoop = false;
+
+                        while (fileType.ProcessNextStep.Any())
                         {
-                            Console.WriteLine($"Action SKIP (ProcessNextStep): Action '{nextActionName}' not found in FileUtils.FileActions. | Context: [{contextInfo}]");
-                            // Remove to avoid infinite loop if action is permanently missing
-                            // Place removal in finally block to ensure it's always removed after processing attempt
-                        }
-                        else // Action found, proceed to execute
-                        {
-                            Console.WriteLine($"Action START (ProcessNextStep): {nextActionName} | Context: [{contextInfo}]");
-                            var nextStopwatch = Stopwatch.StartNew();
-                            try
+                            var nextActionName = fileType.ProcessNextStep.First();
+                            using (LogContext.PushProperty("NextActionName", nextActionName))
                             {
-                                if (nextActionName == "Continue")
+                                if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextActionAsyncFunc))
                                 {
-                                    hitContinueInLoop = true;
-                                    nextStopwatch.Stop();
-                                    Console.WriteLine($"Action CONTINUE (ProcessNextStep): '{nextActionName}' encountered. Proceeding to main action. | Context: [{contextInfo}]");
-                                    // Remove "Continue" action from the list
-                                    fileType.ProcessNextStep.RemoveAt(0);
-                                    break; // Exit while loop to continue to main action
+                                    _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Action '{NextActionName_Context}' not found in FileUtils.FileActions. Skipping. For main action {ActionName_Context}",
+                                        operationName, "ProcessNextStepActionNotFound", nextActionName, actionInfo.Name);
                                 }
+                                else
+                                {
+                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing ProcessNextStep action '{NextActionName_Context}' for main action {ActionName_Context}",
+                                        operationName, "ProcessNextStepActionExecute", nextActionName, actionInfo.Name);
+                                    var nextStopwatch = Stopwatch.StartNew();
+                                    try
+                                    {
+                                        if (nextActionName == "Continue")
+                                        {
+                                            hitContinueInLoop = true;
+                                            nextStopwatch.Stop();
+                                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): 'Continue' action encountered in ProcessNextStep for main action {ActionName_Context}. Proceeding to main action. Duration: {DurationMs}ms",
+                                                operationName, "ProcessNextStepContinue", actionInfo.Name, nextStopwatch.ElapsedMilliseconds);
+                                            fileType.ProcessNextStep.RemoveAt(0); // Remove "Continue"
+                                            break; 
+                                        }
 
-                                await nextActionAsyncFunc.Invoke(fileType, files).ConfigureAwait(false);
-
-                                nextStopwatch.Stop();
-                                Console.WriteLine($"Action SUCCESS (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
-                            }
-                            catch (Exception nextEx)
-                            {
-                                nextStopwatch.Stop();
-                                Console.WriteLine($"Action FAILED (ProcessNextStep): {nextActionName} | Duration: {nextStopwatch.ElapsedMilliseconds}ms | Error: {nextEx.Message} | Context: [{contextInfo}]");
-                                // If a step in ProcessNextStep fails, we should not proceed to the main action
-                                isContinueProcessingMainAction = false;
-                                // Remove the failed action before rethrowing or exiting
+                                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (ProcessNextStep for {ActionName_Context})", 
+                                            nextActionName, "ASYNC_EXPECTED", actionInfo.Name);
+                                        await nextActionAsyncFunc.Invoke(_log, fileType, files).ConfigureAwait(false);
+                                        nextStopwatch.Stop();
+                                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (ProcessNextStep for {ActionName_Context})",
+                                            nextActionName, nextStopwatch.ElapsedMilliseconds, "Async call completed (await).", actionInfo.Name);
+                                    }
+                                    catch (Exception nextEx)
+                                    {
+                                        nextStopwatch.Stop();
+                                        _log.Error(nextEx, "OPERATION_END_FAILURE: {OperationDescription} (ProcessNextStep for {ActionName_Context}). Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                            nextActionName, actionInfo.Name, nextStopwatch.ElapsedMilliseconds, nextEx.Message);
+                                        isContinueProcessingMainAction = false;
+                                        if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
+                                        {
+                                            fileType.ProcessNextStep.RemoveAt(0);
+                                        }
+                                        throw; 
+                                    }
+                                }
+                                // Removal logic adjusted for clarity
                                 if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
-                                {
+                                { // If it was the action just processed (and not 'Continue' which breaks)
                                     fileType.ProcessNextStep.RemoveAt(0);
+                                } 
+                                else if (nextActionName != "Continue" && fileType.ProcessNextStep.Any()) 
+                                { // If it was skipped and not 'Continue', remove the head
+                                     _log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Removing '{NextActionName_Context}' from ProcessNextStep queue after processing/skipping.", operationName, "ProcessNextStepRemove", nextActionName);
+                                     fileType.ProcessNextStep.RemoveAt(0);
                                 }
-                                throw; // Rethrowing to be caught by the outer try-catch, which will stop further processing for this x.Action
                             }
-                        }
-                        // Always remove the processed (or skipped) action from the head of the list
-                        // This needs to be done carefully, especially with the 'Continue' break and potential exceptions
-                        if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
+                        } // End While
+
+                        if (!hitContinueInLoop && isContinueProcessingMainAction) // isContinueProcessingMainAction could be false due to an error
                         {
-                            fileType.ProcessNextStep.RemoveAt(0);
+                            isContinueProcessingMainAction = false;
+                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): ProcessNextStep sequence completed without 'Continue' for main action {ActionName_Context}. Main action will NOT run.",
+                                operationName, "ProcessNextStepNoContinue", actionInfo.Name);
                         }
-                        else if (nextActionName == "Continue" && !fileType.ProcessNextStep.Any(pns => pns == "Continue"))
-                        {
-                            // This case is if "Continue" was the last item and already removed.
-                            // No action needed here, the break took care of it.
-                        }
-                        else if (fileType.ProcessNextStep.Any())
-                        { // If it wasn't the 'Continue' action that broke, or if action was skipped
-                            fileType.ProcessNextStep.RemoveAt(0);
-                        }
-
-
-                    } // End While
-
-                    // After the loop, if "Continue" was not hit AND there were items to process,
-                    // it means the ProcessNextStep sequence finished without a 'Continue' signal.
-                    // In this case, the main action (x.Action) should not be executed.
-                    if (!hitContinueInLoop)
+                    }
+                    
+                    if (isContinueProcessingMainAction)
                     {
-                        isContinueProcessingMainAction = false;
-                        Console.WriteLine($"Action EXIT (ProcessNextStep): Sequence completed without 'Continue'. Main action '{x.Name}' will NOT run. | Context: [{contextInfo}]");
+                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (Main Action)", 
+                            actionInfo.Name, "ASYNC_EXPECTED");
+                        var mainActionInvokeStopwatch = Stopwatch.StartNew(); // Stopwatch for the main action invoke itself
+                        await actionInfo.Delegate.Invoke(_log, fileType, files).ConfigureAwait(false);
+                        mainActionInvokeStopwatch.Stop();
+                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (Main Action)",
+                            actionInfo.Name, mainActionInvokeStopwatch.ElapsedMilliseconds, "Async call completed (await).");
+                        
+                        stopwatch.Stop(); // This is the overall stopwatch for ExecuteActions
+                        _log.Information("ACTION_END_SUCCESS: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
+                            actionInfo.Name, stopwatch.ElapsedMilliseconds, contextProperties);
+                    }
+                    else
+                    {
+                        stopwatch.Stop();
+                        _log.Warning("ACTION_SKIPPED: {ActionName_Context} (Due to ProcessNextStep logic). Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
+                            actionInfo.Name, stopwatch.ElapsedMilliseconds, contextProperties);
                     }
                 }
-                // --- End ProcessNextStep Logic ---
-
-                if (isContinueProcessingMainAction)
+                catch (Exception e)
                 {
-                    // Execute the main action passed into this method
-                    await x.Action.Invoke(fileType, files).ConfigureAwait(false);
-                    stopwatch.Stop();
-                    Console.WriteLine($"Action SUCCESS: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
+                    if(stopwatch.IsRunning) stopwatch.Stop();
+                    _log.Error(e, "ACTION_END_FAILURE: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}. Context: {ActionContextProperties}", 
+                        actionInfo.Name, stopwatch.ElapsedMilliseconds, e.Message, contextProperties);
+                    try
+                    {
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to send error email for failed action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in Action: {actionInfo.Name}",
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully sent error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                    }
+                    catch (Exception emailEx)
+                    {
+                         _log.Error(emailEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to send error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                    }
+                    throw; // Rethrow to allow higher-level handlers
                 }
-                else
-                {
-                    // If ProcessNextStep determined we shouldn't continue, log it and stop the timer.
-                    stopwatch.Stop(); // Ensure stopwatch is stopped even if main action doesn't run
-                    Console.WriteLine($"Action SKIPPED (Due to ProcessNextStep): {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Context: [{contextInfo}]");
-                    // Do not throw here, as this is a controlled exit from ProcessNextStep
-                }
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
-                Console.WriteLine($"Action FAILED: {x.Name} | Duration: {stopwatch.ElapsedMilliseconds}ms | Error: {e.Message} | Context: [{contextInfo}]");
-                Console.WriteLine($"Stack Trace: {e.StackTrace}");
-                await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in Action: {x.Name}",
-                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>()).ConfigureAwait(false);
-                throw;
             }
         }
 
         public static async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
-            try
+            string operationName = nameof(ExecuteDataSpecificFileActions);
+            string operationInvocationId = Guid.NewGuid().ToString();
+            using (LogContext.PushProperty("OperationInvocationId", operationInvocationId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
             {
-                // Missing actions check (this part is fine, assuming FileUtils.FileActions keys are up-to-date)
-                var missingActions = fileType.FileTypeActions
-                    .Where(x => x.Actions.IsDataSpecific == true && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
-                    .ToList();
-
-                if (missingActions.Any())
+                var stopwatch = Stopwatch.StartNew();
+                _log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
+                    operationName, fileType?.Id, files?.Length ?? 0, appSetting?.ApplicationSettingsId);
+                try
                 {
-                    throw new ApplicationException(
-                        $"The following data-specific actions were missing: {string.Join(", ", missingActions.Select(x => x.Actions.Name))}");
-                }
-
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    var orderedFileActions = ctx.FileTypeActions // Renamed for clarity
-                        .Include(fta => fta.Actions)
-                        .Where(fta => fta.FileTypeId == fileType.Id)
-                        .Where(fta => fta.Actions.IsDataSpecific == true)
-                        .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) || // Corrected .Equals(null) to == null
-                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
-                                       appSetting.AssessEX == fta.AssessEX))
-                        .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
-                        .OrderBy(fta => fta.Id)
-                        // .Include(fileTypeActions => fileTypeActions.Actions) // Already included above, redundant
+                    var missingActions = fileType.FileTypeActions
+                        .Where(x => x.Actions.IsDataSpecific == true && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
                         .ToList();
 
-                    // Get the delegates from FileUtils.FileActions
-                    var actionsToExecute = orderedFileActions
-                        .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name)) // Ensure action exists
-                        .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name])) // Action is Func<..., Task>
-                        .ToList();
-
-                    // Use a proper foreach loop to await async operations
-                    foreach (var actionTuple in actionsToExecute)
+                    if (missingActions.Any())
                     {
-                        await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                        string missingActionsStr = string.Join(", ", missingActions.Select(x => x.Actions.Name));
+                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following data-specific actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
+                        throw new ApplicationException($"The following data-specific actions were missing: {missingActionsStr}");
                     }
+
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        var orderedFileActions = ctx.FileTypeActions
+                            .Include(fta => fta.Actions)
+                            .Where(fta => fta.FileTypeId == fileType.Id)
+                            .Where(fta => fta.Actions.IsDataSpecific == true)
+                            .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) ||
+                                          (appSetting.AssessIM7 == fta.AssessIM7 || appSetting.AssessEX == fta.AssessEX))
+                            .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                            .OrderBy(fta => fta.Id)
+                            .ToList();
+
+                        var actionsToExecute = orderedFileActions
+                            .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name))
+                            .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name]))
+                            .ToList();
+                        
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} data-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
+                        if (!actionsToExecute.Any() && orderedFileActions.Any()) {
+                            _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
+                                operationName, "ActionMismatchWarning", orderedFileActions.Count, actionsToExecute.Count);
+                        }
+
+
+                        foreach (var actionTuple in actionsToExecute)
+                        {
+                            await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                        }
+                    }
+                    stopwatch.Stop();
+                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
-            }
-            catch (Exception e)
-            {
-                // ... error handling ...
-                await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found in ExecuteDataSpecificFileActions",
-                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
-                    Array.Empty<string>()).ConfigureAwait(false);
-                // Consider rethrowing if this is a critical path: throw;
+                catch (Exception e)
+                {
+                    stopwatch.Stop();
+                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                        operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                    try
+                    {
+                        await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType?.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
+                    } catch (Exception fex) { _log.Error(fex, "Failed to forward error email during {ActionName} exception handling.", operationName); }
+                    // throw; // Consider re-throwing
+                }
             }
         }
 
         public static async Task ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
-            try
+            string operationName = nameof(ExecuteNonSpecificFileActions);
+            string operationInvocationId = Guid.NewGuid().ToString();
+            using (LogContext.PushProperty("OperationInvocationId", operationInvocationId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
             {
-                // Missing actions check
-                var missingActionsCheck = fileType.FileTypeActions
-                   .Where(x => (x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true) && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
-                   .ToList();
-                if (missingActionsCheck.Any())
+                var stopwatch = Stopwatch.StartNew();
+                _log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
+                    operationName, fileType?.Id, files?.Length ?? 0, appSetting?.ApplicationSettingsId);
+                try
                 {
-                    Console.WriteLine($"WARNING: Non-specific actions missing implementation: {string.Join(", ", missingActionsCheck.Select(x => x.Actions.Name))}");
-                }
-
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    var orderedFileActions = ctx.FileTypeActions // Renamed for clarity
-                        .Include(fta => fta.Actions)
-                        .Where(fta => fta.FileTypeId == fileType.Id)
-                        .Where(fta => fta.Actions.IsDataSpecific == null || fta.Actions.IsDataSpecific != true)
-                        .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) || // Corrected .Equals(null) to == null
-                                      (appSetting.AssessIM7 == fta.AssessIM7 ||
-                                       appSetting.AssessEX == fta.AssessEX))
-                        .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
-                        .OrderBy(fta => fta.Id)
-                        .ToList();
-
-                    var actionsToExecute = orderedFileActions
-                       .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name))
-                       .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name])) // Action is Func<..., Task>
+                    var missingActionsCheck = fileType.FileTypeActions
+                       .Where(x => (x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true) && !FileUtils.FileActions.ContainsKey(x.Actions.Name))
                        .ToList();
-
-                    // Use a proper foreach loop to await async operations
-                    foreach (var actionTuple in actionsToExecute)
+                    if (missingActionsCheck.Any())
                     {
-                        // ExecuteActions returns a Task, so await it.
-                        await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Non-specific actions missing implementation: {MissingActionsList}", 
+                            operationName, "ValidationWarning", string.Join(", ", missingActionsCheck.Select(x => x.Actions.Name)));
                     }
+
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        var orderedFileActions = ctx.FileTypeActions
+                            .Include(fta => fta.Actions)
+                            .Where(fta => fta.FileTypeId == fileType.Id)
+                            .Where(fta => fta.Actions.IsDataSpecific == null || fta.Actions.IsDataSpecific != true)
+                            .Where(fta => (fta.AssessIM7 == null && fta.AssessEX == null) ||
+                                          (appSetting.AssessIM7 == fta.AssessIM7 || appSetting.AssessEX == fta.AssessEX))
+                            .Where(fta => fta.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                            .OrderBy(fta => fta.Id)
+                            .ToList();
+
+                        var actionsToExecute = orderedFileActions
+                           .Where(fta => FileUtils.FileActions.ContainsKey(fta.Actions.Name))
+                           .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name]))
+                           .ToList();
+                        
+                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} non-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
+                         if (!actionsToExecute.Any() && orderedFileActions.Any()) {
+                            _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
+                                operationName, "ActionMismatchWarning", orderedFileActions.Count, actionsToExecute.Count);
+                        }
+
+                        foreach (var actionTuple in actionsToExecute)
+                        {
+                            await ExecuteActions(fileType, files, actionTuple).ConfigureAwait(false);
+                        }
+                    }
+                    stopwatch.Stop();
+                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
-            }
-            catch (Exception e)
-            {
-                // ... error handling ...
-                await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in ExecuteNonSpecificFileActions",
-                    EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>()).ConfigureAwait(false);
-                // throw; // Consider re-throwing
+                catch (Exception e)
+                {
+                    stopwatch.Stop();
+                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                        operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                    try
+                    {
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in {operationName}",
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _log).ConfigureAwait(false);
+                    } catch (Exception fex) { _log.Error(fex, "Failed to send error email during {ActionName} exception handling.", operationName); }
+                    // throw; // Consider re-throwing
+                }
             }
         }
 
-        public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
+        // Instance method - requires an instance of ImportUtils to be called.
+        // If this is intended to be static, it needs `static` keyword and potentially different parameter handling.
+        // For now, instrumenting as an instance method.
+        public async Task SavePDF(string droppedFilePath, string fileTypeHint, int docSetId, bool overwrite)
         {
+            string operationName = nameof(SavePDF);
+            string operationInvocationId = Guid.NewGuid().ToString();
+            // If called from a static context, `this` isn't available for Log.ForContext(this.GetType())
+            // Using _log (static logger for the class) or Log.ForContext<ImportUtils>() is fine.
+            // For instance methods, Log.ForContext(GetType()) is also an option.
+            ILogger instanceLog = _log.ForContext("DroppedFilePath", droppedFilePath)
+                                     .ForContext("FileTypeHint", fileTypeHint)
+                                     .ForContext("DocSetId", docSetId)
+                                     .ForContext("Overwrite", overwrite);
 
-           
-
-            var importableFileTypesPdf = await FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF, droppedFilePath).ConfigureAwait(false);
-            var dfileType = importableFileTypesPdf.FirstOrDefault(x =>
-                Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
-
-           
-
-            if (dfileType != null) // Ensure dfileType is not null before proceeding
+            using (LogContext.PushProperty("OperationInvocationId", operationInvocationId))
             {
-                dfileType.AsycudaDocumentSetId = docSetId;
-           
-                await InvoiceReader.InvoiceReader.ImportPDF([new FileInfo(droppedFilePath)],dfileType).ConfigureAwait(false);
-            }
-            else
-            {
-                // Handle the case where no suitable dfileType was found
-                // For example, log an error or throw an exception
-                Console.WriteLine($"No suitable PDF file type found for {droppedFilePath} with fileType hint {fileType}");
-                // Depending on requirements, you might throw new ApplicationException("No suitable PDF file type found.");
-            }
+                var stopwatch = Stopwatch.StartNew();
+                instanceLog.Information("ACTION_START: {ActionName}. DroppedFilePath: {DroppedFilePath}, FileTypeHint: {FileTypeHint}, DocSetId: {DocSetId}, Overwrite: {Overwrite}",
+                    operationName, droppedFilePath, fileTypeHint, docSetId, overwrite);
+                try
+                {
+                    var importableFileTypesPdf = await FileTypeManager.GetImportableFileType(fileTypeHint, FileTypeManager.FileFormats.PDF, droppedFilePath).ConfigureAwait(false);
+                    var dfileType = importableFileTypesPdf.FirstOrDefault(x =>
+                        Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
 
-
+                    if (dfileType != null)
+                    {
+                        instanceLog.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found matching FileType {MatchedFileTypeId} ('{MatchedFilePattern}') for PDF.",
+                            operationName, "FileTypeMatched", dfileType.Id, dfileType.FilePattern);
+                        dfileType.AsycudaDocumentSetId = docSetId;
+                        
+                        instanceLog.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {MatchedFileTypeId}", 
+                            "InvoiceReader.ImportPDF", "ASYNC_EXPECTED", dfileType.Id);
+                        var importPdfStopwatch = Stopwatch.StartNew();
+                        
+                        // Assuming InvoiceReader.InvoiceReader.ImportPDF is the correct static call path
+                        await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(droppedFilePath) }, dfileType, _log).ConfigureAwait(false);
+                        
+                        importPdfStopwatch.Stop();
+                        instanceLog.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for FileType {MatchedFileTypeId}",
+                            "InvoiceReader.ImportPDF", importPdfStopwatch.ElapsedMilliseconds, "Async call completed (await).", dfileType.Id);
+                    }
+                    else
+                    {
+                        instanceLog.Warning("INTERNAL_STEP ({OperationName} - {Stage}): No suitable PDF file type found for {DroppedFilePath} with fileType hint {FileTypeHint}. PDF will not be imported by this action.",
+                            operationName, "NoFileTypeMatch", droppedFilePath, fileTypeHint);
+                    }
+                    stopwatch.Stop();
+                    instanceLog.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                }
+                catch (Exception e)
+                {
+                    stopwatch.Stop();
+                    instanceLog.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        operationName, stopwatch.ElapsedMilliseconds, e.Message);
+                    throw; // Rethrowing to allow higher-level handlers
+                }
+            }
         }
     }
 }

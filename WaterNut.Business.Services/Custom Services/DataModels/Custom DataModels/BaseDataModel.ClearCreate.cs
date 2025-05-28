@@ -14,27 +14,29 @@ using EntryPreviousItems = CoreEntities.Business.Entities.EntryPreviousItems;
 
 namespace WaterNut.DataSpace;
 
+using Serilog;
+
 public partial class BaseDataModel
 {
-    internal async Task Clear(int AsycudaDocumentSetId)
+    internal async Task Clear(int AsycudaDocumentSetId, ILogger log)
     {
         AsycudaDocumentSet docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
 
-        await Clear(docset).ConfigureAwait(false);
+        await Clear(docset, log).ConfigureAwait(false);
     }
 
-    internal async Task Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
+    internal async Task Clear(AsycudaDocumentSet currentAsycudaDocumentSet, ILogger log)
     {
-        await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
+        await ClearAsycudaDocumentSet(currentAsycudaDocumentSet, log).ConfigureAwait(false);
     }
-
-    public async Task ClearAsycudaDocumentSet(int AsycudaDocumentSetId)
+    
+    public async Task ClearAsycudaDocumentSet(int AsycudaDocumentSetId, ILogger log)
     {
         var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
-        await ClearAsycudaDocumentSet(docset).ConfigureAwait(false);
+        await ClearAsycudaDocumentSet(docset, log).ConfigureAwait(false);
     }
 
-    public async Task ClearAsycudaDocumentSet(AsycudaDocumentSet docset)
+    public async Task ClearAsycudaDocumentSet(AsycudaDocumentSet docset, ILogger log)
     {
         PreventDeletingFromSystemDocSet(docset);
 
@@ -43,7 +45,7 @@ public partial class BaseDataModel
 
         ParalellDeleteDocSetDocuments(docset);
 
-        await CalculateDocumentSetFreight(docset.AsycudaDocumentSetId).ConfigureAwait(false);
+        await CalculateDocumentSetFreight(docset.AsycudaDocumentSetId, log).ConfigureAwait(false);
 
         StatusModel.StopStatusUpdate();
     }

@@ -31,7 +31,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         public  async Task CreateEntryData(DataFile dataFile, List<RawEntryData> goodLst)
         {
-            await new CreateEntryDataSelector().Execute(dataFile, goodLst).ConfigureAwait(false);
+            await new CreateEntryDataSelector().Execute(dataFile, goodLst, Serilog.Log.Logger).ConfigureAwait(false);
         }
     }
 }

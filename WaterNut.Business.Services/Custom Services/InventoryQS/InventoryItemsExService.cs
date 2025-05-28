@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics; // Added for Stopwatch
 using InventoryDS.Business.Entities;
 using InventoryQS.Business.Entities;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using MoreLinq;
 using Omu.ValueInjecter;
 using WaterNut.Business.Services.Utils;
@@ -47,85 +48,143 @@ namespace InventoryQS.Business.Services
 
 
         public static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>>
-            ClassifiedItms(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+            ClassifiedItms(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms, ILogger logger) // Added ILogger parameter
         {
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
+            logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(ClassifiedItms), "Classify inventory items using AI or existing data", $"ItemCount: {Itms?.Count ?? 0}");
+            logger.Information("METHOD_ENTRY: {MethodName}. Input Parameters {@Itms}.", Itms);
             try
             {
+                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(ClassifiedItms), $"Classifying {Itms?.Count ?? 0} items");
+
                 //var
                 var itms =
                 BaseDataModel.Instance.CurrentApplicationSettings.UseAIClassification ?? false
-                    ? (await GetClassifyItems(Itms).ConfigureAwait(false))
+                    ? (await GetClassifyItems(Itms, logger).ConfigureAwait(false)) // Pass logger
                         .Where(x => x.Value.ItemNumber != null)
                         .ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.ItemNumber, kvp.Value.ItemDescription, kvp.Value.TariffCode, kvp.Value.Category, kvp.Value.CategoryTariffCode))
                     : Itms.DistinctBy(x => x.ItemNumber)
                         .ToDictionary(x => x.ItemNumber, x => (x.ItemNumber, x.ItemDescription, x.TariffCode, string.Empty, string.Empty));
-
-
+ 
+ 
                 var res = new Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>();
-
-
+ 
+ 
                 foreach (var itm in itms)
                 {
-                    
+                    logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(ClassifiedItms), "UpdateTariffValueLoop", "Processing item for tariff value update.", $"ItemKey: {itm.Key}");
                     res.Add(itm.Key, await UpdateTariffValue(itm).ConfigureAwait(false));
                 }
+ 
+                methodStopwatch.Stop(); // Stop stopwatch on success
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ClassifiedItms), "Items classified successfully", $"ClassifiedItemCount: {res.Count}", methodStopwatch.ElapsedMilliseconds);
+                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(ClassifiedItms), $"Successfully classified {res.Count} items", methodStopwatch.ElapsedMilliseconds);
 
-
+                logger.Information("METHOD_ENTRY: {MethodName}. Output Parameters {@res}.", res);
                 return res;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                methodStopwatch.Stop(); // Stop stopwatch on failure
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ClassifiedItms), "Classify inventory items using AI or existing data", methodStopwatch.ElapsedMilliseconds, $"Error classifying items: {e.Message}");
+                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ClassifiedItms), "Overall classification process", methodStopwatch.ElapsedMilliseconds, $"Error classifying items: {e.Message}");
+                Console.WriteLine(e); // Keep Console.WriteLine for now as per original code
                 throw;
             }
-
+ 
         }
-
-        private static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>> GetClassifyItems(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+ 
+        private static async Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category, string CategoryTariffCode)>> GetClassifyItems(List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms, ILogger logger) // Added ILogger parameter
         {
-            // Assuming:
-            // - Itms is some input for ClassifyItemsAsync
-            // - ClassifyItemsAsync returns something like IEnumerable<KeyValuePair<string, YourOriginalValueType>>
-            //   where YourOriginalValueType has properties ItemNumber, ItemDescription, TariffCode, Category.
-            // - GetCategoryTariffCode is an async method:
-            //   public async Task<string> GetCategoryTariffCode(KeyValuePair<string, YourOriginalValueType> itemKeyValuePair)
-            //   or
-            //   public async Task<string> GetCategoryTariffCode(YourOriginalValueType itemValue)
-            //   (adjust the call to GetCategoryTariffCode(x) or GetCategoryTariffCode(x.Value) accordingly)
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
+            logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(GetClassifyItems), "Get classified items, potentially using AI", $"ItemCount: {Itms?.Count ?? 0}");
 
-            var classifiedItems = await ClassifyItemsAsync(Itms).ConfigureAwait(false);
-            if (BaseDataModel.Instance.CurrentApplicationSettings.GroupIM4ByCategory == true)
+            try
             {
+                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(GetClassifyItems), $"Getting classified items for {Itms?.Count ?? 0} items");
 
+                // Assuming:
+                // - Itms is some input for ClassifyItemsAsync
+                // - ClassifyItemsAsync returns something like IEnumerable<KeyValuePair<string, YourOriginalValueType>>
+                //   where YourOriginalValueType has properties ItemNumber, ItemDescription, TariffCode, Category.
+                // - GetCategoryTariffCode is an async method:
+                //   public async Task<string> GetCategoryTariffCode(KeyValuePair<string, YourOriginalValueType> itemKeyValuePair)
+                //   or
+                //   public async Task<string> GetCategoryTariffCode(YourOriginalValueType itemValue)
+                //   (adjust the call to GetCategoryTariffCode(x) or GetCategoryTariffCode(x.Value) accordingly)
+ 
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ClassifyItemsAsync", "ASYNC_EXPECTED");
+                var classifyStopwatch = Stopwatch.StartNew();
+                var classifiedItems = await ClassifyItemsAsync(Itms, logger).ConfigureAwait(false); // Pass logger
+                classifyStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "ClassifyItemsAsync", classifyStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
 
-                // Directly await Task.WhenAll on the LINQ Select expression
-                var transformedItems = await Task.WhenAll(
-                    classifiedItems.Select(async x => // x is a KeyValuePair<string, YourOriginalValueType>
-                        new KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string
-                            Category, string CategoryTariffCode)>(
-                            x.Key,
-                            ( // Start of the tuple for the Value
-                                x.Value.ItemNumber,
-                                x.Value.ItemDescription,
-                                x.Value.TariffCode,
-                                x.Value.Category,
-                                await GetCategoryTariffCode(x).ConfigureAwait(false) // Await directly here
-                            ) // End of the tuple
+                if (BaseDataModel.Instance.CurrentApplicationSettings.GroupIM4ByCategory == true)
+                {
+                    logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(GetClassifyItems), "CategoryGrouping", "Grouping items by category and getting category tariff codes.", $"ClassifiedItemCount: {classifiedItems.Count()}");
+
+                    // Directly await Task.WhenAll on the LINQ Select expression
+                    var transformedItems = await Task.WhenAll(
+                        classifiedItems.Select(async x => // x is a KeyValuePair<string, YourOriginalValueType>
+                            new KeyValuePair<string, (string ItemNumber, string ItemDescription, string TariffCode, string
+                                Category, string CategoryTariffCode)>(
+                                x.Key,
+                                ( // Start of the tuple for the Value
+                                    x.Value.ItemNumber,
+                                    x.Value.ItemDescription,
+                                    x.Value.TariffCode,
+                                    x.Value.Category,
+                                    await GetCategoryTariffCode(x).ConfigureAwait(false) // Await directly here
+                                ) // End of the tuple
+                            )
                         )
-                    )
-                ).ConfigureAwait(false);
+                    ).ConfigureAwait(false);
+ 
+                    // Convert the array of KeyValuePairs to a Dictionary
+                    // This assumes that x.Key values are unique across the items.
+                    var resultDictionary = transformedItems.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value
+                    );
 
-                // Convert the array of KeyValuePairs to a Dictionary
-                // This assumes that x.Key values are unique across the items.
-                var resultDictionary = transformedItems.ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value
-                );
+                    methodStopwatch.Stop(); // Stop stopwatch on success
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(GetClassifyItems), "Items classified and categorized successfully", $"ResultCount: {resultDictionary.Count}", methodStopwatch.ElapsedMilliseconds);
+                    logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(GetClassifyItems), $"Successfully classified and categorized {resultDictionary.Count} items", methodStopwatch.ElapsedMilliseconds);
 
-                return resultDictionary;
+                    return resultDictionary;
+                }
+
+                methodStopwatch.Stop(); // Stop stopwatch on success
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(GetClassifyItems), "Items classified successfully (no category grouping)", $"ResultCount: {classifiedItems.Count()}", methodStopwatch.ElapsedMilliseconds);
+                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(GetClassifyItems), $"Successfully classified {classifiedItems.Count()} items (no category grouping)", methodStopwatch.ElapsedMilliseconds);
+
+                return classifiedItems;
             }
-
-            return classifiedItems;
+            catch (Exception e)
+            {
+                methodStopwatch.Stop(); // Stop stopwatch on failure
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(GetClassifyItems), "Get classified items, potentially using AI", methodStopwatch.ElapsedMilliseconds, $"Error getting classified items: {e.Message}");
+                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(GetClassifyItems), "Classification process", methodStopwatch.ElapsedMilliseconds, $"Error getting classified items: {e.Message}");
+                Console.WriteLine(e); // Keep Console.WriteLine for now
+                throw;
+            }
         }
         
 
@@ -161,22 +220,56 @@ namespace InventoryQS.Business.Services
         private static async
             Task<Dictionary<string, (string ItemNumber, string ItemDescription, string TariffCode, string Category,
                 string CategoryTariffCode)>> ClassifyItemsAsync(
-                List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms)
+                List<(string ItemNumber, string ItemDescription, string TariffCode)> Itms, ILogger logger) // Added ILogger parameter
         {
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
+            logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(ClassifyItemsAsync), "Asynchronously classify items using LLM API", $"ItemCount: {Itms?.Count ?? 0}");
+
             try
             {
+                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(ClassifyItemsAsync), $"Classifying {Itms?.Count ?? 0} items using LLM API");
+
                 var desiredProvider = LLMProvider.DeepSeek;
-                using var apiClient = LlmApiClientFactory.CreateClient(desiredProvider);
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "LlmApiClientFactory.CreateClient", "SYNC_EXPECTED");
+                var createClientStopwatch = Stopwatch.StartNew();
+                using var apiClient = LlmApiClientFactory.CreateClient(desiredProvider, logger); // Pass logger
+                createClientStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "LlmApiClientFactory.CreateClient", createClientStopwatch.ElapsedMilliseconds, "Sync call returned");
+
+                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "apiClient.ClassifyItemsAsync", "ASYNC_EXPECTED");
+                var classifyStopwatch = Stopwatch.StartNew();
                 var res = await apiClient.ClassifyItemsAsync(Itms).ConfigureAwait(false);
-                Console.WriteLine($"Call cost: {res.TotalCost.ToString("C")}");
+                classifyStopwatch.Stop();
+                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    "apiClient.ClassifyItemsAsync", classifyStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
+
+                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(ClassifyItemsAsync), "ResultSummary", "LLM API classification completed.", $"ResultCount: {res.Results?.Count ?? 0}, TotalCost: {res.TotalCost.ToString("C")}", new { res.TotalCost });
+
+                Console.WriteLine($"Call cost: {res.TotalCost.ToString("C")}"); // Keep Console.WriteLine for now
+
+                methodStopwatch.Stop(); // Stop stopwatch on success
+                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                    nameof(ClassifyItemsAsync), "Items classified successfully by LLM API", $"ResultCount: {res.Results?.Count ?? 0}, TotalCost: {res.TotalCost.ToString("C")}", methodStopwatch.ElapsedMilliseconds);
+                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    nameof(ClassifyItemsAsync), $"Successfully classified {res.Results?.Count ?? 0} items using LLM API", methodStopwatch.ElapsedMilliseconds);
+
                 return res.Results;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                methodStopwatch.Stop(); // Stop stopwatch on failure
+                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ClassifyItemsAsync), "Asynchronously classify items using LLM API", methodStopwatch.ElapsedMilliseconds, $"Error classifying items with LLM API: {e.Message}");
+                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    nameof(ClassifyItemsAsync), "LLM API classification process", methodStopwatch.ElapsedMilliseconds, $"Error classifying items with LLM API: {e.Message}");
+                Console.WriteLine(e); // Keep Console.WriteLine for now
                 throw;
             }
-
+ 
         }
 
         public static async Task<string> GetTariffCode(string suspectedTariffCode)

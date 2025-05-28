@@ -10,9 +10,14 @@ using WaterNut.DataSpace; // Added WaterNut.DataSpace using for Template type
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using System.Diagnostics;
+
     public class InvoiceProcessingContext
     {
-        private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingContext>();
+        // Remove static logger
+        // private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingContext>();
+
+        public ILogger Logger { get; set; } // Add ILogger property
 
         public string FilePath { get; set; }
 
@@ -25,14 +30,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (_fileTypeId != value)
                 {
                     _fileTypeId = value;
-                    _logger.Debug("Context Property Changed: FileTypeId = {NewValue}", value);
+                    Logger?.Debug("Context Property Changed: FileTypeId = {NewValue}", value); // Use the new Logger property
                 }
             }
         }
 
         public string EmailId { get; set; }
         public bool OverWriteExisting { get; set; }
-        
+
 
         private FileTypes _fileType;
         public FileTypes FileType
@@ -43,7 +48,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (_fileType != value)
                 {
                     _fileType = value;
-                    _logger.Debug("Context Property Changed: FileType = {NewValue}", value?.Description ?? "null");
+                    Logger?.Debug("Context Property Changed: FileType = {NewValue}", value?.Description ?? "null"); // Use the new Logger property
                 }
             }
         }
@@ -56,10 +61,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
 
-
-
         public IEnumerable<Invoice> Templates { get; set; } = Enumerable.Empty<Invoice>();
 
+        // Added to store templates identified as matching the document
+        public IEnumerable<Invoice> MatchedTemplates { get; set; } = Enumerable.Empty<Invoice>();
 
 
         public Dictionary<string, (string file, string, ImportStatus Success)> Imports { get; set; } = new Dictionary<string, (string file, string, ImportStatus Success)>();
@@ -77,11 +82,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
                 _errors.Add(errorMessage);
-                _logger.Error("Error added to context: {ErrorMessage}", errorMessage); // Log as Error for visibility
-                _logger.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count);
+                Logger?.Error("Error added to context: {ErrorMessage}", errorMessage); // Use the new Logger property
+                Logger?.Debug("Context Property Changed: Errors count = {ErrorCount}", _errors.Count); // Use the new Logger property
             }
         }
-
 
 
         public FileInfo FileInfo { get; set; } // Added FileInfo property
@@ -90,14 +94,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public List<Line> FailedLines
         {
-            get { return this.Templates.SelectMany(x => x.FailedLines ?? x.Parts.SelectMany(z => z.FailedLines).ToList()).ToList(); }
+            get { return this.MatchedTemplates.SelectMany(x => x.FailedLines ?? x.Parts.SelectMany(z => z.FailedLines).ToList()).ToList(); }
         }
 
         public ImportStatus ImportStatus
         {
             get
             {
-                var res = this.Templates.Select(x => x.ImportStatus).ToList();
+                var res = this.MatchedTemplates.Select(x => x.ImportStatus).ToList();
                 if (res.Count == 0)
                 {
                     return ImportStatus.Failed;

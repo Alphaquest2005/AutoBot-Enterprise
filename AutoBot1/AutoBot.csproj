@@ -279,25 +279,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography">
-      <Version>2.5.1</Version>
+      <Version>2.6.0</Version>
     </PackageReference>
     <PackageReference Include="EntityFramework">
       <Version>6.5.1</Version>
     </PackageReference>
     <PackageReference Include="itext">
-      <Version>9.1.0</Version>
+      <Version>9.2.0</Version>
     </PackageReference>
     <PackageReference Include="itext.bouncy-castle-adapter">
-      <Version>9.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>9.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console">
-      <Version>9.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug">
-      <Version>9.0.4</Version>
+      <Version>9.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.Platforms">
       <Version>7.0.4</Version>
@@ -326,6 +317,13 @@
     <PackageReference Include="Serilog">
       <Version>4.2.0</Version>
     </PackageReference>
+    <PackageReference Include="Serilog.Enrichers.Context">
+      <Version>4.6.5</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Enrichers.GlobalLogContext">
+      <Version>3.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging">
       <Version>9.0.1</Version>
     </PackageReference>
@@ -357,7 +355,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Globalization">
       <Version>4.3.0</Version>
@@ -436,13 +434,13 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.CodePages">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.Extensions">
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>
@@ -462,9 +460,7 @@
     <PackageReference Include="System.Threading.Timer">
       <Version>4.3.0</Version>
     </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.6.1</Version>
-    </PackageReference>
+    <PackageReference Include="System.ValueTuple" Version="4.6.1" CopyLocal="true" />
     <PackageReference Include="System.Xml.ReaderWriter">
       <Version>4.3.1</Version>
     </PackageReference>

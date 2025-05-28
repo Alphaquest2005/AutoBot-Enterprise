@@ -65,7 +65,7 @@ namespace OCR.Business.Services
             }
         }
 
-        public Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegEx(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegEx(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace OCR.Business.Services
                     IEnumerable<FieldFormatRegEx> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace OCR.Business.Services
         }
 
 
-        public Task<FieldFormatRegEx> GetFieldFormatRegExByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<FieldFormatRegEx> GetFieldFormatRegExByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return Task.FromResult<FieldFormatRegEx>(null); 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 FieldFormatRegEx entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace OCR.Business.Services
         }
 
 
-		 public Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<FieldFormatRegEx>>(new List<FieldFormatRegEx>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FieldFormatRegEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace OCR.Business.Services
             }
         }
 
-		 public Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<FieldFormatRegEx>>(new List<FieldFormatRegEx>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FieldFormatRegEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -272,8 +272,8 @@ namespace OCR.Business.Services
             }
         }
 
-        public Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByBatch(string exp,
-                                                                                  int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace OCR.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<FieldFormatRegEx>>(new List<FieldFormatRegEx>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FieldFormatRegEx>();
 
 
                 var batchSize = 500;
@@ -331,7 +331,7 @@ namespace OCR.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -347,8 +347,8 @@ namespace OCR.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByBatchExpressionLst(List<string> expLst,
-                                                                                               int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<FieldFormatRegEx>> GetOCR_FieldFormatRegExByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace OCR.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<FieldFormatRegEx>>(new List<FieldFormatRegEx>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FieldFormatRegEx>();
 
 
                 var batchSize = 500;
@@ -406,7 +406,7 @@ namespace OCR.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -423,7 +423,7 @@ namespace OCR.Business.Services
         }
 
 
-        public Task<FieldFormatRegEx> UpdateFieldFormatRegEx(FieldFormatRegEx entity)
+        public async Task<FieldFormatRegEx> UpdateFieldFormatRegEx(FieldFormatRegEx entity)
         { 
             using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
@@ -435,7 +435,7 @@ namespace OCR.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -480,7 +480,7 @@ namespace OCR.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -493,10 +493,10 @@ namespace OCR.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<FieldFormatRegEx> CreateFieldFormatRegEx(FieldFormatRegEx entity)
+        public async Task<FieldFormatRegEx> CreateFieldFormatRegEx(FieldFormatRegEx entity)
         {
             try
             {
@@ -506,7 +506,7 @@ namespace OCR.Business.Services
                 dbContext.OCR_FieldFormatRegEx.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -523,7 +523,7 @@ namespace OCR.Business.Services
             }
         }
 
-        public Task<bool> DeleteFieldFormatRegEx(string Id)
+        public async Task<bool> DeleteFieldFormatRegEx(string Id)
         {
             try
             {
@@ -533,12 +533,12 @@ namespace OCR.Business.Services
                 FieldFormatRegEx entity = dbContext.OCR_FieldFormatRegEx
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.OCR_FieldFormatRegEx.Attach(entity);
                     dbContext.OCR_FieldFormatRegEx.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -594,23 +594,23 @@ namespace OCR.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<FieldFormatRegEx>)dbContext.OCR_FieldFormatRegEx; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -629,26 +629,26 @@ namespace OCR.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (OCRContext dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.OCR_FieldFormatRegEx
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.OCR_FieldFormatRegEx
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.OCR_FieldFormatRegEx
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.OCR_FieldFormatRegEx
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -666,33 +666,33 @@ namespace OCR.Business.Services
             }
         }
         
-        public Task<IEnumerable<FieldFormatRegEx>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<FieldFormatRegEx>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<FieldFormatRegEx>>(new List<FieldFormatRegEx>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FieldFormatRegEx>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(dbContext.OCR_FieldFormatRegEx
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.OCR_FieldFormatRegEx
+										.AsNoTracking()
+                                        .OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<FieldFormatRegEx>>(dbContext.OCR_FieldFormatRegEx
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.OCR_FieldFormatRegEx
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -773,18 +773,18 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<FieldFormatRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -793,18 +793,18 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<FieldFormatRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -904,8 +904,8 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<FieldFormatRegEx>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                  OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<FieldFormatRegEx>> LoadRangeSelectMany<T>(int startIndex, int count,
+            OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -916,14 +916,14 @@ namespace OCR.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<FieldFormatRegEx>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -932,8 +932,8 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<FieldFormatRegEx>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                              OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<FieldFormatRegEx>> LoadRangeSelect<T>(int startIndex, int count,
+            OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -944,14 +944,14 @@ namespace OCR.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<FieldFormatRegEx>>(set
-                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -984,21 +984,21 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<FieldFormatRegEx>> GetWhereSelectMany<T>(OCRContext dbContext,
-                                                                                 string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<FieldFormatRegEx>> GetWhereSelectMany<T>(OCRContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<FieldFormatRegEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<FieldFormatRegEx>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<FieldFormatRegEx>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<FieldFormatRegEx>)dbContext.Set<T>()
@@ -1010,7 +1010,7 @@ namespace OCR.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<FieldFormatRegEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1019,21 +1019,21 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<FieldFormatRegEx>> GetWhereSelect<T>(OCRContext dbContext,
-                                                                             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<FieldFormatRegEx>> GetWhereSelect<T>(OCRContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<FieldFormatRegEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<FieldFormatRegEx>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<FieldFormatRegEx>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<FieldFormatRegEx>)dbContext.Set<T>()
@@ -1045,7 +1045,7 @@ namespace OCR.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<FieldFormatRegEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1054,7 +1054,7 @@ namespace OCR.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByFieldId(string FieldId, List<string> includesLst = null)
+			        public async Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByFieldId(string FieldId, List<string> includesLst = null)
         {
             try
             {
@@ -1066,7 +1066,7 @@ namespace OCR.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FieldId.ToString() == FieldId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1082,7 +1082,7 @@ namespace OCR.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByRegExId(string RegExId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByRegExId(string RegExId, List<string> includesLst = null)
         {
             try
             {
@@ -1094,7 +1094,7 @@ namespace OCR.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.RegExId.ToString() == RegExId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1110,7 +1110,7 @@ namespace OCR.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByReplacementRegExId(string ReplacementRegExId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<FieldFormatRegEx>> GetFieldFormatRegExByReplacementRegExId(string ReplacementRegExId, List<string> includesLst = null)
         {
             try
             {
@@ -1122,7 +1122,7 @@ namespace OCR.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ReplacementRegExId.ToString() == ReplacementRegExId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1237,18 +1237,18 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<FieldFormatRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1257,18 +1257,18 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(OCRContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<FieldFormatRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

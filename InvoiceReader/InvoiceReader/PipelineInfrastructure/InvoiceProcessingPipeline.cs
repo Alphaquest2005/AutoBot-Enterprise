@@ -11,16 +11,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public partial class InvoiceProcessingPipeline
     {
-        // Add a static logger instance for this class
-        private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingPipeline>();
+        private readonly ILogger _logger; // Use instance logger
 
         private readonly InvoiceProcessingContext _context;
         private readonly bool _isLastTemplate;
 
-        public InvoiceProcessingPipeline(InvoiceProcessingContext context, bool isLastTemplate)
+        public InvoiceProcessingPipeline(InvoiceProcessingContext context, bool isLastTemplate, ILogger logger)
         {
             _context = context;
             _isLastTemplate = isLastTemplate;
+            _logger = logger; // Assign the passed logger
              // Log initialization with context details
              string filePath = _context?.FilePath ?? "Unknown";
              _logger.Debug("InvoiceProcessingPipeline initialized for File: {FilePath}, IsLastTemplate: {IsLastTemplate}",

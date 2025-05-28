@@ -10,11 +10,13 @@ using WaterNut.Business.Entities;
 
 namespace WaterNut.DataSpace;
 
+using Serilog;
+
 public partial class BaseDataModel
 {
     public async Task<List<DocumentCT>> CreateEntryItems(List<EntryDataDetails> slstSource,
         AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice, bool autoUpdate, bool autoAssess,
-        bool combineEntryDataInSameFile, bool groupItems, bool checkPackages, string prefix = null)
+        bool combineEntryDataInSameFile, bool groupItems, bool checkPackages, ILogger log, string prefix = null)
     {
         var docList = new List<DocumentCT>();
         var itmcount = 0;
@@ -110,7 +112,7 @@ public partial class BaseDataModel
                         }
                         else
                         {
-                            AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                            await this.AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc).ConfigureAwait(false);
                             SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                         }
 
@@ -151,13 +153,13 @@ public partial class BaseDataModel
             if (itmcount == 1 && cdoc.DocumentItems.Any() && !cdoc.DocumentItems.First().xcuda_Packages.Any())
             {
                 SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
-                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                await this.AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc).ConfigureAwait(false);
             }
 
 
             if (oldentryData.EntryDataId != pod.EntryData.EntryDataId)
             {
-                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                await this.AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc).ConfigureAwait(false);
                 cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Amount_foreign_currency +=
                     pod.EntryData.TotalInternalFreight.GetValueOrDefault();
                 cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Currency_code =
@@ -188,7 +190,7 @@ public partial class BaseDataModel
                 0)
                 if (cdoc.DocumentItems.Any())
                 {
-                    AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                    await this.AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc).ConfigureAwait(false);
                     SetEffectiveAssessmentDate(cdoc);
                     LinkPreviousDocuments(pod, cdoc);
                     await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
@@ -212,13 +214,13 @@ public partial class BaseDataModel
         StatusModel.Timer("Saving To Database");
         if (cdoc.DocumentItems.Any())
         {
-            AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, entryLineDatas.Last(), cdoc);
+            await this.AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, entryLineDatas.Last(), cdoc).ConfigureAwait(false);
             SetEffectiveAssessmentDate(cdoc);
             await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
             docList.Add(cdoc);
         }
 
-        await CalculateDocumentSetFreight(currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false);
+        await CalculateDocumentSetFreight(currentAsycudaDocumentSet.AsycudaDocumentSetId, log).ConfigureAwait(false);
         StatusModel.StopStatusUpdate();
 
         await this.AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false);

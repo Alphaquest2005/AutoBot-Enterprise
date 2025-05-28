@@ -9,6 +9,8 @@ using CoreEntities.Business.Entities;
 
 namespace CoreEntities.Business.Services
 {
+    using Serilog;
+
     [ServiceContract(Namespace = "http://www.insight-software.com/WaterNut")]
     public partial interface IDocumentSetService : IBusinessService
     {
@@ -19,8 +21,15 @@ namespace CoreEntities.Business.Services
         Task DeleteDocumentSet(int docSetId);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool onlyRegisteredDocuments, bool importTariffCodes, bool noMessages,
-            bool overwriteExisting, bool linkPi);
+        Task ImportDocuments(
+            int asycudaDocumentSetId,
+            List<string> fileNames,
+            bool onlyRegisteredDocuments,
+            bool importTariffCodes,
+            bool noMessages,
+            bool overwriteExisting,
+            bool linkPi,
+            ILogger log);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
         Task ExportDocument(string fileName, int docId);
@@ -29,7 +38,7 @@ namespace CoreEntities.Business.Services
         Task ExportDocSet(int docSetId, string directoryName);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx);
+        Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx, ILogger log);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
@@ -53,7 +62,7 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task AttachDocuments(int asycudaDocumentSetId, List<string> files);
+        Task AttachDocuments(int asycudaDocumentSetId, List<string> files, ILogger log);
 
     }
 }

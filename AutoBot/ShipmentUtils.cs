@@ -25,9 +25,11 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using System.Text; // Added for StringBuilder
 namespace AutoBot
 {
+    using Serilog;
+
     public class ShipmentUtils
     {
-        public static async Task ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
+        public static async Task ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             try
             {
@@ -35,7 +37,7 @@ namespace AutoBot
                 {
                     var reference = XlsxWriter.SaveUnAttachedSummary(file);
                     ft.EmailId = reference;
-                    await CreateShipmentEmail(ft, fs).ConfigureAwait(false);
+                    await CreateShipmentEmail(ft, fs, log).ConfigureAwait(false);
                     //}
 
                 }
@@ -74,7 +76,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task<bool> CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
+        public static async Task<bool> CreateShipmentEmail(FileTypes fileType, FileInfo[] files, ILogger log)
         {
             try
             {
@@ -116,9 +118,9 @@ namespace AutoBot
 
                 var sent = false;
 
-                shipments.ForEach(async shipment => { sent = await EmailShipment(shipment).ConfigureAwait(false); });
-                   
-              
+                shipments.ForEach(async shipment => { sent = await EmailShipment(shipment, log).ConfigureAwait(false); });
+
+
 
                 return sent;
             }
@@ -133,29 +135,52 @@ namespace AutoBot
                     }
                 }
 
-                await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
+                await BaseDataModel.EmailExceptionHandlerAsync(ex, log).ConfigureAwait(false);
                 throw; // Re-throw the exception to preserve the stack trace
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                await BaseDataModel.EmailExceptionHandlerAsync(e).ConfigureAwait(false);
+                await BaseDataModel.EmailExceptionHandlerAsync(e, log).ConfigureAwait(false);
                 throw;
             }
         }
 
-        private static async Task<bool> EmailShipment(Shipment shipment)
+        private static async Task<bool> EmailShipment(Shipment shipment, ILogger log)
         {
             bool sent;
             using (var ctx = new EntryDataDSContext())
             {
-                var contacts = (shipment.Invoices?.Sum(x => x.TotalsZero) ?? 0) == 0
+                // Check if correction is needed before routing email
+                var totalZeroSum = shipment.Invoices?.Sum(x => x.TotalsZero) ?? 0;
+
+                // If there are issues, attempt correction first
+                if (Math.Abs(totalZeroSum) > 0.01)
+                {
+                    log.Information("Import issues detected for EmailId: {EmailId}, TotalZeroSum: {TotalZeroSum}. Attempting correction.",
+                        shipment.EmailId, totalZeroSum);
+
+                    var correctionSuccessful = await AttemptImportCorrection(shipment.EmailId, log).ConfigureAwait(false);
+
+                    if (correctionSuccessful)
+                    {
+                        // Reload shipment data after correction
+                        shipment = new Shipment(){ShipmentName = shipment.ShipmentName, EmailId = shipment.EmailId, TrackingState = TrackingState.Added}
+                            .LoadEmailInvoices();
+                        totalZeroSum = shipment.Invoices?.Sum(x => x.TotalsZero) ?? 0;
+
+                        log.Information("Correction completed for EmailId: {EmailId}, New TotalZeroSum: {TotalZeroSum}",
+                            shipment.EmailId, totalZeroSum);
+                    }
+                }
+
+                var contacts = Math.Abs(totalZeroSum) < 0.01
                     ? new CoreEntitiesContext().Contacts.Where(x => x.Role == "Shipments").Select(x => x.EmailAddress).Distinct().ToArray()
                     : new CoreEntitiesContext().Contacts.Where(x => x.Role == "Developer" || x.Role == "PO Clerk").Select(x => x.EmailAddress).Distinct().ToArray();
 
                 await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "",
                     $"Shipment: {shipment.ShipmentName}", contacts, shipment.ToString(),
-                    shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray()).ConfigureAwait(false);
+                    shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray(), log).ConfigureAwait(false);
 
                 sent = true;
                 ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
@@ -184,7 +209,7 @@ namespace AutoBot
             return Task.CompletedTask;
         }
 
-        public static async Task MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
+        public static async Task MapUnClassifiedItems(FileTypes ft, FileInfo[] fs, ILogger log)
         {
             Console.WriteLine("Mapping unclassified items");
             using (var ctx = new InventoryDSContext() { StartTracking = true })
@@ -210,20 +235,20 @@ namespace AutoBot
                 }
             }
 
-            EntryDocSetUtils.SetFileTypeDocSetToLatest(ft);
+            EntryDocSetUtils.SetFileTypeDocSetToLatest(log, ft);
 
         }
 
 
 
 
-        public static async Task SubmitUnclassifiedItems(FileTypes ft)
+        public static async Task SubmitUnclassifiedItems(FileTypes ft, ILogger log)
         {
 
 
             try
             {
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -274,7 +299,7 @@ namespace AutoBot
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
-                                new string[] { errorfile }).ConfigureAwait(false);
+                                new string[] { errorfile }, log).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
@@ -289,7 +314,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitDocSetUnclassifiedItems(FileTypes fileType)
+        public static async Task SubmitDocSetUnclassifiedItems(FileTypes fileType, ILogger log)
         {
 
             try
@@ -342,7 +367,7 @@ namespace AutoBot
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
-                                new string[] { errorfile }).ConfigureAwait(false);
+                                new string[] { errorfile }, log).ConfigureAwait(false);
 
                         // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
@@ -357,7 +382,7 @@ namespace AutoBot
             }
         }
 
-        public static async Task SubmitIncompleteSuppliers(FileTypes ft)
+        public static async Task SubmitIncompleteSuppliers(FileTypes ft, ILogger log)
         {
 
 
@@ -365,7 +390,7 @@ namespace AutoBot
             {
 
 
-                var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+                var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
                 var directory = info.Item4;
 
 
@@ -409,7 +434,7 @@ namespace AutoBot
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directory,
                             $"Error:InComplete Supplier Info", contacts.Select(x => x.EmailAddress).ToArray(),
                             "Please Fill out the attached Supplier Info and resend CSV...",
-                            new string[] { errorfile }).ConfigureAwait(false);
+                            new string[] { errorfile }, log).ConfigureAwait(false);
 
                     //LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
 
@@ -425,7 +450,7 @@ namespace AutoBot
 
         }
 
-        public static async Task SubmitInadequatePackages(FileTypes ft)
+        public static async Task SubmitInadequatePackages(FileTypes ft, ILogger log)
         {
 
 
@@ -464,7 +489,7 @@ namespace AutoBot
                                    $"AutoBot";
                         List<string> attlst = new List<string>();
                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", $"Shipment: {docSet.Declarant_Reference_Number}",
-                            contacts, body, attlst.ToArray()).ConfigureAwait(false);
+                            contacts, body, attlst.ToArray(), log).ConfigureAwait(false);
 
                         //LogDocSetAction(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages");
 
@@ -493,7 +518,7 @@ namespace AutoBot
         }
 // --- Start of Added/Corrected Methods ---
 
-        public static async Task ImportShipmentInfoFromTxt(FileTypes ft, FileInfo[] files)
+        public static async Task ImportShipmentInfoFromTxt(FileTypes ft, FileInfo[] files, ILogger log)
         {
             Console.WriteLine($"Starting ImportShipmentInfoFromTxt for FileType: {ft.Id}");
             var infoFile = files.FirstOrDefault(f => f.Name.Equals("Info.txt", StringComparison.OrdinalIgnoreCase));
@@ -710,7 +735,7 @@ namespace AutoBot
             catch (Exception ex)
             {
                  Console.WriteLine($"Error processing Info.txt and updating database: {ex.Message}\n{ex.StackTrace}");
-                 await BaseDataModel.EmailExceptionHandlerAsync(ex).ConfigureAwait(false);
+                 await BaseDataModel.EmailExceptionHandlerAsync(ex, log).ConfigureAwait(false);
                  throw;
             }
         } // End of ImportShipmentInfoFromTxt
@@ -761,6 +786,293 @@ namespace AutoBot
                  Console.WriteLine($"Error saving shipment info to file: {ex.Message}");
              }
         } // End of SaveShipmentInfoToFile
+
+        /// <summary>
+        /// Attempts to correct import issues for a given email by re-processing with OCR corrections
+        /// </summary>
+        public static async Task<bool> AttemptImportCorrection(string emailId, ILogger log)
+        {
+            try
+            {
+                log.Information("Starting import correction for EmailId: {EmailId}", emailId);
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    // Get all shipment invoices with issues for this email
+                    var invoicesWithIssues = ctx.ShipmentInvoice
+                        .Include(x => x.InvoiceDetails)
+                        .Where(x => x.EmailId == emailId)
+                        .ToList()
+                        .Where(x => Math.Abs(x.TotalsZero) > 0.01)
+                        .ToList();
+
+                    if (!invoicesWithIssues.Any())
+                    {
+                        log.Information("No invoices with issues found for EmailId: {EmailId}", emailId);
+                        return true;
+                    }
+
+                    log.Information("Found {Count} invoices with issues for EmailId: {EmailId}",
+                        invoicesWithIssues.Count, emailId);
+
+                    var correctionSuccessful = false;
+
+                    foreach (var invoice in invoicesWithIssues)
+                    {
+                        var invoiceCorrected = await CorrectSingleInvoice(invoice, log).ConfigureAwait(false);
+                        if (invoiceCorrected)
+                        {
+                            correctionSuccessful = true;
+                        }
+                    }
+
+                    if (correctionSuccessful)
+                    {
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
+                        log.Information("Import correction completed successfully for EmailId: {EmailId}", emailId);
+                    }
+
+                    return correctionSuccessful;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error during import correction for EmailId: {EmailId}", emailId);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Action method for FileUtils - corrects import issues for files
+        /// </summary>
+        public static async Task CorrectImportIssues(FileTypes fileType, FileInfo[] files, ILogger log)
+        {
+            if (string.IsNullOrEmpty(fileType.EmailId))
+            {
+                log.Warning("No EmailId provided for import correction");
+                return;
+            }
+
+            await AttemptImportCorrection(fileType.EmailId, log).ConfigureAwait(false);
+        }
+
+        private static async Task<bool> CorrectSingleInvoice(ShipmentInvoice invoice, ILogger log)
+        {
+            try
+            {
+                log.Information("Attempting to correct invoice {InvoiceId} ({InvoiceNo}) with TotalsZero: {TotalsZero}",
+                    invoice.Id, invoice.InvoiceNo, invoice.TotalsZero);
+
+                // Apply common corrections based on invoice type and issue patterns
+                var corrected = false;
+
+                // Determine invoice type from invoice number pattern
+                var invoiceType = DetermineInvoiceType(invoice);
+
+                // Apply specific corrections based on the type of issue
+                corrected = await ApplyCommonCorrections(invoice, invoiceType, log).ConfigureAwait(false);
+
+                if (corrected)
+                {
+                    log.Information("Successfully corrected invoice {InvoiceId}", invoice.Id);
+                }
+
+                return corrected;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error correcting invoice {InvoiceId}", invoice.Id);
+                return false;
+            }
+        }
+
+        private static string DetermineInvoiceType(ShipmentInvoice invoice)
+        {
+            if (string.IsNullOrEmpty(invoice.InvoiceNo))
+                return "General";
+
+            var invoiceNo = invoice.InvoiceNo.ToUpperInvariant();
+
+            if (invoiceNo.Contains("AMAZON") || invoiceNo.Contains("AMZN"))
+                return "Amazon";
+            if (invoiceNo.Contains("TEMU"))
+                return "TEMU";
+            if (invoiceNo.Contains("SHEIN"))
+                return "Shein";
+            if (invoiceNo.Contains("ALIBABA") || invoiceNo.Contains("ALIEXPRESS"))
+                return "Alibaba";
+
+            return "General";
+        }
+
+        private static async Task<bool> ApplyCommonCorrections(ShipmentInvoice invoice, string invoiceType, ILogger log)
+        {
+            var corrected = false;
+
+            try
+            {
+                // Calculate the differences to understand the issue
+                var detailLevelDiff = invoice.InvoiceDetails
+                    .Sum(detail => (detail.TotalCost ?? 0.0) - ((detail.Cost) * (detail.Quantity)));
+
+                var calculatedSubTotal = invoice.InvoiceDetails
+                    .Sum(detail => detail.TotalCost ?? ((detail.Cost) * (detail.Quantity)));
+
+                var headerLevelDiff = (calculatedSubTotal
+                                     + (invoice.TotalInternalFreight ?? 0)
+                                     + (invoice.TotalOtherCost ?? 0)
+                                     + (invoice.TotalInsurance ?? 0)
+                                     - (invoice.TotalDeduction ?? 0))
+                                    - (invoice.InvoiceTotal ?? 0);
+
+                log.Information("Invoice {InvoiceId} analysis - DetailDiff: {DetailDiff}, HeaderDiff: {HeaderDiff}",
+                    invoice.Id, detailLevelDiff, headerLevelDiff);
+
+                // Apply corrections based on common patterns
+                if (Math.Abs(headerLevelDiff) > 0.01)
+                {
+                    corrected = await CorrectHeaderLevelIssues(invoice, invoiceType, headerLevelDiff, log).ConfigureAwait(false);
+                }
+
+                if (Math.Abs(detailLevelDiff) > 0.01)
+                {
+                    corrected = await CorrectDetailLevelIssues(invoice, invoiceType, detailLevelDiff, log).ConfigureAwait(false) || corrected;
+                }
+
+                return corrected;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error applying corrections to invoice {InvoiceId}", invoice.Id);
+                return false;
+            }
+        }
+
+        private static async Task<bool> CorrectHeaderLevelIssues(ShipmentInvoice invoice, string invoiceType, double headerDiff, ILogger log)
+        {
+            var corrected = false;
+
+            try
+            {
+                // If header difference is negative, we're missing charges (shipping, tax, etc.)
+                if (headerDiff < -0.01)
+                {
+                    var missingAmount = Math.Abs(headerDiff);
+
+                    // Apply invoice-type specific corrections
+                    switch (invoiceType)
+                    {
+                        case "Amazon":
+                            // Amazon often has shipping and tax that might be missed
+                            if ((invoice.TotalOtherCost ?? 0) == 0)
+                            {
+                                invoice.TotalOtherCost = missingAmount;
+                                log.Information("Applied Amazon shipping/tax correction: {Amount} to invoice {InvoiceId}",
+                                    missingAmount, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+
+                        case "TEMU":
+                            // TEMU often has shipping fees
+                            if ((invoice.TotalOtherCost ?? 0) == 0)
+                            {
+                                invoice.TotalOtherCost = missingAmount;
+                                log.Information("Applied TEMU shipping correction: {Amount} to invoice {InvoiceId}",
+                                    missingAmount, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+
+                        default:
+                            // General case - add to other costs
+                            if ((invoice.TotalOtherCost ?? 0) == 0)
+                            {
+                                invoice.TotalOtherCost = missingAmount;
+                                log.Information("Applied general other cost correction: {Amount} to invoice {InvoiceId}",
+                                    missingAmount, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+                    }
+                }
+                // If header difference is positive, we're missing deductions (coupons, discounts)
+                else if (headerDiff > 0.01)
+                {
+                    var missingDeduction = headerDiff;
+
+                    switch (invoiceType)
+                    {
+                        case "TEMU":
+                            // TEMU often has coupon deductions
+                            if ((invoice.TotalDeduction ?? 0) == 0)
+                            {
+                                invoice.TotalDeduction = missingDeduction;
+                                log.Information("Applied TEMU coupon deduction: {Amount} to invoice {InvoiceId}",
+                                    missingDeduction, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+
+                        case "Amazon":
+                            // Amazon might have promotional credits
+                            if ((invoice.TotalDeduction ?? 0) == 0)
+                            {
+                                invoice.TotalDeduction = missingDeduction;
+                                log.Information("Applied Amazon promotional deduction: {Amount} to invoice {InvoiceId}",
+                                    missingDeduction, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+
+                        default:
+                            // General case - add deduction
+                            if ((invoice.TotalDeduction ?? 0) == 0)
+                            {
+                                invoice.TotalDeduction = missingDeduction;
+                                log.Information("Applied general deduction: {Amount} to invoice {InvoiceId}",
+                                    missingDeduction, invoice.Id);
+                                corrected = true;
+                            }
+                            break;
+                    }
+                }
+
+                return corrected;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error correcting header level issues for invoice {InvoiceId}", invoice.Id);
+                return false;
+            }
+        }
+
+        private static async Task<bool> CorrectDetailLevelIssues(ShipmentInvoice invoice, string invoiceType, double detailDiff, ILogger log)
+        {
+            var corrected = false;
+
+            try
+            {
+                // Detail level issues usually involve missing or incorrect TotalCost values
+                foreach (var detail in invoice.InvoiceDetails.Where(d => d.TotalCost == null || d.TotalCost == 0))
+                {
+                    if (detail.Cost > 0 && detail.Quantity > 0)
+                    {
+                        detail.TotalCost = detail.Cost * detail.Quantity;
+                        log.Information("Corrected missing TotalCost for detail {DetailId}: {Cost} x {Quantity} = {TotalCost}",
+                            detail.Id, detail.Cost, detail.Quantity, detail.TotalCost);
+                        corrected = true;
+                    }
+                }
+
+                return corrected;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Error correcting detail level issues for invoice {InvoiceId}", invoice.Id);
+                return false;
+            }
+        }
 
     } // End of ShipmentUtils Class
 } // End of namespace AutoBot

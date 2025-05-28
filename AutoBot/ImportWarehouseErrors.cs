@@ -9,9 +9,11 @@ using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class ImportWarehouseErrorsUtils
     {
-        public static async Task ImportWarehouseErrors(int months)
+        public static async Task ImportWarehouseErrors(int months, ILogger log)
         {
             try
             {
@@ -39,13 +41,13 @@ namespace AutoBot
 
 
                 Console.WriteLine("Importing Warehouse errors");
-                var salesInfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
+                var salesInfo = await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false);
                 var directoryName = salesInfo.Item4;
                 var attachments = Directory.GetFiles(directoryName, "*.png").ToArray();
                 if (!attachments.Any()) return;
 
 
-                var imageTxt = await InvoiceReader.InvoiceReader.GetPdftxt(directoryName).ConfigureAwait(false);
+                var imageTxt = await InvoiceReader.InvoiceReader.GetPdftxt(directoryName, log).ConfigureAwait(false);
                 var errorLst = new List<string>();
 
                 foreach (var reg in warehouseRegex)
@@ -68,7 +70,7 @@ namespace AutoBot
                                $"Regards,\r\n" +
                                $"AutoBot";
                     var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.EmailAddress).ToArray();
-                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directoryName, $"Exwarehouse Errors Found for: {salesInfo.Item3.Declarant_Reference_Number}", contacts, body, attachments).ConfigureAwait(false);
+                    await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directoryName, $"Exwarehouse Errors Found for: {salesInfo.Item3.Declarant_Reference_Number}", contacts, body, attachments, log).ConfigureAwait(false);
                     foreach (var att in attachments)
                     {
                         File.Delete(att);
@@ -83,7 +85,7 @@ namespace AutoBot
                                $"Regards,\r\n" +
                                $"AutoBot";
                     var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.EmailAddress).ToArray();
-                   await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directoryName, $"Exwarehouse Unhandled Errors Found for: {salesInfo.Item3.Declarant_Reference_Number}", contacts, body, attachments).ConfigureAwait(false);
+                   await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, directoryName, $"Exwarehouse Unhandled Errors Found for: {salesInfo.Item3.Declarant_Reference_Number}", contacts, body, attachments, log).ConfigureAwait(false);
                     foreach (var att in attachments)
                     {
                         File.Delete(att);

@@ -13,6 +13,7 @@ using MoreLinq.Extensions;
 using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
+using Serilog; // Added Serilog using
 
 
 namespace WaterNut.DataSpace
@@ -30,12 +31,13 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-        public async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
+        // Modified to accept ILogger
+        public async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, ILogger log)
         {
             try
             {
-                
-                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
+                // Pass log to SaveCSV
+                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting, log).ConfigureAwait(false);
             }
             catch (Exception Ex)
             {
@@ -43,18 +45,19 @@ namespace WaterNut.DataSpace
             }
 
         }
-        public  async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, bool overWriteExisting)
+        // Modified to accept optional docSet and ILogger
+        public  async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, bool overWriteExisting, List<AsycudaDocumentSet> docSet = null, ILogger log = null)
         {
             try
             {
-                var docSet = await Utils.GetDocSets(fileType).ConfigureAwait(false);
-                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
+                var currentDocSet = docSet ?? await Utils.GetDocSets(fileType, log).ConfigureAwait(false); // Get docSet if null
+                await SaveCSV(droppedFilePath, fileType, currentDocSet, overWriteExisting, log).ConfigureAwait(false); // Pass log to SaveCSV
             }
             catch (Exception Ex)
             {
                 throw new ApplicationException($"Problem importing File '{droppedFilePath}'. - Error: {Ex.Message}");
             }
- 
+         
         }
 
         Dictionary<string, IRawDataExtractor> extractors = new Dictionary<string, IRawDataExtractor>()
@@ -76,11 +79,13 @@ namespace WaterNut.DataSpace
         };
 
 
+        // Modified to accept ILogger
         private async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting)
+            bool overWriteExisting, ILogger log)
         {
             Console.WriteLine($"SaveCSVModel.SaveCSV: START - File: '{droppedFilePath}', FTID: {fileType.Id}");
-            var rawDataFile = CreateRawDataFile(droppedFilePath, fileType, docSet, overWriteExisting);
+            // Pass log to CreateRawDataFile
+            var rawDataFile = CreateRawDataFile(droppedFilePath, fileType, docSet, overWriteExisting, log);
 
             var extractorKey = fileType.FileImporterInfos.EntryType;
             Console.WriteLine($"SaveCSVModel.SaveCSV: Using Extractor Key: '{extractorKey}'");
@@ -90,14 +95,16 @@ namespace WaterNut.DataSpace
             Console.WriteLine($"SaveCSVModel.SaveCSV: END - Extractor '{extractorKey}' completed.");
         }
 
+        // Modified to accept ILogger
         private static RawDataFile CreateRawDataFile(string droppedFilePath, FileTypes fileType,
             List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting)
+            bool overWriteExisting, ILogger log)
         {
             try
             {
                 Console.WriteLine($"SaveCSVModel.CreateRawDataFile: START - File: '{droppedFilePath}', FTID: {fileType.Id}");
-                var csvImporter = new CSVImporter(fileType);
+                // Pass log to CSVImporter constructor
+                var csvImporter = new CSVImporter(fileType, log);
                 Console.WriteLine($"SaveCSVModel.CreateRawDataFile: CSVImporter created with FTID: {fileType.Id}");
 
                 var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();

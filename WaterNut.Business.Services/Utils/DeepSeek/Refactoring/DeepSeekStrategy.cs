@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
+using Serilog; // Added
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly.Retry; // Needed for base constructor
@@ -19,7 +19,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
     {
         public override LLMProvider ProviderType => LLMProvider.DeepSeek;
 
-        private const int FALLBACK_MAX_TOKENS = 150; // Max tokens for fallback single item 
+        private const int FALLBACK_MAX_TOKENS = 150; // Max tokens for fallback single item
 
         private const string DeepSeekBaseUrl = "https://api.deepseek.com/v1";
         private const string DefaultModelInternal = "deepseek-chat"; // Internal constant
@@ -29,8 +29,8 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             { [DefaultModelInternal] = new ModelPricing { InputPricePerMillionTokens = 0.14m, OutputPricePerMillionTokens = 0.28m } };
 
         // Constructor passes dependencies to base
-        public DeepSeekStrategy(string apiKey, ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy)
-            : base(apiKey, logger, httpClient, retryPolicy)
+        public DeepSeekStrategy(string apiKey, Serilog.ILogger logger, HttpClient httpClient, AsyncRetryPolicy retryPolicy) // Changed ILogger to Serilog.ILogger
+            : base(apiKey, logger, httpClient, retryPolicy) // Pass the Serilog logger to base
         {
             // Set provider-specific defaults if different from base
             // e.g., this.DefaultTemperature = 0.2;
@@ -72,7 +72,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             // Parses the *provider's* specific JSON structure to get completion text and usage
             TokenUsage usage = new TokenUsage { IsEstimated = true };
             string completion = string.Empty;
-            if (string.IsNullOrWhiteSpace(jsonResponse)) { Logger.LogWarning("[DeepSeek] ParseProviderResponse received empty JSON."); return (completion, usage); }
+            if (string.IsNullOrWhiteSpace(jsonResponse)) { Logger.Warning("[DeepSeek] ParseProviderResponse received empty JSON."); return (completion, usage); } // Changed LogWarning to Warning
             try
             {
                 JObject responseObj = JObject.Parse(jsonResponse);
@@ -83,14 +83,14 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     usage.InputTokens = usageData["prompt_tokens"]?.Value<int>() ?? 0;
                     usage.OutputTokens = usageData["completion_tokens"]?.Value<int>() ?? 0;
                     usage.IsEstimated = false;
-                    Logger.LogTrace("[DeepSeek] Parsed Usage - Input: {InputTokens}, Output: {OutputTokens}", usage.InputTokens, usage.OutputTokens);
-                }
-                else { Logger.LogWarning("[DeepSeek] No 'usage' data found in provider response. Estimating."); usage.InputTokens = 0; usage.OutputTokens = EstimateTokenCount(completion); }
-                if (string.IsNullOrEmpty(completion)) { CheckAndLogApiError(responseObj); } // Use helper from base
+                    Logger.Verbose("[DeepSeek] Parsed Usage - Input: {InputTokens}, Output: {OutputTokens}", usage.InputTokens, usage.OutputTokens); // Changed LogTrace to Trace
+                 }
+                 else { Logger.Warning("[DeepSeek] No 'usage' data found in provider response. Estimating."); usage.InputTokens = 0; usage.OutputTokens = EstimateTokenCount(completion); } // Changed LogWarning to Warning
+                 if (string.IsNullOrEmpty(completion)) { CheckAndLogApiError(responseObj); } // Use helper from base
                 return (completion, usage);
             }
-            catch (JsonReaderException jsonEx) { Logger.LogError(jsonEx, "[DeepSeek] Failed to parse provider API response JSON."); throw new LlmApiException("Failed to parse DeepSeek provider JSON response.", jsonEx); }
-            catch (Exception ex) { Logger.LogError(ex, "[DeepSeek] Error processing provider response content/usage."); throw new LlmApiException("Error processing DeepSeek provider response.", ex); }
+            catch (JsonReaderException jsonEx) { Logger.Error(jsonEx, "[DeepSeek] Failed to parse provider API response JSON."); throw new LlmApiException("Failed to parse DeepSeek provider JSON response.", jsonEx); } // Changed LogError to Error
+            catch (Exception ex) { Logger.Error(ex, "[DeepSeek] Error processing provider response content/usage."); throw new LlmApiException("Error processing DeepSeek provider response.", ex); } // Changed LogError to Error
         }
 
 
@@ -148,7 +148,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "[DeepSeek] Unexpected error in GetSingleClassificationAsync for: {ItemDescription}", itemDescription);
+                Logger.Error(ex, "[DeepSeek] Unexpected error in GetSingleClassificationAsync for: {ItemDescription}", itemDescription); // Changed LogError to Error
                 response.ErrorMessage = $"Unexpected error: {ex.Message}";
                 response.IsSuccess = false;
                 // Ensure usage/cost calculated so far are returned
@@ -205,28 +205,28 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     if (!returnedDescriptions.Contains(item.ItemDescription))
                     {
                         response.FailedDescriptions.Add(item.ItemDescription);
-                        Logger.LogWarning("[DeepSeek] Item '{Description}' was in the batch request but not found or parsed in the response.", item.ItemDescription);
+                        Logger.Warning("[DeepSeek] Item '{Description}' was in the batch request but not found or parsed in the response.", item.ItemDescription); // Changed LogWarning to Warning
                     }
                 }
                 if (response.FailedDescriptions.Any())
                 {
                     // If some items failed, maybe the overall success is partial? Decide business logic.
                     // For now, IsSuccess reflects the API call success.
-                    Logger.LogWarning("[DeepSeek] {FailCount} items failed to be processed correctly within the successful batch call.", response.FailedDescriptions.Count);
+                    Logger.Warning("[DeepSeek] {FailCount} items failed to be processed correctly within the successful batch call.", response.FailedDescriptions.Count); // Changed LogWarning to Warning
                 }
 
             }
             // Catch FormatException specifically from ParseBatchResponseFormat
             catch (FormatException formatEx)
             {
-                Logger.LogError(formatEx, "[DeepSeek] Failed to parse the format of the batch response content.");
+                Logger.Error(formatEx, "[DeepSeek] Failed to parse the format of the batch response content."); // Changed LogError to Error
                 response.ErrorMessage = "Failed to parse batch response format.";
                 response.IsSuccess = false;
                 response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); // All failed if format is wrong
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "[DeepSeek] Unexpected error in GetBatchClassificationAsync.");
+                Logger.Error(ex, "[DeepSeek] Unexpected error in GetBatchClassificationAsync."); // Changed LogError to Error
                 response.ErrorMessage = $"Unexpected error: {ex.Message}";
                 response.IsSuccess = false;
                 response.FailedDescriptions.AddRange(items.Select(i => i.ItemDescription)); // Mark all as failed
@@ -269,7 +269,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "[DeepSeek] Failed to generate product code for Description: {Description}", description);
+                Logger.Error(ex, "[DeepSeek] Failed to generate product code for Description: {Description}", description); // Changed LogError to Error
                 response.ErrorMessage = $"Unexpected error: {ex.Message}";
             }
             return response;
@@ -291,7 +291,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi
         private void CheckAndLogApiError(JObject responseObj)
         {
             var error = responseObj?["error"]?["message"]?.Value<string>();
-            if (!string.IsNullOrEmpty(error)) { Logger.LogError("[DeepSeek] API returned an error message in response body: {ErrorMessage}", error); }
+            if (!string.IsNullOrEmpty(error)) { Logger.Error("[DeepSeek] API returned an error message in response body: {ErrorMessage}", error); } // Changed LogError to Error
         }
 
 

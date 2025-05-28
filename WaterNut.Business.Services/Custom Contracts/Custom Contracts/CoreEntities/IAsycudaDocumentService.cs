@@ -6,7 +6,9 @@ using CoreEntities.Business.Entities;
 
 namespace CoreEntities.Business.Services
 {
-   public partial interface IAsycudaDocumentService
+    using Serilog;
+
+    public partial interface IAsycudaDocumentService
    {
        [OperationContract][FaultContract(typeof(ValidationFault))]
        Task SaveDocument(AsycudaDocument entity);
@@ -17,7 +19,7 @@ namespace CoreEntities.Business.Services
 
        [OperationContract]
        [FaultContract(typeof(ValidationFault))]
-       Task DeleteDocument(int asycudaDocumentId);
+       Task DeleteDocument(int asycudaDocumentId, ILogger log);
 
        [OperationContract][FaultContract(typeof(ValidationFault))]
        Task ExportDocument(string fileName, int asycudaDocumentId);

@@ -14,11 +14,13 @@ using WaterNut.DataSpace;
 
 namespace AutoBot;
 
+using Serilog;
+
 public partial class EX9Utils
 {
-    public static async Task EmailWarehouseErrors()
+    public static async Task EmailWarehouseErrors(ILogger log)
     {
-        var info = await BaseDataModel.CurrentSalesInfo(-1).ConfigureAwait(false);
+        var info = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false);
         var directory = info.Item4;
         var errorfile = Path.Combine(directory, "WarehouseErrors.csv");
         if (File.Exists(errorfile)) return;
@@ -63,7 +65,7 @@ public partial class EX9Utils
                     contacts.Select(x => x.EmailAddress).Distinct().ToArray(), body, new string[]
                     {
                         errorfile
-                    }).ConfigureAwait(false);
+                    }, log).ConfigureAwait(false);
             }
         }
     }

@@ -383,6 +383,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCRCorrectionLearningViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\vw_OCRCorrectionAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentItemViewModel.cs" />
@@ -568,6 +570,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRCorrectionLearningTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs" />
@@ -578,6 +581,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\vw_OCRCorrectionAnalysisTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousItemsExTotals.cs" />
@@ -742,6 +746,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRCorrectionLearningVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs" />
@@ -752,6 +757,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\vw_OCRCorrectionAnalysisVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousItemsExVirturalListLoader.cs" />
@@ -1292,22 +1298,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography">
-      <Version>2.5.1</Version>
+      <Version>2.6.0</Version>
     </PackageReference>
     <PackageReference Include="EntityFramework">
       <Version>6.5.1</Version>
     </PackageReference>
     <PackageReference Include="itext7">
-      <Version>9.1.0</Version>
+      <Version>9.2.0</Version>
     </PackageReference>
     <PackageReference Include="itext7.bouncy-castle-adapter">
-      <Version>9.1.0</Version>
+      <Version>9.2.0</Version>
     </PackageReference>
     <PackageReference Include="itext7.bouncy-castle-fips-adapter">
-      <Version>9.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>9.0.4</Version>
+      <Version>9.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Office.Interop.Excel">
       <Version>15.0.4795.1001</Version>
@@ -1364,7 +1367,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Globalization">
       <Version>4.3.0</Version>
@@ -1445,13 +1448,13 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.CodePages">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.Extensions">
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.4</Version>
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>
@@ -1497,7 +1500,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

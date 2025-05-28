@@ -9,6 +9,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class SaveInventoryAlias : IProcessor<InventoryDataItem>
     {
         private readonly FileTypes _fileType;
@@ -19,14 +21,14 @@ namespace WaterNut.Business.Services.Importers.EntryData
            
         }
  
-        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data)
+        public async Task<Result<List<InventoryDataItem>>> Execute(List<InventoryDataItem> data, ILogger log)
         {
             var inventorySource = InventorySourceFactory.GetInventorySource(_fileType);
             var tasks = data
                 .Select(x => (DataItem: x, Code: InventoryAliasCodesProcessor.GetInventoryAliasCodes(x.Data, x.Item)))
                 .Select(async x =>
                 {
-                    await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item).ConfigureAwait(false);
+                    await InventoryCodesProcessor.SaveInventoryCodes(inventorySource, x.Code, x.DataItem.Item, log).ConfigureAwait(false);
                 }).ToList();
  
             await Task.WhenAll(tasks).ConfigureAwait(false);

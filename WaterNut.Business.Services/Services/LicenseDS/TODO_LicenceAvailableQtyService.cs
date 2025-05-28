@@ -65,7 +65,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQty(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQty(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace LicenseDS.Business.Services
                     IEnumerable<TODO_LicenceAvailableQty> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public Task<TODO_LicenceAvailableQty> GetTODO_LicenceAvailableQtyByKey(string SegmentId, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_LicenceAvailableQty> GetTODO_LicenceAvailableQtyByKey(string SegmentId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(SegmentId))return Task.FromResult<TODO_LicenceAvailableQty>(null); 
+			   if(string.IsNullOrEmpty(SegmentId))return null; 
               using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(SegmentId);
 				var set = AddIncludes(includesLst, dbContext);
                 TODO_LicenceAvailableQty entity = set.AsNoTracking().SingleOrDefault(x => x.SegmentId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace LicenseDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(new List<TODO_LicenceAvailableQty>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(new List<TODO_LicenceAvailableQty>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_LicenceAvailableQty>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -260,8 +260,8 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatch(string exp,
-                                                                                              int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace LicenseDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(new List<TODO_LicenceAvailableQty>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
 
 
                 var batchSize = 500;
@@ -319,7 +319,7 @@ namespace LicenseDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -335,8 +335,8 @@ namespace LicenseDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatchExpressionLst(List<string> expLst,
-                                                                                                           int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace LicenseDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(new List<TODO_LicenceAvailableQty>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_LicenceAvailableQty>();
 
 
                 var batchSize = 500;
@@ -394,7 +394,7 @@ namespace LicenseDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -411,7 +411,7 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public Task<TODO_LicenceAvailableQty> UpdateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
+        public async Task<TODO_LicenceAvailableQty> UpdateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
         { 
             using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
@@ -423,7 +423,7 @@ namespace LicenseDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -468,7 +468,7 @@ namespace LicenseDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -481,10 +481,10 @@ namespace LicenseDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<TODO_LicenceAvailableQty> CreateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
+        public async Task<TODO_LicenceAvailableQty> CreateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
         {
             try
             {
@@ -494,7 +494,7 @@ namespace LicenseDS.Business.Services
                 dbContext.TODO_LicenceAvailableQty.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -511,7 +511,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<bool> DeleteTODO_LicenceAvailableQty(string SegmentId)
+        public async Task<bool> DeleteTODO_LicenceAvailableQty(string SegmentId)
         {
             try
             {
@@ -521,12 +521,12 @@ namespace LicenseDS.Business.Services
                 TODO_LicenceAvailableQty entity = dbContext.TODO_LicenceAvailableQty
 													.SingleOrDefault(x => x.SegmentId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.TODO_LicenceAvailableQty.Attach(entity);
                     dbContext.TODO_LicenceAvailableQty.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -582,23 +582,23 @@ namespace LicenseDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<TODO_LicenceAvailableQty>)dbContext.TODO_LicenceAvailableQty; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -617,26 +617,26 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (LicenseDSContext dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.TODO_LicenceAvailableQty
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.TODO_LicenceAvailableQty
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.TODO_LicenceAvailableQty
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.TODO_LicenceAvailableQty
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -654,33 +654,33 @@ namespace LicenseDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(new List<TODO_LicenceAvailableQty>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(dbContext.TODO_LicenceAvailableQty
-                            .AsNoTracking()
-                            .OrderBy(y => y.SegmentId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.TODO_LicenceAvailableQty
+										.AsNoTracking()
+                                        .OrderBy(y => y.SegmentId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(dbContext.TODO_LicenceAvailableQty
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.SegmentId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.TODO_LicenceAvailableQty
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.SegmentId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -755,18 +755,18 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
                 .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
                 .OrderBy("SegmentId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -775,18 +775,18 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_LicenceAvailableQty>()
                 .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
                 .OrderBy("SegmentId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -874,8 +874,8 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                          LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelectMany<T>(int startIndex, int count,
+            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -886,14 +886,14 @@ namespace LicenseDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.SegmentId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -902,8 +902,8 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                      LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelect<T>(int startIndex, int count,
+            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -914,14 +914,14 @@ namespace LicenseDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(set
-                   .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.SegmentId)
+               return set
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.SegmentId)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -954,21 +954,21 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
-                                                                                         string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
-                    .Where(exp == "All" || exp == null?"SegmentId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
+							.Where(exp == "All" || exp == null?"SegmentId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<TODO_LicenceAvailableQty>)dbContext.Set<T>()
@@ -980,7 +980,7 @@ namespace LicenseDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -989,21 +989,21 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelect<T>(LicenseDSContext dbContext,
-                                                                                     string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelect<T>(LicenseDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<TODO_LicenceAvailableQty>()
-                    .Where(exp == "All" || exp == null?"SegmentId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<TODO_LicenceAvailableQty>()
+							.Where(exp == "All" || exp == null?"SegmentId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<TODO_LicenceAvailableQty>)dbContext.Set<T>()
@@ -1015,7 +1015,7 @@ namespace LicenseDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<TODO_LicenceAvailableQty>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1024,7 +1024,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1036,7 +1036,7 @@ namespace LicenseDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1052,7 +1052,7 @@ namespace LicenseDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByLicenseId(string LicenseId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByLicenseId(string LicenseId, List<string> includesLst = null)
         {
             try
             {
@@ -1064,7 +1064,7 @@ namespace LicenseDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.LicenseId.ToString() == LicenseId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1173,18 +1173,18 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
                 .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
                 .OrderBy("SegmentId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1193,18 +1193,18 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_LicenceAvailableQty>()
                 .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
                 .OrderBy("SegmentId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

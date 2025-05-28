@@ -83,6 +83,8 @@ using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 
 namespace WaterNut.DataSpace
 {
+    using Serilog;
+
     public partial class BaseDataModel
     {
         //public static void AttachToDocument(List<string> attachments, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
@@ -282,7 +284,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public async Task ImportC71(int asycudaDocumentSetId, List<string> files)
+        public async Task ImportC71(int asycudaDocumentSetId, List<string> files, ILogger log)
         {
             var docSet = await Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).ConfigureAwait(false);
             var exceptions = new ConcurrentQueue<Exception>();
@@ -290,7 +292,7 @@ namespace WaterNut.DataSpace
                 try
                 {
                     if (Value_declaration_form.CanLoadFromFile(file))
-                        LoadC71(docSet, file, ref exceptions);
+                        LoadC71(docSet, file, ref exceptions, log);
                     else
                         throw new ApplicationException($"Can not Load file '{file}'");
 
@@ -411,9 +413,9 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                AttachC71(asycudaDocumentSetId);
+                await AttachC71(asycudaDocumentSetId).ConfigureAwait(false);
 
-                AttachPDF(asycudaDocumentSetId);
+                    await AttachPDF(asycudaDocumentSetId).ConfigureAwait(false);
                 await AttachLicense(asycudaDocumentSetId).ConfigureAwait(false);
                 AttachContainer(asycudaDocumentSetId);
             }
@@ -425,14 +427,14 @@ namespace WaterNut.DataSpace
         }
 
 
-        public static void AttachBlankC71(List<DocumentCT> docList)
+        public static async Task AttachBlankC71(List<DocumentCT> docList)
         {
             using (var ctx = new CoreEntitiesContext())
             {
                 var c71 = ctx.Attachments.First(x => x.DocumentCode == "DC05" && x.Reference == "NA");
                 foreach (var doc in docList)
-                    AttachToDocument(new List<int> {c71.Id},
-                        doc.Document.ASYCUDA_Id, doc.DocumentItems.First().Item_Id);
+                    await AttachToDocument(new List<int> {c71.Id},
+                        doc.Document.ASYCUDA_Id, doc.DocumentItems.First().Item_Id).ConfigureAwait(false);
             }
         }
 
@@ -453,7 +455,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public static async Task EmailExceptionHandlerAsync(Exception e, bool sendOnlyOnce = true )
+        public static async Task EmailExceptionHandlerAsync(Exception e, ILogger log, bool sendOnlyOnce = true)
         {
             var lastexception = false;
             var errorMessage = "Loading components";
@@ -468,8 +470,8 @@ namespace WaterNut.DataSpace
                     if (sendOnlyOnce == false || !EmailedMessagesList.Contains(exp.Message))
                     {
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{exp.Message}\r\n{exp.StackTrace}",
-                            Array.Empty<string>()).ConfigureAwait(false);
+                            EmailDownloader.EmailDownloader.GetContacts("Developer", log), $"{exp.Message}\r\n{exp.StackTrace}",
+                            Array.Empty<string>(), log).ConfigureAwait(false);
                         EmailedMessagesList.Add(exp.Message);
                     }
 

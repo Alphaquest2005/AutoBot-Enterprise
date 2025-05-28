@@ -27,10 +27,10 @@ namespace WaterNut.DataSpace
  
  
  
-        public static async Task<List<AsycudaDocumentSet>> GetDocSets(FileTypes fileType)
+        public static async Task<List<AsycudaDocumentSet>> GetDocSets(FileTypes fileType, Serilog.ILogger log) // Added ILogger parameter
         {
             HashSet<AsycudaDocumentSet> docSet = new HashSet<AsycudaDocumentSet>();
-            var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(fileType.DocSetRefernece, true).ConfigureAwait(false);
+            var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(log, fileType.DocSetRefernece, true).ConfigureAwait(false); // Added log parameter
 
             var asycudaDocumentSets = GetAsycudaDocumentSets(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId && fileType.AsycudaDocumentSetId != 0);
             asycudaDocumentSets.ForEach(x => docSet.Add(x));

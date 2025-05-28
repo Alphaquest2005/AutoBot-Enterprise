@@ -11,9 +11,11 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {
+    using Serilog;
+
     public class SubmitSalesXmlToCustomsUtils
     {
-        public static async Task SubmitSalesXMLToCustoms(int months)
+        public static async Task SubmitSalesXMLToCustoms(int months, ILogger log)
         {
             try
             {
@@ -21,11 +23,11 @@ namespace AutoBot
 
                 // var saleInfo = CurrentSalesInfo();
                 
-                var salesinfo = await BaseDataModel.CurrentSalesInfo(months).ConfigureAwait(false);
+                var salesinfo = await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false);
 
                 foreach (var emailIds in GetSalesXmls(salesinfo))
                 {
-                    await ProcessSalesData(salesinfo, emailIds).ConfigureAwait(false);
+                    await ProcessSalesData(salesinfo, emailIds, log).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -35,11 +37,12 @@ namespace AutoBot
         }
 
         private static async Task ProcessSalesData(
-            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) salesinfo, IGrouping<string, TODO_SubmitXMLToCustoms> emailIds)
+            (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) salesinfo, IGrouping<string, TODO_SubmitXMLToCustoms> emailIds,
+            ILogger log)
         {
             var body = CreateEmailBody(salesinfo, emailIds);
             var attachments = GetAttachments(emailIds);
-            await SendEmails(emailIds, GetContacts(), body, attachments).ConfigureAwait(false);
+            await SendEmails(emailIds, GetContacts(), body, attachments, log).ConfigureAwait(false);
             UpdateEmailLog(emailIds);
         }
 
@@ -81,14 +84,14 @@ namespace AutoBot
         }
 
 
-        private static async Task SendEmails(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds, string[] contacts, string body, List<string> attachments)
+        private static async Task SendEmails(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds, string[] contacts, string body, List<string> attachments, ILogger log)
         {
             if (emailIds.Key == null)
                 await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client, "", "Assessed Ex-Warehouse Entries",
-                    contacts, body, attachments.ToArray()).ConfigureAwait(false);
+                    contacts, body, attachments.ToArray(), log).ConfigureAwait(false);
             else
                 await EmailDownloader.EmailDownloader.ForwardMsgAsync(emailIds.Key, Utils.Client,
-                    "Assessed Ex-Warehouse Entries", body, contacts, attachments.ToArray()).ConfigureAwait(false);
+                    "Assessed Ex-Warehouse Entries", body, contacts, attachments.ToArray(), log).ConfigureAwait(false);
         }
 
         private static List<string> GetAttachments(IGrouping<string, TODO_SubmitXMLToCustoms> emailIds) => emailIds.SelectMany(GetAttachment).ToList();

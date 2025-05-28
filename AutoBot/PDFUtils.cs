@@ -18,11 +18,14 @@ using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {
+    using Serilog;
+using Serilog.Context;
+
     public class PDFUtils
     {
         //public static Task ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
         //{
-            
+
         //}
 
         public static async Task AttachEmailPDF(FileTypes ft, FileInfo[] fs)
@@ -30,18 +33,6 @@ namespace AutoBot
             await BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId).ConfigureAwait(false);
         }
 
-        public static async Task ImportPDF()
-        {
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var fileType = ctx.FileTypes
-
-                    .FirstOrDefault(x => x.Id == 17);
-                var files = new FileInfo[]
-                    {new FileInfo(@"D:\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
-                await ImportPDF(files, fileType).ConfigureAwait(false);
-            }
-        }
 
         public static async Task LinkPDFs()
         {
@@ -67,7 +58,7 @@ namespace AutoBot
         }
 
         // Change signature to async Task<>
-        public static async Task<List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
+        public static async Task<List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>>> ImportPDF(FileInfo[] pdfFiles, FileTypes fileType, ILogger logger)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
             List<KeyValuePair<string, (string file, string, ImportStatus Success)>> success = new List<KeyValuePair<string, (string file, string, ImportStatus Success)>>();
@@ -87,9 +78,9 @@ namespace AutoBot
                 }
 
                 // Await the async call which returns a Dictionary
-                var docSets = await WaterNut.DataSpace.Utils.GetDocSets(fileType).ConfigureAwait(false);
+                var docSets = await WaterNut.DataSpace.Utils.GetDocSets(fileType, logger).ConfigureAwait(false);
                 var importResult = await InvoiceReader.InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId,
-                    true, docSets, fileType, Utils.Client).ConfigureAwait(false);
+                    true, docSets, fileType, Utils.Client, logger).ConfigureAwait(false);
                 // Add the Dictionary directly (AddRange works with Dictionary<TKey, TValue> as it's IEnumerable<KeyValuePair<TKey, TValue>>)
 
 
@@ -101,17 +92,17 @@ namespace AutoBot
                 {
                     if (!importResult.Any())
                     {
-                        var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                        var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType, logger).ConfigureAwait(false);
                         success.AddRange(res2);
                     }
                     else
                     {
-                        var fails = importResult.Select(x => x.Value).Where(x => x.Success == ImportStatus.Failed).ToList();
+                        var fails = importResult.Select(x => x.Value).Where(x => x.Status == ImportStatus.Failed).ToList();
                         if (fails.Any())
                             fails
                                 .ForEach(async x =>
                                 {
-                                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType).ConfigureAwait(false);
+                                    var res2 = await PDFUtils.ImportPDFDeepSeek([file], fileType, logger).ConfigureAwait(false);
                                     success.AddRange(res2);
                                 });
                         else
@@ -134,7 +125,7 @@ namespace AutoBot
                 {
                     var entries = ctx.Database.SqlQuery<TODO_ImportCompleteEntries>(
                         $"EXEC [dbo].[Stp_TODO_ImportCompleteEntries] @ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
-                       
+
                     var lst = entries
 
                         .GroupBy(x => x.AsycudaDocumentSetId)
@@ -210,15 +201,13 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    
+
                     var directoryName = StringExtensions.UpdateToCurrentUser(BaseDataModel.GetDocSetDirectoryName("Imports"));
-                   
-                    
-                        
+
 
                     var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*.pdf")
-                        .Where(x => 
-                            //Regex.IsMatch(x.FullName,@".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",RegexOptions.IgnoreCase)&& 
+                        .Where(x =>
+                            //Regex.IsMatch(x.FullName,@".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",RegexOptions.IgnoreCase)&&
                             x.LastWriteTime.ToString("d") == DateTime.Today.ToString("d")).ToArray();
 
                     foreach (var file in csvFiles)
@@ -229,8 +218,6 @@ namespace AutoBot
                         if (!mat.Success) continue;
 
                         var dfile = ctx.Attachments.Include(x => x.AsycudaDocument_Attachments).FirstOrDefault(x => x.FilePath == file.FullName);
-
-                        
 
 
                         var cnumber = mat.Groups["pCNumber"].Value;
@@ -256,13 +243,11 @@ namespace AutoBot
                             });
 
 
-
-
                       await  ctx.SaveChangesAsync().ConfigureAwait(false);
 
                     }
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -283,21 +268,22 @@ namespace AutoBot
         //    }
         //}
 
-        public static async Task<List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>> ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType)
+        public static async
+            Task<List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>>
+            ImportPDFDeepSeek(FileInfo[] fileInfos, FileTypes fileType, ILogger logger)
         {
             //List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>> success = new List<KeyValuePair<string, (string FileName, string DocumentType, ImportStatus status)>>();
             var success = new Dictionary<string, (string FileName, string DocumentType, ImportStatus status)>();
-            var logger = LoggingConfig.CreateLogger();
             var docTypes = new Dictionary<string, string>()
                 { { "Template", "Shipment Template" }, { "CustomsDeclaration", "Simplified Declaration" } };
             foreach (var file in fileInfos)
             {
-              var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName).ConfigureAwait(false);  
+              var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName, logger).ConfigureAwait(false);
               var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {
-                  var docSet = await WaterNut.DataSpace.Utils.GetDocSets(fileType).ConfigureAwait(false);
+                  var docSet = await WaterNut.DataSpace.Utils.GetDocSets(fileType, logger).ConfigureAwait(false);
                   var docType = docTypes[(doc.Key as string) ?? "Unknown"];
                   var type = await FileTypeManager.GetFileType(FileTypeManager.EntryTypes.GetEntryType(docType),
                       FileTypeManager.FileFormats.PDF, file.FullName).ConfigureAwait(false);
@@ -310,7 +296,7 @@ namespace AutoBot
                   SetFileTypeMappingDefaultValues(docFileType, doc);
 
                   var import = await ImportSuccessState(file.FullName, fileType.EmailId, docFileType, true,  docSet,
-                      new List<dynamic>() { doc.ToList() }).ConfigureAwait(false);
+                      new List<dynamic>() { doc.ToList() }, logger).ConfigureAwait(false);
                   success.Add($"{file}-{docType}-{doc.Key}",
                       import
                           ? (file.FullName, FileTypeManager.EntryTypes.GetEntryType(docType), ImportStatus.Success)
@@ -320,7 +306,6 @@ namespace AutoBot
 
 
               }
-             
 
 
             }
@@ -340,23 +325,37 @@ namespace AutoBot
         }
 
         private static async Task<bool> ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
-            List<AsycudaDocumentSet> docSet, List<dynamic> csvLines)
+            List<AsycudaDocumentSet> docSet, List<dynamic> csvLines, ILogger logger)
         {
-            try
+            using (LogContext.PushProperty("Method", nameof(ImportSuccessState)))
+            using (LogContext.PushProperty("File", file))
+            using (LogContext.PushProperty("EmailId", emailId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
+            using (LogContext.PushProperty("OverwriteExisting", overWriteExisting))
+            using (LogContext.PushProperty("DocSetCount", docSet?.Count))
+            using (LogContext.PushProperty("CsvLinesCount", csvLines?.Count))
             {
-               return await new DataFileProcessor().Process(new DataFile(fileType, docSet, overWriteExisting,
-                    emailId,
-                    file, csvLines)).ConfigureAwait(false);
+                logger.Information("METHOD_ENTRY: ImportSuccessState. Intention: Process imported data file.");
 
-                
+                try
+                {
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. Intention: Invoke DataFileProcessor.");
+                    var dataFile = new DataFile(fileType, docSet, overWriteExisting, emailId, file, csvLines, null);
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. InitialState: {DataFileState}", new { FileType = dataFile.FileType?.Description, DocSetCount = dataFile.DocSet?.Count, OverwriteExisting = dataFile.OverWriteExisting, EmailId = dataFile.EmailId, DroppedFilePath = dataFile.DroppedFilePath, DataCount = dataFile.Data?.Count });
+
+                    var processResult = await new DataFileProcessor().Process(dataFile).ConfigureAwait(false);
+
+                    logger.Debug("INTERNAL_STEP: ImportSuccessState - DataFileProcessor.Process. Outcome: {ProcessResult}", processResult);
+                    logger.Information("METHOD_EXIT_SUCCESS: ImportSuccessState. IntentionAchieved: Data processing completed. FinalState: {FinalState}", new { ProcessResult = processResult });
+                    return processResult;
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "METHOD_EXIT_FAILURE: ImportSuccessState. IntentionFailed: Data processing failed for file {FileName}.", file);
+                    Console.WriteLine(e);
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-
-
         }
     }
 }

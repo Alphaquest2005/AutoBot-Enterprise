@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
+    using Serilog;
+
     public partial class InvoiceProcessingPipeline
     {
 
-        public async Task<bool> RunPipeline()
+        public async Task<bool> RunPipeline(ILogger log)
         {
             string filePath = _context?.FilePath ?? "Unknown";
             LogPipelineStart(filePath);
@@ -37,18 +39,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 if (isInitialRunUnsuccessful)
                 {
                     // Report unimported file, joining accumulated errors
-                    return await EmailErrors().ConfigureAwait(false);
+                    return await EmailErrors(log).ConfigureAwait(false);
                 }
                 else
                 {
-                    if (_context.Templates.Any(x => x.CsvLines == null || !x.CsvLines.Any() || x.Success == false))
+                    if (_context.MatchedTemplates.Any(x => x.CsvLines == null || !x.CsvLines.Any() || x.Success == false))
                     {
                         LogProcessingErrorPipeline(filePath);
                         var errorPipelineResult = await ProcessErrorPipeline().ConfigureAwait(false);
                         LogErrorPipelineCompleted(filePath, errorPipelineResult);
                         LogContextAfterErrorPipeline();
                         if (!errorPipelineResult && _context.Errors.Any()) //cuz the error pipeline could fail
-                            await EmailErrors().ConfigureAwait(false); //return false;
+                            await EmailErrors(log).ConfigureAwait(false); //return false;
                         // return errorPipelineResult;
                     }
 
@@ -74,11 +76,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private async Task<bool> EmailErrors()
+        private async Task<bool> EmailErrors(ILogger log)
         {
             string aggregatedErrors = string.Join("; ", _context.Errors);
            await InvoiceProcessingUtils.ReportUnimportedFile(_context.DocSet, _context.FilePath,
-                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines).ConfigureAwait(false);
+                _context.EmailId, _context.FileTypeId, _context.Client, _context.PdfText.ToString(), aggregatedErrors, _context.FailedLines, log).ConfigureAwait(false);
             return false;
           
         }
@@ -86,7 +88,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         private List<IPipelineStep<InvoiceProcessingContext>> InitializePipelineStepsWithLogging(string filePath)
         {
             LogInitializingPipelineSteps(filePath);
-            var initialSteps = InitializePipelineSteps();
+            var initialSteps = InitializePipelineSteps(); // InitializePipelineSteps now uses _logger internally
             LogPipelineStepsCreated(initialSteps);
             return initialSteps;
         }
@@ -109,63 +111,82 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         private void LogPipelineStart(string filePath) =>
-            _logger.Information("Starting main InvoiceProcessingPipeline execution for File: {FilePath}", filePath);
+            _logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                nameof(RunPipeline), "Execute the invoice processing pipeline", $"FilePath: {filePath}");
 
         private void LogContextDetails() =>
-            _logger.Verbose("Context details: {@Context}", _context);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ContextSnapshot", "Current pipeline context details.", "", new { Context = _context });
 
         private void LogNullContextError() =>
-            _logger.Error("InvoiceProcessingPipeline cannot run with a null context.");
+            _logger.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                nameof(RunPipeline), "Execute the invoice processing pipeline", 0, "InvoiceProcessingPipeline cannot run with a null context.");
 
         private void LogInitializingPipelineSteps(string filePath) =>
-            _logger.Debug("Initializing initial pipeline steps for File: {FilePath}", filePath);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "Initialization", "Initializing initial pipeline steps.", $"FilePath: {filePath}", "");
 
         private void LogPipelineStepsCreated(List<IPipelineStep<InvoiceProcessingContext>> initialSteps)
         {
-            _logger.Debug("Initial pipeline steps created. Count: {Count}", initialSteps.Count);
-            _logger.Verbose("Initial steps: {@InitialSteps}", initialSteps.Select(step => step.GetType().Name));
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "Initialization", "Initial pipeline steps created.", $"StepCount: {initialSteps.Count}", new { Steps = initialSteps.Select(step => step.GetType().Name) });
         }
 
         private void LogRunningInitialSteps(string filePath) =>
-            _logger.Information("Running initial pipeline steps (Format, Read) for File: {FilePath}", filePath);
+            _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                "RunInitialPipelineSteps", "ASYNC_EXPECTED");
 
         private void LogInitialStepsCompleted(string filePath, bool success) =>
-            _logger.Information("Initial pipeline steps completed for File: {FilePath}. Success: {Success}", filePath, success);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "InitialStepsCompletion", "Initial pipeline steps completed.", $"FilePath: {filePath}, Success: {success}", "");
 
         private void LogContextAfterInitialSteps() =>
-            _logger.Verbose("Context after initial steps: {@Context}", _context);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ContextSnapshot", "Context after initial steps.", "", new { Context = _context });
 
         private void LogCheckingInitialRunResult(string filePath) =>
-            _logger.Debug("Checking if initial run was unsuccessful for File: {FilePath}", filePath);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ResultCheck", "Checking if initial run was unsuccessful.", $"FilePath: {filePath}", "");
 
         private void LogInitialRunResult(string filePath, bool result) =>
-            _logger.Debug("IsInitialRunUnsuccessful result for File: {FilePath}: {Result}", filePath, result);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ResultCheck", "Initial run unsuccessful check complete.", $"FilePath: {filePath}, IsUnsuccessful: {result}", "");
 
         private void LogProcessingErrorPipeline(string filePath) =>
-            _logger.Warning("Initial run deemed unsuccessful for File: {FilePath}. Processing error pipeline.", filePath);
+            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ErrorHandling", "Initial run deemed unsuccessful. Processing error pipeline.", $"FilePath: {filePath}", "");
 
         private void LogErrorPipelineCompleted(string filePath, bool result) =>
-            _logger.Information("Error pipeline processing finished for File: {FilePath}. Result (Continue?): {Result}", filePath, result);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ErrorHandling", "Error pipeline processing finished.", $"FilePath: {filePath}, Result (Continue?): {result}", "");
 
         private void LogContextAfterErrorPipeline() =>
-            _logger.Verbose("Context after error pipeline: {@Context}", _context);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ContextSnapshot", "Context after error pipeline.", "", new { Context = _context });
 
         private void LogProcessingSuccessPipeline(string filePath) =>
-            _logger.Information("Initial run deemed successful for File: {FilePath}. Processing success steps.", filePath);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "SuccessProcessing", "Initial run deemed successful. Processing success steps.", $"FilePath: {filePath}", "");
 
         private void LogSuccessPipelineCompleted(string filePath, bool result) =>
-            _logger.Information("Success pipeline processing finished for File: {FilePath}. Result (Overall Success?): {Result}", filePath, result);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "SuccessProcessing", "Success pipeline processing finished.", $"FilePath: {filePath}, Result (Overall Success?): {result}", "");
 
         private void LogContextAfterSuccessPipeline() =>
-            _logger.Verbose("Context after success pipeline: {@Context}", _context);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ContextSnapshot", "Context after success pipeline.", "", new { Context = _context });
 
         private void LogFatalError(string filePath, Exception ex) =>
-            _logger.Fatal(ex, "Fatal error during main InvoiceProcessingPipeline execution for File: {FilePath}", filePath);
+           _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                nameof(RunPipeline), "Fatal error during execution", 0, $"Fatal error during pipeline execution for File: {filePath}. Error: {ex.Message}");
+            
 
         private void LogContextAfterFatalError() =>
-            _logger.Verbose("Context after fatal error: {@Context}", _context);
+            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(RunPipeline), "ContextSnapshot", "Context after fatal error.", "", new { Context = _context });
 
         private void LogPipelineEnd(string filePath) =>
-            _logger.Information("Finished main InvoiceProcessingPipeline execution for File: {FilePath}. Final Import Status: {ImportStatus}", filePath, _context?.ImportStatus);
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                nameof(RunPipeline), $"Pipeline execution completed for File: {filePath}. Final Status: {_context?.ImportStatus}", 0); // Duration will be added in RunPipeline
     }
 }

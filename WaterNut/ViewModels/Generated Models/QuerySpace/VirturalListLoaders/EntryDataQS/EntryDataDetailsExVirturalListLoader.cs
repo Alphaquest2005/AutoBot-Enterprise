@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using EntryDataQS.Client.Entities;
-using EntryDataQS.Client.Repositories;
 using SimpleMvvmToolkit;
+using EntryDataQS.Client.Repositories;
+using EntryDataQS.Client.Entities;
 
 
 

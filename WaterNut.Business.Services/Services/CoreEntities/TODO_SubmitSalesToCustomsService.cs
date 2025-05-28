@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustoms(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustoms(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace CoreEntities.Business.Services
                     IEnumerable<TODO_SubmitSalesToCustoms> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<TODO_SubmitSalesToCustoms> GetTODO_SubmitSalesToCustomsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_SubmitSalesToCustoms> GetTODO_SubmitSalesToCustomsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return Task.FromResult<TODO_SubmitSalesToCustoms>(null); 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 TODO_SubmitSalesToCustoms entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitSalesToCustoms>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionNav(string exp,
-                                                                                                        Dictionary<string, string> navExp,
-                                                                                                        List<string> includesLst = null, bool tracking = true)
+		public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(aentities); 
+                        return aentities; 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(entities); 
+                        return entities; 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatch(string exp,
-                                                                                                int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatchExpressionLst(List<string> expLst,
-                                                                                                             int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitSalesToCustoms>();
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace CoreEntities.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public Task<TODO_SubmitSalesToCustoms> UpdateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
+        public async Task<TODO_SubmitSalesToCustoms> UpdateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace CoreEntities.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace CoreEntities.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace CoreEntities.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<TODO_SubmitSalesToCustoms> CreateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
+        public async Task<TODO_SubmitSalesToCustoms> CreateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace CoreEntities.Business.Services
                 dbContext.TODO_SubmitSalesToCustoms.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public Task<bool> DeleteTODO_SubmitSalesToCustoms(string Id)
+        public async Task<bool> DeleteTODO_SubmitSalesToCustoms(string Id)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace CoreEntities.Business.Services
                 TODO_SubmitSalesToCustoms entity = dbContext.TODO_SubmitSalesToCustoms
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.TODO_SubmitSalesToCustoms.Attach(entity);
                     dbContext.TODO_SubmitSalesToCustoms.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace CoreEntities.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<TODO_SubmitSalesToCustoms>)dbContext.TODO_SubmitSalesToCustoms; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.TODO_SubmitSalesToCustoms
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.TODO_SubmitSalesToCustoms
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.TODO_SubmitSalesToCustoms
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.TODO_SubmitSalesToCustoms
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(dbContext.TODO_SubmitSalesToCustoms
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.TODO_SubmitSalesToCustoms
+										.AsNoTracking()
+                                        .OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(dbContext.TODO_SubmitSalesToCustoms
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.TODO_SubmitSalesToCustoms
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(dbContext.TODO_SubmitSalesToCustoms
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.TODO_SubmitSalesToCustoms
+										.AsNoTracking()
+                                        .Count();
                     }
-                    return Task.FromResult(dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
-                        .AsNoTracking()
-                        .Count());
+                    return dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
+											.AsNoTracking()
+                                            .Count();
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -773,36 +773,36 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                           Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(new List<TODO_SubmitSalesToCustoms>());
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
+                        return set
+									.AsNoTracking()
+                                    .OrderBy(y => y.Id)
  
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                                    .Skip(startIndex)
+                                    .Take(count)
+									.ToList();
                     }
-                    return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set//dbContext.TODO_SubmitSalesToCustoms
-                        .AsNoTracking()
-                        .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                        .OrderBy(y => y.Id)
+                    return set//dbContext.TODO_SubmitSalesToCustoms
+								.AsNoTracking()
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
-                        .Skip(startIndex)
-                        .Take(count)
-                        .ToList());
+                                .Skip(startIndex)
+                                .Take(count)
+								.ToList();
 
 
                 }
@@ -836,8 +836,8 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                           CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelectMany<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -848,14 +848,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -864,8 +864,8 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                       CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelect<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -876,14 +876,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set
-                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -916,21 +916,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
-                                                                                          string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<TODO_SubmitSalesToCustoms>)dbContext.Set<T>()
@@ -942,7 +942,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -951,21 +951,21 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
-                                                                                      string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<TODO_SubmitSalesToCustoms>)dbContext.Set<T>()
@@ -977,7 +977,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<TODO_SubmitSalesToCustoms>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -986,7 +986,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1014,7 +1014,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1042,7 +1042,7 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1054,7 +1054,7 @@ namespace CoreEntities.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1106,24 +1106,24 @@ namespace CoreEntities.Business.Services
              }
          }
 
-        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.TODO_SubmitSalesToCustoms.Any()) return Task.FromResult<decimal>(0);
+                    if (!dbContext.TODO_SubmitSalesToCustoms.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms
-                                                                     .AsNoTracking()
-                                                                     .Sum(field)??0));
+                        return Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms
+										.AsNoTracking()
+                                        .Sum(field)??0);
                     }
-                    return Task.FromResult(Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
-                                                                 .AsNoTracking()
-                                                                 .Sum(field)??0));
+                    return Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
+											.AsNoTracking()
+                                            .Sum(field)??0);
                 }
                 
             }
@@ -1154,18 +1154,18 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1174,18 +1174,18 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

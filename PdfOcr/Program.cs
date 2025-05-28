@@ -1,7 +1,7 @@
 ﻿
 using System;
 using Tesseract;
-
+using Serilog; // Added
 
 namespace pdf_ocr
 {
@@ -10,13 +10,17 @@ namespace pdf_ocr
 
         private static void Main(string[] args)
         {
-            
+            // Configure a basic Serilog logger for this utility
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
 
             Console.WriteLine($"Recognizing text on page of file test.pdf");
             Console.WriteLine();
 
            
-            var recognizedText = new PdfOcr().Ocr("test.pdf", PageSegMode.SingleColumn);
+            var recognizedText = new PdfOcr(Log.Logger).Ocr("test.pdf", PageSegMode.SingleColumn); // Pass logger
 
             Console.WriteLine($"Recognized text on page");
             Console.WriteLine($"=====");
@@ -24,6 +28,7 @@ namespace pdf_ocr
             Console.WriteLine($"=====");
 
             
+            Log.CloseAndFlush(); // Ensure logs are written
 
             Console.ReadKey();
         }

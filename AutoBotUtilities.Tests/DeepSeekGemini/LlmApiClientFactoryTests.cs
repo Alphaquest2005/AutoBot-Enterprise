@@ -1,6 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using Serilog; // Added
 using NUnit.Framework; // Changed
 using Moq;
 using System;
@@ -31,7 +30,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => // Changed
             {
-                LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek);
+                LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, Log.Logger);
             });
         }
 
@@ -45,7 +44,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => // Changed
             {
-                LlmApiClientFactory.CreateClient(LLMProvider.Gemini);
+                LlmApiClientFactory.CreateClient(LLMProvider.Gemini, Log.Logger);
             });
         }
 
@@ -54,13 +53,10 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
         {
             // Arrange
             Environment.SetEnvironmentVariable("DEEPSEEK_API_KEY", "test-ds-key");
-            var mockLoggerFactory = new Mock<ILoggerFactory>();
-            var mockLogger = new Mock<ILogger<LlmApiClient>>();
-            mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(NullLogger.Instance);
-            mockLoggerFactory.Setup(f => f.CreateLogger("WaterNut.Business.Services.Utils.LlmApi.LlmApiClient")).Returns(mockLogger.Object);
+            var mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
 
             // Act
-            var client = LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, mockLoggerFactory.Object);
+            var client = LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, mockLogger.Object); // Pass the mock Serilog logger directly
 
             // Assert
             Assert.That(client, Is.Not.Null);
@@ -72,13 +68,10 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
         {
             // Arrange
             Environment.SetEnvironmentVariable("GEMINI_API_KEY", "test-gem-key");
-            var mockLoggerFactory = new Mock<ILoggerFactory>();
-            var mockLogger = new Mock<ILogger<LlmApiClient>>();
-            mockLoggerFactory.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(NullLogger.Instance);
-            mockLoggerFactory.Setup(f => f.CreateLogger("WaterNut.Business.Services.Utils.LlmApi.LlmApiClient")).Returns(mockLogger.Object);
+            var mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
 
             // Act
-            var client = LlmApiClientFactory.CreateClient(LLMProvider.Gemini, mockLoggerFactory.Object);
+            var client = LlmApiClientFactory.CreateClient(LLMProvider.Gemini, mockLogger.Object); // Pass the mock Serilog logger directly
 
             // Assert
             Assert.That(client, Is.Not.Null);

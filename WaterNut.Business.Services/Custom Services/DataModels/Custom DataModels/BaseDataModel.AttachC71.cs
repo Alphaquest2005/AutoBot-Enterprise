@@ -10,9 +10,11 @@ using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.DataSpace;
 
+using System.Threading.Tasks;
+
 public partial class BaseDataModel
 {
-    private static void AttachC71(int asycudaDocumentSetId)
+    private static async Task AttachC71(int asycudaDocumentSetId)
     {
         using (var ctx = new CoreEntitiesContext())
         {
@@ -85,8 +87,8 @@ public partial class BaseDataModel
                             x.LineNumber == 1).ToList();
 
                     foreach (var itm in itms)
-                        AttachToDocument(new List<int> { al.Key.Id },
-                            itm.ASYCUDA_Id, itm.Item_Id);
+                        await AttachToDocument(new List<int> { al.Key.Id },
+                            itm.ASYCUDA_Id, itm.Item_Id).ConfigureAwait(false);
                 }
             }
         }

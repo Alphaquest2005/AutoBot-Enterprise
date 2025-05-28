@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MimeKit;
+using Serilog; // Added
 
 namespace EmailDownloader;
 
 public static partial class EmailDownloader
 {
     private static async Task ForwardMsgInternalAsync(MimeMessage originalMsg, Client clientDetails, string subject, string body,
-               string[] contacts, string[] attachments, CancellationToken cancellationToken)
+               string[] contacts, string[] attachments, CancellationToken cancellationToken, ILogger logger) // Added ILogger parameter
     {
         if (clientDetails.Email == null) return;
         var message = new MimeMessage();
@@ -24,7 +25,7 @@ public static partial class EmailDownloader
             else
             {
                 // Fallback if original sender is unknown
-                var devContacts = GetContacts("Developer"); // This is sync, consider GetContactsAsync if available
+                var devContacts = GetContacts("Developer", logger); // Pass the logger
                 if (devContacts.Any()) message.ReplyTo.Add(MailboxAddress.Parse(devContacts.First()));
             }
             foreach (var recipent in contacts.Distinct()) { message.To.Add(MailboxAddress.Parse(recipent)); }
@@ -51,7 +52,7 @@ public static partial class EmailDownloader
         }
         message.Body = builder.ToMessageBody();
         // Use the public SendEmailAsync (MimeMessage overload)
-        await SendEmailInternalAsync(clientDetails, message, cancellationToken).ConfigureAwait(false);
+        await SendEmailInternalAsync(clientDetails, message, cancellationToken, logger).ConfigureAwait(false); // Pass the logger
     }
 
 }

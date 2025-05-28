@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
-using InventoryQS.Client.Entities;
-using InventoryQS.Client.Repositories;
 using SimpleMvvmToolkit;
+using InventoryQS.Client.Repositories;
+using InventoryQS.Client.Entities;
 
 
 

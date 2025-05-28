@@ -134,11 +134,11 @@ namespace AdjustmentQS.Business.Services
         }
 
         // Made async Task
-        private static Task ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
+        private static async Task ProcessDISErrorsForAllocation(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
         {
             // Assuming AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation.Execute returns Task
             // Add ConfigureAwait(false) before await
-            new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+            await new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
                 .Execute(
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                     // Correctly chain Aggregate before Execute and apply ConfigureAwait once
@@ -146,8 +146,8 @@ namespace AdjustmentQS.Business.Services
                         .SelectMany(g => g.Value)
                         .Select(v => v).Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
                         .Aggregate((o, n) => $"{o},{n}") // Aggregate the strings first
-                ); // Apply ConfigureAwait to the Task returned by Execute
-            return Task.CompletedTask;
+                ).ConfigureAwait(false); // Apply ConfigureAwait to the Task returned by Execute
+            
         }
 
         public Task MatchToAsycudaItem(int entryDataDetailId, int itemId)

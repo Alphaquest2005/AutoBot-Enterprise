@@ -4,6 +4,8 @@ using System.Threading.Tasks;
  
 namespace WaterNut.Business.Services.Importers.EntryData
 {
+    using Serilog;
+
     public class SaveEntryDataFile : IDocumentProcessor
     {
         private readonly ImportSettings _importSettings;
@@ -13,7 +15,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _importSettings = importSettings;
         }
  
-        public Task<List<dynamic>> Execute(List<dynamic> lines)
+        public Task<List<dynamic>> Execute(List<dynamic> lines, ILogger log)
         {
             var eslst = EntryDataFileImporter.SetDefaults(lines);
  

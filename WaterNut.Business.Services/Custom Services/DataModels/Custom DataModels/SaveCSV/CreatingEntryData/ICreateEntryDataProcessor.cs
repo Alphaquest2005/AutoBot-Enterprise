@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using WaterNut.DataSpace;
+using Serilog;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.CreatingEntryData
 {
     public interface ICreateEntryDataProcessor
     {
-        Task Execute(DataFile dataFile, List<RawEntryData> goodLst);
+        Task Execute(DataFile dataFile, List<RawEntryData> goodLst, ILogger log);
     }
 }

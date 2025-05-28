@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace
             if (asycudaDocumentSetId != 0)
             {
 
-                var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet("Purchase Orders", true).ConfigureAwait(false);
+                var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(null, "Purchase Orders", true).ConfigureAwait(false);
                 if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Purchase Orders'");
 
 

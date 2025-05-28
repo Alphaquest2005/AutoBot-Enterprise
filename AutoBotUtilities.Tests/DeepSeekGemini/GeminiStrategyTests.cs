@@ -1,6 +1,5 @@
 ﻿#nullable disable
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions; // Needed for NullLogger
+using Serilog; // Added
 using NUnit.Framework;
 using Moq;
 using Moq.Protected; // Needed for HttpMessageHandler
@@ -20,7 +19,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
     public class GeminiStrategyTests
     {
         // Mocks for dependencies required by LlmStrategyBase
-        private Mock<ILogger> _mockLogger;
+        private Mock<Serilog.ILogger> _mockLogger; // Changed to Mock<Serilog.ILogger>
         private Mock<HttpMessageHandler> _mockHttpHandler;
         private HttpClient _mockHttpClient;
         private AsyncRetryPolicy _testRetryPolicy; // Use a simple policy for tests
@@ -33,7 +32,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
         [SetUp]
         public void TestInitialize()
         {
-            _mockLogger = new Mock<ILogger>();
+            _mockLogger = new Mock<Serilog.ILogger>(); // Changed to Mock<Serilog.ILogger>
             _mockHttpHandler = new Mock<HttpMessageHandler>();
             _mockHttpClient = TestHelpers.CreateMockHttpClient(_mockHttpHandler);
 
@@ -42,7 +41,7 @@ namespace WaterNut.Business.Services.Utils.LlmApi.Tests
                                      .WaitAndRetryAsync(0, retryAttempt => TimeSpan.Zero);
 
             // Create the concrete strategy instance, providing all dependencies
-            _strategyConcrete = new GeminiStrategy(_dummyApiKey, _mockLogger.Object, _mockHttpClient, _testRetryPolicy);
+            _strategyConcrete = new GeminiStrategy(_dummyApiKey, _mockLogger.Object, _mockHttpClient, _testRetryPolicy); // Pass the mock Serilog logger
 
             // Set required properties (prompts)
             _strategyConcrete.SingleItemPromptTemplate = "Single: __DESCRIPTION_HERE__ Code: __PRODUCT_CODE_HERE__";

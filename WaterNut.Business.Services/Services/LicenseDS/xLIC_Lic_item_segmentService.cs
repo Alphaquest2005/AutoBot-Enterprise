@@ -65,7 +65,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segment(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segment(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace LicenseDS.Business.Services
                     IEnumerable<xLIC_Lic_item_segment> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public Task<xLIC_Lic_item_segment> GetxLIC_Lic_item_segmentByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<xLIC_Lic_item_segment> GetxLIC_Lic_item_segmentByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return Task.FromResult<xLIC_Lic_item_segment>(null); 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
                 xLIC_Lic_item_segment entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace LicenseDS.Business.Services
         }
 
 
-		 public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(new List<xLIC_Lic_item_segment>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(new List<xLIC_Lic_item_segment>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -266,8 +266,8 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatch(string exp,
-                                                                                        int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace LicenseDS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(new List<xLIC_Lic_item_segment>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
 
 
                 var batchSize = 500;
@@ -325,7 +325,7 @@ namespace LicenseDS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -341,8 +341,8 @@ namespace LicenseDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatchExpressionLst(List<string> expLst,
-                                                                                                     int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -351,7 +351,7 @@ namespace LicenseDS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(new List<xLIC_Lic_item_segment>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
 
 
                 var batchSize = 500;
@@ -400,7 +400,7 @@ namespace LicenseDS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -417,7 +417,7 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public Task<xLIC_Lic_item_segment> UpdatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<xLIC_Lic_item_segment> UpdatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
         { 
             using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
@@ -429,7 +429,7 @@ namespace LicenseDS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -474,7 +474,7 @@ namespace LicenseDS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -487,10 +487,10 @@ namespace LicenseDS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<xLIC_Lic_item_segment> CreatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<xLIC_Lic_item_segment> CreatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
         {
             try
             {
@@ -500,7 +500,7 @@ namespace LicenseDS.Business.Services
                 dbContext.xLIC_Lic_item_segment.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -517,7 +517,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public Task<bool> DeletexLIC_Lic_item_segment(string Id)
+        public async Task<bool> DeletexLIC_Lic_item_segment(string Id)
         {
             try
             {
@@ -527,12 +527,12 @@ namespace LicenseDS.Business.Services
                 xLIC_Lic_item_segment entity = dbContext.xLIC_Lic_item_segment
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.xLIC_Lic_item_segment.Attach(entity);
                     dbContext.xLIC_Lic_item_segment.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -588,23 +588,23 @@ namespace LicenseDS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<xLIC_Lic_item_segment>)dbContext.xLIC_Lic_item_segment; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -623,26 +623,26 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (LicenseDSContext dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.xLIC_Lic_item_segment
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.xLIC_Lic_item_segment
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.xLIC_Lic_item_segment
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.xLIC_Lic_item_segment
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -660,33 +660,33 @@ namespace LicenseDS.Business.Services
             }
         }
         
-        public Task<IEnumerable<xLIC_Lic_item_segment>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(new List<xLIC_Lic_item_segment>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(dbContext.xLIC_Lic_item_segment
-                            .AsNoTracking()
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xLIC_Lic_item_segment
+										.AsNoTracking()
+                                        .OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(dbContext.xLIC_Lic_item_segment
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.Id)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.xLIC_Lic_item_segment
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.Id)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -764,18 +764,18 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -784,18 +784,18 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xLIC_Lic_item_segment>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -889,8 +889,8 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                       LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
+            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -901,14 +901,14 @@ namespace LicenseDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -917,8 +917,8 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                   LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelect<T>(int startIndex, int count,
+            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -929,14 +929,14 @@ namespace LicenseDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(set
-                   .Where(exp == "All" || exp == null ? "Id != null" : exp)
-                   .Distinct()
-                   .OrderBy(y => y.Id)
+               return set
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Distinct()
+                .OrderBy(y => y.Id)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -969,21 +969,21 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
-                                                                                      string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
@@ -995,7 +995,7 @@ namespace LicenseDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1004,21 +1004,21 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelect<T>(LicenseDSContext dbContext,
-                                                                                  string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelect<T>(LicenseDSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                    .Where(exp == "All" || exp == null?"Id != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<xLIC_Lic_item_segment>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
@@ -1030,7 +1030,7 @@ namespace LicenseDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<xLIC_Lic_item_segment>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1039,7 +1039,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByLicenseId(string LicenseId, List<string> includesLst = null)
+			        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByLicenseId(string LicenseId, List<string> includesLst = null)
         {
             try
             {
@@ -1051,7 +1051,7 @@ namespace LicenseDS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.LicenseId.ToString() == LicenseId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1163,18 +1163,18 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1183,18 +1183,18 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xLIC_Lic_item_segment>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{

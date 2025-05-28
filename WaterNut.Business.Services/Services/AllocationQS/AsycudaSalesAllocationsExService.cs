@@ -65,7 +65,7 @@ namespace AllocationQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExs(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExs(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AllocationQS.Business.Services
                     IEnumerable<AsycudaSalesAllocationsEx> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                            return Task.FromResult(entities);
+                            return entities;
                    }
                 //}
              }
@@ -97,18 +97,18 @@ namespace AllocationQS.Business.Services
         }
 
 
-        public Task<AsycudaSalesAllocationsEx> GetAsycudaSalesAllocationsExByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
+        public async Task<AsycudaSalesAllocationsEx> GetAsycudaSalesAllocationsExByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AllocationId))return Task.FromResult<AsycudaSalesAllocationsEx>(null); 
+			   if(string.IsNullOrEmpty(AllocationId))return null; 
               using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(AllocationId);
 				var set = AddIncludes(includesLst, dbContext);
                 AsycudaSalesAllocationsEx entity = set.AsNoTracking().SingleOrDefault(x => x.AllocationId == i);
                 if(tracking && entity != null) entity.StartTracking();
-                return Task.FromResult(entity);
+                return entity;
               }
              }
             catch (Exception updateEx)
@@ -126,28 +126,28 @@ namespace AllocationQS.Business.Services
         }
 
 
-		 public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaSalesAllocationsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
 						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						var entities = set.AsNoTracking().Where(exp)
 											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -167,27 +167,27 @@ namespace AllocationQS.Business.Services
             }
         }
 
-		 public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaSalesAllocationsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
 						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(entities); 
+                        return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
 						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(entities); 
+                        return entities; 
 											
 					}
 					
@@ -207,29 +207,29 @@ namespace AllocationQS.Business.Services
             }
         }
 
-		public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpressionNav(string exp,
-                                                                                                         Dictionary<string, string> navExp,
-                                                                                                         List<string> includesLst = null, bool tracking = true)
+		public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByExpressionNav(string exp,
+																							  Dictionary<string, string> navExp,
+																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaSalesAllocationsEx>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                         var aentities = AddIncludes(includesLst, dbContext)
 												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(aentities); 
+                        return aentities; 
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(entities); 
+                        return entities; 
 
                 }
             }
@@ -247,8 +247,8 @@ namespace AllocationQS.Business.Services
             }
         }
 
-        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByBatch(string exp,
-                                                                                                 int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByBatch(string exp,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace AllocationQS.Business.Services
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaSalesAllocationsEx>();
 
 
                 var batchSize = 500;
@@ -306,7 +306,7 @@ namespace AllocationQS.Business.Services
     
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
 
             }
             catch (Exception updateEx)
@@ -322,8 +322,8 @@ namespace AllocationQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByBatchExpressionLst(List<string> expLst,
-                                                                                                              int totalrow, List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExsByBatchExpressionLst(List<string> expLst,
+            int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace AllocationQS.Business.Services
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaSalesAllocationsEx>();
 
 
                 var batchSize = 500;
@@ -381,7 +381,7 @@ namespace AllocationQS.Business.Services
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
                 var entities = res.SelectMany(x => x.ToList());
                 if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
-                return Task.FromResult(entities); 
+                return entities; 
             }
             catch (Exception updateEx)
             {
@@ -398,7 +398,7 @@ namespace AllocationQS.Business.Services
         }
 
 
-        public Task<AsycudaSalesAllocationsEx> UpdateAsycudaSalesAllocationsEx(AsycudaSalesAllocationsEx entity)
+        public async Task<AsycudaSalesAllocationsEx> UpdateAsycudaSalesAllocationsEx(AsycudaSalesAllocationsEx entity)
         { 
             using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
@@ -410,7 +410,7 @@ namespace AllocationQS.Business.Services
                     dbContext.ApplyChanges(res);
                     dbContext.SaveChanges();
                     res.AcceptChanges();
-                    return Task.FromResult(res);      
+                    return res;      
       
                 }
                 catch (DbUpdateConcurrencyException dce)
@@ -455,7 +455,7 @@ namespace AllocationQS.Business.Services
                         updateEx.Message.Contains(
                             "The changes to the database were committed successfully, " +
                             "but an error occurred while updating the object context"))
-                        return Task.FromResult(entity);
+                        return entity;
 
                     System.Diagnostics.Debugger.Break();
                     //throw new FaultException(updateEx.Message);
@@ -468,10 +468,10 @@ namespace AllocationQS.Business.Services
                         throw new FaultException<ValidationFault>(fault);
                 }
             }
-           return Task.FromResult(entity);
+           return entity;
         }
 
-        public Task<AsycudaSalesAllocationsEx> CreateAsycudaSalesAllocationsEx(AsycudaSalesAllocationsEx entity)
+        public async Task<AsycudaSalesAllocationsEx> CreateAsycudaSalesAllocationsEx(AsycudaSalesAllocationsEx entity)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace AllocationQS.Business.Services
                 dbContext.AsycudaSalesAllocationsExs.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
-                return Task.FromResult(res);
+                return res;
               }
             }
             catch (Exception updateEx)
@@ -498,7 +498,7 @@ namespace AllocationQS.Business.Services
             }
         }
 
-        public Task<bool> DeleteAsycudaSalesAllocationsEx(string AllocationId)
+        public async Task<bool> DeleteAsycudaSalesAllocationsEx(string AllocationId)
         {
             try
             {
@@ -508,12 +508,12 @@ namespace AllocationQS.Business.Services
                 AsycudaSalesAllocationsEx entity = dbContext.AsycudaSalesAllocationsExs
 													.SingleOrDefault(x => x.AllocationId == i);
                 if (entity == null)
-                    return Task.FromResult(false);
+                    return false;
 
                     dbContext.AsycudaSalesAllocationsExs.Attach(entity);
                     dbContext.AsycudaSalesAllocationsExs.Remove(entity);
                     dbContext.SaveChanges();
-                    return Task.FromResult(true);
+                    return true;
               }
             }
             catch (Exception updateEx)
@@ -569,23 +569,23 @@ namespace AllocationQS.Business.Services
 
 		// Virtural list Implementation
 
-         public Task<int> CountByExpressionLst(List<string> expLst)
+         public async Task<int> CountByExpressionLst(List<string> expLst)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return Task.FromResult(0);
+                    if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<AsycudaSalesAllocationsEx>)dbContext.AsycudaSalesAllocationsExs; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return Task.FromResult(set.AsNoTracking().Count());
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -604,26 +604,26 @@ namespace AllocationQS.Business.Services
             }
         }
 
-		public Task<int> Count(string exp)
+		public async Task<int> Count(string exp)
         {
             try
             {
                 using (AllocationQSContext dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return Task.FromResult(dbContext.AsycudaSalesAllocationsExs
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.AsycudaSalesAllocationsExs
+                                    .AsNoTracking()
+									.Count();
                     }
                     else
                     {
                         
-                        return Task.FromResult(dbContext.AsycudaSalesAllocationsExs
-                            .AsNoTracking()
-                            .Where(exp)
-                            .Count());
+                        return dbContext.AsycudaSalesAllocationsExs
+									.AsNoTracking()
+                                    .Where(exp)
+									.Count();
                     }
                 }
             }
@@ -641,33 +641,33 @@ namespace AllocationQS.Business.Services
             }
         }
         
-        public Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaSalesAllocationsEx>();
                     if (exp == "All")
                     {
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(dbContext.AsycudaSalesAllocationsExs
-                            .AsNoTracking()
-                            .OrderBy(y => y.AllocationId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.AsycudaSalesAllocationsExs
+										.AsNoTracking()
+                                        .OrderBy(y => y.AllocationId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                     else
                     {
                         
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(dbContext.AsycudaSalesAllocationsExs
-                            .AsNoTracking()
-                            .Where(exp)
-                            .OrderBy(y => y.AllocationId)
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                        return dbContext.AsycudaSalesAllocationsExs
+										.AsNoTracking()
+                                        .Where(exp)
+										.OrderBy(y => y.AllocationId)
+										.Skip(startIndex)
+										.Take(count)
+										.ToList();
                     }
                 }
             }
@@ -685,23 +685,23 @@ namespace AllocationQS.Business.Services
             }
         }
 
-		public Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(dbContext.AsycudaSalesAllocationsExs
-                            .AsNoTracking()
-                            .Count());
+                        return dbContext.AsycudaSalesAllocationsExs
+										.AsNoTracking()
+                                        .Count();
                     }
-                    return Task.FromResult(dbContext.AsycudaSalesAllocationsExs.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
-                        .AsNoTracking()
-                        .Count());
+                    return dbContext.AsycudaSalesAllocationsExs.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+											.AsNoTracking()
+                                            .Count();
                 }
                 
             }
@@ -733,18 +733,18 @@ namespace AllocationQS.Business.Services
 		    }
         }
 
-		private static Task<int> CountWhereSelectMany<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaSalesAllocationsEx>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -753,18 +753,18 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		private static Task<int> CountWhereSelect<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
-            return Task.FromResult(dbContext.Set<T>()
-                .AsNoTracking()
+            return dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaSalesAllocationsEx>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Count());
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -773,38 +773,38 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		  public Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeNav(int startIndex, int count, string exp,
-                                                                           Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		  public async Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(new List<AsycudaSalesAllocationsEx>());
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaSalesAllocationsEx>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set
-                            .AsNoTracking()
+                        return set
+									.AsNoTracking()
                                       
-                            .OrderByDescending(y => y.InvoiceDate)
+.OrderByDescending(y => y.InvoiceDate)
  
-                            .Skip(startIndex)
-                            .Take(count)
-                            .ToList());
+                                    .Skip(startIndex)
+                                    .Take(count)
+									.ToList();
                     }
-                    return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set//dbContext.AsycudaSalesAllocationsExs
-                        .AsNoTracking()
-                        .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                    return set//dbContext.AsycudaSalesAllocationsExs
+								.AsNoTracking()
+                                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
 								  
-                        .OrderByDescending(y => y.InvoiceDate)
+.OrderByDescending(y => y.InvoiceDate)
  
-                        .Skip(startIndex)
-                        .Take(count)
-                        .ToList());
+                                .Skip(startIndex)
+                                .Take(count)
+								.ToList();
 
 
                 }
@@ -838,8 +838,8 @@ namespace AllocationQS.Business.Services
 		    }
         }
 
-		private static Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeSelectMany<T>(int startIndex, int count,
-                                                                                           AllocationQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeSelectMany<T>(int startIndex, int count,
+            AllocationQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -850,15 +850,15 @@ namespace AllocationQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set
+            return set
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                   
-                .OrderByDescending(y => y.InvoiceDate)
+.OrderByDescending(y => y.InvoiceDate)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToList());
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -867,8 +867,8 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeSelect<T>(int startIndex, int count,
-                                                                                       AllocationQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaSalesAllocationsEx>> LoadRangeSelect<T>(int startIndex, int count,
+            AllocationQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
@@ -879,15 +879,15 @@ namespace AllocationQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set
-                   .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
-                   .Distinct()
+               return set
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Distinct()
                   
-                   .OrderByDescending(y => y.InvoiceDate)
+.OrderByDescending(y => y.InvoiceDate)
  
-                   .Skip(startIndex)
-                   .Take(count)
-                   .ToList());
+                .Skip(startIndex)
+                .Take(count)
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -920,21 +920,21 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaSalesAllocationsEx>> GetWhereSelectMany<T>(AllocationQSContext dbContext,
-                                                                                          string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetWhereSelectMany<T>(AllocationQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .SelectMany(navProp).OfType<AsycudaSalesAllocationsEx>()
-                    .Where(exp == "All" || exp == null?"AllocationId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.SelectMany(navProp).OfType<AsycudaSalesAllocationsEx>()
+							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaSalesAllocationsEx>)dbContext.Set<T>()
@@ -946,7 +946,7 @@ namespace AllocationQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -955,21 +955,21 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		private static Task<IEnumerable<AsycudaSalesAllocationsEx>> GetWhereSelect<T>(AllocationQSContext dbContext,
-                                                                                      string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetWhereSelect<T>(AllocationQSContext dbContext,
+            string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
 			{
 
 			if (includesLst == null)
 			{
-				return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(dbContext.Set<T>()
-                    .AsNoTracking()
-                    .Where(navExp)
-                    .Select(navProp).OfType<AsycudaSalesAllocationsEx>()
-                    .Where(exp == "All" || exp == null?"AllocationId != null":exp)
-                    .Distinct()
-                    .ToList());
+				return dbContext.Set<T>()
+							.AsNoTracking()
+                            .Where(navExp)
+							.Select(navProp).OfType<AsycudaSalesAllocationsEx>()
+							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
+							.Distinct()
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaSalesAllocationsEx>)dbContext.Set<T>()
@@ -981,7 +981,7 @@ namespace AllocationQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return Task.FromResult<IEnumerable<AsycudaSalesAllocationsEx>>(set.ToList());
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -990,7 +990,7 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-			        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1002,7 +1002,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1018,7 +1018,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
         {
             try
             {
@@ -1030,7 +1030,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1046,7 +1046,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1058,7 +1058,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.xBond_Item_Id.ToString() == xBond_Item_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1074,7 +1074,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1086,7 +1086,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.xASYCUDA_Id.ToString() == xASYCUDA_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1102,7 +1102,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1114,7 +1114,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.pASYCUDA_Id.ToString() == pASYCUDA_Id.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1130,7 +1130,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1142,7 +1142,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1158,7 +1158,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
@@ -1170,7 +1170,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1186,7 +1186,7 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1198,7 +1198,7 @@ namespace AllocationQS.Business.Services
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
-                return Task.FromResult(entities);
+                return entities;
               }
              }
             catch (Exception updateEx)
@@ -1250,24 +1250,24 @@ namespace AllocationQS.Business.Services
              }
          }
 
-        public Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
             try
             {
-                if (string.IsNullOrEmpty(exp) || exp == "None") return Task.FromResult<decimal>(0);
+                if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.AsycudaSalesAllocationsExs.Any()) return Task.FromResult<decimal>(0);
+                    if (!dbContext.AsycudaSalesAllocationsExs.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Task.FromResult(Convert.ToDecimal(dbContext.AsycudaSalesAllocationsExs
-                                                                     .AsNoTracking()
-                                                                     .Sum(field)??0));
+                        return Convert.ToDecimal(dbContext.AsycudaSalesAllocationsExs
+										.AsNoTracking()
+                                        .Sum(field)??0);
                     }
-                    return Task.FromResult(Convert.ToDecimal(dbContext.AsycudaSalesAllocationsExs.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
-                                                                 .AsNoTracking()
-                                                                 .Sum(field)??0));
+                    return Convert.ToDecimal(dbContext.AsycudaSalesAllocationsExs.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+											.AsNoTracking()
+                                            .Sum(field)??0);
                 }
                 
             }
@@ -1298,18 +1298,18 @@ namespace AllocationQS.Business.Services
 		    }
         }
 
-		private static Task<decimal> SumWhereSelectMany<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaSalesAllocationsEx>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
@@ -1318,18 +1318,18 @@ namespace AllocationQS.Business.Services
 			}
         }
 
-		private static Task<decimal> SumWhereSelect<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(AllocationQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
-            return Task.FromResult(Convert.ToDecimal(dbContext.Set<T>()
-                .AsNoTracking()
+            return Convert.ToDecimal(dbContext.Set<T>()
+				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaSalesAllocationsEx>()
                 .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
                 .OrderBy("AllocationId")
-                .Sum(field)));
+                .Sum(field));
 			}
 			catch (Exception)
 			{
