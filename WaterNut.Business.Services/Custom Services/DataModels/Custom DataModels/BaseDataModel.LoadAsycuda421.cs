@@ -30,10 +30,11 @@ public partial class BaseDataModel
                     .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).Declarants;
                 var fileCode = a.Warehouse.Identification.Text.FirstOrDefault() ??
                                a.Declarant.Declarant_code.Text.FirstOrDefault();
+                if(BaseDataModel.Instance.CurrentApplicationSettings.AllowXBond == "Visible")
                 if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
                     //throw new ApplicationException(
                     //    $"Could not import file - '{f} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
-                    return;
+                   return;
             }
 
 
