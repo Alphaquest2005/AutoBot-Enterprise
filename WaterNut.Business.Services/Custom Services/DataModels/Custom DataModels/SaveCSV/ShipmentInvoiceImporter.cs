@@ -129,7 +129,7 @@ namespace WaterNut.DataSpace
 
                         var dbCategoryTariffs = BaseDataModel.Instance.CategoryTariffs.FirstOrDefault(x => x.Category == classifiedItm.Category);
 
-                        details.ItemNumber = classifiedItm.ItemNumber;
+                        details.ItemNumber = (classifiedItm.ItemNumber ?? classifiedItm.ItemDescription).ToUpper().Truncate(20);
                         details.ItemDescription = classifiedItm.ItemDescription.Truncate(255);
                         details.TariffCode = classifiedItm.TariffCode;
                         details.Category = dbCategoryTariffs?.Category ?? classifiedItm.Category;

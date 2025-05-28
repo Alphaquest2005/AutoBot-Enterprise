@@ -73,8 +73,10 @@ public partial class BaseDataModel
 
         totalWeight -= WeightAsycudaNormallyOffBy;
 
-        var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
-        var weightRate = totalWeight != 0 ? totalWeight / (decimal)totalItemQuantity : 0;
+        var freightRate = totalFreight != 0 && totalfob != 0 ? totalFreight / totalfob : 0;
+
+     
+        var weightRate = totalWeight != 0  && totalItemQuantity != 0 ? totalWeight / (decimal)totalItemQuantity : 0;
         decimal weightUsed = 0;
 
         using (var ctx = new DocumentDSContext { StartTracking = true })
