@@ -357,5 +357,37 @@ using Serilog.Context;
                 }
             }
         }
+
+        /// <summary>
+        /// Get file text content for OCR correction
+        /// </summary>
+        private static async Task<string> GetFileTextAsync(string filePath, ILogger logger)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                {
+                    logger.Warning("File not found for OCR correction: {FilePath}", filePath);
+                    return null;
+                }
+
+                // For PDF files, we need to extract text
+                if (filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Use the existing PDF text extraction method from InvoiceReader
+                    return await InvoiceReader.InvoiceReader.GetPdftxt(filePath, logger);
+                }
+                else
+                {
+                    // For text files, read directly
+                    return File.ReadAllText(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error reading file text for OCR correction: {FilePath}", filePath);
+                return null;
+            }
+        }
     }
 }

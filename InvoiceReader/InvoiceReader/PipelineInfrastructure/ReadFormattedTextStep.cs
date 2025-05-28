@@ -14,6 +14,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     using System.Diagnostics;
 
+    using CoreEntities.Business.Entities;
+
     using WaterNut.Business.Services.Utils;
 
     public partial class ReadFormattedTextStep : IPipelineStep<InvoiceProcessingContext>
@@ -33,7 +35,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 context.Logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
                     nameof(ReadFormattedTextStep), $"Reading formatted text for file: {filePath}");
 
-               
+
                  if (!context.MatchedTemplates.Any())
                 {
                      context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -83,40 +85,124 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                              context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                                  $"Template.Read for Template {templateId}", "SYNC_EXPECTED"); // Log before Read call
                              var readStopwatch = Stopwatch.StartNew(); // Start stopwatch
-                             
+
                              context.Logger?.Verbose("Template Parts for TemplateId: {TemplateId}: {@Parts}",
                                  templateId, template.OcrInvoices?.Parts); // Log template parts
                              context.Logger?.Verbose("Template RegEx for TemplateId: {TemplateId}: {@RegEx}",
                                  templateId, template.OcrInvoices?.RegEx); // Log template regex
-                             
+
                              context.Logger?.Verbose("Calling template.Read() for TemplateId: {TemplateId}. Input textLines: {@TextLines}",
                                  templateId, textLines); // Log input textLines
-                             
+
                              template.CsvLines = template.Read(textLines); // The core operation
 
-                             if (context.FileType.FileImporterInfos.EntryType
+                            // --- Resolve File Type ---
+                            context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                                nameof(Execute), "FileTypeResolution", "Resolving file type.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
+                            FileTypes fileType = HandleImportSuccessStateStep.ResolveFileType(context.Logger, template); // Handles its own logging, pass logger
+                            if (fileType == null)
+                            {
+                                string errorMsg = $"ResolveFileType returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
+                                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                                    nameof(Execute), "Resolve file type", 0, errorMsg);
+                                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                    $"{nameof(HandleImportSuccessStateStep)} - Template {templateId}", "File type resolution", 0, errorMsg);
+                                context.AddError(errorMsg); // Add error to context
+                                continue;
+                            }
+                            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                                nameof(Execute), "FileTypeResolution", "Resolved FileType.", $"FileTypeId: {fileType.Id}, FilePath: {filePath}", "");
+                            // --- End Resolve File Type ---
+
+                            template.FileType = fileType;
+
+                            if (template.FileType.FileImporterInfos.EntryType
                                  == FileTypeManager.EntryTypes.ShipmentInvoice)
                              {
                                  var res = template.CsvLines;
-                                 List<dynamic> correctedRes;
-                                 while (OCRCorrectionService.TotalsZero(res) != 0)
-                                 {
 
-                                       OCRCorrectionService.CorrectInvoices(res, template);
-                                       template.CsvLines = null;
-                                       template.Lines.ForEach(x => x.Values.Clear());
-                                       res = template.Read(textLines); // Re-read after correction
+                                 // Log the initial CsvLines result for totals calculation debugging
+                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLines result from template.Read()");
+                                 if (res != null)
+                                 {
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLines Count: {Count}", res.Count);
+                                     for (int i = 0; i < res.Count; i++)
+                                     {
+                                         context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLine[{Index}]: {@CsvLineData}", i, res[i]);
+                                     }
+                                 }
+                                 else
+                                 {
+                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Initial CsvLines is null");
+                                 }
+
+                                 // Calculate and log TotalsZero using the CsvLines result
+                                 var totalsZero = OCRCorrectionService.TotalsZero(res);
+                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: TotalsZero calculation from CsvLines = {TotalsZero}", totalsZero);
+
+                                 // Log line values for DeepSeek mapping
+                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: Template line values for DeepSeek mapping");
+                                 if (template.Lines != null)
+                                 {
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Template Lines Count: {Count}", template.Lines.Count);
+                                     for (int lineIndex = 0; lineIndex < template.Lines.Count; lineIndex++)
+                                     {
+                                         var line = template.Lines[lineIndex];
+                                         if (line?.Values != null && line.Values.Any())
+                                         {
+                                             context.Logger?.Information("OCR_CORRECTION_DEBUG: Template Line[{LineIndex}] Values: {@LineValues}", lineIndex, line.Values);
+                                         }
+                                     }
+                                 }
+                                 else
+                                 {
+                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Template Lines is null");
+                                 }
+
+                                 int correctionAttempts = 0;
+                                 const int maxCorrectionAttempts = 1; // Circuit breaker: only 1 attempt to prevent infinite loops
+
+                                 while (Math.Abs(OCRCorrectionService.TotalsZero(res)) > 0.01 && correctionAttempts < maxCorrectionAttempts)
+                                 {
+                                     correctionAttempts++;
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Starting correction attempt {Attempt} of {MaxAttempts}. Current TotalsZero = {TotalsZero}", correctionAttempts, maxCorrectionAttempts, OCRCorrectionService.TotalsZero(res));
+
+                                     // Apply OCR correction using the CsvLines result and template
+                                     OCRCorrectionService.CorrectInvoices(res, template);
+
+                                     // Clear and re-read to get updated values
+                                     template.CsvLines = null;
+                                     template.Lines.ForEach(x => x.Values.Clear());
+                                     res = template.Read(textLines); // Re-read after correction
+
+                                     var newTotalsZero = OCRCorrectionService.TotalsZero(res);
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}", correctionAttempts, newTotalsZero);
+                                 }
+
+                                 if (correctionAttempts >= maxCorrectionAttempts)
+                                 {
+                                     var finalTotalsZero = OCRCorrectionService.TotalsZero(res);
+                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Circuit breaker triggered - maximum correction attempts ({MaxAttempts}) reached. Final TotalsZero = {TotalsZero}", maxCorrectionAttempts, finalTotalsZero);
+                                 }
+                                 else if (correctionAttempts > 0)
+                                 {
+                                     var finalTotalsZero = OCRCorrectionService.TotalsZero(res);
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: OCR correction completed successfully after {Attempts} attempts. Final TotalsZero = {TotalsZero}", correctionAttempts, finalTotalsZero);
+                                 }
+                                 else
+                                 {
+                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: No OCR correction needed. TotalsZero = {TotalsZero}", totalsZero);
                                  }
 
                                  template.CsvLines = res;
                              }
-                             
+
 
                              readStopwatch.Stop(); // Stop stopwatch
-                             
+
                              context.Logger?.Verbose("template.Read() returned. TemplateId: {TemplateId}. CsvLines: {@CsvLines}",
                                  templateId, template.CsvLines); // Log output CsvLines
-                             
+
                              context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                  $"Template.Read for Template {templateId}", readStopwatch.ElapsedMilliseconds, "Sync call returned"); // Log after Read call
                              LogTemplateReadFinished(context.Logger, filePath, templateId, template.CsvLines?.Count ?? 0); // Pass logger
@@ -133,7 +219,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                  nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Template.Read() failed. Terminating early.");
                              context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                                  nameof(ReadFormattedTextStep), "Template reading", methodStopwatch.ElapsedMilliseconds, "Template.Read() failed. Terminating early.");
-                             
+
                              continue;
                          }
                          // --- End Template Read Execution ---
@@ -231,7 +317,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              int? templateId = template.OcrInvoices.Id; // Safe now
              string templateName = template.OcrInvoices.Name; // Safe now
              LogExecutionStart(logger, filePath, templateId, templateName); // Pass logger
-           
+
             if (string.IsNullOrEmpty(template.FormattedPdfText))
             {
                 LogEmptyFormattedPdfTextWarning(logger, filePath, templateId); // Pass logger

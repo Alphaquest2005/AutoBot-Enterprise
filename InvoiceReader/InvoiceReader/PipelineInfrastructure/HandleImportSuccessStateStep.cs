@@ -74,29 +74,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                      }
                      // --- End Validation ---
 
-                     // --- Resolve File Type ---
-                     context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                         nameof(Execute), "FileTypeResolution", "Resolving file type.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
-                     FileTypes fileType = ResolveFileType(context.Logger, template); // Handles its own logging, pass logger
-                     if (fileType == null)
-                     {
-                         string errorMsg = $"ResolveFileType returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
-                         context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                             nameof(Execute), "Resolve file type", 0, errorMsg);
-                         context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                             $"{nameof(HandleImportSuccessStateStep)} - Template {templateId}", "File type resolution", 0, errorMsg);
-                         context.AddError(errorMsg); // Add error to context
-                         overallStepSuccess = false;
-                         continue;
-                     }
-                     context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                         nameof(Execute), "FileTypeResolution", "Resolved FileType.", $"FileTypeId: {fileType.Id}, FilePath: {filePath}", "");
-                     // --- End Resolve File Type ---
+                     
 
                      // --- Create DataFile ---
                      context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                          nameof(Execute), "DataFileCreation", "Creating DataFile object.", $"FilePath: {filePath}", "");
-                     DataFile dataFile = CreateDataFile(context.Logger, template, fileType); // Handles its own logging, pass logger
+                     DataFile dataFile = CreateDataFile(context.Logger, template, template.FileType); // Handles its own logging, pass logger
                      if (dataFile == null)
                      {
                          string errorMsg = $"CreateDataFile returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
@@ -114,7 +97,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                      // --- Process DataFile ---
                      context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                         nameof(Execute), "DataFileProcessing", "Starting DataFileProcessor.", $"FilePath: {filePath}, FileTypeId: {fileType.Id}", "");
+                         nameof(Execute), "DataFileProcessing", "Starting DataFileProcessor.", $"FilePath: {filePath}, FileTypeId: {template.FileType.Id}", "");
                      var processor = new DataFileProcessor();
                      bool processResult = false; // Default to false
                      try
@@ -124,7 +107,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          var processorStopwatch = Stopwatch.StartNew(); // Start stopwatch
                          // Run potentially blocking code in background thread
 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                             nameof(Execute), "DataFileProcessing", "Calling DataFileProcessor.Process.", $"FilePath: {filePath}, FileTypeId: {fileType.Id}", new { DataFileDetails = new { FileType = dataFile?.FileType?.Description, DocSetCount = dataFile?.DocSet?.Count() } });
+                             nameof(Execute), "DataFileProcessing", "Calling DataFileProcessor.Process.", $"FilePath: {filePath}, FileTypeId: {template.FileType.Id}", new { DataFileDetails = new { FileType = dataFile?.FileType?.Description, DocSetCount = dataFile?.DocSet?.Count() } });
                          processResult = await Task.Run(() => processor.Process(dataFile)).ConfigureAwait(false);
                          processorStopwatch.Stop(); // Stop stopwatch
                          context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
@@ -220,7 +203,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              return false; // All required data is present
         }
 
-        private static FileTypes ResolveFileType(ILogger logger, Invoice template) // Add logger parameter
+        public static FileTypes ResolveFileType(ILogger logger, Invoice template) // Add logger parameter
         {
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                  nameof(ResolveFileType), "Resolution", "Entering ResolveFileType.", "", "");
@@ -318,10 +301,43 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                       return null;
                   }
 
+                  // Log the entire CsvLines result for debugging
+                  logger?.Information("TEMPLATE_CSVLINES_DEBUG: Complete CsvLines result from template.Read()");
+                  if (template.CsvLines != null)
+                  {
+                      logger?.Information("CsvLines Count: {Count}", template.CsvLines.Count);
+                      for (int i = 0; i < template.CsvLines.Count; i++)
+                      {
+                          var csvLine = template.CsvLines[i];
+                          logger?.Information("CsvLine[{Index}]: {@CsvLineData}", i, csvLine);
+                      }
+                  }
+                  else
+                  {
+                      logger?.Warning("CsvLines is null");
+                  }
+
+                  // Log the line values with line numbers for DeepSeek mapping
+                  logger?.Information("TEMPLATE_LINE_VALUES_DEBUG: Line values with line numbers");
+                  if (template.Lines != null)
+                  {
+                      logger?.Information("Template Lines Count: {Count}", template.Lines.Count);
+                      for (int lineIndex = 0; lineIndex < template.Lines.Count; lineIndex++)
+                      {
+                          var line = template.Lines[lineIndex];
+                          if (line?.Values != null && line.Values.Any())
+                          {
+                              logger?.Information("Line[{LineIndex}] Values: {@LineValues}", lineIndex, line.Values);
+                          }
+                      }
+                  }
+
                   // Package OCR template with line values for OCR correction
+                  // Use GroupBy to handle duplicate keys by taking the first occurrence
                   var lineValues = template.Lines?.Where(line => line?.Values != null)
                       .SelectMany(line => line.Values)
-                      .ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ??
+                      .GroupBy(kvp => kvp.Key)
+                      .ToDictionary(g => g.Key, g => g.First().Value) ??
                       new Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>>();
 
                   dataFile = new DataFile(fileType, template.DocSet, template.OverWriteExisting,

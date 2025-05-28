@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace WaterNut.DataSpace
                     nameof(ProcessShipmentInvoice), "DataFiltering", "Filtered for good invoices.", $"GoodInvoiceCount: {goodInvoices.Count}");
 
 
-                
+
                 logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SaveInvoicePOsAsync", "ASYNC_EXPECTED");
                 var saveStopwatch = Stopwatch.StartNew();
                 await SaveInvoicePOsAsync(invoicePOs, goodInvoices).ConfigureAwait(false);
@@ -501,5 +501,7 @@ namespace WaterNut.DataSpace
             //  var invoiceInvoiceDetails = lst ;
             return lst;
         }
+
+
     }
 }
