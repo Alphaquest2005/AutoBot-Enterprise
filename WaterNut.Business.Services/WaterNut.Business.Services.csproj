@@ -778,7 +778,6 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderPdfImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveItemHistory.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\OCRCorrectionService.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SimplifiedDeclarationImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />

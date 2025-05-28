@@ -14,6 +14,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     using System.Diagnostics;
 
+    using WaterNut.Business.Services.Utils;
+
     public partial class ReadFormattedTextStep : IPipelineStep<InvoiceProcessingContext>
     {
         // Remove static logger
@@ -91,6 +93,25 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                  templateId, textLines); // Log input textLines
                              
                              template.CsvLines = template.Read(textLines); // The core operation
+
+                             if (context.FileType.FileImporterInfos.EntryType
+                                 == FileTypeManager.EntryTypes.ShipmentInvoice)
+                             {
+                                 var res = template.CsvLines;
+                                 List<dynamic> correctedRes;
+                                 while (OCRCorrectionService.TotalsZero(res) != 0)
+                                 {
+
+                                       OCRCorrectionService.CorrectInvoices(res, template);
+                                       template.CsvLines = null;
+                                       template.Lines.ForEach(x => x.Values.Clear());
+                                       res = template.Read(textLines); // Re-read after correction
+                                 }
+
+                                 template.CsvLines = res;
+                             }
+                             
+
                              readStopwatch.Stop(); // Stop stopwatch
                              
                              context.Logger?.Verbose("template.Read() returned. TemplateId: {TemplateId}. CsvLines: {@CsvLines}",

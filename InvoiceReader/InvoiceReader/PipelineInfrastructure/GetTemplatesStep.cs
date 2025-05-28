@@ -82,61 +82,24 @@ namespace InvoiceReader.PipelineInfrastructure
 
         public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context, Func<Invoice, bool> templateExpression)
         {
-            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                "GetTemplates", "TemplateFiltering", "ENTRY: Filtering templates with expression.", $"AllTemplatesCount: {_allTemplates?.Count() ?? 0}", "");
-
-            var templates = (_allTemplates ?? Enumerable.Empty<Invoice>()).Where(templateExpression).ToList();
-
-            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                "GetTemplates", "TemplateFiltering", "Templates filtered.", $"FilteredCount: {templates.Count}, AllTemplatesCount: {_allTemplates?.Count() ?? 0}", "");
-
-            context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                $"GetContextTemplates for {templates.Count} templates", "ASYNC_EXPECTED");
-
-            var result = await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
-
-            context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. DocSet result: {DocSetResult}",
-                $"GetContextTemplates for {templates.Count} templates",
-                result?.Count > 0 && result[0].DocSet != null ? $"DocSet assigned with {result[0].DocSet.Count} items" : "DocSet is NULL");
-
-            return result;
+            var templates = _allTemplates.Where(templateExpression).ToList();
+            return await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
         }
 
         private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
         {
-            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                nameof(GetContextTemplates), "DocSetRetrieval", "ENTRY: Getting DocSets for templates.", $"FileTypeId: {context.FileType?.Id}, ContextDocSetIsNull: {context.DocSet == null}, TemplateCount: {templates.Count}", "");
-
-            // DEBUG: Log detailed FileType information
-            if (context.FileType == null)
-            {
-                context.Logger?.Error("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                    nameof(GetContextTemplates), "DocSetRetrieval", "CRITICAL: FileType is null - cannot get DocSets!", "", "");
-                return templates; // Return templates without DocSet assignment
-            }
-
-            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                nameof(GetContextTemplates), "DocSetRetrieval", "FileType details.", $"FileTypeId: {context.FileType.Id}, DocSetRefernece: '{context.FileType.DocSetRefernece}', AsycudaDocumentSetId: {context.FileType.AsycudaDocumentSetId}, CopyEntryData: {context.FileType.CopyEntryData}", "");
+            context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                nameof(GetContextTemplates), "DocSetRetrieval", "Getting DocSets for templates.", $"FileTypeId: {context.FileType?.Id}, ContextDocSetIsNull: {context.DocSet == null}", "");
 
             var docSet = context.DocSet;
             if (docSet == null)
             {
                 context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                     $"WaterNut.DataSpace.Utils.GetDocSets for FileTypeId: {context.FileType?.Id}", "ASYNC_EXPECTED");
-
-                try
-                {
-                    docSet = await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
-                    context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. DocSet result: {DocSetResult}",
-                        $"WaterNut.DataSpace.Utils.GetDocSets for FileTypeId: {context.FileType?.Id}",
-                        docSet == null ? "NULL" : $"Count: {docSet.Count}");
-                }
-                catch (Exception ex)
-                {
-                    context.Logger?.Error(ex, "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                        nameof(GetContextTemplates), "DocSetRetrieval", "ERROR: GetDocSets threw exception!", $"FileTypeId: {context.FileType?.Id}, Error: {ex.Message}", "");
-                    docSet = null; // Ensure docSet is null on error
-                }
+                docSet = await WaterNut.DataSpace.Utils.GetDocSets(context.FileType, context.Logger).ConfigureAwait(false);
+                context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. DocSet result: {DocSetResult}",
+                    $"WaterNut.DataSpace.Utils.GetDocSets for FileTypeId: {context.FileType?.Id}",
+                    docSet == null ? "NULL" : $"Count: {docSet.Count}");
             }
 
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

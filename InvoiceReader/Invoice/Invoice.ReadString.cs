@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,6 +31,7 @@ namespace WaterNut.DataSpace
             // Call the primary Read method
             var result = Read(lines); // Primary Read method handles its own entry/exit logging
 
+           
             methodStopwatch.Stop();
             _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultLineCount: {ResultLineCount}",
                 methodName, methodStopwatch.ElapsedMilliseconds, result?.Count ?? 0);
