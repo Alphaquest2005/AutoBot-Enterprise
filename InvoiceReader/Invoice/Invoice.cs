@@ -221,6 +221,73 @@ namespace WaterNut.DataSpace
         // 'table' is used by CreateOrGetDitm - logging added there. Initialization here is simple.
         private static readonly Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
 
+        /// <summary>
+        /// Clears all mutable state that gets populated during the Read process to prepare for re-import.
+        /// This includes Line.Values, CsvLines, and all Part-level accumulated state.
+        /// </summary>
+        public void ClearInvoiceForReimport()
+        {
+            var methodStopwatch = Stopwatch.StartNew();
+            int? invoiceId = this.OcrInvoices?.Id;
+            string methodName = nameof(ClearInvoiceForReimport);
+
+            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}]", methodName, invoiceId);
+
+            try
+            {
+                // 1. Clear CsvLines - final processed results
+                _logger.Debug("{MethodName}: Clearing CsvLines (Count: {Count})", methodName, this.CsvLines?.Count ?? 0);
+                this.CsvLines = null;
+
+                // 2. Clear FormattedPdfText if it was set
+                if (!string.IsNullOrEmpty(this.FormattedPdfText))
+                {
+                    _logger.Debug("{MethodName}: Clearing FormattedPdfText (Length: {Length})", methodName, this.FormattedPdfText.Length);
+                    this.FormattedPdfText = string.Empty;
+                }
+
+                // 3. Clear FailedLines if it was set
+                if (this.FailedLines != null)
+                {
+                    _logger.Debug("{MethodName}: Clearing FailedLines (Count: {Count})", methodName, this.FailedLines.Count);
+                    this.FailedLines = null;
+                }
+
+                // 4. Clear Line.Values for all lines
+                _logger.Debug("{MethodName}: Clearing Line.Values for {LineCount} lines", methodName, this.Lines?.Count ?? 0);
+                this.Lines?.ForEach(line =>
+                {
+                    if (line?.Values != null)
+                    {
+                        var valueCount = line.Values.Count;
+                        line.Values.Clear();
+                        _logger.Verbose("{MethodName}: Cleared {ValueCount} values from Line {LineId}",
+                            methodName, valueCount, line.OCR_Lines?.Id);
+                    }
+                });
+
+                // 5. Clear Part-level mutable state that accumulates during Read process
+                _logger.Debug("{MethodName}: Clearing Part-level mutable state for {PartCount} parts", methodName, this.Parts?.Count ?? 0);
+                this.Parts?.ForEach(part =>
+                {
+                    if (part != null)
+                    {
+                        part.ClearPartForReimport();
+                    }
+                });
+
+                methodStopwatch.Stop();
+                _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms.",
+                    methodName, methodStopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                methodStopwatch.Stop();
+                _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                    methodName, methodStopwatch.ElapsedMilliseconds, ex.Message);
+                throw;
+            }
+        }
 
     }
 }

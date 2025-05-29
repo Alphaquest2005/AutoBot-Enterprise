@@ -265,7 +265,10 @@ namespace WaterNut.Business.Services.Utils
         {
             try
             {
-                var cleaned = Regex.Replace(rawText, @"-{30,}.*?-{30,}", "", RegexOptions.Singleline);
+                // Fix: Use greedy quantifier and handle multiple dash sections properly
+                // This pattern removes individual sections surrounded by 30+ dashes, not everything between first and last
+                var cleaned = Regex.Replace(rawText, @"-{30,}[^-]*-{30,}", "", RegexOptions.Multiline);
+
                 var match = Regex.Match(cleaned,
                     @"(?<=SHOP FASTER WITH THE APP)(.*?)(?=For Comptroller of Customs)",
                     RegexOptions.Singleline | RegexOptions.IgnoreCase);
@@ -290,6 +293,15 @@ namespace WaterNut.Business.Services.Utils
             }
 
             var escapedText = EscapeBraces(text);
+
+            // Check if PromptTemplate looks like a custom prompt (not the default invoice extraction template)
+            if (!PromptTemplate.Contains("DOCUMENT PROCESSING RULES:") && PromptTemplate.Contains("{0}"))
+            {
+                Console.WriteLine("⚠️  PROMPT CORRUPTION WARNING: Custom prompt being used as format template!");
+                Console.WriteLine($"📝 Custom prompt: {PromptTemplate.Substring(0, Math.Min(100, PromptTemplate.Length))}...");
+                Console.WriteLine("💡 ARCHITECTURAL ISSUE: Should use GetResponseAsync for custom prompts, not ExtractShipmentInvoice");
+            }
+
             var prompt = string.Format(PromptTemplate, escapedText);
             // Log the final prompt being sent (Debug level recommended due to potential length/sensitivity)
             _logger.Debug("ProcessTextVariant - Generated Prompt: {Prompt}", prompt);

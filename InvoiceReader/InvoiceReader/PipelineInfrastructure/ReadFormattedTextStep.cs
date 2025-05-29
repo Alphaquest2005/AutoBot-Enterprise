@@ -23,39 +23,56 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Remove static logger
         // private static readonly ILogger _logger = Log.ForContext<ReadFormattedTextStep>();
 
-        public Task<bool> Execute(InvoiceProcessingContext context)
+        public async Task<bool> Execute(InvoiceProcessingContext context)
         {
             using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // Ensure verbose logging for this method
             {
                 var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
                 string filePath = context?.FilePath ?? "Unknown";
-                context.Logger?.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
-                    nameof(Execute), "Read formatted PDF text based on template structure", $"FilePath: {filePath}");
+                context.Logger?.Information(
+                    "METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                    nameof(Execute),
+                    "Read formatted PDF text based on template structure",
+                    $"FilePath: {filePath}");
 
-                context.Logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
-                    nameof(ReadFormattedTextStep), $"Reading formatted text for file: {filePath}");
+                context.Logger?.Information(
+                    "ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(ReadFormattedTextStep),
+                    $"Reading formatted text for file: {filePath}");
 
 
-                 if (!context.MatchedTemplates.Any())
+                if (!context.MatchedTemplates.Any())
                 {
-                     context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                         nameof(Execute), "Validation", "Skipping ReadFormattedTextStep: No Templates found in context.", $"FilePath: {filePath}", "Expected templates for reading.");
-                     // Not necessarily an error, but nothing to process. Consider if this should be true or false based on pipeline logic.
-                     // Returning true as no processing *failed*, just skipped.
-                     methodStopwatch.Stop(); // Stop stopwatch on skip
-                     context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                         nameof(Execute), "Skipped due to no templates", $"FilePath: {filePath}", methodStopwatch.ElapsedMilliseconds);
-                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                         nameof(ReadFormattedTextStep), $"Skipped reading formatted text for file: {filePath} (no templates)", methodStopwatch.ElapsedMilliseconds);
-                     return Task.FromResult(true);
+                    context.Logger?.Warning(
+                        "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                        nameof(Execute),
+                        "Validation",
+                        "Skipping ReadFormattedTextStep: No Templates found in context.",
+                        $"FilePath: {filePath}",
+                        "Expected templates for reading.");
+                    // Not necessarily an error, but nothing to process. Consider if this should be true or false based on pipeline logic.
+                    // Returning true as no processing *failed*, just skipped.
+                    methodStopwatch.Stop(); // Stop stopwatch on skip
+                    context.Logger?.Information(
+                        "METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(Execute),
+                        "Skipped due to no templates",
+                        $"FilePath: {filePath}",
+                        methodStopwatch.ElapsedMilliseconds);
+                    context.Logger?.Information(
+                        "ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(ReadFormattedTextStep),
+                        $"Skipped reading formatted text for file: {filePath} (no templates)",
+                        methodStopwatch.ElapsedMilliseconds);
+                    return true;
                 }
 
                 bool overallSuccess = true; // Track if at least one template was read successfully
 
-              foreach (var template in context.MatchedTemplates)
+                foreach (var template in context.MatchedTemplates)
                 {
-                     int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
-                     string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                    int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
+                    string templateName = template?.OcrInvoices?.Name ?? "Unknown";
 
                     try
                     {
@@ -63,246 +80,384 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         if (!ExecutionValidation(context.Logger, template, filePath)) // Pass logger
                         {
                             // ExecutionValidation logs the specific reason
-                            string errorMsg = $"Validation failed for TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}.";
+                            string errorMsg =
+                                $"Validation failed for TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}.";
                             context.AddError(errorMsg); // Add error to context
                             overallSuccess = false; // Mark that this template failed
                             context.AddError(errorMsg); // Add error to context
                             methodStopwatch.Stop(); // Stop stopwatch immediately
-                            context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                                nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Validation failed for a template. Terminating early.");
-                            context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                                nameof(ReadFormattedTextStep), "Validation", methodStopwatch.ElapsedMilliseconds, "Validation failed for a template. Terminating early.");
+                            context.Logger?.Error(
+                                "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(Execute),
+                                "Read formatted PDF text based on template structure",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "Validation failed for a template. Terminating early.");
+                            context.Logger?.Error(
+                                "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(ReadFormattedTextStep),
+                                "Validation",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "Validation failed for a template. Terminating early.");
                             continue;
                         }
                         // --- End Validation ---
 
-                        var textLines = GetTextLinesFromFormattedPdfText(context.Logger, template, filePath); // Pass logger
+                        var textLines = GetTextLinesFromFormattedPdfText(
+                            context.Logger,
+                            template,
+                            filePath); // Pass logger
 
                         // --- Template Read Execution ---
                         try
                         {
-                             LogCallingTemplateRead(context.Logger, textLines.Count, filePath, templateId); // Pass logger
-                             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                                 $"Template.Read for Template {templateId}", "SYNC_EXPECTED"); // Log before Read call
-                             var readStopwatch = Stopwatch.StartNew(); // Start stopwatch
+                            LogCallingTemplateRead(
+                                context.Logger,
+                                textLines.Count,
+                                filePath,
+                                templateId); // Pass logger
+                            context.Logger?.Information(
+                                "INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                                $"Template.Read for Template {templateId}",
+                                "SYNC_EXPECTED"); // Log before Read call
+                            var readStopwatch = Stopwatch.StartNew(); // Start stopwatch
 
-                             context.Logger?.Verbose("Template Parts for TemplateId: {TemplateId}: {@Parts}",
-                                 templateId, template.OcrInvoices?.Parts); // Log template parts
-                             context.Logger?.Verbose("Template RegEx for TemplateId: {TemplateId}: {@RegEx}",
-                                 templateId, template.OcrInvoices?.RegEx); // Log template regex
+                            context.Logger?.Verbose(
+                                "Template Parts for TemplateId: {TemplateId}: {@Parts}",
+                                templateId,
+                                template.OcrInvoices?.Parts); // Log template parts
+                            context.Logger?.Verbose(
+                                "Template RegEx for TemplateId: {TemplateId}: {@RegEx}",
+                                templateId,
+                                template.OcrInvoices?.RegEx); // Log template regex
 
-                             context.Logger?.Verbose("Calling template.Read() for TemplateId: {TemplateId}. Input textLines: {@TextLines}",
-                                 templateId, textLines); // Log input textLines
+                            context.Logger?.Verbose(
+                                "Calling template.Read() for TemplateId: {TemplateId}. Input textLines: {@TextLines}",
+                                templateId,
+                                textLines); // Log input textLines
 
-                             template.CsvLines = template.Read(textLines); // The core operation
+                            template.CsvLines = template.Read(textLines); // The core operation
 
                             // --- Resolve File Type ---
-                            context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                nameof(Execute), "FileTypeResolution", "Resolving file type.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
-                            FileTypes fileType = HandleImportSuccessStateStep.ResolveFileType(context.Logger, template); // Handles its own logging, pass logger
+                            context.Logger?.Debug(
+                                "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                                nameof(Execute),
+                                "FileTypeResolution",
+                                "Resolving file type.",
+                                $"FilePath: {filePath}, TemplateId: {templateId}",
+                                "");
+                            FileTypes fileType =
+                                HandleImportSuccessStateStep.ResolveFileType(
+                                    context.Logger,
+                                    template); // Handles its own logging, pass logger
                             if (fileType == null)
                             {
-                                string errorMsg = $"ResolveFileType returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
-                                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                                    nameof(Execute), "Resolve file type", 0, errorMsg);
-                                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                                    $"{nameof(HandleImportSuccessStateStep)} - Template {templateId}", "File type resolution", 0, errorMsg);
+                                string errorMsg =
+                                    $"ResolveFileType returned null for File: {filePath}, TemplateId: {templateId}. Cannot proceed.";
+                                context.Logger?.Error(
+                                    "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                                    nameof(Execute),
+                                    "Resolve file type",
+                                    0,
+                                    errorMsg);
+                                context.Logger?.Error(
+                                    "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                    $"{nameof(HandleImportSuccessStateStep)} - Template {templateId}",
+                                    "File type resolution",
+                                    0,
+                                    errorMsg);
                                 context.AddError(errorMsg); // Add error to context
                                 continue;
                             }
-                            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                nameof(Execute), "FileTypeResolution", "Resolved FileType.", $"FileTypeId: {fileType.Id}, FilePath: {filePath}", "");
+
+                            context.Logger?.Information(
+                                "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                                nameof(Execute),
+                                "FileTypeResolution",
+                                "Resolved FileType.",
+                                $"FileTypeId: {fileType.Id}, FilePath: {filePath}",
+                                "");
                             // --- End Resolve File Type ---
 
                             template.FileType = fileType;
 
                             if (template.FileType.FileImporterInfos.EntryType
-                                 == FileTypeManager.EntryTypes.ShipmentInvoice)
-                             {
-                                 var res = template.CsvLines;
+                                == FileTypeManager.EntryTypes.ShipmentInvoice)
+                            {
+                                var res = template.CsvLines;
 
-                                 // Log the initial CsvLines result for totals calculation debugging
-                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLines result from template.Read()");
-                                 if (res != null)
-                                 {
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLines Count: {Count}", res.Count);
-                                     for (int i = 0; i < res.Count; i++)
-                                     {
-                                         context.Logger?.Information("OCR_CORRECTION_DEBUG: Initial CsvLine[{Index}]: {@CsvLineData}", i, res[i]);
-                                     }
-                                 }
-                                 else
-                                 {
-                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Initial CsvLines is null");
-                                 }
+                                // Log the initial CsvLines result for totals calculation debugging
+                                context.Logger?.Information(
+                                    "OCR_CORRECTION_DEBUG: Initial CsvLines result from template.Read()");
+                                if (res != null)
+                                {
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: Initial CsvLines Count: {Count}",
+                                        res.Count);
+                                    for (int i = 0; i < res.Count; i++)
+                                    {
+                                        context.Logger?.Information(
+                                            "OCR_CORRECTION_DEBUG: Initial CsvLine[{Index}]: {@CsvLineData}",
+                                            i,
+                                            res[i]);
+                                    }
+                                }
+                                else
+                                {
+                                    context.Logger?.Warning("OCR_CORRECTION_DEBUG: Initial CsvLines is null");
+                                }
 
-                                 // Calculate and log TotalsZero using the CsvLines result
-                                 var totalsZero = OCRCorrectionService.TotalsZero(res);
-                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: TotalsZero calculation from CsvLines = {TotalsZero}", totalsZero);
+                                // Calculate and log TotalsZero using the CsvLines result
+                                OCRCorrectionService.TotalsZero(res, out var totalsZero);
+                                context.Logger?.Information(
+                                    "OCR_CORRECTION_DEBUG: TotalsZero calculation from CsvLines = {TotalsZero}",
+                                    totalsZero);
 
-                                 // Log line values for DeepSeek mapping
-                                 context.Logger?.Information("OCR_CORRECTION_DEBUG: Template line values for DeepSeek mapping");
-                                 if (template.Lines != null)
-                                 {
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Template Lines Count: {Count}", template.Lines.Count);
-                                     for (int lineIndex = 0; lineIndex < template.Lines.Count; lineIndex++)
-                                     {
-                                         var line = template.Lines[lineIndex];
-                                         if (line?.Values != null && line.Values.Any())
-                                         {
-                                             context.Logger?.Information("OCR_CORRECTION_DEBUG: Template Line[{LineIndex}] Values: {@LineValues}", lineIndex, line.Values);
-                                         }
-                                     }
-                                 }
-                                 else
-                                 {
-                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Template Lines is null");
-                                 }
+                                // Log line values for DeepSeek mapping
+                                context.Logger?.Information(
+                                    "OCR_CORRECTION_DEBUG: Template line values for DeepSeek mapping");
+                                if (template.Lines != null)
+                                {
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: Template Lines Count: {Count}",
+                                        template.Lines.Count);
+                                    for (int lineIndex = 0; lineIndex < template.Lines.Count; lineIndex++)
+                                    {
+                                        var line = template.Lines[lineIndex];
+                                        if (line?.Values != null && line.Values.Any())
+                                        {
+                                            context.Logger?.Information(
+                                                "OCR_CORRECTION_DEBUG: Template Line[{LineIndex}] Values: {@LineValues}",
+                                                lineIndex,
+                                                line.Values);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    context.Logger?.Warning("OCR_CORRECTION_DEBUG: Template Lines is null");
+                                }
 
-                                 int correctionAttempts = 0;
-                                 const int maxCorrectionAttempts = 1; // Circuit breaker: only 1 attempt to prevent infinite loops
+                                int correctionAttempts = 0;
+                                const int
+                                    maxCorrectionAttempts =
+                                        1; // Circuit breaker: only 1 attempt to prevent infinite loops
 
-                                 while (Math.Abs(OCRCorrectionService.TotalsZero(res)) > 0.01 && correctionAttempts < maxCorrectionAttempts)
-                                 {
-                                     correctionAttempts++;
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: Starting correction attempt {Attempt} of {MaxAttempts}. Current TotalsZero = {TotalsZero}", correctionAttempts, maxCorrectionAttempts, OCRCorrectionService.TotalsZero(res));
+                                while (ShouldContinueCorrections(res, out double currentTotal)
+                                       && correctionAttempts < maxCorrectionAttempts)
+                                {
+                                    correctionAttempts++;
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: Starting correction attempt {Attempt} of {MaxAttempts}. Current TotalsZero = {TotalsZero}",
+                                        correctionAttempts,
+                                        maxCorrectionAttempts,
+                                        currentTotal);
 
-                                     // Apply OCR correction using the CsvLines result and template
-                                     OCRCorrectionService.CorrectInvoices(res, template);
+                                    // Apply OCR correction using the CsvLines result and template
+                                    await OCRCorrectionService.CorrectInvoices(res, template).ConfigureAwait(false);
 
-                                     // Clear and re-read to get updated values
-                                     template.CsvLines = null;
-                                     template.Lines.ForEach(x => x.Values.Clear());
-                                     res = template.Read(textLines); // Re-read after correction
+                                    // Clear all mutable state and re-read to get updated values
+                                    template.ClearInvoiceForReimport();
+                                    res = template.Read(textLines); // Re-read after correction
 
-                                     var newTotalsZero = OCRCorrectionService.TotalsZero(res);
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}", correctionAttempts, newTotalsZero);
-                                 }
+                                    if (OCRCorrectionService.TotalsZero(res, out var newTotalsZero))
+                                    {
+                                        context.Logger?.Information(
+                                            "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}",
+                                            correctionAttempts,
+                                            newTotalsZero);
+                                    }
+                                    else
+                                    {
+                                        context.Logger?.Information(
+                                            "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero failed.",
+                                            correctionAttempts);
+                                    }
 
-                                 if (correctionAttempts >= maxCorrectionAttempts)
-                                 {
-                                     var finalTotalsZero = OCRCorrectionService.TotalsZero(res);
-                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Circuit breaker triggered - maximum correction attempts ({MaxAttempts}) reached. Final TotalsZero = {TotalsZero}", maxCorrectionAttempts, finalTotalsZero);
-                                 }
-                                 else if (correctionAttempts > 0)
-                                 {
-                                     var finalTotalsZero = OCRCorrectionService.TotalsZero(res);
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: OCR correction completed successfully after {Attempts} attempts. Final TotalsZero = {TotalsZero}", correctionAttempts, finalTotalsZero);
-                                 }
-                                 else
-                                 {
-                                     context.Logger?.Information("OCR_CORRECTION_DEBUG: No OCR correction needed. TotalsZero = {TotalsZero}", totalsZero);
-                                 }
+                                }
 
-                                 template.CsvLines = res;
-                             }
+                                if (correctionAttempts >= maxCorrectionAttempts)
+                                {
+                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero);
+                                    context.Logger?.Warning(
+                                        "OCR_CORRECTION_DEBUG: Circuit breaker triggered - maximum correction attempts ({MaxAttempts}) reached. Final TotalsZero = {TotalsZero}",
+                                        maxCorrectionAttempts,
+                                        finalTotalsZero);
+                                }
+                                else if (correctionAttempts > 0)
+                                {
+                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero);
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: OCR correction completed successfully after {Attempts} attempts. Final TotalsZero = {TotalsZero}",
+                                        correctionAttempts,
+                                        finalTotalsZero);
+                                }
+                                else
+                                {
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: No OCR correction needed. TotalsZero = {TotalsZero}",
+                                        totalsZero);
+                                }
+
+                                template.CsvLines = res;
+                            }
 
 
-                             readStopwatch.Stop(); // Stop stopwatch
+                            readStopwatch.Stop(); // Stop stopwatch
 
-                             context.Logger?.Verbose("template.Read() returned. TemplateId: {TemplateId}. CsvLines: {@CsvLines}",
-                                 templateId, template.CsvLines); // Log output CsvLines
+                            context.Logger?.Verbose(
+                                "template.Read() returned. TemplateId: {TemplateId}. CsvLines: {@CsvLines}",
+                                templateId,
+                                template.CsvLines); // Log output CsvLines
 
-                             context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                                 $"Template.Read for Template {templateId}", readStopwatch.ElapsedMilliseconds, "Sync call returned"); // Log after Read call
-                             LogTemplateReadFinished(context.Logger, filePath, templateId, template.CsvLines?.Count ?? 0); // Pass logger
-                         }
-                         catch (Exception readEx) // Catch errors specifically from template.Read()
-                         {
-                             string errorMsg = $"Error executing template.Read() for TemplateId: {templateId}, File: {filePath}: {readEx.Message}";
-                             LogExecutionError(context.Logger, readEx, filePath, templateId); // Log detailed error, pass logger
-                             context.AddError(errorMsg); // Add error to context
-                             template.CsvLines = null; // Ensure CsvLines is null after failure
-                             overallSuccess = false;
+                            context.Logger?.Information(
+                                "OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                                $"Template.Read for Template {templateId}",
+                                readStopwatch.ElapsedMilliseconds,
+                                "Sync call returned"); // Log after Read call
+                            LogTemplateReadFinished(
+                                context.Logger,
+                                filePath,
+                                templateId,
+                                template.CsvLines?.Count ?? 0); // Pass logger
+                        }
+                        catch (Exception readEx) // Catch errors specifically from template.Read()
+                        {
+                            string errorMsg =
+                                $"Error executing template.Read() for TemplateId: {templateId}, File: {filePath}: {readEx.Message}";
+                            LogExecutionError(
+                                context.Logger,
+                                readEx,
+                                filePath,
+                                templateId); // Log detailed error, pass logger
+                            context.AddError(errorMsg); // Add error to context
+                            template.CsvLines = null; // Ensure CsvLines is null after failure
+                            overallSuccess = false;
                             methodStopwatch.Stop(); // Stop stopwatch immediately
-                             context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                                 nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Template.Read() failed. Terminating early.");
-                             context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                                 nameof(ReadFormattedTextStep), "Template reading", methodStopwatch.ElapsedMilliseconds, "Template.Read() failed. Terminating early.");
+                            context.Logger?.Error(
+                                "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(Execute),
+                                "Read formatted PDF text based on template structure",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "Template.Read() failed. Terminating early.");
+                            context.Logger?.Error(
+                                "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(ReadFormattedTextStep),
+                                "Template reading",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "Template.Read() failed. Terminating early.");
 
-                             continue;
-                         }
-                         // --- End Template Read Execution ---
+                            continue;
+                        }
+                        // --- End Template Read Execution ---
 
 
                         // --- Result Check ---
-                        if (!ExecutionSuccess(context.Logger, template, filePath)) // Checks if CsvLines is null or empty, pass logger
+                        if (!ExecutionSuccess(
+                                context.Logger,
+                                template,
+                                filePath)) // Checks if CsvLines is null or empty, pass logger
                         {
-                             // ExecutionSuccess logs the specific reason (empty CsvLines)
-                             string errorMsg = $"No CsvLines generated after read for TemplateId: {templateId}, File: {filePath}.";
-                             context.AddError(errorMsg); // Add error to context
-                             methodStopwatch.Stop(); // Stop stopwatch immediately
-                             context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                                 nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "No CsvLines generated. Terminating early.");
-                             context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                                 nameof(ReadFormattedTextStep), "Result check", methodStopwatch.ElapsedMilliseconds, "No CsvLines generated. Terminating early.");
-                             return Task.FromResult(false); // Terminate pipeline on first empty CsvLines result
+                            // ExecutionSuccess logs the specific reason (empty CsvLines)
+                            string errorMsg =
+                                $"No CsvLines generated after read for TemplateId: {templateId}, File: {filePath}.";
+                            context.AddError(errorMsg); // Add error to context
+                            methodStopwatch.Stop(); // Stop stopwatch immediately
+                            context.Logger?.Error(
+                                "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(Execute),
+                                "Read formatted PDF text based on template structure",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "No CsvLines generated. Terminating early.");
+                            context.Logger?.Error(
+                                "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                nameof(ReadFormattedTextStep),
+                                "Result check",
+                                methodStopwatch.ElapsedMilliseconds,
+                                "No CsvLines generated. Terminating early.");
+                            return false; // Terminate pipeline on first empty CsvLines result
                         }
-                         // --- End Result Check ---
+                        // --- End Result Check ---
 
-                         // If we reach here, this template was processed successfully.
-                         LogExecutionSuccess(context.Logger, filePath, templateId); // Log individual template success, pass logger
-                         // If a template is successful, we assume this is the correct one and stop processing others.
-                         methodStopwatch.Stop(); // Stop stopwatch
-                         context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                             nameof(Execute), "Successfully read formatted text for a template. Terminating early as successful.", $"OverallSuccess: {true}, TemplateId: {templateId}", methodStopwatch.ElapsedMilliseconds);
-                         context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                             nameof(ReadFormattedTextStep), $"Successfully read formatted text for file: {filePath} using TemplateId: {templateId}. Terminating early.", methodStopwatch.ElapsedMilliseconds);
-                         return Task.FromResult(true); // Indicate success and stop processing further templates
-                     }
-                     catch (Exception ex) // Catch unexpected errors within the loop but outside template.Read()
-                     {
-                         string errorMsg = $"Unexpected error processing TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}: {ex.Message}";
-                         LogExecutionError(context.Logger, ex, filePath, templateId); // Log detailed error, pass logger
-                         context.AddError(errorMsg); // Add error to context
-                         template.CsvLines = null; // Ensure CsvLines is null
-                         methodStopwatch.Stop(); // Stop stopwatch immediately
-                         context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                             nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Unexpected error processing template. Terminating early.");
-                         context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                             nameof(ReadFormattedTextStep), "Unexpected error during template processing", methodStopwatch.ElapsedMilliseconds, "Unexpected error processing template. Terminating early.");
-                         return Task.FromResult(false); // Terminate pipeline on first unexpected error
-                     }
-                 }
+                        // If we reach here, this template was processed successfully.
+                        LogExecutionSuccess(
+                            context.Logger,
+                            filePath,
+                            templateId); // Log individual template success, pass logger
+                        // If a template is successful, we assume this is the correct one and stop processing others.
+                        methodStopwatch.Stop(); // Stop stopwatch
+                        context.Logger?.Information(
+                            "METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                            nameof(Execute),
+                            "Successfully read formatted text for a template. Terminating early as successful.",
+                            $"OverallSuccess: {true}, TemplateId: {templateId}",
+                            methodStopwatch.ElapsedMilliseconds);
+                        context.Logger?.Information(
+                            "ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                            nameof(ReadFormattedTextStep),
+                            $"Successfully read formatted text for file: {filePath} using TemplateId: {templateId}. Terminating early.",
+                            methodStopwatch.ElapsedMilliseconds);
+                        return true; // Indicate success and stop processing further templates
+                    }
+                    catch (Exception ex) // Catch unexpected errors within the loop but outside template.Read()
+                    {
+                        string errorMsg =
+                            $"Unexpected error processing TemplateId: {templateId} in ReadFormattedTextStep for File: {filePath}: {ex.Message}";
+                        LogExecutionError(context.Logger, ex, filePath, templateId); // Log detailed error, pass logger
+                        context.AddError(errorMsg); // Add error to context
+                        template.CsvLines = null; // Ensure CsvLines is null
+                        methodStopwatch.Stop(); // Stop stopwatch immediately
+                        context.Logger?.Error(
+                            "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                            nameof(Execute),
+                            "Read formatted PDF text based on template structure",
+                            methodStopwatch.ElapsedMilliseconds,
+                            "Unexpected error processing template. Terminating early.");
+                        context.Logger?.Error(
+                            "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                            nameof(ReadFormattedTextStep),
+                            "Unexpected error during template processing",
+                            methodStopwatch.ElapsedMilliseconds,
+                            "Unexpected error processing template. Terminating early.");
+                        return false; // Terminate pipeline on first unexpected error
+                    }
+                }
 
-             // If the loop completes without finding a successful template, or if it was empty initially
-             methodStopwatch.Stop(); // Stop stopwatch
-             if (overallSuccess) // This branch will only be hit if context.Templates was empty initially
-             {
-                  context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                      nameof(Execute), "Skipped due to no templates or all templates failed but no early exit triggered (should not happen with new logic).", $"OverallSuccess: {overallSuccess}", methodStopwatch.ElapsedMilliseconds);
-                  context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                      nameof(ReadFormattedTextStep), $"Skipped reading formatted text for file: {filePath} (no templates or all templates failed)", methodStopwatch.ElapsedMilliseconds);
-             }
-             else // This branch will be hit if all templates failed and no early exit was triggered (should not happen with new logic)
-             {
-                  context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                      nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Reading formatted text failed for all templates.");
-                  context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                      nameof(ReadFormattedTextStep), "Processing templates", methodStopwatch.ElapsedMilliseconds, "Reading formatted text failed for all templates.");
-             }
+                // If the loop completes without finding a successful template, or if it was empty initially
+                methodStopwatch.Stop(); // Stop stopwatch
+                if (overallSuccess) // This branch will only be hit if context.Templates was empty initially
+                {
+                    context.Logger?.Information(
+                        "METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(Execute),
+                        "Skipped due to no templates or all templates failed but no early exit triggered (should not happen with new logic).",
+                        $"OverallSuccess: {overallSuccess}",
+                        methodStopwatch.ElapsedMilliseconds);
+                    context.Logger?.Information(
+                        "ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(ReadFormattedTextStep),
+                        $"Skipped reading formatted text for file: {filePath} (no templates or all templates failed)",
+                        methodStopwatch.ElapsedMilliseconds);
+                }
+                else // This branch will be hit if all templates failed and no early exit was triggered (should not happen with new logic)
+                {
+                    context.Logger?.Error(
+                        "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(Execute),
+                        "Read formatted PDF text based on template structure",
+                        methodStopwatch.ElapsedMilliseconds,
+                        "Reading formatted text failed for all templates.");
+                    context.Logger?.Error(
+                        "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(ReadFormattedTextStep),
+                        "Processing templates",
+                        methodStopwatch.ElapsedMilliseconds,
+                        "Reading formatted text failed for all templates.");
+                }
 
-             return Task.FromResult(overallSuccess); // Return overall success status
+                return overallSuccess; // Return overall success status
 
-            // If the loop completes, check overallSuccess
-            methodStopwatch.Stop(); // Stop stopwatch
-            if (overallSuccess)
-            {
-                 context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                     nameof(Execute), "Successfully read formatted text for at least one template", $"OverallSuccess: {overallSuccess}", methodStopwatch.ElapsedMilliseconds);
-                 context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                     nameof(ReadFormattedTextStep), $"Successfully read formatted text for file: {filePath} using at least one template", methodStopwatch.ElapsedMilliseconds);
-            }
-            else
-            {
-                 context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                     nameof(Execute), "Read formatted PDF text based on template structure", methodStopwatch.ElapsedMilliseconds, "Reading formatted text failed for all templates.");
-                 context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                     nameof(ReadFormattedTextStep), "Processing templates", methodStopwatch.ElapsedMilliseconds, "Reading formatted text failed for all templates.");
-            }
 
-            return Task.FromResult(overallSuccess); // Return overall success status
-        } // Closing brace for the 'using' block
+            } // Closing brace for the 'using' block
         } // Closing brace for the 'Execute' method
 
         // Validation specific to one template instance
@@ -325,6 +480,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
 
             return true;
+        }
+
+        private static bool ShouldContinueCorrections(List<dynamic> res, out double totalZero)
+        {
+            if (OCRCorrectionService.TotalsZero(res, out totalZero))
+            {
+                return Math.Abs(totalZero) > 0.01;
+            }
+
+            // Error case - don't continue
+            Log.Logger.Warning("Could not calculate TotalsZero - stopping correction attempts");
+            return false;
         }
 
         // Checks if the result of template.Read() is valid (not null/empty)

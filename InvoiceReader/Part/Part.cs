@@ -148,5 +148,84 @@ namespace WaterNut.DataSpace
         {
             _logger.Verbose("{MethodName}: Initialized lastLineRead to 0 for PartId: {PartId}.", methodName, partId);
         }
+
+        /// <summary>
+        /// Clears only the mutable state that gets populated during the Read process,
+        /// without affecting configuration state like StartCount, EndCount, Lines, etc.
+        /// </summary>
+        public void ClearPartForReimport()
+        {
+            int? partId = this.OCR_Part?.Id;
+            string methodName = nameof(ClearPartForReimport);
+
+            _logger.Debug("Entering {MethodName} for PartId: {PartId}", methodName, partId);
+
+            try
+            {
+                // Clear accumulated lines from processing (not configuration)
+                _logger.Verbose("{MethodName}: Clearing _startlines (Count: {Count})", methodName, _startlines?.Count ?? 0);
+                _startlines?.Clear();
+
+                _logger.Verbose("{MethodName}: Clearing _endlines (Count: {Count})", methodName, _endlines?.Count ?? 0);
+                _endlines?.Clear();
+
+                _logger.Verbose("{MethodName}: Clearing _lines (Count: {Count})", methodName, _lines?.Count ?? 0);
+                _lines?.Clear();
+
+                // Clear text buffer
+                _logger.Verbose("{MethodName}: Clearing _instanceLinesTxt (Length: {Length})", methodName, _instanceLinesTxt?.Length ?? 0);
+                _instanceLinesTxt?.Clear();
+
+                // Clear extracted values
+                _logger.Verbose("{MethodName}: Clearing _values (Count: {Count})", methodName, _values?.Count ?? 0);
+                _values?.Clear();
+
+                // Reset processing state (but keep configuration state)
+                _logger.Verbose("{MethodName}: Resetting lastLineRead to 0 (was {PreviousValue})", methodName, lastLineRead);
+                lastLineRead = 0;
+
+                _logger.Verbose("{MethodName}: Resetting _currentInstanceStartLineNumber to -1 (was {PreviousValue})",
+                    methodName, _currentInstanceStartLineNumber);
+                _currentInstanceStartLineNumber = -1;
+
+                // Reset processing counters but keep them at reasonable values for re-import
+                _logger.Verbose("{MethodName}: Resetting _instance to 1 (was {PreviousValue})", methodName, _instance);
+                _instance = 1;
+
+                _logger.Verbose("{MethodName}: Resetting _lastProcessedParentInstance to 0 (was {PreviousValue})",
+                    methodName, _lastProcessedParentInstance);
+                _lastProcessedParentInstance = 0;
+
+                // Clear EverStarted flag
+                _logger.Verbose("{MethodName}: Resetting EverStarted to null (was {PreviousValue})", methodName, EverStarted);
+                EverStarted = null;
+
+                // Recursively clear child parts
+                if (ChildParts != null && ChildParts.Any())
+                {
+                    _logger.Debug("{MethodName}: Recursively clearing {Count} child parts for PartId: {PartId}",
+                        methodName, ChildParts.Count, partId);
+                    ChildParts.ForEach(child =>
+                    {
+                        if (child != null)
+                        {
+                            child.ClearPartForReimport();
+                        }
+                        else
+                        {
+                            _logger.Warning("{MethodName}: Skipping null child part for Parent PartId: {ParentPartId}",
+                                methodName, partId);
+                        }
+                    });
+                }
+
+                _logger.Debug("Finished {MethodName} for PartId: {PartId}", methodName, partId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during {MethodName} for PartId: {PartId}", methodName, partId);
+                throw;
+            }
+        }
     }
 }
