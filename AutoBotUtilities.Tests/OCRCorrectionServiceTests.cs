@@ -1930,21 +1930,21 @@ namespace AutoBotUtilities.Tests.Production
             var pdfContent = @"
                 COMMERCIAL INVOICE #END2END-001
                 ================================
-                
+
                 Supplier: Test Company Ltd.
                 Address: 123 Test Street, Test City
-                
+
                 LINE ITEMS:
                 Description             Qty    Price     Total
                 Widget A                5      $10,50    $52,50
                 Widget B                3      $15,75    $47,25
-                
+
                 Subtotal:               $99,75
                 Shipping:               $10,25
                 Tax:                    $8,00
                 Gift Card Applied:      -$5,00
-                
-                TOTAL:                  $113,00 
+
+                TOTAL:                  $113,00
             "; // Note: Original total is $113.00, but sum of items + shipping + tax - gift card is $99.75 + $10.25 + $8.00 - $5.00 = $113.00. So this total is correct.
 
             File.WriteAllText(txtFilePath, pdfContent);
@@ -1996,7 +1996,7 @@ namespace AutoBotUtilities.Tests.Production
             // Step 4: Apply corrections using static method (simulates production usage)
             // The mockTemplate needs to be of a type that CorrectInvoices can use for context (e.g., file path)
             // Assuming OCR.Business.Entities.Invoices is the collection type and Invoice is an entity within it.
-            var mockTemplate = new Invoice(new OCR.Business.Entities.Invoices()) { FilePath = Path.Combine(_testDataDirectory, pdfFileName) };
+            var mockTemplate = new Invoice(new OCR.Business.Entities.Invoices(), _logger) { FilePath = Path.Combine(_testDataDirectory, pdfFileName) };
             await OCRCorrectionService.CorrectInvoices(dynamicResults[0], mockTemplate);
 
 

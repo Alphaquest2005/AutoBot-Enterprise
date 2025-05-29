@@ -48,9 +48,9 @@ namespace InvoiceReaderPipelineTests
 
             await RunImportAndVerificationTest(testFile, expectedInvoiceNo, expectedDetailCountAssertion, assertionDescription, _logger).ConfigureAwait(false);
         }
-        
-        
-        
+
+
+
         private void LogTestStart()
         {
             _logger.Information("=== Starting Test: {TestName} ===", TestContext.CurrentContext.Test.Name);
@@ -104,7 +104,7 @@ namespace InvoiceReaderPipelineTests
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR configuring Serilog programmatically: {ex}");
+                // Use fallback logger since main logger failed to configure
                 Log.Logger = new LoggerConfiguration() // Fallback
                     .MinimumLevel.Warning()
                     .WriteTo.Console()

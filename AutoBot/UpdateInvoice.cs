@@ -20,7 +20,7 @@ namespace AutoBot
     {
         public static async Task UpdateRegEx(FileTypes fileTypes, FileInfo[] files, ILogger log)
         {
-            
+
             var regExCommands = RegExCommands(fileTypes, log);
 
             foreach (var info in files.Where(x => x.Extension == ".txt"))
@@ -39,7 +39,7 @@ namespace AutoBot
                     var cmdParamInfo = cmdinfo.Groups["Params"].Value;
                     var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
-                   
+
                     var cmdparamDic = new Dictionary<string, string>(WaterNut.DataSpace.Utils.ignoreCase);
                     foreach (Match m in cmdParams)
                     {
@@ -73,7 +73,7 @@ namespace AutoBot
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e);
+                                log.Error(e, "Error in demo command");
                                 throw;
                             }
                         },
@@ -173,7 +173,7 @@ namespace AutoBot
                         ? bool.Parse(paramInfo["ReplacementRegexIsMultiLine"])
                         : (bool?)null;
 
-                 
+
 
                     var regex = GetRegex(ctx, pRegex, pIsMultiLine);
                     var repRegex = GetRegex(ctx, pRepRegex, pRepIsMultiLine);
@@ -275,7 +275,7 @@ namespace AutoBot
                         regex = new RegularExpressions(true)
                         { TrackingState = TrackingState.Added, RegEx = pRegex, MultiLine = pIsMultiLine };
                     line.RegularExpressions = regex;
-                   
+
 
                     ctx.SaveChanges();
 
@@ -286,7 +286,7 @@ namespace AutoBot
                     {
                         var keyWord = fieldMatch.Groups["Keyword"].Value;
                         var fieldMappingsList = ctx.OCR_FieldMappings.Where(x => x.Key == keyWord).ToList();
-                        
+
                         foreach (var fieldMap in fieldMappingsList)
                         {
                             Fields field = line.Fields.FirstOrDefault(x => x.Key == fieldMap.Key);
@@ -313,9 +313,9 @@ namespace AutoBot
                                 field.DataType = fieldMap.DataType;
                                 field.IsRequired = fieldMap.IsRequired;
                             }
-                           
 
-                            
+
+
                             ctx.SaveChanges();
                             fieldLst.Add(field);
 
@@ -446,7 +446,7 @@ namespace AutoBot
                     var part = ctx.Parts.Include(x => x.Start)
                         .FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
                     var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
-                    
+
                     if (part != null) return;
                     if (invoice == null) return;
                     var parentPart = ctx.Parts.FirstOrDefault(x =>
@@ -466,20 +466,20 @@ namespace AutoBot
                         PartTypes = partType,
                         Invoices =invoice,
                         Start = new List<Start>(){new Start(true){TrackingState = TrackingState.Added, RegularExpressions = startRegex}},
-                       
+
                     };
 
-                   
+
                     if (pIsRecurring == true) part.RecuringPart = new RecuringPart(true) { IsComposite = pIsComposite , TrackingState = TrackingState.Added};
                     ctx.Parts.Add(part);
                     ctx.SaveChanges();
-                    
+
                     if (pParentPart != null && parentPart != null)
                         ctx.ChildParts.Add(new ChildParts(true){ChildPart = part, ParentPart = parentPart, TrackingState = TrackingState.Added});
 
                     ctx.SaveChanges();
 
-                    
+
 
                 }
             }
@@ -510,7 +510,7 @@ namespace AutoBot
                                 OCR_RegularExpressions = new RegularExpressions(true)
                                 {
                                     RegEx = pIDRegex ,TrackingState = TrackingState.Added,
-                                    
+
                                 },
                                 TrackingState = TrackingState.Added
                             }
@@ -519,19 +519,19 @@ namespace AutoBot
                         , IsActive = true
                         , ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                         , TrackingState = TrackingState.Added
-                        , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
+                        , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                             && x.FileImporterInfos.EntryType == (pDocumentType??FileTypeManager.EntryTypes.ShipmentInvoice) && x.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF).Id
 
                     };
                     ctx.Invoices.Add(invoice);
                     ctx.SaveChanges();
 
-                    
+
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                log.Error(e, "Error in AddInvoice");
                 throw;
             }
         }
@@ -579,10 +579,10 @@ namespace AutoBot
                                    InvoiceReader.InvoiceReader.CommandsTxt;
 
                         var res = files.Where(x => InvoiceReader.InvoiceReader.IsInvoiceDocument(invoice, x.Value, x.Key, log)).ToList();
-                        
+
                         res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
-                       
+
 
                         await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Template Template Not found!",
                              EmailDownloader.EmailDownloader.GetContacts("Developer", log), body, res1, log).ConfigureAwait(false);
@@ -590,7 +590,7 @@ namespace AutoBot
                         fileTypes.ProcessNextStep.Add("Kill");
 
                     }
-                    
+
                 }
             }
             catch (Exception e)

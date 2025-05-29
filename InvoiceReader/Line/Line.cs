@@ -9,15 +9,17 @@ namespace WaterNut.DataSpace
 {
     public partial class Line
     {
-        // Define logger instance here
-        private static readonly ILogger _logger = Log.ForContext<Line>();
+        // Logger instance passed from caller
+        private readonly ILogger _logger;
         // Define Regex Timeout constant here for use in other partial methods
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(2);
 
         public Lines OCR_Lines { get; }
 
-        public Line(Lines lines)
+        public Line(Lines lines, ILogger logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             string methodName = nameof(Line) + " Constructor";
             int? lineId = lines?.Id; // Safe access
             _logger.Verbose("Entering {MethodName} for OCR_Lines Id: {LineId}", methodName, lineId);

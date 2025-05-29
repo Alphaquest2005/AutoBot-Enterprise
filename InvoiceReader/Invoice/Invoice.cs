@@ -16,8 +16,8 @@ namespace WaterNut.DataSpace
 {
     public partial class Invoice
     {
-        // Define logger instance here
-        private static readonly ILogger _logger = Log.ForContext<Invoice>();
+        // Logger instance passed from caller
+        private readonly ILogger _logger;
 
         private EntryData EntryData { get; } = new EntryData(); // Simple initialization, no logging needed
         public Invoices OcrInvoices { get; }
@@ -131,8 +131,10 @@ namespace WaterNut.DataSpace
         }
 
 
-        public Invoice(Invoices ocrInvoices)
+        public Invoice(Invoices ocrInvoices, ILogger logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             var methodStopwatch = Stopwatch.StartNew();
             int? invoiceId = ocrInvoices?.Id;
             _logger.Information("ACTION_START: {ActionName}. Context: [OcrInvoicesId: {InvoiceId}]",
@@ -172,7 +174,7 @@ namespace WaterNut.DataSpace
                          {
                              _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Creating Part object for OCR_Part Id: {PartId}", nameof(Invoice), "PartCreation", z.Id);
                              // Assuming Part constructor handles potential errors/logging
-                             return new Part(z);
+                             return new Part(z, _logger);
                          })
                          .ToList();
                 }

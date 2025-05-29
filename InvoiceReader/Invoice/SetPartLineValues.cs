@@ -253,7 +253,7 @@ namespace WaterNut.DataSpace
                             Section = sectionName,
                             LineNumber = kvp.Key.lineNumber,
                             FieldName = kvp.g.Key.Fields?.Field,
-                            FieldValue = GetValue(kvp.g),
+                            FieldValue = GetValue(kvp.g, _logger),
                             Field = kvp.g.Key.Fields,
                             RawValue = kvp.g.Value
                         })
@@ -549,7 +549,7 @@ namespace WaterNut.DataSpace
         {
             // Strategy: Select the most complete/accurate field value
             // 1. Prefer non-empty values
-            // 2. Prefer higher quality sections (Single > Ripped > Sparse)  
+            // 2. Prefer higher quality sections (Single > Ripped > Sparse)
             // 3. Prefer longer values (more complete capture)
 
             var sectionPriority = new Dictionary<string, int>

@@ -399,7 +399,7 @@ namespace InvoiceReader
                  return failureResult;
             }
         }
- 
+
          public static async Task<string> GetPdftxt(string fileFullName, ILogger logger)
          {
              var methodStopwatch = Stopwatch.StartNew();
@@ -526,7 +526,7 @@ namespace InvoiceReader
      }
         public static bool IsInvoiceDocument(Invoices invoice, string fileText, string fileName, ILogger logger)
         {
-            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice), fileText, fileName, logger);
+            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice, logger), fileText, fileName, logger);
         }
 
         private static void LogStartPDFImport(int fileCount, FileTypes fileType, ILogger logger)
@@ -576,6 +576,6 @@ namespace InvoiceReader
         }
 
 
-  
+
     }
 }

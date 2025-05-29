@@ -53,7 +53,7 @@ namespace WaterNut.DataSpace
                     "{MethodName}: Processing Field {FieldIndex}/{TotalFields} (Id: {FieldId}, Name: '{FieldName}') for Instance: {Instance}",
                     methodName, fieldIndex + 1, topLevelFields.Count, fieldId, fieldName, instance);
 
-                var initialValue = GetInitialValue(match, field, methodName, fieldId);
+                var initialValue = GetInitialValue(match, field, methodName, fieldId, _logger);
 
                 var formattedValue = ApplyFormating(initialValue, field, methodName, fieldId);
 

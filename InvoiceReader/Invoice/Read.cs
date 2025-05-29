@@ -55,7 +55,7 @@ namespace WaterNut.DataSpace
 
                 ////////////////////
 
-                var result = ReturnFinalResults(finalResultList, methodName, invoiceId, finalResult);
+                var result = ReturnFinalResults(finalResultList, methodName, invoiceId, finalResult, _logger);
 
                 methodStopwatch.Stop();
                 _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultInstanceCount: {ResultInstanceCount}",
@@ -105,16 +105,16 @@ namespace WaterNut.DataSpace
 
         // Removed LogValidationPassed, LogNullPartsIssue, LogNullTextIssue as their logic is integrated into ValidateInput.
 
-        private static List<dynamic> ReturnFinalResults(List<IDictionary<string, object>> finalResultList, string methodName, int? invoiceId, List<dynamic> finalResult)
+        private static List<dynamic> ReturnFinalResults(List<IDictionary<string, object>> finalResultList, string methodName, int? invoiceId, List<dynamic> finalResult, ILogger logger)
         {
             var methodStopwatch = Stopwatch.StartNew();
-            _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, FinalResultListCount: {FinalResultListCount}]",
+            logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, FinalResultListCount: {FinalResultListCount}]",
                 nameof(ReturnFinalResults), invoiceId, finalResultList?.Count ?? 0);
 
             if (!finalResultList.Any())
             {
                 methodStopwatch.Stop();
-                _logger.Warning("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: No instances assembled after SetPartLineValues. Returning empty list structure.",
+                logger.Warning("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: No instances assembled after SetPartLineValues. Returning empty list structure.",
                     nameof(ReturnFinalResults), methodStopwatch.ElapsedMilliseconds);
                 // finalResult is already the empty structure
                 return finalResult;
@@ -123,7 +123,7 @@ namespace WaterNut.DataSpace
             // --- Success ---
             finalResult = new List<dynamic> { finalResultList }; // Wrap the final list
             methodStopwatch.Stop();
-            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Returning {InstanceCount} assembled instances.",
+            logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Returning {InstanceCount} assembled instances.",
                 nameof(ReturnFinalResults), methodStopwatch.ElapsedMilliseconds, finalResultList.Count);
             return finalResult;
         }
@@ -152,7 +152,7 @@ namespace WaterNut.DataSpace
             // --- Result Assembly ---
             var ores = AssembleResults(methodName, invoiceId);
 
-            var result = FlattenResults(methodName, out finalResultList, ores);
+            var result = FlattenResults(methodName, out finalResultList, ores, _logger);
 
             methodStopwatch.Stop();
             _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms.",
@@ -160,10 +160,10 @@ namespace WaterNut.DataSpace
             return result;
         }
 
-        private static bool FlattenResults(string methodName, out List<IDictionary<string, object>> finalResultList, List<List<IDictionary<string, object>>> ores)
+        private static bool FlattenResults(string methodName, out List<IDictionary<string, object>> finalResultList, List<List<IDictionary<string, object>>> ores, ILogger logger)
         {
             var methodStopwatch = Stopwatch.StartNew();
-            _logger.Information("ACTION_START: {ActionName}. Context: [OresCount: {OresCount}]",
+            logger.Information("ACTION_START: {ActionName}. Context: [OresCount: {OresCount}]",
                 nameof(FlattenResults), ores?.Count ?? 0);
 
             // Flatten the results from all parts safely
@@ -171,14 +171,14 @@ namespace WaterNut.DataSpace
                 .SelectMany(x => x ?? Enumerable.Empty<IDictionary<string, object>>()) // Safe SelectMany
                 .Where(d => d != null) // Filter out potential null dictionaries
                 .ToList();
-            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Flattened results. Final instance count: {FinalCount}",
+            logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Flattened results. Final instance count: {FinalCount}",
                 nameof(FlattenResults), "Flattening", finalResultList.Count);
             // Log the content of finalResultList
-            _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Content of finalResultList before final check: {@FinalResultList}",
+            logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Content of finalResultList before final check: {@FinalResultList}",
                 nameof(FlattenResults), "ContentCheck", finalResultList);
 
             methodStopwatch.Stop();
-            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultCount: {ResultCount}",
+            logger.Information("ACTION_END_SUCCESS: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. ResultCount: {ResultCount}",
                 nameof(FlattenResults), methodStopwatch.ElapsedMilliseconds, finalResultList.Count);
             return false; // This method doesn't indicate failure, just returns the flattened list
         }
@@ -254,7 +254,7 @@ namespace WaterNut.DataSpace
             var section = ""; // Current section name
             LogStartIteration(methodName, inputLineCount, invoiceId);
 
-            // --- Line Iteration ---  
+            // --- Line Iteration ---
             foreach (var lineText in text)
             {
                 lineCount++;
@@ -262,12 +262,12 @@ namespace WaterNut.DataSpace
 
                 var iLine = CreateInvoiceLines(methodName, lineText, lineCount);
 
-                // Call Read on each Part  
+                // Call Read on each Part
 
                 ////////////////////////////////
                 ProcessParts(methodName, lineCount, section, iLine);
                 ///////////////////////////////
-              
+
             }
 
             LogEndIteration(methodName, inputLineCount, invoiceId);
@@ -302,7 +302,7 @@ namespace WaterNut.DataSpace
                 methodName, partId, iLine, section, part.Instance);
 
             part.Read(iLine, section, part.Instance);// need to call itself passing its own instance again to set the currenteffectiveinstance
-                        
+
             // Log outputs from part.Read()
             _logger.Verbose("{MethodName}: part.Read() returned for PartId: {PartId}. Part Values: {@PartValues}",
                 methodName, partId, ((WaterNut.DataSpace.Part)part).Values);
@@ -313,7 +313,7 @@ namespace WaterNut.DataSpace
 
         private List<InvoiceLine> CreateInvoiceLines(string methodName, string lineText, int lineCount)
         {
-            // Create InvoiceLine object  
+            // Create InvoiceLine object
             var iLine = new List<InvoiceLine>() { new InvoiceLine(lineText, lineCount) };
 
             LogInvoiceLineCreated(methodName, lineCount, iLine);
@@ -322,11 +322,11 @@ namespace WaterNut.DataSpace
 
         private string GetSection(string methodName, int inputLineCount, string section, int lineCount, string lineText)
         {
-            string previousSection = section; // Store previous section for logging change  
+            string previousSection = section; // Store previous section for logging change
 
             LogProcessingLine(methodName, lineCount, inputLineCount, lineText);
 
-            // Determine current section based on predefined markers  
+            // Determine current section based on predefined markers
             string detectedSectionKey = Sections.FirstOrDefault(s =>
                 lineText != null && s.Value != null &&
                 lineText.Contains(s.Value)).Key;

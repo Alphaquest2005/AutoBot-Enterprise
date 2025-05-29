@@ -275,7 +275,7 @@ namespace InvoiceReader.PipelineInfrastructure
             //ctx.Configuration.ProxyCreationEnabled = false;
 
             var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
-            var templates = activeTemplatesQuery.Select(x => new Invoice(x)).ToList(); // activeTemplatesQuery is already a List
+            var templates = activeTemplatesQuery.Select(x => new Invoice(x, context.Logger)).ToList(); // activeTemplatesQuery is already a List
 
 
 

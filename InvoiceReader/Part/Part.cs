@@ -11,7 +11,7 @@ namespace WaterNut.DataSpace
 {
     public partial class Part
     {
-        private static readonly ILogger _logger = Log.ForContext<Part>();
+        private readonly ILogger _logger;
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5);
 
         private readonly List<InvoiceLine> _startlines = new List<InvoiceLine>();
@@ -22,8 +22,10 @@ namespace WaterNut.DataSpace
 
         public Parts OCR_Part { get; }
 
-        public Part(Parts part)
+        public Part(Parts part, ILogger logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             string methodName = nameof(Part) + " Constructor";
             int? partId = part?.Id;
 
@@ -104,7 +106,7 @@ namespace WaterNut.DataSpace
                     .Select(x =>
                     {
                         _logger.Verbose("{MethodName}: Creating child Part for OCR_Part Id: {ChildPartId} (Parent: {ParentPartId})", methodName, x.ChildPart.Id, partId);
-                        return new Part(x.ChildPart);
+                        return new Part(x.ChildPart, _logger);
                     })
                     .ToList() ?? new List<Part>();
 
@@ -129,7 +131,7 @@ namespace WaterNut.DataSpace
                     .Select(x =>
                     {
                         _logger.Verbose("{MethodName}: Creating Line object for OCR_Lines Id: {LineId} (Parent: {ParentPartId})", methodName, x.Id, partId);
-                        return new Line(x);
+                        return new Line(x, _logger);
                     })
                     .ToList() ?? new List<Line>();
 
