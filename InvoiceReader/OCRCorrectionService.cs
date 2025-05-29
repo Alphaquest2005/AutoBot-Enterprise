@@ -10,6 +10,8 @@ using OCR.Business.Entities;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using Serilog;
+using Serilog.Events;
+using Core.Common.Extensions;
 
 namespace WaterNut.DataSpace
 {
@@ -131,8 +133,10 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to check if invoice totals are correct (TotalsZero = 0) with gift card handling
         /// </summary>
-        public static bool TotalsZero(ShipmentInvoice invoice)
+        public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger = null)
         {
+            var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
+
             if (invoice == null) return false;
 
             var baseTotal = (invoice.SubTotal ?? 0) +
@@ -153,6 +157,10 @@ namespace WaterNut.DataSpace
             // Use the smaller difference to determine if totals are zero
             var minDifference = Math.Min(diffWithDeduction, diffWithoutDeduction);
 
+            // Debug level logging to reduce console noise
+            log.Debug("TotalsZero calculation for {InvoiceNo}: BaseTotal={BaseTotal}, Deduction={Deduction}, Reported={Reported}, MinDiff={MinDiff}, Result={Result}",
+                invoice.InvoiceNo, baseTotal, deductionAmount, reportedInvoiceTotal, minDifference, minDifference < 0.01);
+
             return minDifference < 0.01;
         }
 
@@ -168,72 +176,88 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to calculate total zero sum from dynamic invoice results - HANDLES MULTIPLE INVOICES
         /// </summary>
-        public static bool TotalsZero(List<dynamic> res, out double totalZeroSum)
+        public static bool TotalsZero(List<dynamic> res, out double totalZeroSum, ILogger logger = null)
         {
-            totalZeroSum = 0;
-
-            if (res == null || !res.Any())
-                return true; // Empty is legitimate success
-
-            try
+            // Use LogLevelOverride to enable detailed logging for this specific calculation
+            using (LogLevelOverride.Begin(LogEventLevel.Debug))
             {
-                bool processedAnyItem = false;
+                var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
 
-                foreach (var item in res)
+                totalZeroSum = 0;
+
+                if (res == null || !res.Any())
+                    return true; // Empty is legitimate success
+
+                try
                 {
-                    if (item is List<IDictionary<string, object>> invoiceList)
+                    bool processedAnyItem = false;
+
+                    foreach (var item in res)
                     {
-                        if (!invoiceList.Any()) continue;
-
-                        // FIXED: Process ALL invoices in the collection, not just the first
-                        foreach (var invoiceDict in invoiceList)
+                        if (item is List<IDictionary<string, object>> invoiceList)
                         {
-                            var tempInvoice = CreateTempShipmentInvoice(invoiceDict);
+                            if (!invoiceList.Any()) continue;
 
-                            // Use the same gift card handling logic as the static method
-                            var baseTotal = (tempInvoice.SubTotal ?? 0) +
-                                          (tempInvoice.TotalInternalFreight ?? 0) +
-                                          (tempInvoice.TotalOtherCost ?? 0) +
-                                          (tempInvoice.TotalInsurance ?? 0);
+                            // FIXED: Process ALL invoices in the collection, not just the first
+                            foreach (var invoiceDict in invoiceList)
+                            {
+                                var tempInvoice = CreateTempShipmentInvoice(invoiceDict);
 
-                            var deductionAmount = tempInvoice.TotalDeduction ?? 0;
-                            var reportedInvoiceTotal = tempInvoice.InvoiceTotal ?? 0;
+                                // Use the same gift card handling logic as the static method
+                                var baseTotal = (tempInvoice.SubTotal ?? 0) +
+                                              (tempInvoice.TotalInternalFreight ?? 0) +
+                                              (tempInvoice.TotalOtherCost ?? 0) +
+                                              (tempInvoice.TotalInsurance ?? 0);
 
-                            var calculatedWithDeduction = baseTotal - deductionAmount;
-                            var calculatedWithoutDeduction = baseTotal;
+                                var deductionAmount = tempInvoice.TotalDeduction ?? 0;
+                                var reportedInvoiceTotal = tempInvoice.InvoiceTotal ?? 0;
 
-                            var diffWithDeduction = Math.Abs(calculatedWithDeduction - reportedInvoiceTotal);
-                            var diffWithoutDeduction = Math.Abs(calculatedWithoutDeduction - reportedInvoiceTotal);
+                                var calculatedWithDeduction = baseTotal - deductionAmount;
+                                var calculatedWithoutDeduction = baseTotal;
 
-                            // Use the smaller difference for TotalsZero calculation
-                            var invoiceTotalsZero = Math.Min(diffWithDeduction, diffWithoutDeduction);
+                                var diffWithDeduction = Math.Abs(calculatedWithDeduction - reportedInvoiceTotal);
+                                var diffWithoutDeduction = Math.Abs(calculatedWithoutDeduction - reportedInvoiceTotal);
 
-                            totalZeroSum += invoiceTotalsZero;
-                            processedAnyItem = true;
+                                // Use the smaller difference for TotalsZero calculation
+                                var invoiceTotalsZero = Math.Min(diffWithDeduction, diffWithoutDeduction);
 
-                            Log.Logger.Debug("Invoice {InvoiceNo}: TotalsZero = {TotalsZero} (WithDeduction: {WithDeduction}, WithoutDeduction: {WithoutDeduction})",
-                                tempInvoice.InvoiceNo, invoiceTotalsZero, diffWithDeduction, diffWithoutDeduction);
+                                totalZeroSum += invoiceTotalsZero;
+                                processedAnyItem = true;
+
+                                // Enhanced logging with emojis for easy identification
+                                log.Information("🔍 Dynamic TotalsZero calculation for {InvoiceNo}:", tempInvoice.InvoiceNo);
+                                log.Information("   📊 BaseTotal = SubTotal({SubTotal}) + Freight({Freight}) + OtherCost({OtherCost}) + Insurance({Insurance}) = {BaseTotal}",
+                                    tempInvoice.SubTotal, tempInvoice.TotalInternalFreight, tempInvoice.TotalOtherCost, tempInvoice.TotalInsurance, baseTotal);
+                                log.Information("   💳 TotalDeduction = {Deduction}", deductionAmount);
+                                log.Information("   🧾 ReportedInvoiceTotal = {ReportedTotal}", reportedInvoiceTotal);
+                                log.Information("   🧮 Calculated WITH deduction: {BaseTotal} - {Deduction} = {WithDeduction} (diff: {DiffWith})",
+                                    baseTotal, deductionAmount, calculatedWithDeduction, diffWithDeduction);
+                                log.Information("   🧮 Calculated WITHOUT deduction: {BaseTotal} = {WithoutDeduction} (diff: {DiffWithout})",
+                                    baseTotal, calculatedWithoutDeduction, diffWithoutDeduction);
+                                log.Information("   ✅ Using minimum difference: {MinDifference}",
+                                    invoiceTotalsZero);
+                            }
+                        }
+                        else
+                        {
+                            // Type mismatch - log for debugging
+                            var actualType = item?.GetType().Name ?? "null";
+                            log.Warning("Expected List<IDictionary<string, object>> but got {ActualType}", actualType);
+                            totalZeroSum = 0;
+                            return false;
                         }
                     }
-                    else
-                    {
-                        // Type mismatch - log for debugging
-                        var actualType = item?.GetType().Name ?? "null";
-                        Log.Logger.Warning("Expected List<IDictionary<string, object>> but got {ActualType}", actualType);
-                        totalZeroSum = 0;
-                        return false;
-                    }
-                }
 
-                Log.Logger.Information("Processed {ProcessedAny} items, total TotalsZero sum: {TotalSum}",
-                    processedAnyItem, totalZeroSum);
-                return processedAnyItem || !res.Any();
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Error calculating TotalsZero");
-                totalZeroSum = 0;
-                return false;
+                    log.Information("🏁 Final Results: Processed {ProcessedAny} items, total TotalsZero sum: {TotalSum}",
+                        processedAnyItem, totalZeroSum);
+                    return processedAnyItem || !res.Any();
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex, "Error calculating TotalsZero");
+                    totalZeroSum = 0;
+                    return false;
+                }
             }
         }
 
@@ -241,16 +265,18 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to correct invoices using OCR correction service - HANDLES MULTIPLE INVOICES
         /// </summary>
-        public static async Task CorrectInvoices(List<dynamic> res, Invoice template)
+        public static async Task CorrectInvoices(List<dynamic> res, Invoice template, ILogger logger = null)
         {
             if (res == null || !res.Any() || template == null) return;
+
+            var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
 
             try
             {
                 var allShipmentInvoices = ConvertDynamicToShipmentInvoices(res);
                 var droppedFilePath = GetFilePathFromTemplate(template);
 
-                Log.Logger.Information("Processing {InvoiceCount} invoices from {FileCount} PDF sections",
+                log.Information("Processing {InvoiceCount} invoices from {FileCount} PDF sections",
                     allShipmentInvoices.Count, res.Count);
 
                 using var correctionService = new OCRCorrectionService();
@@ -259,7 +285,7 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error in static CorrectInvoices");
+                log.Error(ex, "Error in static CorrectInvoices");
             }
         }
 
@@ -374,7 +400,7 @@ namespace WaterNut.DataSpace
                     successfulCorrections.Count, corrections.Count, invoice.InvoiceNo);
 
                 // 3. Validate post-correction totals
-                var postCorrectionValid = TotalsZero(invoice);
+                var postCorrectionValid = TotalsZero(invoice, _logger);
                 _logger.Information("Post-correction TotalsZero validation: {IsValid} for invoice {InvoiceNo}",
                     postCorrectionValid, invoice.InvoiceNo);
 
@@ -2596,56 +2622,4 @@ RESPONSE FORMAT (JSON only):
         #endregion
 
     }
-
-
-
-        #region Additional Helper Classes
-
-        /// <summary>
-        /// Enhanced error detection with gift card pattern recognition
-        /// </summary>
-public static class GiftCardDetector
-    {
-        private static readonly Regex[] GiftCardPatterns = new[]
-        {
-        new Regex(@"gift\s*card[:\s]*-?\$?([0-9]+\.?[0-9]*)", RegexOptions.IgnoreCase),
-        new Regex(@"store\s*credit[:\s]*-?\$?([0-9]+\.?[0-9]*)", RegexOptions.IgnoreCase),
-        new Regex(@"promo\s*code[:\s]*-?\$?([0-9]+\.?[0-9]*)", RegexOptions.IgnoreCase),
-        new Regex(@"discount[:\s]*-?\$?([0-9]+\.?[0-9]*)", RegexOptions.IgnoreCase),
-        new Regex(@"coupon[:\s]*-?\$?([0-9]+\.?[0-9]*)", RegexOptions.IgnoreCase),
-        new Regex(@"-\$([0-9]+\.?[0-9]*)\s*(gift|credit|discount|promo)", RegexOptions.IgnoreCase)
-    };
-
-        public static List<(string Type, double Amount)> DetectDiscounts(string text)
-        {
-            var discounts = new List<(string Type, double Amount)>();
-
-            foreach (var pattern in GiftCardPatterns)
-            {
-                var matches = pattern.Matches(text);
-                foreach (Match match in matches)
-                {
-                    if (match.Groups.Count >= 2 && double.TryParse(match.Groups[1].Value, out var amount))
-                    {
-                        var type = DetermineDiscountType(match.Value);
-                        discounts.Add((type, Math.Abs(amount))); // Always positive for TotalDeduction
-                    }
-                }
-            }
-
-            return discounts;
-        }
-
-        private static string DetermineDiscountType(string text)
-        {
-            var lowerText = text.ToLower();
-            if (lowerText.Contains("gift")) return "Gift Card";
-            if (lowerText.Contains("credit")) return "Store Credit";
-            if (lowerText.Contains("promo")) return "Promo Code";
-            if (lowerText.Contains("coupon")) return "Coupon";
-            return "Discount";
-        }
-    }
-
-    #endregion
 }

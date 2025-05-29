@@ -325,16 +325,17 @@
                 ctx.OCRCorrectionLearning.Add(learningEntry);
 
                 var status = success ? "SUCCESS" : "FAILED";
-                Console.WriteLine($"Logged {status} correction for field {correction.Field.Key}: {correction.Strategy.Reasoning}");
+                Log.Logger.Information("Logged {Status} correction for field {FieldKey}: {Reasoning}",
+                    status, correction.Field.Key, correction.Strategy.Reasoning);
 
                 if (!success && !string.IsNullOrEmpty(errorMessage))
                 {
-                    Console.WriteLine($"Error details: {errorMessage}");
+                    Log.Logger.Warning("Error details: {ErrorMessage}", errorMessage);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error logging correction: {ex.Message}");
+                Log.Logger.Error(ex, "Error logging correction: {ErrorMessage}", ex.Message);
                 // Don't throw - logging failure shouldn't stop the correction process
             }
         }

@@ -513,12 +513,16 @@ namespace AutoBotUtilities.Tests
         public async Task CanImportAmazoncomOrder11291264431163432()
         {
             Console.SetOut(TestContext.Progress);
+
             try
             {
-                // Configure LogFilterState for targeted logging
-                LogFilterState.TargetSourceContextForDetails = "InvoiceReader";
-                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
-                _logger.Information("LogFilterState configured: TargetSourceContextForDetails='{TargetContext}', DetailTargetMinimumLevel='{DetailLevel}'",
+                // Strategy: Set global minimum level high, then use LogLevelOverride for detailed investigation
+                // Configure LogFilterState for targeted logging - Error level globally, detailed for OCR correction
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error; // High global level to reduce noise
+                LogFilterState.TargetSourceContextForDetails = "InvoiceReader.OCRCorrectionService"; // Target OCR correction service
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose; // Enable very detailed logging for OCR correction
+                _logger.Information("LogFilterState configured: Global=Error, OCR Correction Service=Verbose");
+                _logger.Information("TargetSourceContextForDetails='{TargetContext}', DetailTargetMinimumLevel='{DetailLevel}'",
                                     LogFilterState.TargetSourceContextForDetails, LogFilterState.DetailTargetMinimumLevel);
 
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
@@ -554,7 +558,7 @@ namespace AutoBotUtilities.Tests
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                     _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
                     // Assuming PDFUtils is static
-                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false); // Removed .Instance
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false); // Use test logger instead of Log.Logger
                     _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
 
@@ -601,7 +605,7 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
             }
             catch (Exception e)
             {
-                _logger.Error(e, "ERROR in CanImportAmazonMultiSectionInvoice");
+                _logger.Error(e, "ERROR in CanImportAmazoncomOrder11291264431163432");
                 Assert.Fail($"Test failed with exception: {e.Message}");
             }
         }
@@ -721,7 +725,7 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                     _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
                     _logger.Debug("Calling PDFUtils.ImportPDF for FileType ID: {FileTypeId}", fileType.Id);
 
-                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, Log.Logger).ConfigureAwait(false);
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
                     _logger.Debug("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
 
                     using (var ctx = new EntryDataDSContext())

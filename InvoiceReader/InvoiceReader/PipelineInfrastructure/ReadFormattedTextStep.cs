@@ -207,7 +207,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                 }
 
                                 // Calculate and log TotalsZero using the CsvLines result
-                                OCRCorrectionService.TotalsZero(res, out var totalsZero);
+                                OCRCorrectionService.TotalsZero(res, out var totalsZero, context.Logger);
                                 context.Logger?.Information(
                                     "OCR_CORRECTION_DEBUG: TotalsZero calculation from CsvLines = {TotalsZero}",
                                     totalsZero);
@@ -242,7 +242,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     maxCorrectionAttempts =
                                         1; // Circuit breaker: only 1 attempt to prevent infinite loops
 
-                                while (ShouldContinueCorrections(res, out double currentTotal)
+                                while (ShouldContinueCorrections(res, out double currentTotal, context.Logger)
                                        && correctionAttempts < maxCorrectionAttempts)
                                 {
                                     correctionAttempts++;
@@ -253,13 +253,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         currentTotal);
 
                                     // Apply OCR correction using the CsvLines result and template
-                                    await OCRCorrectionService.CorrectInvoices(res, template).ConfigureAwait(false);
+                                    await OCRCorrectionService.CorrectInvoices(res, template, context.Logger).ConfigureAwait(false);
 
                                     // Clear all mutable state and re-read to get updated values
                                     template.ClearInvoiceForReimport();
                                     res = template.Read(textLines); // Re-read after correction
 
-                                    if (OCRCorrectionService.TotalsZero(res, out var newTotalsZero))
+                                    if (OCRCorrectionService.TotalsZero(res, out var newTotalsZero, context.Logger))
                                     {
                                         context.Logger?.Information(
                                             "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}",
@@ -277,7 +277,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                                 if (correctionAttempts >= maxCorrectionAttempts)
                                 {
-                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero);
+                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero, context.Logger);
                                     context.Logger?.Warning(
                                         "OCR_CORRECTION_DEBUG: Circuit breaker triggered - maximum correction attempts ({MaxAttempts}) reached. Final TotalsZero = {TotalsZero}",
                                         maxCorrectionAttempts,
@@ -285,7 +285,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                 }
                                 else if (correctionAttempts > 0)
                                 {
-                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero);
+                                    OCRCorrectionService.TotalsZero(res, out var finalTotalsZero, context.Logger);
                                     context.Logger?.Information(
                                         "OCR_CORRECTION_DEBUG: OCR correction completed successfully after {Attempts} attempts. Final TotalsZero = {TotalsZero}",
                                         correctionAttempts,
@@ -482,15 +482,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private static bool ShouldContinueCorrections(List<dynamic> res, out double totalZero)
+        private static bool ShouldContinueCorrections(List<dynamic> res, out double totalZero, ILogger logger = null)
         {
-            if (OCRCorrectionService.TotalsZero(res, out totalZero))
+            if (OCRCorrectionService.TotalsZero(res, out totalZero, logger))
             {
                 return Math.Abs(totalZero) > 0.01;
             }
 
             // Error case - don't continue
-            Log.Logger.Warning("Could not calculate TotalsZero - stopping correction attempts");
+            var log = logger ?? Log.Logger;
+            log.Warning("Could not calculate TotalsZero - stopping correction attempts");
             return false;
         }
 

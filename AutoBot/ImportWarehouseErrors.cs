@@ -40,7 +40,7 @@ namespace AutoBot
 
 
 
-                Console.WriteLine("Importing Warehouse errors");
+                log?.Information("Importing Warehouse errors");
                 var salesInfo = await BaseDataModel.CurrentSalesInfo(months, log).ConfigureAwait(false);
                 var directoryName = salesInfo.Item4;
                 var attachments = Directory.GetFiles(directoryName, "*.png").ToArray();

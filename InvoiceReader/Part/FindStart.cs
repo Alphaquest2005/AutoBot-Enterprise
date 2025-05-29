@@ -311,7 +311,7 @@ namespace WaterNut.DataSpace
             {
                 if (Regex.IsMatch(line.Line, regexPattern, RegexOptions.IgnoreCase))
                 {
-                    Console.WriteLine($"[MATCH] Exact match on Line {line.LineNumber}");
+                    _logger?.Debug("[MATCH] Exact match on Line {LineNumber}", line.LineNumber);
                     return new List<InvoiceLine> { line };
                 }
             }
@@ -321,7 +321,7 @@ namespace WaterNut.DataSpace
             {
                 if (line.Line.Contains(match.Value.Trim()))
                 {
-                    Console.WriteLine($"[MATCH] Partial match on Line {line.LineNumber}");
+                    _logger?.Debug("[MATCH] Partial match on Line {LineNumber}", line.LineNumber);
                     return new List<InvoiceLine> { line };
                 }
             }
@@ -333,7 +333,7 @@ namespace WaterNut.DataSpace
                 var lineLength = line.Line.Length + Environment.NewLine.Length;
                 if (match.Index >= currentLength && match.Index < currentLength + lineLength)
                 {
-                    Console.WriteLine($"[WARNING] Used buffer fallback for Line {line.LineNumber}");
+                    _logger?.Warning("[WARNING] Used buffer fallback for Line {LineNumber}", line.LineNumber);
                     return new List<InvoiceLine> { line };
                 }
                 currentLength += lineLength;
