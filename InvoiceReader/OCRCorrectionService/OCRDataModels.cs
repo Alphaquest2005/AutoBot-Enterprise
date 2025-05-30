@@ -21,6 +21,41 @@ namespace WaterNut.DataSpace
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }
         public double Confidence { get; set; }
+        public string Reasoning { get; set; }
+        public int LineNumber { get; set; }
+    }
+
+    /// <summary>
+    /// Result of a database update operation
+    /// </summary>
+    public class DatabaseUpdateResult
+    {
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; }
+        public int? RecordId { get; set; }
+        public string Operation { get; set; }
+        public Exception Exception { get; set; }
+
+        public static DatabaseUpdateResult Success(int recordId, string operation)
+        {
+            return new DatabaseUpdateResult
+            {
+                IsSuccess = true,
+                RecordId = recordId,
+                Operation = operation,
+                Message = $"Successfully {operation.ToLower()} record {recordId}"
+            };
+        }
+
+        public static DatabaseUpdateResult Failed(string message, Exception exception = null)
+        {
+            return new DatabaseUpdateResult
+            {
+                IsSuccess = false,
+                Message = message,
+                Exception = exception
+            };
+        }
     }
 
     /// <summary>
