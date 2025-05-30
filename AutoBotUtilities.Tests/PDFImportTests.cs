@@ -141,8 +141,8 @@ namespace AutoBotUtilities.Tests
                         bool hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
                         string memberName = hasMemberName && memberNameValue is ScalarValue svMem ? svMem.Value?.ToString() : null;
 
-                        TestContext.Progress.WriteLine(
-                           $"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
+                        // TestContext.Progress.WriteLine(
+                        //    $"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
 
                         if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
                             sourceContext != null &&
@@ -516,8 +516,10 @@ namespace AutoBotUtilities.Tests
 
             try
             {
-                // Strategy: Set global minimum level high, then use LogLevelOverride for detailed investigation
-                // Configure LogFilterState for targeted logging - Error level globally, detailed for OCR correction
+                using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+                {
+                    // Strategy: Set global minimum level high, then use LogLevelOverride for detailed investigation
+                    // Configure LogFilterState for targeted logging - Error level globally, detailed for OCR correction
                 LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error; // High global level to reduce noise
                 LogFilterState.TargetSourceContextForDetails = "InvoiceReader.OCRCorrectionService"; // Target OCR correction service
                 LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose; // Enable very detailed logging for OCR correction
@@ -578,6 +580,8 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                         _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
 
                         // Check TotalsZero property - should be 0 when OCR correction is working properly
+                        // Refresh the context to ensure we get the latest data after OCR corrections
+                        ctx.Entry(ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "112-9126443-1163432"))?.Reload();
                         var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "112-9126443-1163432");
                         Assert.That(invoice, Is.Not.Null, "ShipmentInvoice should exist for TotalsZero check.");
 
@@ -602,6 +606,7 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                 }
 
                 Assert.That(true);
+                } // Close LogLevelOverride using block
             }
             catch (Exception e)
             {

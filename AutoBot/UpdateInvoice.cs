@@ -531,7 +531,7 @@ namespace AutoBot
             }
             catch (Exception e)
             {
-                log.Error(e, "Error in AddInvoice");
+                Console.WriteLine($"Error in AddInvoice: {e}");
                 throw;
             }
         }
