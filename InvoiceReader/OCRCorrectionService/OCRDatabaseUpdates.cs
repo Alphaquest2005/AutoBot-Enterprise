@@ -38,7 +38,7 @@ namespace WaterNut.DataSpace
             _logger?.Information("Starting regex pattern updates for {CorrectionCount} corrections", corrections.Count());
 
             // Initialize strategy factory if not already done
-            _strategyFactory ??= new DatabaseUpdateStrategyFactory(_logger);
+            _strategyFactory ??= new DatabaseUpdateStrategyFactory(_logger, this);
 
             var successCount = 0;
             var failureCount = 0;

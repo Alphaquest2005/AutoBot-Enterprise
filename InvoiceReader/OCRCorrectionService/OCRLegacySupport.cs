@@ -18,9 +18,9 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to check if invoice totals are correct (TotalsZero = 0) with gift card handling
         /// </summary>
-        public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger = null)
+        public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger)
         {
-            var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
+            var log = logger;
 
             if (invoice == null) return false;
 
@@ -52,21 +52,21 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to correct invoices using DeepSeek OCR error detection
         /// </summary>
-        public static async Task<bool> CorrectInvoices(ShipmentInvoice invoice, string fileText)
+        public static async Task<bool> CorrectInvoices(ShipmentInvoice invoice, string fileText, ILogger logger)
         {
-            using var service = new OCRCorrectionService();
+            using var service = new OCRCorrectionService(logger);
             return await service.CorrectInvoiceAsync(invoice, fileText).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Static method to calculate total zero sum from dynamic invoice results - HANDLES MULTIPLE INVOICES
         /// </summary>
-        public static bool TotalsZero(List<dynamic> res, out double totalZeroSum, ILogger logger = null)
+        public static bool TotalsZero(List<dynamic> res, out double totalZeroSum, ILogger logger)
         {
             // Use LogLevelOverride to enable detailed logging for this specific calculation
             using (LogLevelOverride.Begin(LogEventLevel.Debug))
             {
-                var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
+                var log = logger;
 
                 totalZeroSum = 0;
 
@@ -149,27 +149,27 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Static method to correct invoices using OCR correction service - HANDLES MULTIPLE INVOICES
         /// </summary>
-        public static async Task CorrectInvoices(List<dynamic> res, Invoice template, ILogger logger = null)
+        public static async Task CorrectInvoices(List<dynamic> res, Invoice template, ILogger logger)
         {
             if (res == null || !res.Any() || template == null) return;
 
-            var log = logger ?? Log.Logger; // Use provided logger or fall back to global logger
+            var log = logger;
 
             try
             {
                 // Convert with OCR metadata for database updates
-                var allShipmentInvoicesWithMetadata = ConvertDynamicToShipmentInvoicesWithMetadata(res, template);
+                var allShipmentInvoicesWithMetadata = ConvertDynamicToShipmentInvoicesWithMetadata(res, template, logger);
                 var allShipmentInvoices = allShipmentInvoicesWithMetadata.Select(x => x.Invoice).ToList();
                 var droppedFilePath = GetFilePathFromTemplate(template);
 
                 log.Information("Processing {InvoiceCount} invoices from {FileCount} PDF sections with OCR metadata",
                     allShipmentInvoices.Count, res.Count);
 
-                using var correctionService = new OCRCorrectionService();
+                using var correctionService = new OCRCorrectionService(logger);
                 var correctedInvoices = await correctionService.CorrectInvoicesAsync(allShipmentInvoices, droppedFilePath).ConfigureAwait(false);
 
                 // Update both the dynamic results AND the template line values
-                UpdateDynamicResultsWithCorrections(res, correctedInvoices);
+                UpdateDynamicResultsWithCorrections(res, correctedInvoices, log);
                 UpdateTemplateLineValues(template, correctedInvoices, log);
 
                 // Update database with OCR corrections using metadata
@@ -184,16 +184,16 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Validates the data structure and logs detailed information about invoice collections
         /// </summary>
-        public static void ValidateInvoiceStructure(List<dynamic> res)
+        public static void ValidateInvoiceStructure(List<dynamic> res, ILogger logger)
         {
             if (res == null)
             {
-                Log.Logger.Error("Invoice result list is null");
+                logger?.Error("Invoice result list is null");
                 return;
             }
 
-            Log.Logger.Information("=== INVOICE STRUCTURE VALIDATION ===");
-            Log.Logger.Information("Total sections in PDF: {SectionCount}", res.Count);
+            logger?.Information("=== INVOICE STRUCTURE VALIDATION ===");
+            logger?.Information("Total sections in PDF: {SectionCount}", res.Count);
 
             int totalInvoices = 0;
 
@@ -202,13 +202,13 @@ namespace WaterNut.DataSpace
                 var section = res[i];
                 if (section == null)
                 {
-                    Log.Logger.Warning("Section {Index}: null", i);
+                    logger?.Warning("Section {Index}: null", i);
                     continue;
                 }
 
                 if (section is List<IDictionary<string, object>> invoiceList)
                 {
-                    Log.Logger.Information("Section {Index}: ✓ List<IDictionary<string, object>> with {Count} invoices", i, invoiceList.Count);
+                    logger?.Information("Section {Index}: ✓ List<IDictionary<string, object>> with {Count} invoices", i, invoiceList.Count);
                     totalInvoices += invoiceList.Count;
 
                     for (int j = 0; j < invoiceList.Count; j++)
@@ -223,24 +223,24 @@ namespace WaterNut.DataSpace
                             detailsCount = details.Count;
                         }
 
-                        Log.Logger.Information("  Invoice {SubIndex}: {InvoiceNo} ({DetailCount} line items)", j, invoiceNo, detailsCount);
+                        logger?.Information("  Invoice {SubIndex}: {InvoiceNo} ({DetailCount} line items)", j, invoiceNo, detailsCount);
                     }
                 }
                 else if (section is IDictionary<string, object> singleDict)
                 {
-                    Log.Logger.Warning("Section {Index}: ⚠️ Single IDictionary (legacy format) - {InvoiceNo}",
+                    logger?.Warning("Section {Index}: ⚠️ Single IDictionary (legacy format) - {InvoiceNo}",
                         i, singleDict.ContainsKey("InvoiceNo") ? singleDict["InvoiceNo"] : "Unknown");
                     totalInvoices += 1;
                 }
                 else
                 {
                     var actualType = section.GetType();
-                    Log.Logger.Error("Section {Index}: ❌ Unexpected type: {TypeName}", i, actualType.Name);
+                    logger?.Error("Section {Index}: ❌ Unexpected type: {TypeName}", i, actualType.Name);
                 }
             }
 
-            Log.Logger.Information("Total invoices found: {TotalInvoices}", totalInvoices);
-            Log.Logger.Information("=== END VALIDATION ===");
+            logger?.Information("Total invoices found: {TotalInvoices}", totalInvoices);
+            logger?.Information("=== END VALIDATION ===");
         }
 
         /// <summary>
@@ -268,25 +268,25 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Comprehensive test method including product validation
         /// </summary>
-        public static async Task RunComprehensiveTests()
+        public static async Task RunComprehensiveTests(ILogger logger)
         {
-            Log.Logger.Information("=== Enhanced OCR Correction Service Tests ===");
+            logger?.Information("=== Enhanced OCR Correction Service Tests ===");
 
             try
             {
-                TestDataStructures();
-                TestJsonParsing();
-                TestFieldParsing();
-                await TestProductValidation().ConfigureAwait(false);
-                await TestMathematicalValidation().ConfigureAwait(false);
-                TestRegexPatterns();
+                TestDataStructures(logger);
+                TestJsonParsing(logger);
+                TestFieldParsing(logger);
+                await TestProductValidation(logger).ConfigureAwait(false);
+                await TestMathematicalValidation(logger).ConfigureAwait(false);
+                TestRegexPatterns(logger);
 
-                Log.Logger.Information("🎉 ALL COMPREHENSIVE TESTS PASSED SUCCESSFULLY!");
-                Log.Logger.Information("✅ Enhanced OCR Correction Service functionality verified");
+                logger?.Information("🎉 ALL COMPREHENSIVE TESTS PASSED SUCCESSFULLY!");
+                logger?.Information("✅ Enhanced OCR Correction Service functionality verified");
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "❌ Comprehensive test failed");
+                logger?.Error(ex, "❌ Comprehensive test failed");
                 throw;
             }
         }
@@ -295,7 +295,7 @@ namespace WaterNut.DataSpace
 
         #region Private Static Helper Methods
 
-        private static ShipmentInvoice CreateTempShipmentInvoice(IDictionary<string, object> x)
+        private static ShipmentInvoice CreateTempShipmentInvoice(IDictionary<string, object> x, ILogger logger)
         {
             try
             {
@@ -340,7 +340,7 @@ namespace WaterNut.DataSpace
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.Logger.Error(ex, "Error processing invoice detail {Index} for invoice {InvoiceNo}",
+                                    logger?.Error(ex, "Error processing invoice detail {Index} for invoice {InvoiceNo}",
                                         index, invoice.InvoiceNo);
                                     return null;
                                 }
@@ -352,7 +352,7 @@ namespace WaterNut.DataSpace
                     {
                         // Handle case where InvoiceDetails might be a different type
                         var actualType = x["InvoiceDetails"]?.GetType().Name ?? "null";
-                        Log.Logger.Warning("Expected List<IDictionary<string, object>> for InvoiceDetails but got {ActualType} for invoice {InvoiceNo}",
+                        logger?.Warning("Expected List<IDictionary<string, object>> for InvoiceDetails but got {ActualType} for invoice {InvoiceNo}",
                             actualType, invoice.InvoiceNo);
                         invoice.InvoiceDetails = new List<InvoiceDetails>();
                     }
@@ -362,7 +362,7 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error creating ShipmentInvoice from dictionary");
+                logger?.Error(ex, "Error creating ShipmentInvoice from dictionary");
                 return new ShipmentInvoice
                 {
                     InvoiceNo = "ERROR",
@@ -371,7 +371,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static List<ShipmentInvoice> ConvertDynamicToShipmentInvoices(List<dynamic> res)
+        private static List<ShipmentInvoice> ConvertDynamicToShipmentInvoices(List<dynamic> res, ILogger logger)
         {
             var allInvoices = new List<ShipmentInvoice>();
 
@@ -384,37 +384,37 @@ namespace WaterNut.DataSpace
                         // FIXED: Process ALL invoices in each list, not just the first
                         foreach (var invoiceDict in invoiceList)
                         {
-                            var shipmentInvoice = CreateTempShipmentInvoice(invoiceDict);
+                            var shipmentInvoice = CreateTempShipmentInvoice(invoiceDict, logger);
                             allInvoices.Add(shipmentInvoice);
                         }
 
-                        Log.Logger.Debug("Converted {Count} invoices from PDF section", invoiceList.Count);
+                        logger?.Debug("Converted {Count} invoices from PDF section", invoiceList.Count);
                     }
                     else
                     {
                         // Handle legacy single dictionary format for backward compatibility
                         if (item is IDictionary<string, object> singleInvoiceDict)
                         {
-                            Log.Logger.Warning("Found single dictionary instead of list - converting for backward compatibility");
-                            var shipmentInvoice = CreateTempShipmentInvoice(singleInvoiceDict);
+                            logger?.Warning("Found single dictionary instead of list - converting for backward compatibility");
+                            var shipmentInvoice = CreateTempShipmentInvoice(singleInvoiceDict, logger);
                             allInvoices.Add(shipmentInvoice);
                         }
                         else
                         {
                             var actualType = item?.GetType().Name ?? "null";
-                            Log.Logger.Error("Unexpected type in ConvertDynamicToShipmentInvoices: {ActualType}", actualType);
+                            logger?.Error("Unexpected type in ConvertDynamicToShipmentInvoices: {ActualType}", actualType);
                         }
                     }
                 }
 
-                Log.Logger.Information("Successfully converted {TotalInvoices} total invoices from {Sections} PDF sections",
+                logger?.Information("Successfully converted {TotalInvoices} total invoices from {Sections} PDF sections",
                     allInvoices.Count, res.Count);
 
                 return allInvoices;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error in ConvertDynamicToShipmentInvoices");
+                logger?.Error(ex, "Error in ConvertDynamicToShipmentInvoices");
                 return new List<ShipmentInvoice>();
             }
         }
@@ -422,14 +422,14 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Converts dynamic results to ShipmentInvoices with OCR metadata for database updates
         /// </summary>
-        private static List<ShipmentInvoiceWithMetadata> ConvertDynamicToShipmentInvoicesWithMetadata(List<dynamic> res, Invoice template)
+        private static List<ShipmentInvoiceWithMetadata> ConvertDynamicToShipmentInvoicesWithMetadata(List<dynamic> res, Invoice template, ILogger logger)
         {
             var allInvoicesWithMetadata = new List<ShipmentInvoiceWithMetadata>();
 
             try
             {
                 // Create field mapping from template
-                var fieldMappings = GetTemplateFieldMappings(template);
+                var fieldMappings = GetTemplateFieldMappings(template, logger);
 
                 foreach (var item in res)
                 {
@@ -437,8 +437,8 @@ namespace WaterNut.DataSpace
                     {
                         foreach (var invoiceDict in invoiceList)
                         {
-                            var shipmentInvoice = CreateTempShipmentInvoice(invoiceDict);
-                            var metadata = ExtractOCRMetadata(invoiceDict, template, fieldMappings);
+                            var shipmentInvoice = CreateTempShipmentInvoice(invoiceDict, logger);
+                            var metadata = ExtractOCRMetadata(invoiceDict, template, fieldMappings, logger);
 
                             allInvoicesWithMetadata.Add(new ShipmentInvoiceWithMetadata
                             {
@@ -449,8 +449,8 @@ namespace WaterNut.DataSpace
                     }
                     else if (item is IDictionary<string, object> singleInvoiceDict)
                     {
-                        var shipmentInvoice = CreateTempShipmentInvoice(singleInvoiceDict);
-                        var metadata = ExtractOCRMetadata(singleInvoiceDict, template, fieldMappings);
+                        var shipmentInvoice = CreateTempShipmentInvoice(singleInvoiceDict, logger);
+                        var metadata = ExtractOCRMetadata(singleInvoiceDict, template, fieldMappings, logger);
 
                         allInvoicesWithMetadata.Add(new ShipmentInvoiceWithMetadata
                         {
@@ -460,14 +460,14 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                Log.Logger.Information("Successfully converted {TotalInvoices} invoices with OCR metadata from {Sections} PDF sections",
+                logger?.Information("Successfully converted {TotalInvoices} invoices with OCR metadata from {Sections} PDF sections",
                     allInvoicesWithMetadata.Count, res.Count);
 
                 return allInvoicesWithMetadata;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error in ConvertDynamicToShipmentInvoicesWithMetadata");
+                logger?.Error(ex, "Error in ConvertDynamicToShipmentInvoicesWithMetadata");
                 return new List<ShipmentInvoiceWithMetadata>();
             }
         }
@@ -478,12 +478,320 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Extracts OCR metadata from invoice dictionary using template information
+        /// Extracts OCR metadata from invoice dictionary using template information (Enhanced version)
         /// </summary>
         private static Dictionary<string, OCRFieldMetadata> ExtractOCRMetadata(
             IDictionary<string, object> invoiceDict,
             Invoice template,
-            Dictionary<string, (int LineId, int FieldId)> fieldMappings)
+            Dictionary<string, (int LineId, int FieldId)> fieldMappings,
+            ILogger logger)
+        {
+            try
+            {
+                // Use the enhanced metadata extractor
+                return ExtractEnhancedOCRMetadataInternal(invoiceDict, template, fieldMappings, logger);
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "Error extracting enhanced OCR metadata, falling back to legacy method");
+
+                // Fallback to legacy extraction if enhanced fails
+                return ExtractLegacyOCRMetadata(invoiceDict, template, fieldMappings, logger);
+            }
+        }
+
+        /// <summary>
+        /// Enhanced OCR metadata extraction with comprehensive template context
+        /// </summary>
+        private static Dictionary<string, OCRFieldMetadata> ExtractEnhancedOCRMetadataInternal(
+            IDictionary<string, object> invoiceDict,
+            Invoice template,
+            Dictionary<string, (int LineId, int FieldId)> fieldMappings,
+            ILogger logger)
+        {
+            var metadata = new Dictionary<string, OCRFieldMetadata>();
+
+            try
+            {
+                logger?.Debug("Starting enhanced OCR metadata extraction for {FieldCount} fields", invoiceDict.Count);
+
+                // Get invoice context
+                var invoiceContext = new
+                {
+                    InvoiceId = template.OcrInvoices?.Id,
+                    InvoiceName = template.OcrInvoices?.Name
+                };
+
+                // Extract metadata for each field in the invoice
+                foreach (var kvp in invoiceDict)
+                {
+                    var fieldName = kvp.Key;
+                    var fieldValue = kvp.Value?.ToString();
+
+                    // Skip metadata fields
+                    if (IsMetadataField(fieldName)) continue;
+
+                    // Try to find field mapping
+                    if (fieldMappings.TryGetValue(fieldName, out var mapping))
+                    {
+                        var fieldMetadata = ExtractEnhancedFieldMetadata(fieldName, fieldValue, template, invoiceContext, mapping.LineId, mapping.FieldId, logger);
+                        if (fieldMetadata != null)
+                        {
+                            metadata[fieldName] = fieldMetadata;
+                        }
+                    }
+                    else
+                    {
+                        // Try to find field directly in template if no mapping exists
+                        var fieldMetadata = ExtractFieldMetadataFromTemplate(fieldName, fieldValue, template, invoiceContext, logger);
+                        if (fieldMetadata != null)
+                        {
+                            metadata[fieldName] = fieldMetadata;
+                        }
+                    }
+                }
+
+                logger?.Debug("Extracted enhanced OCR metadata for {FieldCount} fields", metadata.Count);
+                return metadata;
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "Error extracting enhanced OCR metadata");
+                return new Dictionary<string, OCRFieldMetadata>();
+            }
+        }
+
+        /// <summary>
+        /// Checks if a field name is a metadata field that should be skipped
+        /// </summary>
+        private static bool IsMetadataField(string fieldName)
+        {
+            var metadataFields = new[] { "LineNumber", "FileLineNumber", "Section", "Instance" };
+            return metadataFields.Contains(fieldName);
+        }
+
+        /// <summary>
+        /// Extracts enhanced field metadata using specific LineId and FieldId
+        /// </summary>
+        private static OCRFieldMetadata ExtractEnhancedFieldMetadata(
+            string fieldName,
+            string fieldValue,
+            Invoice template,
+            dynamic invoiceContext,
+            int lineId,
+            int fieldId,
+            ILogger logger)
+        {
+            try
+            {
+                // Find the specific line
+                var line = template.Lines?.FirstOrDefault(l => l.OCR_Lines?.Id == lineId);
+                if (line?.Values == null) return null;
+
+                // Search through line values for the specific field
+                foreach (var outerKvp in line.Values)
+                {
+                    var (lineNumber, section) = outerKvp.Key;
+                    var innerDict = outerKvp.Value;
+
+                    if (innerDict != null)
+                    {
+                        foreach (var innerKvp in innerDict)
+                        {
+                            var (fields, instance) = innerKvp.Key;
+                            var rawValue = innerKvp.Value;
+
+                            // Check if this is the specific field we're looking for
+                            if (fields?.Id == fieldId)
+                            {
+                                return new OCRFieldMetadata
+                                {
+                                    // Basic field information
+                                    FieldName = fieldName,
+                                    Value = fieldValue,
+                                    RawValue = rawValue,
+
+                                    // OCR Template Context
+                                    LineNumber = lineNumber,
+                                    FieldId = fields.Id,
+                                    LineId = lineId,
+                                    RegexId = line.OCR_Lines?.RegularExpressions?.Id,
+                                    Key = fields.Key,
+                                    Field = fields.Field,
+                                    EntityType = fields.EntityType,
+                                    DataType = fields.DataType,
+
+                                    // Line Context
+                                    LineName = line.OCR_Lines?.Name,
+                                    LineRegex = line.OCR_Lines?.RegularExpressions?.RegEx,
+                                    IsRequired = fields.IsRequired,
+
+                                    // Part Context (get from line's part)
+                                    PartId = line.OCR_Lines?.PartId,
+
+                                    // Invoice Context
+                                    InvoiceId = invoiceContext.InvoiceId,
+                                    InvoiceName = invoiceContext.InvoiceName,
+
+                                    // Processing Context
+                                    Section = section,
+                                    Instance = instance,
+                                    Confidence = 1.0 // Default confidence for successful extraction
+                                };
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "Error extracting enhanced field metadata for {FieldName}", fieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Extracts field metadata by searching through template (fallback method)
+        /// </summary>
+        private static OCRFieldMetadata ExtractFieldMetadataFromTemplate(
+            string fieldName,
+            string fieldValue,
+            Invoice template,
+            dynamic invoiceContext,
+            ILogger logger)
+        {
+            try
+            {
+                // Search through all parts, lines, and field values to find the field
+                foreach (var part in template.Parts ?? Enumerable.Empty<Part>())
+                {
+                    foreach (var line in part.Lines ?? Enumerable.Empty<Line>())
+                    {
+                        // Search through line values for the field
+                        var fieldContext = FindFieldInLineValues(fieldName, line, logger);
+                        if (fieldContext != null)
+                        {
+                            return new OCRFieldMetadata
+                            {
+                                // Basic field information
+                                FieldName = fieldName,
+                                Value = fieldValue,
+                                RawValue = fieldContext.RawValue,
+
+                                // OCR Template Context
+                                LineNumber = fieldContext.LineNumber,
+                                FieldId = fieldContext.FieldId,
+                                LineId = fieldContext.LineId,
+                                RegexId = fieldContext.RegexId,
+                                Key = fieldContext.Key,
+                                Field = fieldContext.Field,
+                                EntityType = fieldContext.EntityType,
+                                DataType = fieldContext.DataType,
+
+                                // Line Context
+                                LineName = fieldContext.LineName,
+                                LineRegex = fieldContext.LineRegex,
+                                IsRequired = fieldContext.IsRequired,
+
+                                // Part Context
+                                PartId = fieldContext.PartId,
+
+                                // Invoice Context
+                                InvoiceId = invoiceContext.InvoiceId,
+                                InvoiceName = invoiceContext.InvoiceName,
+
+                                // Processing Context
+                                Section = fieldContext.Section,
+                                Instance = fieldContext.Instance,
+                                Confidence = fieldContext.Confidence
+                            };
+                        }
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "Error extracting field metadata from template for {FieldName}", fieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Searches for field in line values
+        /// </summary>
+        private static dynamic FindFieldInLineValues(string fieldName, Line line, ILogger logger)
+        {
+            try
+            {
+                if (line.Values == null) return null;
+
+                foreach (var outerKvp in line.Values)
+                {
+                    var (lineNumber, section) = outerKvp.Key;
+                    var innerDict = outerKvp.Value;
+
+                    if (innerDict != null)
+                    {
+                        foreach (var innerKvp in innerDict)
+                        {
+                            var (fields, instance) = innerKvp.Key;
+                            var rawValue = innerKvp.Value;
+
+                            // Check if this field matches what we're looking for
+                            if (fields?.Field == fieldName || fields?.Key == fieldName)
+                            {
+                                return new
+                                {
+                                    // Field information
+                                    FieldId = fields.Id,
+                                    Field = fields.Field,
+                                    Key = fields.Key,
+                                    EntityType = fields.EntityType,
+                                    DataType = fields.DataType,
+                                    IsRequired = fields.IsRequired,
+                                    RawValue = rawValue,
+
+                                    // Line context
+                                    LineNumber = lineNumber,
+                                    LineId = line.OCR_Lines?.Id,
+                                    LineName = line.OCR_Lines?.Name,
+                                    LineRegex = line.OCR_Lines?.RegularExpressions?.RegEx,
+                                    RegexId = line.OCR_Lines?.RegularExpressions?.Id,
+
+                                    // Part context
+                                    PartId = line.OCR_Lines?.PartId,
+
+                                    // Processing context
+                                    Section = section,
+                                    Instance = instance,
+                                    Confidence = 1.0 // Default confidence for successful extraction
+                                };
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "Error searching field {FieldName} in line values", fieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Legacy OCR metadata extraction method (kept as fallback)
+        /// </summary>
+        private static Dictionary<string, OCRFieldMetadata> ExtractLegacyOCRMetadata(
+            IDictionary<string, object> invoiceDict,
+            Invoice template,
+            Dictionary<string, (int LineId, int FieldId)> fieldMappings,
+            ILogger logger)
         {
             var metadata = new Dictionary<string, OCRFieldMetadata>();
 
@@ -507,12 +815,12 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                Log.Logger.Debug("Extracted OCR metadata for {FieldCount} fields", metadata.Count);
+                logger?.Debug("Extracted legacy OCR metadata for {FieldCount} fields", metadata.Count);
                 return metadata;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error extracting OCR metadata");
+                logger?.Error(ex, "Error extracting legacy OCR metadata");
                 return new Dictionary<string, OCRFieldMetadata>();
             }
         }
@@ -593,7 +901,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void UpdateDynamicResultsWithCorrections(List<dynamic> res, List<ShipmentInvoice> correctedInvoices)
+        private static void UpdateDynamicResultsWithCorrections(List<dynamic> res, List<ShipmentInvoice> correctedInvoices, ILogger logger)
         {
             try
             {
@@ -603,7 +911,7 @@ namespace WaterNut.DataSpace
                 {
                     if (res[sectionIndex] is List<IDictionary<string, object>> invoiceList)
                     {
-                        Log.Logger.Debug("Updating {Count} invoices in section {Section}", invoiceList.Count, sectionIndex);
+                        logger?.Debug("Updating {Count} invoices in section {Section}", invoiceList.Count, sectionIndex);
 
                         // FIXED: Update ALL invoices in the collection
                         for (int invoiceIndex = 0; invoiceIndex < invoiceList.Count && correctedIndex < correctedInvoices.Count; invoiceIndex++, correctedIndex++)
@@ -617,7 +925,7 @@ namespace WaterNut.DataSpace
                                 if (correctedInvoice.InvoiceTotal.HasValue)
                                 {
                                     invoiceDict["InvoiceTotal"] = correctedInvoice.InvoiceTotal.Value;
-                                    Log.Logger.Debug("Updated InvoiceTotal for {InvoiceNo}: {Value}",
+                                    logger?.Debug("Updated InvoiceTotal for {InvoiceNo}: {Value}",
                                         correctedInvoice.InvoiceNo, correctedInvoice.InvoiceTotal.Value);
                                 }
                                 if (correctedInvoice.SubTotal.HasValue)
@@ -633,18 +941,18 @@ namespace WaterNut.DataSpace
                             }
                             catch (Exception ex)
                             {
-                                Log.Logger.Error(ex, "Error updating invoice {InvoiceNo} at section {Section}, invoice {Invoice}",
+                                logger?.Error(ex, "Error updating invoice {InvoiceNo} at section {Section}, invoice {Invoice}",
                                     correctedInvoice.InvoiceNo, sectionIndex, invoiceIndex);
                             }
                         }
                     }
                 }
 
-                Log.Logger.Information("Successfully updated {UpdatedCount} invoices from corrections", correctedIndex);
+                logger?.Information("Successfully updated {UpdatedCount} invoices from corrections", correctedIndex);
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error in UpdateDynamicResultsWithCorrections");
+                logger?.Error(ex, "Error in UpdateDynamicResultsWithCorrections");
             }
         }
 
@@ -870,7 +1178,7 @@ namespace WaterNut.DataSpace
                 log.Information("Updating template line values with {CorrectionCount} corrected invoices", correctedInvoices.Count);
 
                 // Get field mappings from template structure
-                var fieldMappings = GetTemplateFieldMappings(template);
+                var fieldMappings = GetTemplateFieldMappings(template, log);
 
                 foreach (var correctedInvoice in correctedInvoices)
                 {
@@ -888,7 +1196,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Gets field mappings from template structure to map ShipmentInvoice fields to template lines
         /// </summary>
-        private static Dictionary<string, (int LineId, int FieldId)> GetTemplateFieldMappings(Invoice template)
+        private static Dictionary<string, (int LineId, int FieldId)> GetTemplateFieldMappings(Invoice template, ILogger logger)
         {
             var mappings = new Dictionary<string, (int LineId, int FieldId)>();
 
@@ -911,12 +1219,12 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                Log.Logger.Debug("Created {MappingCount} field mappings from template", mappings.Count);
+                logger?.Debug("Created {MappingCount} field mappings from template", mappings.Count);
                 return mappings;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "Error creating template field mappings");
+                logger?.Error(ex, "Error creating template field mappings");
                 return new Dictionary<string, (int LineId, int FieldId)>();
             }
         }
@@ -1015,9 +1323,9 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void TestDataStructures()
+        private static void TestDataStructures(ILogger logger)
         {
-            Log.Logger.Information("Testing data structures...");
+            logger?.Information("Testing data structures...");
 
             var error = new InvoiceError
             {
@@ -1038,12 +1346,12 @@ namespace WaterNut.DataSpace
                 Confidence = 0.95
             };
 
-            Log.Logger.Information("✓ Data structures working correctly");
+            logger?.Information("✓ Data structures working correctly");
         }
 
-        private static void TestJsonParsing()
+        private static void TestJsonParsing(ILogger logger)
         {
-            Log.Logger.Information("Testing JSON parsing...");
+            logger?.Information("Testing JSON parsing...");
 
             var testJson = @"{
                 ""errors"": [
@@ -1058,7 +1366,7 @@ namespace WaterNut.DataSpace
                 ]
             }";
 
-            using var service = new OCRCorrectionService();
+            using var service = new OCRCorrectionService(logger);
             var cleanJson = service.CleanJsonResponse(testJson);
 
             if (string.IsNullOrEmpty(cleanJson))
@@ -1071,14 +1379,14 @@ namespace WaterNut.DataSpace
                 errorsElement.GetArrayLength() != 1)
                 throw new Exception("JSON parsing failed");
 
-            Log.Logger.Information("✓ JSON parsing logic verified");
+            logger?.Information("✓ JSON parsing logic verified");
         }
 
-        private static void TestFieldParsing()
+        private static void TestFieldParsing(ILogger logger)
         {
-            Log.Logger.Information("Testing field parsing...");
+            logger?.Information("Testing field parsing...");
 
-            using var service = new OCRCorrectionService();
+            using var service = new OCRCorrectionService(logger);
 
             // Test numeric parsing
             var numericValue = service.ParseCorrectedValue("$123.45", "InvoiceTotal");
@@ -1090,12 +1398,12 @@ namespace WaterNut.DataSpace
             if (stringValue is not string || stringValue.ToString() != "ABC123")
                 throw new Exception("String field parsing failed");
 
-            Log.Logger.Information("✓ Field parsing logic verified");
+            logger?.Information("✓ Field parsing logic verified");
         }
 
-        private static async Task TestProductValidation()
+        private static async Task TestProductValidation(ILogger logger)
         {
-            Log.Logger.Information("Testing product validation logic...");
+            logger?.Information("Testing product validation logic...");
 
             var testInvoice = new ShipmentInvoice
             {
@@ -1121,18 +1429,18 @@ namespace WaterNut.DataSpace
                 }
             };
 
-            using var service = new OCRCorrectionService();
+            using var service = new OCRCorrectionService(logger);
             var mathErrors = service.ValidateMathematicalConsistency(testInvoice);
 
             if (!mathErrors.Any(e => e.ErrorType == "unreasonable_quantity"))
                 throw new Exception("Product validation failed to detect invalid quantity");
 
-            Log.Logger.Information("✓ Product validation logic verified");
+            logger?.Information("✓ Product validation logic verified");
         }
 
-        private static async Task TestMathematicalValidation()
+        private static async Task TestMathematicalValidation(ILogger logger)
         {
-            Log.Logger.Information("Testing mathematical validation logic...");
+            logger?.Information("Testing mathematical validation logic...");
 
             var testInvoice = new ShipmentInvoice
             {
@@ -1160,18 +1468,18 @@ namespace WaterNut.DataSpace
                 }
             };
 
-            using var service = new OCRCorrectionService();
+            using var service = new OCRCorrectionService(logger);
             var crossFieldErrors = service.ValidateCrossFieldConsistency(testInvoice);
 
             if (!crossFieldErrors.Any(e => e.ErrorType == "invoice_total_mismatch"))
                 throw new Exception("Mathematical validation failed to detect total mismatch");
 
-            Log.Logger.Information("✓ Mathematical validation logic verified");
+            logger?.Information("✓ Mathematical validation logic verified");
         }
 
-        private static void TestRegexPatterns()
+        private static void TestRegexPatterns(ILogger logger)
         {
-            Log.Logger.Information("Testing regex pattern logic...");
+            logger?.Information("Testing regex pattern logic...");
 
             var testStrategy = new RegexCorrectionStrategy
             {
@@ -1185,7 +1493,7 @@ namespace WaterNut.DataSpace
             if (string.IsNullOrEmpty(testStrategy.RegexPattern))
                 throw new Exception("Regex pattern validation failed");
 
-            Log.Logger.Information("✓ Regex pattern logic verified");
+            logger?.Information("✓ Regex pattern logic verified");
         }
 
         #endregion

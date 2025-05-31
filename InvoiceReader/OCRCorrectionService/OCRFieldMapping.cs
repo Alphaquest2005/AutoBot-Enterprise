@@ -24,23 +24,23 @@ namespace WaterNut.DataSpace
             ["TotalOtherCost"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Other"),
             ["TotalInsurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance"),
             ["TotalDeduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deduction"),
-            
+
             // Invoice Identification Fields
             ["InvoiceNo"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
             ["InvoiceDate"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Date"),
             ["Currency"] = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency"),
-            
+
             // Supplier Fields
             ["SupplierName"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier"),
             ["SupplierAddress"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Address"),
-            
+
             // Line Item Fields
             ["ItemDescription"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Description"),
             ["Quantity"] = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Qty"),
             ["Cost"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Price"),
             ["TotalCost"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "LineTotal"),
             ["Discount"] = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Discount"),
-            
+
             // Alternative field names that DeepSeek might use
             ["Total"] = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Total"),
             ["Subtotal"] = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal"),
@@ -51,19 +51,19 @@ namespace WaterNut.DataSpace
             ["Insurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance"),
             ["Deduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deduction"),
             ["GiftCard"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "GiftCard"),
-            
+
             // Invoice identification alternatives
             ["Invoice"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
             ["InvoiceNumber"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
             ["OrderNumber"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Order"),
             ["Date"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Date"),
-            
+
             // Supplier alternatives
             ["Supplier"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier"),
             ["Vendor"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Vendor"),
             ["From"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "From"),
             ["Address"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Address"),
-            
+
             // Line item alternatives
             ["Description"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Description"),
             ["Item"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Item"),
@@ -122,7 +122,7 @@ namespace WaterNut.DataSpace
 
             _logger?.Warning("No mapping found for DeepSeek field '{DeepSeekField}'. Available mappings: {AvailableMappings}",
                 deepSeekFieldName, string.Join(", ", DeepSeekFieldMapping.Keys.Take(10)));
-            
+
             return null;
         }
 
@@ -142,7 +142,7 @@ namespace WaterNut.DataSpace
         /// <returns>Field mappings for the entity</returns>
         public IEnumerable<KeyValuePair<string, DatabaseFieldInfo>> GetFieldMappingsForEntity(string entityType)
         {
-            return DeepSeekFieldMapping.Where(kvp => 
+            return DeepSeekFieldMapping.Where(kvp =>
                 string.Equals(kvp.Value.EntityType, entityType, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -153,7 +153,7 @@ namespace WaterNut.DataSpace
         /// <returns>True if field is supported</returns>
         public bool IsFieldSupported(string fieldName)
         {
-            return !string.IsNullOrWhiteSpace(fieldName) && 
+            return !string.IsNullOrWhiteSpace(fieldName) &&
                    DeepSeekFieldMapping.ContainsKey(fieldName.Trim());
         }
 
@@ -176,9 +176,9 @@ namespace WaterNut.DataSpace
         public bool IsMonetaryField(string fieldName)
         {
             var fieldInfo = MapDeepSeekFieldToDatabase(fieldName);
-            return fieldInfo?.DataType == "decimal" && 
-                   (fieldInfo.EntityType == "ShipmentInvoice" || 
-                    fieldInfo.DatabaseFieldName.Contains("Cost") || 
+            return fieldInfo?.DataType == "decimal" &&
+                   (fieldInfo.EntityType == "ShipmentInvoice" ||
+                    fieldInfo.DatabaseFieldName.Contains("Cost") ||
                     fieldInfo.DatabaseFieldName.Contains("Total") ||
                     fieldInfo.DatabaseFieldName.Contains("Price"));
         }
@@ -252,6 +252,128 @@ namespace WaterNut.DataSpace
             public string ValidationPattern { get; set; }
             public string ErrorMessage { get; set; }
         }
+
+        #endregion
+
+        #region Enhanced Metadata Integration
+
+        /// <summary>
+        /// Maps DeepSeek field name to database field and enriches with OCR metadata context
+        /// </summary>
+        /// <param name="deepSeekFieldName">Field name from DeepSeek response</param>
+        /// <param name="metadata">OCR metadata for the field (optional)</param>
+        /// <returns>Enhanced database field information with OCR context</returns>
+        public EnhancedDatabaseFieldInfo MapDeepSeekFieldWithMetadata(string deepSeekFieldName, OCRFieldMetadata metadata = null)
+        {
+            var baseFieldInfo = MapDeepSeekFieldToDatabase(deepSeekFieldName);
+            if (baseFieldInfo == null)
+            {
+                _logger?.Warning("No mapping found for DeepSeek field '{DeepSeekField}' in enhanced mapping", deepSeekFieldName);
+                return null;
+            }
+
+            return new EnhancedDatabaseFieldInfo(
+                baseFieldInfo.DatabaseFieldName,
+                baseFieldInfo.EntityType,
+                baseFieldInfo.DataType,
+                baseFieldInfo.IsRequired,
+                baseFieldInfo.DisplayName,
+                metadata);
+        }
+
+        /// <summary>
+        /// Gets database update context for a field correction using enhanced metadata
+        /// </summary>
+        /// <param name="fieldName">Field name being corrected</param>
+        /// <param name="metadata">OCR metadata for the field</param>
+        /// <returns>Database update context information</returns>
+        public DatabaseUpdateContext GetDatabaseUpdateContext(string fieldName, OCRFieldMetadata metadata)
+        {
+            var enhancedFieldInfo = MapDeepSeekFieldWithMetadata(fieldName, metadata);
+            if (enhancedFieldInfo == null)
+            {
+                return new DatabaseUpdateContext { IsValid = false, ErrorMessage = $"Unknown field: {fieldName}" };
+            }
+
+            return new DatabaseUpdateContext
+            {
+                IsValid = true,
+                FieldInfo = enhancedFieldInfo, // Store as object, will be cast to EnhancedDatabaseFieldInfo when used
+                UpdateStrategy = DetermineUpdateStrategy(enhancedFieldInfo),
+                RequiredIds = GetRequiredDatabaseIds(metadata),
+                ValidationRules = GetFieldValidationInfo(fieldName) // Store as object, will be cast to FieldValidationInfo when used
+            };
+        }
+
+        /// <summary>
+        /// Determines the appropriate database update strategy based on field metadata
+        /// </summary>
+        private DatabaseUpdateStrategy DetermineUpdateStrategy(EnhancedDatabaseFieldInfo fieldInfo)
+        {
+            if (!fieldInfo.HasOCRContext)
+            {
+                return DatabaseUpdateStrategy.SkipUpdate; // No OCR context, can't update database
+            }
+
+            var metadata = fieldInfo.OCRMetadata;
+
+            // If we have complete OCR context, we can update regex patterns
+            if (metadata.FieldId.HasValue && metadata.LineId.HasValue && metadata.RegexId.HasValue)
+            {
+                return DatabaseUpdateStrategy.UpdateRegexPattern;
+            }
+
+            // If we have field context but no regex, we might need to create new patterns
+            if (metadata.FieldId.HasValue && metadata.LineId.HasValue)
+            {
+                return DatabaseUpdateStrategy.CreateNewPattern;
+            }
+
+            // If we only have basic context, update field format rules
+            if (metadata.FieldId.HasValue)
+            {
+                return DatabaseUpdateStrategy.UpdateFieldFormat;
+            }
+
+            return DatabaseUpdateStrategy.LogOnly; // Log the correction but don't update database
+        }
+
+        /// <summary>
+        /// Gets required database IDs for update operations
+        /// </summary>
+        private RequiredDatabaseIds GetRequiredDatabaseIds(OCRFieldMetadata metadata)
+        {
+            return new RequiredDatabaseIds
+            {
+                FieldId = metadata?.FieldId,
+                LineId = metadata?.LineId,
+                RegexId = metadata?.RegexId,
+                InvoiceId = metadata?.InvoiceId,
+                PartId = metadata?.PartId
+            };
+        }
+
+        /// <summary>
+        /// Enhanced database field information with OCR metadata context
+        /// </summary>
+        public class EnhancedDatabaseFieldInfo : DatabaseFieldInfo
+        {
+            public OCRFieldMetadata OCRMetadata { get; set; }
+            public bool HasOCRContext { get; set; }
+            public bool CanUpdateDatabase { get; set; }
+
+            public EnhancedDatabaseFieldInfo() : base("", "", "", false, "") { }
+
+            public EnhancedDatabaseFieldInfo(string databaseFieldName, string entityType, string dataType, bool isRequired, string displayName, OCRFieldMetadata metadata)
+                : base(databaseFieldName, entityType, dataType, isRequired, displayName)
+            {
+                OCRMetadata = metadata;
+                HasOCRContext = metadata != null;
+                CanUpdateDatabase = metadata?.FieldId.HasValue == true && metadata?.LineId.HasValue == true;
+            }
+        }
+
+
 
         #endregion
     }

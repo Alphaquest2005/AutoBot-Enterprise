@@ -58,8 +58,8 @@ namespace AutoBotUtilities.Tests.Production
         [SetUp]
         public void SetUp()
         {
-            _service = new OCRCorrectionService();
-            _logger.Information("Created new OCRCorrectionService instance for test");
+            _service = new OCRCorrectionService(_logger);
+            _logger.Information("Created new OCRCorrectionService instance for test with shared logger");
         }
 
         [TearDown]

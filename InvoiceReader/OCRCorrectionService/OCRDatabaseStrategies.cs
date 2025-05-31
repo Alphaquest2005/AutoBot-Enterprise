@@ -109,7 +109,12 @@ namespace WaterNut.DataSpace
         /// </summary>
         public class FieldFormatUpdateStrategy : DatabaseUpdateStrategyBase
         {
-            public FieldFormatUpdateStrategy(ILogger logger) : base(logger) { }
+            private readonly OCRCorrectionService _correctionService;
+
+            public FieldFormatUpdateStrategy(ILogger logger, OCRCorrectionService correctionService) : base(logger)
+            {
+                _correctionService = correctionService;
+            }
 
             public override string StrategyType => "FieldFormat";
 
@@ -127,7 +132,7 @@ namespace WaterNut.DataSpace
                     _logger.Information("Executing field format update for field: {FieldName}", request.FieldName);
 
                     // Get or create field
-                    var fieldInfo = MapDeepSeekFieldToDatabase(request.FieldName);
+                    var fieldInfo = _correctionService.MapDeepSeekFieldToDatabase(request.FieldName);
                     if (fieldInfo == null)
                     {
                         return DatabaseUpdateResult.Failed($"Unknown field: {request.FieldName}");
@@ -244,12 +249,12 @@ namespace WaterNut.DataSpace
             private readonly ILogger _logger;
             private readonly List<IDatabaseUpdateStrategy> _strategies;
 
-            public DatabaseUpdateStrategyFactory(ILogger logger)
+            public DatabaseUpdateStrategyFactory(ILogger logger, OCRCorrectionService correctionService)
             {
                 _logger = logger;
                 _strategies = new List<IDatabaseUpdateStrategy>
                 {
-                    new FieldFormatUpdateStrategy(logger)
+                    new FieldFormatUpdateStrategy(logger, correctionService)
                 };
             }
 
@@ -295,6 +300,7 @@ namespace WaterNut.DataSpace
             public string DeepSeekReasoning { get; set; }
             public string FilePath { get; set; }
             public string InvoiceType { get; set; }
+            public DatabaseUpdateStrategy Strategy { get; set; }
         }
 
         #endregion

@@ -38,10 +38,10 @@ namespace WaterNut.DataSpace
 
         #region Constructor
 
-        public OCRCorrectionService()
+        public OCRCorrectionService(ILogger logger = null)
         {
             _deepSeekApi = new DeepSeekInvoiceApi();
-            _logger = Log.Logger.ForContext<OCRCorrectionService>();
+            _logger = logger ?? Log.Logger.ForContext<OCRCorrectionService>();
         }
 
         #endregion
