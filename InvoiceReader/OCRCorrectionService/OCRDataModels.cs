@@ -4,7 +4,6 @@ using System;
 namespace WaterNut.DataSpace
 {
     using System.Collections.Generic;
-
     using global::EntryDataDS.Business.Entities;
 
     #region Data Models
@@ -23,6 +22,16 @@ namespace WaterNut.DataSpace
         public double Confidence { get; set; }
         public string Reasoning { get; set; }
         public int LineNumber { get; set; }
+        
+        // NEW: Enhanced context for omission handling
+        public string LineText { get; set; }
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public bool RequiresMultilineRegex { get; set; }
+        
+        // Computed property for full context
+        public string FullContext => string.Join("\n", 
+            ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));
     }
 
     /// <summary>
@@ -69,6 +78,13 @@ namespace WaterNut.DataSpace
         public double Confidence { get; set; }
         public string ErrorType { get; set; }
         public string Reasoning { get; set; }
+        
+        // NEW: Enhanced context for omission handling
+        public int LineNumber { get; set; }
+        public string LineText { get; set; }
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public bool RequiresMultilineRegex { get; set; }
     }
 
     /// <summary>
@@ -80,6 +96,47 @@ namespace WaterNut.DataSpace
         public string LineText { get; set; }
         public double Confidence { get; set; }
         public string Reasoning { get; set; }
+    }
+
+    /// <summary>
+    /// Line context for correction processing
+    /// </summary>
+    public class LineContext
+    {
+        public int? LineId { get; set; }
+        public int LineNumber { get; set; }
+        public string LineText { get; set; }
+        public string WindowText { get; set; }
+        public bool IsOrphaned { get; set; }
+        public bool RequiresNewLineCreation { get; set; }
+        public List<OCRFieldMetadata> ExistingFields { get; set; } = new List<OCRFieldMetadata>();
+        
+        // NEW: Enhanced context from DeepSeek
+        public string RegexPattern { get; set; }
+        public List<FieldInfo> FieldsInLine { get; set; } = new List<FieldInfo>();
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public bool RequiresMultilineRegex { get; set; }
+        public string FullContextWithLineNumbers => string.Join("\n", 
+            ContextLinesBefore.Concat(new[] { $">>> Line {LineNumber}: {LineText} <<<" }).Concat(ContextLinesAfter));
+            
+        // Additional properties for line context
+        public string LineName { get; set; }
+        public string LineRegex { get; set; }
+        public int? RegexId { get; set; }
+        public int? PartId { get; set; }
+    }
+
+    /// <summary>
+    /// Field information for mapping purposes
+    /// </summary>
+    public class FieldInfo
+    {
+        public int FieldId { get; set; }
+        public string Key { get; set; }        // Maps to regex named group
+        public string Field { get; set; }      // Database field name
+        public string EntityType { get; set; }
+        public string DataType { get; set; }
     }
 
     /// <summary>
@@ -95,6 +152,22 @@ namespace WaterNut.DataSpace
     }
 
     /// <summary>
+    /// Response from DeepSeek for regex creation
+    /// </summary>
+    public class RegexCreationResponse
+    {
+        public string Strategy { get; set; }  // "modify_existing_line" or "create_new_line"
+        public string RegexPattern { get; set; }
+        public string CompleteLineRegex { get; set; }  // Full regex for line updates
+        public bool IsMultiline { get; set; }
+        public int MaxLines { get; set; }
+        public string TestMatch { get; set; }
+        public double Confidence { get; set; }
+        public string Reasoning { get; set; }
+        public bool PreservesExistingGroups { get; set; }  // Safety check
+    }
+
+    /// <summary>
     /// Request for updating regex patterns
     /// </summary>
     public class RegexUpdateRequest
@@ -107,6 +180,11 @@ namespace WaterNut.DataSpace
         public string LineText { get; set; }
         public RegexCorrectionStrategy Strategy { get; set; }
         public double Confidence { get; set; }
+        public string WindowText { get; set; }
+        public string DeepSeekReasoning { get; set; }
+        public string FilePath { get; set; }
+        public string InvoiceType { get; set; }
+        public DatabaseUpdateStrategy UpdateStrategy { get; set; }
     }
 
     /// <summary>
@@ -266,17 +344,6 @@ namespace WaterNut.DataSpace
         public int? PartTypeId { get; set; }
     }
 
-    public class LineContext
-    {
-        public int? LineId { get; set; }
-        public string LineName { get; set; }
-        public string LineRegex { get; set; }
-        public int? RegexId { get; set; }
-        public int? PartId { get; set; }
-        public string PartName { get; set; }
-        public int? PartTypeId { get; set; }
-    }
-
     public class FieldContext
     {
         // Field information
@@ -307,7 +374,7 @@ namespace WaterNut.DataSpace
     }
 
     /// <summary>
-    /// Database update context for field corrections (forward declaration for integration)
+    /// Database update context for field corrections
     /// </summary>
     public class DatabaseUpdateContext
     {

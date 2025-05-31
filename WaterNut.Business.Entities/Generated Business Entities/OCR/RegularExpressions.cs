@@ -93,6 +93,51 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _maxlines;
         [DataMember]
+        public Nullable<System.DateTime> CreatedDate 
+        {
+            get
+            {
+                return _createddate;
+            }
+            set
+            {
+                _createddate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _createddate;
+        [DataMember]
+        public Nullable<System.DateTime> LastUpdated 
+        {
+            get
+            {
+                return _lastupdated;
+            }
+            set
+            {
+                _lastupdated = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _lastupdated;
+        [DataMember]
+        public string Description 
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _description;
+        [DataMember]
         public List<End> End { get; set; }
         [DataMember]
         public List<Lines> Lines { get; set; }

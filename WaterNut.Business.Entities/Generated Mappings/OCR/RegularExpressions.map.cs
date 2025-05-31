@@ -17,6 +17,9 @@
               this.Property(t => t.RegEx).HasColumnName("RegEx").IsRequired();
               this.Property(t => t.MultiLine).HasColumnName("MultiLine");
               this.Property(t => t.MaxLines).HasColumnName("MaxLines");
+              this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
+              this.Property(t => t.LastUpdated).HasColumnName("LastUpdated");
+              this.Property(t => t.Description).HasColumnName("Description").HasMaxLength(500);
               this.HasMany(t => t.End).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Lines).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Start).WithRequired(t => (RegularExpressions)t.RegularExpressions);

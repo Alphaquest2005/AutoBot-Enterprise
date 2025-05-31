@@ -73,6 +73,45 @@ namespace OCR.Client.DTO
 		}
         private Nullable<int> _MaxLines;
 
+        [DataMember]
+        public Nullable<System.DateTime> CreatedDate
+		{ 
+		    get { return _CreatedDate; }
+			set
+			{
+			    if (value == _CreatedDate) return;
+				_CreatedDate = value;
+				NotifyPropertyChanged();//m => this.CreatedDate
+			}
+		}
+        private Nullable<System.DateTime> _CreatedDate;
+
+        [DataMember]
+        public Nullable<System.DateTime> LastUpdated
+		{ 
+		    get { return _LastUpdated; }
+			set
+			{
+			    if (value == _LastUpdated) return;
+				_LastUpdated = value;
+				NotifyPropertyChanged();//m => this.LastUpdated
+			}
+		}
+        private Nullable<System.DateTime> _LastUpdated;
+
+        [DataMember]
+        public string Description
+		{ 
+		    get { return _Description; }
+			set
+			{
+			    if (value == _Description) return;
+				_Description = value;
+				NotifyPropertyChanged();//m => this.Description
+			}
+		}
+        private string _Description;
+
        
         [DataMember]
         public ChangeTrackingCollection<End> End

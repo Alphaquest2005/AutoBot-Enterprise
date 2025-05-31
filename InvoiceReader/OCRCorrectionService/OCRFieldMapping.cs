@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Data.Entity;
+using OCR.Business.Entities;
 using Serilog;
 
 namespace WaterNut.DataSpace
@@ -255,6 +259,110 @@ namespace WaterNut.DataSpace
 
         #endregion
 
+        #region Regex Named Group Extraction
+
+        /// <summary>
+        /// Extracts named groups from a regex pattern
+        /// </summary>
+        /// <param name="regexPattern">Regex pattern to analyze</param>
+        /// <returns>List of named group names</returns>
+        public List<string> ExtractNamedGroupsFromRegex(string regexPattern)
+        {
+            var namedGroups = new List<string>();
+
+            if (string.IsNullOrEmpty(regexPattern)) return namedGroups;
+
+            try
+            {
+                // Pattern to match named groups: (?<groupName>...) or (?'groupName'...)
+                var namedGroupPattern = @"\(\?<([^>]+)>|\(\?'([^']+)'";
+                var matches = Regex.Matches(regexPattern, namedGroupPattern);
+
+                foreach (Match match in matches)
+                {
+                    // Group 1 is for (?<name>) format, Group 2 is for (?'name') format
+                    var groupName = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
+                    if (!string.IsNullOrEmpty(groupName))
+                    {
+                        namedGroups.Add(groupName);
+                    }
+                }
+
+                _logger?.Debug("Extracted named groups from regex: {Groups}", string.Join(", ", namedGroups));
+                return namedGroups;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Error extracting named groups from regex pattern: {Pattern}", regexPattern);
+                return namedGroups;
+            }
+        }
+
+        /// <summary>
+        /// Gets fields by regex named groups from database (CONSOLIDATED ENHANCED VERSION)
+        /// Combines functionality from OCRMetadataExtractor.cs and adds comprehensive error handling
+        /// </summary>
+        /// <param name="regexPattern">Regex pattern to analyze</param>
+        /// <param name="lineId">Line ID to filter fields</param>
+        /// <returns>List of field information</returns>
+        public async Task<List<FieldInfo>> GetFieldsByRegexNamedGroups(string regexPattern, int lineId)
+        {
+            try
+            {
+                using var context = new OCRContext();
+
+                // Extract named groups from regex pattern
+                var namedGroups = ExtractNamedGroupsFromRegex(regexPattern);
+
+                // Find fields where Key matches the named groups
+                var fields = await context.Fields
+                    .Where(f => f.LineId == lineId && namedGroups.Contains(f.Key))
+                    .Select(f => new FieldInfo
+                    {
+                        FieldId = f.Id,
+                        Key = f.Key,
+                        Field = f.Field,
+                        EntityType = f.EntityType,
+                        DataType = f.DataType,
+                        IsRequired = f.IsRequired  // ENHANCED: Added IsRequired property
+                    })
+                    .ToListAsync();
+
+                _logger?.Debug("Found {FieldCount} fields matching named groups for LineId {LineId}",
+                    fields.Count, lineId);
+
+                return fields;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Error getting fields by regex named groups for LineId: {LineId}", lineId);
+                return new List<FieldInfo>();
+            }
+        }
+
+        /// <summary>
+        /// Checks if a field exists in a line's regex named groups
+        /// </summary>
+        /// <param name="deepSeekFieldName">DeepSeek field name</param>
+        /// <param name="lineContext">Line context with field information</param>
+        /// <returns>True if field exists in line</returns>
+        public bool IsFieldExistingInLine(string deepSeekFieldName, LineContext lineContext)
+        {
+            if (lineContext?.FieldsInLine == null) return false;
+
+            // Map DeepSeek field name to expected Key or Field name
+            var fieldMapping = MapDeepSeekFieldToDatabase(deepSeekFieldName);
+            if (fieldMapping == null) return false;
+
+            // Check if field exists by Key (regex named group) or Field name
+            return lineContext.FieldsInLine.Any(f =>
+                f.Key.Equals(deepSeekFieldName, StringComparison.OrdinalIgnoreCase) ||
+                f.Key.Equals(fieldMapping.DatabaseFieldName, StringComparison.OrdinalIgnoreCase) ||
+                f.Field.Equals(fieldMapping.DatabaseFieldName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        #endregion
+
         #region Enhanced Metadata Integration
 
         /// <summary>
@@ -372,8 +480,6 @@ namespace WaterNut.DataSpace
                 CanUpdateDatabase = metadata?.FieldId.HasValue == true && metadata?.LineId.HasValue == true;
             }
         }
-
-
 
         #endregion
     }

@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using OCR.Business.Entities;
 using Serilog;
+using System.Data.Entity;
 
 namespace WaterNut.DataSpace
 {
     /// <summary>
-    /// Database update strategies for OCR correction patterns
+    /// Database update strategies for OCR correction patterns with omission support
     /// </summary>
     public partial class OCRCorrectionService
     {
@@ -41,11 +42,11 @@ namespace WaterNut.DataSpace
             public abstract Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request);
             public abstract bool CanHandle(CorrectionResult correction);
 
-            protected async Task<RegularExpressions> GetOrCreateRegexAsync(OCRContext context, string pattern, bool multiLine = false)
+            protected async Task<RegularExpressions> GetOrCreateRegexAsync(OCRContext context, string pattern, bool multiLine = false, int maxLines = 1)
             {
                 // Check if regex already exists
-                var existingRegex = context.RegularExpressions
-                    .FirstOrDefault(r => r.RegEx == pattern);
+                var existingRegex = await context.RegularExpressions
+                    .FirstOrDefaultAsync(r => r.RegEx == pattern);
 
                 if (existingRegex != null)
                 {
@@ -58,7 +59,8 @@ namespace WaterNut.DataSpace
                 {
                     RegEx = pattern,
                     MultiLine = multiLine,
-                    MaxLines = multiLine ? 10 : 1
+                    MaxLines = maxLines,
+                    TrackingState = TrackableEntities.TrackingState.Added
                 };
 
                 context.RegularExpressions.Add(newRegex);
@@ -68,11 +70,11 @@ namespace WaterNut.DataSpace
                 return newRegex;
             }
 
-            protected async Task<Fields> GetOrCreateFieldAsync(OCRContext context, string fieldName, string entityType, string dataType)
+            protected async Task<Fields> GetOrCreateFieldAsync(OCRContext context, string fieldName, string entityType, string dataType, int lineId, string key)
             {
                 // Check if field already exists
-                var existingField = context.Fields
-                    .FirstOrDefault(f => f.Field == fieldName && f.EntityType == entityType);
+                var existingField = await context.Fields
+                    .FirstOrDefaultAsync(f => f.Field == fieldName && f.EntityType == entityType && f.LineId == lineId);
 
                 if (existingField != null)
                 {
@@ -83,12 +85,14 @@ namespace WaterNut.DataSpace
                 // Create new field
                 var newField = new Fields
                 {
-                    Key = fieldName,
+                    Key = key,
                     Field = fieldName,
                     EntityType = entityType,
                     DataType = dataType,
-                    IsRequired = false, // Will be determined by field mapping
-                    LineId = 0 // Will be set when associated with a line
+                    IsRequired = false,
+                    LineId = lineId,
+                    AppendValues = true, // Always true for new fields to preserve existing behavior
+                    TrackingState = TrackableEntities.TrackingState.Added
                 };
 
                 context.Fields.Add(newField);
@@ -122,6 +126,7 @@ namespace WaterNut.DataSpace
             {
                 return correction.CorrectionType == "FieldFormat" ||
                        correction.CorrectionType == "FORMAT_FIX" ||
+                       correction.CorrectionType == "format_correction" ||
                        IsFormatCorrection(correction.OldValue, correction.NewValue);
             }
 
@@ -138,23 +143,29 @@ namespace WaterNut.DataSpace
                         return DatabaseUpdateResult.Failed($"Unknown field: {request.FieldName}");
                     }
 
-                    var field = await GetOrCreateFieldAsync(context, fieldInfo.DatabaseFieldName,
-                        fieldInfo.EntityType, fieldInfo.DataType);
+                    // Find existing field in database
+                    var field = await context.Fields
+                        .FirstOrDefaultAsync(f => f.Field == fieldInfo.DatabaseFieldName);
+
+                    if (field == null)
+                    {
+                        return DatabaseUpdateResult.Failed($"Field not found in database: {fieldInfo.DatabaseFieldName}");
+                    }
 
                     // Create regex pattern for the correction
                     var regexPattern = CreateFormatCorrectionPattern(request.OldValue, request.NewValue);
-                    if (string.IsNullOrEmpty(regexPattern.Pattern))
+                    if (regexPattern == null)
                     {
                         return DatabaseUpdateResult.Failed($"Could not create regex pattern for {request.OldValue} -> {request.NewValue}");
                     }
 
                     // Get or create regex entries
-                    var regex = await GetOrCreateRegexAsync(context, regexPattern.Pattern);
-                    var replacementRegex = await GetOrCreateRegexAsync(context, regexPattern.Replacement);
+                    var regex = await GetOrCreateRegexAsync(context, regexPattern.Value.Pattern);
+                    var replacementRegex = await GetOrCreateRegexAsync(context, regexPattern.Value.Replacement);
 
                     // Check if field format regex already exists
-                    var existingFieldFormat = context.OCR_FieldFormatRegEx
-                        .FirstOrDefault(ffr => ffr.FieldId == field.Id &&
+                    var existingFieldFormat = await context.FieldFormatRegEx
+                        .FirstOrDefaultAsync(ffr => ffr.FieldId == field.Id &&
                                               ffr.RegExId == regex.Id &&
                                               ffr.ReplacementRegExId == replacementRegex.Id);
 
@@ -169,14 +180,15 @@ namespace WaterNut.DataSpace
                     {
                         FieldId = field.Id,
                         RegExId = regex.Id,
-                        ReplacementRegExId = replacementRegex.Id
+                        ReplacementRegExId = replacementRegex.Id,
+                        TrackingState = TrackableEntities.TrackingState.Added
                     };
 
-                    context.OCR_FieldFormatRegEx.Add(fieldFormatRegex);
+                    context.FieldFormatRegEx.Add(fieldFormatRegex);
                     await context.SaveChangesAsync();
 
                     _logger.Information("Created field format regex for {FieldName}: {Pattern} -> {Replacement}",
-                        request.FieldName, regexPattern.Pattern, regexPattern.Replacement);
+                        request.FieldName, regexPattern.Value.Pattern, regexPattern.Value.Replacement);
 
                     return DatabaseUpdateResult.Success(fieldFormatRegex.Id, "Created");
                 }
@@ -201,7 +213,7 @@ namespace WaterNut.DataSpace
                 return string.Equals(oldNormalized, newNormalized, StringComparison.OrdinalIgnoreCase);
             }
 
-            private (string Pattern, string Replacement) CreateFormatCorrectionPattern(string oldValue, string newValue)
+            private (string Pattern, string Replacement)? CreateFormatCorrectionPattern(string oldValue, string newValue)
             {
                 // Decimal comma to point
                 if (oldValue.Contains(",") && newValue.Contains(".") &&
@@ -237,12 +249,191 @@ namespace WaterNut.DataSpace
 
         #endregion
 
+        #region NEW: Omission Update Strategy
 
+        /// <summary>
+        /// Strategy for handling omission corrections by creating new fields and regex patterns
+        /// </summary>
+        public class OmissionUpdateStrategy : DatabaseUpdateStrategyBase
+        {
+            private readonly OCRCorrectionService _correctionService;
+
+            public OmissionUpdateStrategy(ILogger logger, OCRCorrectionService correctionService) : base(logger)
+            {
+                _correctionService = correctionService;
+            }
+
+            public override string StrategyType => "Omission";
+
+            public override bool CanHandle(CorrectionResult correction)
+            {
+                return correction.CorrectionType == "omission";
+            }
+
+            public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request)
+            {
+                try
+                {
+                    _logger.Information("Executing omission update for field: {FieldName}", request.FieldName);
+
+                    // Get field mapping information
+                    var fieldInfo = _correctionService.MapDeepSeekFieldToDatabase(request.FieldName);
+                    if (fieldInfo == null)
+                    {
+                        return DatabaseUpdateResult.Failed($"Unknown field: {request.FieldName}");
+                    }
+
+                    // Request regex pattern from DeepSeek for this omission
+                    var regexResponse = await _correctionService.RequestNewRegexFromDeepSeek(
+                        new CorrectionResult 
+                        { 
+                            FieldName = request.FieldName,
+                            NewValue = request.NewValue,
+                            OldValue = request.OldValue,
+                            LineText = request.LineText,
+                            ContextLinesBefore = ParseContextLines(request.ContextBefore),
+                            ContextLinesAfter = ParseContextLines(request.ContextAfter)
+                        }, 
+                        new LineContext 
+                        { 
+                            LineId = request.LineId,
+                            PartId = request.PartId,
+                            RegexPattern = request.ExistingRegex
+                        });
+
+                    if (regexResponse == null)
+                    {
+                        return DatabaseUpdateResult.Failed("Failed to get regex pattern from DeepSeek");
+                    }
+
+                    // Execute the strategy returned by DeepSeek
+                    if (regexResponse.Strategy == "modify_existing_line")
+                    {
+                        return await ModifyExistingLine(context, request, regexResponse, fieldInfo);
+                    }
+                    else if (regexResponse.Strategy == "create_new_line")
+                    {
+                        return await CreateNewLine(context, request, regexResponse, fieldInfo);
+                    }
+                    else
+                    {
+                        return DatabaseUpdateResult.Failed($"Unknown strategy: {regexResponse.Strategy}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Failed to execute omission update for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Failed($"Database error: {ex.Message}");
+                }
+            }
+
+            private async Task<DatabaseUpdateResult> ModifyExistingLine(
+                OCRContext context, 
+                RegexUpdateRequest request, 
+                RegexCreationResponse regexResponse, 
+                DatabaseFieldInfo fieldInfo)
+            {
+                try
+                {
+                    // Update existing regex pattern
+                    var existingRegex = await context.RegularExpressions
+                        .FirstOrDefaultAsync(r => r.Id == request.RegexId);
+
+                    if (existingRegex == null)
+                    {
+                        return DatabaseUpdateResult.Failed($"Existing regex not found: {request.RegexId}");
+                    }
+
+                    existingRegex.RegEx = regexResponse.CompleteLineRegex;
+                    existingRegex.MultiLine = regexResponse.IsMultiline;
+                    existingRegex.MaxLines = regexResponse.MaxLines;
+                    existingRegex.TrackingState = TrackableEntities.TrackingState.Modified;
+
+                    // Create new field for this line
+                    var newField = await GetOrCreateFieldAsync(
+                        context,
+                        fieldInfo.DatabaseFieldName,
+                        fieldInfo.EntityType,
+                        fieldInfo.DataType,
+                        request.LineId.Value,
+                        request.FieldName);
+
+                    await context.SaveChangesAsync();
+
+                    _logger.Information("Modified existing line regex and created field for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Success(newField.Id, "Modified existing line");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error modifying existing line for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Failed($"Modify existing line error: {ex.Message}");
+                }
+            }
+
+            private async Task<DatabaseUpdateResult> CreateNewLine(
+                OCRContext context, 
+                RegexUpdateRequest request, 
+                RegexCreationResponse regexResponse, 
+                DatabaseFieldInfo fieldInfo)
+            {
+                try
+                {
+                    // Create new regex pattern
+                    var newRegex = await GetOrCreateRegexAsync(
+                        context,
+                        regexResponse.RegexPattern,
+                        regexResponse.IsMultiline,
+                        regexResponse.MaxLines);
+
+                    // Create new line
+                    var newLine = new Lines
+                    {
+                        PartId = request.PartId.Value,
+                        RegExId = newRegex.Id,
+                        Name = $"Auto_{request.FieldName}_{DateTime.Now:yyyyMMdd_HHmm}",
+                        IsActive = true,
+                        TrackingState = TrackableEntities.TrackingState.Added
+                    };
+
+                    context.Lines.Add(newLine);
+                    await context.SaveChangesAsync();
+
+                    // Create new field for this line
+                    var newField = await GetOrCreateFieldAsync(
+                        context,
+                        fieldInfo.DatabaseFieldName,
+                        fieldInfo.EntityType,
+                        fieldInfo.DataType,
+                        newLine.Id,
+                        request.FieldName);
+
+                    _logger.Information("Created new line and field for {FieldName}: LineId={LineId}, FieldId={FieldId}",
+                        request.FieldName, newLine.Id, newField.Id);
+
+                    return DatabaseUpdateResult.Success(newField.Id, "Created new line");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error creating new line for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Failed($"Create new line error: {ex.Message}");
+                }
+            }
+
+            private List<string> ParseContextLines(string contextString)
+            {
+                if (string.IsNullOrEmpty(contextString))
+                    return new List<string>();
+
+                return contextString.Split('\n').ToList();
+            }
+        }
+
+        #endregion
 
         #region Strategy Factory
 
         /// <summary>
-        /// Factory for creating database update strategies
+        /// Factory for creating database update strategies - Enhanced with omission support
         /// </summary>
         public class DatabaseUpdateStrategyFactory
         {
@@ -254,7 +445,8 @@ namespace WaterNut.DataSpace
                 _logger = logger;
                 _strategies = new List<IDatabaseUpdateStrategy>
                 {
-                    new FieldFormatUpdateStrategy(logger, correctionService)
+                    new FieldFormatUpdateStrategy(logger, correctionService),
+                    new OmissionUpdateStrategy(logger, correctionService) // NEW: Omission strategy
                 };
             }
 
@@ -282,10 +474,10 @@ namespace WaterNut.DataSpace
 
         #endregion
 
-        #region Request Models
+        #region Request Models - Enhanced
 
         /// <summary>
-        /// Request for updating regex patterns in database
+        /// Enhanced request for updating regex patterns in database
         /// </summary>
         public class RegexUpdateRequest
         {
@@ -301,6 +493,14 @@ namespace WaterNut.DataSpace
             public string FilePath { get; set; }
             public string InvoiceType { get; set; }
             public DatabaseUpdateStrategy Strategy { get; set; }
+            
+            // NEW: Enhanced properties for omission handling
+            public int? LineId { get; set; }
+            public int? PartId { get; set; }
+            public int? RegexId { get; set; }
+            public string ExistingRegex { get; set; }
+            public string ContextBefore { get; set; }
+            public string ContextAfter { get; set; }
         }
 
         #endregion

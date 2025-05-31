@@ -226,6 +226,124 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+		private DateTime? _startCreatedDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartCreatedDateFilter
+        {
+            get
+            {
+                return _startCreatedDateFilter;
+            }
+            set
+            {
+                _startCreatedDateFilter = value;
+				NotifyPropertyChanged(x => StartCreatedDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endCreatedDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndCreatedDateFilter
+        {
+            get
+            {
+                return _endCreatedDateFilter;
+            }
+            set
+            {
+                _endCreatedDateFilter = value;
+				NotifyPropertyChanged(x => EndCreatedDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _createdDateFilter;
+        public DateTime? CreatedDateFilter
+        {
+            get
+            {
+                return _createdDateFilter;
+            }
+            set
+            {
+                _createdDateFilter = value;
+				NotifyPropertyChanged(x => CreatedDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startLastUpdatedFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartLastUpdatedFilter
+        {
+            get
+            {
+                return _startLastUpdatedFilter;
+            }
+            set
+            {
+                _startLastUpdatedFilter = value;
+				NotifyPropertyChanged(x => StartLastUpdatedFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endLastUpdatedFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndLastUpdatedFilter
+        {
+            get
+            {
+                return _endLastUpdatedFilter;
+            }
+            set
+            {
+                _endLastUpdatedFilter = value;
+				NotifyPropertyChanged(x => EndLastUpdatedFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _lastUpdatedFilter;
+        public DateTime? LastUpdatedFilter
+        {
+            get
+            {
+                return _lastUpdatedFilter;
+            }
+            set
+            {
+                _lastUpdatedFilter = value;
+				NotifyPropertyChanged(x => LastUpdatedFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _descriptionFilter;
+        public string DescriptionFilter
+        {
+            get
+            {
+                return _descriptionFilter;
+            }
+            set
+            {
+                _descriptionFilter = value;
+				NotifyPropertyChanged(x => DescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -265,7 +383,69 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
  
 
 					if(MaxLinesFilter.HasValue)
-						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));				 
+
+ 
+
+				if (Convert.ToDateTime(StartCreatedDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndCreatedDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartCreatedDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartCreatedDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndCreatedDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("CreatedDate >= \"{0}\"",  Convert.ToDateTime(StartCreatedDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndCreatedDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndCreatedDateFilter.HasValue)
+								res.Append(" && " + string.Format("CreatedDate <= \"{0}\"",  Convert.ToDateTime(EndCreatedDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartCreatedDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndCreatedDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_createdDateFilter).Date != DateTime.MinValue)
+						{
+							if(CreatedDateFilter.HasValue)
+								res.Append(" && " + string.Format("CreatedDate == \"{0}\"",  Convert.ToDateTime(CreatedDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+ 
+
+				if (Convert.ToDateTime(StartLastUpdatedFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndLastUpdatedFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartLastUpdatedFilter).Date != DateTime.MinValue)
+						{
+							if(StartLastUpdatedFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndLastUpdatedFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("LastUpdated >= \"{0}\"",  Convert.ToDateTime(StartLastUpdatedFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndLastUpdatedFilter).Date != DateTime.MinValue)
+						{
+							if(EndLastUpdatedFilter.HasValue)
+								res.Append(" && " + string.Format("LastUpdated <= \"{0}\"",  Convert.ToDateTime(EndLastUpdatedFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartLastUpdatedFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndLastUpdatedFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_lastUpdatedFilter).Date != DateTime.MinValue)
+						{
+							if(LastUpdatedFilter.HasValue)
+								res.Append(" && " + string.Format("LastUpdated == \"{0}\"",  Convert.ToDateTime(LastUpdatedFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+									if(string.IsNullOrEmpty(DescriptionFilter) == false)
+						res.Append(" && " + string.Format("Description.Contains(\"{0}\")",  DescriptionFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -294,7 +474,16 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     MultiLine = x.MultiLine ,
                     
  
-                    MaxLines = x.MaxLines 
+                    MaxLines = x.MaxLines ,
+                    
+ 
+                    CreatedDate = x.CreatedDate ,
+                    
+ 
+                    LastUpdated = x.LastUpdated ,
+                    
+ 
+                    Description = x.Description 
                     
                 }).ToList()
             };
@@ -314,6 +503,15 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public Nullable<int> MaxLines { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> CreatedDate { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> LastUpdated { get; set; } 
+                    
+ 
+                    public string Description { get; set; } 
                     
         }
 

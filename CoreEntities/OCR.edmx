@@ -189,6 +189,9 @@
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MultiLine" Type="bit" />
           <Property Name="MaxLines" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="LastUpdated" Type="datetime" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="OCR-Start">
           <Key>
@@ -962,6 +965,9 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="MultiLine" Type="Boolean" />
           <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
           <Property Name="MaxLines" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Start">
           <Key>
@@ -1585,6 +1591,9 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <EntitySetMapping Name="RegularExpressions">
             <EntityTypeMapping TypeName="WaterNutDBModel.RegularExpressions">
               <MappingFragment StoreEntitySet="OCR-RegularExpressions">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="MultiLine" ColumnName="MultiLine" />
                 <ScalarProperty Name="RegEx" ColumnName="RegEx" />

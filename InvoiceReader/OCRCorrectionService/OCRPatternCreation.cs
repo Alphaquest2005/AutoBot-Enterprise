@@ -8,6 +8,7 @@ namespace WaterNut.DataSpace
 {
     /// <summary>
     /// Advanced pattern creation logic for OCR corrections
+    /// Enhanced with omission handling and DeepSeek integration
     /// </summary>
     public partial class OCRCorrectionService
     {
@@ -62,6 +63,60 @@ namespace WaterNut.DataSpace
             _logger?.Warning("No suitable pattern could be created for: '{Original}' -> '{Corrected}'",
                 originalValue, correctedValue);
             return null;
+        }
+
+        /// <summary>
+        /// Creates extraction patterns for omissions based on DeepSeek analysis and context
+        /// </summary>
+        /// <param name="correction">Correction result with context</param>
+        /// <param name="existingRegex">Current line regex pattern if available</param>
+        /// <param name="existingNamedGroups">Existing named groups to preserve</param>
+        /// <returns>Regex creation response for omission handling</returns>
+        public RegexCreationResponse CreateOmissionExtractionPattern(CorrectionResult correction, 
+            string existingRegex = null, List<string> existingNamedGroups = null)
+        {
+            try
+            {
+                _logger?.Information("Creating omission extraction pattern for field {FieldName}", correction.FieldName);
+
+                // Analyze the context to determine pattern strategy
+                var patternStrategy = AnalyzeOmissionContext(correction);
+                
+                // Create the regex pattern based on analysis
+                var regexPattern = CreateOmissionRegexPattern(correction, patternStrategy);
+                
+                if (string.IsNullOrEmpty(regexPattern))
+                {
+                    _logger?.Warning("Could not create omission regex pattern for field {FieldName}", correction.FieldName);
+                    return null;
+                }
+
+                // Determine if we should modify existing line or create new one
+                var strategy = DetermineOmissionStrategy(correction, existingRegex, existingNamedGroups);
+
+                var response = new RegexCreationResponse
+                {
+                    Strategy = strategy,
+                    RegexPattern = regexPattern,
+                    CompleteLineRegex = strategy == "modify_existing_line" ? 
+                        CombineWithExistingRegex(existingRegex, regexPattern) : regexPattern,
+                    IsMultiline = correction.RequiresMultilineRegex,
+                    MaxLines = DetermineMaxLines(correction),
+                    Confidence = CalculatePatternConfidence(correction, regexPattern),
+                    Reasoning = $"Created {strategy} pattern for {correction.FieldName} based on context analysis",
+                    TestMatch = ExtractTestMatch(correction)
+                };
+
+                _logger?.Information("Created omission pattern for {FieldName}: Strategy={Strategy}, Pattern={Pattern}",
+                    correction.FieldName, response.Strategy, response.RegexPattern);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Error creating omission extraction pattern for field {FieldName}", correction.FieldName);
+                return null;
+            }
         }
 
         /// <summary>
@@ -229,6 +284,414 @@ namespace WaterNut.DataSpace
             }
 
             return null;
+        }
+
+        #endregion
+
+        #region Omission Pattern Creation
+
+        /// <summary>
+        /// Analyzes omission context to determine the best pattern creation strategy
+        /// </summary>
+        private OmissionPatternStrategy AnalyzeOmissionContext(CorrectionResult correction)
+        {
+            var strategy = new OmissionPatternStrategy();
+
+            // Analyze the target value to determine pattern type
+            if (IsMonetaryValue(correction.NewValue))
+            {
+                strategy.PatternType = "monetary";
+                strategy.BasePattern = @"-?\$?([0-9,]+\.?[0-9]*)";
+            }
+            else if (IsDateValue(correction.NewValue))
+            {
+                strategy.PatternType = "date";
+                strategy.BasePattern = @"(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})";
+            }
+            else if (IsNumericValue(correction.NewValue))
+            {
+                strategy.PatternType = "numeric";
+                strategy.BasePattern = @"([0-9]+\.?[0-9]*)";
+            }
+            else
+            {
+                strategy.PatternType = "text";
+                strategy.BasePattern = @"([^\r\n\t]+)";
+            }
+
+            // Analyze context for multiline requirements
+            var fullContext = correction.FullContext;
+            if (correction.RequiresMultilineRegex || ContainsMultilinePattern(fullContext))
+            {
+                strategy.RequiresMultiline = true;
+                strategy.MaxLines = DetermineMaxLines(correction);
+            }
+
+            _logger?.Debug("Analyzed omission context for {FieldName}: Type={PatternType}, Multiline={RequiresMultiline}",
+                correction.FieldName, strategy.PatternType, strategy.RequiresMultiline);
+
+            return strategy;
+        }
+
+        /// <summary>
+        /// Creates regex pattern for omission based on strategy
+        /// </summary>
+        private string CreateOmissionRegexPattern(CorrectionResult correction, OmissionPatternStrategy strategy)
+        {
+            try
+            {
+                var fieldName = correction.FieldName;
+                var targetValue = correction.NewValue;
+                var lineText = correction.LineText;
+
+                // Create field-specific pattern based on context
+                string pattern;
+
+                if (strategy.RequiresMultiline)
+                {
+                    pattern = CreateMultilineOmissionPattern(correction, strategy);
+                }
+                else
+                {
+                    pattern = CreateSingleLineOmissionPattern(correction, strategy);
+                }
+
+                // Wrap in named group
+                if (!string.IsNullOrEmpty(pattern))
+                {
+                    pattern = $"(?<{fieldName}>{pattern})";
+                }
+
+                _logger?.Debug("Created omission regex pattern for {FieldName}: {Pattern}", fieldName, pattern);
+                return pattern;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Error creating omission regex pattern for field {FieldName}", correction.FieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates single-line pattern for omission
+        /// </summary>
+        private string CreateSingleLineOmissionPattern(CorrectionResult correction, OmissionPatternStrategy strategy)
+        {
+            var fieldName = correction.FieldName;
+            var targetValue = correction.NewValue;
+            var lineText = correction.LineText;
+
+            // Try to find the target value in the line text and create pattern around it
+            var valueIndex = lineText.IndexOf(targetValue, StringComparison.OrdinalIgnoreCase);
+            if (valueIndex >= 0)
+            {
+                // Extract context around the value
+                var beforeValue = lineText.Substring(0, valueIndex).Trim();
+                var afterValue = lineText.Substring(valueIndex + targetValue.Length).Trim();
+
+                // Create pattern with context
+                var beforePattern = CreateContextPattern(beforeValue, 20); // Last 20 chars
+                var afterPattern = CreateContextPattern(afterValue, 10);   // First 10 chars
+
+                return $"{beforePattern}\\s*{strategy.BasePattern}\\s*{afterPattern}";
+            }
+            else
+            {
+                // Fallback: create generic pattern for field type
+                return CreateGenericFieldPattern(fieldName, strategy.PatternType);
+            }
+        }
+
+        /// <summary>
+        /// Creates multi-line pattern for omission
+        /// </summary>
+        private string CreateMultilineOmissionPattern(CorrectionResult correction, OmissionPatternStrategy strategy)
+        {
+            var fieldName = correction.FieldName;
+            var contextLines = new List<string>();
+            
+            contextLines.AddRange(correction.ContextLinesBefore);
+            contextLines.Add(correction.LineText);
+            contextLines.AddRange(correction.ContextLinesAfter);
+
+            // Find the line containing the target value
+            var targetLineIndex = -1;
+            for (int i = 0; i < contextLines.Count; i++)
+            {
+                if (contextLines[i].Contains(correction.NewValue))
+                {
+                    targetLineIndex = i;
+                    break;
+                }
+            }
+
+            if (targetLineIndex >= 0)
+            {
+                // Create pattern that spans the necessary lines
+                var linesBefore = Math.Min(2, targetLineIndex);
+                var linesAfter = Math.Min(2, contextLines.Count - targetLineIndex - 1);
+
+                var patternLines = new List<string>();
+                
+                for (int i = targetLineIndex - linesBefore; i <= targetLineIndex + linesAfter; i++)
+                {
+                    if (i >= 0 && i < contextLines.Count)
+                    {
+                        if (i == targetLineIndex)
+                        {
+                            // This is the line with our value
+                            var line = contextLines[i];
+                            var valueIndex = line.IndexOf(correction.NewValue);
+                            if (valueIndex >= 0)
+                            {
+                                var beforeValue = line.Substring(0, valueIndex);
+                                var afterValue = line.Substring(valueIndex + correction.NewValue.Length);
+                                patternLines.Add($"{Regex.Escape(beforeValue)}{strategy.BasePattern}{Regex.Escape(afterValue)}");
+                            }
+                            else
+                            {
+                                patternLines.Add($".*{strategy.BasePattern}.*");
+                            }
+                        }
+                        else
+                        {
+                            // Context line - make it flexible
+                            patternLines.Add(".*");
+                        }
+                    }
+                }
+
+                return string.Join("\\s*\\n\\s*", patternLines);
+            }
+
+            // Fallback for multiline
+            return $"(?:.*\\n){{0,{strategy.MaxLines}}}{strategy.BasePattern}(?:.*\\n){{0,{strategy.MaxLines}}}";
+        }
+
+        /// <summary>
+        /// Creates context pattern from text
+        /// </summary>
+        private string CreateContextPattern(string text, int maxLength)
+        {
+            if (string.IsNullOrEmpty(text))
+                return "";
+
+            // Take last/first characters and escape them
+            var contextText = text.Length > maxLength ? text.Substring(text.Length - maxLength) : text;
+            return Regex.Escape(contextText.Trim());
+        }
+
+        /// <summary>
+        /// Creates generic field pattern based on field type
+        /// </summary>
+        private string CreateGenericFieldPattern(string fieldName, string patternType)
+        {
+            var fieldLower = fieldName.ToLowerInvariant();
+
+            return patternType switch
+            {
+                "monetary" => $@"{Regex.Escape(fieldName)}[:\s]*\$?([0-9,]+\.?[0-9]*)",
+                "numeric" => $@"{Regex.Escape(fieldName)}[:\s]*([0-9]+\.?[0-9]*)",
+                "date" => $@"{Regex.Escape(fieldName)}[:\s]*(\d{{1,2}}[\/\-]\d{{1,2}}[\/\-]\d{{2,4}})",
+                "text" => $@"{Regex.Escape(fieldName)}[:\s]*([^\r\n\t]+)",
+                _ => $@"{Regex.Escape(fieldName)}[:\s]*([^\r\n\t]+)"
+            };
+        }
+
+        #endregion
+
+        #region Pattern Utilities
+
+        /// <summary>
+        /// Determines if we should modify existing line or create new one
+        /// </summary>
+        private string DetermineOmissionStrategy(CorrectionResult correction, string existingRegex, List<string> existingNamedGroups)
+        {
+            // If no existing regex, must create new line
+            if (string.IsNullOrEmpty(existingRegex))
+                return "create_new_line";
+
+            // If field already exists in named groups, this shouldn't be an omission
+            if (existingNamedGroups?.Contains(correction.FieldName) == true)
+            {
+                _logger?.Warning("Field {FieldName} already exists in named groups but marked as omission", correction.FieldName);
+                return "create_new_line";
+            }
+
+            // If the existing regex is very complex or long, safer to create new line
+            if (existingRegex.Length > 500 || CountRegexGroups(existingRegex) > 10)
+            {
+                _logger?.Debug("Existing regex too complex for modification, creating new line for {FieldName}", correction.FieldName);
+                return "create_new_line";
+            }
+
+            // If the correction is for a different type of content, create new line
+            if (IsDifferentContentType(correction, existingRegex))
+            {
+                return "create_new_line";
+            }
+
+            // Otherwise, try to modify existing line
+            return "modify_existing_line";
+        }
+
+        /// <summary>
+        /// Combines new pattern with existing regex
+        /// </summary>
+        private string CombineWithExistingRegex(string existingRegex, string newPattern)
+        {
+            if (string.IsNullOrEmpty(existingRegex))
+                return newPattern;
+
+            // Simple combination - add new pattern to end
+            return $"{existingRegex}.*{newPattern}";
+        }
+
+        /// <summary>
+        /// Calculates confidence for pattern based on context analysis
+        /// </summary>
+        private double CalculatePatternConfidence(CorrectionResult correction, string pattern)
+        {
+            var confidence = 0.7; // Base confidence
+
+            // Increase confidence if we found exact value in context
+            if (!string.IsNullOrEmpty(correction.LineText) && 
+                correction.LineText.Contains(correction.NewValue))
+            {
+                confidence += 0.2;
+            }
+
+            // Increase confidence for specific field types
+            if (IsMonetaryValue(correction.NewValue) || IsNumericValue(correction.NewValue))
+            {
+                confidence += 0.1;
+            }
+
+            // Decrease confidence for very complex patterns
+            if (pattern.Length > 200)
+            {
+                confidence -= 0.1;
+            }
+
+            return Math.Max(0.5, Math.Min(0.95, confidence));
+        }
+
+        /// <summary>
+        /// Extracts test match from correction context
+        /// </summary>
+        private string ExtractTestMatch(CorrectionResult correction)
+        {
+            // Return the line containing the target value
+            if (!string.IsNullOrEmpty(correction.LineText) && 
+                correction.LineText.Contains(correction.NewValue))
+            {
+                return correction.LineText;
+            }
+
+            // Search in context lines
+            foreach (var line in correction.ContextLinesBefore.Concat(correction.ContextLinesAfter))
+            {
+                if (line.Contains(correction.NewValue))
+                {
+                    return line;
+                }
+            }
+
+            return correction.LineText ?? "";
+        }
+
+        /// <summary>
+        /// Determines maximum lines for multiline pattern
+        /// </summary>
+        private int DetermineMaxLines(CorrectionResult correction)
+        {
+            if (!correction.RequiresMultilineRegex)
+                return 1;
+
+            // Base on available context
+            var totalContextLines = correction.ContextLinesBefore.Count + correction.ContextLinesAfter.Count + 1;
+            return Math.Min(10, Math.Max(3, totalContextLines / 2));
+        }
+
+        /// <summary>
+        /// Checks if context contains multiline pattern indicators
+        /// </summary>
+        private bool ContainsMultilinePattern(string context)
+        {
+            if (string.IsNullOrEmpty(context))
+                return false;
+
+            // Look for multiline indicators
+            var multilineIndicators = new[] { "Address", "Description", "Notes", "Comments" };
+            return multilineIndicators.Any(indicator => context.Contains(indicator, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Checks if value appears to be monetary
+        /// </summary>
+        private bool IsMonetaryValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            return Regex.IsMatch(value, @"^\$?-?[0-9,]+\.?[0-9]*$") ||
+                   value.Contains("$") || value.Contains("€") || value.Contains("£");
+        }
+
+        /// <summary>
+        /// Checks if value appears to be a date
+        /// </summary>
+        private bool IsDateValue(string value)
+        {
+            return !string.IsNullOrEmpty(value) && 
+                   Regex.IsMatch(value, @"\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}");
+        }
+
+        /// <summary>
+        /// Checks if value appears to be numeric
+        /// </summary>
+        private bool IsNumericValue(string value)
+        {
+            return !string.IsNullOrEmpty(value) && 
+                   Regex.IsMatch(value, @"^-?[0-9]+\.?[0-9]*$");
+        }
+
+        /// <summary>
+        /// Counts regex groups in pattern
+        /// </summary>
+        private int CountRegexGroups(string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                return 0;
+
+            return Regex.Matches(pattern, @"\([^)]*\)").Count;
+        }
+
+        /// <summary>
+        /// Checks if correction is for different content type than existing regex
+        /// </summary>
+        private bool IsDifferentContentType(CorrectionResult correction, string existingRegex)
+        {
+            // Simple heuristic - if existing regex has monetary patterns and correction is not monetary
+            var existingIsMonetary = existingRegex.Contains(@"\$") || existingRegex.Contains("price") || existingRegex.Contains("total");
+            var correctionIsMonetary = IsMonetaryValue(correction.NewValue);
+
+            return existingIsMonetary != correctionIsMonetary;
+        }
+
+        #endregion
+
+        #region Helper Classes
+
+        /// <summary>
+        /// Strategy for creating omission patterns
+        /// </summary>
+        private class OmissionPatternStrategy
+        {
+            public string PatternType { get; set; } = "text";
+            public string BasePattern { get; set; } = @"([^\r\n\t]+)";
+            public bool RequiresMultiline { get; set; } = false;
+            public int MaxLines { get; set; } = 1;
         }
 
         #endregion

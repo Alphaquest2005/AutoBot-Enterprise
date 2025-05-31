@@ -107,6 +107,53 @@ public Nullable<int> MaxLines
 		}
      
 
+       
+       
+public Nullable<System.DateTime> CreatedDate
+		{ 
+		    get { return this.regularexpressions.CreatedDate; }
+			set
+			{
+			    if (value == this.regularexpressions.CreatedDate) return;
+				this.regularexpressions.CreatedDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CreatedDate");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> LastUpdated
+		{ 
+		    get { return this.regularexpressions.LastUpdated; }
+			set
+			{
+			    if (value == this.regularexpressions.LastUpdated) return;
+				this.regularexpressions.LastUpdated = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LastUpdated");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(500, ErrorMessage = "Description has a max length of 500 letters ")]
+public string Description
+		{ 
+		    get { return this.regularexpressions.Description; }
+			set
+			{
+			    if (value == this.regularexpressions.Description) return;
+				this.regularexpressions.Description = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Description");
+			}
+		}
+     
+
         ObservableCollection<End> _End = null;
         public  ObservableCollection<End> End
 		{
