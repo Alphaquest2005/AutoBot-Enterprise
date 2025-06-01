@@ -19,68 +19,94 @@ namespace WaterNut.DataSpace
         /// Key: Common/DeepSeek field name (case-insensitive).
         /// Value: Information about the target database field.
         /// </summary>
-        private static readonly Dictionary<string, DatabaseFieldInfo> DeepSeekToDBFieldMapping = new Dictionary<string, DatabaseFieldInfo>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, DatabaseFieldInfo> DeepSeekToDBFieldMapping = CreateFieldMapping();
+
+        /// <summary>
+        /// Creates the field mapping dictionary to avoid circular reference issues during static initialization.
+        /// </summary>
+        private static Dictionary<string, DatabaseFieldInfo> CreateFieldMapping()
         {
+            var mapping = new Dictionary<string, DatabaseFieldInfo>(StringComparer.OrdinalIgnoreCase);
+
             // Invoice Header Canonical Names (Primary keys for mapping)
-            ["InvoiceTotal"] = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Invoice Total Amount"),
-            ["SubTotal"] = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal"),
-            ["TotalInternalFreight"] = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight/Shipping Charges"),
-            ["TotalOtherCost"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Taxes and Other Costs"),
-            ["TotalInsurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance Charges"),
-            ["TotalDeduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deductions/Discounts/Gift Cards"),
-            ["InvoiceNo"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice Number"),
-            ["InvoiceDate"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Invoice Date"),
-            ["Currency"] = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency Code (e.g., USD)"),
-            ["SupplierName"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier/Vendor Name"),
-            ["SupplierAddress"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Supplier Address"),
-            // Add other header fields as needed: PaymentTerms, DueDate, PONumber, etc.
+            var invoiceTotal = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Invoice Total Amount");
+            var subTotal = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal");
+            var totalInternalFreight = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight/Shipping Charges");
+            var totalOtherCost = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Taxes and Other Costs");
+            var totalInsurance = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance Charges");
+            var totalDeduction = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deductions/Discounts/Gift Cards");
+            var invoiceNo = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice Number");
+            var invoiceDate = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Invoice Date");
+            var currency = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency Code (e.g., USD)");
+            var supplierName = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier/Vendor Name");
+            var supplierAddress = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Supplier Address");
 
             // Invoice Detail Canonical Names (Primary keys for mapping - used when fieldName is simple like "Quantity")
-            ["ItemDescription"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Product/Service Description"),
-            ["Quantity"] = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Quantity"),
-            ["Cost"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Unit Price/Cost"),
-            ["TotalCost"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "Line Item Total Amount"),
-            ["Discount"] = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Line Item Discount"),
-            ["Units"] = new DatabaseFieldInfo("Units", "InvoiceDetails", "string", false, "Unit of Measure (e.g., EA, KG)"),
-            // Add other detail fields: SKU, PartNumber, LineItemTax, etc.
+            var itemDescription = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Product/Service Description");
+            var quantity = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Quantity");
+            var cost = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Unit Price/Cost");
+            var totalCost = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "Line Item Total Amount");
+            var discount = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Line Item Discount");
+            var units = new DatabaseFieldInfo("Units", "InvoiceDetails", "string", false, "Unit of Measure (e.g., EA, KG)");
+
+            // Add canonical names first
+            mapping["InvoiceTotal"] = invoiceTotal;
+            mapping["SubTotal"] = subTotal;
+            mapping["TotalInternalFreight"] = totalInternalFreight;
+            mapping["TotalOtherCost"] = totalOtherCost;
+            mapping["TotalInsurance"] = totalInsurance;
+            mapping["TotalDeduction"] = totalDeduction;
+            mapping["InvoiceNo"] = invoiceNo;
+            mapping["InvoiceDate"] = invoiceDate;
+            mapping["Currency"] = currency;
+            mapping["SupplierName"] = supplierName;
+            mapping["SupplierAddress"] = supplierAddress;
+            mapping["ItemDescription"] = itemDescription;
+            mapping["Quantity"] = quantity;
+            mapping["Cost"] = cost;
+            mapping["TotalCost"] = totalCost;
+            mapping["Discount"] = discount;
+            mapping["Units"] = units;
 
             // --- ALIASES: Common variations DeepSeek might return, mapping to the canonical names above ---
-            ["Total"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
-            ["GrandTotal"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
-            ["AmountDue"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
-            ["Subtotal"] = DeepSeekToDBFieldMapping["SubTotal"], // Note: casing difference from canonical
-            ["Freight"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
-            ["Shipping"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
-            ["ShippingAndHandling"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
-            ["Tax"] = DeepSeekToDBFieldMapping["TotalOtherCost"], // Tax is often part of Other Costs
-            ["VAT"] = DeepSeekToDBFieldMapping["TotalOtherCost"],
-            ["OtherCharges"] = DeepSeekToDBFieldMapping["TotalOtherCost"],
-            ["Insurance"] = DeepSeekToDBFieldMapping["TotalInsurance"], // Casing
-            ["Deduction"] = DeepSeekToDBFieldMapping["TotalDeduction"], // Casing
-            ["GiftCard"] = DeepSeekToDBFieldMapping["TotalDeduction"],
-            ["Promotion"] = DeepSeekToDBFieldMapping["TotalDeduction"],
-            ["InvoiceNumber"] = DeepSeekToDBFieldMapping["InvoiceNo"],
-            ["InvoiceID"] = DeepSeekToDBFieldMapping["InvoiceNo"],
-            ["OrderNumber"] = DeepSeekToDBFieldMapping["InvoiceNo"], // Or map to a separate OrderNo if distinct
-            ["OrderNo"] = DeepSeekToDBFieldMapping["InvoiceNo"],
-            ["Date"] = DeepSeekToDBFieldMapping["InvoiceDate"], // Generic "Date" often means InvoiceDate
-            ["IssueDate"] = DeepSeekToDBFieldMapping["InvoiceDate"],
-            ["Supplier"] = DeepSeekToDBFieldMapping["SupplierName"],
-            ["Vendor"] = DeepSeekToDBFieldMapping["SupplierName"],
-            ["SoldBy"] = DeepSeekToDBFieldMapping["SupplierName"],
-            ["From"] = DeepSeekToDBFieldMapping["SupplierName"], // Can be ambiguous
-            ["Address"] = DeepSeekToDBFieldMapping["SupplierAddress"], // Can be ambiguous (Supplier vs Billing vs Shipping)
-            ["Description"] = DeepSeekToDBFieldMapping["ItemDescription"], // For line items
-            ["ProductDescription"] = DeepSeekToDBFieldMapping["ItemDescription"],
-            ["Item"] = DeepSeekToDBFieldMapping["ItemDescription"], // Ambiguous, but often description
-            ["ProductName"] = DeepSeekToDBFieldMapping["ItemDescription"],
-            ["Qty"] = DeepSeekToDBFieldMapping["Quantity"],
-            ["Price"] = DeepSeekToDBFieldMapping["Cost"], // Unit Price
-            ["UnitPrice"] = DeepSeekToDBFieldMapping["Cost"],
-            ["Amount"] = DeepSeekToDBFieldMapping["TotalCost"], // For line items, "Amount" usually means line total
-            ["LineTotal"] = DeepSeekToDBFieldMapping["TotalCost"],
-            ["LineItemDiscount"] = DeepSeekToDBFieldMapping["Discount"]
-        };
+            mapping["Total"] = invoiceTotal;
+            mapping["GrandTotal"] = invoiceTotal;
+            mapping["AmountDue"] = invoiceTotal;
+            mapping["Subtotal"] = subTotal; // Note: casing difference from canonical
+            mapping["Freight"] = totalInternalFreight;
+            mapping["Shipping"] = totalInternalFreight;
+            mapping["ShippingAndHandling"] = totalInternalFreight;
+            mapping["Tax"] = totalOtherCost; // Tax is often part of Other Costs
+            mapping["VAT"] = totalOtherCost;
+            mapping["OtherCharges"] = totalOtherCost;
+            mapping["Insurance"] = totalInsurance; // Casing
+            mapping["Deduction"] = totalDeduction; // Casing
+            mapping["GiftCard"] = totalDeduction;
+            mapping["Promotion"] = totalDeduction;
+            mapping["InvoiceNumber"] = invoiceNo;
+            mapping["InvoiceID"] = invoiceNo;
+            mapping["OrderNumber"] = invoiceNo; // Or map to a separate OrderNo if distinct
+            mapping["OrderNo"] = invoiceNo;
+            mapping["Date"] = invoiceDate; // Generic "Date" often means InvoiceDate
+            mapping["IssueDate"] = invoiceDate;
+            mapping["Supplier"] = supplierName;
+            mapping["Vendor"] = supplierName;
+            mapping["SoldBy"] = supplierName;
+            mapping["From"] = supplierName; // Can be ambiguous
+            mapping["Address"] = supplierAddress; // Can be ambiguous (Supplier vs Billing vs Shipping)
+            mapping["Description"] = itemDescription; // For line items
+            mapping["ProductDescription"] = itemDescription;
+            mapping["Item"] = itemDescription; // Ambiguous, but often description
+            mapping["ProductName"] = itemDescription;
+            mapping["Qty"] = quantity;
+            mapping["Price"] = cost; // Unit Price
+            mapping["UnitPrice"] = cost;
+            mapping["Amount"] = totalCost; // For line items, "Amount" usually means line total
+            mapping["LineTotal"] = totalCost;
+            mapping["LineItemDiscount"] = discount;
+
+            return mapping;
+        }
 
         /// <summary>
         /// Represents structured information about a target database field.
