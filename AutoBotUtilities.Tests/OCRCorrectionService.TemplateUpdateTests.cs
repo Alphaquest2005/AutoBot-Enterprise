@@ -71,7 +71,7 @@ namespace AutoBotUtilities.Tests.Production
         public void GetTemplateFieldMappings_ValidTemplate_ShouldCreateMappings()
         {
             // Arrange
-            var template = CreateMockTemplateWithLinesAndFields(); // Enhanced mock
+            var template = CreateFixedMockTemplateWithLinesAndFields(); // Enhanced mock
 
             // Act
             // OCRLegacySupport.GetTemplateFieldMappings
@@ -120,7 +120,7 @@ namespace AutoBotUtilities.Tests.Production
         public void UpdateTemplateLineValues_ValidCorrections_ShouldUpdateTemplate()
         {
             // Arrange
-            var template = CreateMockTemplateWithLinesAndFields();
+            var template = CreateFixedMockTemplateWithLinesAndFields();
             var correctedInvoices = new List<ShipmentInvoice>
             {
                 new ShipmentInvoice
@@ -164,7 +164,7 @@ namespace AutoBotUtilities.Tests.Production
         public void UpdateFieldInTemplate_SpecificField_ShouldUpdateValue()
         {
             // Arrange
-            var template = CreateMockTemplateWithLinesAndFields();
+            var template = CreateFixedMockTemplateWithLinesAndFields();
             var fieldMappings = CallPrivateStaticMethod<Dictionary<string, (int LineId, int FieldId)>>(
                 typeof(OCRCorrectionService), "GetTemplateFieldMappings", template, _logger);
 
@@ -202,48 +202,75 @@ namespace AutoBotUtilities.Tests.Production
             return template;
         }
 
-        private Invoice CreateMockTemplateWithLinesAndFields()
+        private Invoice CreateFixedMockTemplateWithLinesAndFields()
         {
-            var mockOcrInvoicesEntity = new Invoices() { Id = 1, Name = "TestTemplate1" };
-            var template = new Invoice(mockOcrInvoicesEntity, _logger)
-            {
-                FilePath = "test_template.pdf",
-              
+            var ocrInvoiceEntity = new OCR.Business.Entities.Invoices { Id = 1, Name = "FixedTestTemplate1" };
+            var template = new Invoice(ocrInvoiceEntity, _logger) { FilePath = "fixed_test_template.pdf" };
+
+            // Create Parts entity with proper Invoices reference
+            var headerPartEntity = new Parts {
+                Id = 10,
+                PartTypeId = 1,
+                PartTypes = new PartTypes { Id = 1, Name = "Header"},
+                Invoices = ocrInvoiceEntity  // Correct way to link to invoice
             };
+            var headerInvoicePart = new Part(headerPartEntity, _logger);
+            template.Parts.Add(headerInvoicePart);
 
-            // Create a mock Part (e.g., Header)
-            var headerPartEntity = new Parts { Id = 1, Invoices = mockOcrInvoicesEntity, PartTypes = new PartTypes() { Name = "Header", Id = 1 }, PartTypeId = 1};
-            var headerPartWrapper = new Part(headerPartEntity, _logger);
-            template.Parts.Add(headerPartWrapper);
+            // Create dummy regex entities for the lines
+            var regex1 = new RegularExpressions { Id = 100, RegEx = @"Total:\s*(?<InvoiceTotal>\d+\.\d+)" };
+            var regex2 = new RegularExpressions { Id = 200, RegEx = @"SubTotal:\s*(?<SubTotal>\d+\.\d+)" };
 
-            // Create mock Line definitions (OCR_Lines) and link to Fields
-            var line1Def = new Lines { Id = 10, PartId = headerPartEntity.Id, Name = "InvoiceTotalLine", RegExId = 100, IsActive = true, Fields = new List<Fields>() };
-            var field1Def = new Fields { Id = 101, LineId = line1Def.Id, Field = "InvoiceTotal", Key = "Total", EntityType = "ShipmentInvoice", DataType = "decimal" };
+            var line1Def = new Lines {
+                Id = 100,
+                PartId = headerPartEntity.Id,
+                Name = "InvoiceTotalLine",
+                RegExId = 100,
+                RegularExpressions = regex1
+            };
+            var field1Def = new Fields {
+                Id = 1001,
+                LineId = line1Def.Id,
+                Field = "InvoiceTotal",
+                Key = "TotalKey",
+                EntityType = "ShipmentInvoice",
+                DataType = "decimal",
+                Lines = line1Def
+            };
             line1Def.Fields.Add(field1Def);
 
-            var line2Def = new Lines { Id = 20, PartId = headerPartEntity.Id, Name = "SubTotalLine", RegExId = 200, IsActive = true, Fields = new List<Fields>() };
-            var field2Def = new Fields { Id = 201, LineId = line2Def.Id, Field = "SubTotal", Key = "Sub_Total", EntityType = "ShipmentInvoice", DataType = "decimal" };
+            var line2Def = new Lines {
+                Id = 200,
+                PartId = headerPartEntity.Id,
+                Name = "SubTotalLine",
+                RegExId = 200,
+                RegularExpressions = regex2
+            };
+            var field2Def = new Fields {
+                Id = 2001,
+                LineId = line2Def.Id,
+                Field = "SubTotal",
+                Key = "SubTotalKey",
+                EntityType = "ShipmentInvoice",
+                DataType = "decimal",
+                Lines = line2Def
+            };
             line2Def.Fields.Add(field2Def);
 
-            // Add these Lines definitions to the Part's Lines collection
-            headerPartEntity.Lines = new List<Lines> { line1Def, line2Def };
+            headerPartEntity.Lines.Add(line1Def);
+            headerPartEntity.Lines.Add(line2Def);
 
-
-            // Create InvoiceLine wrappers (runtime instances of line definitions)
-            // And populate their Values dictionary to simulate extracted data
+            // Create Line wrappers and populate their Values using the Add method
             var line1Wrapper = new Line(line1Def, _logger);
-            line1Wrapper.Values.Add(
-                (1, "1-1"), // (Section, InstanceNum)
-                new Dictionary<(Fields, string), string> { { (field1Def, "1"), "0.00" } } // ((FieldDef, FieldInstance), Value)
-            );
-            template.Lines.Add(line1Wrapper);
+            var field1KeyTuple = (field1Def, "1");
+            line1Wrapper.Values.Add((1, "1"), new Dictionary<(Fields field, string fieldInstance), string> { { field1KeyTuple, "0.00" } });
 
             var line2Wrapper = new Line(line2Def, _logger);
-            line2Wrapper.Values.Add(
-               (2, "1-1"),
-               new Dictionary<(Fields, string), string> { { (field2Def, "1"), "0.00" } }
-           );
-            template.Lines.Add(line2Wrapper);
+            var field2KeyTuple = (field2Def, "1");
+            line2Wrapper.Values.Add((1, "1"), new Dictionary<(Fields field, string fieldInstance), string> { { field2KeyTuple, "0.00" } });
+
+            // Note: template.Lines is a computed property from Parts, so we don't need to add to it directly
+            // The Lines will be available through the Parts collection
 
             return template;
         }

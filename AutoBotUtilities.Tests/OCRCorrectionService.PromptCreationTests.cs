@@ -127,7 +127,10 @@ namespace AutoBotUtilities.Tests.Production
             Assert.That(prompt, Does.Contain($"Field Name to Capture: \"{correction.FieldName}\""));
             Assert.That(prompt, Does.Contain($"Expected Value: \"{correction.NewValue}\""));
             Assert.That(prompt, Does.Contain($">>> LINE {correction.LineNumber}: {correction.LineText} <<<"));
-            Assert.That(prompt, Does.Contain("Context Before 2")); // Check context presence
+            // More robust check for actual content:
+            Assert.That(prompt, Does.Contain(correction.ContextLinesBefore[0]), "Prompt should contain first 'before' context line content.");
+            Assert.That(prompt, Does.Contain(correction.ContextLinesBefore[1]), "Prompt should contain second 'before' context line content.");
+            Assert.That(prompt, Does.Contain(correction.ContextLinesAfter[0]), "Prompt should contain first 'after' context line content.");
             Assert.That(prompt, Does.Contain("Existing Regex for this Line (if any): SomeExistingPatternForLine"));
             Assert.That(prompt, Does.Contain("Named Groups Already Captured by Current Regex: ExistingField"));
             Assert.That(prompt, Does.Contain("STRICT JSON RESPONSE FORMAT:"));
