@@ -208,7 +208,7 @@ namespace InvoiceReaderPipelineTests
             var getTemplatesStep = new GetTemplatesStep();
 
             // Act
-            var result = await getTemplatesStep.Execute(_invoiceProcessingContext);
+            var result = await getTemplatesStep.Execute(this._invoiceProcessingContext).ConfigureAwait(false);
 
             // Assert
             Assert.That(result, Is.False, "Execute method should return false when no active templates are found.");
@@ -244,7 +244,7 @@ namespace InvoiceReaderPipelineTests
             var getTemplatesStep = new GetTemplatesStep();
 
             // Act
-            var result = await getTemplatesStep.Execute(_invoiceProcessingContext);
+            var result = await getTemplatesStep.Execute(this._invoiceProcessingContext).ConfigureAwait(false);
 
             // Assert
             Assert.That(result, Is.False, "Execute method should return false on database error.");

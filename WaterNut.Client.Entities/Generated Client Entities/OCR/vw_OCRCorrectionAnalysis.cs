@@ -45,7 +45,7 @@ namespace OCR.Client.Entities
        [RequiredValidationAttribute(ErrorMessage= "FieldName is required")]
        
                 
-                [MaxLength(100, ErrorMessage = "FieldName has a max length of 100 letters ")]
+                [MaxLength(255, ErrorMessage = "FieldName has a max length of 255 letters ")]
 public string FieldName
 		{ 
 		    get { return this.vw_ocrcorrectionanalysis.FieldName; }
@@ -62,7 +62,7 @@ public string FieldName
        [RequiredValidationAttribute(ErrorMessage= "CorrectionType is required")]
        
                 
-                [MaxLength(50, ErrorMessage = "CorrectionType has a max length of 50 letters ")]
+                [MaxLength(100, ErrorMessage = "CorrectionType has a max length of 100 letters ")]
 public string CorrectionType
 		{ 
 		    get { return this.vw_ocrcorrectionanalysis.CorrectionType; }

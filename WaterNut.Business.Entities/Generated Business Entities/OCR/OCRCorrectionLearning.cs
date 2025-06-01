@@ -81,7 +81,7 @@ namespace OCR.Business.Entities
         }
         string _correctvalue;
         [DataMember]
-        public int LineNumber 
+        public Nullable<int> LineNumber 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _linenumber;
+        Nullable<int> _linenumber;
         [DataMember]
         public string LineText 
         {
@@ -126,21 +126,6 @@ namespace OCR.Business.Entities
         }
         string _windowtext;
         [DataMember]
-        public string ExistingRegex 
-        {
-            get
-            {
-                return _existingregex;
-            }
-            set
-            {
-                _existingregex = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _existingregex;
-        [DataMember]
         public string CorrectionType 
         {
             get
@@ -155,36 +140,6 @@ namespace OCR.Business.Entities
             }
         }
         string _correctiontype;
-        [DataMember]
-        public string NewRegexPattern 
-        {
-            get
-            {
-                return _newregexpattern;
-            }
-            set
-            {
-                _newregexpattern = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _newregexpattern;
-        [DataMember]
-        public string ReplacementPattern 
-        {
-            get
-            {
-                return _replacementpattern;
-            }
-            set
-            {
-                _replacementpattern = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _replacementpattern;
         [DataMember]
         public string DeepSeekReasoning 
         {
@@ -246,21 +201,6 @@ namespace OCR.Business.Entities
         }
         string _filepath;
         [DataMember]
-        public Nullable<int> FieldId 
-        {
-            get
-            {
-                return _fieldid;
-            }
-            set
-            {
-                _fieldid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _fieldid;
-        [DataMember]
         public bool Success 
         {
             get
@@ -321,50 +261,95 @@ namespace OCR.Business.Entities
         }
         string _createdby;
         [DataMember]
-        public Nullable<int> ProcessingTimeMs 
+        public Nullable<bool> RequiresMultilineRegex 
         {
             get
             {
-                return _processingtimems;
+                return _requiresmultilineregex;
             }
             set
             {
-                _processingtimems = value;
+                _requiresmultilineregex = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _processingtimems;
+        Nullable<bool> _requiresmultilineregex;
         [DataMember]
-        public string DeepSeekPrompt 
+        public string ContextLinesBefore 
         {
             get
             {
-                return _deepseekprompt;
+                return _contextlinesbefore;
             }
             set
             {
-                _deepseekprompt = value;
+                _contextlinesbefore = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _deepseekprompt;
+        string _contextlinesbefore;
         [DataMember]
-        public string DeepSeekResponse 
+        public string ContextLinesAfter 
         {
             get
             {
-                return _deepseekresponse;
+                return _contextlinesafter;
             }
             set
             {
-                _deepseekresponse = value;
+                _contextlinesafter = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _deepseekresponse;
+        string _contextlinesafter;
+        [DataMember]
+        public Nullable<int> LineId 
+        {
+            get
+            {
+                return _lineid;
+            }
+            set
+            {
+                _lineid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _lineid;
+        [DataMember]
+        public Nullable<int> PartId 
+        {
+            get
+            {
+                return _partid;
+            }
+            set
+            {
+                _partid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _partid;
+        [DataMember]
+        public Nullable<int> RegexId 
+        {
+            get
+            {
+                return _regexid;
+            }
+            set
+            {
+                _regexid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _regexid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

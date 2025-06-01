@@ -44,28 +44,27 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FieldName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="OriginalError" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="CorrectValue" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="LineNumber" Type="int" Nullable="false" />
-          <Property Name="LineText" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="FieldName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="OriginalError" Type="nvarchar(max)" />
+          <Property Name="CorrectValue" Type="nvarchar(max)" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="LineText" Type="nvarchar(max)" />
           <Property Name="WindowText" Type="nvarchar(max)" />
-          <Property Name="ExistingRegex" Type="nvarchar" MaxLength="1000" />
-          <Property Name="CorrectionType" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="NewRegexPattern" Type="nvarchar" MaxLength="1000" />
-          <Property Name="ReplacementPattern" Type="nvarchar" MaxLength="500" />
+          <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" />
           <Property Name="DeepSeekReasoning" Type="nvarchar(max)" />
-          <Property Name="Confidence" Type="decimal" Precision="3" Scale="2" />
+          <Property Name="Confidence" Type="decimal" Precision="5" Scale="4" />
           <Property Name="InvoiceType" Type="nvarchar" MaxLength="100" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
-          <Property Name="FieldId" Type="int" />
           <Property Name="Success" Type="bit" Nullable="false" />
-          <Property Name="ErrorMessage" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ErrorMessage" Type="nvarchar(max)" />
           <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
-          <Property Name="ProcessingTimeMs" Type="int" />
-          <Property Name="DeepSeekPrompt" Type="nvarchar(max)" />
-          <Property Name="DeepSeekResponse" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="RequiresMultilineRegex" Type="bit" />
+          <Property Name="ContextLinesBefore" Type="nvarchar(max)" />
+          <Property Name="ContextLinesAfter" Type="nvarchar(max)" />
+          <Property Name="LineId" Type="int" />
+          <Property Name="PartId" Type="int" />
+          <Property Name="RegexId" Type="int" />
         </EntityType>
         <EntityType Name="OCR-End">
           <Key>
@@ -189,8 +188,8 @@
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MultiLine" Type="bit" />
           <Property Name="MaxLines" Type="int" />
-          <Property Name="CreatedDate" Type="datetime" />
-          <Property Name="LastUpdated" Type="datetime" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="OCR-Start">
@@ -236,8 +235,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
             <PropertyRef Name="FieldName" />
             <PropertyRef Name="CorrectionType" />
           </Key>
-          <Property Name="FieldName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="CorrectionType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FieldName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="TotalCorrections" Type="int" />
           <Property Name="AvgConfidence" Type="decimal" Precision="38" Scale="6" />
           <Property Name="SuccessfulCorrections" Type="int" />
@@ -965,8 +964,8 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="MultiLine" Type="Boolean" />
           <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
           <Property Name="MaxLines" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="3" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Start">
@@ -1507,36 +1506,35 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="OriginalError" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="CorrectValue" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LineNumber" Type="Int32" Nullable="false" />
-          <Property Name="LineText" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalError" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="LineText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WindowText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ExistingRegex" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NewRegexPattern" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="ReplacementPattern" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectionType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DeepSeekReasoning" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Confidence" Type="Decimal" Precision="3" Scale="2" />
+          <Property Name="Confidence" Type="Decimal" Precision="5" Scale="4" />
           <Property Name="InvoiceType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="FieldId" Type="Int32" />
           <Property Name="Success" Type="Boolean" Nullable="false" />
-          <Property Name="ErrorMessage" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ProcessingTimeMs" Type="Int32" />
-          <Property Name="DeepSeekPrompt" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeepSeekResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RequiresMultilineRegex" Type="Boolean" />
+          <Property Name="ContextLinesBefore" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContextLinesAfter" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LineId" Type="Int32" />
+          <Property Name="PartId" Type="Int32" />
+          <Property Name="RegexId" Type="Int32" />
         </EntityType>
         <EntityType Name="vw_OCRCorrectionAnalysis">
           <Key>
             <PropertyRef Name="FieldName" />
             <PropertyRef Name="CorrectionType" />
           </Key>
-          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FieldName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TotalCorrections" Type="Int32" />
           <Property Name="AvgConfidence" Type="Decimal" Precision="38" Scale="6" />
           <Property Name="SuccessfulCorrections" Type="Int32" />
@@ -1761,22 +1759,21 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <EntitySetMapping Name="OCRCorrectionLearning">
             <EntityTypeMapping TypeName="WaterNutDBModel.OCRCorrectionLearning">
               <MappingFragment StoreEntitySet="OCRCorrectionLearning">
-                <ScalarProperty Name="DeepSeekResponse" ColumnName="DeepSeekResponse" />
-                <ScalarProperty Name="DeepSeekPrompt" ColumnName="DeepSeekPrompt" />
-                <ScalarProperty Name="ProcessingTimeMs" ColumnName="ProcessingTimeMs" />
+                <ScalarProperty Name="RegexId" ColumnName="RegexId" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+                <ScalarProperty Name="ContextLinesAfter" ColumnName="ContextLinesAfter" />
+                <ScalarProperty Name="ContextLinesBefore" ColumnName="ContextLinesBefore" />
+                <ScalarProperty Name="RequiresMultilineRegex" ColumnName="RequiresMultilineRegex" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
                 <ScalarProperty Name="Success" ColumnName="Success" />
-                <ScalarProperty Name="FieldId" ColumnName="FieldId" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="InvoiceType" ColumnName="InvoiceType" />
                 <ScalarProperty Name="Confidence" ColumnName="Confidence" />
                 <ScalarProperty Name="DeepSeekReasoning" ColumnName="DeepSeekReasoning" />
-                <ScalarProperty Name="ReplacementPattern" ColumnName="ReplacementPattern" />
-                <ScalarProperty Name="NewRegexPattern" ColumnName="NewRegexPattern" />
                 <ScalarProperty Name="CorrectionType" ColumnName="CorrectionType" />
-                <ScalarProperty Name="ExistingRegex" ColumnName="ExistingRegex" />
                 <ScalarProperty Name="WindowText" ColumnName="WindowText" />
                 <ScalarProperty Name="LineText" ColumnName="LineText" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />

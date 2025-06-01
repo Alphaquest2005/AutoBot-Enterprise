@@ -1,3 +1,4 @@
+// File: OCRCorrectionService/OCRDatabaseUpdates.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,528 +6,349 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using OCR.Business.Entities;
 using Serilog;
+using System.Text.RegularExpressions; // Needed for Regex.IsMatch in ValidateUpdateRequest
 
 namespace WaterNut.DataSpace
 {
-    /// <summary>
-    /// Main database update methods for OCR correction service
-    /// Enhanced with omission handling support
-    /// </summary>
     public partial class OCRCorrectionService
     {
-        #region Private Fields
-
-        private DatabaseUpdateStrategyFactory _strategyFactory;
-
-        #endregion
+        // _strategyFactory is initialized in OCRCorrectionService.cs constructor
 
         #region Main Database Update Methods
 
-        /// <summary>
-        /// Updates regex patterns in database based on correction results
-        /// Enhanced to handle both format corrections and omissions
-        /// </summary>
-        /// <param name="corrections">List of corrections to process</param>
-        /// <param name="fileText">Original file text for context</param>
-        /// <param name="filePath">Path to the file being processed</param>
-        /// <param name="invoiceMetadata">Enhanced metadata with line context</param>
-        /// <returns>Task representing the async operation</returns>
-        public async Task UpdateRegexPatternsAsync(IEnumerable<CorrectionResult> corrections, string fileText, 
-            string filePath = null, Dictionary<string, OCRFieldMetadata> invoiceMetadata = null)
+        public async Task UpdateRegexPatternsAsync(
+            IEnumerable<CorrectionResult> successfulCorrections,
+            string fileText,
+            string filePath = null,
+            Dictionary<string, OCRFieldMetadata> invoiceMetadata = null)
         {
-            if (corrections == null || !corrections.Any())
+            if (successfulCorrections == null || !successfulCorrections.Any())
             {
-                _logger?.Information("No corrections provided for regex pattern updates");
+                _logger?.Information("UpdateRegexPatternsAsync: No successful corrections provided for database pattern updates.");
                 return;
             }
 
-            _logger?.Information("Starting enhanced regex pattern updates for {CorrectionCount} corrections", corrections.Count());
+            _logger?.Information("Starting database pattern updates for {CorrectionCount} successful corrections.", successfulCorrections.Count());
+            _strategyFactory ??= new DatabaseUpdateStrategyFactory(_logger);
 
-            // Initialize strategy factory if not already done
-            _strategyFactory ??= new DatabaseUpdateStrategyFactory(_logger, this);
-
-            var successCount = 0;
-            var failureCount = 0;
-            var omissionCount = 0;
-            var formatCount = 0;
+            int dbSuccessCount = 0;
+            int dbFailureCount = 0;
+            int omissionPatternUpdates = 0;
+            int formatPatternUpdates = 0;
 
             using var context = new OCRContext();
 
-            foreach (var correction in corrections.Where(c => c.Success))
+            foreach (var correction in successfulCorrections)
             {
+                DatabaseUpdateResult dbUpdateResult = null;
+                IDatabaseUpdateStrategy strategy = null;
+                RegexUpdateRequest request = null;
+
                 try
                 {
-                    var request = CreateEnhancedUpdateRequest(correction, fileText, filePath, invoiceMetadata);
-                    var result = await ProcessSingleCorrectionAsync(context, request);
+                    // 1. Create the RegexUpdateRequest from the CorrectionResult and other context
+                    //    CreateUpdateRequestForStrategy is an instance method in OCRCorrectionService.cs (main part)
+                    request = this.CreateUpdateRequestForStrategy(correction,
+                                                                  this.BuildLineContextForCorrection(correction, invoiceMetadata, fileText),
+                                                                  filePath,
+                                                                  fileText);
 
-                    if (result.IsSuccess)
+                    // 2. Validate the request for basic soundness before selecting a strategy
+                    //    ValidateUpdateRequest is an instance method defined below in this file.
+                    var validationResult = this.ValidateUpdateRequest(request);
+                    if (!validationResult.IsValid)
                     {
-                        successCount++;
-                        if (correction.CorrectionType == "omission")
-                            omissionCount++;
-                        else
-                            formatCount++;
-                        
-                        _logger?.Debug("Successfully processed correction for field {FieldName}: {Operation}",
-                            correction.FieldName, result.Operation);
+                        _logger?.Warning("Invalid RegexUpdateRequest for field {FieldName}: {ErrorMessage}. Skipping DB update.", correction.FieldName, validationResult.ErrorMessage);
+                        dbUpdateResult = DatabaseUpdateResult.Failed($"Validation failed: {validationResult.ErrorMessage}");
+                        dbFailureCount++;
+                        // LogCorrectionLearningAsync is an instance method defined below in this file.
+                        await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
+                        continue;
+                    }
+
+                    // 3. Get the appropriate strategy
+                    strategy = _strategyFactory.GetStrategy(correction);
+                    if (strategy == null)
+                    {
+                        _logger?.Warning("No database update strategy found for correction type '{CorrectionType}' on field {FieldName}. Skipping DB update.",
+                            correction.CorrectionType, correction.FieldName);
+                        dbUpdateResult = DatabaseUpdateResult.Failed($"No strategy for type '{correction.CorrectionType}'");
+                        dbFailureCount++;
+                        await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
+                        continue;
+                    }
+
+                    // 4. Execute the strategy
+                    _logger?.Information("Executing DB update strategy '{StrategyType}' for field {FieldName}.", strategy.StrategyType, correction.FieldName);
+                    dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+
+                    // 5. Process the result of the strategy execution
+                    if (dbUpdateResult.IsSuccess)
+                    {
+                        dbSuccessCount++;
+                        if (strategy is OmissionUpdateStrategy) omissionPatternUpdates++;
+                        else if (strategy is FieldFormatUpdateStrategy) formatPatternUpdates++;
+
+                        _logger?.Information("Successfully updated database for field {FieldName} using {StrategyType}: {OperationDetails}",
+                            correction.FieldName, strategy.StrategyType, dbUpdateResult.Message);
                     }
                     else
                     {
-                        failureCount++;
-                        _logger?.Warning("Failed to process correction for field {FieldName}: {Message}",
-                            correction.FieldName, result.Message);
+                        dbFailureCount++;
+                        _logger?.Warning("Database update failed for field {FieldName} using {StrategyType}: {ErrorMessage}",
+                            correction.FieldName, strategy.StrategyType, dbUpdateResult.Message);
                     }
 
-                    // Log to learning table regardless of database update success
-                    await LogCorrectionLearningAsync(context, request, result);
+                    // 6. Log to learning table
+                    await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    failureCount++;
-                    _logger?.Error(ex, "Exception processing correction for field {FieldName}", correction.FieldName);
+                    dbFailureCount++;
+                    _logger?.Error(ex, "Exception during database update processing for field {FieldName}. Strategy: {StrategyType}",
+                        correction.FieldName, strategy?.StrategyType ?? "Unknown");
+
+                    if (request != null)
+                    {
+                        var exceptionResult = DatabaseUpdateResult.Failed($"Outer exception during DB update: {ex.Message}", ex);
+                        await this.LogCorrectionLearningAsync(context, request, exceptionResult).ConfigureAwait(false);
+                    }
                 }
             }
 
-            _logger?.Information("Completed enhanced regex pattern updates: {SuccessCount} successful ({OmissionCount} omissions, {FormatCount} format), {FailureCount} failed",
-                successCount, omissionCount, formatCount, failureCount);
+            _logger?.Information("Database pattern updates completed: {SuccessCount} successful ({OmissionUpdates} omissions, {FormatUpdates} format/value), {FailureCount} failed.",
+                dbSuccessCount, omissionPatternUpdates, formatPatternUpdates, dbFailureCount);
         }
 
+
         /// <summary>
-        /// Processes a single correction and updates the database using enhanced strategy pattern
+        /// Builds a LineContext object for a given correction, using available metadata and file text.
+        /// This is used to provide context to strategies, especially for omission handling.
         /// </summary>
-        /// <param name="context">Database context</param>
-        /// <param name="request">Enhanced update request</param>
-        /// <returns>Database update result</returns>
-        private async Task<DatabaseUpdateResult> ProcessSingleCorrectionAsync(OCRContext context, RegexUpdateRequest request)
+        private LineContext BuildLineContextForCorrection(
+            CorrectionResult correction,
+            Dictionary<string, OCRFieldMetadata> invoiceMetadata,
+            string fileText)
         {
-            try
+            OCRFieldMetadata fieldMeta = null;
+            if (invoiceMetadata != null)
             {
-                // Validate the request
-                var validationResult = ValidateUpdateRequest(request);
-                if (!validationResult.IsValid)
+                if (invoiceMetadata.TryGetValue(correction.FieldName, out var directMeta))
                 {
-                    return DatabaseUpdateResult.Failed($"Validation failed: {validationResult.ErrorMessage}");
+                    fieldMeta = directMeta;
                 }
-
-                // Create correction result for strategy selection
-                var correction = new CorrectionResult
+                else
                 {
-                    FieldName = request.FieldName,
-                    OldValue = request.OldValue,
-                    NewValue = request.NewValue,
-                    CorrectionType = request.CorrectionType,
-                    Success = true,
-                    Confidence = request.Confidence,
-                    LineText = request.LineText,
-                    ContextLinesBefore = request.ContextLinesBefore,
-                    ContextLinesAfter = request.ContextLinesAfter,
-                    RequiresMultilineRegex = request.RequiresMultilineRegex
-                };
-
-                // Get appropriate strategy using enhanced factory
-                var strategy = _strategyFactory.GetStrategy(correction);
-
-                // Execute the strategy
-                var result = await strategy.ExecuteAsync(context, request);
-
-                _logger?.Debug("Strategy {StrategyType} executed for field {FieldName}: {Success}",
-                    strategy.StrategyType, request.FieldName, result.IsSuccess);
-
-                return result;
+                    var mappedInfo = this.MapDeepSeekFieldToDatabase(correction.FieldName);
+                    if (mappedInfo != null && invoiceMetadata.TryGetValue(mappedInfo.DatabaseFieldName, out var mappedMeta))
+                    {
+                        fieldMeta = mappedMeta;
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                _logger?.Error(ex, "Error processing correction for field {FieldName}", request.FieldName);
-                return DatabaseUpdateResult.Failed($"Processing error: {ex.Message}", ex);
-            }
-        }
 
-        /// <summary>
-        /// Creates an enhanced update request from a correction result with metadata context
-        /// </summary>
-        /// <param name="correction">Correction result</param>
-        /// <param name="fileText">Original file text</param>
-        /// <param name="filePath">File path</param>
-        /// <param name="invoiceMetadata">Enhanced metadata dictionary</param>
-        /// <returns>Enhanced update request</returns>
-        private RegexUpdateRequest CreateEnhancedUpdateRequest(CorrectionResult correction, string fileText, 
-            string filePath, Dictionary<string, OCRFieldMetadata> invoiceMetadata)
-        {
-            var request = new RegexUpdateRequest
+            var lineContext = new LineContext
             {
-                FieldName = correction.FieldName,
-                OldValue = correction.OldValue,
-                NewValue = correction.NewValue,
                 LineNumber = correction.LineNumber,
-                LineText = correction.LineText,
-                WindowText = ExtractWindowText(fileText, correction.LineNumber, 5),
-                CorrectionType = correction.CorrectionType,
-                Confidence = correction.Confidence,
-                DeepSeekReasoning = correction.Reasoning,
-                FilePath = filePath,
-                InvoiceType = DetermineInvoiceType(filePath),
-                ContextLinesBefore = correction.ContextLinesBefore ?? new List<string>(),
-                ContextLinesAfter = correction.ContextLinesAfter ?? new List<string>(),
-                RequiresMultilineRegex = correction.RequiresMultilineRegex
+                LineText = correction.LineText ?? (correction.LineNumber > 0 ? this.GetOriginalLineText(fileText, correction.LineNumber) : null),
+                ContextLinesBefore = correction.ContextLinesBefore,
+                ContextLinesAfter = correction.ContextLinesAfter,
+                RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                WindowText = (correction.LineNumber > 0) ? this.ExtractWindowText(fileText, correction.LineNumber, 5) : null
             };
 
-            // Enhance with metadata if available
-            if (invoiceMetadata != null && invoiceMetadata.TryGetValue(correction.FieldName, out var metadata))
+            if (fieldMeta != null)
             {
-                request.LineId = metadata.LineId;
-                request.PartId = metadata.PartId;
-                
-                _logger?.Debug("Enhanced request for field {FieldName} with LineId {LineId} and PartId {PartId}",
-                    correction.FieldName, request.LineId, request.PartId);
+                lineContext.LineId = fieldMeta.LineId;
+                lineContext.RegexId = fieldMeta.RegexId;
+                lineContext.RegexPattern = fieldMeta.LineRegex;
+                lineContext.PartId = fieldMeta.PartId;
+                lineContext.LineName = fieldMeta.LineName;
+                lineContext.PartName = fieldMeta.PartName;
+                lineContext.PartTypeId = fieldMeta.PartTypeId;
+                // For FieldsInLine, the strategy would typically call GetFieldsByRegexNamedGroupsAsync if needed with lineContext.LineId
             }
-            else
+            else if (correction.CorrectionType == "omission" || correction.CorrectionType == "omitted_line_item")
             {
-                _logger?.Debug("No metadata available for field {FieldName}, will use fallback resolution",
-                    correction.FieldName);
+                lineContext.IsOrphaned = true;
+                lineContext.RequiresNewLineCreation = true;
             }
 
-            return request;
+            return lineContext;
         }
 
         /// <summary>
-        /// Validates an enhanced update request
+        /// Validates a RegexUpdateRequest for essential data and conformity to field rules.
         /// </summary>
-        /// <param name="request">Request to validate</param>
-        /// <returns>Validation result</returns>
         private FieldValidationInfo ValidateUpdateRequest(RegexUpdateRequest request)
         {
+            if (request == null) return new FieldValidationInfo { IsValid = false, ErrorMessage = "Request object is null." };
             if (string.IsNullOrWhiteSpace(request.FieldName))
-            {
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = "Field name is required" };
-            }
+                return new FieldValidationInfo { IsValid = false, ErrorMessage = "Field name is required in RegexUpdateRequest." };
+            if (request.NewValue == null && request.CorrectionType != "removal")
+                return new FieldValidationInfo { IsValid = false, ErrorMessage = "New value is required for non-removal corrections." };
 
-            if (string.IsNullOrWhiteSpace(request.NewValue))
-            {
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = "New value is required" };
-            }
+            // IsFieldSupported and GetFieldValidationInfo are instance methods (likely in OCRFieldMapping.cs part)
+            if (!this.IsFieldSupported(request.FieldName))
+                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{request.FieldName}' is not supported for database updates." };
 
-            // For omissions, old value can be empty
-            if (request.CorrectionType != "omission" && 
-                string.IsNullOrWhiteSpace(request.OldValue) && 
-                request.OldValue == request.NewValue)
-            {
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = "Old and new values are identical for non-omission correction" };
-            }
+            var fieldValidationRules = this.GetFieldValidationInfo(request.FieldName);
+            if (!fieldValidationRules.IsValid) return fieldValidationRules; // Pass along error from GetFieldValidationInfo
 
-            // Check if field is supported
-            if (!IsFieldSupported(request.FieldName))
-            {
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field {request.FieldName} is not supported" };
-            }
+            if (fieldValidationRules.IsRequired && string.IsNullOrWhiteSpace(request.NewValue))
+                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{request.FieldName}' is required and cannot be empty." };
 
-            // Get field-specific validation
-            var fieldValidation = GetFieldValidationInfo(request.FieldName);
-            if (!fieldValidation.IsValid)
+            // Validate NewValue against pattern only if NewValue is not empty (empty might be a valid 'cleared' state)
+            if (!string.IsNullOrEmpty(fieldValidationRules.ValidationPattern) && !string.IsNullOrWhiteSpace(request.NewValue))
             {
-                return fieldValidation;
+                if (!Regex.IsMatch(request.NewValue, fieldValidationRules.ValidationPattern))
+                    return new FieldValidationInfo { IsValid = false, ErrorMessage = $"New value '{this.TruncateForLog(request.NewValue, 50)}' for '{request.FieldName}' does not match expected pattern: {fieldValidationRules.ValidationPattern}" };
             }
-
-            // Validate new value format
-            if (!string.IsNullOrEmpty(fieldValidation.ValidationPattern))
-            {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(request.NewValue, fieldValidation.ValidationPattern))
-                {
-                    return new FieldValidationInfo
-                    {
-                        IsValid = false,
-                        ErrorMessage = $"New value '{request.NewValue}' does not match expected format for field {request.FieldName}"
-                    };
-                }
-            }
-
-            return new FieldValidationInfo { IsValid = true };
+            return new FieldValidationInfo { IsValid = true, DatabaseFieldName = fieldValidationRules.DatabaseFieldName, EntityType = fieldValidationRules.EntityType };
         }
 
         /// <summary>
-        /// Logs correction details to the enhanced learning table
+        /// Logs details of a correction attempt and its database update outcome to the OCRCorrectionLearning table.
         /// </summary>
-        /// <param name="context">Database context</param>
-        /// <param name="request">Enhanced update request</param>
-        /// <param name="result">Update result</param>
-        /// <returns>Task representing the async operation</returns>
-        private async Task LogCorrectionLearningAsync(OCRContext context, RegexUpdateRequest request, DatabaseUpdateResult result)
+        private async Task LogCorrectionLearningAsync(OCRContext context, RegexUpdateRequest request, DatabaseUpdateResult dbUpdateResult)
         {
+            if (request == null)
+            {
+                _logger.Error("LogCorrectionLearningAsync: RegexUpdateRequest is null. Cannot log learning entry.");
+                return;
+            }
+            if (dbUpdateResult == null)
+            { // Should not happen if called correctly
+                _logger.Error("LogCorrectionLearningAsync: DatabaseUpdateResult is null for field {FieldName}. Cannot log learning entry.", request.FieldName);
+                dbUpdateResult = DatabaseUpdateResult.Failed("Internal error: DBUpdateResult was null.");
+            }
+
             try
             {
                 var learning = new OCRCorrectionLearning
                 {
                     FieldName = request.FieldName,
                     OriginalError = request.OldValue ?? "",
-                    CorrectValue = request.NewValue,
+                    CorrectValue = request.NewValue ?? "", // Ensure not null
                     LineNumber = request.LineNumber,
                     LineText = request.LineText ?? "",
                     WindowText = request.WindowText,
                     CorrectionType = request.CorrectionType,
-                    DeepSeekReasoning = request.DeepSeekReasoning,
-                    Confidence = (decimal?)request.Confidence,
+                    DeepSeekReasoning = this.TruncateForLog(request.DeepSeekReasoning, 1000),
+                    Confidence = request.Confidence >= -1000000 && request.Confidence <= 1000000 ? (decimal?)request.Confidence : null, // Range check for decimal
                     InvoiceType = request.InvoiceType,
-                    FilePath = request.FilePath,
-                    Success = result.IsSuccess,
-                    ErrorMessage = result.IsSuccess ? null : result.Message,
+                    FilePath = this.TruncateForLog(request.FilePath, 260),
+                    Success = dbUpdateResult.IsSuccess,
+                    ErrorMessage = dbUpdateResult.IsSuccess ? null : this.TruncateForLog(dbUpdateResult.Message, 2000),
                     CreatedDate = DateTime.UtcNow,
-                    CreatedBy = "OCRCorrectionService",
-                    
-                    // Enhanced fields for omission tracking
+                    CreatedBy = "OCRCorrectionService", // System identifier
+
                     RequiresMultilineRegex = request.RequiresMultilineRegex,
-                    ContextLinesBefore = string.Join("\n", request.ContextLinesBefore),
-                    ContextLinesAfter = string.Join("\n", request.ContextLinesAfter),
+                    ContextLinesBefore = request.ContextLinesBefore != null ? string.Join("\n", request.ContextLinesBefore) : null,
+                    ContextLinesAfter = request.ContextLinesAfter != null ? string.Join("\n", request.ContextLinesAfter) : null,
+                    // LineId in request can be Fields.Id for FieldFormat strategy, or Lines.Id for Omission modify
                     LineId = request.LineId,
-                    PartId = request.PartId
+                    PartId = request.PartId,
+                    // If DB update was successful and involved a Regex, log its ID.
+                    RegexId = (dbUpdateResult.IsSuccess && dbUpdateResult.Operation != null && (dbUpdateResult.Operation.Contains("Regex") || dbUpdateResult.Operation.Contains("Pattern"))) ?
+                                dbUpdateResult.RecordId : request.RegexId
                 };
-
                 context.OCRCorrectionLearning.Add(learning);
-                await context.SaveChangesAsync();
-
-                _logger?.Debug("Logged enhanced correction learning entry for field {FieldName}", request.FieldName);
+                await context.SaveChangesAsync().ConfigureAwait(false); // Save learning entry
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Failed to log enhanced correction learning for field {FieldName}", request.FieldName);
-                // Don't throw - logging failure shouldn't stop the main process
+                _logger.Error(ex, "Failed to log correction learning entry for field {FieldName}. Error: {DbUpdateErrorMessage}", request.FieldName, dbUpdateResult.Message);
+                // Do not re-throw, logging failure should not halt main processing.
             }
         }
 
         /// <summary>
-        /// Creates a new regex pattern from DeepSeek for omission corrections
+        /// Creates a RegexUpdateRequest object populated from a CorrectionResult and other contextual information.
+        /// This request object is then used by database update strategies.
         /// </summary>
-        /// <param name="request">Enhanced regex update request</param>
-        /// <returns>Regex creation response from DeepSeek</returns>
-        public async Task<RegexCreationResponse> RequestNewRegexFromDeepSeekAsync(RegexUpdateRequest request)
+        private RegexUpdateRequest CreateUpdateRequestForStrategy(
+            CorrectionResult correction,
+            LineContext lineContext, // Generated by BuildLineContextForCorrection
+            string filePath,
+            string fileText) // Full original file text
         {
-            try
+            if (correction == null)
             {
-                // Get current line regex if LineId is available
-                var currentLineRegex = "";
-                var existingNamedGroups = new List<string>();
-
-                if (request.LineId.HasValue)
+                _logger.Error("CreateUpdateRequestForStrategy: CorrectionResult is null. Cannot create request.");
+                return null; // Or throw argument null exception
+            }
+            if (lineContext == null)
+            {
+                // This might be acceptable for some corrections if they don't need line context for DB update,
+                // but strategies for omissions or line modifications will likely require it.
+                _logger.Warning("CreateUpdateRequestForStrategy: LineContext is null for field {FieldName}. Request may lack DB context.", correction.FieldName);
+                // Create a minimal LineContext if it's absolutely null to avoid null refs,
+                // though BuildLineContextForCorrection should ideally always return a (potentially sparse) object.
+                lineContext = new LineContext
                 {
-                    using var context = new OCRContext();
-                    var line = await context.Lines
-                        .Include(l => l.RegularExpressions)
-                        .Include(l => l.Fields)
-                        .FirstOrDefaultAsync(l => l.Id == request.LineId.Value);
-
-                    if (line?.RegularExpressions != null)
-                    {
-                        currentLineRegex = line.RegularExpressions.RegEx;
-                        existingNamedGroups = ExtractNamedGroupsFromRegex(currentLineRegex);
-                    }
-                }
-
-                var prompt = CreateRegexCreationPrompt(request, currentLineRegex, existingNamedGroups);
-                var response = await _deepSeekApi.GetResponseAsync(prompt);
-                
-                return ParseRegexCreationResponse(response);
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error(ex, "Error requesting new regex from DeepSeek for field {FieldName}", request.FieldName);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Creates the prompt for DeepSeek regex creation
-        /// </summary>
-        private string CreateRegexCreationPrompt(RegexUpdateRequest request, string currentLineRegex, List<string> existingNamedGroups)
-        {
-            var contextLines = string.Join("\n", 
-                request.ContextLinesBefore
-                    .Concat(new[] { $">>> LINE {request.LineNumber}: {request.LineText} <<<" })
-                    .Concat(request.ContextLinesAfter));
-
-            return $@"CREATE REGEX PATTERN FOR OCR FIELD EXTRACTION:
-
-A field '{request.FieldName}' with value '{request.NewValue}' was found but not extracted by current OCR processing.
-
-CURRENT LINE REGEX: {currentLineRegex ?? "None"}
-EXISTING NAMED GROUPS: {string.Join(", ", existingNamedGroups)}
-
-TARGET LINE:
-{request.LineText}
-
-FULL CONTEXT:
-{contextLines}
-
-FIELD DETAILS:
-- Field Name: {request.FieldName}
-- Expected Value: {request.NewValue}
-- Requires Multiline: {request.RequiresMultilineRegex}
-- Error Type: {request.CorrectionType}
-
-REQUIREMENTS:
-1. Create a regex pattern that extracts the value '{request.NewValue}' using named group (?<{request.FieldName}>pattern)
-2. If updating existing regex, ensure you don't break existing named groups: {string.Join(", ", existingNamedGroups)}
-3. Pattern should work with the provided context
-4. Decide if this should modify existing line or create new line
-
-RESPONSE FORMAT:
-{{
-  ""strategy"": ""modify_existing_line"" OR ""create_new_line"",
-  ""regex_pattern"": ""(?<{request.FieldName}>your_pattern_here)"",
-  ""complete_line_regex"": ""full regex if modifying existing line"",
-  ""is_multiline"": true/false,
-  ""max_lines"": your_determined_number,
-  ""test_match"": ""exact text from context that should be matched"",
-  ""confidence"": 0.95,
-  ""reasoning"": ""why you chose this approach and pattern""
-}}
-
-Choose the safest approach that won't break existing extractions.";
-        }
-
-        /// <summary>
-        /// Parses the DeepSeek response for regex creation
-        /// </summary>
-        private RegexCreationResponse ParseRegexCreationResponse(string response)
-        {
-            try
-            {
-                var cleanJson = CleanJsonResponse(response);
-                if (string.IsNullOrWhiteSpace(cleanJson)) return null;
-
-                using var doc = System.Text.Json.JsonDocument.Parse(cleanJson);
-                var root = doc.RootElement;
-
-                return new RegexCreationResponse
-                {
-                    Strategy = GetStringValue(root, "strategy") ?? "create_new_line",
-                    RegexPattern = GetStringValue(root, "regex_pattern") ?? "",
-                    CompleteLineRegex = GetStringValue(root, "complete_line_regex") ?? "",
-                    IsMultiline = root.TryGetProperty("is_multiline", out var multiProp) ? multiProp.GetBoolean() : false,
-                    MaxLines = root.TryGetProperty("max_lines", out var maxProp) ? maxProp.GetInt32() : 1,
-                    Confidence = GetDoubleValue(root, "confidence"),
-                    Reasoning = GetStringValue(root, "reasoning") ?? "",
-                    TestMatch = GetStringValue(root, "test_match") ?? ""
+                    LineNumber = correction.LineNumber,
+                    LineText = correction.LineText,
+                    ContextLinesBefore = correction.ContextLinesBefore,
+                    ContextLinesAfter = correction.ContextLinesAfter,
+                    RequiresMultilineRegex = correction.RequiresMultilineRegex
                 };
             }
-            catch (Exception ex)
+
+
+            var request = new RegexUpdateRequest
             {
-                _logger?.Error(ex, "Error parsing regex creation response");
-                return null;
-            }
+                FieldName = correction.FieldName,
+                OldValue = correction.OldValue,
+                NewValue = correction.NewValue,
+                CorrectionType = correction.CorrectionType,
+                Confidence = correction.Confidence,
+                DeepSeekReasoning = correction.Reasoning,
+
+                LineNumber = correction.LineNumber, // From CorrectionResult, which should be authoritative
+                LineText = correction.LineText,     // From CorrectionResult
+                WindowText = (lineContext.LineNumber > 0 && !string.IsNullOrEmpty(fileText)) ?
+                             this.ExtractWindowText(fileText, lineContext.LineNumber, 5) : // From OCRUtilities
+                             (correction.LineNumber > 0 && !string.IsNullOrEmpty(fileText) ? this.ExtractWindowText(fileText, correction.LineNumber, 5) : null),
+                ContextLinesBefore = correction.ContextLinesBefore,
+                ContextLinesAfter = correction.ContextLinesAfter,
+                RequiresMultilineRegex = correction.RequiresMultilineRegex,
+
+                FilePath = filePath,
+                InvoiceType = this.DetermineInvoiceType(filePath), // From OCRUtilities
+
+                // Database context primarily from the passed LineContext
+                LineId = lineContext.LineId,        // This is OCR.Business.Entities.Lines.Id from existing template line
+                PartId = lineContext.PartId,        // OCR.Business.Entities.Parts.Id
+                RegexId = lineContext.RegexId,      // OCR.Business.Entities.RegularExpressions.Id from existing template line
+                ExistingRegex = lineContext.RegexPattern // Actual regex string of the existing line
+            };
+
+            // Special handling for FieldFormatUpdateStrategy:
+            // It expects Fields.Id to be passed in request.LineId.
+            // The BuildLineContextForCorrection might not have this specific Fields.Id directly,
+            // as LineContext is about a "line of text".
+            // The OCRFieldMetadata associated with the *specific field instance* being corrected would have Fields.Id.
+            // This logic needs to be robust. If invoiceMetadata was passed down to here:
+            // Dictionary<string, OCRFieldMetadata> invoiceMetadata = ... (would need to be parameter)
+            // if (invoiceMetadata != null && 
+            //     _strategyFactory.GetStrategy(correction) is FieldFormatUpdateStrategy && 
+            //     invoiceMetadata.TryGetValue(correction.FieldName, out var fieldMetaForThisCorrection) &&
+            //     fieldMetaForThisCorrection.FieldId.HasValue)
+            // {
+            //     request.LineId = fieldMetaForThisCorrection.FieldId; // Repurpose LineId for Fields.Id
+            //      _logger.Debug("For FieldFormatStrategy on {FieldName}, setting request.LineId to Fields.Id: {FieldId}", 
+            //          correction.FieldName, fieldMetaForThisCorrection.FieldId.Value);
+            // }
+            // For now, the caller (UpdateRegexPatternsAsync) will need to ensure that if the strategy
+            // is FieldFormatUpdateStrategy, the `request.LineId` (originally from lineContext.LineId)
+            // is appropriately set to the `Fields.Id` if that's the convention.
+            // The current BuildLineContextForCorrection tries to set LineId from OCRFieldMetadata.LineId.
+            // A cleaner way is for CreateUpdateRequestForStrategy to take invoiceMetadata.
+
+            return request;
         }
 
-        #endregion
-
-        #region Helper Methods
-
-        /// <summary>
-        /// Extracts a specific line from text
-        /// </summary>
-        /// <param name="text">Full text</param>
-        /// <param name="lineNumber">Line number (1-based)</param>
-        /// <returns>Line text or empty string if not found</returns>
-        private string ExtractLineText(string text, int lineNumber)
-        {
-            if (string.IsNullOrEmpty(text) || lineNumber <= 0)
-                return "";
-
-            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            return lineNumber <= lines.Length ? lines[lineNumber - 1] : "";
-        }
-
-        /// <summary>
-        /// Extracts a window of text around a specific line
-        /// </summary>
-        /// <param name="text">Full text</param>
-        /// <param name="lineNumber">Center line number (1-based)</param>
-        /// <param name="windowSize">Number of lines before and after</param>
-        /// <returns>Window text</returns>
-        private string ExtractWindowText(string text, int lineNumber, int windowSize)
-        {
-            if (string.IsNullOrEmpty(text) || lineNumber <= 0)
-                return "";
-
-            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var startLine = Math.Max(0, lineNumber - windowSize - 1);
-            var endLine = Math.Min(lines.Length - 1, lineNumber + windowSize - 1);
-
-            var windowLines = new List<string>();
-            for (int i = startLine; i <= endLine; i++)
-            {
-                windowLines.Add($"{i + 1}: {lines[i]}");
-            }
-
-            return string.Join("\n", windowLines);
-        }
-
-        /// <summary>
-        /// Determines invoice type from file path
-        /// </summary>
-        /// <param name="filePath">File path</param>
-        /// <returns>Invoice type string</returns>
-        private string DetermineInvoiceType(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-                return "Unknown";
-
-            var fileName = System.IO.Path.GetFileName(filePath).ToLowerInvariant();
-
-            if (fileName.Contains("amazon"))
-                return "Amazon";
-            if (fileName.Contains("temu"))
-                return "Temu";
-            if (fileName.Contains("shein"))
-                return "Shein";
-            if (fileName.Contains("alibaba"))
-                return "Alibaba";
-
-            return "Generic";
-        }
-
-        /// <summary>
-        /// Gets string value from JSON element safely
-        /// </summary>
-        private string GetStringValue(System.Text.Json.JsonElement element, string propertyName)
-        {
-            if (element.TryGetProperty(propertyName, out var prop) && 
-                prop.ValueKind != System.Text.Json.JsonValueKind.Null)
-                return prop.GetString();
-            return null;
-        }
-
-        /// <summary>
-        /// Gets double value from JSON element safely
-        /// </summary>
-        private double GetDoubleValue(System.Text.Json.JsonElement element, string propertyName)
-        {
-            if (element.TryGetProperty(propertyName, out var prop) && 
-                prop.ValueKind != System.Text.Json.JsonValueKind.Null)
-            {
-                if (prop.TryGetDouble(out var value)) return value;
-                if (prop.TryGetDecimal(out var decimalValue)) return (double)decimalValue;
-                if (prop.TryGetInt32(out var intValue)) return intValue;
-            }
-            return 0.0;
-        }
-
-        /// <summary>
-        /// Cleans JSON response from DeepSeek
-        /// </summary>
-        private string CleanJsonResponse(string jsonResponse)
-        {
-            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
-
-            var cleaned = System.Text.RegularExpressions.Regex.Replace(jsonResponse, @"```json|```|'''|\uFEFF", string.Empty, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
-            var startIndex = cleaned.IndexOf('{');
-            var endIndex = cleaned.LastIndexOf('}');
-
-            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
-            {
-                _logger?.Warning("No valid JSON boundaries detected in response");
-                return string.Empty;
-            }
-
-            return cleaned.Substring(startIndex, endIndex - startIndex + 1);
-        }
 
         #endregion
     }

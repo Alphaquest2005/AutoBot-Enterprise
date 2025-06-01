@@ -1,94 +1,97 @@
+// File: OCRCorrectionService/OCRFieldMapping.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using OCR.Business.Entities;
-using Serilog;
+using System.Text.RegularExpressions; // For IsFieldExistingInLine's regex group extraction
+using System.Threading.Tasks; // For async GetFieldsByRegexNamedGroups
+using System.Data.Entity; // For async DB operations in GetFieldsByRegexNamedGroups
+using OCR.Business.Entities; // For Fields DB entity in GetFieldsByRegexNamedGroups
+using Serilog; // ILogger is available as this._logger
 
 namespace WaterNut.DataSpace
 {
-    /// <summary>
-    /// Handles mapping between DeepSeek field names and database field structures
-    /// </summary>
     public partial class OCRCorrectionService
     {
         #region Field Mapping Configuration
 
         /// <summary>
-        /// Maps DeepSeek field names to database field information
+        /// Defines the primary mapping from DeepSeek/common field names to canonical database field information.
+        /// Key: Common/DeepSeek field name (case-insensitive).
+        /// Value: Information about the target database field.
         /// </summary>
-        private static readonly Dictionary<string, DatabaseFieldInfo> DeepSeekFieldMapping = new Dictionary<string, DatabaseFieldInfo>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, DatabaseFieldInfo> DeepSeekToDBFieldMapping = new Dictionary<string, DatabaseFieldInfo>(StringComparer.OrdinalIgnoreCase)
         {
-            // Invoice Header Fields
-            ["InvoiceTotal"] = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Total"),
+            // Invoice Header Canonical Names (Primary keys for mapping)
+            ["InvoiceTotal"] = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Invoice Total Amount"),
             ["SubTotal"] = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal"),
-            ["TotalInternalFreight"] = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight"),
-            ["TotalOtherCost"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Other"),
-            ["TotalInsurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance"),
-            ["TotalDeduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deduction"),
+            ["TotalInternalFreight"] = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight/Shipping Charges"),
+            ["TotalOtherCost"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Taxes and Other Costs"),
+            ["TotalInsurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance Charges"),
+            ["TotalDeduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deductions/Discounts/Gift Cards"),
+            ["InvoiceNo"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice Number"),
+            ["InvoiceDate"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Invoice Date"),
+            ["Currency"] = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency Code (e.g., USD)"),
+            ["SupplierName"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier/Vendor Name"),
+            ["SupplierAddress"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Supplier Address"),
+            // Add other header fields as needed: PaymentTerms, DueDate, PONumber, etc.
 
-            // Invoice Identification Fields
-            ["InvoiceNo"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
-            ["InvoiceDate"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Date"),
-            ["Currency"] = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency"),
+            // Invoice Detail Canonical Names (Primary keys for mapping - used when fieldName is simple like "Quantity")
+            ["ItemDescription"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Product/Service Description"),
+            ["Quantity"] = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Quantity"),
+            ["Cost"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Unit Price/Cost"),
+            ["TotalCost"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "Line Item Total Amount"),
+            ["Discount"] = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Line Item Discount"),
+            ["Units"] = new DatabaseFieldInfo("Units", "InvoiceDetails", "string", false, "Unit of Measure (e.g., EA, KG)"),
+            // Add other detail fields: SKU, PartNumber, LineItemTax, etc.
 
-            // Supplier Fields
-            ["SupplierName"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier"),
-            ["SupplierAddress"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Address"),
-
-            // Line Item Fields
-            ["ItemDescription"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Description"),
-            ["Quantity"] = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Qty"),
-            ["Cost"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Price"),
-            ["TotalCost"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "LineTotal"),
-            ["Discount"] = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Discount"),
-
-            // Alternative field names that DeepSeek might use
-            ["Total"] = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Total"),
-            ["Subtotal"] = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal"),
-            ["Freight"] = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight"),
-            ["Shipping"] = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight"),
-            ["Tax"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Tax"),
-            ["Other"] = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Other"),
-            ["Insurance"] = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance"),
-            ["Deduction"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deduction"),
-            ["GiftCard"] = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "GiftCard"),
-
-            // Invoice identification alternatives
-            ["Invoice"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
-            ["InvoiceNumber"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice"),
-            ["OrderNumber"] = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Order"),
-            ["Date"] = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Date"),
-
-            // Supplier alternatives
-            ["Supplier"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier"),
-            ["Vendor"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Vendor"),
-            ["From"] = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "From"),
-            ["Address"] = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Address"),
-
-            // Line item alternatives
-            ["Description"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Description"),
-            ["Item"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Item"),
-            ["Product"] = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Product"),
-            ["Qty"] = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Qty"),
-            ["Price"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Price"),
-            ["UnitPrice"] = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Price"),
-            ["Amount"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "Amount"),
-            ["LineTotal"] = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "LineTotal")
+            // --- ALIASES: Common variations DeepSeek might return, mapping to the canonical names above ---
+            ["Total"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
+            ["GrandTotal"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
+            ["AmountDue"] = DeepSeekToDBFieldMapping["InvoiceTotal"],
+            ["Subtotal"] = DeepSeekToDBFieldMapping["SubTotal"], // Note: casing difference from canonical
+            ["Freight"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
+            ["Shipping"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
+            ["ShippingAndHandling"] = DeepSeekToDBFieldMapping["TotalInternalFreight"],
+            ["Tax"] = DeepSeekToDBFieldMapping["TotalOtherCost"], // Tax is often part of Other Costs
+            ["VAT"] = DeepSeekToDBFieldMapping["TotalOtherCost"],
+            ["OtherCharges"] = DeepSeekToDBFieldMapping["TotalOtherCost"],
+            ["Insurance"] = DeepSeekToDBFieldMapping["TotalInsurance"], // Casing
+            ["Deduction"] = DeepSeekToDBFieldMapping["TotalDeduction"], // Casing
+            ["GiftCard"] = DeepSeekToDBFieldMapping["TotalDeduction"],
+            ["Promotion"] = DeepSeekToDBFieldMapping["TotalDeduction"],
+            ["InvoiceNumber"] = DeepSeekToDBFieldMapping["InvoiceNo"],
+            ["InvoiceID"] = DeepSeekToDBFieldMapping["InvoiceNo"],
+            ["OrderNumber"] = DeepSeekToDBFieldMapping["InvoiceNo"], // Or map to a separate OrderNo if distinct
+            ["OrderNo"] = DeepSeekToDBFieldMapping["InvoiceNo"],
+            ["Date"] = DeepSeekToDBFieldMapping["InvoiceDate"], // Generic "Date" often means InvoiceDate
+            ["IssueDate"] = DeepSeekToDBFieldMapping["InvoiceDate"],
+            ["Supplier"] = DeepSeekToDBFieldMapping["SupplierName"],
+            ["Vendor"] = DeepSeekToDBFieldMapping["SupplierName"],
+            ["SoldBy"] = DeepSeekToDBFieldMapping["SupplierName"],
+            ["From"] = DeepSeekToDBFieldMapping["SupplierName"], // Can be ambiguous
+            ["Address"] = DeepSeekToDBFieldMapping["SupplierAddress"], // Can be ambiguous (Supplier vs Billing vs Shipping)
+            ["Description"] = DeepSeekToDBFieldMapping["ItemDescription"], // For line items
+            ["ProductDescription"] = DeepSeekToDBFieldMapping["ItemDescription"],
+            ["Item"] = DeepSeekToDBFieldMapping["ItemDescription"], // Ambiguous, but often description
+            ["ProductName"] = DeepSeekToDBFieldMapping["ItemDescription"],
+            ["Qty"] = DeepSeekToDBFieldMapping["Quantity"],
+            ["Price"] = DeepSeekToDBFieldMapping["Cost"], // Unit Price
+            ["UnitPrice"] = DeepSeekToDBFieldMapping["Cost"],
+            ["Amount"] = DeepSeekToDBFieldMapping["TotalCost"], // For line items, "Amount" usually means line total
+            ["LineTotal"] = DeepSeekToDBFieldMapping["TotalCost"],
+            ["LineItemDiscount"] = DeepSeekToDBFieldMapping["Discount"]
         };
 
         /// <summary>
-        /// Information about a database field for mapping purposes
+        /// Represents structured information about a target database field.
         /// </summary>
         public class DatabaseFieldInfo
         {
-            public string DatabaseFieldName { get; }
-            public string EntityType { get; }
-            public string DataType { get; }
-            public bool IsRequired { get; }
-            public string DisplayName { get; }
+            public string DatabaseFieldName { get; } // The canonical C# property name / DB column name.
+            public string EntityType { get; }      // Name of the entity class, e.g., "ShipmentInvoice", "InvoiceDetails".
+            public string DataType { get; }        // Expected data type, e.g., "string", "decimal", "DateTime", "int".
+            public bool IsRequired { get; }        // Whether the field is considered mandatory.
+            public string DisplayName { get; }     // A user-friendly or common name for the field, useful for prompts/logs.
 
             public DatabaseFieldInfo(string databaseFieldName, string entityType, string dataType, bool isRequired, string displayName)
             {
@@ -99,388 +102,256 @@ namespace WaterNut.DataSpace
                 DisplayName = displayName;
             }
         }
-
         #endregion
 
-        #region Field Mapping Methods
+        #region Field Mapping Public Methods
 
         /// <summary>
-        /// Maps a DeepSeek field name to database field information
+        /// Maps a field name (potentially from DeepSeek or other OCR output) to its canonical DatabaseFieldInfo.
+        /// Handles common prefixed field names for invoice details (e.g., "InvoiceDetail_Line1_Quantity").
         /// </summary>
-        /// <param name="deepSeekFieldName">Field name from DeepSeek response</param>
-        /// <returns>Database field information or null if not found</returns>
-        public DatabaseFieldInfo MapDeepSeekFieldToDatabase(string deepSeekFieldName)
+        public DatabaseFieldInfo MapDeepSeekFieldToDatabase(string rawFieldName)
         {
-            if (string.IsNullOrWhiteSpace(deepSeekFieldName))
+            if (string.IsNullOrWhiteSpace(rawFieldName))
             {
-                _logger?.Warning("Empty or null DeepSeek field name provided for mapping");
+                _logger?.Verbose("MapDeepSeekFieldToDatabase: Received null or empty field name.");
                 return null;
             }
 
-            if (DeepSeekFieldMapping.TryGetValue(deepSeekFieldName.Trim(), out var fieldInfo))
+            string fieldNameToMap = rawFieldName.Trim();
+            // Check for common prefixes used for line item fields by some systems/prompts
+            if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
             {
-                _logger?.Debug("Mapped DeepSeek field '{DeepSeekField}' to database field '{DatabaseField}' in entity '{Entity}'",
-                    deepSeekFieldName, fieldInfo.DatabaseFieldName, fieldInfo.EntityType);
+                var parts = fieldNameToMap.Split('_');
+                if (parts.Length >= 3) // e.g., InvoiceDetail_Line1_Quantity -> Quantity
+                {
+                    fieldNameToMap = parts.Last(); 
+                }
+            }
+            
+            if (DeepSeekToDBFieldMapping.TryGetValue(fieldNameToMap, out var fieldInfo))
+            {
+                _logger?.Verbose("Mapped raw field '{RawField}' (processed as '{MappedKey}') to DB field '{DbField}', Entity '{Entity}'.", rawFieldName, fieldNameToMap, fieldInfo.DatabaseFieldName, fieldInfo.EntityType);
                 return fieldInfo;
             }
 
-            _logger?.Warning("No mapping found for DeepSeek field '{DeepSeekField}'. Available mappings: {AvailableMappings}",
-                deepSeekFieldName, string.Join(", ", DeepSeekFieldMapping.Keys.Take(10)));
-
+            _logger?.Debug("No mapping found for raw field '{RawField}' (processed as '{MappedKey}').", rawFieldName, fieldNameToMap);
             return null;
         }
 
         /// <summary>
-        /// Gets all supported DeepSeek field names
+        /// Gets all field names that have defined mappings (primary keys of the mapping dictionary).
         /// </summary>
-        /// <returns>List of supported field names</returns>
-        public IEnumerable<string> GetSupportedDeepSeekFields()
-        {
-            return DeepSeekFieldMapping.Keys.OrderBy(k => k);
-        }
+        public IEnumerable<string> GetSupportedMappedFields() => DeepSeekToDBFieldMapping.Keys.Where(k => DeepSeekToDBFieldMapping[k] != null && DeepSeekToDBFieldMapping[k].DatabaseFieldName == k).OrderBy(k => k);
+
 
         /// <summary>
-        /// Gets field mappings for a specific entity type
+        /// Validates if a given field name (after potential prefix stripping) is supported by the mapping.
         /// </summary>
-        /// <param name="entityType">Entity type (e.g., "ShipmentInvoice", "InvoiceDetails")</param>
-        /// <returns>Field mappings for the entity</returns>
-        public IEnumerable<KeyValuePair<string, DatabaseFieldInfo>> GetFieldMappingsForEntity(string entityType)
+        public bool IsFieldSupported(string rawFieldName)
         {
-            return DeepSeekFieldMapping.Where(kvp =>
-                string.Equals(kvp.Value.EntityType, entityType, StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(rawFieldName)) return false;
+            string fieldNameToMap = rawFieldName.Trim();
+            if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
+            {
+                var parts = fieldNameToMap.Split('_');
+                if (parts.Length >= 3) fieldNameToMap = parts.Last();
+            }
+            return DeepSeekToDBFieldMapping.ContainsKey(fieldNameToMap);
         }
-
+        
         /// <summary>
-        /// Validates if a field name is supported for correction
+        /// Retrieves validation rules (data type, required, pattern, etc.) for a given field name.
         /// </summary>
-        /// <param name="fieldName">Field name to validate</param>
-        /// <returns>True if field is supported</returns>
-        public bool IsFieldSupported(string fieldName)
+        public FieldValidationInfo GetFieldValidationInfo(string rawFieldName)
         {
-            return !string.IsNullOrWhiteSpace(fieldName) &&
-                   DeepSeekFieldMapping.ContainsKey(fieldName.Trim());
-        }
-
-        /// <summary>
-        /// Gets the canonical database field name for a DeepSeek field
-        /// </summary>
-        /// <param name="deepSeekFieldName">DeepSeek field name</param>
-        /// <returns>Canonical database field name or original if not mapped</returns>
-        public string GetCanonicalFieldName(string deepSeekFieldName)
-        {
-            var fieldInfo = MapDeepSeekFieldToDatabase(deepSeekFieldName);
-            return fieldInfo?.DatabaseFieldName ?? deepSeekFieldName;
-        }
-
-        /// <summary>
-        /// Determines if a field is a monetary/currency field
-        /// </summary>
-        /// <param name="fieldName">Field name to check</param>
-        /// <returns>True if field represents currency</returns>
-        public bool IsMonetaryField(string fieldName)
-        {
-            var fieldInfo = MapDeepSeekFieldToDatabase(fieldName);
-            return fieldInfo?.DataType == "decimal" &&
-                   (fieldInfo.EntityType == "ShipmentInvoice" ||
-                    fieldInfo.DatabaseFieldName.Contains("Cost") ||
-                    fieldInfo.DatabaseFieldName.Contains("Total") ||
-                    fieldInfo.DatabaseFieldName.Contains("Price"));
-        }
-
-        /// <summary>
-        /// Gets validation rules for a specific field
-        /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <returns>Validation information</returns>
-        public FieldValidationInfo GetFieldValidationInfo(string fieldName)
-        {
-            var fieldInfo = MapDeepSeekFieldToDatabase(fieldName);
+            var fieldInfo = MapDeepSeekFieldToDatabase(rawFieldName);
             if (fieldInfo == null)
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Unknown field: {fieldName}" };
+                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{rawFieldName}' is unknown or not mapped." };
 
             return new FieldValidationInfo
             {
-                IsValid = true,
+                IsValid = true, // Indicates that we have validation rules, not that the value IS valid
+                DatabaseFieldName = fieldInfo.DatabaseFieldName,
+                EntityType = fieldInfo.EntityType,
                 IsRequired = fieldInfo.IsRequired,
                 DataType = fieldInfo.DataType,
-                IsMonetary = IsMonetaryField(fieldName),
-                MaxLength = GetMaxLengthForField(fieldInfo),
-                ValidationPattern = GetValidationPatternForField(fieldInfo)
+                IsMonetary = (fieldInfo.DataType == "decimal" || fieldInfo.DataType == "currency"), // Example
+                MaxLength = GetMaxLengthForField(fieldInfo), // Helper
+                ValidationPattern = GetValidationPatternForField(fieldInfo) // Helper
             };
         }
 
+        // Helper method for GetFieldValidationInfo
         private int? GetMaxLengthForField(DatabaseFieldInfo fieldInfo)
         {
-            // Define max lengths based on database schema
+            // These lengths should ideally come from database schema metadata or attributes on entity properties.
             switch (fieldInfo.DatabaseFieldName)
             {
-                case "InvoiceNo":
-                case "Currency":
-                    return 50;
-                case "SupplierName":
-                    return 255;
-                case "SupplierAddress":
-                    return 500;
-                case "ItemDescription":
-                    return 1000;
+                case "InvoiceNo": return 50;
+                case "Currency": return 10;
+                case "SupplierName": return 255;
+                case "SupplierAddress": return 500;
+                case "ItemDescription": return 1000;
+                case "Units": return 50;
                 default:
-                    return fieldInfo.DataType == "string" ? 255 : null;
+                    return fieldInfo.DataType?.ToLowerInvariant() == "string" ? 255 : (int?)null; // Default for other strings
             }
         }
 
+        // Helper method for GetFieldValidationInfo
         private string GetValidationPatternForField(DatabaseFieldInfo fieldInfo)
         {
-            switch (fieldInfo.DataType)
+            // These are example patterns. Real-world patterns can be more complex.
+            switch (fieldInfo.DataType?.ToLowerInvariant())
             {
-                case "decimal":
-                    return @"^-?\d+(\.\d{1,4})?$"; // Allow up to 4 decimal places
-                case "DateTime":
-                    return @"^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$"; // Basic date pattern
+                case "decimal": case "currency":
+                    return @"^-?\$?€?£?\s*(?:\d{1,3}(?:[,.]\d{3})*|\d+)(?:[.,]\d{1,4})?$"; // Handles 1,234.56 or 1.234,56 patterns roughly
+                case "datetime":
+                    return @"^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z?)?$|^\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}$|^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s\d{1,2}(?:st|nd|rd|th)?(?:,)?\s\d{2,4}$";
+                case "int": case "integer":
+                     return @"^-?\d+$";
                 case "string":
-                    return fieldInfo.IsRequired ? @"^.+$" : @"^.*$"; // Non-empty if required
+                    return fieldInfo.IsRequired ? @"^\s*\S+[\s\S]*$" : @"^[\s\S]*$"; // Non-whitespace if required
                 default:
-                    return @"^.*$";
+                    return @"^[\s\S]*$"; // Allow anything for unknown types
             }
         }
 
         /// <summary>
-        /// Field validation information
+        /// Holds validation rules for a specific field.
         /// </summary>
         public class FieldValidationInfo
         {
-            public bool IsValid { get; set; }
+            public bool IsValid { get; set; } // True if validation rules could be determined for this field.
+            public string DatabaseFieldName { get; set; }
+            public string EntityType {get; set;}
             public bool IsRequired { get; set; }
             public string DataType { get; set; }
             public bool IsMonetary { get; set; }
             public int? MaxLength { get; set; }
             public string ValidationPattern { get; set; }
-            public string ErrorMessage { get; set; }
+            public string ErrorMessage { get; set; } // If IsValid is false, reason why.
         }
 
         #endregion
 
-        #region Regex Named Group Extraction
+        #region Regex Group and Line Context Logic Aiding Mapping
 
         /// <summary>
-        /// Extracts named groups from a regex pattern
+        /// Gets field definitions from the database (OCR.Business.Entities.Fields) that correspond
+        /// to named groups found in a given regex pattern string, for a specific OCR.Business.Entities.Lines.Id.
         /// </summary>
-        /// <param name="regexPattern">Regex pattern to analyze</param>
-        /// <returns>List of named group names</returns>
-        public List<string> ExtractNamedGroupsFromRegex(string regexPattern)
+        public async Task<List<FieldInfo>> GetFieldsByRegexNamedGroupsAsync(string regexPatternText, int ocrLineDefinitionId)
         {
-            var namedGroups = new List<string>();
-
-            if (string.IsNullOrEmpty(regexPattern)) return namedGroups;
+            // Uses utility: this.ExtractNamedGroupsFromRegex
+            var namedGroupsInPattern = this.ExtractNamedGroupsFromRegex(regexPatternText); 
+            if (!namedGroupsInPattern.Any()) return new List<FieldInfo>();
 
             try
             {
-                // Pattern to match named groups: (?<groupName>...) or (?'groupName'...)
-                var namedGroupPattern = @"\(\?<([^>]+)>|\(\?'([^']+)'";
-                var matches = Regex.Matches(regexPattern, namedGroupPattern);
-
-                foreach (Match match in matches)
-                {
-                    // Group 1 is for (?<name>) format, Group 2 is for (?'name') format
-                    var groupName = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
-                    if (!string.IsNullOrEmpty(groupName))
-                    {
-                        namedGroups.Add(groupName);
-                    }
-                }
-
-                _logger?.Debug("Extracted named groups from regex: {Groups}", string.Join(", ", namedGroups));
-                return namedGroups;
+                using var context = new OCRContext(); 
+                var fieldsFromDb = await context.Fields // From OCR.Business.Entities
+                                       .Where(f => f.LineId == ocrLineDefinitionId && namedGroupsInPattern.Contains(f.Key))
+                                       .Select(f => new FieldInfo // WaterNut.DataSpace.FieldInfo
+                                                        {
+                                                            FieldId = f.Id, Key = f.Key, Field = f.Field,
+                                                            EntityType = f.EntityType, DataType = f.DataType, IsRequired = f.IsRequired
+                                                        })
+                                       .ToListAsync().ConfigureAwait(false);
+                
+                return fieldsFromDb;
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Error extracting named groups from regex pattern: {Pattern}", regexPattern);
-                return namedGroups;
-            }
-        }
-
-        /// <summary>
-        /// Gets fields by regex named groups from database (CONSOLIDATED ENHANCED VERSION)
-        /// Combines functionality from OCRMetadataExtractor.cs and adds comprehensive error handling
-        /// </summary>
-        /// <param name="regexPattern">Regex pattern to analyze</param>
-        /// <param name="lineId">Line ID to filter fields</param>
-        /// <returns>List of field information</returns>
-        public async Task<List<FieldInfo>> GetFieldsByRegexNamedGroups(string regexPattern, int lineId)
-        {
-            try
-            {
-                using var context = new OCRContext();
-
-                // Extract named groups from regex pattern
-                var namedGroups = ExtractNamedGroupsFromRegex(regexPattern);
-
-                // Find fields where Key matches the named groups
-                var fields = await context.Fields
-                    .Where(f => f.LineId == lineId && namedGroups.Contains(f.Key))
-                    .Select(f => new FieldInfo
-                    {
-                        FieldId = f.Id,
-                        Key = f.Key,
-                        Field = f.Field,
-                        EntityType = f.EntityType,
-                        DataType = f.DataType,
-                        IsRequired = f.IsRequired  // ENHANCED: Added IsRequired property
-                    })
-                    .ToListAsync();
-
-                _logger?.Debug("Found {FieldCount} fields matching named groups for LineId {LineId}",
-                    fields.Count, lineId);
-
-                return fields;
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error(ex, "Error getting fields by regex named groups for LineId: {LineId}", lineId);
+                _logger?.Error(ex, "Error getting fields by regex named groups for OCR Line Definition ID: {OcrLineDefId}", ocrLineDefinitionId);
                 return new List<FieldInfo>();
             }
         }
-
+        
         /// <summary>
-        /// Checks if a field exists in a line's regex named groups
+        /// Checks if a field (identified by its DeepSeek name) is expected to be extracted by the regex
+        /// associated with the provided LineContext, by checking against its defined FieldsInLine.
         /// </summary>
-        /// <param name="deepSeekFieldName">DeepSeek field name</param>
-        /// <param name="lineContext">Line context with field information</param>
-        /// <returns>True if field exists in line</returns>
-        public bool IsFieldExistingInLine(string deepSeekFieldName, LineContext lineContext)
+        public bool IsFieldExistingInLineContext(string deepSeekFieldName, LineContext lineContext)
         {
-            if (lineContext?.FieldsInLine == null) return false;
-
-            // Map DeepSeek field name to expected Key or Field name
+            if (lineContext == null) return false;
+            
             var fieldMapping = MapDeepSeekFieldToDatabase(deepSeekFieldName);
-            if (fieldMapping == null) return false;
+            // If no mapping, we can't reliably check against DB field names, so only check Key against raw deepSeekFieldName.
+            string keyToMatch1 = deepSeekFieldName;
+            string keyToMatch2 = fieldMapping?.DisplayName; 
+            string dbFieldToMatch = fieldMapping?.DatabaseFieldName;
 
-            // Check if field exists by Key (regex named group) or Field name
-            return lineContext.FieldsInLine.Any(f =>
-                f.Key.Equals(deepSeekFieldName, StringComparison.OrdinalIgnoreCase) ||
-                f.Key.Equals(fieldMapping.DatabaseFieldName, StringComparison.OrdinalIgnoreCase) ||
-                f.Field.Equals(fieldMapping.DatabaseFieldName, StringComparison.OrdinalIgnoreCase));
+            if (lineContext.FieldsInLine != null && lineContext.FieldsInLine.Any())
+            {
+                return lineContext.FieldsInLine.Any(f =>
+                    (!string.IsNullOrEmpty(f.Key) && f.Key.Equals(keyToMatch1, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(keyToMatch2) && !string.IsNullOrEmpty(f.Key) && f.Key.Equals(keyToMatch2, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(dbFieldToMatch) && !string.IsNullOrEmpty(f.Field) && f.Field.Equals(dbFieldToMatch, StringComparison.OrdinalIgnoreCase))
+                );
+            }
+            // Fallback if FieldsInLine is not populated but RegexPattern is: Parse the pattern.
+            else if (!string.IsNullOrEmpty(lineContext.RegexPattern))
+            {
+                var groupsFromPattern = this.ExtractNamedGroupsFromRegex(lineContext.RegexPattern);
+                return groupsFromPattern.Any(group =>
+                     group.Equals(keyToMatch1, StringComparison.OrdinalIgnoreCase) ||
+                    (!string.IsNullOrEmpty(keyToMatch2) && group.Equals(keyToMatch2, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(dbFieldToMatch) && group.Equals(dbFieldToMatch, StringComparison.OrdinalIgnoreCase)) // Less likely for group name to be DB field name
+                );
+            }
+            return false;
         }
 
         #endregion
 
-        #region Enhanced Metadata Integration
+        #region Enhanced Metadata Integration (Field Mapping Specific)
 
         /// <summary>
-        /// Maps DeepSeek field name to database field and enriches with OCR metadata context
-        /// </summary>
-        /// <param name="deepSeekFieldName">Field name from DeepSeek response</param>
-        /// <param name="metadata">OCR metadata for the field (optional)</param>
-        /// <returns>Enhanced database field information with OCR context</returns>
-        public EnhancedDatabaseFieldInfo MapDeepSeekFieldWithMetadata(string deepSeekFieldName, OCRFieldMetadata metadata = null)
-        {
-            var baseFieldInfo = MapDeepSeekFieldToDatabase(deepSeekFieldName);
-            if (baseFieldInfo == null)
-            {
-                _logger?.Warning("No mapping found for DeepSeek field '{DeepSeekField}' in enhanced mapping", deepSeekFieldName);
-                return null;
-            }
-
-            return new EnhancedDatabaseFieldInfo(
-                baseFieldInfo.DatabaseFieldName,
-                baseFieldInfo.EntityType,
-                baseFieldInfo.DataType,
-                baseFieldInfo.IsRequired,
-                baseFieldInfo.DisplayName,
-                metadata);
-        }
-
-        /// <summary>
-        /// Gets database update context for a field correction using enhanced metadata
-        /// </summary>
-        /// <param name="fieldName">Field name being corrected</param>
-        /// <param name="metadata">OCR metadata for the field</param>
-        /// <returns>Database update context information</returns>
-        public DatabaseUpdateContext GetDatabaseUpdateContext(string fieldName, OCRFieldMetadata metadata)
-        {
-            var enhancedFieldInfo = MapDeepSeekFieldWithMetadata(fieldName, metadata);
-            if (enhancedFieldInfo == null)
-            {
-                return new DatabaseUpdateContext { IsValid = false, ErrorMessage = $"Unknown field: {fieldName}" };
-            }
-
-            return new DatabaseUpdateContext
-            {
-                IsValid = true,
-                FieldInfo = enhancedFieldInfo, // Store as object, will be cast to EnhancedDatabaseFieldInfo when used
-                UpdateStrategy = DetermineUpdateStrategy(enhancedFieldInfo),
-                RequiredIds = GetRequiredDatabaseIds(metadata),
-                ValidationRules = GetFieldValidationInfo(fieldName) // Store as object, will be cast to FieldValidationInfo when used
-            };
-        }
-
-        /// <summary>
-        /// Determines the appropriate database update strategy based on field metadata
-        /// </summary>
-        private DatabaseUpdateStrategy DetermineUpdateStrategy(EnhancedDatabaseFieldInfo fieldInfo)
-        {
-            if (!fieldInfo.HasOCRContext)
-            {
-                return DatabaseUpdateStrategy.SkipUpdate; // No OCR context, can't update database
-            }
-
-            var metadata = fieldInfo.OCRMetadata;
-
-            // If we have complete OCR context, we can update regex patterns
-            if (metadata.FieldId.HasValue && metadata.LineId.HasValue && metadata.RegexId.HasValue)
-            {
-                return DatabaseUpdateStrategy.UpdateRegexPattern;
-            }
-
-            // If we have field context but no regex, we might need to create new patterns
-            if (metadata.FieldId.HasValue && metadata.LineId.HasValue)
-            {
-                return DatabaseUpdateStrategy.CreateNewPattern;
-            }
-
-            // If we only have basic context, update field format rules
-            if (metadata.FieldId.HasValue)
-            {
-                return DatabaseUpdateStrategy.UpdateFieldFormat;
-            }
-
-            return DatabaseUpdateStrategy.LogOnly; // Log the correction but don't update database
-        }
-
-        /// <summary>
-        /// Gets required database IDs for update operations
-        /// </summary>
-        private RequiredDatabaseIds GetRequiredDatabaseIds(OCRFieldMetadata metadata)
-        {
-            return new RequiredDatabaseIds
-            {
-                FieldId = metadata?.FieldId,
-                LineId = metadata?.LineId,
-                RegexId = metadata?.RegexId,
-                InvoiceId = metadata?.InvoiceId,
-                PartId = metadata?.PartId
-            };
-        }
-
-        /// <summary>
-        /// Enhanced database field information with OCR metadata context
+        /// Wraps a DatabaseFieldInfo with associated OCRFieldMetadata (runtime extraction context).
         /// </summary>
         public class EnhancedDatabaseFieldInfo : DatabaseFieldInfo
         {
-            public OCRFieldMetadata OCRMetadata { get; set; }
-            public bool HasOCRContext { get; set; }
-            public bool CanUpdateDatabase { get; set; }
+            public OCRFieldMetadata OCRMetadata { get; } 
+            public bool HasOCRContext => OCRMetadata != null;
+            public bool CanUpdatePatternsViaContext => OCRMetadata?.LineId.HasValue == true && OCRMetadata?.RegexId.HasValue == true;
+            public bool CanUpdateFieldDefinitionViaContext => OCRMetadata?.FieldId.HasValue == true;
 
-            public EnhancedDatabaseFieldInfo() : base("", "", "", false, "") { }
-
-            public EnhancedDatabaseFieldInfo(string databaseFieldName, string entityType, string dataType, bool isRequired, string displayName, OCRFieldMetadata metadata)
-                : base(databaseFieldName, entityType, dataType, isRequired, displayName)
+            public EnhancedDatabaseFieldInfo(DatabaseFieldInfo baseInfo, OCRFieldMetadata metadata)
+                : base(baseInfo.DatabaseFieldName, baseInfo.EntityType, baseInfo.DataType, baseInfo.IsRequired, baseInfo.DisplayName)
             {
                 OCRMetadata = metadata;
-                HasOCRContext = metadata != null;
-                CanUpdateDatabase = metadata?.FieldId.HasValue == true && metadata?.LineId.HasValue == true;
             }
         }
-
+        
+        /// <summary>
+        /// Maps a DeepSeek field name to an EnhancedDatabaseFieldInfo object, enriching it with OCR metadata if provided.
+        /// </summary>
+        public EnhancedDatabaseFieldInfo MapDeepSeekFieldToEnhancedInfo(string deepSeekFieldName, OCRFieldMetadata fieldSpecificMetadata = null)
+        {
+            var baseInfo = MapDeepSeekFieldToDatabase(deepSeekFieldName);
+            if (baseInfo == null)
+            {
+                if (fieldSpecificMetadata != null && !string.IsNullOrEmpty(fieldSpecificMetadata.Field))
+                {
+                    // Try to construct baseInfo from metadata if direct mapping failed
+                    _logger.Debug("MapDeepSeekFieldToEnhancedInfo: No direct map for '{DeepSeekName}'. Using provided metadata for Field '{MetaField}' as base.", deepSeekFieldName, fieldSpecificMetadata.Field);
+                    baseInfo = new DatabaseFieldInfo(
+                        fieldSpecificMetadata.Field, 
+                        fieldSpecificMetadata.EntityType, 
+                        fieldSpecificMetadata.DataType, 
+                        fieldSpecificMetadata.IsRequired ?? false, 
+                        fieldSpecificMetadata.Key ?? fieldSpecificMetadata.FieldName // Use Key or fallback to FieldName from metadata
+                    );
+                } else {
+                     _logger.Warning("MapDeepSeekFieldToEnhancedInfo: Cannot map DeepSeek field '{DeepSeekName}' and no metadata provided for fallback.", deepSeekFieldName);
+                    return null;
+                }
+            }
+            return new EnhancedDatabaseFieldInfo(baseInfo, fieldSpecificMetadata);
+        }
+        
         #endregion
     }
 }

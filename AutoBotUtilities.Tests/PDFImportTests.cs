@@ -669,14 +669,14 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                     var testText = CreateTestTextWithError(scenario.CorruptedText, scenario.Field);
 
                     // Test DeepSeek error detection
-                    var detectedErrors = await TestDeepSeekErrorDetection(testText, scenario);
+                    var detectedErrors = await this.TestDeepSeekErrorDetection(testText, scenario).ConfigureAwait(false);
 
                     // Verify DeepSeek detected the error correctly
                     Assert.That(detectedErrors.Any(e => e.Field == scenario.Field), Is.True,
                         $"DeepSeek should detect error in field {scenario.Field} for scenario {scenario.Name}");
 
                     // Test DeepSeek correction
-                    var correctedValue = await TestDeepSeekCorrection(testText, scenario);
+                    var correctedValue = await this.TestDeepSeekCorrection(testText, scenario).ConfigureAwait(false);
 
                     // Verify correction matches expected value
                     if (scenario.ExpectedCorrection is decimal expectedDecimal)
@@ -901,7 +901,7 @@ Order Total: $166.30
                     deepSeekApi.PromptTemplate = correctionPrompt;
 
                     // Extract the corrected data
-                    var response = await deepSeekApi.ExtractShipmentInvoice(new List<string> { corruptedText });
+                    var response = await deepSeekApi.ExtractShipmentInvoice(new List<string> { corruptedText }).ConfigureAwait(false);
 
                     // Restore original template
                     deepSeekApi.PromptTemplate = originalTemplate;

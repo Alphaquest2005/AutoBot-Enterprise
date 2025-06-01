@@ -1,756 +1,502 @@
+// File: OCRCorrectionService/OCRDeepSeekIntegration.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Serilog;
+using Serilog; // ILogger is available as this._logger
 
 namespace WaterNut.DataSpace
 {
     /// <summary>
-    /// Enhanced DeepSeek integration for OCR correction service with omission handling and context line support
+    /// Handles direct interactions with the DeepSeek LLM API for OCR correction tasks,
+    /// including general response parsing and specific regex creation requests.
     /// </summary>
     public partial class OCRCorrectionService
     {
-        #region Enhanced DeepSeek Response Processing
+        #region General DeepSeek Response Processing for Corrections
 
         /// <summary>
-        /// Processes DeepSeek response and creates correction results with enhanced context support
+        /// Processes a generic JSON response from DeepSeek (expected to contain errors/corrections)
+        /// and transforms it into a list of CorrectionResult objects.
         /// </summary>
-        /// <param name="deepSeekResponse">Raw DeepSeek response</param>
-        /// <param name="originalText">Original OCR text</param>
-        /// <returns>List of correction results with context lines</returns>
-        public List<CorrectionResult> ProcessDeepSeekResponse(string deepSeekResponse, string originalText)
+        /// <param name="deepSeekResponseJson">The raw JSON string from DeepSeek.</param>
+        /// <param name="originalDocumentText">The full original text of the document for context.</param>
+        /// <returns>A list of CorrectionResult objects derived from the DeepSeek response.</returns>
+        public List<CorrectionResult> ProcessDeepSeekCorrectionResponse(string deepSeekResponseJson, string originalDocumentText)
         {
             var corrections = new List<CorrectionResult>();
+            if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
+            {
+                _logger.Warning("ProcessDeepSeekCorrectionResponse: Received null or empty response from DeepSeek.");
+                return corrections;
+            }
 
             try
             {
-                _logger?.Information("Processing DeepSeek response for OCR corrections");
-
-                // Parse JSON response
-                var responseData = ParseDeepSeekResponse(deepSeekResponse);
-                if (responseData == null)
+                _logger.Information("Processing DeepSeek correction response. Length: {Length}", deepSeekResponseJson.Length);
+                JsonElement? responseDataRoot = ParseDeepSeekResponseToElement(deepSeekResponseJson); // Uses helper in this file
+                
+                if (responseDataRoot == null)
                 {
-                    _logger?.Warning("Failed to parse DeepSeek response as JSON");
+                    _logger.Warning("Failed to parse DeepSeek correction response into a valid JSON structure.");
                     return corrections;
                 }
 
-                // Extract corrections from response with enhanced context support
-                corrections = ExtractCorrectionsFromResponse(responseData.Value, originalText);
-
-                _logger?.Information("Extracted {CorrectionCount} corrections from DeepSeek response", corrections.Count);
+                corrections = ExtractCorrectionsFromResponseElement(responseDataRoot.Value, originalDocumentText); // Uses helper in this file
+                _logger.Information("Extracted {CorrectionCount} corrections from DeepSeek response.", corrections.Count);
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Error processing DeepSeek response");
+                _logger.Error(ex, "Error processing DeepSeek correction response. Response snippet: {Snippet}", this.TruncateForLog(deepSeekResponseJson, 200));
             }
-
             return corrections;
         }
 
         /// <summary>
-        /// Parses DeepSeek JSON response
+        /// Parses a raw DeepSeek JSON response string into a JsonElement.
         /// </summary>
-        /// <param name="response">Raw response string</param>
-        /// <returns>Parsed JSON data or null if failed</returns>
-        private JsonElement? ParseDeepSeekResponse(string response)
+        private JsonElement? ParseDeepSeekResponseToElement(string rawResponse)
         {
             try
             {
-                // Clean up response if needed
-                var cleanResponse = CleanDeepSeekResponse(response);
-                
-                using var document = JsonDocument.Parse(cleanResponse);
-                return document.RootElement.Clone();
-            }
-            catch (JsonException ex)
-            {
-                _logger?.Warning(ex, "Failed to parse DeepSeek response as JSON: {Response}", response.Substring(0, Math.Min(200, response.Length)));
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Cleans up DeepSeek response for JSON parsing
-        /// </summary>
-        /// <param name="response">Raw response</param>
-        /// <returns>Cleaned response</returns>
-        private string CleanDeepSeekResponse(string response)
-        {
-            if (string.IsNullOrWhiteSpace(response))
-                return "{}";
-
-            // Remove markdown code blocks if present
-            response = Regex.Replace(response, @"```json\s*", "", RegexOptions.IgnoreCase);
-            response = Regex.Replace(response, @"```\s*$", "", RegexOptions.IgnoreCase);
-
-            // Remove any leading/trailing whitespace
-            response = response.Trim();
-
-            // If response doesn't start with {, try to find JSON content
-            if (!response.StartsWith("{"))
-            {
-                var jsonMatch = Regex.Match(response, @"\{.*\}", RegexOptions.Singleline);
-                if (jsonMatch.Success)
+                var cleanJson = this.CleanJsonResponse(rawResponse); // From OCRUtilities.cs
+                if (string.IsNullOrEmpty(cleanJson))
                 {
-                    response = jsonMatch.Value;
-                }
-                else
-                {
-                    _logger?.Warning("No JSON content found in DeepSeek response");
-                    return "{}";
-                }
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// Extracts corrections from parsed DeepSeek response with enhanced context support
-        /// </summary>
-        /// <param name="responseData">Parsed JSON response</param>
-        /// <param name="originalText">Original OCR text</param>
-        /// <returns>List of corrections with context lines</returns>
-        private List<CorrectionResult> ExtractCorrectionsFromResponse(JsonElement responseData, string originalText)
-        {
-            var corrections = new List<CorrectionResult>();
-
-            try
-            {
-                // Handle different response formats
-                if (responseData.TryGetProperty("errors", out var errorsElement))
-                {
-                    corrections.AddRange(ProcessCorrectionsArray(errorsElement, originalText));
-                }
-                else if (responseData.TryGetProperty("corrections", out var correctionsElement))
-                {
-                    corrections.AddRange(ProcessCorrectionsArray(correctionsElement, originalText));
-                }
-                else if (responseData.TryGetProperty("fields", out var fieldsObject))
-                {
-                    corrections.AddRange(ProcessFieldsObject(fieldsObject, originalText));
-                }
-                else
-                {
-                    // Try to process as direct field corrections
-                    corrections.AddRange(ProcessDirectFieldCorrections(responseData, originalText));
-                }
-
-                // Validate and enrich corrections
-                corrections = ValidateAndEnrichCorrections(corrections, originalText);
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error(ex, "Error extracting corrections from DeepSeek response");
-            }
-
-            return corrections;
-        }
-
-        /// <summary>
-        /// Processes corrections array format with enhanced context support
-        /// </summary>
-        /// <param name="correctionsArray">JSON array of corrections</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>List of corrections with context</returns>
-        private List<CorrectionResult> ProcessCorrectionsArray(JsonElement correctionsArray, string originalText)
-        {
-            var corrections = new List<CorrectionResult>();
-
-            if (correctionsArray.ValueKind != JsonValueKind.Array)
-                return corrections;
-
-            foreach (var correctionElement in correctionsArray.EnumerateArray())
-            {
-                var correction = CreateCorrectionFromElement(correctionElement, originalText);
-                if (correction != null)
-                {
-                    corrections.Add(correction);
-                }
-            }
-
-            return corrections;
-        }
-
-        /// <summary>
-        /// Creates a correction result from a JSON element with enhanced context support
-        /// </summary>
-        /// <param name="element">JSON element</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>Correction result or null</returns>
-        private CorrectionResult CreateCorrectionFromElement(JsonElement element, string originalText)
-        {
-            try
-            {
-                var fieldName = element.TryGetProperty("field", out var fieldProp) ? fieldProp.GetString() : null;
-                var oldValue = element.TryGetProperty("extracted_value", out var oldProp) ? oldProp.GetString() : null;
-                var newValue = element.TryGetProperty("correct_value", out var newProp) ? newProp.GetString() : null;
-                var lineText = element.TryGetProperty("line_text", out var lineProp) ? lineProp.GetString() : null;
-                var lineNumber = element.TryGetProperty("line_number", out var lineNumProp) ? lineNumProp.GetInt32() : 0;
-                var confidence = element.TryGetProperty("confidence", out var confProp) ? confProp.GetDouble() : 0.8;
-                var reasoning = element.TryGetProperty("reasoning", out var reasonProp) ? reasonProp.GetString() : null;
-                var errorType = element.TryGetProperty("error_type", out var errorProp) ? errorProp.GetString() : null;
-                var requiresMultiline = element.TryGetProperty("requires_multiline_regex", out var multiProp) ? multiProp.GetBoolean() : false;
-
-                // Parse context lines - NEW ENHANCED FUNCTIONALITY
-                var contextBefore = new List<string>();
-                var contextAfter = new List<string>();
-                
-                if (element.TryGetProperty("context_lines_before", out var beforeArray) && beforeArray.ValueKind == JsonValueKind.Array)
-                {
-                    contextBefore = beforeArray.EnumerateArray()
-                        .Select(e => e.GetString())
-                        .Where(s => !string.IsNullOrEmpty(s))
-                        .ToList();
-                }
-                
-                if (element.TryGetProperty("context_lines_after", out var afterArray) && afterArray.ValueKind == JsonValueKind.Array)
-                {
-                    contextAfter = afterArray.EnumerateArray()
-                        .Select(e => e.GetString())
-                        .Where(s => !string.IsNullOrEmpty(s))
-                        .ToList();
-                }
-
-                _logger?.Debug("Parsed correction for {FieldName}: {BeforeCount} lines before, {AfterCount} lines after, multiline: {Multiline}", 
-                    fieldName, contextBefore.Count, contextAfter.Count, requiresMultiline);
-
-                if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(newValue))
-                {
-                    _logger?.Warning("Skipping correction with missing field name or new value");
+                    _logger.Warning("CleanJsonResponse returned empty for raw response. Cannot parse.");
                     return null;
                 }
-
-                // If old value not provided, try to find it in original text
-                if (string.IsNullOrEmpty(oldValue))
-                {
-                    oldValue = FindOriginalValue(fieldName, originalText);
-                }
-
-                return new CorrectionResult
-                {
-                    FieldName = MapDeepSeekFieldToDatabase(fieldName)?.DatabaseFieldName ?? fieldName,
-                    OldValue = oldValue ?? "",
-                    NewValue = newValue,
-                    LineText = lineText,
-                    LineNumber = lineNumber > 0 ? lineNumber : FindLineNumber(fieldName, originalText),
-                    ContextLinesBefore = contextBefore,
-                    ContextLinesAfter = contextAfter,
-                    RequiresMultilineRegex = requiresMultiline,
-                    Success = true,
-                    Confidence = confidence,
-                    CorrectionType = DetermineCorrectionType(oldValue, newValue, errorType),
-                    Reasoning = reasoning
-                };
+                
+                using var document = JsonDocument.Parse(cleanJson);
+                return document.RootElement.Clone(); // Clone to allow document to be disposed
             }
-            catch (Exception ex)
+            catch (JsonException jsonEx)
             {
-                _logger?.Warning(ex, "Failed to create correction from JSON element");
+                _logger.Warning(jsonEx, "Failed to parse DeepSeek response as JSON. Cleaned snippet: {Snippet}", this.TruncateForLog(this.CleanJsonResponse(rawResponse), 200));
                 return null;
             }
         }
 
         /// <summary>
-        /// Processes fields object format
+        /// Extracts CorrectionResult objects from a parsed JsonElement, trying various common structures.
         /// </summary>
-        /// <param name="fieldsObject">JSON object with field corrections</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>List of corrections</returns>
-        private List<CorrectionResult> ProcessFieldsObject(JsonElement fieldsObject, string originalText)
+        private List<CorrectionResult> ExtractCorrectionsFromResponseElement(JsonElement responseDataRoot, string originalDocumentText)
         {
             var corrections = new List<CorrectionResult>();
+            int errorIndexCounter = 0; // For detailed logging inside CreateCorrectionFromElement
 
-            if (fieldsObject.ValueKind != JsonValueKind.Object)
-                return corrections;
-
-            foreach (var property in fieldsObject.EnumerateObject())
+            if (responseDataRoot.TryGetProperty("errors", out var errorsArray) && errorsArray.ValueKind == JsonValueKind.Array)
             {
-                var fieldName = property.Name;
-                var fieldValue = property.Value;
-
-                if (fieldValue.ValueKind == JsonValueKind.Object)
+                _logger.Debug("Found 'errors' array in DeepSeek response. Processing {Count} elements.", errorsArray.GetArrayLength());
+                foreach (var element in errorsArray.EnumerateArray())
                 {
-                    var correction = CreateCorrectionFromFieldObject(fieldName, fieldValue, originalText);
-                    if (correction != null)
-                    {
-                        corrections.Add(correction);
-                    }
-                }
-                else if (fieldValue.ValueKind == JsonValueKind.String)
-                {
-                    // Simple field value correction
-                    var correction = CreateSimpleFieldCorrection(fieldName, fieldValue.GetString(), originalText);
-                    if (correction != null)
-                    {
-                        corrections.Add(correction);
-                    }
+                    errorIndexCounter++;
+                    var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
+                    if (cr != null) corrections.Add(cr);
                 }
             }
-
-            return corrections;
+            else if (responseDataRoot.TryGetProperty("corrections", out var correctionsArray) && correctionsArray.ValueKind == JsonValueKind.Array)
+            {
+                _logger.Debug("Found 'corrections' array in DeepSeek response. Processing {Count} elements.", correctionsArray.GetArrayLength());
+                 foreach (var element in correctionsArray.EnumerateArray())
+                {
+                    errorIndexCounter++;
+                    var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
+                    if (cr != null) corrections.Add(cr);
+                }
+            }
+            else if (responseDataRoot.TryGetProperty("fields", out var fieldsObject) && fieldsObject.ValueKind == JsonValueKind.Object)
+            {
+                 _logger.Debug("Found 'fields' object in DeepSeek response. Processing properties.");
+                foreach (var property in fieldsObject.EnumerateObject())
+                {
+                    errorIndexCounter++;
+                    var cr = CreateCorrectionFromNamedFieldProperty(property, originalDocumentText, errorIndexCounter);
+                    if (cr != null) corrections.Add(cr);
+                }
+            }
+            else if (responseDataRoot.ValueKind == JsonValueKind.Object) // Fallback: try to parse root object properties directly
+            {
+                _logger.Debug("No 'errors'/'corrections'/'fields' found. Attempting to parse root object properties directly.");
+                 foreach (var property in responseDataRoot.EnumerateObject())
+                {
+                    errorIndexCounter++;
+                    var cr = CreateCorrectionFromNamedFieldProperty(property, originalDocumentText, errorIndexCounter);
+                    if (cr != null) corrections.Add(cr);
+                }
+            }
+            else
+            {
+                _logger.Warning("DeepSeek response JSON structure not recognized for correction extraction. Root type: {RootType}", responseDataRoot.ValueKind);
+            }
+            
+            // Final validation and enrichment pass on all collected corrections
+            return ValidateAndEnrichParsedCorrections(corrections, originalDocumentText);
         }
 
         /// <summary>
-        /// Processes direct field corrections format
+        /// Creates a CorrectionResult from a JsonElement representing a single error/correction object.
         /// </summary>
-        /// <param name="responseData">Response data</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>List of corrections</returns>
-        private List<CorrectionResult> ProcessDirectFieldCorrections(JsonElement responseData, string originalText)
+        private CorrectionResult CreateCorrectionFromElement(JsonElement element, string originalText, int itemIndex)
         {
-            var corrections = new List<CorrectionResult>();
+            // Uses GetStringValueWithLogging etc. from OCRUtilities.cs
+            var fieldName = this.GetStringValueWithLogging(element, "field", itemIndex);
+            var newValue = this.GetStringValueWithLogging(element, "correct_value", itemIndex);
 
-            // Look for common field names directly in the response
-            var commonFields = new[] { "InvoiceTotal", "SubTotal", "InvoiceNo", "InvoiceDate", "SupplierName" };
-
-            foreach (var fieldName in commonFields)
+            if (string.IsNullOrEmpty(fieldName) || newValue == null) // newValue can be empty string "" for deletions
             {
-                if (responseData.TryGetProperty(fieldName, out var fieldValue))
-                {
-                    var correction = CreateSimpleFieldCorrection(fieldName, fieldValue.GetString(), originalText);
-                    if (correction != null)
-                    {
-                        corrections.Add(correction);
-                    }
-                }
-            }
-
-            return corrections;
-        }
-
-        /// <summary>
-        /// Creates a correction from a field object
-        /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <param name="fieldObject">Field object</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>Correction result or null</returns>
-        private CorrectionResult CreateCorrectionFromFieldObject(string fieldName, JsonElement fieldObject, string originalText)
-        {
-            var oldValue = fieldObject.TryGetProperty("original", out var origProp) ? origProp.GetString() : null;
-            var newValue = fieldObject.TryGetProperty("corrected", out var corrProp) ? corrProp.GetString() : null;
-            var confidence = fieldObject.TryGetProperty("confidence", out var confProp) ? confProp.GetDouble() : 0.8;
-
-            if (string.IsNullOrEmpty(newValue))
+                _logger.Warning("Skipping correction item {ItemIndex}: 'field' or 'correct_value' is missing or null.", itemIndex);
                 return null;
-
-            if (string.IsNullOrEmpty(oldValue))
-            {
-                oldValue = FindOriginalValue(fieldName, originalText);
             }
 
+            var oldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, isOptional: true);
+            var lineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, isOptional: true);
+            var lineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, isOptional: true);
+            var confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, isOptional: true); // Default confidence
+            var reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, isOptional: true);
+            var errorType = this.GetStringValueWithLogging(element, "error_type", itemIndex, isOptional: true);
+            var requiresMultiline = this.GetBooleanValueWithLogging(element, "requires_multiline_regex", itemIndex, false, isOptional: true);
+
+            var contextBefore = this.ParseContextLinesArray(element, "context_lines_before", itemIndex);
+            var contextAfter = this.ParseContextLinesArray(element, "context_lines_after", itemIndex);
+            
+            // If oldValue is not provided by DeepSeek and it's not an omission, try to find it.
+            if (string.IsNullOrEmpty(oldValue) && errorType != "omission" && DetermineCorrectionType(null, newValue, errorType) != "omission")
+            {
+                oldValue = FindOriginalValueInText(fieldName, originalText);
+            }
+            
             return new CorrectionResult
             {
-                FieldName = MapDeepSeekFieldToDatabase(fieldName)?.DatabaseFieldName ?? fieldName,
-                OldValue = oldValue ?? "",
+                FieldName = fieldName, // Raw from DeepSeek, mapping happens later
+                OldValue = oldValue,
                 NewValue = newValue,
-                Success = true,
+                LineText = lineText,
+                LineNumber = lineNumber,
+                ContextLinesBefore = contextBefore,
+                ContextLinesAfter = contextAfter,
+                RequiresMultilineRegex = requiresMultiline,
+                Success = true, // Assume valid structure from DeepSeek means potential success
                 Confidence = confidence,
-                CorrectionType = DetermineCorrectionType(oldValue, newValue),
-                LineNumber = FindLineNumber(fieldName, originalText)
+                CorrectionType = DetermineCorrectionType(oldValue, newValue, errorType),
+                Reasoning = reasoning
             };
         }
 
         /// <summary>
-        /// Creates a simple field correction
+        /// Creates a CorrectionResult from a JsonProperty where property name is field name.
+        /// Handles cases where DeepSeek returns { "FieldName": "CorrectedValue" } or { "FieldName": { "corrected": "val" } }
         /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <param name="newValue">New value</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>Correction result or null</returns>
-        private CorrectionResult CreateSimpleFieldCorrection(string fieldName, string newValue, string originalText)
+        private CorrectionResult CreateCorrectionFromNamedFieldProperty(JsonProperty fieldProperty, string originalText, int itemIndex)
         {
-            if (string.IsNullOrEmpty(newValue))
+            string fieldName = fieldProperty.Name;
+            string newValue = null;
+            string oldValue = null; // Not typically available in this simpler structure
+            double confidence = 0.75; // Default for direct field value
+            string errorType = "value_correction"; // Assume value correction
+
+            if (fieldProperty.Value.ValueKind == JsonValueKind.String)
+            {
+                newValue = fieldProperty.Value.GetString();
+            }
+            else if (fieldProperty.Value.ValueKind == JsonValueKind.Object)
+            {
+                // Check for nested structure like { "corrected": "value", "original": "old", "confidence": 0.9 }
+                var fieldObject = fieldProperty.Value;
+                newValue = this.GetStringValueWithLogging(fieldObject, "corrected", itemIndex, isOptional: true) ??
+                           this.GetStringValueWithLogging(fieldObject, "correct_value", itemIndex, isOptional: true);
+                oldValue = this.GetStringValueWithLogging(fieldObject, "original", itemIndex, isOptional: true) ??
+                           this.GetStringValueWithLogging(fieldObject, "extracted_value", itemIndex, isOptional: true);
+                confidence = this.GetDoubleValueWithLogging(fieldObject, "confidence", itemIndex, confidence, isOptional: true);
+                errorType = this.GetStringValueWithLogging(fieldObject, "error_type", itemIndex, isOptional: true) ?? errorType;
+            }
+
+            if (newValue == null) {
+                 _logger.Verbose("Skipping field property {FieldName} in item {ItemIndex} as no correctable value found.", fieldName, itemIndex);
                 return null;
+            }
 
-            var oldValue = FindOriginalValue(fieldName, originalText);
-
+            if (string.IsNullOrEmpty(oldValue)) oldValue = FindOriginalValueInText(fieldName, originalText);
+            
             return new CorrectionResult
             {
-                FieldName = MapDeepSeekFieldToDatabase(fieldName)?.DatabaseFieldName ?? fieldName,
-                OldValue = oldValue ?? "",
-                NewValue = newValue,
-                Success = true,
-                Confidence = 0.8,
-                CorrectionType = DetermineCorrectionType(oldValue, newValue),
-                LineNumber = FindLineNumber(fieldName, originalText)
+                FieldName = fieldName, OldValue = oldValue, NewValue = newValue,
+                Success = true, Confidence = confidence, CorrectionType = DetermineCorrectionType(oldValue, newValue, errorType),
+                LineNumber = FindLineNumberInTextByFieldName(fieldName, originalText) // Best guess
             };
         }
 
         #endregion
 
-        #region Enhanced Regex Creation for Omissions
-
+        #region DeepSeek Regex Creation API Call & Parsing
+        
         /// <summary>
-        /// Requests new regex pattern from DeepSeek for omission corrections
+        /// Requests a new regex pattern from DeepSeek, typically for handling omissions.
         /// </summary>
-        /// <param name="correction">Correction with omission details</param>
-        /// <param name="existingLineRegex">Current line regex pattern</param>
-        /// <param name="existingNamedGroups">Existing named groups in line</param>
-        /// <returns>Regex creation response</returns>
-        public async Task<RegexCreationResponse> RequestNewRegexFromDeepSeek(
-            CorrectionResult correction, 
-            string existingLineRegex, 
-            List<string> existingNamedGroups)
+        /// <param name="correction">The CorrectionResult detailing the omission.</param>
+        /// <param name="lineContext">The LineContext providing surrounding information.</param>
+        /// <returns>A RegexCreationResponse from DeepSeek, or null on failure.</returns>
+        public async Task<RegexCreationResponse> RequestNewRegexFromDeepSeek(CorrectionResult correction, LineContext lineContext)
         {
+            if (correction == null || lineContext == null)
+            {
+                _logger.Error("RequestNewRegexFromDeepSeek: Correction or LineContext is null.");
+                return null;
+            }
             try
             {
-                var prompt = CreateRegexCreationPrompt(correction, existingLineRegex, existingNamedGroups);
-                var response = await _deepSeekApi.GetResponseAsync(prompt);
-                return ParseRegexCreationResponse(response);
+                // Prompt creation is delegated to OCRPromptCreation.cs
+                var prompt = this.CreateRegexCreationPrompt(correction, lineContext); 
+                _logger.Debug("Requesting new regex from DeepSeek for field {FieldName}. Prompt snippet: {PromptSnippet}", 
+                    correction.FieldName, this.TruncateForLog(prompt, 300));
+                
+                var responseJson = await this._deepSeekApi.GetCompletionAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(responseJson))
+                {
+                    _logger.Warning("Received empty or whitespace response from DeepSeek for regex creation of field {FieldName}.", correction.FieldName);
+                    return null;
+                }
+                _logger.Debug("DeepSeek response for regex creation ({FieldName}): {ResponseSnippet}", 
+                    correction.FieldName, this.TruncateForLog(responseJson, 300));
+                
+                return ParseRegexCreationResponseJson(responseJson); // Uses helper in this file
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Error requesting new regex from DeepSeek for field {FieldName}", correction.FieldName);
+                _logger.Error(ex, "Error requesting new regex from DeepSeek for field {FieldName}", correction.FieldName);
                 return null;
             }
         }
-
+        
         /// <summary>
-        /// Creates prompt for DeepSeek regex pattern creation
+        /// Parses the JSON response from DeepSeek (for regex creation) into a RegexCreationResponse object.
         /// </summary>
-        private string CreateRegexCreationPrompt(CorrectionResult correction, string existingLineRegex, List<string> existingNamedGroups)
-        {
-            return $@"CREATE REGEX PATTERN FOR OCR FIELD EXTRACTION:
-
-A field '{correction.FieldName}' with value '{correction.NewValue}' was found but not extracted by current OCR processing.
-
-CURRENT LINE REGEX: {existingLineRegex ?? "None"}
-EXISTING NAMED GROUPS: {string.Join(", ", existingNamedGroups ?? new List<string>())}
-
-TARGET LINE:
-{correction.LineText}
-
-FULL CONTEXT:
-{string.Join("\n", correction.ContextLinesBefore)}
->>> TARGET LINE {correction.LineNumber}: {correction.LineText} <<<
-{string.Join("\n", correction.ContextLinesAfter)}
-
-REQUIREMENTS:
-1. Create a regex pattern that extracts the value '{correction.NewValue}' using named group (?<{correction.FieldName}>pattern)
-2. If updating existing regex, ensure you don't break existing named groups: {string.Join(", ", existingNamedGroups ?? new List<string>())}
-3. Pattern should work with the provided context
-4. Decide if this should be a separate line or modify existing line regex
-
-RESPONSE FORMAT:
-{{
-  ""strategy"": ""modify_existing_line"" OR ""create_new_line"",
-  ""regex_pattern"": ""(?<{correction.FieldName}>your_pattern_here)"",
-  ""complete_line_regex"": ""full regex if modifying existing line"",
-  ""is_multiline"": {correction.RequiresMultilineRegex.ToString().ToLower()},
-  ""max_lines"": {(correction.RequiresMultilineRegex ? "5" : "1")},
-  ""test_match"": ""exact text from context that should be matched"",
-  ""confidence"": 0.95,
-  ""reasoning"": ""why you chose this approach and pattern"",
-  ""preserves_existing_groups"": true
-}}
-
-EXAMPLES:
-- Single line currency: ""(?<TotalDeduction>Gift Card Applied:\s*-?\$?([0-9]+\.?[0-9]*))""
-- Multi-line address: ""(?<Address>(?:.*\n){{1,3}}.*(?:Street|Ave|Blvd|Road))""
-
-Choose the safest approach that won't break existing extractions.";
-        }
-
-        /// <summary>
-        /// Parses DeepSeek regex creation response
-        /// </summary>
-        /// <param name="response">Raw DeepSeek response</param>
-        /// <returns>Parsed regex creation response</returns>
-        private RegexCreationResponse ParseRegexCreationResponse(string response)
+        private RegexCreationResponse ParseRegexCreationResponseJson(string responseJson)
         {
             try
             {
-                var cleanJson = CleanDeepSeekResponse(response);
+                var cleanJson = this.CleanJsonResponse(responseJson); // From OCRUtilities.cs
                 if (string.IsNullOrWhiteSpace(cleanJson))
                 {
-                    _logger?.Warning("Empty or invalid regex creation response from DeepSeek");
+                    _logger.Warning("ParseRegexCreationResponseJson: Cleaned JSON is empty. Cannot parse.");
                     return null;
                 }
 
                 using var doc = JsonDocument.Parse(cleanJson);
                 var root = doc.RootElement;
+                int dummyErrorIndex = -1; // For logging helpers, not a list of errors here
 
                 return new RegexCreationResponse
                 {
-                    Strategy = GetStringValue(root, "strategy") ?? "create_new_line",
-                    RegexPattern = GetStringValue(root, "regex_pattern") ?? "",
-                    CompleteLineRegex = GetStringValue(root, "complete_line_regex") ?? "",
-                    IsMultiline = GetBooleanValue(root, "is_multiline"),
-                    MaxLines = GetIntValue(root, "max_lines"),
-                    TestMatch = GetStringValue(root, "test_match") ?? "",
-                    Confidence = GetDoubleValue(root, "confidence"),
-                    Reasoning = GetStringValue(root, "reasoning") ?? "",
-                    PreservesExistingGroups = GetBooleanValue(root, "preserves_existing_groups")
+                    Strategy = this.GetStringValueWithLogging(root, "strategy", dummyErrorIndex) ?? "create_new_line",
+                    RegexPattern = this.GetStringValueWithLogging(root, "regex_pattern", dummyErrorIndex) ?? "",
+                    CompleteLineRegex = this.GetStringValueWithLogging(root, "complete_line_regex", dummyErrorIndex, isOptional: true) ?? "", // Optional
+                    IsMultiline = this.GetBooleanValueWithLogging(root, "is_multiline", dummyErrorIndex, false),
+                    MaxLines = this.GetIntValueWithLogging(root, "max_lines", dummyErrorIndex, 1), // Default 1 line
+                    TestMatch = this.GetStringValueWithLogging(root, "test_match", dummyErrorIndex, isOptional: true) ?? "",
+                    Confidence = this.GetDoubleValueWithLogging(root, "confidence", dummyErrorIndex, 0.75), // Default confidence
+                    Reasoning = this.GetStringValueWithLogging(root, "reasoning", dummyErrorIndex, isOptional: true) ?? "",
+                    PreservesExistingGroups = this.GetBooleanValueWithLogging(root, "preserves_existing_groups", dummyErrorIndex, true) // Default true
                 };
+            }
+            catch (JsonException jsonEx)
+            {
+                _logger.Error(jsonEx, "Error parsing DeepSeek regex creation JSON response. Cleaned snippet: {Snippet}", this.TruncateForLog(this.CleanJsonResponse(responseJson), 200));
+                return null;
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Error parsing regex creation response");
+                _logger.Error(ex, "Generic error parsing regex creation response.");
                 return null;
             }
         }
 
         #endregion
 
-        #region Helper Methods for DeepSeek Processing
-
+        #region Internal Helper Methods for Parsing & Contextualization
+        
         /// <summary>
-        /// Finds the original value for a field in the text
+        /// Finds the original value of a field in the provided text using known patterns.
+        /// This is a simplified local lookup.
         /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <param name="text">Original text</param>
-        /// <returns>Original value or null</returns>
-        private string FindOriginalValue(string fieldName, string text)
+        private string FindOriginalValueInText(string fieldName, string text)
         {
-            // Implementation would use existing OCR extraction logic
-            // This is a simplified version
-            var patterns = GetFieldExtractionPatterns(fieldName);
-            
-            foreach (var pattern in patterns)
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(text)) return null;
+
+            var mappedName = this.MapDeepSeekFieldToDatabase(fieldName)?.DatabaseFieldName ?? fieldName; // From OCRFieldMapping.cs
+            // CreateFieldExtractionPatterns is from OCRPatternCreation.cs
+            var patterns = this.CreateFieldExtractionPatterns(mappedName, Enumerable.Empty<string>()); 
+
+            foreach (var patternString in patterns)
             {
-                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-                if (match.Success && match.Groups.Count > 1)
+                try
                 {
-                    return match.Groups[1].Value.Trim();
+                    var match = Regex.Match(text, patternString, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    if (match.Success)
+                    {
+                        // Prefer named group if it matches the mappedName, otherwise first capturing group.
+                        if (match.Groups[mappedName].Success) return match.Groups[mappedName].Value.Trim();
+                        if (match.Groups.Count > 1 && match.Groups[1].Success) return match.Groups[1].Value.Trim();
+                    }
+                }
+                catch (ArgumentException regexEx) {
+                     _logger.Verbose("Regex pattern error during FindOriginalValueInText for field '{FieldName}', pattern '{Pattern}': {Message}", fieldName, patternString, regexEx.Message);
                 }
             }
-
-            return null;
+            return null; 
         }
 
         /// <summary>
-        /// Gets extraction patterns for a field
+        /// Finds the line number in text where a field name or its typical pattern might appear.
         /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <returns>List of regex patterns</returns>
-        private List<string> GetFieldExtractionPatterns(string fieldName)
+        private int FindLineNumberInTextByFieldName(string fieldName, string text)
         {
-            var patterns = new List<string>();
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(text)) return 0;
 
-            switch (fieldName.ToLowerInvariant())
-            {
-                case "invoicetotal":
-                case "total":
-                    patterns.Add(@"total[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    patterns.Add(@"amount[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    break;
-                case "subtotal":
-                    patterns.Add(@"subtotal[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    patterns.Add(@"sub[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    break;
-                case "invoiceno":
-                case "invoice":
-                    patterns.Add(@"invoice[:\s#]+([A-Z0-9\-]+)");
-                    patterns.Add(@"order[:\s#]+([A-Z0-9\-]+)");
-                    break;
-                case "totaldeduction":
-                case "deduction":
-                    patterns.Add(@"gift\s+card[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    patterns.Add(@"deduction[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    patterns.Add(@"discount[:\s]+\$?([0-9,]+\.?[0-9]*)");
-                    break;
-                default:
-                    patterns.Add($@"{fieldName}[:\s]+([^\r\n]+)");
-                    break;
-            }
-
-            return patterns;
-        }
-
-        /// <summary>
-        /// Finds the line number where a field appears
-        /// </summary>
-        /// <param name="fieldName">Field name</param>
-        /// <param name="text">Text to search</param>
-        /// <returns>Line number (1-based) or 0 if not found</returns>
-        private int FindLineNumber(string fieldName, string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return 0;
-
-            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var patterns = GetFieldExtractionPatterns(fieldName);
+            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
+            var mappedName = this.MapDeepSeekFieldToDatabase(fieldName)?.DisplayName ?? fieldName; // Prefer DisplayName for text search
+            var patterns = this.CreateFieldExtractionPatterns(mappedName, Enumerable.Empty<string>()); // From OCRPatternCreation
 
             for (int i = 0; i < lines.Length; i++)
             {
-                foreach (var pattern in patterns)
+                // First, check for field name itself as a keyword on the line
+                if (lines[i].IndexOf(mappedName, StringComparison.OrdinalIgnoreCase) >= 0) return i + 1;
+                
+                // Then, check regex patterns
+                foreach (var patternString in patterns)
                 {
-                    if (Regex.IsMatch(lines[i], pattern, RegexOptions.IgnoreCase))
+                    try
                     {
-                        return i + 1; // Return 1-based line number
+                        if (Regex.IsMatch(lines[i], patternString, RegexOptions.IgnoreCase)) return i + 1;
+                    }
+                    catch (ArgumentException regexEx) {
+                         _logger.Verbose("Regex pattern error during FindLineNumberInTextByFieldName for field '{FieldName}', pattern '{Pattern}': {Message}", fieldName, patternString, regexEx.Message);
                     }
                 }
             }
-
+            return 0; // Not found
+        }
+        
+        /// <summary>
+        /// Finds the line number in text that exactly matches the given lineText.
+        /// </summary>
+        private int FindLineNumberInTextByExactLine(string lineToFind, string text)
+        {
+            if (string.IsNullOrEmpty(lineToFind) || string.IsNullOrEmpty(text)) return 0;
+            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Trim().Equals(lineToFind.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return i + 1; // 1-based
+                }
+            }
             return 0;
         }
 
         /// <summary>
-        /// Determines the type of correction based on old and new values
+        /// Final validation pass on a list of parsed CorrectionResult objects.
+        /// Enriches them with line numbers and context if missing and possible.
         /// </summary>
-        /// <param name="oldValue">Original value</param>
-        /// <param name="newValue">Corrected value</param>
-        /// <param name="errorType">Error type from DeepSeek</param>
-        /// <returns>Correction type</returns>
-        private string DetermineCorrectionType(string oldValue, string newValue, string errorType = null)
+        private List<CorrectionResult> ValidateAndEnrichParsedCorrections(List<CorrectionResult> corrections, string originalText)
         {
-            // Use explicit error type from DeepSeek if provided
-            if (!string.IsNullOrEmpty(errorType))
-                return errorType;
-
-            // Omission: no old value, has new value
-            if (string.IsNullOrEmpty(oldValue) && !string.IsNullOrEmpty(newValue))
-                return "omission";
-
-            // Removal: has old value, no new value
-            if (!string.IsNullOrEmpty(oldValue) && string.IsNullOrEmpty(newValue))
-                return "removal";
-
-            // Check for format corrections
-            var oldNormalized = Regex.Replace(oldValue ?? "", @"[\s\$,\-]", "");
-            var newNormalized = Regex.Replace(newValue ?? "", @"[\s\$,\-]", "");
-
-            if (string.Equals(oldNormalized, newNormalized, StringComparison.OrdinalIgnoreCase))
-                return "format_error";
-
-            return "value_correction";
-        }
-
-        /// <summary>
-        /// Validates and enriches corrections
-        /// </summary>
-        /// <param name="corrections">Raw corrections</param>
-        /// <param name="originalText">Original text</param>
-        /// <returns>Validated corrections</returns>
-        private List<CorrectionResult> ValidateAndEnrichCorrections(List<CorrectionResult> corrections, string originalText)
-        {
-            var validatedCorrections = new List<CorrectionResult>();
-
-            foreach (var correction in corrections)
+            var validatedAndEnriched = new List<CorrectionResult>();
+            foreach (var cr in corrections)
             {
-                // Validate field name
-                if (!IsFieldSupported(correction.FieldName))
+                // Map field name now, so subsequent logic uses canonical names
+                var mappedInfo = this.MapDeepSeekFieldToDatabase(cr.FieldName); // From OCRFieldMapping.cs
+                var canonicalFieldName = mappedInfo?.DatabaseFieldName ?? cr.FieldName;
+
+                if (!this.IsFieldSupported(canonicalFieldName)) // From OCRFieldMapping.cs
                 {
-                    _logger?.Warning("Unsupported field name in correction: {FieldName}", correction.FieldName);
+                    _logger.Warning("Unsupported field name '{CanonicalFieldName}' (from DeepSeek '{RawField}') in correction. Skipping.", canonicalFieldName, cr.FieldName);
                     continue;
                 }
+                cr.FieldName = canonicalFieldName; // Update to canonical name
 
-                // Validate values
-                if (string.IsNullOrEmpty(correction.NewValue))
+                // Enrich LineNumber if missing
+                if (cr.LineNumber <= 0)
                 {
-                    _logger?.Warning("Empty new value in correction for field: {FieldName}", correction.FieldName);
-                    continue;
+                    if (!string.IsNullOrEmpty(cr.LineText)) 
+                        cr.LineNumber = FindLineNumberInTextByExactLine(cr.LineText, originalText);
+                    if (cr.LineNumber <= 0) // Fallback
+                        cr.LineNumber = FindLineNumberInTextByFieldName(cr.FieldName, originalText);
+                }
+                
+                // Enrich LineText if missing but LineNumber is known
+                if (string.IsNullOrEmpty(cr.LineText) && cr.LineNumber > 0)
+                {
+                    cr.LineText = this.GetOriginalLineText(originalText, cr.LineNumber); // From OCRUtilities.cs
                 }
 
-                // Enrich with line number if missing
-                if (correction.LineNumber <= 0)
+                // Enrich ContextLines if missing and LineNumber/LineText are known
+                if (cr.LineNumber > 0 && (!cr.ContextLinesBefore.Any() || !cr.ContextLinesAfter.Any()))
                 {
-                    correction.LineNumber = FindLineNumber(correction.FieldName, originalText);
+                    EnrichContextLinesFromText(cr, originalText); // Uses helper in this file
                 }
-
-                // Enrich context if missing but we have line text
-                if (!correction.ContextLinesBefore.Any() && !correction.ContextLinesAfter.Any() && 
-                    !string.IsNullOrEmpty(correction.LineText) && correction.LineNumber > 0)
-                {
-                    EnrichContextFromLineNumber(correction, originalText);
-                }
-
-                validatedCorrections.Add(correction);
+                validatedAndEnriched.Add(cr);
             }
-
-            return validatedCorrections;
+            return validatedAndEnriched;
         }
 
         /// <summary>
-        /// Enriches correction with context lines based on line number
+        /// Populates ContextLinesBefore and ContextLinesAfter on a CorrectionResult
+        /// if they are empty, using the LineNumber and original document text.
         /// </summary>
-        /// <param name="correction">Correction to enrich</param>
-        /// <param name="originalText">Original text</param>
-        private void EnrichContextFromLineNumber(CorrectionResult correction, string originalText)
+        private void EnrichContextLinesFromText(CorrectionResult correction, string originalText)
         {
-            try
+            if (correction.LineNumber <= 0 || string.IsNullOrEmpty(originalText) || 
+                (correction.ContextLinesBefore.Any() && correction.ContextLinesAfter.Any())) // Don't overwrite if already populated
             {
-                var lines = originalText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                var lineIndex = correction.LineNumber - 1; // Convert to 0-based
+                return;
+            }
 
-                if (lineIndex >= 0 && lineIndex < lines.Length)
+            var lines = originalText.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
+            var targetLineIndex = correction.LineNumber - 1; // 0-based
+            int contextWindowSize = 5;
+
+            if (targetLineIndex >= 0 && targetLineIndex < lines.Length)
+            {
+                if (!correction.ContextLinesBefore.Any())
                 {
-                    // Add context lines before
-                    var startIndex = Math.Max(0, lineIndex - 5);
-                    for (int i = startIndex; i < lineIndex; i++)
+                    for (int i = Math.Max(0, targetLineIndex - contextWindowSize); i < targetLineIndex; i++)
                     {
-                        correction.ContextLinesBefore.Add($"Line {i + 1}: {lines[i]}");
+                        correction.ContextLinesBefore.Add(lines[i]);
                     }
-
-                    // Add context lines after
-                    var endIndex = Math.Min(lines.Length - 1, lineIndex + 5);
-                    for (int i = lineIndex + 1; i <= endIndex; i++)
+                }
+                if (!correction.ContextLinesAfter.Any())
+                {
+                     for (int i = targetLineIndex + 1; i <= Math.Min(lines.Length - 1, targetLineIndex + contextWindowSize); i++)
                     {
-                        correction.ContextLinesAfter.Add($"Line {i + 1}: {lines[i]}");
+                        correction.ContextLinesAfter.Add(lines[i]);
                     }
-
-                    _logger?.Debug("Enriched correction for {FieldName} with {BeforeCount} before and {AfterCount} after context lines",
-                        correction.FieldName, correction.ContextLinesBefore.Count, correction.ContextLinesAfter.Count);
                 }
             }
-            catch (Exception ex)
-            {
-                _logger?.Warning(ex, "Failed to enrich context for correction on field {FieldName}", correction.FieldName);
-            }
         }
 
         /// <summary>
-        /// Gets string value from JSON element
+        /// Determines the type of correction (omission, format, value) based on old/new values and optional DeepSeek type.
         /// </summary>
-        private string GetStringValue(JsonElement element, string propertyName)
+        private string DetermineCorrectionType(string oldValue, string newValue, string errorTypeFromDeepSeek = null)
         {
-            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
-                return prop.GetString();
-            return null;
-        }
+            // Prefer explicit type from DeepSeek if reliable
+            if (!string.IsNullOrEmpty(errorTypeFromDeepSeek)) return errorTypeFromDeepSeek;
 
-        /// <summary>
-        /// Gets double value from JSON element
-        /// </summary>
-        private double GetDoubleValue(JsonElement element, string propertyName)
-        {
-            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
-            {
-                if (prop.TryGetDouble(out var value)) return value;
-                if (prop.TryGetDecimal(out var decimalValue)) return (double)decimalValue;
-                if (prop.TryGetInt32(out var intValue)) return intValue;
-            }
-            return 0.0;
-        }
+            if (string.IsNullOrEmpty(oldValue) && newValue != null) return "omission"; // NewValue can be ""
+            if (oldValue != null && newValue == null) return "removal"; // Explicit removal (newValue is null)
+            if (oldValue != null && newValue == string.Empty) return "cleared"; // Value explicitly set to empty string
 
-        /// <summary>
-        /// Gets boolean value from JSON element
-        /// </summary>
-        private bool GetBooleanValue(JsonElement element, string propertyName)
-        {
-            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
-            {
-                if (prop.ValueKind == JsonValueKind.True) return true;
-                if (prop.ValueKind == JsonValueKind.False) return false;
-                if (prop.TryGetBoolean(out var boolValue)) return boolValue;
+            if (oldValue != null && newValue != null) {
+                var oldNormalized = Regex.Replace(oldValue, @"[\s\$,€£\-()]", "");
+                var newNormalized = Regex.Replace(newValue, @"[\s\$,€£\-()]", "");
+                if (string.Equals(oldNormalized, newNormalized, StringComparison.OrdinalIgnoreCase) && oldValue != newValue)
+                {
+                    return "format_error";
+                }
+                return "value_correction";
             }
-            return false;
-        }
-
-        /// <summary>
-        /// Gets integer value from JSON element
-        /// </summary>
-        private int GetIntValue(JsonElement element, string propertyName)
-        {
-            if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind != JsonValueKind.Null)
-            {
-                if (prop.TryGetInt32(out var value)) return value;
-                if (prop.TryGetInt64(out var longValue)) return (int)longValue;
-            }
-            return 1; // Default for max_lines
+            return "unknown"; // Should not happen if oldValue/newValue logic is sound
         }
 
         #endregion

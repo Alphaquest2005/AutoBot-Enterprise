@@ -60,7 +60,7 @@ public int Id
        [RequiredValidationAttribute(ErrorMessage= "FieldName is required")]
        
                 
-                [MaxLength(100, ErrorMessage = "FieldName has a max length of 100 letters ")]
+                [MaxLength(255, ErrorMessage = "FieldName has a max length of 255 letters ")]
 public string FieldName
 		{ 
 		    get { return this.ocrcorrectionlearning.FieldName; }
@@ -74,10 +74,10 @@ public string FieldName
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "OriginalError is required")]
+       
        
                 
-                [MaxLength(500, ErrorMessage = "OriginalError has a max length of 500 letters ")]
+                
 public string OriginalError
 		{ 
 		    get { return this.ocrcorrectionlearning.OriginalError; }
@@ -91,10 +91,10 @@ public string OriginalError
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "CorrectValue is required")]
+       
        
                 
-                [MaxLength(500, ErrorMessage = "CorrectValue has a max length of 500 letters ")]
+                
 public string CorrectValue
 		{ 
 		    get { return this.ocrcorrectionlearning.CorrectValue; }
@@ -108,9 +108,9 @@ public string CorrectValue
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "LineNumber is required")]
+       
        [NumberValidationAttribute]
-public int LineNumber
+public Nullable<int> LineNumber
 		{ 
 		    get { return this.ocrcorrectionlearning.LineNumber; }
 			set
@@ -123,10 +123,10 @@ public int LineNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "LineText is required")]
+       
        
                 
-                [MaxLength(1000, ErrorMessage = "LineText has a max length of 1000 letters ")]
+                
 public string LineText
 		{ 
 		    get { return this.ocrcorrectionlearning.LineText; }
@@ -160,24 +160,7 @@ public string WindowText
        
        
                 
-                [MaxLength(1000, ErrorMessage = "ExistingRegex has a max length of 1000 letters ")]
-public string ExistingRegex
-		{ 
-		    get { return this.ocrcorrectionlearning.ExistingRegex; }
-			set
-			{
-			    if (value == this.ocrcorrectionlearning.ExistingRegex) return;
-				this.ocrcorrectionlearning.ExistingRegex = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ExistingRegex");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "CorrectionType is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "CorrectionType has a max length of 50 letters ")]
+                [MaxLength(100, ErrorMessage = "CorrectionType has a max length of 100 letters ")]
 public string CorrectionType
 		{ 
 		    get { return this.ocrcorrectionlearning.CorrectionType; }
@@ -187,40 +170,6 @@ public string CorrectionType
 				this.ocrcorrectionlearning.CorrectionType = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("CorrectionType");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(1000, ErrorMessage = "NewRegexPattern has a max length of 1000 letters ")]
-public string NewRegexPattern
-		{ 
-		    get { return this.ocrcorrectionlearning.NewRegexPattern; }
-			set
-			{
-			    if (value == this.ocrcorrectionlearning.NewRegexPattern) return;
-				this.ocrcorrectionlearning.NewRegexPattern = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("NewRegexPattern");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(500, ErrorMessage = "ReplacementPattern has a max length of 500 letters ")]
-public string ReplacementPattern
-		{ 
-		    get { return this.ocrcorrectionlearning.ReplacementPattern; }
-			set
-			{
-			    if (value == this.ocrcorrectionlearning.ReplacementPattern) return;
-				this.ocrcorrectionlearning.ReplacementPattern = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ReplacementPattern");
 			}
 		}
      
@@ -291,21 +240,6 @@ public string FilePath
 		}
      
 
-       
-       
-public Nullable<int> FieldId
-		{ 
-		    get { return this.ocrcorrectionlearning.FieldId; }
-			set
-			{
-			    if (value == this.ocrcorrectionlearning.FieldId) return;
-				this.ocrcorrectionlearning.FieldId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("FieldId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Success is required")]
        
 public bool Success
@@ -324,7 +258,7 @@ public bool Success
        
        
                 
-                [MaxLength(1000, ErrorMessage = "ErrorMessage has a max length of 1000 letters ")]
+                
 public string ErrorMessage
 		{ 
 		    get { return this.ocrcorrectionlearning.ErrorMessage; }
@@ -353,7 +287,7 @@ public System.DateTime CreatedDate
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CreatedBy is required")]
        
                 
                 [MaxLength(100, ErrorMessage = "CreatedBy has a max length of 100 letters ")]
@@ -371,16 +305,16 @@ public string CreatedBy
      
 
        
-       [NumberValidationAttribute]
-public Nullable<int> ProcessingTimeMs
+       
+public Nullable<bool> RequiresMultilineRegex
 		{ 
-		    get { return this.ocrcorrectionlearning.ProcessingTimeMs; }
+		    get { return this.ocrcorrectionlearning.RequiresMultilineRegex; }
 			set
 			{
-			    if (value == this.ocrcorrectionlearning.ProcessingTimeMs) return;
-				this.ocrcorrectionlearning.ProcessingTimeMs = value;
+			    if (value == this.ocrcorrectionlearning.RequiresMultilineRegex) return;
+				this.ocrcorrectionlearning.RequiresMultilineRegex = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ProcessingTimeMs");
+				NotifyPropertyChanged("RequiresMultilineRegex");
 			}
 		}
      
@@ -389,15 +323,15 @@ public Nullable<int> ProcessingTimeMs
        
                 
                 
-public string DeepSeekPrompt
+public string ContextLinesBefore
 		{ 
-		    get { return this.ocrcorrectionlearning.DeepSeekPrompt; }
+		    get { return this.ocrcorrectionlearning.ContextLinesBefore; }
 			set
 			{
-			    if (value == this.ocrcorrectionlearning.DeepSeekPrompt) return;
-				this.ocrcorrectionlearning.DeepSeekPrompt = value;
+			    if (value == this.ocrcorrectionlearning.ContextLinesBefore) return;
+				this.ocrcorrectionlearning.ContextLinesBefore = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("DeepSeekPrompt");
+				NotifyPropertyChanged("ContextLinesBefore");
 			}
 		}
      
@@ -406,15 +340,60 @@ public string DeepSeekPrompt
        
                 
                 
-public string DeepSeekResponse
+public string ContextLinesAfter
 		{ 
-		    get { return this.ocrcorrectionlearning.DeepSeekResponse; }
+		    get { return this.ocrcorrectionlearning.ContextLinesAfter; }
 			set
 			{
-			    if (value == this.ocrcorrectionlearning.DeepSeekResponse) return;
-				this.ocrcorrectionlearning.DeepSeekResponse = value;
+			    if (value == this.ocrcorrectionlearning.ContextLinesAfter) return;
+				this.ocrcorrectionlearning.ContextLinesAfter = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("DeepSeekResponse");
+				NotifyPropertyChanged("ContextLinesAfter");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> LineId
+		{ 
+		    get { return this.ocrcorrectionlearning.LineId; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.LineId) return;
+				this.ocrcorrectionlearning.LineId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> PartId
+		{ 
+		    get { return this.ocrcorrectionlearning.PartId; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.PartId) return;
+				this.ocrcorrectionlearning.PartId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PartId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> RegexId
+		{ 
+		    get { return this.ocrcorrectionlearning.RegexId; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.RegexId) return;
+				this.ocrcorrectionlearning.RegexId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("RegexId");
 			}
 		}
      

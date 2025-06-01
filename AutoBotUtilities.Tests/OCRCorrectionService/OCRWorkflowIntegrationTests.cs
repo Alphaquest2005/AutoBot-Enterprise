@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Serilog;
 using WaterNut.DataSpace;
-using InvoiceReader.OCRCorrectionService;
 using OCR.Business.Entities;
+using static AutoBotUtilities.Tests.TestHelpers;
 
 namespace AutoBotUtilities.Tests.OCRCorrectionService
 {
+    using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
     /// <summary>
     /// Integration tests that demonstrate the complete enhanced OCR correction workflow
     /// </summary>
@@ -27,7 +28,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
                 .WriteTo.Console()
                 .CreateLogger();
 
-            _correctionService = new OCRCorrectionService();
+            _correctionService = new OCRCorrectionService(_logger);
         }
 
         [Test]
@@ -57,11 +58,11 @@ Total: $43,72
 
             // Step 1: Extract enhanced OCR metadata
             _logger.Information("=== Step 1: Extracting Enhanced OCR Metadata ===");
-            var metadata = OCRCorrectionService.ExtractEnhancedOCRMetadata(invoiceDict, template, fieldMappings);
+            var metadata = InvokePrivateMethod<Dictionary<string, OCRFieldMetadata>>(_correctionService, "ExtractEnhancedOCRMetadata", invoiceDict, template, fieldMappings);
 
             // Verify metadata extraction
-            Assert.IsNotNull(metadata, "Metadata should be extracted");
-            Assert.Greater(metadata.Count, 0, "Should have extracted metadata for fields");
+            Assert.That(metadata, Is.Not.Null, "Metadata should be extracted");
+            Assert.That(metadata.Count, Is.GreaterThan(0), "Should have extracted metadata for fields");
 
             foreach (var kvp in metadata)
             {
@@ -81,14 +82,14 @@ Total: $43,72
 
             // Step 3: Process corrections with enhanced metadata
             _logger.Information("=== Step 3: Processing Corrections with Enhanced Metadata ===");
-            var result = await _correctionService.ProcessCorrectionsWithEnhancedMetadataAsync(
+            var result = await _correctionService.ProcessExternalCorrectionsForDBUpdateAsync(
                 corrections, metadata, invoiceText, "test_amazon_invoice.txt");
 
             // Step 4: Verify results
             _logger.Information("=== Step 4: Verifying Results ===");
-            Assert.IsNotNull(result, "Processing result should not be null");
-            Assert.IsFalse(result.HasErrors, $"Processing should not have errors: {result.ErrorMessage}");
-            Assert.AreEqual(corrections.Count, result.TotalCorrections, "Should process all corrections");
+            Assert.That(result, Is.Not.Null, "Processing result should not be null");
+            Assert.That(result.HasErrors, Is.False, $"Processing should not have errors: {result.ErrorMessage}");
+            Assert.That(result.TotalCorrections, Is.EqualTo(corrections.Count), "Should process all corrections");
 
             _logger.Information("Processing completed: {SuccessfulUpdates} successful, {FailedUpdates} failed, Duration: {Duration}ms",
                 result.SuccessfulUpdates, result.FailedUpdates, result.ProcessingDuration.TotalMilliseconds);
@@ -101,13 +102,12 @@ Total: $43,72
                     correction.FieldName, detail.UpdateContext?.UpdateStrategy, detail.HasMetadata,
                     detail.DatabaseUpdate?.IsSuccess);
 
-                Assert.IsNotNull(detail.UpdateContext, $"Update context should exist for {correction.FieldName}");
+                Assert.That(detail.UpdateContext, Is.Not.Null, $"Update context should exist for {correction.FieldName}");
 
                 // Verify strategy selection based on metadata availability
                 if (detail.HasMetadata && detail.OCRMetadata?.RegexId.HasValue == true)
                 {
-                    Assert.AreEqual(DatabaseUpdateStrategy.UpdateRegexPattern, detail.UpdateContext.UpdateStrategy,
-                        $"Should use regex pattern update for {correction.FieldName} with complete metadata");
+                    Assert.That(detail.UpdateContext.UpdateStrategy, Is.EqualTo(DatabaseUpdateStrategy.UpdateRegexPattern), $"Should use regex pattern update for {correction.FieldName} with complete metadata");
                 }
                 else if (detail.HasMetadata && detail.OCRMetadata?.FieldId.HasValue == true)
                 {
@@ -144,13 +144,11 @@ Total: $43,72
                 var deepSeekField = kvp.Key;
                 var (expectedField, expectedEntity) = kvp.Value;
 
-                var mappedField = _correctionService.MapDeepSeekFieldToDatabase(deepSeekField);
+                var mappedField = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToDatabase", deepSeekField);
 
-                Assert.IsNotNull(mappedField, $"Field '{deepSeekField}' should be mapped");
-                Assert.AreEqual(expectedField, mappedField.DatabaseFieldName,
-                    $"Field '{deepSeekField}' should map to '{expectedField}'");
-                Assert.AreEqual(expectedEntity, mappedField.EntityType,
-                    $"Field '{deepSeekField}' should map to entity '{expectedEntity}'");
+                Assert.That(mappedField, Is.Not.Null, $"Field '{deepSeekField}' should be mapped");
+                Assert.That(mappedField.DatabaseFieldName, Is.EqualTo(expectedField), $"Field '{deepSeekField}' should map to '{expectedField}'");
+                Assert.That(mappedField.EntityType, Is.EqualTo(expectedEntity), $"Field '{deepSeekField}' should map to entity '{expectedEntity}'");
 
                 _logger.Information("✓ {DeepSeekField} -> {DatabaseField} ({Entity})",
                     deepSeekField, mappedField.DatabaseFieldName, mappedField.EntityType);
@@ -162,12 +160,9 @@ Total: $43,72
         private Invoice CreateMockInvoiceTemplate()
         {
             // Create a minimal mock template for testing
-            return new Invoice
-            {
-                OcrInvoices = new OCR_Invoices { Id = 1, Name = "Amazon" },
-                Parts = new List<Part>(),
-                Lines = new List<Line>()
-            };
+            var ocrInvoices = new Invoices { Id = 1, Name = "Amazon" };
+            return new Invoice(ocrInvoices, _logger);
+            // Note: Parts are initialized in the constructor, Lines is computed from Parts
         }
 
         private Dictionary<string, object> CreateMockInvoiceDict()
@@ -184,17 +179,17 @@ Total: $43,72
             };
         }
 
-        private Dictionary<string, (int LineId, int FieldId)> CreateMockFieldMappings()
+        private Dictionary<string, (int LineId, int FieldId, int? PartId)> CreateMockFieldMappings()
         {
-            return new Dictionary<string, (int LineId, int FieldId)>
+            return new Dictionary<string, (int LineId, int FieldId, int? PartId)>
             {
-                ["InvoiceTotal"] = (1, 101),
-                ["SubTotal"] = (2, 102),
-                ["TotalInternalFreight"] = (3, 103),
-                ["TotalOtherCost"] = (4, 104),
-                ["TotalDeduction"] = (5, 105),
-                ["InvoiceNo"] = (6, 106),
-                ["InvoiceDate"] = (7, 107)
+                ["InvoiceTotal"] = (1, 101, 1),
+                ["SubTotal"] = (2, 102, 1),
+                ["TotalInternalFreight"] = (3, 103, 1),
+                ["TotalOtherCost"] = (4, 104, 1),
+                ["TotalDeduction"] = (5, 105, 1),
+                ["InvoiceNo"] = (6, 106, 1),
+                ["InvoiceDate"] = (7, 107, 1)
             };
         }
 

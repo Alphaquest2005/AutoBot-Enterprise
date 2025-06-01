@@ -361,14 +361,70 @@ namespace OCR.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByFieldId(string FieldId, List<string> includesLst = null)
+	 public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByLineId(string LineId, List<string> includesLst = null)
         {
-             if (FieldId == "0") return null;
+             if (LineId == "0") return null;
             try
             {
                  using (OCRCorrectionLearningClient t = new OCRCorrectionLearningClient())
                     {
-                        var res = await t.GetOCRCorrectionLearningByFieldId(FieldId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetOCRCorrectionLearningByLineId(LineId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new OCRCorrectionLearning(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByPartId(string PartId, List<string> includesLst = null)
+        {
+             if (PartId == "0") return null;
+            try
+            {
+                 using (OCRCorrectionLearningClient t = new OCRCorrectionLearningClient())
+                    {
+                        var res = await t.GetOCRCorrectionLearningByPartId(PartId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new OCRCorrectionLearning(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByRegexId(string RegexId, List<string> includesLst = null)
+        {
+             if (RegexId == "0") return null;
+            try
+            {
+                 using (OCRCorrectionLearningClient t = new OCRCorrectionLearningClient())
+                    {
+                        var res = await t.GetOCRCorrectionLearningByRegexId(RegexId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new OCRCorrectionLearning(x)).AsEnumerable();

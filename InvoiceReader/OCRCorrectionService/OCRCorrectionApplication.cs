@@ -2,589 +2,392 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions; // Keep for ApplyInvoiceDetailCorrection
 using System.Threading.Tasks;
-using EntryDataDS.Business.Entities;
-using TrackableEntities;
+using EntryDataDS.Business.Entities; // For ShipmentInvoice, InvoiceDetails
+using TrackableEntities; // For TrackingState
+using Serilog; // For ILogger, assumed available as this._logger
 
 namespace WaterNut.DataSpace
 {
     public partial class OCRCorrectionService
     {
-        #region Enhanced Correction Application
+        #region Enhanced Correction Application to In-Memory Objects
 
         /// <summary>
-        /// Applies corrections with priority-based processing, field dependency validation, and omission handling
+        /// Applies a list of identified errors (InvoiceError) as corrections to the provided ShipmentInvoice object.
+        /// This method orchestrates the application of both omission-type corrections and format/value corrections.
+        /// It updates the in-memory ShipmentInvoice and returns a list of CorrectionResult.
+        /// Database pattern updates are handled separately by UpdateRegexPatternsAsync using these CorrectionResults.
         /// </summary>
         private async Task<List<CorrectionResult>> ApplyCorrectionsAsync(
             ShipmentInvoice invoice,
-            List<InvoiceError> errors,
-            string fileText,
-            Dictionary<string, OCRFieldMetadata> metadata = null)
+            List<InvoiceError> errors, // Detected errors/omissions
+            string fileText,           // Full original text for context
+            Dictionary<string, OCRFieldMetadata> currentInvoiceMetadata) // Metadata for fields already extracted
         {
-            var results = new List<CorrectionResult>();
+            var correctionResults = new List<CorrectionResult>();
+            if (invoice == null || errors == null || !errors.Any())
+            {
+                _logger.Information("ApplyCorrectionsAsync: No invoice or errors to apply.");
+                return correctionResults;
+            }
 
-            // Apply field dependency validation and conflict resolution
-            var filteredErrors = ResolveFieldConflicts(errors, invoice);
+            // Resolve conflicting error proposals for the same field (e.g., prefer highest confidence)
+            var filteredErrors = this.ResolveFieldConflicts(errors, invoice); // From OCRValidation.cs
 
-            // Group errors by type: omissions vs format corrections
-            var omissionErrors = filteredErrors.Where(e => e.ErrorType == "omission").ToList();
-            var formatErrors = filteredErrors.Where(e => e.ErrorType != "omission").ToList();
+            var omissionErrors = filteredErrors.Where(e => e.ErrorType == "omission" || e.ErrorType == "omitted_line_item").ToList();
+            var formatAndValueErrors = filteredErrors.Where(e => e.ErrorType != "omission" && e.ErrorType != "omitted_line_item").ToList();
 
-            _logger.Information("Processing {OmissionCount} omissions and {FormatCount} format errors for invoice {InvoiceNo}",
-                omissionErrors.Count, formatErrors.Count, invoice.InvoiceNo);
+            _logger.Information("Applying corrections to invoice {InvoiceNo}: {OmissionCount} omissions, {FormatValueCount} format/value errors.",
+                invoice.InvoiceNo, omissionErrors.Count, formatAndValueErrors.Count);
 
-            // Process omissions first (create new fields/regex)
+            // 1. Process Omissions
+            // For omissions, the primary action is usually updating DB patterns so the field is extracted next time.
+            // Applying the value to the *current* in-memory invoice object might also be desired.
             foreach (var error in omissionErrors)
             {
-                var result = await this.ProcessOmissionCorrectionAsync(error, metadata, fileText).ConfigureAwait(false);
-                results.Add(result);
-                LogCorrectionResult(result, "OMISSION");
+                // ProcessOmissionCorrectionAsync will attempt DB updates via strategy AND apply to current invoice if applicable.
+                var result = await this.ProcessOmissionCorrectionAndApplyToInvoiceAsync(invoice, error, currentInvoiceMetadata, fileText).ConfigureAwait(false);
+                correctionResults.Add(result);
+                LogCorrectionResult(result, "OMISSION_APPLIED");
             }
+            
+            // 2. Process Format/Value Errors for already extracted (but incorrect) fields
+            // These are applied directly to the invoice object.
+            // The resulting CorrectionResult can then be used by UpdateRegexPatternsAsync to learn/update FieldFormatRegEx or Line Regexes.
+            var criticalFormatErrors = formatAndValueErrors.Where(e => IsCriticalError(e)).ToList();
+            var standardFormatErrors = formatAndValueErrors.Where(e => !IsCriticalError(e)).ToList();
 
-            // Process format errors using existing logic
-            var criticalFormatErrors = formatErrors.Where(e => IsCriticalError(e)).ToList();
-            var standardFormatErrors = formatErrors.Where(e => !IsCriticalError(e)).ToList();
-
-            foreach (var error in criticalFormatErrors)
+            // Apply critical errors first, then standard ones
+            foreach (var error in criticalFormatErrors.Concat(standardFormatErrors))
             {
-                var result = await this.ApplySingleCorrectionAsync(invoice, error).ConfigureAwait(false);
-                results.Add(result);
-                LogCorrectionResult(result, "CRITICAL");
+                var result = await this.ApplySingleValueOrFormatCorrectionToInvoiceAsync(invoice, error).ConfigureAwait(false);
+                correctionResults.Add(result);
+                LogCorrectionResult(result, IsCriticalError(error) ? "CRITICAL_FIX_APPLIED" : "STANDARD_FIX_APPLIED");
             }
 
-            foreach (var error in standardFormatErrors)
-            {
-                var result = await this.ApplySingleCorrectionAsync(invoice, error).ConfigureAwait(false);
-                results.Add(result);
-                LogCorrectionResult(result, "STANDARD");
-            }
-
-            // Recalculate dependent fields after all corrections
+            // 3. Recalculate any fields that depend on corrected values (e.g., SubTotal from line items, InvoiceTotal from components)
             RecalculateDependentFields(invoice);
 
-            // Mark invoice as modified if any corrections were successful
-            if (results.Any(r => r.Success))
+            // 4. Mark the invoice object as modified if any successful corrections were applied to it.
+            if (correctionResults.Any(r => r.Success && r.CorrectionType != "omission_db_only")) // "omission_db_only" if an omission only updated DB patterns but not the in-memory invoice.
             {
                 invoice.TrackingState = TrackingState.Modified;
+                 _logger.Information("Invoice {InvoiceNo} marked as modified due to successful value applications.", invoice.InvoiceNo);
             }
 
-            return results;
+            return correctionResults;
         }
 
         /// <summary>
-        /// NEW: Processes omission corrections by creating new regex patterns and database entries
+        /// Handles an "omission" type error.
+        /// The primary goal for an omission is to teach the system to extract it next time (DB pattern update).
+        /// Optionally, it can also apply the omitted value to the current in-memory ShipmentInvoice object.
         /// </summary>
-        private async Task<CorrectionResult> ProcessOmissionCorrectionAsync(
-            InvoiceError error,
-            Dictionary<string, OCRFieldMetadata> metadata,
-            string fileText)
+        private async Task<CorrectionResult> ProcessOmissionCorrectionAndApplyToInvoiceAsync(
+            ShipmentInvoice invoiceToUpdate, // The in-memory invoice object
+            InvoiceError omissionError,      // The detected omission
+            Dictionary<string, OCRFieldMetadata> currentInvoiceMetadata, // Metadata of currently extracted fields
+            string fileText)                 // Full text for context
         {
-            var result = new CorrectionResult
+            var correctionResultForDB = new CorrectionResult // This is what gets sent for DB pattern learning
             {
-                FieldName = error.Field,
-                CorrectionType = "omission",
-                Confidence = error.Confidence,
-                OldValue = error.ExtractedValue ?? "",
-                NewValue = error.CorrectValue,
-                LineText = error.LineText,
-                LineNumber = error.LineNumber,
-                ContextLinesBefore = error.ContextLinesBefore ?? new List<string>(),
-                ContextLinesAfter = error.ContextLinesAfter ?? new List<string>(),
-                RequiresMultilineRegex = error.RequiresMultilineRegex
+                FieldName = omissionError.Field, CorrectionType = omissionError.ErrorType, Confidence = omissionError.Confidence,
+                OldValue = omissionError.ExtractedValue ?? "", NewValue = omissionError.CorrectValue,
+                LineText = omissionError.LineText, LineNumber = omissionError.LineNumber,
+                ContextLinesBefore = omissionError.ContextLinesBefore, ContextLinesAfter = omissionError.ContextLinesAfter,
+                RequiresMultilineRegex = omissionError.RequiresMultilineRegex, Reasoning = omissionError.Reasoning,
+                Success = false // Will be set based on DB update success
             };
 
             try
             {
-                // Find line context using metadata and error information
-                var lineContext = FindLineContextForOmission(error, metadata, fileText);
+                _logger.Information("Processing omission for DB update: Field/Item '{OmissionField}' for Invoice {InvoiceNo}", omissionError.Field, invoiceToUpdate.InvoiceNo);
 
-                if (lineContext == null)
+                // The core DB update logic for omissions (calling DeepSeek for regex, updating DB)
+                // is now encapsulated within the OmissionUpdateStrategy, called by UpdateRegexPatternsAsync.
+                // Here, we're creating the CorrectionResult that will FEED into UpdateRegexPatternsAsync later.
+                // For the purpose of THIS method (ApplyCorrectionsAsync), we decide if the *in-memory* invoice should be updated.
+
+                bool appliedToMemory = false;
+                if (omissionError.ErrorType != "omitted_line_item") // For now, don't try to add whole new line items to memory
                 {
-                    result.Success = false;
-                    result.ErrorMessage = "Could not determine line context for omission";
-                    return result;
-                }
-
-                // Check if field already exists in the line's regex
-                var fieldExists = IsFieldExistingInLine(error.Field, lineContext);
-
-                if (fieldExists)
-                {
-                    // Field exists but value was wrong - treat as format error instead
-                    _logger.Information("Field {FieldName} exists in line regex, treating as format correction", error.Field);
-                    return await ProcessAsFormatCorrection(error);
-                }
-
-                // True omission - request new regex pattern from DeepSeek
-                var regexResponse = await RequestNewRegexFromDeepSeek(result, lineContext);
-
-                if (regexResponse == null || !ValidateRegexPattern(regexResponse, result))
-                {
-                    result.Success = false;
-                    result.ErrorMessage = "Failed to create or validate regex pattern";
-                    return result;
-                }
-
-                // Create database entries for the new field
-                var databaseSuccess = await CreateDatabaseEntriesForOmission(regexResponse, lineContext, result);
-
-                if (databaseSuccess)
-                {
-                    result.Success = true;
-                    result.ErrorMessage = null;
-                    _logger.Information("Successfully created new field for omission: {FieldName}", error.Field);
-                }
-                else
-                {
-                    result.Success = false;
-                    result.ErrorMessage = "Failed to create database entries";
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.ErrorMessage = ex.Message;
-                _logger.Error(ex, "Error processing omission correction for field {FieldName}", error.Field);
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Finds line context for omission correction using error details and metadata
-        /// </summary>
-        private LineContext FindLineContextForOmission(
-            InvoiceError error,
-            Dictionary<string, OCRFieldMetadata> metadata,
-            string fileText)
-        {
-            try
-            {
-                // First try to find exact line text match in metadata
-                if (!string.IsNullOrEmpty(error.LineText) && metadata != null)
-                {
-                    foreach (var meta in metadata.Values)
+                    var fieldInfo = this.MapDeepSeekFieldToDatabase(omissionError.Field);
+                    if (fieldInfo != null && fieldInfo.EntityType == "ShipmentInvoice") // Only apply to known header fields for now
                     {
-                        var originalLine = GetOriginalLineText(meta.LineNumber, fileText);
-                        if (string.Equals(originalLine?.Trim(), error.LineText.Trim(), StringComparison.OrdinalIgnoreCase))
+                        var parsedCorrectValue = this.ParseCorrectedValue(omissionError.CorrectValue, omissionError.Field);
+                        if (parsedCorrectValue != null)
                         {
-                            return CreateLineContextFromMetadata(meta, fileText);
+                            if (this.ApplyFieldCorrection(invoiceToUpdate, omissionError.Field, parsedCorrectValue))
+                            {
+                                _logger.Information("Applied omitted value for header field {OmittedField} = '{CorrectValue}' to in-memory invoice {InvoiceNo}.",
+                                    omissionError.Field, omissionError.CorrectValue, invoiceToUpdate.InvoiceNo);
+                                appliedToMemory = true;
+                                // The CorrectionResult's success should reflect the DB update attempt, not this in-memory application.
+                                // We set it to true here to indicate it's a valid correction to *try* to learn from.
+                                correctionResultForDB.Success = true; 
+                            }
                         }
                     }
+                } else {
+                    // For omitted_line_item, the DB strategy will handle creating new line definitions.
+                    // Adding to in-memory invoice.InvoiceDetails is more complex and might be skipped here.
+                    _logger.Information("Omitted line item '{OmittedItemField}' detected. DB strategy will handle pattern creation. In-memory invoice not modified for this item.", omissionError.Field);
+                    correctionResultForDB.Success = true; // It's a valid omission to learn from.
+                }
+                
+                // If not applied to memory but it's a valid omission, still mark success for DB learning.
+                if (!appliedToMemory && omissionError.ErrorType == "omission") {
+                    correctionResultForDB.Success = true; 
+                    correctionResultForDB.CorrectionType = "omission_db_only"; // Custom type if not applied to memory
                 }
 
-                // Fallback: create orphaned context for new line creation
-                return new LineContext
-                {
-                    LineId = null,
-                    LineNumber = error.LineNumber,
-                    LineText = error.LineText,
-                    ContextLinesBefore = error.ContextLinesBefore ?? new List<string>(),
-                    ContextLinesAfter = error.ContextLinesAfter ?? new List<string>(),
-                    RequiresMultilineRegex = error.RequiresMultilineRegex,
-                    IsOrphaned = true,
-                    RequiresNewLineCreation = true
-                };
+
+                return correctionResultForDB;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error finding line context for omission");
-                return null;
+                _logger.Error(ex, "Error during ProcessOmissionCorrectionAndApplyToInvoiceAsync for field {OmissionField} on invoice {InvoiceNo}", omissionError.Field, invoiceToUpdate.InvoiceNo);
+                correctionResultForDB.Success = false;
+                correctionResultForDB.ErrorMessage = $"Processing Omission Error: {ex.Message}";
+                return correctionResultForDB;
             }
         }
 
         /// <summary>
-        /// Creates line context from OCR metadata
+        /// Applies a single format or value correction to the in-memory ShipmentInvoice object.
         /// </summary>
-        private LineContext CreateLineContextFromMetadata(OCRFieldMetadata metadata, string fileText)
+        private async Task<CorrectionResult> ApplySingleValueOrFormatCorrectionToInvoiceAsync(
+            ShipmentInvoice invoice, 
+            InvoiceError error)
         {
-            return new LineContext
+            var result = new CorrectionResult // This will be returned and can be used for DB learning
             {
-                LineId = metadata.LineId,
-                LineNumber = metadata.LineNumber,
-                LineText = GetOriginalLineText(metadata.LineNumber, fileText),
-                RegexPattern = GetLineRegexPattern(metadata.LineId),
-                PartId = metadata.PartId,
-                IsOrphaned = false,
-                RequiresNewLineCreation = false
-            };
-        }
-
-        /// <summary>
-        /// Checks if a field exists in the line's regex named groups
-        /// </summary>
-        private bool IsFieldExistingInLine(string fieldName, LineContext lineContext)
-        {
-            if (lineContext?.RegexPattern == null) return false;
-
-            try
-            {
-                // Extract named groups from the line's regex pattern
-                var namedGroups = ExtractNamedGroupsFromRegex(lineContext.RegexPattern);
-
-                // Map DeepSeek field name to expected key/field name
-                var fieldMapping = MapDeepSeekFieldToDatabase(fieldName);
-
-                // Check if field exists by Key (regex named group) or Field name
-                return namedGroups.Any(group =>
-                    group.Equals(fieldName, StringComparison.OrdinalIgnoreCase) ||
-                    (fieldMapping != null &&
-                     (group.Equals(fieldMapping.DatabaseFieldName, StringComparison.OrdinalIgnoreCase) ||
-                      group.Equals(fieldMapping.DisplayName, StringComparison.OrdinalIgnoreCase))));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error checking field existence for {FieldName}", fieldName);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Processes omission as format correction when field already exists
-        /// </summary>
-        private async Task<CorrectionResult> ProcessAsFormatCorrection(InvoiceError error)
-        {
-            // Convert omission error to format error and process normally
-            var formatResult = new CorrectionResult
-            {
-                FieldName = error.Field,
-                CorrectionType = "format_correction",
-                OldValue = error.ExtractedValue ?? "",
-                NewValue = error.CorrectValue,
-                Confidence = error.Confidence,
-                Success = true // Will be set by format correction logic
-            };
-
-            // Use existing format correction logic
-            // This would integrate with your existing FieldFormatRegEx system
-
-            return formatResult;
-        }
-
-        /// <summary>
-        /// Gets the regex pattern for a specific line
-        /// </summary>
-        private string GetLineRegexPattern(int? lineId)
-        {
-            if (!lineId.HasValue) return null;
-
-            try
-            {
-                using var context = new OCRContext();
-                var line = context.Lines
-                    .Include("RegularExpressions")
-                    .FirstOrDefault(l => l.Id == lineId);
-
-                return line?.RegularExpressions?.RegEx;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error getting regex pattern for LineId {LineId}", lineId);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Gets original line text by line number
-        /// </summary>
-        private string GetOriginalLineText(int lineNumber, string fileText)
-        {
-            if (string.IsNullOrEmpty(fileText) || lineNumber <= 0)
-                return "";
-
-            var lines = fileText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            return lineNumber <= lines.Length ? lines[lineNumber - 1] : "";
-        }
-
-        /// <summary>
-        /// Applies a single correction to the invoice (existing method - unchanged)
-        /// </summary>
-        private async Task<CorrectionResult> ApplySingleCorrectionAsync(ShipmentInvoice invoice, InvoiceError error)
-        {
-            var result = new CorrectionResult
-            {
-                FieldName = error.Field,
-                CorrectionType = error.ErrorType,
-                Confidence = error.Confidence
+                FieldName = error.Field, CorrectionType = error.ErrorType, Confidence = error.Confidence,
+                OldValue = error.ExtractedValue, NewValue = error.CorrectValue, LineText = error.LineText, 
+                LineNumber = error.LineNumber, ContextLinesBefore = error.ContextLinesBefore, ContextLinesAfter = error.ContextLinesAfter,
+                RequiresMultilineRegex = error.RequiresMultilineRegex, Reasoning = error.Reasoning
             };
 
             try
             {
-                // Parse the correct value based on field type
-                var correctedValue = ParseCorrectedValue(error.CorrectValue, error.Field);
-                if (correctedValue == null)
+                object parsedCorrectedValue = this.ParseCorrectedValue(error.CorrectValue, error.Field); // From OCRUtilities
+                
+                if (parsedCorrectedValue == null && !string.IsNullOrEmpty(error.CorrectValue)) 
                 {
                     result.Success = false;
-                    result.ErrorMessage = $"Could not parse corrected value: {error.CorrectValue}";
+                    result.ErrorMessage = $"Could not parse corrected value '{error.CorrectValue}' for field {error.Field}.";
+                     _logger.Warning(result.ErrorMessage);
                     return result;
                 }
 
-                // Get current value for logging
-                result.OldValue = GetCurrentFieldValue(invoice, error.Field)?.ToString();
+                // Get current value from invoice object for logging before change
+                result.OldValue = this.GetCurrentFieldValue(invoice, error.Field)?.ToString(); // From OCRUtilities
 
-                // Apply the correction
-                var applied = ApplyFieldCorrection(invoice, error.Field, correctedValue);
-                if (applied)
+                if (this.ApplyFieldCorrection(invoice, error.Field, parsedCorrectedValue)) // Applies to in-memory invoice
                 {
-                    result.NewValue = correctedValue.ToString();
+                    // Update result with the actual applied value (after parsing and potential type conversion)
+                    result.NewValue = parsedCorrectedValue?.ToString() ?? (error.CorrectValue == "" ? "" : null); // Handle intentional empty strings
                     result.Success = true;
+                    _logger.Debug("Successfully applied in-memory correction for {Field}: From '{Old}' to '{New}'", error.Field, result.OldValue, result.NewValue);
                 }
                 else
                 {
                     result.Success = false;
-                    result.ErrorMessage = "Field not recognized or value not applied";
+                    result.ErrorMessage = $"Field '{error.Field}' not recognized or value '{error.CorrectValue}' not applied to invoice object.";
+                     _logger.Warning(result.ErrorMessage);
                 }
-
                 return result;
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, "Error applying single value/format correction for {Field} on invoice {InvoiceNo}", error.Field, invoice.InvoiceNo);
                 result.Success = false;
                 result.ErrorMessage = ex.Message;
                 return result;
             }
         }
-
+        
         /// <summary>
-        /// Applies correction to a specific field (existing method - unchanged)
+        /// Applies correction to a specific field on the ShipmentInvoice object.
         /// </summary>
-        private bool ApplyFieldCorrection(ShipmentInvoice invoice, string fieldName, object correctedValue)
+        public bool ApplyFieldCorrection(ShipmentInvoice invoice, string fieldNameFromError, object correctedValue)
         {
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError); // From OCRFieldMapping.cs
+            var targetPropertyName = fieldInfo?.DatabaseFieldName ?? fieldNameFromError; // Use mapped name if available
+
             try
             {
-                switch (fieldName.ToLower())
+                // Handle header fields
+                var invoiceProp = typeof(ShipmentInvoice).GetProperty(targetPropertyName, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (invoiceProp != null)
                 {
-                    case "invoicetotal":
-                        if (correctedValue is decimal invoiceTotal)
-                        {
-                            invoice.InvoiceTotal = (double)invoiceTotal;
-                            return true;
-                        }
-                        break;
-                    case "subtotal":
-                        if (correctedValue is decimal subTotal)
-                        {
-                            invoice.SubTotal = (double)subTotal;
-                            return true;
-                        }
-                        break;
-                    case "totalinternalfreight":
-                        if (correctedValue is decimal freight)
-                        {
-                            invoice.TotalInternalFreight = (double)freight;
-                            return true;
-                        }
-                        break;
-                    case "totalothercost":
-                        if (correctedValue is decimal otherCost)
-                        {
-                            invoice.TotalOtherCost = (double)otherCost;
-                            return true;
-                        }
-                        break;
-                    case "totalinsurance":
-                        if (correctedValue is decimal insurance)
-                        {
-                            invoice.TotalInsurance = (double)insurance;
-                            return true;
-                        }
-                        break;
-                    case "totaldeduction":
-                        if (correctedValue is decimal deduction)
-                        {
-                            invoice.TotalDeduction = (double)deduction;
-                            return true;
-                        }
-                        break;
-                    case "invoiceno":
-                        if (correctedValue is string invoiceNo)
-                        {
-                            invoice.InvoiceNo = invoiceNo;
-                            return true;
-                        }
-                        break;
-                    case "suppliername":
-                        if (correctedValue is string supplierName)
-                        {
-                            invoice.SupplierName = supplierName;
-                            return true;
-                        }
-                        break;
-                    case "currency":
-                        if (correctedValue is string currency)
-                        {
-                            invoice.Currency = currency;
-                            return true;
-                        }
-                        break;
-                    default:
-                        // Handle invoice detail corrections
-                        if (fieldName.StartsWith("invoicedetail_", StringComparison.OrdinalIgnoreCase))
-                        {
-                            return ApplyInvoiceDetailCorrection(invoice, fieldName, correctedValue);
-                        }
-                        break;
+                    if (correctedValue == null && Nullable.GetUnderlyingType(invoiceProp.PropertyType) == null && invoiceProp.PropertyType.IsValueType) {
+                         _logger.Warning("Cannot assign null to non-nullable property {PropertyName}", targetPropertyName);
+                        return false; // Cannot assign null to non-nullable value type
+                    }
+                    var convertedValue = correctedValue != null ? Convert.ChangeType(correctedValue, Nullable.GetUnderlyingType(invoiceProp.PropertyType) ?? invoiceProp.PropertyType) : null;
+                    invoiceProp.SetValue(invoice, convertedValue);
+                    return true;
                 }
+
+                // Handle invoice detail corrections (if fieldName indicates a detail field)
+                if (targetPropertyName.StartsWith("invoicedetail", StringComparison.OrdinalIgnoreCase) || 
+                    (fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails"))
+                {
+                    // Pass the original fieldNameFromError as it might contain line number prefix
+                    return ApplyInvoiceDetailCorrection(invoice, fieldNameFromError, correctedValue);
+                }
+
+                _logger.Warning("ApplyFieldCorrection: Property '{TargetPropertyName}' (from error field '{ErrorField}') not found on ShipmentInvoice header or not identified as detail.", targetPropertyName, fieldNameFromError);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error applying field correction for {FieldName}", fieldName);
+                _logger.Error(ex, "Error applying field correction for {ErrorField} (target: {TargetProp}) with value '{Value}'", fieldNameFromError, targetPropertyName, correctedValue);
                 return false;
             }
         }
 
         /// <summary>
-        /// Applies correction to invoice detail fields (existing method - unchanged)
+        /// Applies correction to a specific field within an InvoiceDetail item.
         /// </summary>
-        private bool ApplyInvoiceDetailCorrection(ShipmentInvoice invoice, string fieldName, object correctedValue)
+        private bool ApplyInvoiceDetailCorrection(ShipmentInvoice invoice, string prefixedErrorFieldName, object correctedValue)
         {
+            var parts = prefixedErrorFieldName.Split('_');
+            if (parts.Length < 3 || !parts[0].Equals("InvoiceDetail", StringComparison.OrdinalIgnoreCase)) {
+                _logger.Warning("ApplyInvoiceDetailCorrection: Field name '{FieldName}' not in expected 'InvoiceDetail_LineX_Field' format.", prefixedErrorFieldName);
+                return false;
+            }
+
+            if (!int.TryParse(Regex.Match(parts[1], @"\d+").Value, out var lineNumber)) { // Extract number from "LineX"
+                _logger.Warning("ApplyInvoiceDetailCorrection: Could not parse line number from '{LinePart}' in field '{FieldName}'.", parts[1], prefixedErrorFieldName);
+                return false;
+            }
+            
+            string detailFieldName = parts[2];
+            var detailItem = invoice.InvoiceDetails?.FirstOrDefault(d => d.LineNumber == lineNumber);
+
+            if (detailItem == null) {
+                _logger.Warning("ApplyInvoiceDetailCorrection: No InvoiceDetail found for LineNumber {LineNo} from field '{FieldName}'.", lineNumber, prefixedErrorFieldName);
+                return false;
+            }
+
             try
             {
-                var parts = fieldName.Split('_');
-                if (parts.Length < 3) return false;
-
-                var lineNumberStr = Regex.Replace(parts[1], "line", "", RegexOptions.IgnoreCase);
-                if (!int.TryParse(lineNumberStr, out var lineNumber)) return false;
-
-                var detailFieldName = parts[2];
-                var detail = invoice.InvoiceDetails?.FirstOrDefault(d => d.LineNumber == lineNumber);
-                if (detail == null) return false;
-
-                switch (detailFieldName.ToLower())
+                var detailProp = typeof(InvoiceDetails).GetProperty(detailFieldName, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (detailProp != null)
                 {
-                    case "quantity":
-                        if (correctedValue is decimal quantity)
-                        {
-                            detail.Quantity = (double)quantity;
-                            RecalculateDetailTotal(detail);
-                            detail.TrackingState = TrackingState.Modified;
-                            return true;
-                        }
-                        break;
-                    case "cost":
-                        if (correctedValue is decimal cost)
-                        {
-                            detail.Cost = (double)cost;
-                            RecalculateDetailTotal(detail);
-                            detail.TrackingState = TrackingState.Modified;
-                            return true;
-                        }
-                        break;
-                    case "totalcost":
-                        if (correctedValue is decimal totalCost)
-                        {
-                            detail.TotalCost = (double)totalCost;
-                            detail.TrackingState = TrackingState.Modified;
-                            return true;
-                        }
-                        break;
-                    case "discount":
-                        if (correctedValue is decimal discount)
-                        {
-                            detail.Discount = (double)discount;
-                            RecalculateDetailTotal(detail);
-                            detail.TrackingState = TrackingState.Modified;
-                            return true;
-                        }
-                        break;
+                     if (correctedValue == null && Nullable.GetUnderlyingType(detailProp.PropertyType) == null && detailProp.PropertyType.IsValueType) {
+                         _logger.Warning("Cannot assign null to non-nullable property {PropertyName} on InvoiceDetail Line {LineNum}", detailProp.Name, lineNumber);
+                        return false;
+                    }
+                    var convertedValue = correctedValue != null ? Convert.ChangeType(correctedValue, Nullable.GetUnderlyingType(detailProp.PropertyType) ?? detailProp.PropertyType) : null;
+                    detailProp.SetValue(detailItem, convertedValue);
+                    
+                    // If a quantity-affecting field changed, recalculate line total.
+                    if (detailFieldName.Equals("Quantity", StringComparison.OrdinalIgnoreCase) ||
+                        detailFieldName.Equals("Cost", StringComparison.OrdinalIgnoreCase) ||
+                        detailFieldName.Equals("Discount", StringComparison.OrdinalIgnoreCase))
+                    {
+                        RecalculateDetailTotal(detailItem);
+                    }
+                    detailItem.TrackingState = TrackingState.Modified;
+                    return true;
                 }
+                _logger.Warning("ApplyInvoiceDetailCorrection: Property '{DetailField}' not found on InvoiceDetails for Line {LineNo}.", detailFieldName, lineNumber);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error applying invoice detail correction for {FieldName}", fieldName);
+                _logger.Error(ex, "Error applying invoice detail correction for field {DetailField} on Line {LineNo} with value '{Value}'", detailFieldName, lineNumber, correctedValue);
                 return false;
             }
         }
 
         /// <summary>
-        /// Determines if an error is critical (affects calculations) - existing method
+        /// Determines if an error is critical (affects calculations or core data).
         /// </summary>
-        private bool IsCriticalError(InvoiceError error)
+        private bool IsCriticalError(InvoiceError error) // Error from OCRErrorDetection
         {
-            var criticalTypes = new[] {
-                "calculation_error",
-                "subtotal_mismatch",
-                "invoice_total_mismatch",
-                "unreasonable_quantity",
-                "unreasonable_cost"
+            var criticalErrorTypes = new[] {
+                "calculation_error", "subtotal_mismatch", "invoice_total_mismatch",
+                "unreasonable_value", "omitted_line_item"
             };
-            return criticalTypes.Contains(error.ErrorType);
+            if (criticalErrorTypes.Contains(error.ErrorType?.ToLowerInvariant())) return true;
+
+            // Consider value/format errors on key financial fields as critical
+            if (error.ErrorType == "value_error" || error.ErrorType == "format_error" || error.ErrorType == "character_confusion")
+            {
+                var fieldInfo = this.MapDeepSeekFieldToDatabase(error.Field);
+                string canonicalFieldName = fieldInfo?.DatabaseFieldName ?? error.Field;
+                var criticalDbFields = new[] {"invoicetotal", "subtotal", "totaldeduction", "quantity", "cost", "totalcost"};
+                if (criticalDbFields.Contains(canonicalFieldName.ToLowerInvariant())) return true;
+            }
+            return false;
         }
 
         /// <summary>
-        /// Logs correction results with appropriate detail level - existing method
+        /// Logs the result of a correction attempt.
         /// </summary>
-        private void LogCorrectionResult(CorrectionResult result, string priority)
+        private void LogCorrectionResult(CorrectionResult result, string priority) // CorrectionResult from this file
         {
-            if (result.Success)
-            {
-                _logger.Information("[{Priority}] Applied correction: {Field} {OldValue} → {NewValue} (confidence: {Confidence:P0})",
-                    priority, result.FieldName, result.OldValue, result.NewValue, result.Confidence);
-            }
-            else
-            {
-                _logger.Warning("[{Priority}] Failed correction for {Field}: {Error}",
-                    priority, result.FieldName, result.ErrorMessage);
-            }
+            var status = result.Success ? "Applied" : "Failed";
+            var level = result.Success ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Warning;
+            
+            _logger.Write(level, "[{Priority}] {Status} correction for Field: {Field}, Type: {Type}. Old: '{OldVal}', New: '{NewVal}'. Conf: {Conf:P0}. Reason: '{Reason}'. Message: {Msg}",
+                priority, status, result.FieldName, result.CorrectionType, 
+                this.TruncateForLog(result.OldValue, 50), this.TruncateForLog(result.NewValue, 50), 
+                result.Confidence, result.Reasoning ?? "N/A", result.ErrorMessage ?? "N/A");
         }
 
         /// <summary>
-        /// Recalculates dependent fields after corrections - existing method
+        /// Recalculates dependent fields like SubTotal and InvoiceTotal after individual corrections are applied.
         /// </summary>
         private void RecalculateDependentFields(ShipmentInvoice invoice)
         {
+            if (invoice == null) return;
             try
             {
-                // Recalculate line totals
+                // Recalculate line totals first if they are not authoritative
                 if (invoice.InvoiceDetails != null)
                 {
-                    foreach (var detail in invoice.InvoiceDetails)
+                    foreach (var detail in invoice.InvoiceDetails.Where(d => d != null))
                     {
+                        // Only recalculate if Qty or Cost might have changed and TotalCost exists.
+                        // If TotalCost was directly corrected, trust it unless Qty/Cost also corrected.
+                        // This assumes direct corrections to TotalCost are authoritative.
+                        // A more robust system might flag which fields were AI-corrected.
+                        // For now, always recalculate:
                         RecalculateDetailTotal(detail);
                     }
-
+                    
                     // Recalculate subtotal from line items
-                    var calculatedSubTotal = invoice.InvoiceDetails.Sum(d => d.TotalCost ?? 0);
+                    var calculatedSubTotal = invoice.InvoiceDetails.Sum(d => d?.TotalCost ?? 0);
                     if (Math.Abs((invoice.SubTotal ?? 0) - calculatedSubTotal) > 0.01)
                     {
-                        _logger.Information("Updating SubTotal from {OldValue} to {NewValue} based on line items",
-                            invoice.SubTotal, calculatedSubTotal);
+                        _logger.Information("Recalculating SubTotal for {InvoiceNo}: From {OldSubTotal:F2} to {NewSubTotal:F2} based on line items sum.", 
+                            invoice.InvoiceNo, invoice.SubTotal ?? 0, calculatedSubTotal);
                         invoice.SubTotal = calculatedSubTotal;
                     }
                 }
 
-                // Recalculate invoice total with gift card handling
-                var baseTotal = (invoice.SubTotal ?? 0) +
-                              (invoice.TotalInternalFreight ?? 0) +
-                              (invoice.TotalOtherCost ?? 0) +
-                              (invoice.TotalInsurance ?? 0);
+                // Recalculate invoice total using the same logic as TotalsZero for consistency
+                var baseTotalForFinalCalc = (invoice.SubTotal ?? 0) +
+                                            (invoice.TotalInternalFreight ?? 0) +
+                                            (invoice.TotalOtherCost ?? 0) +
+                                            (invoice.TotalInsurance ?? 0);
+                var deductionForFinalCalc = invoice.TotalDeduction ?? 0;
+                var expectedFinalInvoiceTotal = baseTotalForFinalCalc - deductionForFinalCalc;
 
-                var deductionAmount = invoice.TotalDeduction ?? 0;
-                var currentInvoiceTotal = invoice.InvoiceTotal ?? 0;
-
-                // Check if the current total already has deductions applied
-                var calculatedWithDeduction = baseTotal - deductionAmount;
-                var calculatedWithoutDeduction = baseTotal;
-
-                var diffWithDeduction = Math.Abs(calculatedWithDeduction - currentInvoiceTotal);
-                var diffWithoutDeduction = Math.Abs(calculatedWithoutDeduction - currentInvoiceTotal);
-
-                // Use the calculation that's closer to the current total
-                var calculatedTotal = diffWithDeduction <= diffWithoutDeduction ?
-                    calculatedWithDeduction : calculatedWithoutDeduction;
-
-                if (Math.Abs(currentInvoiceTotal - calculatedTotal) > 0.01)
+                if (Math.Abs((invoice.InvoiceTotal ?? 0) - expectedFinalInvoiceTotal) > 0.01)
                 {
-                    _logger.Information("Updating InvoiceTotal from {OldValue} to {NewValue} based on calculation",
-                        invoice.InvoiceTotal, calculatedTotal);
-                    invoice.InvoiceTotal = calculatedTotal;
+                     _logger.Information("Recalculating InvoiceTotal for {InvoiceNo}: From {OldInvoiceTotal:F2} to {NewInvoiceTotal:F2} based on components.", 
+                        invoice.InvoiceNo, invoice.InvoiceTotal ?? 0, expectedFinalInvoiceTotal);
+                    invoice.InvoiceTotal = expectedFinalInvoiceTotal;
                 }
-
-                _logger.Debug("Dependent field recalculation complete for invoice {InvoiceNo}", invoice.InvoiceNo);
+                 _logger.Debug("Dependent field recalculation complete for invoice {InvoiceNo}", invoice.InvoiceNo);
             }
             catch (Exception ex)
             {
@@ -593,11 +396,18 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Recalculates invoice detail total cost - existing method
+        /// Recalculates the TotalCost for a single InvoiceDetail item.
         /// </summary>
         private void RecalculateDetailTotal(InvoiceDetails detail)
         {
-            detail.TotalCost = (detail.Quantity * detail.Cost) - (detail.Discount ?? 0);
+            if (detail == null) return;
+            // Basic calculation: Quantity * Cost - Discount
+            // Ensure Qty and Cost are positive or handle appropriately
+            var quantity = detail.Quantity > 0 ? detail.Quantity : 0;
+            var cost = detail.Cost > 0 ? detail.Cost : 0; // Or handle negative costs if they are refunds etc.
+            var discount = detail.Discount ?? 0;
+            
+            detail.TotalCost = (quantity * cost) - discount;
         }
 
         #endregion

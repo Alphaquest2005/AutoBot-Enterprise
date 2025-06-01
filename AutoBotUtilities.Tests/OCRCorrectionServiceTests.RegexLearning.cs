@@ -76,7 +76,7 @@ namespace AutoBotUtilities.Tests.Production
 
                 // Load patterns using production code
                 var loadedPatterns = await InvokePrivateMethodAsync<List<RegexPattern>>(
-                    _service, "LoadRegexPatternsAsync");
+                                         this._service, "LoadRegexPatternsAsync").ConfigureAwait(false);
 
                 _logger.Information("Loaded {Count} patterns from file", loadedPatterns.Count);
 
@@ -142,8 +142,8 @@ namespace AutoBotUtilities.Tests.Production
                 var expectedText = "Invoice Total: $123.45";
 
                 // Apply patterns using production code
-                var transformedText = await InvokePrivateMethodAsync<string>(_service,
-                    "ApplyLearnedRegexPatternsAsync", originalText, "InvoiceTotal");
+                var transformedText = await InvokePrivateMethodAsync<string>(this._service,
+                                          "ApplyLearnedRegexPatternsAsync", originalText, "InvoiceTotal").ConfigureAwait(false);
 
                 _logger.Information("Original: {Original}", originalText);
                 _logger.Information("Transformed: {Transformed}", transformedText);
@@ -201,14 +201,14 @@ namespace AutoBotUtilities.Tests.Production
                 Assert.That(File.Exists(regexConfigPath), Is.True, "Regex patterns file should be created");
 
                 var savedPatterns = await InvokePrivateMethodAsync<List<RegexPattern>>(
-                    _service, "LoadRegexPatternsAsync");
+                                        this._service, "LoadRegexPatternsAsync").ConfigureAwait(false);
 
                 _logger.Information("Generated {Count} patterns from corrections", savedPatterns.Count);
 
                 // Step 5: Apply learned patterns to new text
                 var testText = "New Invoice Total: 67890";
-                var transformedText = await InvokePrivateMethodAsync<string>(_service,
-                    "ApplyLearnedRegexPatternsAsync", testText, "InvoiceTotal");
+                var transformedText = await InvokePrivateMethodAsync<string>(this._service,
+                                          "ApplyLearnedRegexPatternsAsync", testText, "InvoiceTotal").ConfigureAwait(false);
 
                 _logger.Information("Applied patterns: {Original} → {Transformed}", testText, transformedText);
 
@@ -269,8 +269,8 @@ namespace AutoBotUtilities.Tests.Production
                 var stopwatch = Stopwatch.StartNew();
 
                 // Apply patterns
-                var transformedText = await InvokePrivateMethodAsync<string>(_service,
-                    "ApplyLearnedRegexPatternsAsync", largeText.ToString(), "InvoiceTotal");
+                var transformedText = await InvokePrivateMethodAsync<string>(this._service,
+                                          "ApplyLearnedRegexPatternsAsync", largeText.ToString(), "InvoiceTotal").ConfigureAwait(false);
 
                 stopwatch.Stop();
 

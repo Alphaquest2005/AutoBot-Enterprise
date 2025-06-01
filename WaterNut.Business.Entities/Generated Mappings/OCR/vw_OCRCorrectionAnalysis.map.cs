@@ -13,8 +13,8 @@
         {                        
               this.HasKey(t => new {t.FieldName, t.CorrectionType});        
               this.ToTable("vw_OCRCorrectionAnalysis");
-              this.Property(t => t.FieldName).HasColumnName("FieldName").IsRequired().HasMaxLength(100);
-              this.Property(t => t.CorrectionType).HasColumnName("CorrectionType").IsRequired().HasMaxLength(50);
+              this.Property(t => t.FieldName).HasColumnName("FieldName").IsRequired().HasMaxLength(255);
+              this.Property(t => t.CorrectionType).HasColumnName("CorrectionType").IsRequired().HasMaxLength(100);
               this.Property(t => t.TotalCorrections).HasColumnName("TotalCorrections");
               this.Property(t => t.AvgConfidence).HasColumnName("AvgConfidence");
               this.Property(t => t.SuccessfulCorrections).HasColumnName("SuccessfulCorrections");

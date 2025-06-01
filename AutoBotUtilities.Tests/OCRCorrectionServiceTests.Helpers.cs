@@ -238,11 +238,11 @@ namespace AutoBotUtilities.Tests.Production
 
             if (result is Task<T> taskResult)
             {
-                return await taskResult;
+                return await taskResult.ConfigureAwait(false);
             }
             else if (result is Task task)
             {
-                await task;
+                await task.ConfigureAwait(false);
                 return default(T);
             }
             else if (result is T directResult)

@@ -1,306 +1,251 @@
 ﻿// File: OCRCorrectionService/OCRDataModels.cs
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using global::EntryDataDS.Business.Entities; // For ShipmentInvoice
+using OCR.Business.Entities; // For DB entities like Invoice, Fields, Lines, etc.
 
 namespace WaterNut.DataSpace
 {
-    using System.Collections.Generic;
-    using global::EntryDataDS.Business.Entities;
-
-    #region Data Models
+    #region Core Correction and Error Models
 
     /// <summary>
-    /// Result of applying an OCR correction
+    /// Represents a single correction proposed by the LLM or an internal validation rule.
+    /// This is the primary object used to apply changes and learn patterns.
     /// </summary>
     public class CorrectionResult
     {
         public string FieldName { get; set; }
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
-        public string CorrectionType { get; set; }
-        public bool Success { get; set; }
-        public string ErrorMessage { get; set; }
-        public double Confidence { get; set; }
-        public string Reasoning { get; set; }
-        public int LineNumber { get; set; }
-        
-        // NEW: Enhanced context for omission handling
+        public string OldValue { get; set; } 
+        public string NewValue { get; set; } 
+        public string CorrectionType { get; set; } 
+        public bool Success { get; set; } 
+        public string ErrorMessage { get; set; } 
+        public double Confidence { get; set; } 
+        public string Reasoning { get; set; } 
+        public int LineNumber { get; set; } 
         public string LineText { get; set; }
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-        public bool RequiresMultilineRegex { get; set; }
+        public bool RequiresMultilineRegex { get; set; } 
         
-        // Computed property for full context
         public string FullContext => string.Join("\n", 
             ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));
     }
 
     /// <summary>
-    /// Result of a database update operation
+    /// Represents an error detected in the invoice data before correction.
+    /// </summary>
+    public class InvoiceError
+    {
+        public string Field { get; set; } 
+        public string ExtractedValue { get; set; } 
+        public string CorrectValue { get; set; } 
+        public double Confidence { get; set; } 
+        public string ErrorType { get; set; } 
+        public string Reasoning { get; set; } 
+        public int LineNumber { get; set; }
+        public string LineText { get; set; }
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public bool RequiresMultilineRegex { get; set; }
+    }
+
+    #endregion
+
+    #region Database Interaction Models
+
+    /// <summary>
+    /// Result of a database update operation (e.g., creating/updating a regex pattern).
     /// </summary>
     public class DatabaseUpdateResult
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
-        public int? RecordId { get; set; }
-        public string Operation { get; set; }
+        public int? RecordId { get; set; } 
+        public string Operation { get; set; } 
         public Exception Exception { get; set; }
 
-        public static DatabaseUpdateResult Success(int recordId, string operation)
-        {
-            return new DatabaseUpdateResult
-            {
-                IsSuccess = true,
-                RecordId = recordId,
-                Operation = operation,
-                Message = $"Successfully {operation.ToLower()} record {recordId}"
-            };
-        }
-
-        public static DatabaseUpdateResult Failed(string message, Exception exception = null)
-        {
-            return new DatabaseUpdateResult
-            {
-                IsSuccess = false,
-                Message = message,
-                Exception = exception
-            };
-        }
-    }
-
-    /// <summary>
-    /// Represents an OCR error detected in invoice data
-    /// </summary>
-    public class InvoiceError
-    {
-        public string Field { get; set; }
-        public string ExtractedValue { get; set; }
-        public string CorrectValue { get; set; }
-        public double Confidence { get; set; }
-        public string ErrorType { get; set; }
-        public string Reasoning { get; set; }
+        public static DatabaseUpdateResult Success(int recordId, string operation) =>
+            new DatabaseUpdateResult { IsSuccess = true, RecordId = recordId, Operation = operation, Message = $"Successfully {operation} (ID: {recordId})" };
         
-        // NEW: Enhanced context for omission handling
-        public int LineNumber { get; set; }
-        public string LineText { get; set; }
-        public List<string> ContextLinesBefore { get; set; } = new List<string>();
-        public List<string> ContextLinesAfter { get; set; } = new List<string>();
-        public bool RequiresMultilineRegex { get; set; }
+        public static DatabaseUpdateResult Failed(string message, Exception ex = null) =>
+            new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
     }
 
     /// <summary>
-    /// Enhanced LineInfo with confidence and reasoning
-    /// </summary>
-    public class LineInfo
-    {
-        public int LineNumber { get; set; }
-        public string LineText { get; set; }
-        public double Confidence { get; set; }
-        public string Reasoning { get; set; }
-    }
-
-    /// <summary>
-    /// Line context for correction processing
-    /// </summary>
-    public class LineContext
-    {
-        public int? LineId { get; set; }
-        public int LineNumber { get; set; }
-        public string LineText { get; set; }
-        public string WindowText { get; set; }
-        public bool IsOrphaned { get; set; }
-        public bool RequiresNewLineCreation { get; set; }
-        public List<OCRFieldMetadata> ExistingFields { get; set; } = new List<OCRFieldMetadata>();
-        
-        // NEW: Enhanced context from DeepSeek
-        public string RegexPattern { get; set; }
-        public List<FieldInfo> FieldsInLine { get; set; } = new List<FieldInfo>();
-        public List<string> ContextLinesBefore { get; set; } = new List<string>();
-        public List<string> ContextLinesAfter { get; set; } = new List<string>();
-        public bool RequiresMultilineRegex { get; set; }
-        public string FullContextWithLineNumbers => string.Join("\n", 
-            ContextLinesBefore.Concat(new[] { $">>> Line {LineNumber}: {LineText} <<<" }).Concat(ContextLinesAfter));
-            
-        // Additional properties for line context
-        public string LineName { get; set; }
-        public string LineRegex { get; set; }
-        public int? RegexId { get; set; }
-        public int? PartId { get; set; }
-    }
-
-    /// <summary>
-    /// Field information for mapping purposes
-    /// </summary>
-    public class FieldInfo
-    {
-        public int FieldId { get; set; }
-        public string Key { get; set; }        // Maps to regex named group
-        public string Field { get; set; }      // Database field name
-        public string EntityType { get; set; }
-        public string DataType { get; set; }
-    }
-
-    /// <summary>
-    /// Regex correction strategy determined by DeepSeek
-    /// </summary>
-    public class RegexCorrectionStrategy
-    {
-        public string StrategyType { get; set; } // FORMAT_FIX, PATTERN_UPDATE, CHARACTER_MAP, VALIDATION_RULE
-        public string RegexPattern { get; set; }
-        public string ReplacementPattern { get; set; }
-        public double Confidence { get; set; }
-        public string Reasoning { get; set; }
-    }
-
-    /// <summary>
-    /// Response from DeepSeek for regex creation
-    /// </summary>
-    public class RegexCreationResponse
-    {
-        public string Strategy { get; set; }  // "modify_existing_line" or "create_new_line"
-        public string RegexPattern { get; set; }
-        public string CompleteLineRegex { get; set; }  // Full regex for line updates
-        public bool IsMultiline { get; set; }
-        public int MaxLines { get; set; }
-        public string TestMatch { get; set; }
-        public double Confidence { get; set; }
-        public string Reasoning { get; set; }
-        public bool PreservesExistingGroups { get; set; }  // Safety check
-    }
-
-    /// <summary>
-    /// Request for updating regex patterns
+    /// Request object for database update strategies. Contains all necessary context for a strategy to act.
     /// </summary>
     public class RegexUpdateRequest
     {
-        public string FieldName { get; set; }
-        public string CorrectionType { get; set; }
+        public string FieldName { get; set; }       
         public string OldValue { get; set; }
         public string NewValue { get; set; }
+        public string CorrectionType { get; set; }
+        public double Confidence { get; set; }
+        public string DeepSeekReasoning { get; set; }
         public int LineNumber { get; set; }
         public string LineText { get; set; }
-        public RegexCorrectionStrategy Strategy { get; set; }
-        public double Confidence { get; set; }
-        public string WindowText { get; set; }
-        public string DeepSeekReasoning { get; set; }
+        public string WindowText { get; set; }      
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public bool RequiresMultilineRegex { get; set; }
         public string FilePath { get; set; }
-        public string InvoiceType { get; set; }
-        public DatabaseUpdateStrategy UpdateStrategy { get; set; }
+        public string InvoiceType { get; set; }     
+        public int? LineId { get; set; }                                                 
+        public int? PartId { get; set; }            
+        public int? RegexId { get; set; }           
+        public string ExistingRegex { get; set; }   
     }
-
+    
     /// <summary>
-    /// Data model for regex pattern storage
+    /// Enum defining the strategies for database updates.
     /// </summary>
-    public class RegexPattern
+    public enum DatabaseUpdateStrategy
     {
-        public string FieldName { get; set; }
-        public string StrategyType { get; set; }
-        public string Pattern { get; set; }
-        public string Replacement { get; set; }
-        public double Confidence { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime LastUpdated { get; set; }
-        public int UpdateCount { get; set; }
-        public string CreatedBy { get; set; }
+        SkipUpdate,         
+        LogOnly,            
+        UpdateFieldFormat,  
+        UpdateRegexPattern, 
+        CreateNewPattern    
     }
 
+    #endregion
+
+    #region OCR Template and Extraction Metadata Models
+
     /// <summary>
-    /// Enhanced OCR metadata for tracking field extraction details and enabling precise database updates
+    /// Detailed metadata about how a field was extracted by the OCR template system.
+    /// This links runtime extracted values back to the specific OCR template definitions.
     /// </summary>
     public class OCRFieldMetadata
     {
-        // Basic field information
-        public string FieldName { get; set; }          // "TotalDeduction" (database destination field)
-        public string Value { get; set; }              // "5.99" (extracted value)
-        public string RawValue { get; set; }           // Original OCR text value
-
-        // OCR Template Context (THE CRITICAL METADATA!)
-        public int LineNumber { get; set; }            // Text line number where found
-        public int? FieldId { get; set; }              // OCR-Fields.Id (unique field identifier)
-        public int? LineId { get; set; }               // OCR-Lines.Id (line definition)
-        public int? RegexId { get; set; }              // OCR-RegularExpressions.Id (regex pattern used)
-        public string Key { get; set; }                // "Save" (regex capture group name)
-        public string Field { get; set; }              // "TotalDeduction" (database field name)
-        public string EntityType { get; set; }         // "Invoice" (target table)
-        public string DataType { get; set; }           // "Number", "String", etc.
-
-        // Line Context
-        public string LineName { get; set; }           // "Buy More Save" (OCR-Lines.Name)
-        public string LineRegex { get; set; }          // The regex pattern that matched this line
-        public bool? IsRequired { get; set; }          // Whether field is required
-
-        // Part Context
-        public int? PartId { get; set; }               // OCR-Parts.Id
-        public string PartName { get; set; }           // "Header", "InvoiceLine", etc.
-        public int? PartTypeId { get; set; }           // OCR-PartTypes.Id
-
-        // Invoice Context
-        public int? InvoiceId { get; set; }            // OCR-Invoices.Id
-        public string InvoiceName { get; set; }        // "Amazon"
-
-        // Processing Context
-        public string Section { get; set; }            // "Single", "Ripped", "Sparse"
-        public string Instance { get; set; }           // Instance identifier
-        public double? Confidence { get; set; }        // Extraction confidence
-
-        // Format Regex Context
+        public string FieldName { get; set; }          
+        public string Value { get; set; }              
+        public string RawValue { get; set; }           
+        public int LineNumber { get; set; }            
+        public int? FieldId { get; set; }              
+        public int? LineId { get; set; }               
+        public int? RegexId { get; set; }              
+        public string Key { get; set; }                
+        public string Field { get; set; }              
+        public string EntityType { get; set; }         
+        public string DataType { get; set; }           
+        public bool? IsRequired { get; set; }          
+        public string LineName { get; set; }           
+        public string LineRegex { get; set; }          
+        public string LineText { get; set; }                  
+        public int? PartId { get; set; }               
+        public string PartName { get; set; }           
+        public int? PartTypeId { get; set; }           
+        public int? InvoiceId { get; set; }            
+        public string InvoiceName { get; set; }        
+        public string Section { get; set; }            
+        public string Instance { get; set; }           
+        public double? Confidence { get; set; }        
         public List<FieldFormatRegexInfo> FormatRegexes { get; set; } = new List<FieldFormatRegexInfo>();
     }
 
     /// <summary>
-    /// Field format regex information for post-processing corrections
+    /// Information about a specific FieldFormatRegEx rule applied to a field.
     /// </summary>
     public class FieldFormatRegexInfo
     {
-        public int? FormatRegexId { get; set; }        // OCR-FieldFormatRegEx.Id
-        public int? RegexId { get; set; }              // Pattern regex ID
-        public int? ReplacementRegexId { get; set; }   // Replacement regex ID
-        public string Pattern { get; set; }            // Regex pattern
-        public string Replacement { get; set; }        // Replacement pattern
+        public int? FormatRegexId { get; set; }        
+        public int? RegexId { get; set; }              
+        public int? ReplacementRegexId { get; set; }   
+        public string Pattern { get; set; }            
+        public string Replacement { get; set; }        
     }
 
     /// <summary>
-    /// Enhanced ShipmentInvoice with OCR metadata for database updates
+    /// Combines a ShipmentInvoice (runtime data) with its corresponding OCRFieldMetadata.
     /// </summary>
     public class ShipmentInvoiceWithMetadata
     {
         public ShipmentInvoice Invoice { get; set; }
         public Dictionary<string, OCRFieldMetadata> FieldMetadata { get; set; } = new Dictionary<string, OCRFieldMetadata>();
 
-        /// <summary>
-        /// Gets OCR metadata for a specific field
-        /// </summary>
-        public OCRFieldMetadata GetFieldMetadata(string fieldName)
-        {
-            return FieldMetadata.TryGetValue(fieldName, out var metadata) ? metadata : null;
-        }
-
-        /// <summary>
-        /// Sets OCR metadata for a specific field
-        /// </summary>
-        public void SetFieldMetadata(string fieldName, OCRFieldMetadata metadata)
-        {
+        public OCRFieldMetadata GetFieldMetadata(string fieldName) => 
+            FieldMetadata.TryGetValue(fieldName, out var metadata) ? metadata : null;
+        
+        public void SetFieldMetadata(string fieldName, OCRFieldMetadata metadata) => 
             FieldMetadata[fieldName] = metadata;
-        }
     }
 
+    #endregion
+
+    #region Context and Strategy Models for Advanced Processing
+
     /// <summary>
-    /// Enumeration of OCR error types
+    /// Represents the textual and structural context of a line being processed for correction, especially omissions.
     /// </summary>
-    public enum OCRErrorType
+    public class LineContext
     {
-        DecimalSeparator,    // Comma vs period confusion
-        CharacterConfusion,  // 1/l, 0/O, etc.
-        MissingDigit,       // Missing or extra digits
-        FormatError,        // General formatting issues
-        FieldMismatch,      // Wrong field mapping
-        CalculationError,   // Mathematical inconsistencies
-        UnreasonableValue   // Values that don't make sense
+        public int LineNumber { get; set; }         
+        public string LineText { get; set; }        
+        public List<string> ContextLinesBefore { get; set; } = new List<string>();
+        public List<string> ContextLinesAfter { get; set; } = new List<string>();
+        public string WindowText { get; set; }      
+        public bool RequiresMultilineRegex { get; set; } 
+        public int? LineId { get; set; }            
+        public string LineName { get; set; }        
+        public string RegexPattern { get; set; }    
+        public int? RegexId { get; set; }           
+        public List<FieldInfo> FieldsInLine { get; set; } = new List<FieldInfo>(); 
+        public int? PartId { get; set; }
+        public string PartName { get; set; }
+        public int? PartTypeId { get; set; }
+        public bool IsOrphaned { get; set; }        
+        public bool RequiresNewLineCreation { get; set; } 
+
+        public string FullContextWithLineNumbers => string.Join("\n", 
+            ContextLinesBefore.Concat(new[] { $">>> Line {LineNumber}: {LineText} <<<" }).Concat(ContextLinesAfter));
     }
 
     /// <summary>
-    /// Enhanced correction processing result with metadata context
+    /// Simplified information about a field definition within a line's regex context.
+    /// Primarily derived from OCR.Business.Entities.Fields.
     /// </summary>
-    public class EnhancedCorrectionResult
+    public class FieldInfo 
+    {
+        public int FieldId { get; set; }       
+        public string Key { get; set; }         
+        public string Field { get; set; }       
+        public string EntityType { get; set; }  
+        public string DataType { get; set; }    
+        public bool? IsRequired { get; set; }   
+    }
+    
+    /// <summary>
+    /// Response from DeepSeek specifically for suggesting a new regex pattern.
+    /// </summary>
+    public class RegexCreationResponse
+    {
+        public string Strategy { get; set; }
+        public string RegexPattern { get; set; }
+        public string CompleteLineRegex { get; set; }
+        public bool IsMultiline { get; set; }
+        public int MaxLines { get; set; }
+        public string TestMatch { get; set; }
+        public double Confidence { get; set; }
+        public string Reasoning { get; set; }
+        public bool PreservesExistingGroups { get; set; } = true;
+        public string ContextLinesUsed { get; set; } // Additional property for test compatibility
+    }
+
+    /// <summary>
+    /// Alias for RegexCreationResponse for backward compatibility with tests
+    /// </summary>
+    public class DeepSeekRegexResponse : RegexCreationResponse
+    {
+        // This is just an alias/inheritance for test compatibility
+    }
+    
+    /// <summary>
+    /// Overall result of processing a batch of corrections with enhanced metadata.
+    /// </summary>
+    public class EnhancedCorrectionResult 
     {
         public int TotalCorrections { get; set; }
         public int SuccessfulUpdates { get; set; }
@@ -315,38 +260,58 @@ namespace WaterNut.DataSpace
     }
 
     /// <summary>
-    /// Detailed information about processing a single correction with metadata
+    /// Details for a single correction processed with enhanced metadata.
     /// </summary>
-    public class EnhancedCorrectionDetail
+    public class EnhancedCorrectionDetail 
     {
         public CorrectionResult Correction { get; set; }
         public bool HasMetadata { get; set; }
-        public OCRFieldMetadata OCRMetadata { get; set; }
-        public DatabaseUpdateContext UpdateContext { get; set; }
-        public DatabaseUpdateResult DatabaseUpdate { get; set; }
+        public OCRFieldMetadata OCRMetadata { get; set; } 
+        public DatabaseUpdateContext UpdateContext { get; set; } 
+        public DatabaseUpdateResult DatabaseUpdate { get; set; } 
         public string SkipReason { get; set; }
         public DateTime ProcessingTime { get; set; }
     }
 
     /// <summary>
-    /// Context classes for metadata extraction
+    /// Context for deciding and executing database updates for a correction.
     /// </summary>
-    public class InvoiceContext
+    public class DatabaseUpdateContext 
+    {
+        public bool IsValid { get; set; }
+        public string ErrorMessage { get; set; }
+        public OCRCorrectionService.EnhancedDatabaseFieldInfo FieldInfo { get; set; } 
+        public DatabaseUpdateStrategy UpdateStrategy { get; set; }
+        public RequiredDatabaseIds RequiredIds { get; set; } 
+        public OCRCorrectionService.FieldValidationInfo ValidationRules { get; set; }
+    }
+
+    /// <summary>
+    /// IDs from OCRFieldMetadata relevant for DB update operations.
+    /// </summary>
+    public class RequiredDatabaseIds 
+    {
+        public int? FieldId { get; set; }
+        public int? LineId { get; set; }
+        public int? RegexId { get; set; }
+        public int? InvoiceId { get; set; } 
+        public int? PartId { get; set; }
+    }
+    
+    // Context classes used during metadata extraction from OCR Template
+    public class InvoiceContext 
     {
         public int? InvoiceId { get; set; }
         public string InvoiceName { get; set; }
     }
-
-    public class PartContext
+    public class PartContext 
     {
         public int? PartId { get; set; }
         public string PartName { get; set; }
         public int? PartTypeId { get; set; }
     }
-
-    public class FieldContext
+    public class FieldContext 
     {
-        // Field information
         public int? FieldId { get; set; }
         public string Field { get; set; }
         public string Key { get; set; }
@@ -354,60 +319,75 @@ namespace WaterNut.DataSpace
         public string DataType { get; set; }
         public bool? IsRequired { get; set; }
         public string RawValue { get; set; }
-
-        // Line context
-        public int LineNumber { get; set; }
-        public int? LineId { get; set; }
+        public int LineNumber { get; set; } 
+        public int? LineId { get; set; } 
         public string LineName { get; set; }
         public string LineRegex { get; set; }
         public int? RegexId { get; set; }
-
-        // Part context
         public int? PartId { get; set; }
         public string PartName { get; set; }
         public int? PartTypeId { get; set; }
-
-        // Processing context
-        public string Section { get; set; }
-        public string Instance { get; set; }
+        public string Section { get; set; } 
+        public string Instance { get; set; } 
         public double? Confidence { get; set; }
     }
 
+    // The following models were present in some files but might be less used after consolidation
+    // or their purpose is covered by the above. Review if they are still essential.
+
     /// <summary>
-    /// Database update context for field corrections
+    /// Enhanced LineInfo with confidence and reasoning (might be superseded by CorrectionResult/InvoiceError context)
     /// </summary>
-    public class DatabaseUpdateContext
+    public class LineInfo // If this is just for simple line data from DeepSeek, it's fine.
     {
-        public bool IsValid { get; set; }
-        public string ErrorMessage { get; set; }
-        public object FieldInfo { get; set; } // Will be EnhancedDatabaseFieldInfo from OCRFieldMapping
-        public DatabaseUpdateStrategy UpdateStrategy { get; set; }
-        public RequiredDatabaseIds RequiredIds { get; set; }
-        public object ValidationRules { get; set; } // Will be FieldValidationInfo from OCRFieldMapping
+        public int LineNumber { get; set; }
+        public string LineText { get; set; }
+        public double Confidence { get; set; }
+        public string Reasoning { get; set; }
     }
 
     /// <summary>
-    /// Database update strategies
+    /// Represents a regex correction strategy specifically determined by DeepSeek (e.g. for format fixes)
+    /// This might be used if DeepSeek returns a specific regex pattern to apply, rather than just a corrected value.
     /// </summary>
-    public enum DatabaseUpdateStrategy
+    public class RegexCorrectionStrategy // This seems distinct enough to keep if DeepSeek provides explicit regex fix strategies.
     {
-        SkipUpdate,         // No OCR context available
-        LogOnly,            // Log correction but don't update database
-        UpdateFieldFormat,  // Update field format regex only
-        UpdateRegexPattern, // Update existing regex pattern
-        CreateNewPattern    // Create new regex pattern
+        public string StrategyType { get; set; } // e.g., FORMAT_FIX, PATTERN_UPDATE, CHARACTER_MAP, VALIDATION_RULE
+        public string RegexPattern { get; set; }
+        public string ReplacementPattern { get; set; }
+        public double Confidence { get; set; }
+        public string Reasoning { get; set; }
     }
-
+    
     /// <summary>
-    /// Required database IDs for update operations
+    /// Data model for storing learned regex patterns (perhaps in a local cache or simplified DB table, distinct from OCR.Business.Entities.RegularExpressions)
     /// </summary>
-    public class RequiredDatabaseIds
+    public class RegexPattern // This is for a conceptual local store/cache, not the main DB entity.
     {
-        public int? FieldId { get; set; }
-        public int? LineId { get; set; }
-        public int? RegexId { get; set; }
-        public int? InvoiceId { get; set; }
-        public int? PartId { get; set; }
+        public string FieldName { get; set; }
+        public string StrategyType { get; set; } // Type of correction that led to this pattern
+        public string Pattern { get; set; }
+        public string Replacement { get; set; } // If applicable
+        public double Confidence { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdated { get; set; }
+        public int UpdateCount { get; set; }
+        public string CreatedBy { get; set; }
+    }
+    
+    /// <summary>
+    /// Enum for different types of OCR errors, for more granular classification.
+    /// </summary>
+    public enum OCRErrorType // If used for tagging InvoiceError.ErrorType or CorrectionResult.CorrectionType
+    {
+        DecimalSeparator,    
+        CharacterConfusion,  
+        MissingDigit,       
+        FormatError,        
+        FieldMismatch,      
+        CalculationError,   
+        UnreasonableValue,
+        Omission // Explicitly for missing fields
     }
 
     #endregion

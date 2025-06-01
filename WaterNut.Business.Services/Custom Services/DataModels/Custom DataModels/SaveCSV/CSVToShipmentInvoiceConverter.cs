@@ -73,7 +73,6 @@ namespace WaterNut.DataSpace
                         TotalInsurance = Convert.ToDouble((double)(x.TotalInsurance ?? 0.0)),
                         TotalDeductions = Convert.ToDouble((double)(x.TotalDeductions ?? 0.0)),
                         InvoiceTotal = Convert.ToDouble((double)(x.InvoiceTotal ?? 0.0)),
-                        TotalTax = Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
                         Packages = Convert.ToInt32((int)(x.Packages ?? 0)),
                         x.WarehouseNo,
                     }),

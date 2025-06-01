@@ -281,24 +281,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private string _existingRegexFilter;
-        public string ExistingRegexFilter
-        {
-            get
-            {
-                return _existingRegexFilter;
-            }
-            set
-            {
-                _existingRegexFilter = value;
-				NotifyPropertyChanged(x => ExistingRegexFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _correctionTypeFilter;
         public string CorrectionTypeFilter
         {
@@ -310,42 +292,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             {
                 _correctionTypeFilter = value;
 				NotifyPropertyChanged(x => CorrectionTypeFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _newRegexPatternFilter;
-        public string NewRegexPatternFilter
-        {
-            get
-            {
-                return _newRegexPatternFilter;
-            }
-            set
-            {
-                _newRegexPatternFilter = value;
-				NotifyPropertyChanged(x => NewRegexPatternFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _replacementPatternFilter;
-        public string ReplacementPatternFilter
-        {
-            get
-            {
-                return _replacementPatternFilter;
-            }
-            set
-            {
-                _replacementPatternFilter = value;
-				NotifyPropertyChanged(x => ReplacementPatternFilter);
                 FilterData();
                 
             }
@@ -529,17 +475,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private Int32? _processingTimeMsFilter;
-        public Int32? ProcessingTimeMsFilter
+		private Boolean? _requiresMultilineRegexFilter;
+        public Boolean? RequiresMultilineRegexFilter
         {
             get
             {
-                return _processingTimeMsFilter;
+                return _requiresMultilineRegexFilter;
             }
             set
             {
-                _processingTimeMsFilter = value;
-				NotifyPropertyChanged(x => ProcessingTimeMsFilter);
+                _requiresMultilineRegexFilter = value;
+				NotifyPropertyChanged(x => RequiresMultilineRegexFilter);
                 FilterData();
                 
             }
@@ -547,17 +493,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private string _deepSeekPromptFilter;
-        public string DeepSeekPromptFilter
+		private string _contextLinesBeforeFilter;
+        public string ContextLinesBeforeFilter
         {
             get
             {
-                return _deepSeekPromptFilter;
+                return _contextLinesBeforeFilter;
             }
             set
             {
-                _deepSeekPromptFilter = value;
-				NotifyPropertyChanged(x => DeepSeekPromptFilter);
+                _contextLinesBeforeFilter = value;
+				NotifyPropertyChanged(x => ContextLinesBeforeFilter);
                 FilterData();
                 
             }
@@ -565,17 +511,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private string _deepSeekResponseFilter;
-        public string DeepSeekResponseFilter
+		private string _contextLinesAfterFilter;
+        public string ContextLinesAfterFilter
         {
             get
             {
-                return _deepSeekResponseFilter;
+                return _contextLinesAfterFilter;
             }
             set
             {
-                _deepSeekResponseFilter = value;
-				NotifyPropertyChanged(x => DeepSeekResponseFilter);
+                _contextLinesAfterFilter = value;
+				NotifyPropertyChanged(x => ContextLinesAfterFilter);
                 FilterData();
                 
             }
@@ -635,20 +581,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 						res.Append(" && " + string.Format("WindowText.Contains(\"{0}\")",  WindowTextFilter));						
  
 
-									if(string.IsNullOrEmpty(ExistingRegexFilter) == false)
-						res.Append(" && " + string.Format("ExistingRegex.Contains(\"{0}\")",  ExistingRegexFilter));						
- 
-
 									if(string.IsNullOrEmpty(CorrectionTypeFilter) == false)
 						res.Append(" && " + string.Format("CorrectionType.Contains(\"{0}\")",  CorrectionTypeFilter));						
- 
-
-									if(string.IsNullOrEmpty(NewRegexPatternFilter) == false)
-						res.Append(" && " + string.Format("NewRegexPattern.Contains(\"{0}\")",  NewRegexPatternFilter));						
- 
-
-									if(string.IsNullOrEmpty(ReplacementPatternFilter) == false)
-						res.Append(" && " + string.Format("ReplacementPattern.Contains(\"{0}\")",  ReplacementPatternFilter));						
  
 
 									if(string.IsNullOrEmpty(DeepSeekReasoningFilter) == false)
@@ -707,15 +641,16 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 						res.Append(" && " + string.Format("CreatedBy.Contains(\"{0}\")",  CreatedByFilter));						
  
 
-					if(ProcessingTimeMsFilter.HasValue)
-						res.Append(" && " + string.Format("ProcessingTimeMs == {0}",  ProcessingTimeMsFilter.ToString()));				 
-
-									if(string.IsNullOrEmpty(DeepSeekPromptFilter) == false)
-						res.Append(" && " + string.Format("DeepSeekPrompt.Contains(\"{0}\")",  DeepSeekPromptFilter));						
+									if(RequiresMultilineRegexFilter.HasValue)
+						res.Append(" && " + string.Format("RequiresMultilineRegex == {0}",  RequiresMultilineRegexFilter));						
  
 
-									if(string.IsNullOrEmpty(DeepSeekResponseFilter) == false)
-						res.Append(" && " + string.Format("DeepSeekResponse.Contains(\"{0}\")",  DeepSeekResponseFilter));						
+									if(string.IsNullOrEmpty(ContextLinesBeforeFilter) == false)
+						res.Append(" && " + string.Format("ContextLinesBefore.Contains(\"{0}\")",  ContextLinesBeforeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ContextLinesAfterFilter) == false)
+						res.Append(" && " + string.Format("ContextLinesAfter.Contains(\"{0}\")",  ContextLinesAfterFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -757,16 +692,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     WindowText = x.WindowText ,
                     
  
-                    ExistingRegex = x.ExistingRegex ,
-                    
- 
                     CorrectionType = x.CorrectionType ,
-                    
- 
-                    NewRegexPattern = x.NewRegexPattern ,
-                    
- 
-                    ReplacementPattern = x.ReplacementPattern ,
                     
  
                     DeepSeekReasoning = x.DeepSeekReasoning ,
@@ -793,13 +719,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     CreatedBy = x.CreatedBy ,
                     
  
-                    ProcessingTimeMs = x.ProcessingTimeMs ,
+                    RequiresMultilineRegex = x.RequiresMultilineRegex ,
                     
  
-                    DeepSeekPrompt = x.DeepSeekPrompt ,
+                    ContextLinesBefore = x.ContextLinesBefore ,
                     
  
-                    DeepSeekResponse = x.DeepSeekResponse 
+                    ContextLinesAfter = x.ContextLinesAfter 
                     
                 }).ToList()
             };
@@ -821,7 +747,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public string CorrectValue { get; set; } 
                     
  
-                    public int LineNumber { get; set; } 
+                    public Nullable<int> LineNumber { get; set; } 
                     
  
                     public string LineText { get; set; } 
@@ -830,16 +756,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public string WindowText { get; set; } 
                     
  
-                    public string ExistingRegex { get; set; } 
-                    
- 
                     public string CorrectionType { get; set; } 
-                    
- 
-                    public string NewRegexPattern { get; set; } 
-                    
- 
-                    public string ReplacementPattern { get; set; } 
                     
  
                     public string DeepSeekReasoning { get; set; } 
@@ -866,13 +783,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public string CreatedBy { get; set; } 
                     
  
-                    public Nullable<int> ProcessingTimeMs { get; set; } 
+                    public Nullable<bool> RequiresMultilineRegex { get; set; } 
                     
  
-                    public string DeepSeekPrompt { get; set; } 
+                    public string ContextLinesBefore { get; set; } 
                     
  
-                    public string DeepSeekResponse { get; set; } 
+                    public string ContextLinesAfter { get; set; } 
                     
         }
 

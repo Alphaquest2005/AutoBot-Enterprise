@@ -93,7 +93,7 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _maxlines;
         [DataMember]
-        public Nullable<System.DateTime> CreatedDate 
+        public System.DateTime CreatedDate 
         {
             get
             {
@@ -106,9 +106,9 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _createddate;
+        System.DateTime _createddate;
         [DataMember]
-        public Nullable<System.DateTime> LastUpdated 
+        public System.DateTime LastUpdated 
         {
             get
             {
@@ -121,7 +121,7 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _lastupdated;
+        System.DateTime _lastupdated;
         [DataMember]
         public string Description 
         {

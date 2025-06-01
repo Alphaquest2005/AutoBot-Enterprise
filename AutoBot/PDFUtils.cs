@@ -375,7 +375,7 @@ using Serilog.Context;
                 if (filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
                 {
                     // Use the existing PDF text extraction method from InvoiceReader
-                    return await InvoiceReader.InvoiceReader.GetPdftxt(filePath, logger);
+                    return await InvoiceReader.InvoiceReader.GetPdftxt(filePath, logger).ConfigureAwait(false);
                 }
                 else
                 {

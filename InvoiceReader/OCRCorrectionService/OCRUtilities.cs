@@ -1,45 +1,86 @@
 ﻿// File: OCRCorrectionService/OCRUtilities.cs
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using EntryDataDS.Business.Entities;
+using EntryDataDS.Business.Entities; // For ShipmentInvoice in GetCurrentFieldValue
+using Serilog; // Assuming ILogger is from Serilog, available as this._logger
 
 namespace WaterNut.DataSpace
 {
+    using System.IO;
+
     public partial class OCRCorrectionService
     {
-        #region Helper Methods
+        #region Text Manipulation and Cleaning Utilities
 
         /// <summary>
-        /// Cleans text for analysis
+        /// Cleans raw OCR text by removing common artifacts and truncating if too long for LLM processing.
         /// </summary>
-        internal string CleanTextForAnalysis(string text)
+        public string CleanTextForAnalysis(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return string.Empty;
 
-            var cleaned = Regex.Replace(text, @"-{30,}[^-]*-{30,}", "", RegexOptions.Multiline);
+            string cleaned = text;
+            // Remove long separator lines (e.g., 20+ hyphens, underscores, equals)
+            cleaned = Regex.Replace(cleaned, @"(?:-{20,}|_{20,}|={20,}).*?$", "", RegexOptions.Multiline);
+            // Normalize multiple spaces/tabs to a single space, but preserve newlines carefully
+            cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
+            // Trim each line
+            cleaned = string.Join("\n", cleaned.Split('\n').Select(line => line.Trim()));
+            // Remove multiple consecutive blank lines
+            cleaned = Regex.Replace(cleaned, @"(\r\n|\r|\n){3,}", Environment.NewLine + Environment.NewLine);
 
-            if (cleaned.Length > 8000)
-                cleaned = cleaned.Substring(0, 8000) + "...[truncated]";
-
-            return cleaned;
+            // Truncate if excessively long (e.g., for LLM prompt context)
+            int maxLength = 15000; // Adjusted based on typical LLM context limits, can be tuned
+            if (cleaned.Length > maxLength)
+            {
+                cleaned = cleaned.Substring(0, maxLength) + "...[text truncated]";
+                _logger?.Debug("CleanTextForAnalysis: Text was truncated to {MaxLength} characters.", maxLength);
+            }
+            return cleaned.Trim();
         }
 
         /// <summary>
-        /// Cleans JSON response
+        /// Cleans a raw JSON response string, typically from an LLM, by removing common non-JSON artifacts
+        /// like markdown code fences (```json ... ```) and Byte Order Marks (BOM).
+        /// It attempts to extract the main JSON object or array.
         /// </summary>
-        internal string CleanJsonResponse(string jsonResponse)
+        public string CleanJsonResponse(string jsonResponse)
         {
             if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
 
-            var cleaned = Regex.Replace(jsonResponse, @"```json|```|'''|\uFEFF", string.Empty, RegexOptions.IgnoreCase);
+            string cleaned = jsonResponse.Trim();
+            // Remove BOM if present at the start
+            if (cleaned.StartsWith("\uFEFF")) cleaned = cleaned.Substring(1);
 
-            var startIndex = cleaned.IndexOf('{');
-            var endIndex = cleaned.LastIndexOf('}');
+            // Remove markdown code block fences
+            cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
+            cleaned = Regex.Replace(cleaned, @"[\r\n]*```\s*$", "", RegexOptions.IgnoreCase);
+            cleaned = cleaned.Trim();
 
-            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
+            // Find the first '{' or '[' and the last '}' or ']' to extract the core JSON part
+            int firstBrace = cleaned.IndexOf('{');
+            int firstBracket = cleaned.IndexOf('[');
+            int startIndex = -1;
+
+            if (firstBrace == -1 && firstBracket == -1)
             {
-                _logger.Warning("No valid JSON boundaries detected in response");
+                _logger?.Warning("CleanJsonResponse: No JSON object ('{{') or array ('[') start found in response: {ResponseSnippet}", TruncateForLog(cleaned, 100));
+                return string.Empty;
+            }
+
+            if (firstBrace != -1 && firstBracket != -1) startIndex = Math.Min(firstBrace, firstBracket);
+            else if (firstBrace != -1) startIndex = firstBrace;
+            else startIndex = firstBracket; // firstBracket must be != -1 here
+
+            char expectedEndChar = (cleaned[startIndex] == '{') ? '}' : ']';
+            int endIndex = cleaned.LastIndexOf(expectedEndChar);
+
+            if (startIndex == -1 || endIndex == -1 || endIndex < startIndex)
+            {
+                _logger?.Warning("CleanJsonResponse: Could not find valid JSON start/end boundaries. StartIndex: {StartIndex}, EndIndex: {EndIndex}. Response snippet: {ResponseSnippet}", startIndex, endIndex, TruncateForLog(cleaned, 100));
                 return string.Empty;
             }
 
@@ -47,381 +88,403 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Parses corrected value to appropriate type
+        /// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
+        /// Useful for logging or displaying long strings.
         /// </summary>
-        internal object ParseCorrectedValue(string value, string fieldName)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return null;
-
-            var cleanValue = value.Replace("$", "").Replace(",", "").Trim();
-
-            if (IsNumericField(fieldName))
-            {
-                if (decimal.TryParse(cleanValue, out var decimalValue))
-                    return decimalValue;
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        /// Determines if a field should contain numeric values
-        /// </summary>
-        internal bool IsNumericField(string fieldName)
-        {
-            var numericFields = new[] {
-                "invoicetotal", "subtotal", "totalinternalfreight",
-                "totalothercost", "totalinsurance", "totaldeduction",
-                "quantity", "cost", "totalcost", "discount"
-            };
-            return Array.Exists(numericFields, f => f.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Gets current field value for logging
-        /// </summary>
-        internal object GetCurrentFieldValue(ShipmentInvoice invoice, string fieldName)
-        {
-            return fieldName.ToLower() switch
-            {
-                "invoicetotal" => invoice.InvoiceTotal,
-                "subtotal" => invoice.SubTotal,
-                "totalinternalfreight" => invoice.TotalInternalFreight,
-                "totalothercost" => invoice.TotalOtherCost,
-                "totalinsurance" => invoice.TotalInsurance,
-                "totaldeduction" => invoice.TotalDeduction,
-                "invoiceno" => invoice.InvoiceNo,
-                "suppliername" => invoice.SupplierName,
-                "currency" => invoice.Currency,
-                _ => null
-            };
-        }
-
-        /// <summary>
-        /// Truncates text for logging
-        /// </summary>
-        internal string TruncateForLog(string text, int maxLength = 500)
+        public string TruncateForLog(string text, int maxLength = 200) // Reduced default for logs
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
             return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
         }
 
-        /// <summary>
-        /// Enhanced error detection response parsing (no duplicates)
-        /// </summary>
-        internal List<InvoiceError> ParseErrorDetectionResponse(string response)
-        {
-            try
-            {
-                var cleanJson = CleanJsonResponse(response);
-                if (string.IsNullOrWhiteSpace(cleanJson))
-                {
-                    _logger.Warning("No valid JSON found in error detection response");
-                    return new List<InvoiceError>();
-                }
+        #endregion
 
-                _logger.Debug("Parsing error detection response JSON: {Json}", TruncateForLog(cleanJson, 1000));
+        #region JSON Element Parsing Utilities (with Logging)
 
-                using var doc = JsonDocument.Parse(cleanJson);
-                var root = doc.RootElement;
-
-                var errors = new List<InvoiceError>();
-
-                if (root.TryGetProperty("errors", out var errorsElement))
-                {
-                    _logger.Information("Found errors array with {Count} elements", errorsElement.GetArrayLength());
-
-                    int errorIndex = 0;
-                    foreach (var errorElement in errorsElement.EnumerateArray())
-                    {
-                        errorIndex++;
-                        try
-                        {
-                            _logger.Debug("Processing error element {Index}: {Element}", errorIndex, errorElement.GetRawText());
-
-                            var error = new InvoiceError();
-
-                            // Parse each field with detailed logging
-                            error.Field = GetStringValueWithLogging(errorElement, "field", errorIndex);
-                            error.ExtractedValue = GetStringValueWithLogging(errorElement, "extracted_value", errorIndex);
-                            error.CorrectValue = GetStringValueWithLogging(errorElement, "correct_value", errorIndex);
-                            error.Confidence = GetDoubleValueWithLogging(errorElement, "confidence", errorIndex);
-                            error.ErrorType = GetStringValueWithLogging(errorElement, "error_type", errorIndex);
-                            error.Reasoning = GetStringValueWithLogging(errorElement, "reasoning", errorIndex);
-                            error.LineText = GetStringValueWithLogging(errorElement, "line_text", errorIndex);
-                            error.LineNumber = GetIntValueWithLogging(errorElement, "line_number", errorIndex);
-                            error.RequiresMultilineRegex = GetBooleanValueWithLogging(errorElement, "requires_multiline_regex", errorIndex);
-
-                            // Parse context lines
-                            error.ContextLinesBefore = ParseContextLinesArray(errorElement, "context_lines_before", errorIndex);
-                            error.ContextLinesAfter = ParseContextLinesArray(errorElement, "context_lines_after", errorIndex);
-
-                            // Validate required fields
-                            if (!string.IsNullOrEmpty(error.Field) && !string.IsNullOrEmpty(error.CorrectValue))
-                            {
-                                errors.Add(error);
-                                _logger.Information("Successfully parsed error {Index}: Field={Field}, Type={ErrorType}, Confidence={Confidence:P0}",
-                                    errorIndex, error.Field, error.ErrorType, error.Confidence);
-                            }
-                            else
-                            {
-                                _logger.Warning("Skipping incomplete error {Index}: Field='{Field}', CorrectValue='{CorrectValue}'",
-                                    errorIndex, error.Field ?? "NULL", error.CorrectValue ?? "NULL");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(ex, "Failed to parse error element {Index}. Raw JSON: {Element}",
-                                errorIndex, errorElement.GetRawText());
-                        }
-                    }
-                }
-                else
-                {
-                    _logger.Warning("No 'errors' property found in response. Available properties: {Properties}",
-                        string.Join(", ", root.EnumerateObject().Select(p => p.Name)));
-                }
-
-                _logger.Debug("Successfully parsed {Count} errors from response", errors.Count);
-                return errors;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error parsing error detection response. Raw response: {Response}", TruncateForLog(response));
-                return new List<InvoiceError>();
-            }
-        }
-
-        /// <summary>
-        /// Gets string value with detailed logging of data types and conversion issues
-        /// </summary>
-        private string GetStringValueWithLogging(JsonElement element, string propertyName, int errorIndex)
+        public string GetStringValueWithLogging(JsonElement element, string propertyName, int itemIndex, bool isOptional = false)
         {
             try
             {
                 if (!element.TryGetProperty(propertyName, out var prop))
                 {
-                    _logger.Debug("Property '{PropertyName}' not found in error {Index}", propertyName, errorIndex);
+                    if (!isOptional) _logger?.Debug("Item {ItemIndex}: Property '{PropertyName}' not found.", itemIndex, propertyName);
                     return null;
                 }
-
-                _logger.Debug("Error {Index}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}",
-                    errorIndex, propertyName, prop.ValueKind, TruncateForLog(prop.GetRawText(), 100));
-
-                switch (prop.ValueKind)
+                // _logger?.Verbose("Item {ItemIndex}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}", itemIndex, propertyName, prop.ValueKind, TruncateForLog(prop.GetRawText(), 50));
+                return prop.ValueKind switch
                 {
-                    case JsonValueKind.String:
-                        var stringValue = prop.GetString();
-                        _logger.Debug("Extracted string value for {PropertyName}: '{Value}'", propertyName, stringValue);
-                        return stringValue;
-
-                    case JsonValueKind.Number:
-                        var numberAsString = prop.GetRawText();
-                        _logger.Warning("Expected string for '{PropertyName}' but got number: {Value}. Converting to string.",
-                            propertyName, numberAsString);
-                        return numberAsString;
-
-                    case JsonValueKind.True:
-                        _logger.Warning("Expected string for '{PropertyName}' but got boolean: true. Converting to string.", propertyName);
-                        return "true";
-
-                    case JsonValueKind.False:
-                        _logger.Warning("Expected string for '{PropertyName}' but got boolean: false. Converting to string.", propertyName);
-                        return "false";
-
-                    case JsonValueKind.Null:
-                        _logger.Debug("Property '{PropertyName}' is null", propertyName);
-                        return null;
-
-                    case JsonValueKind.Array:
-                        var arrayValue = prop.GetRawText();
-                        _logger.Warning("Expected string for '{PropertyName}' but got array: {Value}. Using raw JSON.",
-                            propertyName, TruncateForLog(arrayValue, 100));
-                        return arrayValue;
-
-                    case JsonValueKind.Object:
-                        var objectValue = prop.GetRawText();
-                        _logger.Warning("Expected string for '{PropertyName}' but got object: {Value}. Using raw JSON.",
-                            propertyName, TruncateForLog(objectValue, 100));
-                        return objectValue;
-
-                    default:
-                        var defaultValue = prop.GetRawText();
-                        _logger.Warning("Unexpected JSON type {ValueKind} for '{PropertyName}': {Value}. Using raw text.",
-                            prop.ValueKind, propertyName, defaultValue);
-                        return defaultValue;
-                }
+                    JsonValueKind.String => prop.GetString(),
+                    JsonValueKind.Number => prop.GetRawText(), // Convert number to its string representation
+                    JsonValueKind.True => "true",
+                    JsonValueKind.False => "false",
+                    JsonValueKind.Null => null,
+                    _ => prop.GetRawText() // Fallback for arrays/objects if GetString is called on them
+                };
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error extracting string value for property '{PropertyName}' in error {Index}",
-                    propertyName, errorIndex);
+                _logger?.Error(ex, "Item {ItemIndex}: Error extracting string for property '{PropertyName}'.", itemIndex, propertyName);
                 return null;
             }
         }
 
-        /// <summary>
-        /// Gets double value with detailed logging of data types and conversion issues
-        /// </summary>
-        private double GetDoubleValueWithLogging(JsonElement element, string propertyName, int errorIndex)
+        internal double GetDoubleValueWithLogging(JsonElement element, string propertyName, int itemIndex, double defaultValue = 0.0, bool isOptional = false)
         {
             try
             {
                 if (!element.TryGetProperty(propertyName, out var prop))
                 {
-                    _logger.Debug("Property '{PropertyName}' not found in error {Index}", propertyName, errorIndex);
-                    return 0.0;
+                    if (!isOptional) _logger?.Debug("Item {ItemIndex}: Property '{PropertyName}' not found, using default {Default}.", itemIndex, propertyName, defaultValue);
+                    return defaultValue;
                 }
-
-                _logger.Debug("Error {Index}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}",
-                    errorIndex, propertyName, prop.ValueKind, prop.GetRawText());
-
-                switch (prop.ValueKind)
-                {
-                    case JsonValueKind.Number:
-                        if (prop.TryGetDouble(out var doubleValue))
-                        {
-                            _logger.Debug("Extracted double value for {PropertyName}: {Value}", propertyName, doubleValue);
-                            return doubleValue;
-                        }
-                        if (prop.TryGetDecimal(out var decimalValue))
-                        {
-                            var convertedValue = (double)decimalValue;
-                            _logger.Debug("Converted decimal to double for {PropertyName}: {Value}", propertyName, convertedValue);
-                            return convertedValue;
-                        }
-                        if (prop.TryGetInt32(out var intValue))
-                        {
-                            _logger.Debug("Converted int to double for {PropertyName}: {Value}", propertyName, intValue);
-                            return intValue;
-                        }
-                        if (prop.TryGetInt64(out var longValue))
-                        {
-                            _logger.Debug("Converted long to double for {PropertyName}: {Value}", propertyName, longValue);
-                            return longValue;
-                        }
-                        break;
-
-                    case JsonValueKind.String:
-                        var stringValue = prop.GetString();
-                        if (double.TryParse(stringValue, out var parsedValue))
-                        {
-                            _logger.Warning("Expected number for '{PropertyName}' but got string: '{Value}'. Successfully parsed as {ParsedValue}.",
-                                propertyName, stringValue, parsedValue);
-                            return parsedValue;
-                        }
-                        _logger.Error("Expected number for '{PropertyName}' but got unparseable string: '{Value}'. Using 0.0.",
-                            propertyName, stringValue);
-                        break;
-
-                    case JsonValueKind.Null:
-                        _logger.Debug("Property '{PropertyName}' is null, using 0.0", propertyName);
-                        break;
-
-                    default:
-                        _logger.Warning("Expected number for '{PropertyName}' but got {ValueKind}: {Value}. Using 0.0.",
-                            propertyName, prop.ValueKind, prop.GetRawText());
-                        break;
-                }
-
-                return 0.0;
+                // _logger?.Verbose("Item {ItemIndex}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}", itemIndex, propertyName, prop.ValueKind, TruncateForLog(prop.GetRawText(), 50));
+                if (prop.ValueKind == JsonValueKind.Number && prop.TryGetDouble(out var val)) return val;
+                if (prop.ValueKind == JsonValueKind.String && double.TryParse(prop.GetString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsedVal)) return parsedVal;
+                if (prop.ValueKind != JsonValueKind.Null && !isOptional) _logger?.Warning("Item {ItemIndex}: Cannot parse '{PropertyName}' as double (Raw: '{RawVal}'). Using default {Default}.", itemIndex, propertyName, prop.GetRawText(), defaultValue);
+                return defaultValue;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error extracting double value for property '{PropertyName}' in error {Index}",
-                    propertyName, errorIndex);
-                return 0.0;
+                _logger?.Error(ex, "Item {ItemIndex}: Error extracting double for property '{PropertyName}'.", itemIndex, propertyName);
+                return defaultValue;
             }
         }
 
-        /// <summary>
-        /// Gets integer value with logging
-        /// </summary>
-        private int GetIntValueWithLogging(JsonElement element, string propertyName, int errorIndex)
+        internal int GetIntValueWithLogging(JsonElement element, string propertyName, int itemIndex, int defaultValue = 0, bool isOptional = false)
         {
             try
             {
                 if (!element.TryGetProperty(propertyName, out var prop))
                 {
-                    _logger.Debug("Property '{PropertyName}' not found in error {Index}", propertyName, errorIndex);
-                    return 0;
+                    if (!isOptional) _logger?.Debug("Item {ItemIndex}: Property '{PropertyName}' not found, using default {Default}.", itemIndex, propertyName, defaultValue);
+                    return defaultValue;
                 }
-
-                if (prop.ValueKind == JsonValueKind.Number && prop.TryGetInt32(out var intValue))
-                {
-                    return intValue;
-                }
-
-                return 0;
+                // _logger?.Verbose("Item {ItemIndex}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}", itemIndex, propertyName, prop.ValueKind, TruncateForLog(prop.GetRawText(), 50));
+                if (prop.ValueKind == JsonValueKind.Number && prop.TryGetInt32(out var val)) return val;
+                if (prop.ValueKind == JsonValueKind.String && int.TryParse(prop.GetString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsedVal)) return parsedVal;
+                if (prop.ValueKind != JsonValueKind.Null && !isOptional) _logger?.Warning("Item {ItemIndex}: Cannot parse '{PropertyName}' as int (Raw: '{RawVal}'). Using default {Default}.", itemIndex, propertyName, prop.GetRawText(), defaultValue);
+                return defaultValue;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error extracting int value for property '{PropertyName}' in error {Index}",
-                    propertyName, errorIndex);
-                return 0;
+                _logger?.Error(ex, "Item {ItemIndex}: Error extracting int for property '{PropertyName}'.", itemIndex, propertyName);
+                return defaultValue;
             }
         }
 
-        /// <summary>
-        /// Gets boolean value with logging
-        /// </summary>
-        private bool GetBooleanValueWithLogging(JsonElement element, string propertyName, int errorIndex)
+        internal bool GetBooleanValueWithLogging(JsonElement element, string propertyName, int itemIndex, bool defaultValue = false, bool isOptional = false)
         {
             try
             {
                 if (!element.TryGetProperty(propertyName, out var prop))
                 {
-                    _logger.Debug("Property '{PropertyName}' not found in error {Index}", propertyName, errorIndex);
-                    return false;
+                    if (!isOptional) _logger?.Debug("Item {ItemIndex}: Property '{PropertyName}' not found, using default {Default}.", itemIndex, propertyName, defaultValue);
+                    return defaultValue;
                 }
-
+                // _logger?.Verbose("Item {ItemIndex}.{PropertyName}: Type={ValueKind}, RawValue={RawValue}", itemIndex, propertyName, prop.ValueKind, TruncateForLog(prop.GetRawText(), 50));
                 if (prop.ValueKind == JsonValueKind.True) return true;
                 if (prop.ValueKind == JsonValueKind.False) return false;
-
-                return false;
+                if (prop.ValueKind == JsonValueKind.String && bool.TryParse(prop.GetString(), out var parsedBool)) return parsedBool;
+                if (prop.ValueKind == JsonValueKind.Number && prop.TryGetInt32(out var intVal)) return intVal != 0; // Treat 0 as false, others as true
+                if (prop.ValueKind != JsonValueKind.Null && !isOptional) _logger?.Warning("Item {ItemIndex}: Cannot parse '{PropertyName}' as bool (Raw: '{RawVal}'). Using default {Default}.", itemIndex, propertyName, prop.GetRawText(), defaultValue);
+                return defaultValue;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error extracting boolean value for property '{PropertyName}' in error {Index}",
-                    propertyName, errorIndex);
-                return false;
+                _logger?.Error(ex, "Item {ItemIndex}: Error extracting boolean for property '{PropertyName}'.", itemIndex, propertyName);
+                return defaultValue;
             }
+        }
+
+        public List<string> ParseContextLinesArray(JsonElement element, string propertyName, int itemIndex)
+        {
+            var contextLines = new List<string>();
+            try
+            {
+                if (element.TryGetProperty(propertyName, out var prop) && prop.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in prop.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.String) contextLines.Add(item.GetString());
+                        else if (item.ValueKind != JsonValueKind.Null) contextLines.Add(item.GetRawText()); // Add non-string array elements as raw text
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Item {ItemIndex}: Error parsing context lines for property '{PropertyName}'.", itemIndex, propertyName);
+            }
+            return contextLines;
+        }
+
+        #endregion
+
+        #region Document Text Utilities
+
+        /// <summary>
+        /// Extracts the text of a specific line number (1-based) from a multi-line string.
+        /// </summary>
+        public string GetOriginalLineText(string fullText, int lineNumber)
+        {
+            if (string.IsNullOrEmpty(fullText) || lineNumber <= 0)
+                return ""; // Or null, depending on desired behavior for invalid input
+
+            // Split by common newline sequences. Using StringSplitOptions.None to preserve empty lines if line numbers are absolute.
+            var lines = fullText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            if (lineNumber <= lines.Length)
+            {
+                return lines[lineNumber - 1]; // 0-indexed access for 1-based lineNumber
+            }
+            _logger?.Debug("GetOriginalLineText: LineNumber {LineNum} is out of bounds for text with {TotalLines} lines.", lineNumber, lines.Length);
+            return ""; // Line number out of bounds
         }
 
         /// <summary>
-        /// Parses context lines array from JSON
+        /// Extracts a window of text lines around a specified center line number.
         /// </summary>
-        private List<string> ParseContextLinesArray(JsonElement element, string propertyName, int errorIndex)
+        /// <param name="fullText">The complete document text.</param>
+        /// <param name="centerLineNumber">The 1-based line number for the center of the window.</param>
+        /// <param name="windowHalfSize">Number of lines to include before and after the center line.</param>
+        /// <returns>A string containing the window of text, with lines separated by newlines.</returns>
+        public string ExtractWindowText(string fullText, int centerLineNumber, int windowHalfSize)
         {
+            if (string.IsNullOrEmpty(fullText) || centerLineNumber <= 0 || windowHalfSize < 0)
+                return "";
+
+            var lines = fullText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var centerIndex = centerLineNumber - 1; // 0-based
+
+            if (centerIndex < 0 || centerIndex >= lines.Length)
+            {
+                _logger?.Debug("ExtractWindowText: CenterLineNumber {CenterLineNum} is out of bounds.", centerLineNumber);
+                return "";
+            }
+
+            var startIndex = Math.Max(0, centerIndex - windowHalfSize);
+            var endIndex = Math.Min(lines.Length - 1, centerIndex + windowHalfSize);
+
+            if (startIndex > endIndex) return ""; // Should not happen with valid inputs
+
+            return string.Join("\n", lines.Skip(startIndex).Take(endIndex - startIndex + 1));
+        }
+
+        /// <summary>
+        /// Extracts all named capture groups from a given regex pattern string.
+        /// </summary>
+        public List<string> ExtractNamedGroupsFromRegex(string regexPattern)
+        {
+            if (string.IsNullOrEmpty(regexPattern)) return new List<string>();
             try
             {
-                if (!element.TryGetProperty(propertyName, out var prop) || prop.ValueKind != JsonValueKind.Array)
-                {
-                    return new List<string>();
-                }
-
-                var contextLines = new List<string>();
-                foreach (var item in prop.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.String)
-                    {
-                        contextLines.Add(item.GetString());
-                    }
-                }
-
-                _logger.Debug("Parsed {Count} context lines for {PropertyName} in error {Index}",
-                    contextLines.Count, propertyName, errorIndex);
-
-                return contextLines;
+                // Regex.GetGroupNames() includes "0" for the full match, and then named/numbered groups.
+                // We filter out the "0" and any other purely numeric group names.
+                var regex = new Regex(regexPattern); // Throws ArgumentException on invalid pattern
+                return regex.GetGroupNames().Where(name => name != "0" && !int.TryParse(name, out _)).ToList();
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                _logger.Error(ex, "Error parsing context lines for property '{PropertyName}' in error {Index}",
-                    propertyName, errorIndex);
-                return new List<string>();
+                _logger?.Error(ex, "ExtractNamedGroupsFromRegex: Invalid regex pattern syntax: {Pattern}", regexPattern);
+                return new List<string>(); // Return empty on error
             }
         }
 
+        #endregion
+
+        #region Field Type and Property Mapping Utilities
+
+        /// <summary>
+        /// Parses a string value into an appropriate object type based on the target field's characteristics.
+        /// Used when applying corrections to ShipmentInvoice objects.
+        /// </summary>
+        public object ParseCorrectedValue(string valueToParse, string targetFieldName) // targetFieldName is canonical or mapped
+        {
+            if (valueToParse == null) return null; // Null input remains null
+
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(targetFieldName); // From OCRFieldMapping.cs
+            string dataType = fieldInfo?.DataType?.ToLowerInvariant() ?? "string"; // Default to string if no type info
+
+            string cleanedValue = valueToParse;
+            // For numeric types, attempt more aggressive cleaning
+            if (dataType == "decimal" || dataType == "double" || dataType == "int" || dataType == "currency")
+            {
+                // Remove currency symbols, then group separators (commas), then ensure decimal point is '.'
+                cleanedValue = Regex.Replace(valueToParse, @"[\$€£]", "").Trim(); // Remove currency
+                // If it contains both , and . assume , is thousands, . is decimal e.g. 1,234.56 -> 1234.56
+                // If it contains , but no . assume , is decimal e.g. 123,45 -> 123.45
+                if (cleanedValue.Contains(',') && cleanedValue.Contains('.'))
+                {
+                    if (cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.'))
+                    { // 1,234.56
+                        cleanedValue = cleanedValue.Replace(",", "");
+                    }
+                    else
+                    { // 1.234,56
+                        cleanedValue = cleanedValue.Replace(".", "").Replace(",", ".");
+                    }
+                }
+                else if (cleanedValue.Contains(','))
+                { // Only comma: 123,45
+                    cleanedValue = cleanedValue.Replace(",", ".");
+                }
+                // Now, cleanedValue should only use '.' as decimal separator.
+            }
+
+
+            switch (dataType)
+            {
+                case "decimal":
+                case "currency": // Assuming currency also maps to decimal
+                    if (decimal.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var decimalResult))
+                        return decimalResult;
+                    break;
+                case "double":
+                    if (double.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var doubleResult))
+                        return doubleResult;
+                    break;
+                case "int":
+                case "integer":
+                    if (int.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var intResult))
+                        return intResult;
+                    break;
+                case "datetime":
+                    if (DateTime.TryParse(valueToParse, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeLocal, out var dateResult)) // Be flexible with date parsing
+                        return dateResult;
+                    break;
+                case "bool":
+                case "boolean":
+                    if (bool.TryParse(valueToParse, out var boolResult))
+                        return boolResult;
+                    // Handle common string representations of bool
+                    if (valueToParse.Trim().Equals("1", StringComparison.OrdinalIgnoreCase)) return true;
+                    if (valueToParse.Trim().Equals("0", StringComparison.OrdinalIgnoreCase)) return false;
+                    break;
+                case "string":
+                default:
+                    return valueToParse; // Return original string if not a known special type or parsing fails
+            }
+            _logger?.Warning("ParseCorrectedValue: Could not parse value '{OriginalValue}' (cleaned: '{CleanedVal}') as type '{DataType}' for field '{FieldName}'. Returning original string.", valueToParse, cleanedValue, dataType, targetFieldName);
+            return valueToParse; // Fallback to original string if parsing fails
+        }
+
+        /// <summary>
+        /// Determines if a field (by its canonical/DB name) is expected to hold a numeric value.
+        /// </summary>
+        public bool IsNumericField(string canonicalOrMappedFieldName)
+        {
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(canonicalOrMappedFieldName);
+            if (fieldInfo != null)
+            {
+                string dataType = fieldInfo.DataType?.ToLowerInvariant();
+                return dataType == "decimal" || dataType == "double" || dataType == "int" || dataType == "integer" || dataType == "currency";
+            }
+            _logger?.Verbose("IsNumericField: No mapping info for '{FieldName}', cannot determine if numeric from type.", canonicalOrMappedFieldName);
+            return false; // Default if type unknown
+        }
+
+        /// <summary>
+        /// Retrieves the current value of a field from a ShipmentInvoice object using reflection.
+        /// Handles potential mismatches between fieldName casing and property casing.
+        /// </summary>
+        public object GetCurrentFieldValue(ShipmentInvoice invoice, string fieldNameFromError)
+        {
+            if (invoice == null || string.IsNullOrEmpty(fieldNameFromError)) return null;
+
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError); // Use mapping
+            var targetPropertyName = fieldInfo?.DatabaseFieldName ?? fieldNameFromError;
+
+            try
+            {
+                // Standard properties on ShipmentInvoice
+                var propInfo = typeof(ShipmentInvoice).GetProperty(targetPropertyName,
+                    System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (propInfo != null)
+                {
+                    return propInfo.GetValue(invoice);
+                }
+
+                // Handle InvoiceDetail fields (e.g., "InvoiceDetail_Line1_Quantity")
+                if (targetPropertyName.StartsWith("invoicedetail", StringComparison.OrdinalIgnoreCase) ||
+                    (fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails"))
+                {
+                    var parts = fieldNameFromError.Split('_'); // Use original error field name for parsing line#
+                    if (parts.Length >= 3 && parts[0].Equals("InvoiceDetail", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (int.TryParse(Regex.Match(parts[1], @"\d+").Value, out int lineNum))
+                        {
+                            var detailItem = invoice.InvoiceDetails?.FirstOrDefault(d => d.LineNumber == lineNum);
+                            if (detailItem != null)
+                            {
+                                string detailFieldName = parts[2]; // This is the actual property on InvoiceDetails
+                                var detailPropInfo = typeof(InvoiceDetails).GetProperty(detailFieldName,
+                                    System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                                if (detailPropInfo != null)
+                                {
+                                    return detailPropInfo.GetValue(detailItem);
+                                }
+                            }
+                        }
+                    }
+                }
+                _logger?.Debug("GetCurrentFieldValue: Property '{TargetProp}' (from error field '{ErrorField}') not found on ShipmentInvoice or its details.", targetPropertyName, fieldNameFromError);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning(ex, "Exception trying to get current value for field '{ErrorField}' (target: {TargetProp}).", fieldNameFromError, targetPropertyName);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Determines the invoice type (e.g., "Amazon", "Generic") based on file path heuristics.
+        /// </summary>
+        internal string DetermineInvoiceType(string filePath) // Already in this file from previous merge.
+        {
+            if (string.IsNullOrEmpty(filePath)) return "Unknown";
+            var fileName = Path.GetFileName(filePath).ToLowerInvariant();
+            if (fileName.Contains("amazon")) return "Amazon";
+            if (fileName.Contains("temu")) return "Temu";
+            if (fileName.Contains("shein")) return "Shein";
+            if (fileName.Contains("alibaba")) return "Alibaba";
+            return "Generic";
+        }
+
+        /// <summary>
+        /// Maps OCR template field names (from OCR.Business.Entities.Fields.Field) to canonical 
+        /// C# property names on ShipmentInvoice or InvoiceDetails. Used by legacy static methods.
+        /// </summary>
+        public static string MapTemplateFieldToPropertyName(string templateDbFieldName) // Static for legacy support
+        {
+            // This provides a consistent mapping if template field names differ from C# property names.
+            return templateDbFieldName?.ToLowerInvariant() switch
+            {
+                "invoicetotal" or "total" or "invoice_total" => "InvoiceTotal",
+                "subtotal" or "sub_total" => "SubTotal",
+                "totalinternalfreight" or "freight" or "internal_freight" or "shipping" or "shippingandhandling" => "TotalInternalFreight",
+                "totalothercost" or "other_cost" or "othercost" or "tax" or "vat" or "othercharges" => "TotalOtherCost",
+                "totalinsurance" or "insurance" => "TotalInsurance",
+                "totaldeduction" or "deduction" or "discount" or "giftcard" or "promotion" => "TotalDeduction",
+                "invoiceno" or "invoice_no" or "invoice_number" or "invoice" or "invoiceid" or "ordernumber" or "orderno" => "InvoiceNo",
+                "invoicedate" or "invoice_date" or "date" or "issuedate" => "InvoiceDate",
+                "currency" => "Currency",
+                "suppliername" or "supplier_name" or "supplier" or "vendor" or "soldby" or "from" => "SupplierName",
+                "supplieraddress" or "supplier_address" or "address" => "SupplierAddress", // 'Address' is ambiguous
+                // Line item fields (these are base names, often prefixed in practice)
+                "itemdescription" or "description" or "productdescription" or "item" or "productname" => "ItemDescription",
+                "quantity" or "qty" => "Quantity",
+                "cost" or "price" or "unitprice" => "Cost",
+                "totalcost" or "linetotal" or "amount" => "TotalCost", // 'Amount' for line items
+                "units" => "Units",
+                // "discount" (line item) is ambiguous with header "TotalDeduction" if not contextually differentiated
+                _ => templateDbFieldName // Fallback to the original name if no specific mapping
+            };
+        }
+
+        public static bool IsMetadataField(string fieldName) // Made static as it's a pure function
+        {
+            var metadataFields = new[] { "LineNumber", "FileLineNumber", "Section", "Instance" }; // Case sensitive based on typical usage
+            return metadataFields.Contains(fieldName);
+        }
+        
         #endregion
     }
 }

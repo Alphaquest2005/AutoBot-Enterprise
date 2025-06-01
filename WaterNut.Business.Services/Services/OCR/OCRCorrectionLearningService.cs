@@ -986,17 +986,73 @@ namespace OCR.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByFieldId(string FieldId, List<string> includesLst = null)
+			        public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByLineId(string LineId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(FieldId);
+                var i = Convert.ToInt32(LineId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<OCRCorrectionLearning> entities = set//dbContext.OCRCorrectionLearning
                                       .AsNoTracking()
-                                        .Where(x => x.FieldId.ToString() == FieldId.ToString())
+                                        .Where(x => x.LineId.ToString() == LineId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByPartId(string PartId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(PartId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<OCRCorrectionLearning> entities = set//dbContext.OCRCorrectionLearning
+                                      .AsNoTracking()
+                                        .Where(x => x.PartId.ToString() == PartId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByRegexId(string RegexId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(RegexId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<OCRCorrectionLearning> entities = set//dbContext.OCRCorrectionLearning
+                                      .AsNoTracking()
+                                        .Where(x => x.RegexId.ToString() == RegexId.ToString())
 										.ToList();
                 return entities;
               }

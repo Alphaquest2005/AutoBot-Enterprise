@@ -633,7 +633,7 @@ try
             return await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
         }
 
-        private async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
+        public async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
         {
             if (_httpClient == null) throw new InvalidOperationException("HttpClient is not initialized.");
             if (string.IsNullOrWhiteSpace(_baseUrl)) throw new InvalidOperationException("Base URL is not set.");

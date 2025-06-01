@@ -19,6 +19,8 @@ using Serilog.Core;
 
 namespace AutoBotUtilities.Tests.Production
 {
+    using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
+
     /// <summary>
     /// Performance and memory tests for OCR Correction Service
     /// </summary>
@@ -47,7 +49,7 @@ namespace AutoBotUtilities.Tests.Production
                 var fileText = $"Invoice #{invoice.InvoiceNo}\nTotal: ${invoice.InvoiceTotal:F2}";
 
                 // Test the static TotalsZero method for performance (no API calls)
-                var result = OCRCorrectionService.TotalsZero(invoice);
+                var result = OCRCorrectionService.TotalsZero(invoice, out _, _logger);
 
                 if ((invoices.IndexOf(invoice) + 1) % 25 == 0)
                 {
@@ -90,7 +92,7 @@ namespace AutoBotUtilities.Tests.Production
                     var fileText = $"Invoice #{invoice.InvoiceNo}\nTotal: ${invoice.InvoiceTotal:F2}";
 
                     // Test memory usage with TotalsZero
-                    var result = OCRCorrectionService.TotalsZero(invoice);
+                    var result = OCRCorrectionService.TotalsZero(invoice, out _, _logger);
                 }
 
                 if (i % 10 == 0)
@@ -153,7 +155,7 @@ namespace AutoBotUtilities.Tests.Production
 
                 Assert.DoesNotThrow(() =>
                 {
-                    var result = OCRCorrectionService.TotalsZero(invoice);
+                    var result = OCRCorrectionService.TotalsZero(invoice, out _, _logger);
                     _logger.Information("Extreme value test: {Total} → {Result}", total, result);
                 }, $"Should handle extreme values gracefully: {total}");
             }
@@ -183,7 +185,7 @@ namespace AutoBotUtilities.Tests.Production
                     for (int i = 0; i < operationsPerThread; i++)
                     {
                         var invoice = CreateTestInvoice($"THREAD-{threadId}-{i}", 100, 90, 5, 5, 0, 0);
-                        var result = OCRCorrectionService.TotalsZero(invoice);
+                        var result = OCRCorrectionService.TotalsZero(invoice, out _, _logger);
                         threadResults.Add(result);
                     }
 
@@ -196,7 +198,7 @@ namespace AutoBotUtilities.Tests.Production
                 }));
             }
 
-            var allTaskResults = await Task.WhenAll(tasks);
+            var allTaskResults = await Task.WhenAll(tasks).ConfigureAwait(false);
 
             _logger.Information("Concurrent test completed: {ThreadCount} threads × {OpsPerThread} operations = {TotalOps} total operations",
                 threadCount, operationsPerThread, results.Count);
@@ -245,7 +247,7 @@ namespace AutoBotUtilities.Tests.Production
                     var insurance = total * 0.02;
 
                     var invoice = CreateTestInvoice($"STRESS-{totalProcessed}", total, subTotal, freight, other, insurance, 0);
-                    var result = OCRCorrectionService.TotalsZero(invoice);
+                    var result = OCRCorrectionService.TotalsZero(invoice, out _, _logger);
                     configResults.Add(result);
                     totalProcessed++;
                 }

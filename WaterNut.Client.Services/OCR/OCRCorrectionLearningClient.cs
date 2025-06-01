@@ -112,9 +112,19 @@ namespace OCR.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByFieldId(string FieldId, List<string> includesLst = null)
+		public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByLineId(string LineId, List<string> includesLst = null)
         {
-            return  await Channel.GetOCRCorrectionLearningByFieldId(FieldId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetOCRCorrectionLearningByLineId(LineId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByPartId(string PartId, List<string> includesLst = null)
+        {
+            return  await Channel.GetOCRCorrectionLearningByPartId(PartId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByRegexId(string RegexId, List<string> includesLst = null)
+        {
+            return  await Channel.GetOCRCorrectionLearningByRegexId(RegexId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)
@@ -124,7 +134,7 @@ namespace OCR.Client.Services
 
         public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
         {
-            return await Channel.SumNav(exp,navExp,field);
+            return await this.Channel.SumNav(exp,navExp,field).ConfigureAwait(false);
         }
 
 		public string MinField(string whereExp, string sumExp)

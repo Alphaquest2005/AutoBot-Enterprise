@@ -19,6 +19,8 @@ using Serilog.Core;
 
 namespace AutoBotUtilities.Tests.Production
 {
+    using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
+
     /// <summary>
     /// Main test class for OCR Correction Service with setup and teardown
     /// </summary>

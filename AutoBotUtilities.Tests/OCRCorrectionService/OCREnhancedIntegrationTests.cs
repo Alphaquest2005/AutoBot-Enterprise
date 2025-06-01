@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Serilog;
 using WaterNut.DataSpace;
-using InvoiceReader.OCRCorrectionService;
 using OCR.Business.Entities;
+using static AutoBotUtilities.Tests.TestHelpers;
 
 namespace AutoBotUtilities.Tests.OCRCorrectionService
 {
+    using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
     /// <summary>
     /// Tests for enhanced OCR metadata integration with field mapping and database updates
     /// </summary>
@@ -28,38 +29,38 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
                 .WriteTo.Console()
                 .CreateLogger();
 
-            _correctionService = new OCRCorrectionService();
+            _correctionService = new OCRCorrectionService(_logger);
         }
 
         [Test]
-        public void MapDeepSeekFieldWithMetadata_WithValidFieldAndMetadata_ReturnsEnhancedFieldInfo()
+        public void MapDeepSeekFieldToEnhancedInfo_WithValidFieldAndMetadata_ReturnsEnhancedFieldInfo()
         {
             // Arrange
             var metadata = CreateTestOCRMetadata("TotalDeduction", "5.99");
 
             // Act
-            var result = _correctionService.MapDeepSeekFieldWithMetadata("GiftCard", metadata);
+            var result = InvokePrivateMethod<OCRCorrectionService.EnhancedDatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToEnhancedInfo", "GiftCard", metadata);
 
             // Assert
-            Assert.IsNotNull(result, "Enhanced field info should not be null");
-            Assert.AreEqual("TotalDeduction", result.DatabaseFieldName, "Should map to correct database field");
-            Assert.AreEqual("ShipmentInvoice", result.EntityType, "Should have correct entity type");
-            Assert.IsTrue(result.HasOCRContext, "Should indicate OCR context is available");
-            Assert.IsTrue(result.CanUpdateDatabase, "Should be able to update database with complete metadata");
-            Assert.AreSame(metadata, result.OCRMetadata, "Should preserve original metadata");
+            Assert.That(result, Is.Not.Null, "Enhanced field info should not be null");
+            Assert.That(result.DatabaseFieldName, Is.EqualTo("TotalDeduction"), "Should map to correct database field");
+            Assert.That(result.EntityType, Is.EqualTo("ShipmentInvoice"), "Should have correct entity type");
+            Assert.That(result.HasOCRContext, Is.True, "Should indicate OCR context is available");
+            Assert.That(result.CanUpdatePatternsViaContext, Is.True, "Should be able to update database with complete metadata");
+            Assert.That(result.OCRMetadata, Is.SameAs(metadata), "Should preserve original metadata");
         }
 
         [Test]
-        public void MapDeepSeekFieldWithMetadata_WithUnknownField_ReturnsNull()
+        public void MapDeepSeekFieldToEnhancedInfo_WithUnknownField_ReturnsNull()
         {
             // Arrange
             var metadata = CreateTestOCRMetadata("UnknownField", "test");
 
             // Act
-            var result = _correctionService.MapDeepSeekFieldWithMetadata("UnknownField", metadata);
+            var result = InvokePrivateMethod<OCRCorrectionService.EnhancedDatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToEnhancedInfo", "UnknownField", metadata);
 
             // Assert
-            Assert.IsNull(result, "Should return null for unknown fields");
+            Assert.That(result, Is.Null, "Should return null for unknown fields");
         }
 
         [Test]
@@ -69,17 +70,16 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var metadata = CreateTestOCRMetadata("TotalDeduction", "5.99");
 
             // Act
-            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
+            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
 
             // Assert
-            Assert.IsNotNull(result, "Update context should not be null");
-            Assert.IsTrue(result.IsValid, "Context should be valid");
-            Assert.AreEqual(DatabaseUpdateStrategy.UpdateRegexPattern, result.UpdateStrategy,
-                "Should use regex pattern update strategy with complete metadata");
-            Assert.IsNotNull(result.RequiredIds, "Required IDs should be populated");
-            Assert.AreEqual(123, result.RequiredIds.FieldId, "Should have correct field ID");
-            Assert.AreEqual(456, result.RequiredIds.LineId, "Should have correct line ID");
-            Assert.AreEqual(789, result.RequiredIds.RegexId, "Should have correct regex ID");
+            Assert.That(result, Is.Not.Null, "Update context should not be null");
+            Assert.That(result.IsValid, Is.True, "Context should be valid");
+            Assert.That(result.UpdateStrategy, Is.EqualTo(DatabaseUpdateStrategy.UpdateRegexPattern), "Should use regex pattern update strategy with complete metadata");
+            Assert.That(result.RequiredIds, Is.Not.Null, "Required IDs should be populated");
+            Assert.That(result.RequiredIds.FieldId, Is.EqualTo(123), "Should have correct field ID");
+            Assert.That(result.RequiredIds.LineId, Is.EqualTo(456), "Should have correct line ID");
+            Assert.That(result.RequiredIds.RegexId, Is.EqualTo(789), "Should have correct regex ID");
         }
 
         [Test]
@@ -90,13 +90,12 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             metadata.RegexId = null; // Remove regex ID
 
             // Act
-            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
+            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
 
             // Assert
-            Assert.IsNotNull(result, "Update context should not be null");
-            Assert.IsTrue(result.IsValid, "Context should be valid");
-            Assert.AreEqual(DatabaseUpdateStrategy.CreateNewPattern, result.UpdateStrategy,
-                "Should use create new pattern strategy without regex ID");
+            Assert.That(result, Is.Not.Null, "Update context should not be null");
+            Assert.That(result.IsValid, Is.True, "Context should be valid");
+            Assert.That(result.UpdateStrategy, Is.EqualTo(DatabaseUpdateStrategy.CreateNewPattern), "Should use create new pattern strategy without regex ID");
         }
 
         [Test]
@@ -108,13 +107,12 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             metadata.RegexId = null;
 
             // Act
-            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
+            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
 
             // Assert
-            Assert.IsNotNull(result, "Update context should not be null");
-            Assert.IsTrue(result.IsValid, "Context should be valid");
-            Assert.AreEqual(DatabaseUpdateStrategy.UpdateFieldFormat, result.UpdateStrategy,
-                "Should use field format update strategy with minimal metadata");
+            Assert.That(result, Is.Not.Null, "Update context should not be null");
+            Assert.That(result.IsValid, Is.True, "Context should be valid");
+            Assert.That(result.UpdateStrategy, Is.EqualTo(DatabaseUpdateStrategy.UpdateFieldFormat), "Should use field format update strategy with minimal metadata");
         }
 
         [Test]
@@ -124,17 +122,16 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             OCRFieldMetadata metadata = null;
 
             // Act
-            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
+            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
 
             // Assert
-            Assert.IsNotNull(result, "Update context should not be null");
-            Assert.IsTrue(result.IsValid, "Context should be valid for known fields even without metadata");
-            Assert.AreEqual(DatabaseUpdateStrategy.SkipUpdate, result.UpdateStrategy,
-                "Should skip update without metadata");
+            Assert.That(result, Is.Not.Null, "Update context should not be null");
+            Assert.That(result.IsValid, Is.True, "Context should be valid for known fields even without metadata");
+            Assert.That(result.UpdateStrategy, Is.EqualTo(DatabaseUpdateStrategy.SkipUpdate), "Should skip update without metadata");
         }
 
         [Test]
-        public async Task ProcessCorrectionsWithEnhancedMetadataAsync_WithValidData_ProcessesSuccessfully()
+        public async Task ProcessExternalCorrectionsForDBUpdateAsync_WithValidData_ProcessesSuccessfully()
         {
             // Arrange
             var corrections = CreateTestCorrections();
@@ -143,22 +140,22 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var filePath = "test_invoice.txt";
 
             // Act
-            var result = await _correctionService.ProcessCorrectionsWithEnhancedMetadataAsync(
+            var result = await _correctionService.ProcessExternalCorrectionsForDBUpdateAsync(
                 corrections, invoiceMetadata, fileText, filePath);
 
             // Assert
-            Assert.IsNotNull(result, "Processing result should not be null");
-            Assert.AreEqual(2, result.TotalCorrections, "Should process all corrections");
-            Assert.AreEqual(2, result.ProcessedCorrections.Count, "Should have processed correction details");
-            Assert.IsFalse(result.HasErrors, "Should not have errors");
-            Assert.Greater(result.ProcessingDuration.TotalMilliseconds, 0, "Should have processing duration");
+            Assert.That(result, Is.Not.Null, "Processing result should not be null");
+            Assert.That(result.TotalCorrections, Is.EqualTo(2), "Should process all corrections");
+            Assert.That(result.ProcessedCorrections.Count, Is.EqualTo(2), "Should have processed correction details");
+            Assert.That(result.HasErrors, Is.False, "Should not have errors");
+            Assert.That(result.ProcessingDuration.TotalMilliseconds, Is.GreaterThan(0), "Should have processing duration");
 
             // Check individual correction processing
             var giftCardCorrection = result.ProcessedCorrections.FirstOrDefault(c =>
                 c.Correction.FieldName == "GiftCard");
-            Assert.IsNotNull(giftCardCorrection, "Should have processed gift card correction");
-            Assert.IsTrue(giftCardCorrection.HasMetadata, "Should have metadata for gift card field");
-            Assert.IsNotNull(giftCardCorrection.UpdateContext, "Should have update context");
+            Assert.That(giftCardCorrection, Is.Not.Null, "Should have processed gift card correction");
+            Assert.That(giftCardCorrection.HasMetadata, Is.True, "Should have metadata for gift card field");
+            Assert.That(giftCardCorrection.UpdateContext, Is.Not.Null, "Should have update context");
         }
 
         [Test]
@@ -169,8 +166,8 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
 
             foreach (var field in supportedFields)
             {
-                var result = _correctionService.IsFieldSupported(field);
-                Assert.IsTrue(result, $"Field '{field}' should be supported");
+                var result = InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", field);
+                Assert.That(result, Is.True, $"Field '{field}' should be supported");
             }
         }
 
@@ -178,24 +175,24 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
         public void IsFieldSupported_WithUnsupportedField_ReturnsFalse()
         {
             // Act & Assert
-            Assert.IsFalse(_correctionService.IsFieldSupported("UnsupportedField"));
-            Assert.IsFalse(_correctionService.IsFieldSupported(""));
-            Assert.IsFalse(_correctionService.IsFieldSupported(null));
+            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", "UnsupportedField"), Is.False);
+            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", ""), Is.False);
+            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", (string)null), Is.False);
         }
 
         [Test]
         public void GetFieldValidationInfo_WithMonetaryField_ReturnsCorrectValidation()
         {
             // Act
-            var result = _correctionService.GetFieldValidationInfo("TotalDeduction");
+            var result = InvokePrivateMethod<OCRCorrectionService.FieldValidationInfo>(_correctionService, "GetFieldValidationInfo", "TotalDeduction");
 
             // Assert
-            Assert.IsNotNull(result, "Validation info should not be null");
-            Assert.IsTrue(result.IsValid, "Field should be valid");
-            Assert.IsFalse(result.IsRequired, "TotalDeduction should not be required");
-            Assert.AreEqual("decimal", result.DataType, "Should have decimal data type");
-            Assert.IsTrue(result.IsMonetary, "Should be identified as monetary field");
-            Assert.IsNotNull(result.ValidationPattern, "Should have validation pattern");
+            Assert.That(result, Is.Not.Null, "Validation info should not be null");
+            Assert.That(result.IsValid, Is.True, "Field should be valid");
+            Assert.That(result.IsRequired, Is.False, "TotalDeduction should not be required");
+            Assert.That(result.DataType, Is.EqualTo("decimal"), "Should have decimal data type");
+            Assert.That(result.IsMonetary, Is.True, "Should be identified as monetary field");
+            Assert.That(result.ValidationPattern, Is.Not.Null, "Should have validation pattern");
         }
 
         #region Helper Methods

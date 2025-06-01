@@ -107,7 +107,13 @@ namespace OCR.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByFieldId(string FieldId, List<string> includesLst = null);
+        Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByLineId(string LineId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByPartId(string PartId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByRegexId(string RegexId, List<string> includesLst = null);
   
 
 

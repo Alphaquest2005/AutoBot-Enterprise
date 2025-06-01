@@ -80,7 +80,13 @@ namespace OCR.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
-		Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByFieldId(string FieldId, List<string> includesLst = null);
+		Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByLineId(string LineId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByPartId(string PartId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<OCRCorrectionLearning>> GetOCRCorrectionLearningByRegexId(string RegexId, List<string> includesLst = null);
         
   		
     }

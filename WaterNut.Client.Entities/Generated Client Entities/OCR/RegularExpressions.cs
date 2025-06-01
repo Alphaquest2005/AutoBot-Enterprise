@@ -107,9 +107,9 @@ public Nullable<int> MaxLines
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "CreatedDate is required")]
        
-       
-public Nullable<System.DateTime> CreatedDate
+public System.DateTime CreatedDate
 		{ 
 		    get { return this.regularexpressions.CreatedDate; }
 			set
@@ -122,9 +122,9 @@ public Nullable<System.DateTime> CreatedDate
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "LastUpdated is required")]
        
-       
-public Nullable<System.DateTime> LastUpdated
+public System.DateTime LastUpdated
 		{ 
 		    get { return this.regularexpressions.LastUpdated; }
 			set

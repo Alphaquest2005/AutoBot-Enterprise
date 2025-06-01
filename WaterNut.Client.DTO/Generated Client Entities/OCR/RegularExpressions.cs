@@ -74,7 +74,7 @@ namespace OCR.Client.DTO
         private Nullable<int> _MaxLines;
 
         [DataMember]
-        public Nullable<System.DateTime> CreatedDate
+        public System.DateTime CreatedDate
 		{ 
 		    get { return _CreatedDate; }
 			set
@@ -84,10 +84,10 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.CreatedDate
 			}
 		}
-        private Nullable<System.DateTime> _CreatedDate;
+        private System.DateTime _CreatedDate;
 
         [DataMember]
-        public Nullable<System.DateTime> LastUpdated
+        public System.DateTime LastUpdated
 		{ 
 		    get { return _LastUpdated; }
 			set
@@ -97,7 +97,7 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.LastUpdated
 			}
 		}
-        private Nullable<System.DateTime> _LastUpdated;
+        private System.DateTime _LastUpdated;
 
         [DataMember]
         public string Description

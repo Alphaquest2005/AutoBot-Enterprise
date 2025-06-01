@@ -2,270 +2,275 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using EntryDataDS.Business.Entities;
+using EntryDataDS.Business.Entities; // For ShipmentInvoice, InvoiceDetails
+using Serilog; // ILogger is available as this._logger
 
 namespace WaterNut.DataSpace
 {
     public partial class OCRCorrectionService
     {
-        #region Validation Methods
+        #region Invoice Data Validation Methods
 
         /// <summary>
-        /// Validates mathematical consistency within the invoice
+        /// Validates mathematical consistency within the invoice.
+        /// Checks line item totals (Quantity * Cost - Discount = TotalCost).
+        /// Also performs basic reasonableness checks on quantities and costs.
         /// </summary>
+        /// <param name="invoice">The ShipmentInvoice to validate.</param>
+        /// <returns>A list of InvoiceError objects for any detected inconsistencies.</returns>
         private List<InvoiceError> ValidateMathematicalConsistency(ShipmentInvoice invoice)
         {
             var errors = new List<InvoiceError>();
+            if (invoice == null)
+            {
+                _logger.Warning("ValidateMathematicalConsistency: Null invoice provided.");
+                return errors;
+            }
+
+            _logger.Debug("Validating mathematical consistency for invoice {InvoiceNo}.", invoice.InvoiceNo);
 
             try
             {
-                // Validate individual line item calculations
                 if (invoice.InvoiceDetails != null)
                 {
-                    foreach (var detail in invoice.InvoiceDetails)
+                    foreach (var detail in invoice.InvoiceDetails.Where(d => d != null)) // Ensure detail item is not null
                     {
-                        var calculatedTotal = (detail.Quantity * detail.Cost) - (detail.Discount ?? 0);
-                        var reportedTotal = detail.TotalCost ?? 0;
+                        // Ensure necessary values are present for calculation
+                        double quantity = detail.Quantity; // Assuming Quantity is double, not nullable
+                        double unitCost = detail.Cost;   // Assuming Cost is double, not nullable
+                        double discount = detail.Discount ?? 0;
+                        double reportedLineTotal = detail.TotalCost ?? 0; // Handle nullable TotalCost
 
-                        if (Math.Abs(calculatedTotal - reportedTotal) > 0.01)
+                        // Avoid issues with extremely small or zero quantities if cost is significant
+                        double calculatedLineTotal;
+                        if (quantity == 0 && unitCost != 0) {
+                             calculatedLineTotal = -discount; // If qty is 0, total is just negative discount
+                        } else {
+                             calculatedLineTotal = (quantity * unitCost) - discount;
+                        }
+
+                        if (Math.Abs(calculatedLineTotal - reportedLineTotal) > 0.015) // Relaxed tolerance for floating point
                         {
-                            errors.Add(new InvoiceError
-                            {
+                            errors.Add(new InvoiceError {
                                 Field = $"InvoiceDetail_Line{detail.LineNumber}_TotalCost",
-                                ExtractedValue = reportedTotal.ToString("F2"),
-                                CorrectValue = calculatedTotal.ToString("F2"),
-                                Confidence = 0.99,
+                                ExtractedValue = reportedLineTotal.ToString("F2"), // Format for consistency
+                                CorrectValue = calculatedLineTotal.ToString("F2"),
+                                Confidence = 0.99, // High confidence as it's a direct calculation
                                 ErrorType = "calculation_error",
-                                Reasoning = $"Line total should be (Qty {detail.Quantity} × Cost {detail.Cost:F2}) - Discount {detail.Discount ?? 0:F2} = {calculatedTotal:F2}"
+                                Reasoning = $"Line total {reportedLineTotal:F2} mismatch. Expected (Qty {quantity:F2} * Cost {unitCost:F2}) - Discount {discount:F2} = {calculatedLineTotal:F2}."
                             });
                         }
 
-                        // Validate reasonable quantities
-                        if (detail.Quantity <= 0 || detail.Quantity > 10000)
+                        // Basic Reasonableness Checks
+                        if (quantity < 0) // Allow quantity of 0 for some scenarios (e.g. informational line)
                         {
-                            errors.Add(new InvoiceError
-                            {
-                                Field = $"InvoiceDetail_Line{detail.LineNumber}_Quantity",
-                                ExtractedValue = detail.Quantity.ToString(),
-                                CorrectValue = "1",
-                                Confidence = 0.7,
-                                ErrorType = "unreasonable_quantity",
-                                Reasoning = $"Quantity {detail.Quantity} seems unreasonable"
+                             errors.Add(new InvoiceError {
+                                Field = $"InvoiceDetail_Line{detail.LineNumber}_Quantity", ExtractedValue = quantity.ToString("F2"),
+                                CorrectValue = "0", // Suggest 0 if negative
+                                Confidence = 0.75, ErrorType = "unreasonable_value", Reasoning = $"Quantity {quantity:F2} is negative."
                             });
                         }
-
-                        // Validate reasonable unit costs
-                        if (detail.Cost <= 0)
+                        if (quantity > 999999) // Arbitrary upper limit for "unreasonable"
                         {
-                            errors.Add(new InvoiceError
-                            {
-                                Field = $"InvoiceDetail_Line{detail.LineNumber}_Cost",
-                                ExtractedValue = detail.Cost.ToString("F2"),
-                                CorrectValue = "0.01",
-                                Confidence = 0.8,
-                                ErrorType = "unreasonable_cost",
-                                Reasoning = $"Unit cost {detail.Cost:F2} is negative or zero"
+                             errors.Add(new InvoiceError {
+                                Field = $"InvoiceDetail_Line{detail.LineNumber}_Quantity", ExtractedValue = quantity.ToString("F2"),
+                                CorrectValue = "1", // Hard to suggest a generic correct value
+                                Confidence = 0.60, ErrorType = "unreasonable_value", Reasoning = $"Quantity {quantity:F2} seems excessively large."
+                            });
+                        }
+                        if (unitCost < 0 && quantity > 0) // Negative cost only makes sense if quantity is also effectively negative (refund line)
+                        {
+                             errors.Add(new InvoiceError {
+                                Field = $"InvoiceDetail_Line{detail.LineNumber}_Cost", ExtractedValue = unitCost.ToString("F2"),
+                                CorrectValue = "0.00", Confidence = 0.80, ErrorType = "unreasonable_value",
+                                Reasoning = $"Unit cost {unitCost:F2} is negative for a positive quantity."
                             });
                         }
                     }
                 }
-
-                return errors;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error validating mathematical consistency");
-                return errors;
+                _logger.Error(ex, "Error validating mathematical consistency for invoice {InvoiceNo}", invoice.InvoiceNo);
             }
+            return errors;
         }
 
         /// <summary>
-        /// Enhanced cross-field validation that properly validates invoice totals
+        /// Validates consistency between summary fields (SubTotal, InvoiceTotal) and their derived components.
+        /// Uses the static OCRCorrectionService.TotalsZero method (from OCRLegacySupport.cs) as the canonical check for overall balance.
         /// </summary>
+        /// <param name="invoice">The ShipmentInvoice to validate.</param>
+        /// <returns>A list of InvoiceError objects for any detected inconsistencies.</returns>
         private List<InvoiceError> ValidateCrossFieldConsistency(ShipmentInvoice invoice)
         {
             var errors = new List<InvoiceError>();
+            if (invoice == null)
+            {
+                _logger.Warning("ValidateCrossFieldConsistency: Null invoice provided.");
+                return errors;
+            }
+            _logger.Debug("Validating cross-field consistency for invoice {InvoiceNo}.", invoice.InvoiceNo);
 
             try
             {
-                // Check if detail totals match subtotal
+                // 1. Validate SubTotal against the sum of (corrected) InvoiceDetail.TotalCost
                 if (invoice.InvoiceDetails?.Any() == true)
                 {
-                    var calculatedSubTotal = invoice.InvoiceDetails.Sum(d => d.TotalCost ?? 0);
+                    var calculatedSubTotalFromDetails = invoice.InvoiceDetails.Sum(d => d?.TotalCost ?? 0);
                     var reportedSubTotal = invoice.SubTotal ?? 0;
 
-                    if (Math.Abs(calculatedSubTotal - reportedSubTotal) > 0.01)
+                    if (Math.Abs(calculatedSubTotalFromDetails - reportedSubTotal) > 0.015) // Relaxed tolerance
                     {
-                        errors.Add(new InvoiceError
-                        {
-                            Field = "SubTotal",
-                            ExtractedValue = reportedSubTotal.ToString("F2"),
-                            CorrectValue = calculatedSubTotal.ToString("F2"),
-                            Confidence = 0.95,
+                        errors.Add(new InvoiceError {
+                            Field = "SubTotal", ExtractedValue = reportedSubTotal.ToString("F2"),
+                            CorrectValue = calculatedSubTotalFromDetails.ToString("F2"), Confidence = 0.95,
                             ErrorType = "subtotal_mismatch",
-                            Reasoning = $"SubTotal should equal sum of line items: {calculatedSubTotal:F2}"
+                            Reasoning = $"Reported SubTotal {reportedSubTotal:F2} differs from sum of line item totals {calculatedSubTotalFromDetails:F2}."
                         });
                     }
                 }
 
-                // FIXED: Enhanced invoice total validation with gift card handling
-                var baseTotal = (invoice.SubTotal ?? 0) +
-                              (invoice.TotalInternalFreight ?? 0) +
-                              (invoice.TotalOtherCost ?? 0) +
-                              (invoice.TotalInsurance ?? 0);
-
-                var deductionAmount = invoice.TotalDeduction ?? 0;
-                var reportedInvoiceTotal = invoice.InvoiceTotal ?? 0;
-
-                // Check if the invoice total already has deductions applied (like Amazon gift cards)
-                var calculatedWithDeduction = baseTotal - deductionAmount;  // Standard formula
-                var calculatedWithoutDeduction = baseTotal;                 // Total before deductions
-
-                var diffWithDeduction = Math.Abs(calculatedWithDeduction - reportedInvoiceTotal);
-                var diffWithoutDeduction = Math.Abs(calculatedWithoutDeduction - reportedInvoiceTotal);
-
-                // Use the calculation that's closer to the reported total
-                var calculatedInvoiceTotal = diffWithDeduction <= diffWithoutDeduction ?
-                    calculatedWithDeduction : calculatedWithoutDeduction;
-                var difference = Math.Min(diffWithDeduction, diffWithoutDeduction);
-
-                // Log the analysis for debugging
-                _logger.Debug("Invoice total analysis for {InvoiceNo}: BaseTotal={BaseTotal}, " +
-                            "WithDeduction={WithDeduction}, WithoutDeduction={WithoutDeduction}, " +
-                            "Reported={Reported}, DiffWith={DiffWith}, DiffWithout={DiffWithout}",
-                    invoice.InvoiceNo, baseTotal, calculatedWithDeduction, calculatedWithoutDeduction,
-                    reportedInvoiceTotal, diffWithDeduction, diffWithoutDeduction);
-
-                _logger.Information("Invoice Total Validation for {InvoiceNo}:", invoice.InvoiceNo);
-                _logger.Information("  SubTotal: {SubTotal:F2}", invoice.SubTotal ?? 0);
-                _logger.Information("  TotalInternalFreight: {Freight:F2}", invoice.TotalInternalFreight ?? 0);
-                _logger.Information("  TotalOtherCost: {OtherCost:F2}", invoice.TotalOtherCost ?? 0);
-                _logger.Information("  TotalInsurance: {Insurance:F2}", invoice.TotalInsurance ?? 0);
-                _logger.Information("  TotalDeduction: {Deduction:F2}", invoice.TotalDeduction ?? 0);
-                _logger.Information("  Calculated Total: {Calculated:F2}", calculatedInvoiceTotal);
-                _logger.Information("  Reported Total: {Reported:F2}", reportedInvoiceTotal);
-                _logger.Information("  Difference: {Difference:F4}", difference);
-
-                // Only flag as error if difference is significant (> $0.01)
-                if (difference > 0.01)
+                // 2. Validate InvoiceTotal against components using the TotalsZero logic
+                // This directly checks if the invoice is "balanced" as per business rule.
+                if (!OCRCorrectionService.TotalsZero(invoice, _logger)) // Static method from OCRLegacySupport
                 {
-                    errors.Add(new InvoiceError
-                    {
-                        Field = "InvoiceTotal",
-                        ExtractedValue = reportedInvoiceTotal.ToString("F2"),
-                        CorrectValue = calculatedInvoiceTotal.ToString("F2"),
-                        Confidence = 0.95,
+                    // If TotalsZero is false, it means the reported InvoiceTotal doesn't match the calculation.
+                    // Let's calculate what it *should* be based on the TotalsZero logic.
+                    var baseTotal = (invoice.SubTotal ?? 0) + (invoice.TotalInternalFreight ?? 0) +
+                                  (invoice.TotalOtherCost ?? 0) + (invoice.TotalInsurance ?? 0);
+                    var deductionAmount = invoice.TotalDeduction ?? 0;
+                    var expectedInvoiceTotalBasedOnComponents = baseTotal - deductionAmount;
+                    
+                    errors.Add(new InvoiceError {
+                        Field = "InvoiceTotal", ExtractedValue = (invoice.InvoiceTotal ?? 0).ToString("F2"),
+                        CorrectValue = expectedInvoiceTotalBasedOnComponents.ToString("F2"), Confidence = 0.98, // High confidence in this rule
                         ErrorType = "invoice_total_mismatch",
-                        Reasoning = $"Invoice total calculation: {invoice.SubTotal:F2} + {invoice.TotalInternalFreight:F2} + {invoice.TotalOtherCost:F2} + {invoice.TotalInsurance:F2} - {invoice.TotalDeduction:F2} = {calculatedInvoiceTotal:F2}"
+                        Reasoning = $"Invoice total is unbalanced. Reported: {(invoice.InvoiceTotal ?? 0):F2}, Expected based on components: {expectedInvoiceTotalBasedOnComponents:F2} (SubT: {invoice.SubTotal ?? 0:F2} + Frght: {invoice.TotalInternalFreight ?? 0:F2} + Other: {invoice.TotalOtherCost ?? 0:F2} + Ins: {invoice.TotalInsurance ?? 0:F2} - Ded: {deductionAmount:F2})."
                     });
-
-                    _logger.Warning("Invoice total mismatch detected for {InvoiceNo}: Expected {Expected:F2}, Got {Actual:F2}",
-                        invoice.InvoiceNo, calculatedInvoiceTotal, reportedInvoiceTotal);
+                     _logger.Warning("Invoice {InvoiceNo} fails TotalsZero consistency check during cross-field validation. Reported Total: {ReportedTotal}, Calculated Expected: {CalculatedExpected}", 
+                        invoice.InvoiceNo, invoice.InvoiceTotal ?? 0, expectedInvoiceTotalBasedOnComponents);
                 }
-                else
-                {
-                    _logger.Information("Invoice total validation PASSED for {InvoiceNo} (difference: {Difference:F4})",
-                        invoice.InvoiceNo, difference);
-                }
-
-                return errors;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error validating cross-field consistency for invoice {InvoiceNo}", invoice.InvoiceNo);
-                return errors;
             }
+            return errors;
         }
 
         /// <summary>
-        /// Resolves field conflicts using dependency validation
+        /// Resolves conflicts if multiple error proposals exist for the same field by choosing the one with
+        /// the highest confidence. Then, it validates if applying this chosen set of corrections maintains
+        /// or improves mathematical consistency of the invoice.
         /// </summary>
-        private List<InvoiceError> ResolveFieldConflicts(List<InvoiceError> errors, ShipmentInvoice invoice)
+        /// <param name="allProposedErrors">The initial list of all detected InvoiceErrors.</param>
+        /// <param name="originalInvoice">The original ShipmentInvoice object before any corrections.</param>
+        /// <returns>A filtered list of InvoiceError objects that are deemed most reliable and consistent.</returns>
+        private List<InvoiceError> ResolveFieldConflicts(List<InvoiceError> allProposedErrors, ShipmentInvoice originalInvoice)
         {
-            var filteredErrors = new List<InvoiceError>();
+            if (allProposedErrors == null || !allProposedErrors.Any()) return new List<InvoiceError>();
 
-            // Group errors by field to detect conflicts
-            var errorGroups = errors.GroupBy(e => e.Field?.ToLower()).ToList();
+            _logger.Debug("Resolving field conflicts for {ErrorCount} proposed errors on invoice {InvoiceNo}.", allProposedErrors.Count, originalInvoice?.InvoiceNo ?? "N/A");
 
-            foreach (var group in errorGroups)
+            // Step 1: Deduplicate by field name, preferring higher confidence.
+            // Ensure field names are treated consistently (e.g., case-insensitive).
+            var uniqueFieldHighestConfidenceErrors = allProposedErrors
+                .GroupBy(e => (this.MapDeepSeekFieldToDatabase(e.Field)?.DatabaseFieldName ?? e.Field).ToLowerInvariant())
+                .Select(g => g.OrderByDescending(e => e.Confidence).First())
+                .ToList();
+            
+            if (uniqueFieldHighestConfidenceErrors.Count < allProposedErrors.Count)
             {
-                if (group.Count() == 1)
-                {
-                    // No conflict, add the error
-                    filteredErrors.Add(group.First());
-                }
-                else
-                {
-                    // Multiple corrections for same field - choose highest confidence
-                    var bestError = group.OrderByDescending(e => e.Confidence).First();
-                    filteredErrors.Add(bestError);
-
-                    _logger.Warning("Resolved field conflict for {Field}: chose correction with confidence {Confidence:P0} over {AlternativeCount} alternatives",
-                        bestError.Field, bestError.Confidence, group.Count() - 1);
-                }
+                _logger.Information("Conflict resolution: Reduced {InitialCount} proposed errors to {FilteredCount} unique field errors by highest confidence.", 
+                    allProposedErrors.Count, uniqueFieldHighestConfidenceErrors.Count);
             }
 
-            // Apply mathematical validation to detect conflicting corrections
-            var mathematicallyValidErrors = ValidateMathematicalConsistency(filteredErrors, invoice);
-
-            return mathematicallyValidErrors;
+            // Step 2: Validate this refined set of errors against the original invoice's mathematical balance.
+            // This helps filter out corrections that might be individually high-confidence but would break overall consistency.
+            var mathValidatedErrors = ValidateAndFilterCorrectionsByMathImpact(uniqueFieldHighestConfidenceErrors, originalInvoice);
+            
+            return mathValidatedErrors;
         }
 
         /// <summary>
-        /// Validates mathematical consistency of proposed corrections
+        /// Validates a list of proposed error corrections by temporarily applying them to a clone
+        /// of the original invoice and checking if they improve or maintain overall mathematical balance (TotalsZero).
         /// </summary>
-        private List<InvoiceError> ValidateMathematicalConsistency(List<InvoiceError> errors, ShipmentInvoice invoice)
+        private List<InvoiceError> ValidateAndFilterCorrectionsByMathImpact(List<InvoiceError> proposedErrors, ShipmentInvoice originalInvoice)
         {
-            var validErrors = new List<InvoiceError>();
-
-            // Create a copy of the invoice to test corrections
-            var testInvoice = CloneInvoiceForTesting(invoice);
-
-            foreach (var error in errors)
+            var consistentlyValidErrors = new List<InvoiceError>();
+            if (originalInvoice == null)
             {
-                // Apply the correction to test invoice
-                var correctedValue = ParseCorrectedValue(error.CorrectValue, error.Field);
-                if (correctedValue != null && ApplyFieldCorrection(testInvoice, error.Field, correctedValue))
-                {
-                    // Check if the correction improves mathematical consistency
-                    var beforeTotalsZero = TotalsZero(invoice, _logger);
-                    var afterTotalsZero = TotalsZero(testInvoice, _logger);
+                _logger.Warning("ValidateAndFilterCorrectionsByMathImpact: Original invoice is null, cannot validate impact. Returning all proposed errors.");
+                return proposedErrors; 
+            }
 
-                    if (afterTotalsZero || (!beforeTotalsZero && afterTotalsZero))
+            bool initialTotalsAreZero = OCRCorrectionService.TotalsZero(originalInvoice, _logger); // From LegacySupport
+
+            foreach (var error in proposedErrors)
+            {
+                var testInvoice = CloneInvoiceForValidation(originalInvoice); // Use dedicated clone method
+                
+                // Attempt to parse the CorrectValue from the error using the same logic as correction application.
+                object parsedCorrectedValue = this.ParseCorrectedValue(error.CorrectValue, error.Field); // From OCRUtilities
+
+                if (parsedCorrectedValue != null || string.IsNullOrEmpty(error.CorrectValue)) // Allow empty string if that's the correction
+                {
+                    // Attempt to apply the correction to the testInvoice
+                    if (this.ApplyFieldCorrection(testInvoice, error.Field, parsedCorrectedValue)) // From OCRCorrectionApplication
                     {
-                        validErrors.Add(error);
-                        _logger.Debug("Correction for {Field} improves mathematical consistency", error.Field);
+                        bool afterCorrectionTotalsAreZero = OCRCorrectionService.TotalsZero(testInvoice, _logger);
+
+                        if (afterCorrectionTotalsAreZero) 
+                        {
+                            // Good: Correction leads to a balanced state (or maintains it).
+                            consistentlyValidErrors.Add(error);
+                             _logger.Verbose("Validation: Correction for {Field} to '{NewVal}' is consistent (results in TotalsZero=true).", error.Field, error.CorrectValue);
+                        }
+                        else if (initialTotalsAreZero && !afterCorrectionTotalsAreZero) 
+                        {
+                            // Bad: Original was balanced, but this correction unbalances it.
+                            _logger.Warning("Validation: Correction for {Field} from '{OldVal}' to '{NewVal}' would UNBALANCE an initially balanced invoice. Discarding this correction.", 
+                                error.Field, error.ExtractedValue, error.CorrectValue);
+                            // Optionally, could add with drastically reduced confidence if desired. For now, discard.
+                        }
+                        else // Original was unbalanced, and still is. Or original was balanced, and still is (but this error wasn't financial).
+                        {
+                            // This correction didn't make things worse regarding overall balance.
+                            // More advanced logic could check if the *magnitude* of imbalance was reduced.
+                            // For now, accept it if it doesn't worsen a balanced state.
+                            consistentlyValidErrors.Add(error);
+                             _logger.Debug("Validation: Correction for {Field} to '{NewVal}' did not worsen TotalsZero state (Initial: {InitialTZ}, After: {AfterTZ}). Keeping.", error.Field, error.CorrectValue, initialTotalsAreZero, afterCorrectionTotalsAreZero);
+                        }
                     }
                     else
                     {
-                        _logger.Warning("Correction for {Field} does not improve mathematical consistency, reducing confidence",
-                            error.Field);
-
-                        // Reduce confidence but still include if above threshold
-                        error.Confidence *= 0.6; // Reduce by 40%
-                        if (error.Confidence > 0.3)
-                        {
-                            validErrors.Add(error);
-                        }
+                         _logger.Warning("Validation: Could not apply proposed correction for {Field} to '{NewVal}' on test invoice. Retaining error proposal.", error.Field, error.CorrectValue);
+                        consistentlyValidErrors.Add(error); // Keep it if application itself failed, might be structural issue in test or data.
                     }
                 }
                 else
                 {
-                    _logger.Warning("Could not apply correction for {Field} during validation", error.Field);
+                     _logger.Warning("Validation: Could not parse CorrectValue '{CorrectValText}' for field {Field}. Retaining error proposal.", error.CorrectValue, error.Field);
+                    consistentlyValidErrors.Add(error); // Keep, as parsing failure doesn't mean error proposal is wrong, just hard to test this way.
                 }
             }
-
-            return validErrors;
+            _logger.Information("Validated {ProposedCount} proposed errors by math impact, resulting in {FinalCount} errors.", proposedErrors.Count, consistentlyValidErrors.Count);
+            return consistentlyValidErrors;
         }
 
         /// <summary>
-        /// Creates a copy of invoice for testing corrections
+        /// Creates a clone of a ShipmentInvoice suitable for testing corrections without modifying the original.
         /// </summary>
-        private ShipmentInvoice CloneInvoiceForTesting(ShipmentInvoice original)
+        private ShipmentInvoice CloneInvoiceForValidation(ShipmentInvoice original)
         {
-            return new ShipmentInvoice
+            // This needs to be a sufficiently deep clone for financial fields.
+            var clone = new ShipmentInvoice
             {
+                // Copy all relevant properties for TotalsZero and other validations
                 InvoiceNo = original.InvoiceNo,
+                InvoiceDate = original.InvoiceDate, // If date validation occurs
                 InvoiceTotal = original.InvoiceTotal,
                 SubTotal = original.SubTotal,
                 TotalInternalFreight = original.TotalInternalFreight,
@@ -274,16 +279,25 @@ namespace WaterNut.DataSpace
                 TotalDeduction = original.TotalDeduction,
                 Currency = original.Currency,
                 SupplierName = original.SupplierName,
-                InvoiceDetails = original.InvoiceDetails?.Select(d => new InvoiceDetails
-                {
+                // Do NOT copy TrackingState or ModifiedProperties
+            };
+
+            if (original.InvoiceDetails != null)
+            {
+                clone.InvoiceDetails = original.InvoiceDetails.Select(d => new InvoiceDetails {
                     LineNumber = d.LineNumber,
+                    ItemDescription = d.ItemDescription, // If description validation occurs
                     Quantity = d.Quantity,
                     Cost = d.Cost,
                     TotalCost = d.TotalCost,
                     Discount = d.Discount,
-                    ItemDescription = d.ItemDescription
-                }).ToList()
-            };
+                    Units = d.Units // If unit validation occurs
+                    // Do NOT copy TrackingState or ModifiedProperties
+                }).ToList();
+            } else {
+                clone.InvoiceDetails = new List<InvoiceDetails>();
+            }
+            return clone;
         }
 
         #endregion

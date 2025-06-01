@@ -1,416 +1,293 @@
 ﻿// File: OCRCorrectionService/OCRPromptCreation.cs
 using System;
-using System.Text.Json;
+using System.Collections.Generic; // For List<dynamic> in one prompt
 using System.Linq;
-using EntryDataDS.Business.Entities;
+using System.Text.Json;
+using EntryDataDS.Business.Entities; // For ShipmentInvoice
+// Serilog ILogger is available as this._logger
+// WaterNut.DataSpace types (CorrectionResult, LineContext, OCRFieldMetadata) are in the same namespace.
 
 namespace WaterNut.DataSpace
 {
+    using System.Text.Json.Serialization;
+
     public partial class OCRCorrectionService
     {
-        #region Enhanced Prompt Creation Methods
+        #region Enhanced Prompt Creation Methods for DeepSeek
 
         /// <summary>
-        /// Enhanced prompt that detects both format errors and omissions with context lines
+        /// Creates a prompt for DeepSeek to detect errors and omissions in invoice header fields.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
         {
-            var headerData = new
+            // Serialize only relevant header fields for the prompt
+            var headerData = new Dictionary<string, object>();
+            var props = typeof(ShipmentInvoice).GetProperties().Where(p => p.DeclaringType == typeof(ShipmentInvoice) && p.Name != "InvoiceDetails" && p.Name != "Attachments" && p.Name != "TrackingState" && p.Name != "ModifiedProperties");
+            
+            foreach (var prop in props)
             {
-                InvoiceNo = invoice.InvoiceNo,
-                InvoiceDate = invoice.InvoiceDate,
-                InvoiceTotal = invoice.InvoiceTotal,
-                SubTotal = invoice.SubTotal,
-                TotalInternalFreight = invoice.TotalInternalFreight,
-                TotalOtherCost = invoice.TotalOtherCost,
-                TotalInsurance = invoice.TotalInsurance,
-                TotalDeduction = invoice.TotalDeduction,
-                Currency = invoice.Currency,
-                SupplierName = invoice.SupplierName,
-                SupplierAddress = invoice.SupplierAddress
-            };
+                headerData[prop.Name] = prop.GetValue(invoice);
+            }
+            // Ensure key fields are present even if null, so LLM knows they are expected
+            string[] ensureKeys = { "InvoiceTotal", "SubTotal", "TotalDeduction", "InvoiceNo", "InvoiceDate", "SupplierName", "Currency" };
+            foreach(var key in ensureKeys) {
+                if(!headerData.ContainsKey(key)) headerData[key] = null;
+            }
 
-            var headerJson = JsonSerializer.Serialize(headerData, new JsonSerializerOptions { WriteIndented = true });
+            var headerJson = JsonSerializer.Serialize(headerData, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
-            return $@"OCR HEADER FIELD ERROR DETECTION WITH OMISSION ANALYSIS:
-
-Compare the extracted header data with the original invoice text and identify ALL discrepancies including missing fields.
+            return $@"OCR HEADER FIELD ERROR DETECTION AND OMISSION ANALYSIS:
+Analyze the original invoice text against the extracted header data. Identify ALL discrepancies, including format errors, value errors, and MISSING fields (omissions).
 
 EXTRACTED HEADER DATA:
 {headerJson}
 
-ORIGINAL TEXT:
-{CleanTextForAnalysis(fileText)}
+ORIGINAL INVOICE TEXT (condensed for brevity if long):
+{this.CleanTextForAnalysis(fileText)} 
 
-CRITICAL REQUIREMENTS FOR EACH ERROR:
-1. Provide EXACT line text where the correct value appears in the original document
-2. Provide context lines (5 before + 5 after) for regex creation assistance
-3. Indicate if this requires single-line or multi-line regex processing
-4. Distinguish between FORMAT ERRORS (wrong format) and OMISSIONS (missing entirely)
+CRITICAL REQUIREMENTS FOR EACH IDENTIFIED ERROR/OMISSION:
+1. ""field"": The EXACT name of the field from EXTRACTED HEADER DATA keys (e.g., ""InvoiceTotal"", ""TotalDeduction""). For true omissions not in keys, use the canonical name from your knowledge or the context if evident (e.g. ""TotalDeduction"" if a gift card line is found but TotalDeduction is null/missing in EXTRACTED HEADER DATA).
+2. ""extracted_value"": The current value from EXTRACTED HEADER DATA for that field. For omissions, this should be empty string or reflect the null/missing state from EXTRACTED HEADER DATA.
+3. ""correct_value"": The correct value as found or inferred from the ORIGINAL INVOICE TEXT.
+4. ""line_text"": The EXACT line from ORIGINAL INVOICE TEXT where the correct value (or clear evidence of omission) appears.
+5. ""line_number"": The 1-based line number in ORIGINAL INVOICE TEXT corresponding to ""line_text"".
+6. ""context_lines_before"": Array of up to 5 full text lines immediately PRECEDING ""line_text"".
+7. ""context_lines_after"": Array of up to 5 full text lines immediately FOLLOWING ""line_text"".
+8. ""requires_multiline_regex"": true/false. Indicate if extracting this field might require a regex pattern spanning multiple lines (e.g., for a multi-line address if SupplierAddress was the field).
+9. ""confidence"": Your confidence in this correction (0.0 to 1.0).
+10. ""error_type"": One of: ""omission"" (field present in text, missing/null in extracted), ""format_error"" (extracted, but wrong format e.g. 123,45 vs 123.45), ""value_error"" (extracted, format ok, but value wrong vs text), ""decimal_separator"", ""character_confusion"", ""calculation_error"" (if a total is inconsistent with components visible in header text).
+11. ""reasoning"": Brief explanation for the correction.
 
-ERROR TYPES TO DETECT:
-- ""omission"": Field value exists in text but wasn't extracted (ExtractedValue will be null/empty)
-- ""format_error"": Value extracted but wrong format (ExtractedValue differs from correct value)
-- ""decimal_separator"": Comma vs period issues
-- ""character_confusion"": OCR character substitution
-- ""calculation_error"": Mathematical inconsistencies
+DEDUCTION IDENTIFICATION (CRITICAL FOR OMISSIONS OF TotalDeduction):
+Actively search for these terms in ORIGINAL INVOICE TEXT. If found and TotalDeduction in EXTRACTED HEADER DATA is 0 or null, report as ""omission"":
+- ""Gift card"", ""Gift certificate"", ""GC Applied"", ""Discount Code"", ""Coupon Applied""
+- ""Store credit"", ""Account credit"", ""Promotional Credit""
+- Terms indicating a reduction in the total amount payable due to non-standard line item discounts.
 
-DEDUCTION IDENTIFICATION RULES (CRITICAL FOR OMISSIONS):
-Look for these terms and treat as TotalDeduction omissions if not extracted:
-- ""Gift card applied"", ""Gift certificate used"", ""GC Applied""
-- ""Amazon gift card"", ""Store gift card"", ""Gift balance""
-- ""Store credit"", ""Account credit"", ""Credit applied""
-- ""Promotional credit"", ""Promo code"", ""Coupon applied""
-- ""Paid with gift card"", ""Gift card payment""
-
-RESPONSE FORMAT (JSON only - follow this EXACT structure):
+RESPONSE FORMAT (Strict JSON array of error objects under ""errors"" key):
 {{
   ""errors"": [
     {{
-      ""field"": ""FieldName"",
-      ""extracted_value"": ""CurrentValue"",
-      ""correct_value"": ""CorrectValueFromText"",
-      ""line_text"": ""EXACT line from original text where correct value appears"",
-      ""line_number"": 15,
-      ""context_lines_before"": [
-        ""Line 10: text content"",
-        ""Line 11: text content"",
-        ""Line 12: text content"",
-        ""Line 13: text content"",
-        ""Line 14: text content""
-      ],
-      ""context_lines_after"": [
-        ""Line 16: text content"",
-        ""Line 17: text content"",
-        ""Line 18: text content"",
-        ""Line 19: text content"",
-        ""Line 20: text content""
-      ],
-      ""requires_multiline_regex"": false,
-      ""confidence"": 0.95,
-      ""error_type"": ""omission"",
-      ""reasoning"": ""Field exists in text but wasn't extracted - requires new regex pattern""
+      ""field"": ""TotalDeduction"", ""extracted_value"": ""0.00"", ""correct_value"": ""5.99"",
+      ""line_text"": ""Gift Card Applied: -$5.99"", ""line_number"": 28,
+      ""context_lines_before"": [""L23: Item X"", ""L24: Subtotal: $100.00"", ""L25: Shipping: $10.00"", ""L26: Handling: $2.00"", ""L27: Tax: $7.00""],
+      ""context_lines_after"": [""L29: Grand Total: $101.01"", ""L30: Due Date: 01/15/2024"", ""L31: Payment Method: Visa ****1234"", ""L32: Auth Code: XYZ789"", ""L33: Thank you for your order!""],
+      ""requires_multiline_regex"": false, ""confidence"": 0.98, ""error_type"": ""omission"",
+      ""reasoning"": ""Gift card deduction clearly stated in text but not reflected in extracted TotalDeduction.""
     }}
+    // ... more error objects if any ...
   ]
 }}
-
-EXAMPLE FOR OMISSION (missing field):
-{{
-  ""field"": ""TotalDeduction"",
-  ""extracted_value"": """",
-  ""correct_value"": ""6.99"",
-  ""line_text"": ""Gift Card Applied: -$6.99"",
-  ""line_number"": 28,
-  ""context_lines_before"": [
-    ""Line 23: Item 3: Widget C"",
-    ""Line 24: Quantity: 1  Price: $15.00"",
-    ""Line 25: Subtotal: $150.00"",
-    ""Line 26: Shipping: $10.00"",
-    ""Line 27: Tax: $12.00""
-  ],
-  ""context_lines_after"": [
-    ""Line 29: Final Total: $165.01"",
-    ""Line 30: Payment Method: Credit Card"",
-    ""Line 31: Card ending in: 1234"",
-    ""Line 32: Authorization: ABC123"",
-    ""Line 33: Thank you for your order!""
-  ],
-  ""requires_multiline_regex"": false,
-  ""error_type"": ""omission"",
-  ""reasoning"": ""Gift card deduction exists in text but wasn't extracted by current OCR patterns""
-}}
-
-EXAMPLE FOR FORMAT ERROR (wrong format):
-{{
-  ""field"": ""InvoiceTotal"",
-  ""extracted_value"": ""123,45"",
-  ""correct_value"": ""123.45"",
-  ""line_text"": ""Total: $123,45"",
-  ""line_number"": 35,
-  ""context_lines_before"": [],
-  ""context_lines_after"": [],
-  ""requires_multiline_regex"": false,
-  ""error_type"": ""decimal_separator"",
-  ""reasoning"": ""European decimal comma should be converted to period""
-}}
-
-IMPORTANT NOTES:
-- line_text must be EXACT text from the original document
-- For omissions, ALWAYS provide context_lines to help create extraction regex
-- For simple format corrections, context_lines can be empty arrays
-- Line numbers in context_lines should be actual line numbers from the document
-- Focus on fields that affect TotalsZero calculation: InvoiceTotal, SubTotal, TotalDeduction, etc.
-
-Return empty array if no errors: {{""errors"": []}}";
+If no errors or omissions are found, return: {{""errors"": []}}
+Focus on fields critical for financial accuracy and identification: InvoiceTotal, SubTotal, all cost components, deductions, InvoiceNo, InvoiceDate, SupplierName.
+Provide full context lines as available; do not truncate them in the JSON.
+";
         }
 
         /// <summary>
-        /// Enhanced product-level error detection with omission support
+        /// Creates a prompt for DeepSeek to detect errors and omissions in product line item data.
         /// </summary>
         private string CreateProductErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
         {
-            var productData = invoice.InvoiceDetails?.Select(d => new
+            var productDataForPrompt = invoice.InvoiceDetails?.Select(d => new
             {
-                LineNumber = d.LineNumber,
-                ItemDescription = d.ItemDescription,
-                Quantity = d.Quantity,
-                Cost = d.Cost,
-                TotalCost = d.TotalCost,
-                Discount = d.Discount,
-                Units = d.Units
+                // Providing the LineNumber from the current data helps DeepSeek correlate, but it should find the *actual* line in text.
+                InputLineNumber = d.LineNumber, 
+                d.ItemDescription,
+                d.Quantity,
+                UnitCost = d.Cost, // Clarify this is unit cost
+                LineTotal = d.TotalCost,
+                d.Discount,
+                d.Units
             }).ToList();
 
-            var productsJson = JsonSerializer.Serialize(productData, new JsonSerializerOptions { WriteIndented = true });
+            var productsJson = JsonSerializer.Serialize(productDataForPrompt, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
-            return $@"OCR PRODUCT DATA ERROR DETECTION WITH OMISSION ANALYSIS:
+            return $@"OCR PRODUCT LINE ITEM ERROR DETECTION AND OMISSION ANALYSIS:
+Analyze the original invoice text against the EXTRACED PRODUCT DATA. Identify ALL discrepancies: format/value errors, calculation errors, MISSING fields within items, or ENTIRELY OMITTED line items.
 
-Compare the extracted product data with the original invoice text and identify ALL discrepancies including missing fields.
-
-EXTRACTED PRODUCT DATA:
+EXTRACTED PRODUCT DATA (InputLineNumber is from current data, may not match text line number):
 {productsJson}
 
-ORIGINAL TEXT:
-{CleanTextForAnalysis(fileText)}
+ORIGINAL INVOICE TEXT (condensed for brevity if long):
+{this.CleanTextForAnalysis(fileText)}
 
-CRITICAL REQUIREMENTS FOR EACH ERROR:
-1. Provide EXACT line text where the correct value appears
-2. Provide context lines (5 before + 5 after) for multi-line pattern detection
-3. Indicate if this requires single-line or multi-line regex processing
-4. Distinguish between FORMAT ERRORS and OMISSIONS
+CRITICAL REQUIREMENTS FOR EACH IDENTIFIED ERROR/OMISSION:
+1. ""field"": Use format ""InvoiceDetail_LineX_FieldName"". 'X' MUST be the 1-based line number from the ORIGINAL INVOICE TEXT where the item/field is found. FieldName examples: ""ItemDescription"", ""Quantity"", ""Cost"" (for unit cost), ""TotalCost"" (for line total), ""Discount"", ""Units"". For a completely missed line item, use a generic field like ""InvoiceDetail_LineX_OmittedLineItem"" where X is starting line of omitted item in text.
+2. ""extracted_value"": Current value from EXTRACTED PRODUCT DATA if a corresponding item/field is found; otherwise empty string or null for omissions.
+3. ""correct_value"": Correct value from ORIGINAL INVOICE TEXT. For ""OmittedLineItem"", this could be a string summarizing the item, e.g., ""Product XYZ, Qty 2, Price $10.00, Total $20.00"".
+4. ""line_text"": EXACT line(s) from ORIGINAL INVOICE TEXT where the error/omission is evident. If item spans multiple lines, join with \n.
+5. ""line_number"": 1-based *starting* line number in ORIGINAL INVOICE TEXT corresponding to ""line_text"".
+6. ""context_lines_before"": Array of up to 5 full text lines PRECEDING the start of ""line_text"".
+7. ""context_lines_after"": Array of up to 5 full text lines FOLLOWING the end of ""line_text"".
+8. ""requires_multiline_regex"": true if extraction of this item/field likely needs multi-line regex.
+9. ""confidence"": Your confidence (0.0 to 1.0).
+10. ""error_type"": ""omission"" (missing field in an otherwise extracted line), ""omitted_line_item"" (entire line item missed), ""format_error"", ""value_error"", ""calculation_error"", ""character_confusion"".
+11. ""reasoning"": Explanation.
 
 VALIDATION FOCUS:
-1. QUANTITIES: Verify each item quantity matches the text exactly
-   - Watch for: 1↔l, 5↔S, 6↔G, 8↔B, 0↔O character confusion
-   - Check: Reasonable quantities (not negative, not extremely large)
-   - OMISSIONS: Missing quantity fields in line items
+- COMPLETENESS: Are all line items from text present in extracted data? If not, ""omitted_line_item"".
+- QUANTITIES: Verify. OCR confusion (1/l, 0/O, S/5, B/8). Reasonable values.
+- UNIT PRICES (Cost): Verify. Decimal/currency format ($12.50 vs $1250). Reasonable values.
+- LINE TOTALS (TotalCost): Verify calculation: (Quantity * UnitCost) - Discount = LineTotal.
+- DESCRIPTIONS: Verify. Truncation, substitutions.
 
-2. UNIT PRICES: Verify unit costs are correct
-   - Watch for: Decimal separators (12,50 vs 12.50)
-   - Check: Currency formatting ($12.50 vs $1250)
-   - Validate: Prices are reasonable (not negative, not zero for products)
-   - OMISSIONS: Missing cost fields in line items
-
-3. LINE TOTALS: Verify calculations and detect missing totals
-   - Formula: (Quantity × Unit Price) - Discount = Line Total
-   - Check: Math is correct within $0.01
-   - OMISSIONS: Missing TotalCost calculations
-
-4. ITEM DESCRIPTIONS: Verify product names and detect missing descriptions
-   - Check: No truncated descriptions
-   - Watch for: Character substitutions that change meaning
-   - OMISSIONS: Missing ItemDescription fields
-
-RESPONSE FORMAT (JSON only - follow this EXACT structure):
+RESPONSE FORMAT (Strict JSON array of error objects under ""errors"" key):
 {{
   ""errors"": [
     {{
-      ""field"": ""InvoiceDetail_Line1_Quantity"",
-      ""extracted_value"": ""1Z"",
-      ""correct_value"": ""12"",
-      ""line_text"": ""EXACT line from original text where correct value appears"",
-      ""line_number"": 15,
-      ""context_lines_before"": [
-        ""Line 10: previous line"",
-        ""Line 11: previous line"",
-        ""Line 12: previous line"",
-        ""Line 13: previous line"",
-        ""Line 14: previous line""
-      ],
-      ""context_lines_after"": [
-        ""Line 16: next line"",
-        ""Line 17: next line"",
-        ""Line 18: next line"",
-        ""Line 19: next line"",
-        ""Line 20: next line""
-      ],
-      ""requires_multiline_regex"": false,
-      ""confidence"": 0.90,
-      ""error_type"": ""character_confusion"",
-      ""reasoning"": ""OCR confused 'Z' with '2' in quantity field""
+      ""field"": ""InvoiceDetail_Line15_Quantity"", ""extracted_value"": ""l"", ""correct_value"": ""1"",
+      ""line_text"": ""Super Widget - Part #SW123 Qty: l @ $19.99 ea."", ""line_number"": 15,
+      ""context_lines_before"": [""L10..."", ..., ""L14...""], ""context_lines_after"": [""L16..."", ..., ""L20...""],
+      ""requires_multiline_regex"": false, ""confidence"": 0.92, ""error_type"": ""character_confusion"",
+      ""reasoning"": ""OCR likely misread '1' as 'l' in the quantity.""
+    }},
+    {{
+      ""field"": ""InvoiceDetail_Line22_OmittedLineItem"", ""extracted_value"": """", ""correct_value"": ""Extra Gizmo, Qty 2, Unit Price $5.00, Line Total $10.00"",
+      ""line_text"": ""Extra Gizmo\n  Qty: 2   Unit Price: $5.00    Total: $10.00"", ""line_number"": 22,
+      ""context_lines_before"": [...], ""context_lines_after"": [...],
+      ""requires_multiline_regex"": true, ""confidence"": 0.97, ""error_type"": ""omitted_line_item"",
+      ""reasoning"": ""This line item is present in the text between line 21 and 24 but was not extracted.""
     }}
   ]
 }}
-
-EXAMPLE FOR LINE ITEM OMISSION:
-{{
-  ""field"": ""InvoiceDetail_Line2_TotalCost"",
-  ""extracted_value"": """",
-  ""correct_value"": ""25.98"",
-  ""line_text"": ""Item 2: Premium Widget  Qty: 2  @$12.99  Total: $25.98"",
-  ""line_number"": 45,
-  ""context_lines_before"": [
-    ""Line 40: Item 1: Basic Widget"",
-    ""Line 41: Qty: 1  @$9.99  Total: $9.99"",
-    ""Line 42: "",
-    ""Line 43: Item 2: Premium Widget"",
-    ""Line 44: Description: High-quality premium widget""
-  ],
-  ""context_lines_after"": [
-    ""Line 46: Warranty: 2 years included"",
-    ""Line 47: "",
-    ""Line 48: Item 3: Deluxe Widget"",
-    ""Line 49: Qty: 1  @$19.99"",
-    ""Line 50: Total: $19.99""
-  ],
-  ""requires_multiline_regex"": true,
-  ""error_type"": ""omission"",
-  ""reasoning"": ""Line total exists in text but wasn't extracted - may require multi-line pattern""
-}}
-
-IMPORTANT NOTES:
-- line_text must be EXACT text from the original document
-- For omissions in line items, ALWAYS provide context_lines for pattern creation
-- Multi-line patterns may be needed for complex line item structures
-- Focus on fields critical for mathematical validation
-- Field names use format: InvoiceDetail_Line{N}_{FieldName}
-
-Return empty array if no errors: {{""errors"": []}}";
+If no errors or omissions are found, return: {{""errors"": []}}
+Full context lines are important for multi-line items.
+";
         }
 
         /// <summary>
-        /// Creates prompt for DeepSeek to generate new regex patterns for omissions
+        /// Creates a prompt for DeepSeek to generate a new regex pattern, typically for an omitted field.
         /// </summary>
         public string CreateRegexCreationPrompt(CorrectionResult correction, LineContext lineContext)
         {
-            var existingNamedGroups = lineContext.FieldsInLine?.Select(f => f.Key).ToList() ?? new List<string>();
+            var existingNamedGroups = lineContext.FieldsInLine?.Select(f => f.Key).Where(k => !string.IsNullOrEmpty(k)).Distinct().ToList() ?? new List<string>();
+            var existingNamedGroupsString = existingNamedGroups.Any() ? string.Join(", ", existingNamedGroups) : "None";
 
             return $@"CREATE REGEX PATTERN FOR OCR FIELD EXTRACTION:
+An OCR process failed to extract a field. Your task is to create or modify a regex pattern to capture this missing field.
 
-A field '{correction.FieldName}' with value '{correction.NewValue}' was found in the invoice text but not extracted by current OCR processing.
+OMITTED FIELD DETAILS:
+- Field Name to Capture: ""{correction.FieldName}""
+- Expected Value: ""{correction.NewValue}""
+- Line Number in Original Text: {correction.LineNumber}
+- Text of the Line Containing the Value: ""{correction.LineText}""
 
-CURRENT LINE REGEX: {lineContext.RegexPattern ?? "None"}
-EXISTING NAMED GROUPS: {string.Join(", ", existingNamedGroups)}
+FULL TEXTUAL CONTEXT (target line where value ""{correction.NewValue}"" is found is marked with >>> <<<):
+{string.Join("\n", lineContext.ContextLinesBefore)}
+>>> LINE {lineContext.LineNumber}: {lineContext.LineText} <<<
+{string.Join("\n", lineContext.ContextLinesAfter)}
 
-TARGET LINE:
-{correction.LineText}
+EXISTING LINE CONTEXT (if applicable):
+- Current Regex for this Line (if any): {lineContext.RegexPattern ?? "None"}
+- Named Groups Already Captured by Current Regex: {existingNamedGroupsString}
+- System Hint for Multiline Need: {correction.RequiresMultilineRegex}
 
-FULL CONTEXT PROVIDED BY ANALYSIS:
-{string.Join("\n", correction.ContextLinesBefore)}
->>> TARGET LINE {correction.LineNumber}: {correction.LineText} <<<
-{string.Join("\n", correction.ContextLinesAfter)}
+YOUR TASK & REQUIREMENTS:
+1.  DECIDE STRATEGY:
+    *   ""modify_existing_line"": Choose if `Current Regex` is not ""None"" AND the new field logically belongs on the same line AND you can safely add a new capture group `(?<{correction.FieldName}>...)` while PRESERVING ALL `Existing Named Groups`.
+    *   ""create_new_line"": Choose if no `Current Regex`, or modification is too complex/risky, or the field appears on a new conceptual line.
+2.  PROVIDE REGEX:
+    *   `regex_pattern`: ALWAYS provide the specific regex part that captures the `Expected Value` for `FieldName`, like `(?<{correction.FieldName}>your_pattern_for_value)`.
+    *   `complete_line_regex`: IF strategy is ""modify_existing_line"", provide the FULL modified `Current Regex` string that includes the new group and preserves all old ones. Otherwise, leave empty or null.
+3.  DEFINE EXTRACTION BEHAVIOR:
+    *   `is_multiline`: true/false. Does your `regex_pattern` (or the new part in `complete_line_regex`) need to span multiple text lines?
+    *   `max_lines`: If `is_multiline` is true, how many lines max (e.g., 1 to 5)? Default to 1 if not multiline.
+4.  VALIDATE YOUR PATTERN:
+    *   `test_match`: Provide the EXACT minimal substring from the `FULL TEXTUAL CONTEXT` that your `regex_pattern` (the part for the new field) should match to extract `Expected Value`.
+5.  SAFETY:
+    *   `preserves_existing_groups`: MUST be true if ""modify_existing_line"". For ""create_new_line"", it's implicitly true regarding prior groups.
 
-FIELD DETAILS:
-- Field Name: {correction.FieldName}
-- Expected Value: {correction.NewValue}
-- DeepSeek Suggests Multiline: {correction.RequiresMultilineRegex}
-- Error Type: {correction.CorrectionType}
-- Context Lines Available: {correction.ContextLinesBefore.Count + correction.ContextLinesAfter.Count + 1} total
-
-REQUIREMENTS:
-1. Analyze the FULL context provided - use as much or as little as needed
-2. Create the most robust regex pattern for this field extraction
-3. Use named capture group: (?<{correction.FieldName}>pattern)
-4. YOU decide if single-line or multi-line approach is best based on the context
-5. YOU determine the optimal max_lines value (no artificial limits)
-6. Choose strategy: modify existing line regex OR create completely new line
-
-RESPONSE FORMAT (JSON only):
+STRICT JSON RESPONSE FORMAT:
 {{
-  ""strategy"": ""modify_existing_line"" OR ""create_new_line"",
-  ""regex_pattern"": ""(?<{correction.FieldName}>your_pattern_here)"",
-  ""complete_line_regex"": ""full regex if modifying existing line (preserve all existing named groups)"",
-  ""is_multiline"": true/false,
-  ""max_lines"": number,
-  ""test_match"": ""exact text from context that should be matched"",
-  ""confidence"": 0.95,
-  ""reasoning"": ""why you chose this approach and pattern"",
-  ""preserves_existing_groups"": true/false
+  ""strategy"": ""(either 'modify_existing_line' or 'create_new_line')"",
+  ""regex_pattern"": ""(?<{correction.FieldName}>your_pattern_for_this_field_only)"",
+  ""complete_line_regex"": ""(IF 'modify_existing_line', THE FULL UPDATED REGEX STRING, else null or empty)"",
+  ""is_multiline"": (true or false),
+  ""max_lines"": (integer, e.g., 1 or 3),
+  ""test_match"": ""(exact text snippet your regex_pattern should match from context)"",
+  ""confidence"": (0.0 to 1.0, your confidence in this pattern),
+  ""reasoning"": ""(briefly explain your pattern and strategy choice)"",
+  ""preserves_existing_groups"": (true if 'modify_existing_line', otherwise true)
 }}
 
-STRATEGY DECISION GUIDELINES:
-- ""modify_existing_line"": If the field logically belongs with existing fields on the same line
-- ""create_new_line"": If the field appears on a separate line or requires different processing
-
-EXAMPLES:
-- Single line currency: ""(?<TotalDeduction>Gift Card Applied:\s*-?\$?([0-9]+\.?[0-9]*))""
-- Multi-line with context: ""(?<Address>(?:.*\n){{2,4}}.*(?:Street|Ave|Blvd|Road))""
-- Modify existing: Combine with existing pattern while preserving all named groups
-
-CRITICAL SAFETY REQUIREMENTS:
-- If modifying existing regex, MUST preserve ALL existing named groups: {string.Join(", ", existingNamedGroups)}
-- Test pattern against provided context to ensure it works
-- Provide test_match with exact text that should be captured
-- Explain reasoning for strategy choice
-
-Create the optimal pattern based on your analysis of the full context.";
+EXAMPLE - Creating a new line for a missing ""GiftWrapFee"":
+Value ""$2.50"" found on line ""Gift Wrap Fee: $2.50""
+{{
+  ""strategy"": ""create_new_line"",
+  ""regex_pattern"": ""(?<GiftWrapFee>\\$\\d+\\.\\d{{2}})"",
+  ""complete_line_regex"": null,
+  ""is_multiline"": false,
+  ""max_lines"": 1,
+  ""test_match"": ""$2.50"",
+  ""confidence"": 0.95,
+  ""reasoning"": ""Fee is on its own distinct line. Pattern captures currency value."",
+  ""preserves_existing_groups"": true
+}}
+Focus on creating a robust and accurate pattern. If modifying, ensure no existing data capture is broken.
+";
         }
 
         /// <summary>
-        /// Creates prompt for direct data correction fallback when regex fixes fail
+        /// Creates a prompt for DeepSeek for direct data correction when regex/pattern fixes are insufficient.
         /// </summary>
-        public string CreateDirectDataCorrectionPrompt(List<dynamic> invoiceData, string originalText)
+        public string CreateDirectDataCorrectionPrompt(List<dynamic> invoiceDataList, string originalText)
         {
-            var invoiceJson = JsonSerializer.Serialize(invoiceData, new JsonSerializerOptions { WriteIndented = true });
+            // This prompt assumes it's correcting ONE invoice structure at a time.
+            // If invoiceDataList has multiple, the calling logic should iterate or this prompt needs adjustment.
+            var invoiceDataToSerialize = invoiceDataList?.FirstOrDefault() ?? (object)new Dictionary<string, object>();
+            var invoiceJson = JsonSerializer.Serialize(invoiceDataToSerialize, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
-            return $@"DIRECT DATA CORRECTION - BYPASS REGEX APPROACH:
+            return $@"DIRECT DATA CORRECTION - MATHEMATICAL CONSISTENCY REQUIRED:
+The automated OCR extraction and pattern-based corrections have resulted in an invoice that may not be mathematically consistent or still contains errors. Your task is to analyze the ORIGINAL INVOICE TEXT and provide direct value changes to the EXTRACTED INVOICE DATA to ensure accuracy and mathematical balance.
 
-The OCR import patterns could not be fixed automatically. Please provide direct value corrections to make the invoice data mathematically consistent.
-
-EXTRACTED INVOICE DATA:
+EXTRACTED INVOICE DATA (current state, possibly after some automated fixes):
 {invoiceJson}
 
-ORIGINAL INVOICE TEXT:
-{CleanTextForAnalysis(originalText)}
+ORIGINAL INVOICE TEXT (condensed for brevity if long):
+{this.CleanTextForAnalysis(originalText)}
 
-REQUIREMENTS:
-1. Analyze the original text and provide correct values for fields that affect mathematical balance
-2. Ensure the corrected data satisfies: SubTotal + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeduction = InvoiceTotal
-3. Focus on critical fields that impact TotalsZero calculation
-4. Maintain data integrity and business logic consistency
+MATHEMATICAL VALIDATION RULES:
+1. For each line item (in InvoiceDetails if present): (Quantity * Cost) - Discount = TotalCost (approximately).
+2. Overall: SubTotal (sum of all line item TotalCosts) + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeduction = InvoiceTotal (approximately).
+   (Allow for minor rounding differences, e.g., +/- $0.01 or $0.02).
 
-RESPONSE FORMAT (JSON only):
+REQUIREMENTS FOR YOUR RESPONSE:
+1. Analyze the ORIGINAL INVOICE TEXT to determine the true values for any fields in EXTRACTED INVOICE DATA that appear incorrect or cause mathematical imbalances.
+2. Propose corrections by specifying the field name and its ""correct_value"" derived from the text.
+3. You can correct header fields (e.g., ""InvoiceTotal"", ""SubTotal"", ""TotalDeduction"") and line item fields.
+4. For line item fields, use the 0-based index from the EXTRACTED INVOICE DATA's ""InvoiceDetails"" array. Format: ""InvoiceDetails[index].FieldName"" (e.g., ""InvoiceDetails[0].Quantity"", ""InvoiceDetails[1].TotalCost"").
+5. The goal is to make the invoice data reflect the ORIGINAL INVOICE TEXT and be mathematically sound according to the rules above.
+6. Provide a ""mathematical_check_after_corrections"" object showing how the invoice balances WITH YOUR PROPOSED CORRECTIONS APPLIED.
+
+STRICT JSON RESPONSE FORMAT:
 {{
-  ""corrections"": [
+  ""corrections"": [ 
+    // Array of correction objects. Can be empty if no corrections are needed or possible.
     {{
-      ""field"": ""InvoiceTotal"",
-      ""current_value"": ""wrong_value"",
-      ""correct_value"": ""right_value"",
-      ""confidence"": 0.95,
-      ""reasoning"": ""explanation of why this correction is needed""
+      ""field"": ""InvoiceTotal"", // Or ""InvoiceDetails[0].TotalCost"" for a line item
+      ""current_value"": ""(value from EXTRACTED INVOICE DATA)"", 
+      ""correct_value"": ""(the true value from ORIGINAL INVOICE TEXT)"", 
+      ""confidence"": (0.0 to 1.0, your confidence in this specific correction),
+      ""reasoning"": ""(brief explanation, e.g., 'InvoiceTotal in text is $150.55, not $155.00.')""
     }}
   ],
-  ""mathematical_check"": {{
-    ""subtotal"": 150.00,
-    ""freight"": 10.00,
-    ""other_cost"": 12.00,
-    ""insurance"": 0.00,
-    ""deduction"": 6.99,
-    ""calculated_total"": 165.01,
-    ""totals_zero"": 0.0
+  ""mathematical_check_after_corrections"": {{ // Reflects state AFTER your proposed 'corrections' are applied
+    ""subtotal"": (calculated sum of all corrected InvoiceDetails.TotalCost), 
+    ""freight"": (corrected TotalInternalFreight or original if unchanged),
+    ""other_cost"": (corrected TotalOtherCost or original),
+    ""insurance"": (corrected TotalInsurance or original),
+    ""deduction"": (corrected TotalDeduction or original),
+    ""calculated_invoice_total"": (subtotal + freight + other_cost + insurance - deduction),
+    ""final_invoice_total_field"": (the value of InvoiceTotal field AFTER your corrections),
+    ""balance_difference"": (calculated_invoice_total - final_invoice_total_field) // Should be close to 0.00
   }}
 }}
 
-CRITICAL FIELDS TO FOCUS ON:
-- InvoiceTotal: Final amount charged
-- SubTotal: Sum of all line items
-- TotalDeduction: Gift cards, discounts, store credits
-- TotalInternalFreight: Shipping charges
-- TotalOtherCost: Taxes and fees
-- TotalInsurance: Insurance charges
-
-EXAMPLE CORRECTION:
-{{
-  ""corrections"": [
-    {{
-      ""field"": ""TotalDeduction"",
-      ""current_value"": ""0.00"",
-      ""correct_value"": ""6.99"",
-      ""confidence"": 0.98,
-      ""reasoning"": ""Gift card deduction of $6.99 found in text but not extracted""
-    }}
-  ],
-  ""mathematical_check"": {{
-    ""subtotal"": 150.00,
-    ""freight"": 10.00,
-    ""other_cost"": 12.00,
-    ""insurance"": 0.00,
-    ""deduction"": 6.99,
-    ""calculated_total"": 165.01,
-    ""totals_zero"": 0.0
-  }}
-}}
-
-Provide corrections that will make TotalsZero = 0 and ensure mathematical consistency.";
+If the EXTRACTED INVOICE DATA is already correct and balanced based on the ORIGINAL INVOICE TEXT, return:
+{{ ""corrections"": [], ""mathematical_check_after_corrections"": {{ ... current balanced values ... }} }}
+Only propose changes that are directly supported by evidence in the ORIGINAL INVOICE TEXT.
+";
         }
 
         #endregion

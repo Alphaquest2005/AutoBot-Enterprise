@@ -74,7 +74,7 @@ namespace OCR.Client.DTO
         private string _CorrectValue;
 
         [DataMember]
-        public int LineNumber
+        public Nullable<int> LineNumber
 		{ 
 		    get { return _LineNumber; }
 			set
@@ -84,7 +84,7 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.LineNumber
 			}
 		}
-        private int _LineNumber;
+        private Nullable<int> _LineNumber;
 
         [DataMember]
         public string LineText
@@ -113,19 +113,6 @@ namespace OCR.Client.DTO
         private string _WindowText;
 
         [DataMember]
-        public string ExistingRegex
-		{ 
-		    get { return _ExistingRegex; }
-			set
-			{
-			    if (value == _ExistingRegex) return;
-				_ExistingRegex = value;
-				NotifyPropertyChanged();//m => this.ExistingRegex
-			}
-		}
-        private string _ExistingRegex;
-
-        [DataMember]
         public string CorrectionType
 		{ 
 		    get { return _CorrectionType; }
@@ -137,32 +124,6 @@ namespace OCR.Client.DTO
 			}
 		}
         private string _CorrectionType;
-
-        [DataMember]
-        public string NewRegexPattern
-		{ 
-		    get { return _NewRegexPattern; }
-			set
-			{
-			    if (value == _NewRegexPattern) return;
-				_NewRegexPattern = value;
-				NotifyPropertyChanged();//m => this.NewRegexPattern
-			}
-		}
-        private string _NewRegexPattern;
-
-        [DataMember]
-        public string ReplacementPattern
-		{ 
-		    get { return _ReplacementPattern; }
-			set
-			{
-			    if (value == _ReplacementPattern) return;
-				_ReplacementPattern = value;
-				NotifyPropertyChanged();//m => this.ReplacementPattern
-			}
-		}
-        private string _ReplacementPattern;
 
         [DataMember]
         public string DeepSeekReasoning
@@ -217,19 +178,6 @@ namespace OCR.Client.DTO
         private string _FilePath;
 
         [DataMember]
-        public Nullable<int> FieldId
-		{ 
-		    get { return _FieldId; }
-			set
-			{
-			    if (value == _FieldId) return;
-				_FieldId = value;
-				NotifyPropertyChanged();//m => this.FieldId
-			}
-		}
-        private Nullable<int> _FieldId;
-
-        [DataMember]
         public bool Success
 		{ 
 		    get { return _Success; }
@@ -282,43 +230,82 @@ namespace OCR.Client.DTO
         private string _CreatedBy;
 
         [DataMember]
-        public Nullable<int> ProcessingTimeMs
+        public Nullable<bool> RequiresMultilineRegex
 		{ 
-		    get { return _ProcessingTimeMs; }
+		    get { return _RequiresMultilineRegex; }
 			set
 			{
-			    if (value == _ProcessingTimeMs) return;
-				_ProcessingTimeMs = value;
-				NotifyPropertyChanged();//m => this.ProcessingTimeMs
+			    if (value == _RequiresMultilineRegex) return;
+				_RequiresMultilineRegex = value;
+				NotifyPropertyChanged();//m => this.RequiresMultilineRegex
 			}
 		}
-        private Nullable<int> _ProcessingTimeMs;
+        private Nullable<bool> _RequiresMultilineRegex;
 
         [DataMember]
-        public string DeepSeekPrompt
+        public string ContextLinesBefore
 		{ 
-		    get { return _DeepSeekPrompt; }
+		    get { return _ContextLinesBefore; }
 			set
 			{
-			    if (value == _DeepSeekPrompt) return;
-				_DeepSeekPrompt = value;
-				NotifyPropertyChanged();//m => this.DeepSeekPrompt
+			    if (value == _ContextLinesBefore) return;
+				_ContextLinesBefore = value;
+				NotifyPropertyChanged();//m => this.ContextLinesBefore
 			}
 		}
-        private string _DeepSeekPrompt;
+        private string _ContextLinesBefore;
 
         [DataMember]
-        public string DeepSeekResponse
+        public string ContextLinesAfter
 		{ 
-		    get { return _DeepSeekResponse; }
+		    get { return _ContextLinesAfter; }
 			set
 			{
-			    if (value == _DeepSeekResponse) return;
-				_DeepSeekResponse = value;
-				NotifyPropertyChanged();//m => this.DeepSeekResponse
+			    if (value == _ContextLinesAfter) return;
+				_ContextLinesAfter = value;
+				NotifyPropertyChanged();//m => this.ContextLinesAfter
 			}
 		}
-        private string _DeepSeekResponse;
+        private string _ContextLinesAfter;
+
+        [DataMember]
+        public Nullable<int> LineId
+		{ 
+		    get { return _LineId; }
+			set
+			{
+			    if (value == _LineId) return;
+				_LineId = value;
+				NotifyPropertyChanged();//m => this.LineId
+			}
+		}
+        private Nullable<int> _LineId;
+
+        [DataMember]
+        public Nullable<int> PartId
+		{ 
+		    get { return _PartId; }
+			set
+			{
+			    if (value == _PartId) return;
+				_PartId = value;
+				NotifyPropertyChanged();//m => this.PartId
+			}
+		}
+        private Nullable<int> _PartId;
+
+        [DataMember]
+        public Nullable<int> RegexId
+		{ 
+		    get { return _RegexId; }
+			set
+			{
+			    if (value == _RegexId) return;
+				_RegexId = value;
+				NotifyPropertyChanged();//m => this.RegexId
+			}
+		}
+        private Nullable<int> _RegexId;
 
        
    //     [DataMember]

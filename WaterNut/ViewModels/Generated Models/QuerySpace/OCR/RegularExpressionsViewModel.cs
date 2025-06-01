@@ -505,10 +505,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public Nullable<int> MaxLines { get; set; } 
                     
  
-                    public Nullable<System.DateTime> CreatedDate { get; set; } 
+                    public System.DateTime CreatedDate { get; set; } 
                     
  
-                    public Nullable<System.DateTime> LastUpdated { get; set; } 
+                    public System.DateTime LastUpdated { get; set; } 
                     
  
                     public string Description { get; set; } 

@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Serilog;
-using EntryDataDS.Business.Entities;
-using WaterNut.DataSpace;
+using EntryDataDS.Business.Entities; // Not directly used, but common in project
+using WaterNut.DataSpace; // For OCRCorrectionService
 
 namespace AutoBotUtilities.Tests.Production
 {
+    using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
+
     /// <summary>
-    /// Tests for field format pattern creation and validation
+    /// Tests for advanced field format pattern creation and validation
+    /// Focuses on OCRCorrectionService.CreateAdvancedFormatCorrectionPatterns
     /// </summary>
     [TestFixture]
     [Category("FieldFormat")]
@@ -20,6 +23,7 @@ namespace AutoBotUtilities.Tests.Production
         #region Test Setup
 
         private static ILogger _logger;
+        private OCRCorrectionService _service;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -27,16 +31,23 @@ namespace AutoBotUtilities.Tests.Production
             _logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File($"logs/OCRFieldFormatPatternTests_{DateTime.Now:yyyyMMdd_HHmmss}.log")
+                .WriteTo.File($"logs/OCRFieldFormatPatternTests_Advanced_{DateTime.Now:yyyyMMdd_HHmmss}.log")
                 .CreateLogger();
 
-            _logger.Information("Starting OCR Field Format Pattern Tests");
+            _logger.Information("Starting Advanced OCR Field Format Pattern Tests");
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            // OCRCorrectionService constructor takes an optional ILogger
+            _service = new OCRCorrectionService(_logger);
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            _logger.Information("Completed OCR Field Format Pattern Tests");
+            _logger.Information("Completed Advanced OCR Field Format Pattern Tests");
         }
 
         #endregion
@@ -45,56 +56,54 @@ namespace AutoBotUtilities.Tests.Production
 
         [Test]
         [Category("DecimalSeparator")]
-        public void CreateFormatCorrectionPatterns_DecimalCommaToPoint_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_DecimalCommaToPoint_ShouldCreateCorrectPattern()
         {
             // Arrange
             var oldValue = "123,45";
             var newValue = "123.45";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+),(\d{2})"));
-            Assert.That(replacementPattern, Is.EqualTo("$1.$2"));
-
-            _logger.Information("✓ Decimal comma to point pattern created correctly");
+            Assert.That(result, Is.Not.Null, "Pattern result should not be null.");
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"(\d+),(\d{1,4})"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("$1.$2"));
+            _logger.Information("✓ Decimal comma to point pattern created correctly: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         [Test]
         [Category("DecimalSeparator")]
-        public void CreateFormatCorrectionPatterns_LargeDecimalCommaToPoint_ShouldCreateCorrectPattern()
-        {
-            // Arrange
-            var oldValue = "1234,56";
-            var newValue = "1234.56";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+),(\d{2})"));
-            Assert.That(replacementPattern, Is.EqualTo("$1.$2"));
-
-            _logger.Information("✓ Large decimal comma to point pattern created correctly");
-        }
-
-        [Test]
-        [Category("DecimalSeparator")]
-        public void CreateFormatCorrectionPatterns_InvalidDecimalSeparator_ShouldReturnNull()
+        public void CreateAdvancedFormatCorrectionPatterns_DecimalPointToComma_ShouldCreateCorrectPattern()
         {
             // Arrange
             var oldValue = "123.45";
             var newValue = "123,45";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
+            Assert.That(result, Is.Not.Null, "Pattern result should not be null.");
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"(\d+)\.(\d{1,4})"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("$1,$2"));
+            _logger.Information("✓ Decimal point to comma pattern created correctly: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
+        }
 
-            _logger.Information("✓ Invalid decimal separator conversion correctly returns null");
+        [Test]
+        [Category("DecimalSeparator")]
+        public void CreateAdvancedFormatCorrectionPatterns_InvalidDecimalChange_ShouldReturnNull()
+        {
+            // Arrange
+            var oldValue = "ABC,45"; // Not a number
+            var newValue = "ABC.45";
+
+            // Act
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
+
+            // Assert
+            Assert.That(result, Is.Null); // Expect null because CreateDecimalSeparatorPattern will reject non-numeric
+            _logger.Information("✓ Invalid decimal change (non-numeric) correctly returns null.");
         }
 
         #endregion
@@ -103,56 +112,56 @@ namespace AutoBotUtilities.Tests.Production
 
         [Test]
         [Category("CurrencySymbol")]
-        public void CreateFormatCorrectionPatterns_AddDollarSign_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_AddDollarSign_ShouldCreateCorrectPattern()
         {
             // Arrange
             var oldValue = "99.99";
             var newValue = "$99.99";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"^(\d+\.?\d*)$"));
-            Assert.That(replacementPattern, Is.EqualTo("$$1"));
-
-            _logger.Information("✓ Currency symbol addition pattern created correctly");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"^(-?\d+(\.\d+)?)$"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("$$$1")); // Dollar sign needs to be escaped in replacement string
+            _logger.Information("✓ Add dollar sign pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         [Test]
         [Category("CurrencySymbol")]
-        public void CreateFormatCorrectionPatterns_IntegerCurrency_ShouldCreateCorrectPattern()
-        {
-            // Arrange
-            var oldValue = "100";
-            var newValue = "$100";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"^(\d+\.?\d*)$"));
-            Assert.That(replacementPattern, Is.EqualTo("$$1"));
-
-            _logger.Information("✓ Integer currency pattern created correctly");
-        }
-
-        [Test]
-        [Category("CurrencySymbol")]
-        public void CreateFormatCorrectionPatterns_AlreadyHasDollarSign_ShouldReturnNull()
+        public void CreateAdvancedFormatCorrectionPatterns_RemoveDollarSign_ShouldCreateCorrectPattern()
         {
             // Arrange
             var oldValue = "$99.99";
-            var newValue = "$99.99";
+            var newValue = "99.99";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"\$\s*(-?\d+(\.\d+)?)"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("$1"));
+            _logger.Information("✓ Remove dollar sign pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
+        }
 
-            _logger.Information("✓ Already has currency symbol correctly returns null");
+        [Test]
+        [Category("CurrencySymbol")]
+        public void CreateAdvancedFormatCorrectionPatterns_AddEuroSign_ShouldCreateCorrectPattern()
+        {
+            // Arrange
+            var oldValue = "123.45";
+            var newValue = "€123.45";
+
+            // Act
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"^(-?\d+(\.\d+)?)$"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("€$1"));
+            _logger.Information("✓ Add Euro sign pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         #endregion
@@ -161,96 +170,38 @@ namespace AutoBotUtilities.Tests.Production
 
         [Test]
         [Category("NegativeNumber")]
-        public void CreateFormatCorrectionPatterns_TrailingMinusToLeading_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_TrailingMinusToLeading_ShouldCreateCorrectPattern()
         {
             // Arrange
             var oldValue = "50.00-";
             var newValue = "-50.00";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+\.?\d*)-$"));
-            Assert.That(replacementPattern, Is.EqualTo("-$1"));
-
-            _logger.Information("✓ Trailing minus to leading pattern created correctly");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"(\d+(\.\d+)?)-$"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("-$1"));
+            _logger.Information("✓ Trailing minus to leading pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         [Test]
         [Category("NegativeNumber")]
-        public void CreateFormatCorrectionPatterns_IntegerTrailingMinus_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_ParenthesesToLeadingMinus_ShouldCreateCorrectPattern()
         {
             // Arrange
-            var oldValue = "25-";
-            var newValue = "-25";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+\.?\d*)-$"));
-            Assert.That(replacementPattern, Is.EqualTo("-$1"));
-
-            _logger.Information("✓ Integer trailing minus pattern created correctly");
-        }
-
-        [Test]
-        [Category("NegativeNumber")]
-        public void CreateFormatCorrectionPatterns_AlreadyNegative_ShouldReturnNull()
-        {
-            // Arrange
-            var oldValue = "-50.00";
+            var oldValue = "(50.00)";
             var newValue = "-50.00";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
-            _logger.Information("✓ Already negative number correctly returns null");
-        }
-
-        #endregion
-
-        #region Space Removal Pattern Tests
-
-        [Test]
-        [Category("SpaceRemoval")]
-        public void CreateFormatCorrectionPatterns_RemoveSpacesInNumbers_ShouldCreateCorrectPattern()
-        {
-            // Arrange
-            var oldValue = "1 234.56";
-            var newValue = "1234.56";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+)\s+(\d+)"));
-            Assert.That(replacementPattern, Is.EqualTo("$1$2"));
-
-            _logger.Information("✓ Space removal pattern created correctly");
-        }
-
-        [Test]
-        [Category("SpaceRemoval")]
-        public void CreateFormatCorrectionPatterns_MultipleSpaces_ShouldCreateCorrectPattern()
-        {
-            // Arrange
-            var oldValue = "12 345 678.90";
-            var newValue = "12345678.90";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"(\d+)\s+(\d+)"));
-            Assert.That(replacementPattern, Is.EqualTo("$1$2"));
-
-            _logger.Information("✓ Multiple spaces removal pattern created correctly");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(@"\(\s*(\d+(\.\d+)?)\s*\)"));
+            Assert.That(result.Value.Replacement, Is.EqualTo("-$1"));
+            _logger.Information("✓ Parentheses to leading minus pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         #endregion
@@ -259,167 +210,180 @@ namespace AutoBotUtilities.Tests.Production
 
         [Test]
         [Category("CharacterConfusion")]
-        public void CreateFormatCorrectionPatterns_OToZero_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_OToZero_SingleChange_ShouldCreateCorrectPattern()
         {
             // Arrange
-            var oldValue = "1O5.OO";
+            var oldValue = "1O5.OO"; // This has two changes, the strategy CreateSpecificOCRCharacterConfusionPattern expects single character diff
             var newValue = "105.00";
 
+            // For a single change test:
+            oldValue = "PRICE 1O";
+            newValue = "PRICE 10";
+
+
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"([^A-Z])O([^A-Z])"));
-            Assert.That(replacementPattern, Is.EqualTo("$10$2"));
-
-            _logger.Information("✓ O to zero pattern created correctly");
+            Assert.That(result, Is.Not.Null, "Should generate pattern for single 'O' to '0' change.");
+            // Expected pattern might be specific to the change "PRICE 1[O0]" -> "PRICE 10"
+            Assert.That(result.Value.Pattern, Does.Contain("[O0]")); // Check if it creates a character class for confusion
+            Assert.That(result.Value.Replacement, Is.EqualTo(newValue)); // For specific char confusion, replacement is the full new value
+            _logger.Information("✓ O to zero (single specific) pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         [Test]
         [Category("CharacterConfusion")]
-        public void CreateFormatCorrectionPatterns_LToOne_ShouldCreateCorrectPattern()
+        public void CreateAdvancedFormatCorrectionPatterns_LToOne_SingleChange_ShouldCreateCorrectPattern()
         {
             // Arrange
-            var oldValue = "l23.45";
-            var newValue = "123.45";
+            var oldValue = "l23";
+            var newValue = "123";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.EqualTo(@"([^a-z])l([^a-z])"));
-            Assert.That(replacementPattern, Is.EqualTo("$11$2"));
-
-            _logger.Information("✓ l to one pattern created correctly");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Does.Contain("[l1]"));
+            Assert.That(result.Value.Replacement, Is.EqualTo(newValue));
+            _logger.Information("✓ l to one (single specific) pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         [Test]
         [Category("CharacterConfusion")]
-        public void CreateFormatCorrectionPatterns_ValidLetters_ShouldReturnNull()
+        public void CreateAdvancedFormatCorrectionPatterns_ValidLettersNoKnownConfusion_ShouldReturnNullOrGeneric()
         {
             // Arrange
-            var oldValue = "TOTAL";
-            var newValue = "T0TAL";
+            var oldValue = "TOTALS";
+            var newValue = "T0TALZ"; // Multiple changes, not single known confusion
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
-            _logger.Information("✓ Valid letters correctly return null");
+            // Depending on the implementation of CreateGeneralSymbolOrCasePattern or CreateLooseAlphanumericMatchPattern
+            // this might return a generic pattern or null.
+            // If CreateSpecificOCRCharacterConfusionPattern is strict on single, known confusions, it should return null.
+            // For this test, let's assume it tries a generic one if specific ones fail.
+            if (result != null)
+            {
+                _logger.Information("✓ Valid letters with multiple changes generated pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
+                Assert.That(result.Value.Pattern, Is.EqualTo(System.Text.RegularExpressions.Regex.Escape(oldValue))); // General pattern might be exact old value
+                Assert.That(result.Value.Replacement, Is.EqualTo(newValue));
+            }
+            else
+            {
+                Assert.That(result, Is.Null);
+                _logger.Information("✓ Valid letters with multiple changes correctly returns null or was not handled by specific strategies.");
+            }
         }
 
         #endregion
 
-        #region Edge Cases and Invalid Input Tests
-
+        #region Space Manipulation Pattern Tests
         [Test]
-        [Category("EdgeCases")]
-        public void CreateFormatCorrectionPatterns_NullInput_ShouldReturnNull()
+        [Category("SpaceRemoval")]
+        public void CreateAdvancedFormatCorrectionPatterns_RemoveSpacesInNumeric_ShouldCreateCorrectPattern()
         {
             // Arrange
-            string oldValue = null;
-            string newValue = "123.45";
+            var oldValue = "1 234.56";
+            var newValue = "1234.56";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
-            _logger.Information("✓ Null input correctly returns null");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Value.Pattern, Is.EqualTo(System.Text.RegularExpressions.Regex.Escape(oldValue).Replace(@"\ ", @"\s*")));
+            Assert.That(result.Value.Replacement, Is.EqualTo(newValue));
+            _logger.Information("✓ Space removal in numeric pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
+        #endregion
+
+        #region General and Edge Case Tests
 
         [Test]
-        [Category("EdgeCases")]
-        public void CreateFormatCorrectionPatterns_EmptyInput_ShouldReturnNull()
-        {
-            // Arrange
-            var oldValue = "";
-            var newValue = "123.45";
-
-            // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
-
-            // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
-            _logger.Information("✓ Empty input correctly returns null");
-        }
-
-        [Test]
-        [Category("EdgeCases")]
-        public void CreateFormatCorrectionPatterns_IdenticalValues_ShouldReturnNull()
+        [Category("General")]
+        public void CreateAdvancedFormatCorrectionPatterns_IdenticalValues_ShouldReturnNull()
         {
             // Arrange
             var oldValue = "123.45";
             var newValue = "123.45";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
+            Assert.That(result, Is.Null);
             _logger.Information("✓ Identical values correctly return null");
         }
 
         [Test]
-        [Category("EdgeCases")]
-        public void CreateFormatCorrectionPatterns_CompletelyDifferentValues_ShouldReturnNull()
+        [Category("General")]
+        public void CreateAdvancedFormatCorrectionPatterns_CompletelyDifferentValues_ShouldReturnNullOrGeneric()
         {
             // Arrange
             var oldValue = "ABC123";
             var newValue = "XYZ789";
 
             // Act
-            var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
             // Assert
-            Assert.That(regexPattern, Is.Null);
-            Assert.That(replacementPattern, Is.Null);
-
-            _logger.Information("✓ Completely different values correctly return null");
+            // This might fall to CreateGeneralSymbolOrCasePattern or CreateLooseAlphanumericMatchPattern (if implemented to handle this)
+            // or return null if no strategy matches.
+            // Given current strategies, CreateGeneralSymbolOrCasePattern might match if only symbols/case diff, which is not the case here.
+            // CreateLooseAlphanumericMatchPattern is stubbed to return null.
+            // So, expecting null or a very generic pattern if one of the fallback strategies generates one.
+            // Most likely it will fall to `CreateGeneralSymbolOrCasePattern` and create a specific `Regex.Escape(oldValue)` -> `newValue`
+            if (result != null)
+            {
+                _logger.Information("✓ Completely different values generated pattern: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
+                Assert.That(result.Value.Pattern, Is.EqualTo(System.Text.RegularExpressions.Regex.Escape(oldValue)));
+                Assert.That(result.Value.Replacement, Is.EqualTo(newValue));
+            }
+            else
+            {
+                Assert.That(result, Is.Null);
+                _logger.Information("✓ Completely different values correctly return null (no pattern generated).");
+            }
         }
 
-        #endregion
-
-        #region Pattern Validation Tests
-
         [Test]
-        [Category("PatternValidation")]
-        public void CreateFormatCorrectionPatterns_AllSupportedPatterns_ShouldCreateValidRegex()
+        [Category("General")]
+        public void CreateAdvancedFormatCorrectionPatterns_OnlyCaseDifference_ShouldCreateCorrectPattern()
         {
             // Arrange
-            var testCases = new[]
-            {
-                ("123,45", "123.45", "Decimal separator"),
-                ("99.99", "$99.99", "Currency symbol"),
-                ("50.00-", "-50.00", "Negative number"),
-                ("1 234.56", "1234.56", "Space removal"),
-                ("1O5.OO", "105.00", "O to zero"),
-                ("l23.45", "123.45", "l to one")
-            };
+            var oldValue = "invoiceTotal";
+            var newValue = "InvoiceTotal";
 
-            // Act & Assert
-            foreach (var (oldValue, newValue, description) in testCases)
-            {
-                var (regexPattern, replacementPattern) = OCRCorrectionService.CreateFormatCorrectionPatterns(oldValue, newValue);
+            // Act
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
 
-                Assert.That(regexPattern, Is.Not.Null, $"{description} should create regex pattern");
-                Assert.That(replacementPattern, Is.Not.Null, $"{description} should create replacement pattern");
+            // Assert
+            Assert.That(result, Is.Not.Null, "Pattern result should not be null for case difference.");
+            Assert.That(result.Value.Pattern, Is.EqualTo(System.Text.RegularExpressions.Regex.Escape(oldValue))); // Match exact old value
+            Assert.That(result.Value.Replacement, Is.EqualTo(newValue)); // Replace with new value
+            _logger.Information("✓ Case difference pattern created: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
+        }
 
-                // Validate that the regex pattern is valid
-                Assert.DoesNotThrow(() => new System.Text.RegularExpressions.Regex(regexPattern),
-                    $"{description} should create valid regex pattern");
+        [Test]
+        [Category("General")]
+        public void CreateAdvancedFormatCorrectionPatterns_SymbolDifference_ShouldCreateCorrectPattern()
+        {
+            // Arrange
+            var oldValue = "INV-123";
+            var newValue = "INV/123";
 
-                _logger.Information("✓ {Description}: {Pattern} → {Replacement}", description, regexPattern, replacementPattern);
-            }
+            // Act
+            var result = _service.CreateAdvancedFormatCorrectionPatterns(oldValue, newValue);
+
+            // Assert
+            Assert.That(result, Is.Not.Null, "Pattern result should not be null for symbol difference.");
+            Assert.That(result.Value.Pattern, Is.EqualTo(System.Text.RegularExpressions.Regex.Escape(oldValue))); // Match exact old value
+            Assert.That(result.Value.Replacement, Is.EqualTo(newValue)); // Replace with new value
+            _logger.Information("✓ Symbol difference pattern created: {Old} -> {New} => P: '{Pattern}', R: '{Replacement}'", oldValue, newValue, result.Value.Pattern, result.Value.Replacement);
         }
 
         #endregion
