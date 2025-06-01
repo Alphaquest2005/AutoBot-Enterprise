@@ -73,27 +73,27 @@ namespace AutoBotUtilities.Tests.Production
         public void MapDeepSeekFieldToDatabase_KnownFieldsAndAliases_ShouldMapCorrectly()
         {
             // Canonical Names
-            var totalInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "InvoiceTotal");
+            var totalInfo = _service.MapDeepSeekFieldToDatabase("InvoiceTotal");
             Assert.That(totalInfo, Is.Not.Null);
             Assert.That(totalInfo.DatabaseFieldName, Is.EqualTo("InvoiceTotal"));
             Assert.That(totalInfo.EntityType, Is.EqualTo("ShipmentInvoice"));
 
-            var qtyInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "Quantity");
+            var qtyInfo = _service.MapDeepSeekFieldToDatabase("Quantity");
             Assert.That(qtyInfo, Is.Not.Null);
             Assert.That(qtyInfo.DatabaseFieldName, Is.EqualTo("Quantity"));
             Assert.That(qtyInfo.EntityType, Is.EqualTo("InvoiceDetails"));
 
             // Aliases
-            var grandTotalInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "GrandTotal");
+            var grandTotalInfo = _service.MapDeepSeekFieldToDatabase("GrandTotal");
             Assert.That(grandTotalInfo, Is.Not.Null);
             Assert.That(grandTotalInfo.DatabaseFieldName, Is.EqualTo("InvoiceTotal"));
 
-            var shippingInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "Shipping");
+            var shippingInfo = _service.MapDeepSeekFieldToDatabase("Shipping");
             Assert.That(shippingInfo, Is.Not.Null);
             Assert.That(shippingInfo.DatabaseFieldName, Is.EqualTo("TotalInternalFreight"));
 
             // Prefixed line item field
-            var lineItemQtyInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "InvoiceDetail_Line1_Quantity");
+            var lineItemQtyInfo = _service.MapDeepSeekFieldToDatabase("InvoiceDetail_Line1_Quantity");
             Assert.That(lineItemQtyInfo, Is.Not.Null);
             Assert.That(lineItemQtyInfo.DatabaseFieldName, Is.EqualTo("Quantity"));
             Assert.That(lineItemQtyInfo.EntityType, Is.EqualTo("InvoiceDetails"));
@@ -104,7 +104,7 @@ namespace AutoBotUtilities.Tests.Production
         [Test]
         public void MapDeepSeekFieldToDatabase_UnknownField_ShouldReturnNull()
         {
-            var unknownInfo = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_service, "MapDeepSeekFieldToDatabase", "NonExistentField123");
+            var unknownInfo = _service.MapDeepSeekFieldToDatabase("NonExistentField123");
             Assert.That(unknownInfo, Is.Null);
             _logger.Information("? MapDeepSeekFieldToDatabase returns null for unknown field.");
         }
@@ -114,16 +114,16 @@ namespace AutoBotUtilities.Tests.Production
         [Test]
         public void IsFieldSupported_ShouldReturnCorrectStatus()
         {
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldSupported", "InvoiceTotal"), Is.True);
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldSupported", "InvoiceDetail_Line5_Cost"), Is.True); // Prefixed
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldSupported", "UnsupportedGarbageField"), Is.False);
+            Assert.That(_service.IsFieldSupported("InvoiceTotal"), Is.True);
+            Assert.That(_service.IsFieldSupported("InvoiceDetail_Line5_Cost"), Is.True); // Prefixed
+            Assert.That(_service.IsFieldSupported("UnsupportedGarbageField"), Is.False);
             _logger.Information("? IsFieldSupported works correctly.");
         }
 
         [Test]
         public void GetFieldValidationInfo_KnownField_ShouldReturnValidationRules()
         {
-            var info = InvokePrivateMethod<OCRCorrectionService.FieldValidationInfo>(_service, "GetFieldValidationInfo", "InvoiceTotal");
+            var info = _service.GetFieldValidationInfo("InvoiceTotal");
             Assert.That(info.IsValid, Is.True);
             Assert.That(info.DatabaseFieldName, Is.EqualTo("InvoiceTotal"));
             Assert.That(info.EntityType, Is.EqualTo("ShipmentInvoice"));
@@ -132,7 +132,7 @@ namespace AutoBotUtilities.Tests.Production
             Assert.That(info.IsMonetary, Is.True);
             StringAssert.IsMatch(@"^-?\$?�?�?\s*(?:\d{1,3}(?:[,.]\d{3})*|\d+)(?:[.,]\d{1,4})?$", info.ValidationPattern);
 
-            var descInfo = InvokePrivateMethod<OCRCorrectionService.FieldValidationInfo>(_service, "GetFieldValidationInfo", "ItemDescription");
+            var descInfo = _service.GetFieldValidationInfo("ItemDescription");
             Assert.That(descInfo.IsValid, Is.True);
             Assert.That(descInfo.DatabaseFieldName, Is.EqualTo("ItemDescription"));
             Assert.That(descInfo.DataType, Is.EqualTo("string"));
@@ -144,7 +144,7 @@ namespace AutoBotUtilities.Tests.Production
         [Test]
         public void GetFieldValidationInfo_UnknownField_ShouldReturnInvalid()
         {
-            var info = InvokePrivateMethod<OCRCorrectionService.FieldValidationInfo>(_service, "GetFieldValidationInfo", "MysteryField");
+            var info = _service.GetFieldValidationInfo("MysteryField");
             Assert.That(info.IsValid, Is.False);
             StringAssert.Contains("unknown or not mapped", info.ErrorMessage);
             _logger.Information("? GetFieldValidationInfo handles unknown field.");

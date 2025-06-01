@@ -39,7 +39,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var metadata = CreateTestOCRMetadata("TotalDeduction", "5.99");
 
             // Act
-            var result = InvokePrivateMethod<OCRCorrectionService.EnhancedDatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToEnhancedInfo", "GiftCard", metadata);
+            var result = _correctionService.MapDeepSeekFieldToEnhancedInfo("GiftCard", metadata);
 
             // Assert
             Assert.That(result, Is.Not.Null, "Enhanced field info should not be null");
@@ -57,7 +57,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var metadata = CreateTestOCRMetadata("UnknownField", "test");
 
             // Act
-            var result = InvokePrivateMethod<OCRCorrectionService.EnhancedDatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToEnhancedInfo", "UnknownField", metadata);
+            var result = _correctionService.MapDeepSeekFieldToEnhancedInfo("UnknownField", metadata);
 
             // Assert
             Assert.That(result, Is.Null, "Should return null for unknown fields");

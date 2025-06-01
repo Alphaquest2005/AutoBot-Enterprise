@@ -195,7 +195,7 @@ namespace AutoBotUtilities.Tests.Production
                 var fileText = "Invoice Total: 12345";
 
                 // Step 3: Update regex patterns (this should create the file)
-                await _service.UpdateRegexPatternsAsync(corrections, fileText);
+                await _service.UpdateRegexPatternsAsync(corrections, fileText, null, null); // Pass null for metadata if not available/needed for this specific test focus
 
                 // Step 4: Verify pattern was saved
                 Assert.That(File.Exists(regexConfigPath), Is.True, "Regex patterns file should be created");

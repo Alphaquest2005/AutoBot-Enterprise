@@ -58,7 +58,7 @@ Total: $43,72
 
             // Step 1: Extract enhanced OCR metadata
             _logger.Information("=== Step 1: Extracting Enhanced OCR Metadata ===");
-            var metadata = InvokePrivateMethod<Dictionary<string, OCRFieldMetadata>>(_correctionService, "ExtractEnhancedOCRMetadata", invoiceDict, template, fieldMappings);
+            var metadata = _correctionService.ExtractEnhancedOCRMetadata(invoiceDict, template, fieldMappings);
 
             // Verify metadata extraction
             Assert.That(metadata, Is.Not.Null, "Metadata should be extracted");
@@ -144,7 +144,7 @@ Total: $43,72
                 var deepSeekField = kvp.Key;
                 var (expectedField, expectedEntity) = kvp.Value;
 
-                var mappedField = InvokePrivateMethod<OCRCorrectionService.DatabaseFieldInfo>(_correctionService, "MapDeepSeekFieldToDatabase", deepSeekField);
+                var mappedField = _correctionService.MapDeepSeekFieldToDatabase(deepSeekField);
 
                 Assert.That(mappedField, Is.Not.Null, $"Field '{deepSeekField}' should be mapped");
                 Assert.That(mappedField.DatabaseFieldName, Is.EqualTo(expectedField), $"Field '{deepSeekField}' should map to '{expectedField}'");

@@ -107,6 +107,7 @@ namespace WaterNut.DataSpace
                        correction.CorrectionType == "FORMAT_FIX" ||
                        correction.CorrectionType == "format_correction" ||
                        correction.CorrectionType == "decimal_separator" ||
+                       correction.CorrectionType == "DecimalSeparator" ||  // Handle both cases
                        correction.CorrectionType == "character_confusion" ||
                        IsPotentialFormatCorrection(correction.OldValue, correction.NewValue);
             }
