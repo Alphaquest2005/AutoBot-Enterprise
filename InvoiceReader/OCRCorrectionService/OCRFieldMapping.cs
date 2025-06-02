@@ -353,25 +353,31 @@ namespace WaterNut.DataSpace
         
         /// <summary>
         /// Maps a DeepSeek field name to an EnhancedDatabaseFieldInfo object, enriching it with OCR metadata if provided.
+        /// Returns null for unknown fields that cannot be mapped, even if metadata is provided.
         /// </summary>
         public EnhancedDatabaseFieldInfo MapDeepSeekFieldToEnhancedInfo(string deepSeekFieldName, OCRFieldMetadata fieldSpecificMetadata = null)
         {
             var baseInfo = MapDeepSeekFieldToDatabase(deepSeekFieldName);
             if (baseInfo == null)
             {
+                // For unknown fields, we should return null regardless of metadata
+                // This ensures proper validation and prevents creation of invalid field mappings
+                _logger.Debug("MapDeepSeekFieldToEnhancedInfo: No direct map for '{DeepSeekName}'. Using provided metadata for Field '{MetaField}' as base.", deepSeekFieldName, fieldSpecificMetadata?.Field ?? "N/A");
+
+                // Only create from metadata if the metadata field itself is a known field
                 if (fieldSpecificMetadata != null && !string.IsNullOrEmpty(fieldSpecificMetadata.Field))
                 {
-                    // Try to construct baseInfo from metadata if direct mapping failed
-                    _logger.Debug("MapDeepSeekFieldToEnhancedInfo: No direct map for '{DeepSeekName}'. Using provided metadata for Field '{MetaField}' as base.", deepSeekFieldName, fieldSpecificMetadata.Field);
-                    baseInfo = new DatabaseFieldInfo(
-                        fieldSpecificMetadata.Field, 
-                        fieldSpecificMetadata.EntityType, 
-                        fieldSpecificMetadata.DataType, 
-                        fieldSpecificMetadata.IsRequired ?? false, 
-                        fieldSpecificMetadata.Key ?? fieldSpecificMetadata.FieldName // Use Key or fallback to FieldName from metadata
-                    );
-                } else {
-                     _logger.Warning("MapDeepSeekFieldToEnhancedInfo: Cannot map DeepSeek field '{DeepSeekName}' and no metadata provided for fallback.", deepSeekFieldName);
+                    var metadataFieldInfo = MapDeepSeekFieldToDatabase(fieldSpecificMetadata.Field);
+                    if (metadataFieldInfo != null)
+                    {
+                        // Use the metadata field mapping as base since it's a known field
+                        baseInfo = metadataFieldInfo;
+                    }
+                }
+
+                if (baseInfo == null)
+                {
+                    _logger.Warning("MapDeepSeekFieldToEnhancedInfo: Cannot map DeepSeek field '{DeepSeekName}' and no valid metadata field provided for fallback.", deepSeekFieldName);
                     return null;
                 }
             }

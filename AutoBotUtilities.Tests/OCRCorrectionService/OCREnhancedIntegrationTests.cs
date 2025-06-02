@@ -70,7 +70,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var metadata = CreateTestOCRMetadata("TotalDeduction", "5.99");
 
             // Act
-            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
+            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
 
             // Assert
             Assert.That(result, Is.Not.Null, "Update context should not be null");
@@ -90,7 +90,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             metadata.RegexId = null; // Remove regex ID
 
             // Act
-            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
+            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
 
             // Assert
             Assert.That(result, Is.Not.Null, "Update context should not be null");
@@ -105,9 +105,10 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             var metadata = CreateTestOCRMetadata("TotalDeduction", "5.99");
             metadata.LineId = null;
             metadata.RegexId = null;
+            metadata.PartId = null; // Remove part ID to make it truly minimal
 
             // Act
-            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
+            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
 
             // Assert
             Assert.That(result, Is.Not.Null, "Update context should not be null");
@@ -122,7 +123,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
             OCRFieldMetadata metadata = null;
 
             // Act
-            var result = InvokePrivateMethod<DatabaseUpdateContext>(_correctionService, "GetDatabaseUpdateContext", "GiftCard", metadata);
+            var result = _correctionService.GetDatabaseUpdateContext("GiftCard", metadata);
 
             // Assert
             Assert.That(result, Is.Not.Null, "Update context should not be null");
@@ -166,7 +167,7 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
 
             foreach (var field in supportedFields)
             {
-                var result = InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", field);
+                var result = _correctionService.IsFieldSupported(field);
                 Assert.That(result, Is.True, $"Field '{field}' should be supported");
             }
         }
@@ -175,16 +176,16 @@ namespace AutoBotUtilities.Tests.OCRCorrectionService
         public void IsFieldSupported_WithUnsupportedField_ReturnsFalse()
         {
             // Act & Assert
-            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", "UnsupportedField"), Is.False);
-            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", ""), Is.False);
-            Assert.That(InvokePrivateMethod<bool>(_correctionService, "IsFieldSupported", (string)null), Is.False);
+            Assert.That(_correctionService.IsFieldSupported("UnsupportedField"), Is.False);
+            Assert.That(_correctionService.IsFieldSupported(""), Is.False);
+            Assert.That(_correctionService.IsFieldSupported(null), Is.False);
         }
 
         [Test]
         public void GetFieldValidationInfo_WithMonetaryField_ReturnsCorrectValidation()
         {
             // Act
-            var result = InvokePrivateMethod<OCRCorrectionService.FieldValidationInfo>(_correctionService, "GetFieldValidationInfo", "TotalDeduction");
+            var result = _correctionService.GetFieldValidationInfo("TotalDeduction");
 
             // Assert
             Assert.That(result, Is.Not.Null, "Validation info should not be null");

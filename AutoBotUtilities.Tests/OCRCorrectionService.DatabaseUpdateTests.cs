@@ -178,7 +178,13 @@ namespace AutoBotUtilities.Tests.Production
             var line = await ctx.Lines.FirstOrDefaultAsync(l => l.Name == lineName && l.PartId == partId).ConfigureAwait(false);
             if (line == null)
             {
-                var dummyRegex = new RegularExpressions { RegEx = initialRegex, Description = $"Dummy for {lineName}", TrackingState = TrackingState.Added };
+                var dummyRegex = new RegularExpressions {
+                    RegEx = initialRegex,
+                    Description = $"Dummy for {lineName}",
+                    CreatedDate = DateTime.Now,
+                    LastUpdated = DateTime.Now,
+                    TrackingState = TrackingState.Added
+                };
                 ctx.RegularExpressions.Add(dummyRegex);
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
                 _createdRegexIds.Add(dummyRegex.Id);
@@ -318,7 +324,7 @@ namespace AutoBotUtilities.Tests.Production
                 _createdFieldFormatIds.Add(dbResult.RecordId.Value);
                 var entry = await ctx.OCR_FieldFormatRegEx.Include(f => f.RegEx).Include(f => f.ReplacementRegEx).FirstAsync(f => f.Id == dbResult.RecordId.Value).ConfigureAwait(false);
                 Assert.That(entry.RegEx.RegEx, Is.EqualTo(@"^(-?\d+(\.\d+)?)$"));
-                Assert.That(entry.ReplacementRegEx.RegEx, Is.EqualTo("$$$1"));
+                Assert.That(entry.ReplacementRegEx.RegEx, Is.EqualTo("\\$$1"));
                 _createdRegexIds.Add(entry.RegEx.Id);
                 _createdRegexIds.Add(entry.ReplacementRegEx.Id);
             }
@@ -332,17 +338,17 @@ namespace AutoBotUtilities.Tests.Production
         [Category("LiveAPI")] // Mark as live API test
         public async Task OmissionUpdateStrategy_CreateNewLine_WithLiveDeepSeek_ShouldCreateDbEntries()
         {
-            // Arrange
-            var fieldNameToOmit = $"OmittedField_{_testRunId.Substring(0, 5)}";
+            // Arrange - Use a known field name that exists in the field mapping
+            var fieldNameToOmit = "TotalDeduction"; // Use a known field instead of random field name
             var correction = new CorrectionResult
             {
                 FieldName = fieldNameToOmit,
-                NewValue = "Test Value 123",
+                NewValue = "25.00",
                 OldValue = "", // Key for omission
                 CorrectionType = "omission",
                 Confidence = 0.95,
                 LineNumber = 10,
-                LineText = $"Some Label: Test Value 123 Extra Text", // Line where value is found
+                LineText = $"Total Deduction: 25.00 USD", // Line where value is found
                 ContextLinesBefore = new List<string> { "Context Before 1", "Context Before 2" },
                 ContextLinesAfter = new List<string> { "Context After 1", "Context After 2" },
                 RequiresMultilineRegex = false

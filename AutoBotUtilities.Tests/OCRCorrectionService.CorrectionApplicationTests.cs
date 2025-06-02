@@ -133,7 +133,7 @@ namespace AutoBotUtilities.Tests.Production
             var invoice = new ShipmentInvoice { SubTotal = 100, InvoiceTotal = 100, InvoiceDetails = new List<InvoiceDetails> { new InvoiceDetails { Quantity = 1, Cost = 50, TotalCost = 50 }, new InvoiceDetails { Quantity = 1, Cost = 50, TotalCost = 50 } } };
             invoice.InvoiceDetails[0].Quantity = 2; // TotalCost becomes 100
             InvokePrivateMethod<object>(_service, "RecalculateDetailTotal", invoice.InvoiceDetails[0]); // Manually trigger detail recalc
-            InvokePrivateMethod<object>(_service, "RecalculateDependentFields", invoice);
+            InvokePrivateMethod<object>(_service, "RecalculateDependentFields", invoice, new HashSet<string>());
             Assert.That(invoice.SubTotal, Is.EqualTo(150.0)); // 100 + 50
             Assert.That(invoice.InvoiceTotal, Is.EqualTo(150.0));
         }

@@ -104,7 +104,7 @@ Provide full context lines as available; do not truncate them in the JSON.
             var productsJson = JsonSerializer.Serialize(productDataForPrompt, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
             return $@"OCR PRODUCT LINE ITEM ERROR DETECTION AND OMISSION ANALYSIS:
-Analyze the original invoice text against the EXTRACED PRODUCT DATA. Identify ALL discrepancies: format/value errors, calculation errors, MISSING fields within items, or ENTIRELY OMITTED line items.
+Analyze the original invoice text against the EXTRACTED PRODUCT DATA. Identify ALL discrepancies: format/value errors, calculation errors, MISSING fields within items, or ENTIRELY OMITTED line items.
 
 EXTRACTED PRODUCT DATA (InputLineNumber is from current data, may not match text line number):
 {productsJson}
@@ -179,7 +179,7 @@ FULL TEXTUAL CONTEXT (target line where value ""{correction.NewValue}"" is found
 {string.Join("\n", lineContext.ContextLinesAfter)}
 
 EXISTING LINE CONTEXT (if applicable):
-- Current Regex for this Line (if any): {lineContext.RegexPattern ?? "None"}
+- Existing Regex for this Line (if any): {lineContext.RegexPattern ?? "None"}
 - Named Groups Already Captured by Current Regex: {existingNamedGroupsString}
 - System Hint for Multiline Need: {correction.RequiresMultilineRegex}
 

@@ -222,11 +222,41 @@ namespace WaterNut.DataSpace
                 result.EndTime = DateTime.UtcNow;
                 return result;
             }
-            
+
             _logger.Information("Starting DB update process for {CorrectionCount} externally provided corrections.", corrections.Count());
             result.TotalCorrections = corrections.Count();
 
             var successfulCorrectionsForDB = corrections.Where(c => c.Success).ToList();
+
+            // Process each correction to populate ProcessedCorrections collection
+            foreach (var correction in corrections)
+            {
+                var detail = new EnhancedCorrectionDetail
+                {
+                    Correction = correction,
+                    ProcessingTime = DateTime.UtcNow
+                };
+
+                // Try to find metadata for this correction
+                if (invoiceMetadata != null && invoiceMetadata.TryGetValue(correction.FieldName, out var metadata))
+                {
+                    detail.HasMetadata = true;
+                    detail.OCRMetadata = metadata;
+
+                    // Get database update context if correction was successful
+                    if (correction.Success)
+                    {
+                        detail.UpdateContext = this.GetDatabaseUpdateContext(correction.FieldName, metadata);
+                    }
+                }
+                else
+                {
+                    detail.HasMetadata = false;
+                    detail.SkipReason = $"No metadata found for field '{correction.FieldName}'";
+                }
+
+                result.ProcessedCorrections.Add(detail);
+            }
 
             if (successfulCorrectionsForDB.Any())
             {
@@ -242,7 +272,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("No successful corrections in the provided list to process for DB updates.");
             }
-            
+
             result.EndTime = DateTime.UtcNow;
             result.ProcessingDuration = result.EndTime - result.StartTime;
             _logger.Information("External corrections DB update processing finished in {Duration}ms.", result.ProcessingDuration.TotalMilliseconds);

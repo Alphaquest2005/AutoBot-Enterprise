@@ -42,6 +42,9 @@ namespace WaterNut.DataSpace
             _logger.Information("Applying corrections to invoice {InvoiceNo}: {OmissionCount} omissions, {FormatValueCount} format/value errors.",
                 invoice.InvoiceNo, omissionErrors.Count, formatAndValueErrors.Count);
 
+            // Track which fields were directly corrected to avoid recalculating them
+            var correctedFields = new HashSet<string>();
+
             // 1. Process Omissions
             // For omissions, the primary action is usually updating DB patterns so the field is extracted next time.
             // Applying the value to the *current* in-memory invoice object might also be desired.
@@ -51,8 +54,14 @@ namespace WaterNut.DataSpace
                 var result = await this.ProcessOmissionCorrectionAndApplyToInvoiceAsync(invoice, error, currentInvoiceMetadata, fileText).ConfigureAwait(false);
                 correctionResults.Add(result);
                 LogCorrectionResult(result, "OMISSION_APPLIED");
+
+                // Track corrected fields to avoid recalculating them
+                if (result.Success && result.CorrectionType != "omission_db_only")
+                {
+                    correctedFields.Add(result.FieldName);
+                }
             }
-            
+
             // 2. Process Format/Value Errors for already extracted (but incorrect) fields
             // These are applied directly to the invoice object.
             // The resulting CorrectionResult can then be used by UpdateRegexPatternsAsync to learn/update FieldFormatRegEx or Line Regexes.
@@ -65,10 +74,16 @@ namespace WaterNut.DataSpace
                 var result = await this.ApplySingleValueOrFormatCorrectionToInvoiceAsync(invoice, error).ConfigureAwait(false);
                 correctionResults.Add(result);
                 LogCorrectionResult(result, IsCriticalError(error) ? "CRITICAL_FIX_APPLIED" : "STANDARD_FIX_APPLIED");
+
+                // Track corrected fields to avoid recalculating them
+                if (result.Success)
+                {
+                    correctedFields.Add(result.FieldName);
+                }
             }
 
-            // 3. Recalculate any fields that depend on corrected values (e.g., SubTotal from line items, InvoiceTotal from components)
-            RecalculateDependentFields(invoice);
+            // 3. Recalculate any fields that depend on corrected values, but avoid recalculating directly corrected fields
+            RecalculateDependentFields(invoice, correctedFields);
 
             // 4. Mark the invoice object as modified if any successful corrections were applied to it.
             if (correctionResults.Any(r => r.Success && r.CorrectionType != "omission_db_only")) // "omission_db_only" if an omission only updated DB patterns but not the in-memory invoice.
@@ -135,11 +150,12 @@ namespace WaterNut.DataSpace
                     // Adding to in-memory invoice.InvoiceDetails is more complex and might be skipped here.
                     _logger.Information("Omitted line item '{OmittedItemField}' detected. DB strategy will handle pattern creation. In-memory invoice not modified for this item.", omissionError.Field);
                     correctionResultForDB.Success = true; // It's a valid omission to learn from.
+                    correctionResultForDB.CorrectionType = "omission_db_only"; // No in-memory changes for omitted line items
                 }
-                
+
                 // If not applied to memory but it's a valid omission, still mark success for DB learning.
                 if (!appliedToMemory && omissionError.ErrorType == "omission") {
-                    correctionResultForDB.Success = true; 
+                    correctionResultForDB.Success = true;
                     correctionResultForDB.CorrectionType = "omission_db_only"; // Custom type if not applied to memory
                 }
 
@@ -345,9 +361,11 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Recalculates dependent fields like SubTotal and InvoiceTotal after individual corrections are applied.
         /// </summary>
-        private void RecalculateDependentFields(ShipmentInvoice invoice)
+        private void RecalculateDependentFields(ShipmentInvoice invoice, HashSet<string> correctedFields = null)
         {
             if (invoice == null) return;
+            correctedFields = correctedFields ?? new HashSet<string>();
+
             try
             {
                 // Recalculate line totals first if they are not authoritative
@@ -362,31 +380,46 @@ namespace WaterNut.DataSpace
                         // For now, always recalculate:
                         RecalculateDetailTotal(detail);
                     }
-                    
-                    // Recalculate subtotal from line items
-                    var calculatedSubTotal = invoice.InvoiceDetails.Sum(d => d?.TotalCost ?? 0);
-                    if (Math.Abs((invoice.SubTotal ?? 0) - calculatedSubTotal) > 0.01)
+
+                    // Only recalculate subtotal if it wasn't directly corrected
+                    if (!correctedFields.Contains("SubTotal"))
                     {
-                        _logger.Information("Recalculating SubTotal for {InvoiceNo}: From {OldSubTotal:F2} to {NewSubTotal:F2} based on line items sum.", 
-                            invoice.InvoiceNo, invoice.SubTotal ?? 0, calculatedSubTotal);
-                        invoice.SubTotal = calculatedSubTotal;
+                        var calculatedSubTotal = invoice.InvoiceDetails.Sum(d => d?.TotalCost ?? 0);
+                        if (Math.Abs((invoice.SubTotal ?? 0) - calculatedSubTotal) > 0.01)
+                        {
+                            _logger.Information("Recalculating SubTotal for {InvoiceNo}: From {OldSubTotal:F2} to {NewSubTotal:F2} based on line items sum.",
+                                invoice.InvoiceNo, invoice.SubTotal ?? 0, calculatedSubTotal);
+                            invoice.SubTotal = calculatedSubTotal;
+                        }
+                    }
+                    else
+                    {
+                        _logger.Debug("Skipping SubTotal recalculation for {InvoiceNo} - field was directly corrected", invoice.InvoiceNo);
                     }
                 }
 
-                // Recalculate invoice total using the same logic as TotalsZero for consistency
-                var baseTotalForFinalCalc = (invoice.SubTotal ?? 0) +
-                                            (invoice.TotalInternalFreight ?? 0) +
-                                            (invoice.TotalOtherCost ?? 0) +
-                                            (invoice.TotalInsurance ?? 0);
-                var deductionForFinalCalc = invoice.TotalDeduction ?? 0;
-                var expectedFinalInvoiceTotal = baseTotalForFinalCalc - deductionForFinalCalc;
-
-                if (Math.Abs((invoice.InvoiceTotal ?? 0) - expectedFinalInvoiceTotal) > 0.01)
+                // Only recalculate invoice total if it wasn't directly corrected
+                if (!correctedFields.Contains("InvoiceTotal"))
                 {
-                     _logger.Information("Recalculating InvoiceTotal for {InvoiceNo}: From {OldInvoiceTotal:F2} to {NewInvoiceTotal:F2} based on components.", 
-                        invoice.InvoiceNo, invoice.InvoiceTotal ?? 0, expectedFinalInvoiceTotal);
-                    invoice.InvoiceTotal = expectedFinalInvoiceTotal;
+                    var baseTotalForFinalCalc = (invoice.SubTotal ?? 0) +
+                                                (invoice.TotalInternalFreight ?? 0) +
+                                                (invoice.TotalOtherCost ?? 0) +
+                                                (invoice.TotalInsurance ?? 0);
+                    var deductionForFinalCalc = invoice.TotalDeduction ?? 0;
+                    var expectedFinalInvoiceTotal = baseTotalForFinalCalc - deductionForFinalCalc;
+
+                    if (Math.Abs((invoice.InvoiceTotal ?? 0) - expectedFinalInvoiceTotal) > 0.01)
+                    {
+                         _logger.Information("Recalculating InvoiceTotal for {InvoiceNo}: From {OldInvoiceTotal:F2} to {NewInvoiceTotal:F2} based on components.",
+                            invoice.InvoiceNo, invoice.InvoiceTotal ?? 0, expectedFinalInvoiceTotal);
+                        invoice.InvoiceTotal = expectedFinalInvoiceTotal;
+                    }
                 }
+                else
+                {
+                    _logger.Debug("Skipping InvoiceTotal recalculation for {InvoiceNo} - field was directly corrected", invoice.InvoiceNo);
+                }
+
                  _logger.Debug("Dependent field recalculation complete for invoice {InvoiceNo}", invoice.InvoiceNo);
             }
             catch (Exception ex)

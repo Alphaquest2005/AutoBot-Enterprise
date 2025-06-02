@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.Entity;
 using OCR.Business.Entities;
-using Serilog;
 using System.Text.RegularExpressions; // Needed for Regex.IsMatch in ValidateUpdateRequest
 
 namespace WaterNut.DataSpace
@@ -46,14 +44,25 @@ namespace WaterNut.DataSpace
 
                 try
                 {
-                    // 1. Create the RegexUpdateRequest from the CorrectionResult and other context
+                    // 1. Check if database update should be skipped based on metadata availability
+                    var fieldMetadata = invoiceMetadata?.ContainsKey(correction.FieldName) == true ? invoiceMetadata[correction.FieldName] : null;
+                    var updateContext = this.GetDatabaseUpdateContext(correction.FieldName, fieldMetadata);
+
+                    if (updateContext.UpdateStrategy == DatabaseUpdateStrategy.SkipUpdate)
+                    {
+                        _logger?.Information("Skipping database update for field {FieldName}: {Reason}",
+                            correction.FieldName, updateContext.ErrorMessage ?? "No metadata available");
+                        continue; // Skip this correction entirely
+                    }
+
+                    // 2. Create the RegexUpdateRequest from the CorrectionResult and other context
                     //    CreateUpdateRequestForStrategy is an instance method in OCRCorrectionService.cs (main part)
                     request = this.CreateUpdateRequestForStrategy(correction,
                                                                   this.BuildLineContextForCorrection(correction, invoiceMetadata, fileText),
                                                                   filePath,
                                                                   fileText);
 
-                    // 2. Validate the request for basic soundness before selecting a strategy
+                    // 3. Validate the request for basic soundness before selecting a strategy
                     //    ValidateUpdateRequest is an instance method defined below in this file.
                     var validationResult = this.ValidateUpdateRequest(request);
                     if (!validationResult.IsValid)
@@ -66,7 +75,7 @@ namespace WaterNut.DataSpace
                         continue;
                     }
 
-                    // 3. Get the appropriate strategy
+                    // 4. Get the appropriate strategy
                     strategy = _strategyFactory.GetStrategy(correction);
                     if (strategy == null)
                     {
@@ -120,6 +129,98 @@ namespace WaterNut.DataSpace
                 dbSuccessCount, omissionPatternUpdates, formatPatternUpdates, dbFailureCount);
         }
 
+        #endregion
+
+        #region Database Update Context Methods
+
+        /// <summary>
+        /// Gets the database update context for a field correction, determining the appropriate strategy and required IDs.
+        /// </summary>
+        public DatabaseUpdateContext GetDatabaseUpdateContext(string fieldName, OCRFieldMetadata metadata)
+        {
+            var context = new DatabaseUpdateContext();
+
+            try
+            {
+                // 1. Validate field support
+                if (!this.IsFieldSupported(fieldName))
+                {
+                    context.IsValid = false;
+                    context.ErrorMessage = $"Field '{fieldName}' is not supported for database updates.";
+                    context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                    return context;
+                }
+
+                // 2. Get field validation info
+                var validationInfo = this.GetFieldValidationInfo(fieldName);
+                context.ValidationRules = validationInfo;
+
+                if (!validationInfo.IsValid)
+                {
+                    context.IsValid = false;
+                    context.ErrorMessage = validationInfo.ErrorMessage;
+                    context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                    return context;
+                }
+
+                // 3. Get enhanced field info
+                var fieldInfo = this.MapDeepSeekFieldToEnhancedInfo(fieldName, metadata);
+                context.FieldInfo = fieldInfo;
+
+                // 4. Determine strategy based on available metadata
+                if (metadata == null)
+                {
+                    context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                    context.IsValid = true; // Valid to skip for known fields
+                    return context;
+                }
+
+                // 5. Set required IDs from metadata
+                context.RequiredIds = new RequiredDatabaseIds
+                {
+                    FieldId = metadata.FieldId,
+                    LineId = metadata.LineId,
+                    RegexId = metadata.RegexId,
+                    PartId = metadata.PartId
+                };
+
+                // 6. Determine update strategy based on available IDs
+                // Priority: Complete regex context > Line context for new patterns > Field format updates > Log only
+                if (metadata.RegexId.HasValue && metadata.LineId.HasValue && metadata.FieldId.HasValue)
+                {
+                    context.UpdateStrategy = DatabaseUpdateStrategy.UpdateRegexPattern;
+                }
+                else if (metadata.LineId.HasValue || metadata.PartId.HasValue)
+                {
+                    // If we have line context but missing regex ID, create new pattern
+                    context.UpdateStrategy = DatabaseUpdateStrategy.CreateNewPattern;
+                }
+                else if (metadata.FieldId.HasValue)
+                {
+                    // Only use field format updates when we don't have line context
+                    context.UpdateStrategy = DatabaseUpdateStrategy.UpdateFieldFormat;
+                }
+                else
+                {
+                    context.UpdateStrategy = DatabaseUpdateStrategy.LogOnly;
+                }
+
+                context.IsValid = true;
+                return context;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "Error creating database update context for field {FieldName}", fieldName);
+                context.IsValid = false;
+                context.ErrorMessage = $"Error creating update context: {ex.Message}";
+                context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                return context;
+            }
+        }
+
+        #endregion
+
+        #region Helper Methods
 
         /// <summary>
         /// Builds a LineContext object for a given correction, using available metadata and file text.

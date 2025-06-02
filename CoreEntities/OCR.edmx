@@ -188,8 +188,8 @@
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MultiLine" Type="bit" />
           <Property Name="MaxLines" Type="int" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="OCR-Start">
@@ -964,8 +964,8 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="MultiLine" Type="Boolean" />
           <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
           <Property Name="MaxLines" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" Nullable="false" />
-          <Property Name="LastUpdated" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="7" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="7" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Start">
