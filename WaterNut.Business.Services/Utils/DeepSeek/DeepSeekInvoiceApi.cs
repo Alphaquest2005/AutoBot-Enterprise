@@ -273,7 +273,8 @@ namespace WaterNut.Business.Services.Utils
                 }
             }
 
-            return new List<dynamic> { MergeDocuments(results)};
+            // Return flat list of documents for test compatibility
+            return results.Cast<dynamic>().ToList();
         }
 
         private string CleanText(string rawText)
@@ -369,12 +370,13 @@ try
                 foreach (var inv in invoices.EnumerateArray())
                 {
                     IDictionary<string,object> dict = new BetterExpando();
-                    dict["DocumentType"] = "Template";
+                    dict["DocumentType"] = FileTypeManager.EntryTypes.ShipmentInvoice;
                     dict["InvoiceNo"] = GetStringValue(inv, "InvoiceNo");
                     dict["PONumber"] = GetStringValue(inv, "PONumber");
                     dict["InvoiceDate"] = ParseDate(GetStringValue(inv, "InvoiceDate"));
                     dict["SubTotal"] = GetDecimalValue(inv, "SubTotal");
                     dict["InvoiceTotal"] = GetDecimalValue(inv, "Total");
+                    dict["Total"] = GetDecimalValue(inv, "Total"); // Add Total field for test compatibility
                     dict["Currency"] = GetStringValue(inv, "Currency");
                     dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
                     dict["SupplierCode"] = GetStringValue(inv, "SupplierCode");
@@ -432,7 +434,7 @@ try
 
                     if (string.IsNullOrEmpty(GetStringValue(cd, "BLNumber"))) continue;
 
-                    dict["DocumentType"] = "CustomsDeclaration";
+                    dict["DocumentType"] = FileTypeManager.EntryTypes.SimplifiedDeclaration;
                     dict["CustomsOffice"] = GetStringValue(cd, "CustomsOffice");
                     dict["ManifestYear"] = GetIntValue(cd, "ManifestYear");
                     dict["ManifestNumber"] = GetIntValue(cd, "ManifestNumber");
@@ -485,12 +487,12 @@ try
 
         private void CleanSupplierCodeConsignee(List<IDictionary<string, object>> documents)
         {
-            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Template"))
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == FileTypeManager.EntryTypes.ShipmentInvoice))
             {
                 // Prevent consignee/supplier mismatch
                 var supplier = doc["SupplierCode"]?.ToString() ?? "";
                 var consignee = documents
-                    .FirstOrDefault(d => d["DocumentType"].ToString() == "CustomsDeclaration")?["Consignee"]?.ToString() ?? "";
+                    .FirstOrDefault(d => d["DocumentType"].ToString() == FileTypeManager.EntryTypes.SimplifiedDeclaration)?["Consignee"]?.ToString() ?? "";
 
                 if (supplier.Equals(consignee, StringComparison.OrdinalIgnoreCase))
                 {
@@ -507,7 +509,7 @@ try
 
         private void CleanTotals(List<IDictionary<string, object>> documents)
         {
-            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == "Template"))
+            foreach (var doc in documents.Where(d => d["DocumentType"].ToString() == FileTypeManager.EntryTypes.ShipmentInvoice))
             {
                 try
                 {
@@ -744,7 +746,7 @@ try
             {
                 if (doc.TryGetValue("DocumentType", out var docType))
                 {
-                    if (docType.ToString() == "Template")
+                    if (docType.ToString() == FileTypeManager.EntryTypes.ShipmentInvoice)
                     {
                         // Add invoice documents
                         if (doc.TryGetValue("Invoices", out var invoices) && invoices is List<IDictionary<string, object>> invList)
@@ -757,7 +759,7 @@ try
                              ((List<IDictionary<string, object>>)merged["Invoices"]).Add(doc);
                         }
                     }
-                    else if (docType.ToString() == "CustomsDeclaration")
+                    else if (docType.ToString() == FileTypeManager.EntryTypes.SimplifiedDeclaration)
                     {
                          // Add customs declaration documents
                         if (doc.TryGetValue("CustomsDeclarations", out var customs) && customs is List<IDictionary<string, object>> customsList)
