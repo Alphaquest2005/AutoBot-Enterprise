@@ -152,21 +152,24 @@ namespace WaterNut.Business.Services.Utils
 
 2. FIELD EXTRACTION GUIDANCE:
    - SupplierCode:
-     * Source: Store/merchant name in header/footer (e.g., ""FASHIONNOWVA"")
-     * NEVER use consignee name
+     * Source: Company/vendor name in header/footer (e.g., ""ACME"", ""SUPPLIER"")
+     * NEVER use consignee/customer name
      * Fallback: Email domain analysis (@company.com)
+     * Make it short and unique (one word preferred)
 
    - TotalDeduction:
-     * Look for: Coupons, credits, free shipping markers
+     * Look for: Discounts, credits, rebates, promotional reductions
      * Calculate: Sum of all price reductions
+     * Examples: ""Discount"", ""Less:"", ""Credit"", ""Coupon""
 
    - TotalInternalFreight:
      * Combine: Shipping + Handling + Transportation fees
-     * Source: ""FREIGHT"" values in consignee line
+     * Source: ""FREIGHT"", ""Shipping"", ""Delivery"" values
+     * Include all transportation-related costs
 
    - TotalOtherCost:
-     * Include: Taxes + Fees + Duties
-     * Look for: ""Tax"", ""Duty"", ""Fee"" markers
+     * Include: Taxes + Fees + Duties + Surcharges
+     * Look for: ""Tax"", ""Duty"", ""Fee"", ""Surcharge"" markers
      * Calculate: Sum of all non-freight additional costs
 
 3. CUSTOMS DECLARATION RULES:
@@ -210,7 +213,7 @@ namespace WaterNut.Business.Services.Utils
     ""TotalOtherCost"": <float|null>,            // Taxes + Fees + Duties
     ""TotalInternalFreight"": <float|null>,      //Shipping + Handling + Transportation fees
     ""TotalInsurance"": <float|null>,
-    ""SupplierCode"": ""<str>"",     //One word name that is unique eg. ""Shien"" or ""Amazon"" or ""Walmart""
+    ""SupplierCode"": ""<str>"",     //One word name that is unique eg. ""ACME"" or ""SUPPLIER"" or ""VENDOR""
     ""SupplierName"": ""<str>"",     //Full Business name of supplier
     ""SupplierAddress"": ""<str>"",  //Full address of supplier IF NOT available use email address domain
     ""SupplierCountryCode"": ""<ISO3166-2>"",
@@ -281,15 +284,28 @@ namespace WaterNut.Business.Services.Utils
         {
             try
             {
-                // Fix: Use greedy quantifier and handle multiple dash sections properly
-                // This pattern removes individual sections surrounded by 30+ dashes, not everything between first and last
+                // Remove sections surrounded by 30+ dashes (common in OCR output)
                 var cleaned = Regex.Replace(rawText, @"-{30,}[^-]*-{30,}", "", RegexOptions.Multiline);
 
-                var match = Regex.Match(cleaned,
-                    @"(?<=SHOP FASTER WITH THE APP)(.*?)(?=For Comptroller of Customs)",
-                    RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                // Try to extract main content between common invoice markers
+                // Look for content between order/invoice details and customs/footer sections
+                var patterns = new[]
+                {
+                    @"(?<=Order\s*#|Invoice\s*#|Invoice\s*No)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)",
+                    @"(?<=Total\s*\$|Payment\s*method|Billing\s*Address)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)",
+                    @"(?<=Item\s*Code|Description|Shipped|Price|Amount)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)"
+                };
 
-                return match.Success ? match.Value : cleaned;
+                foreach (var pattern in patterns)
+                {
+                    var match = Regex.Match(cleaned, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    if (match.Success && match.Value.Trim().Length > 100) // Ensure we have substantial content
+                    {
+                        return match.Value;
+                    }
+                }
+
+                return cleaned;
             }
             catch (Exception ex)
             {

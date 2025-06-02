@@ -17,6 +17,8 @@ using Core.Common.Extensions; // For LogCategory and TypedLoggerExtensions
 using Serilog.Events;
 using Serilog.Core;
 using Serilog.Sinks.NUnit;
+using System.IO; // Added for File operations
+using System.Globalization; // Added for culture-specific operations
 
 namespace AutoBotUtilities.Tests
 {
@@ -96,7 +98,42 @@ namespace AutoBotUtilities.Tests
         [TestFixture]
         public class ShipmentInvoiceTests
         {
+            private static ILogger _testLog;
 
+            [OneTimeSetUp]
+            public void OneTimeSetUp()
+            {
+                // Configure LogFilterState for test logging
+                LogFilterState.EnabledCategoryLevels = new Dictionary<LogCategory, LogEventLevel>
+                {
+                    { LogCategory.MethodBoundary, LogEventLevel.Information },
+                    { LogCategory.InternalStep, LogEventLevel.Information },
+                    { LogCategory.DiagnosticDetail, LogEventLevel.Information },
+                    { LogCategory.Performance, LogEventLevel.Warning },
+                    { LogCategory.Undefined, LogEventLevel.Information }
+                };
+
+                _testLog = new LoggerConfiguration()
+                    .MinimumLevel.Verbose()
+                    .Enrich.FromLogContext().Enrich.WithProperty("TestFixture", nameof(ShipmentInvoiceTests))
+                    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.NUnitOutput(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj}{NewLine}")
+                    .Filter.ByIncludingOnly(evt =>
+                    {
+                        var category = evt.Properties.TryGetValue("LogCategory", out var categoryValue) && categoryValue is ScalarValue sv && sv.Value is LogCategory lc ? lc : LogCategory.Undefined;
+                        if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails))
+                        {
+                            var sourceContext = evt.Properties.TryGetValue("SourceContext", out var sourceContextValue) && sourceContextValue is ScalarValue scv ? scv.Value?.ToString() : "";
+                            var memberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue) && memberNameValue is ScalarValue mnv ? mnv.Value?.ToString() : "";
+                            var contextMatch = sourceContext?.Contains(LogFilterState.TargetSourceContextForDetails) == true;
+                            var methodMatch = string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) || memberName?.Contains(LogFilterState.TargetMethodNameForDetails) == true;
+                            if (contextMatch && methodMatch) { return evt.Level >= LogFilterState.DetailTargetMinimumLevel; }
+                        }
+                        if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var enabledMinLevelForCategory)) { return evt.Level >= enabledMinLevelForCategory; }
+                        return false;
+                    })
+                    .CreateLogger();
+            }
 
             [Test]
             public async Task ExtractShipmentInvoice_ProcessesSampleText_ReturnsValidDocuments()
@@ -106,11 +143,11 @@ namespace AutoBotUtilities.Tests
                 // Arrange - Use proper logging directives
                 using (LogLevelOverride.Begin(LogEventLevel.Information))
                 {
-                    _log.LogMethodEntry(testInvocationId);
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Starting ExtractShipmentInvoice Test ===", invocationId: testInvocationId);
+                    _testLog.LogMethodEntry(testInvocationId);
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Starting ExtractShipmentInvoice Test ===", invocationId: testInvocationId);
 
-                    // Create mock HTTP response with expected JSON structure
-                    var mockJsonResponse = @"{
+                    // Create mock HTTP response with expected DeepSeek API format
+                    var mockJsonContent = @"{
                         ""Invoices"": [
                             {
                                 ""InvoiceNo"": ""138845514"",
@@ -211,20 +248,39 @@ namespace AutoBotUtilities.Tests
                         ]
                     }";
 
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock JSON Response prepared with {InvoiceCount} invoices and {CustomsCount} customs declarations", testInvocationId, propertyValues: new object[] { 1, 1 });
+                    // Wrap the content in the expected DeepSeek API response format
+                    // Properly escape the JSON content for embedding as a string
+                    var escapedContent = mockJsonContent
+                        .Replace("\\", "\\\\")  // Escape backslashes first
+                        .Replace("\"", "\\\"")  // Escape quotes
+                        .Replace("\r\n", "\\n") // Replace CRLF with \n
+                        .Replace("\n", "\\n")   // Replace LF with \n
+                        .Replace("\t", "\\t");  // Replace tabs with \t
+
+                    var mockJsonResponse = $@"{{
+                        ""choices"": [
+                            {{
+                                ""message"": {{
+                                    ""content"": ""{escapedContent}""
+                                }}
+                            }}
+                        ]
+                    }}";
+
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock JSON Response prepared with {InvoiceCount} invoices and {CustomsCount} customs declarations", testInvocationId, propertyValues: new object[] { 1, 1 });
 
                     // Create mock HTTP handler
                     var mockHttpHandler = new MockHttpMessageHandler(mockJsonResponse);
                     var mockHttpClient = new HttpClient(mockHttpHandler);
 
                     // Create API instance with proper logger
-                    var api = new DeepSeekInvoiceApi(_log);
+                    var api = new DeepSeekInvoiceApi(_testLog);
 
                     // Use reflection to inject the mock HttpClient
                     var httpClientField = typeof(DeepSeekInvoiceApi).GetField("_httpClient", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     if (httpClientField == null)
                     {
-                        _log.LogErrorCategorized(LogCategory.DiagnosticDetail, "Could not find private field '_httpClient' via reflection", testInvocationId);
+                        _testLog.LogErrorCategorized(LogCategory.DiagnosticDetail, "Could not find private field '_httpClient' via reflection", testInvocationId);
                         Assert.Fail("Could not find private field '_httpClient' via reflection.");
                     }
 
@@ -233,14 +289,14 @@ namespace AutoBotUtilities.Tests
                     originalHttpClient?.Dispose();
                     httpClientField.SetValue(api, mockHttpClient);
 
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock HttpClient injected successfully", testInvocationId);
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock HttpClient injected successfully", testInvocationId);
 
                     var textVariants = new List<string> { SampleText };
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Processing {VariantCount} text variants", testInvocationId, propertyValues: new object[] { textVariants.Count });
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Processing {VariantCount} text variants", testInvocationId, propertyValues: new object[] { textVariants.Count });
 
                     // Act
                     var results = await api.ExtractShipmentInvoice(textVariants).ConfigureAwait(false);
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "ExtractShipmentInvoice returned {ResultCount} results", testInvocationId, propertyValues: new object[] { results?.Count ?? 0 });
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "ExtractShipmentInvoice returned {ResultCount} results", testInvocationId, propertyValues: new object[] { results?.Count ?? 0 });
 
                     // Log all results for debugging
                     if (results != null)
@@ -250,10 +306,10 @@ namespace AutoBotUtilities.Tests
                             var result = results[i];
                             if (result is IDictionary<string, object> dict)
                             {
-                                _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Result {Index}: DocumentType = {DocumentType}", testInvocationId, propertyValues: new object[] { i, dict.TryGetValue("DocumentType", out var docType) ? docType : "NULL" });
+                                _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Result {Index}: DocumentType = {DocumentType}", testInvocationId, propertyValues: new object[] { i, dict.TryGetValue("DocumentType", out var docType) ? docType : "NULL" });
                                 foreach (var kvp in dict)
                                 {
-                                    _log.LogDebugCategorized(LogCategory.DiagnosticDetail, "  {Key} = {Value}", testInvocationId, propertyValues: new object[] { kvp.Key, kvp.Value?.ToString() ?? "NULL" });
+                                    _testLog.LogDebugCategorized(LogCategory.DiagnosticDetail, "  {Key} = {Value}", testInvocationId, propertyValues: new object[] { kvp.Key, kvp.Value?.ToString() ?? "NULL" });
                                 }
                             }
                         }
@@ -261,7 +317,7 @@ namespace AutoBotUtilities.Tests
 
                     // Assert - Invoices
                     var invoice = results?.FirstOrDefault(d => d is IDictionary<string, object> dict && dict.TryGetValue("DocumentType", out var docType) && docType as string == FileTypeManager.EntryTypes.ShipmentInvoice) as IDictionary<string, object>;
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Invoice found: {Found}, Expected DocumentType: {ExpectedType}", testInvocationId, propertyValues: new object[] { invoice != null, FileTypeManager.EntryTypes.ShipmentInvoice });
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Invoice found: {Found}, Expected DocumentType: {ExpectedType}", testInvocationId, propertyValues: new object[] { invoice != null, FileTypeManager.EntryTypes.ShipmentInvoice });
 
                     Assert.That(invoice, Is.Not.Null, "No invoice found");
                     Assert.That(invoice["InvoiceNo"], Is.EqualTo("138845514"));
@@ -271,14 +327,14 @@ namespace AutoBotUtilities.Tests
 
                     // Assert Line Items
                     var lineItems = invoice["InvoiceDetails"] as List<IDictionary<string, object>>;
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Line items found: {Count}", testInvocationId, propertyValues: new object[] { lineItems?.Count ?? 0 });
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Line items found: {Count}", testInvocationId, propertyValues: new object[] { lineItems?.Count ?? 0 });
                     Assert.That(lineItems.Count, Is.EqualTo(9));
                     Assert.That(lineItems[0]["ItemDescription"], Is.EqualTo("Going Viral Handbag - Silver"));
                     Assert.That(lineItems[0]["Quantity"], Is.EqualTo(1m));
 
                     // Assert - Customs Declaration
                     var customs = results?.FirstOrDefault(d => d is IDictionary<string, object> dict && dict.TryGetValue("DocumentType", out var docType) && docType as string == FileTypeManager.EntryTypes.SimplifiedDeclaration) as IDictionary<string, object>;
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "Customs declaration found: {Found}, Expected DocumentType: {ExpectedType}", testInvocationId, propertyValues: new object[] { customs != null, FileTypeManager.EntryTypes.SimplifiedDeclaration });
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Customs declaration found: {Found}, Expected DocumentType: {ExpectedType}", testInvocationId, propertyValues: new object[] { customs != null, FileTypeManager.EntryTypes.SimplifiedDeclaration });
 
                     Assert.That(customs, Is.Not.Null, "No customs declaration found");
                     Assert.That(customs["Consignee"], Is.EqualTo("ARTISHA CHARLES"));
@@ -288,8 +344,223 @@ namespace AutoBotUtilities.Tests
                     Assert.That(customs["Packages"], Is.EqualTo(1));
                     Assert.That(customs["GrossWeightKG"], Is.EqualTo(6.0m));
 
-                    _log.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Test completed successfully ===", testInvocationId);
-                    _log.LogMethodExitSuccess(testInvocationId, 0); // 0 duration since we're not tracking time in this test
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Test completed successfully ===", testInvocationId);
+                    _testLog.LogMethodExitSuccess(testInvocationId, 0); // 0 duration since we're not tracking time in this test
+
+                    // Cleanup
+                    mockHttpClient.Dispose();
+                }
+            }
+
+            [Test]
+            public async Task ExtractShipmentInvoice_ProcessesTropicalVendorsPDF_ReturnsValidDocuments()
+            {
+                var testInvocationId = Guid.NewGuid().ToString();
+
+                // Arrange - Use proper logging directives
+                using (LogLevelOverride.Begin(LogEventLevel.Information))
+                {
+                    _testLog.LogMethodEntry(testInvocationId);
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Starting Tropical Vendors PDF ExtractShipmentInvoice Test ===", invocationId: testInvocationId);
+
+                    // Read the actual PDF text content
+                    var pdfTextPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Test Data", "06FLIP-SO-0016205IN-20250514-000.PDF.txt");
+                    if (!File.Exists(pdfTextPath))
+                    {
+                        Assert.Fail($"Test data file not found: {pdfTextPath}");
+                    }
+
+                    var actualPdfText = File.ReadAllText(pdfTextPath);
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Loaded PDF text content with {CharacterCount} characters", testInvocationId, propertyValues: new object[] { actualPdfText.Length });
+
+                    // Create mock HTTP response based on expected Tropical Vendors invoice data
+                    var mockJsonContent = @"{
+                        ""Invoices"": [
+                            {
+                                ""InvoiceNo"": ""0016205-IN"",
+                                ""PONumber"": ""0016205"",
+                                ""InvoiceDate"": ""2025-05-14"",
+                                ""Total"": 2356.00,
+                                ""Currency"": ""USD"",
+                                ""SubTotal"": 2945.00,
+                                ""TotalDeduction"": 589.00,
+                                ""TotalOtherCost"": 0.00,
+                                ""TotalInternalFreight"": 0.00,
+                                ""TotalInsurance"": 0.00,
+                                ""SupplierCode"": ""TROPICAL"",
+                                ""SupplierName"": ""Tropical Vendors, Inc."",
+                                ""SupplierAddress"": ""P.O BOX 13670 San Juan, PR 00908-3670"",
+                                ""SupplierCountryCode"": ""PR"",
+                                ""InvoiceDetails"": [
+                                    {
+                                        ""ItemNumber"": ""11016-001-M11"",
+                                        ""ItemDescription"": ""CROCBAND BLACK"",
+                                        ""Quantity"": 1,
+                                        ""Cost"": 27.50,
+                                        ""TotalCost"": 27.50,
+                                        ""Units"": ""EA"",
+                                        ""TariffCode"": ""640419"",
+                                        ""Discount"": null
+                                    },
+                                    {
+                                        ""ItemNumber"": ""11016-001-M12"",
+                                        ""ItemDescription"": ""CROCBAND BLACK"",
+                                        ""Quantity"": 1,
+                                        ""Cost"": 27.50,
+                                        ""TotalCost"": 27.50,
+                                        ""Units"": ""EA"",
+                                        ""TariffCode"": ""640419"",
+                                        ""Discount"": null
+                                    },
+                                    {
+                                        ""ItemNumber"": ""11033-001-M13"",
+                                        ""ItemDescription"": ""CROCBAND FLIP BLK"",
+                                        ""Quantity"": 3,
+                                        ""Cost"": 15.00,
+                                        ""TotalCost"": 45.00,
+                                        ""Units"": ""EA"",
+                                        ""TariffCode"": ""640419"",
+                                        ""Discount"": null
+                                    },
+                                    {
+                                        ""ItemNumber"": ""11033-001-M6W8"",
+                                        ""ItemDescription"": ""CROCBAND FLIP BLK"",
+                                        ""Quantity"": 3,
+                                        ""Cost"": 15.00,
+                                        ""TotalCost"": 45.00,
+                                        ""Units"": ""EA"",
+                                        ""TariffCode"": ""640419"",
+                                        ""Discount"": null
+                                    },
+                                    {
+                                        ""ItemNumber"": ""11033-001-M7W9"",
+                                        ""ItemDescription"": ""CROCBAND FLIP BLK"",
+                                        ""Quantity"": 3,
+                                        ""Cost"": 15.00,
+                                        ""TotalCost"": 45.00,
+                                        ""Units"": ""EA"",
+                                        ""TariffCode"": ""640419"",
+                                        ""Discount"": null
+                                    }
+                                ]
+                            }
+                        ],
+                        ""CustomsDeclarations"": []
+                    }";
+
+                    // Wrap the content in the expected DeepSeek API response format
+                    var escapedContent = mockJsonContent
+                        .Replace("\\", "\\\\")
+                        .Replace("\"", "\\\"")
+                        .Replace("\r\n", "\\n")
+                        .Replace("\n", "\\n")
+                        .Replace("\t", "\\t");
+
+                    var mockJsonResponse = $@"{{
+                        ""choices"": [
+                            {{
+                                ""message"": {{
+                                    ""content"": ""{escapedContent}""
+                                }}
+                            }}
+                        ]
+                    }}";
+
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock JSON Response prepared for Tropical Vendors invoice", testInvocationId);
+
+                    // Create mock HTTP handler
+                    var mockHttpHandler = new MockHttpMessageHandler(mockJsonResponse);
+                    var mockHttpClient = new HttpClient(mockHttpHandler);
+
+                    // Create API instance with proper logger
+                    var api = new DeepSeekInvoiceApi(_testLog);
+
+                    // Use reflection to inject the mock HttpClient
+                    var httpClientField = typeof(DeepSeekInvoiceApi).GetField("_httpClient", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (httpClientField == null)
+                    {
+                        _testLog.LogErrorCategorized(LogCategory.DiagnosticDetail, "Could not find private field '_httpClient' via reflection", testInvocationId);
+                        Assert.Fail("Could not find private field '_httpClient' via reflection.");
+                    }
+
+                    // Dispose original HttpClient and inject mock
+                    var originalHttpClient = httpClientField.GetValue(api) as HttpClient;
+                    originalHttpClient?.Dispose();
+                    httpClientField.SetValue(api, mockHttpClient);
+
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Mock HttpClient injected successfully", testInvocationId);
+
+                    var textVariants = new List<string> { actualPdfText };
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Processing {VariantCount} text variants", testInvocationId, propertyValues: new object[] { textVariants.Count });
+
+                    // Act
+                    var results = await api.ExtractShipmentInvoice(textVariants).ConfigureAwait(false);
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "ExtractShipmentInvoice returned {ResultCount} results", testInvocationId, propertyValues: new object[] { results?.Count ?? 0 });
+
+                    // Log all results for debugging
+                    if (results != null)
+                    {
+                        for (int i = 0; i < results.Count; i++)
+                        {
+                            var result = results[i];
+                            if (result is IDictionary<string, object> dict)
+                            {
+                                _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Result {Index}: DocumentType = {DocumentType}", testInvocationId, propertyValues: new object[] { i, dict.TryGetValue("DocumentType", out var docType) ? docType : "NULL" });
+                                foreach (var kvp in dict)
+                                {
+                                    _testLog.LogDebugCategorized(LogCategory.DiagnosticDetail, "  {Key} = {Value}", testInvocationId, propertyValues: new object[] { kvp.Key, kvp.Value?.ToString() ?? "NULL" });
+                                }
+                            }
+                        }
+                    }
+
+                    // Assert - Validate the Tropical Vendors invoice
+                    var invoice = results?.FirstOrDefault(d => d is IDictionary<string, object> dict && dict.TryGetValue("DocumentType", out var docType) && docType as string == FileTypeManager.EntryTypes.ShipmentInvoice) as IDictionary<string, object>;
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Invoice found: {Found}, Expected DocumentType: {ExpectedType}", testInvocationId, propertyValues: new object[] { invoice != null, FileTypeManager.EntryTypes.ShipmentInvoice });
+
+                    Assert.That(invoice, Is.Not.Null, "No Tropical Vendors invoice found");
+                    Assert.That(invoice["InvoiceNo"], Is.EqualTo("0016205-IN"), "Invoice number mismatch");
+                    Assert.That(invoice["InvoiceDate"], Is.EqualTo(DateTime.Parse("2025-05-14")), "Invoice date mismatch");
+                    Assert.That(invoice["InvoiceTotal"], Is.EqualTo(2356.00m).Within(0.01m), "Invoice total mismatch");
+                    Assert.That(invoice["SubTotal"], Is.EqualTo(2945.00m).Within(0.01m), "SubTotal mismatch");
+                    Assert.That(invoice["Currency"], Is.EqualTo("USD"), "Currency mismatch");
+                    Assert.That(invoice["SupplierCode"], Is.EqualTo("TROPICAL"), "Supplier code mismatch");
+                    Assert.That(invoice["SupplierName"], Is.EqualTo("Tropical Vendors, Inc."), "Supplier name mismatch");
+
+                    // Assert Line Items - Validate that we have the expected line items
+                    var lineItems = invoice["InvoiceDetails"] as List<IDictionary<string, object>>;
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "Line items found: {Count}", testInvocationId, propertyValues: new object[] { lineItems?.Count ?? 0 });
+                    Assert.That(lineItems, Is.Not.Null, "No line items found");
+                    Assert.That(lineItems.Count, Is.GreaterThanOrEqualTo(5), "Expected at least 5 line items");
+
+                    // Validate specific line items
+                    var firstItem = lineItems[0];
+                    Assert.That(firstItem["ItemNumber"], Is.EqualTo("11016-001-M11"), "First item number mismatch");
+                    Assert.That(firstItem["ItemDescription"], Is.EqualTo("CROCBAND BLACK"), "First item description mismatch");
+                    Assert.That(firstItem["Quantity"], Is.EqualTo(1m), "First item quantity mismatch");
+                    Assert.That(firstItem["Cost"], Is.EqualTo(27.50m).Within(0.01m), "First item cost mismatch");
+                    Assert.That(firstItem["TotalCost"], Is.EqualTo(27.50m).Within(0.01m), "First item total cost mismatch");
+
+                    var thirdItem = lineItems[2];
+                    Assert.That(thirdItem["ItemNumber"], Is.EqualTo("11033-001-M13"), "Third item number mismatch");
+                    Assert.That(thirdItem["ItemDescription"], Is.EqualTo("CROCBAND FLIP BLK"), "Third item description mismatch");
+                    Assert.That(thirdItem["Quantity"], Is.EqualTo(3m), "Third item quantity mismatch");
+                    Assert.That(thirdItem["Cost"], Is.EqualTo(15.00m).Within(0.01m), "Third item cost mismatch");
+                    Assert.That(thirdItem["TotalCost"], Is.EqualTo(45.00m).Within(0.01m), "Third item total cost mismatch");
+
+                    // Validate that all line items have required fields
+                    foreach (var item in lineItems)
+                    {
+                        Assert.That(item.ContainsKey("ItemNumber"), Is.True, "Line item missing ItemNumber");
+                        Assert.That(item.ContainsKey("ItemDescription"), Is.True, "Line item missing ItemDescription");
+                        Assert.That(item.ContainsKey("Quantity"), Is.True, "Line item missing Quantity");
+                        Assert.That(item.ContainsKey("Cost"), Is.True, "Line item missing Cost");
+                        Assert.That(item.ContainsKey("TotalCost"), Is.True, "Line item missing TotalCost");
+                        Assert.That(item.ContainsKey("TariffCode"), Is.True, "Line item missing TariffCode");
+                    }
+
+                    _testLog.LogInfoCategorized(LogCategory.DiagnosticDetail, "=== Tropical Vendors PDF test completed successfully ===", testInvocationId);
+                    _testLog.LogMethodExitSuccess(testInvocationId, 0);
 
                     // Cleanup
                     mockHttpClient.Dispose();

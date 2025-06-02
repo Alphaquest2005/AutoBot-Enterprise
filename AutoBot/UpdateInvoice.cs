@@ -584,7 +584,7 @@ namespace AutoBot
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
 
 
-                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Template Template Not found!",
+                        await EmailDownloader.EmailDownloader.SendEmailAsync(Utils.Client,null, "Invoice Template Not found!",
                              EmailDownloader.EmailDownloader.GetContacts("Developer", log), body, res1, log).ConfigureAwait(false);
 
                         fileTypes.ProcessNextStep.Add("Kill");
