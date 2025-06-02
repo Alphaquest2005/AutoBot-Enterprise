@@ -636,7 +636,7 @@ EmailId = email.EmailId, // Added EmailId
 
                 if (string.IsNullOrEmpty(directoryName)) return;
 
-                Console.WriteLine($"Executing {scriptName}");
+                Serilog.Log.Information("Executing {ScriptName}", scriptName);
                 var script =
                     $"C:\\Users\\{Environment.UserName}\\OneDrive\\Clients\\AutoBot\\Scripts\\{scriptName}.sikuli";
                 if (!Directory.Exists(script)) throw new ApplicationException($"Script not found: '{script}'");

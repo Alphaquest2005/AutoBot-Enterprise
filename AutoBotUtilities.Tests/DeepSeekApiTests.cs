@@ -85,7 +85,8 @@ namespace AutoBotUtilities.Tests
             [Test]
             public void ValidateTariffCode_CleansHsCodesCorrectly()
             {
-                var api = new DeepSeekInvoiceApi();
+                var mockLogger = new Mock<Serilog.ILogger>();
+                var api = new DeepSeekInvoiceApi(mockLogger.Object);
 
                 Assert.Multiple(() =>
                 {

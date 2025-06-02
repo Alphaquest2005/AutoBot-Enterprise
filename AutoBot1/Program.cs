@@ -19,22 +19,95 @@ using MailKit.Net.Imap; // Added for ImapClient type
 using Serilog;
 using Serilog.Context;
 using Serilog.Events; // Though often not directly used, good for reference
+using Core.Common.Extensions;
 
 namespace AutoBot
 {
     partial class Program
     {
         public static bool ReadOnlyMode { get; set; } = false;
+        private static LevelOverridableLogger _centralizedLogger;
 
         static void Main(string[] args) // Main is synchronous
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
+            // Configure LogFilterState.EnabledCategoryLevels for AutoBot (similar to test projects)
+            LogFilterState.EnabledCategoryLevels = new Dictionary<LogCategory, LogEventLevel>
+            {
+                { LogCategory.MethodBoundary, LogEventLevel.Information },
+                { LogCategory.ActionBoundary, LogEventLevel.Information },
+                { LogCategory.ExternalCall, LogEventLevel.Information },
+                { LogCategory.StateChange, LogEventLevel.Information },
+                { LogCategory.Security, LogEventLevel.Information },
+                { LogCategory.MetaLog, LogEventLevel.Warning },
+                { LogCategory.InternalStep, LogEventLevel.Warning },
+                { LogCategory.DiagnosticDetail, LogEventLevel.Warning },
+                { LogCategory.Performance, LogEventLevel.Warning },
+                { LogCategory.Undefined, LogEventLevel.Information }
+            };
+
+            // Create inner Serilog logger with high minimum level (filtering will be done by LevelOverridableLogger)
+            var innerSerilogLogger = new LoggerConfiguration()
+                .MinimumLevel.Verbose() // Set to lowest level, filtering handled by LevelOverridableLogger
                 .Enrich.FromLogContext() // Ensures LogContext properties are included
                 .Enrich.WithThreadId()   // Requires Serilog.Enrichers.Thread package
                 .WriteTo.Console(
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{ThreadId}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{ThreadId}] [{LogCategory}] [{SourceContext}] [{MemberName}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+                .Filter.ByIncludingOnly(evt =>
+                {
+                    // Extract LogCategory from event properties
+                    LogCategory category = LogCategory.Undefined;
+                    if (evt.Properties.TryGetValue("LogCategory", out var categoryProperty) &&
+                        categoryProperty is ScalarValue scalarValue &&
+                        scalarValue.Value is LogCategory logCategory)
+                    {
+                        category = logCategory;
+                    }
+
+                    // Extract SourceContext for detailed targeting
+                    string sourceContext = null;
+                    if (evt.Properties.TryGetValue("SourceContext", out var sourceContextProperty) &&
+                        sourceContextProperty is ScalarValue sourceScalarValue)
+                    {
+                        sourceContext = sourceContextProperty.ToString().Trim('"');
+                    }
+
+                    // Extract MemberName for method-specific targeting
+                    string memberName = null;
+                    if (evt.Properties.TryGetValue("MemberName", out var memberNameProperty) &&
+                        memberNameProperty is ScalarValue memberScalarValue)
+                    {
+                        memberName = memberNameProperty.ToString().Trim('"');
+                    }
+
+                    // Check for detailed targeting (similar to test projects)
+                    if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
+                        !string.IsNullOrEmpty(sourceContext) &&
+                        sourceContext.Contains(LogFilterState.TargetSourceContextForDetails))
+                    {
+                        bool methodMatch = string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
+                                           (!string.IsNullOrEmpty(memberName) && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase));
+
+                        if (methodMatch)
+                        {
+                            return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
+                        }
+                    }
+
+                    // Use category-based filtering
+                    if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var enabledMinLevelForCategory))
+                    {
+                        return evt.Level >= enabledMinLevelForCategory;
+                    }
+
+                    return false;
+                })
                 .CreateLogger();
+
+            // Create LevelOverridableLogger wrapper
+            _centralizedLogger = new LevelOverridableLogger(innerSerilogLogger);
+
+            // Set as global logger for backward compatibility
+            Log.Logger = _centralizedLogger;
 
             var globalStopwatch = Stopwatch.StartNew();
             string globalInvocationId = Guid.NewGuid().ToString();
@@ -72,14 +145,14 @@ namespace AutoBot
                     {
                         var errorReportingClient = Utils.Client ?? new EmailDownloader.Client { Email = "default-error-reporter@example.com", CompanyName = "ErrorReporter" };
                         string[] devContacts = { "developer@example.com" }; // Fallback
-                        try { devContacts = EmailDownloader.EmailDownloader.GetContacts("Developer", Log.Logger); } 
+                        try { devContacts = EmailDownloader.EmailDownloader.GetContacts("Developer", _centralizedLogger); }
                         catch (Exception contactEx) {
                             Log.Warning(contactEx, "INTERNAL_STEP (Main - ErrorHandling): Failed to get developer contacts for error reporting.");
                         }
 
                         Log.Information("INTERNAL_STEP (Main - ErrorHandling): Attempting to send error email to {DevContacts}.", (object)devContacts);
                         EmailDownloader.EmailDownloader.SendEmailAsync(errorReportingClient, null, $"Bug Found in AutoBot",
-                             devContacts, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>(), Log.Logger, CancellationToken.None)
+                             devContacts, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>(), _centralizedLogger, CancellationToken.None)
                              .GetAwaiter().GetResult();
                         Log.Information("INTERNAL_STEP (Main - ErrorHandling): Successfully sent error email.");
                     }
@@ -167,7 +240,7 @@ namespace AutoBot
                             {
                                 Log.Information("INTERNAL_STEP ({OperationName} - {Stage}): TestMode is TRUE for AppSetting {AppSettingId}. Attempting to execute last DB session action.",
                                     "ProcessAppSetting", "TestModeCheck", appSetting.ApplicationSettingsId);
-                                if (ExecuteLastDBSessionAction(ctx, appSetting))
+                                if (ExecuteLastDBSessionAction(ctx, appSetting, _centralizedLogger))
                                 {
                                     Log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Last DB session action executed for AppSetting {AppSettingId}, continuing to next appSetting.",
                                         "ProcessAppSetting", "TestModeLastActionExecuted", appSetting.ApplicationSettingsId);
@@ -183,7 +256,7 @@ namespace AutoBot
                             var emailProcessingStopwatch = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", 
                                 $"EmailProcessor.ProcessEmailsAsync for AppSetting {appSetting.ApplicationSettingsId}", "ASYNC_EXPECTED");
-                            await EmailProcessor.ProcessEmailsAsync(appSetting, timeBeforeImport, ctx , cancellationToken, Log.Logger).ConfigureAwait(false);
+                            await EmailProcessor.ProcessEmailsAsync(appSetting, timeBeforeImport, ctx , cancellationToken, _centralizedLogger).ConfigureAwait(false);
                             emailProcessingStopwatch.Stop();
                             Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                 $"EmailProcessor.ProcessEmailsAsync for AppSetting {appSetting.ApplicationSettingsId}", emailProcessingStopwatch.ElapsedMilliseconds, "Async call completed (await).");
@@ -192,7 +265,7 @@ namespace AutoBot
                             var dbSessionActionsStopwatch = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", 
                                 $"ExecuteDBSessionActions for AppSetting {appSetting.ApplicationSettingsId}", "SYNC_EXPECTED"); // It's sync
-                            ExecuteDBSessionActions(ctx, appSetting);
+                            ExecuteDBSessionActions(ctx, appSetting, _centralizedLogger);
                             dbSessionActionsStopwatch.Stop();
                              Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                 $"ExecuteDBSessionActions for AppSetting {appSetting.ApplicationSettingsId}", dbSessionActionsStopwatch.ElapsedMilliseconds, "Sync call returned.");
@@ -220,7 +293,7 @@ namespace AutoBot
             }
         }
 
-        private static bool ExecuteLastDBSessionAction(CoreEntitiesContext ctx, ApplicationSettings appSetting)
+        private static bool ExecuteLastDBSessionAction(CoreEntitiesContext ctx, ApplicationSettings appSetting, ILogger log)
         {
             string methodInvocationId = Guid.NewGuid().ToString();
             using (LogContext.PushProperty("InvocationId", methodInvocationId)) // Overrides AppSetting's InvocationId for this method scope
@@ -259,7 +332,7 @@ namespace AutoBot
                         Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                         try
                         {
-                            SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(Log.Logger);
+                            SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(log);
                             invokeTimer.Stop();
                             Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                 operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -287,7 +360,7 @@ namespace AutoBot
             }
         }
 
-        private static void ExecuteDBSessionActions(CoreEntitiesContext ctx, ApplicationSettings appSetting)
+        private static void ExecuteDBSessionActions(CoreEntitiesContext ctx, ApplicationSettings appSetting, ILogger log)
         {
             string methodInvocationId = Guid.NewGuid().ToString();
             using (LogContext.PushProperty("InvocationId", methodInvocationId))
@@ -312,7 +385,7 @@ namespace AutoBot
                     Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                     try
                     {
-                        SessionsUtils.SessionActions[endActionDetail.Actions.Name].Invoke(Log.Logger);
+                        SessionsUtils.SessionActions[endActionDetail.Actions.Name].Invoke(log);
                         invokeTimer.Stop();
                         Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                             operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -370,7 +443,7 @@ namespace AutoBot
                                 Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                                 try
                                 {
-                                    SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(Log.Logger);
+                                    SessionsUtils.SessionActions[sessionActionDetail.Actions.Name].Invoke(log);
                                     invokeTimer.Stop();
                                     Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                         operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -407,7 +480,7 @@ namespace AutoBot
                             var invokeTimer = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                             try {
-                                SessionsUtils.SessionActions[im7ActionDetail.Actions.Name].Invoke(Log.Logger);
+                                SessionsUtils.SessionActions[im7ActionDetail.Actions.Name].Invoke(log);
                                 invokeTimer.Stop();
                                 Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                     operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");
@@ -435,7 +508,7 @@ namespace AutoBot
                             var invokeTimer = Stopwatch.StartNew();
                             Log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", operationDesc, "SYNC_EXPECTED");
                             try {
-                                SessionsUtils.SessionActions[exActionDetail.Actions.Name].Invoke(Log.Logger);
+                                SessionsUtils.SessionActions[exActionDetail.Actions.Name].Invoke(log);
                                 invokeTimer.Stop();
                                 Log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})", 
                                     operationDesc, invokeTimer.ElapsedMilliseconds, "Sync call returned successfully.");

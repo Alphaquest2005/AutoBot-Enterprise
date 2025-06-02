@@ -45,8 +45,8 @@ namespace WaterNut.DataSpace
 
         public OCRCorrectionService(ILogger logger = null)
         {
-            _deepSeekApi = new DeepSeekInvoiceApi(); // Ensure DeepSeekInvoiceApi is correctly newed up or injected
             _logger = logger ?? Log.Logger.ForContext<OCRCorrectionService>();
+            _deepSeekApi = new DeepSeekInvoiceApi(_logger); // Pass the logger to DeepSeekInvoiceApi
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger); // Initialize the strategy factory
         }
 

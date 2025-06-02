@@ -51,6 +51,21 @@ namespace WaterNut.Business.Services.Utils
             _retryPolicy = CreateRetryPolicy(); // Call the new method
         }
 
+        public DeepSeekInvoiceApi(Serilog.ILogger logger, HttpClient httpClient = null)
+        {
+            _apiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
+                                ?? throw new InvalidOperationException("API key not found in environment variables");
+
+            _baseUrl = "https://api.deepseek.com/v1";
+            _logger = logger ?? Log.Logger.ForContext<DeepSeekInvoiceApi>(); // Use provided logger or fallback to Serilog context logger
+            _httpClient = httpClient ?? new HttpClient();
+
+            ConfigureHttpClient();
+            SetDefaultPrompts();
+
+            _retryPolicy = CreateRetryPolicy(); // Call the new method
+        }
+
         // --- New CreateRetryPolicy method based on DeepSeekApi.cs ---
         private AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy()
         {

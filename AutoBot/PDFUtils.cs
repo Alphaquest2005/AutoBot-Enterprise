@@ -279,7 +279,7 @@ using Serilog.Context;
             foreach (var file in fileInfos)
             {
               var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName, logger).ConfigureAwait(false);
-              var res = await new DeepSeekInvoiceApi().ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
+              var res = await new DeepSeekInvoiceApi(logger).ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {

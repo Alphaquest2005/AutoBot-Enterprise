@@ -1006,7 +1006,7 @@ Please return ONLY the corrected value for {fieldName} in JSON format:
                 var prompt = CreateErrorDetectionPrompt(invoice, fileText);
 
                 // Use DeepSeek API to compare data - create custom prompt template
-                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi())
+                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi(_logger))
                 {
                     // Temporarily override the prompt template for error detection
                     var originalTemplate = deepSeekApi.PromptTemplate;

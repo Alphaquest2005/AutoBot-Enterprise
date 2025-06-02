@@ -456,7 +456,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "Error in C71 processing");
                 throw e;
             }
         }
@@ -610,7 +610,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "Error in ExportIdentification");
                 throw;
             }
         }
@@ -626,7 +626,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "Error in ExportSeller");
                 throw;
             }
         }

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoBotUtilities;
 using AutoBotUtilities.CSV;
 using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
+using WaterNut.DataSpace;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 // Serilog usings
@@ -40,7 +43,14 @@ namespace AutoBot
                 {"SubmitToCustoms",(log, ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1, log) }, // Signature needs update in SubmitSalesXmlToCustomsUtils
                 {"MapUnClassifiedItems", (log, ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs, log) }, // Signature needs update in ShipmentUtils
                 {"UpdateSupplierInfo", (log, ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) }, // Signature needs update in ShipmentUtils
-                {"ImportPDF", (log, ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(fs, ft, log) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() }, // Signature needs update in InvoiceReader.InvoiceReader
+                
+                /// commented out "ImportPDF" because i didnt update the database with the new "ImportPDFWithDeepSeekFallback" action
+                /// so disabled the orignal code and rewired ImportPDF to use the new action with DeepSeek fallback
+                //{"ImportPDF", (log, ft, fs) => InvoiceReader.InvoiceReader.ImportPDF(fs, ft, log) },//PDFUtils.ImportPDF(fs, ft).GetAwaiter().GetResult() }, // Signature needs update in InvoiceReader.InvoiceReader
+                //{"ImportPDFWithDeepSeekFallback", (log, ft, fs) => ImportPDFWithDeepSeekFallbackAsync(log, ft, fs) }, // New action with DeepSeek fallback
+
+                {"ImportPDF", (log, ft, fs) => ImportPDFWithDeepSeekFallbackAsync(log, ft, fs) }, // New action with DeepSeek fallback
+
                 {"CreateShipmentEmail", (log, types, infos) => ShipmentUtils.CreateShipmentEmail(types, infos, log) }, // Signature needs update in ShipmentUtils
                 //{"SaveAttachments",(log, ft, fs) => SaveAttachments(fs, ft) }, // Signature needs update if uncommented
 
@@ -114,6 +124,143 @@ namespace AutoBot
                 {"CorrectImportIssues", (log, ft, fs) => ShipmentUtils.CorrectImportIssues(ft, fs, log) }, // New action for correcting import issues
 
             };
+
+        /// <summary>
+        /// Imports PDF files with DeepSeek fallback functionality.
+        /// First tries standard ImportPDF, then falls back to DeepSeek if imports fail.
+        /// </summary>
+        /// <param name="log">Logger instance</param>
+        /// <param name="fileType">File type configuration</param>
+        /// <param name="files">Array of files to import</param>
+        /// <returns>Task representing the async operation</returns>
+        private static async Task ImportPDFWithDeepSeekFallbackAsync(ILogger log, FileTypes fileType, FileInfo[] files)
+        {
+            string operationName = nameof(ImportPDFWithDeepSeekFallbackAsync);
+            string operationInvocationId = Guid.NewGuid().ToString();
+
+            using (LogContext.PushProperty("OperationInvocationId", operationInvocationId))
+            using (LogContext.PushProperty("FileTypeId", fileType?.Id))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}",
+                    operationName, fileType?.Id, files?.Length ?? 0);
+
+                try
+                {
+                    // Filter to only PDF files
+                    var pdfFiles = files?.Where(f => f.Extension.ToLower() == ".pdf").ToArray() ?? new FileInfo[0];
+
+                    if (!pdfFiles.Any())
+                    {
+                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No PDF files found to import.",
+                            operationName, "FileFiltering");
+                        stopwatch.Stop();
+                        log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms. Reason: No PDF files to process",
+                            operationName, stopwatch.ElapsedMilliseconds);
+                        return;
+                    }
+
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {PdfFileCount} PDF files to import.",
+                        operationName, "FileFiltering", pdfFiles.Length);
+
+                    // --- Step 1: Try Standard Import ---
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting standard PDF import first.",
+                        operationName, "StandardImportAttempt");
+
+                    var standardImportStopwatch = Stopwatch.StartNew();
+                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                        "PDFUtils.ImportPDF (Standard)", "ASYNC_EXPECTED");
+
+                    var standardImportResults = await PDFUtils.ImportPDF(pdfFiles, fileType, log).ConfigureAwait(false);
+
+                    standardImportStopwatch.Stop();
+                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "PDFUtils.ImportPDF (Standard)", standardImportStopwatch.ElapsedMilliseconds, "Async call completed (await).");
+
+                    // --- Step 2: Check Results ---
+                    bool allImportsSuccessful = standardImportResults.All(x => x.Value.Status == ImportStatus.Success);
+                    int successCount = standardImportResults.Count(x => x.Value.Status == ImportStatus.Success);
+                    int failedCount = standardImportResults.Count(x => x.Value.Status == ImportStatus.Failed);
+                    int hasErrorsCount = standardImportResults.Count(x => x.Value.Status == ImportStatus.HasErrors);
+
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Standard import results - Total: {TotalCount}, Success: {SuccessCount}, Failed: {FailedCount}, HasErrors: {HasErrorsCount}. AllSuccessful: {AllSuccessful}",
+                        operationName, "StandardImportResultCheck", standardImportResults.Count, successCount, failedCount, hasErrorsCount, allImportsSuccessful);
+
+                    if (allImportsSuccessful)
+                    {
+                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): All imports successful with standard method. No DeepSeek fallback needed.",
+                            operationName, "StandardImportSuccess");
+                        stopwatch.Stop();
+                        log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms. Outcome: Standard import successful",
+                            operationName, stopwatch.ElapsedMilliseconds);
+                        return;
+                    }
+
+                    // --- Step 3: DeepSeek Fallback ---
+                    log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Standard import had failures. Attempting DeepSeek fallback for failed files.",
+                        operationName, "DeepSeekFallbackAttempt");
+
+                    // Get the files that failed in standard import
+                    var failedFiles = standardImportResults
+                        .Where(x => x.Value.Status == ImportStatus.Failed)
+                        .Select(x => x.Key)
+                        .ToList();
+
+                    if (!failedFiles.Any())
+                    {
+                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No failed files found for DeepSeek retry (only HasErrors status). Skipping DeepSeek fallback.",
+                            operationName, "DeepSeekFallbackSkip");
+                        stopwatch.Stop();
+                        log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms. Outcome: Standard import completed with some errors, no failures to retry",
+                            operationName, stopwatch.ElapsedMilliseconds);
+                        return;
+                    }
+
+                    // Convert failed file names back to FileInfo objects
+                    var failedFileInfos = pdfFiles.Where(f => failedFiles.Contains(f.FullName)).ToArray();
+
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Retrying {FailedFileCount} failed files with DeepSeek API.",
+                        operationName, "DeepSeekFallbackExecution", failedFileInfos.Length);
+
+                    var deepSeekImportStopwatch = Stopwatch.StartNew();
+                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                        "PDFUtils.ImportPDFDeepSeek (Fallback)", "ASYNC_EXPECTED");
+
+                    var deepSeekResults = await PDFUtils.ImportPDFDeepSeek(failedFileInfos, fileType, log).ConfigureAwait(false);
+
+                    deepSeekImportStopwatch.Stop();
+                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "PDFUtils.ImportPDFDeepSeek (Fallback)", deepSeekImportStopwatch.ElapsedMilliseconds, "Async call completed (await).");
+
+                    // --- Step 4: Log Final Results ---
+                    int deepSeekSuccessCount = deepSeekResults.Count(x => x.Value.status == ImportStatus.Success);
+                    int deepSeekFailedCount = deepSeekResults.Count(x => x.Value.status == ImportStatus.Failed);
+                    int deepSeekHasErrorsCount = deepSeekResults.Count(x => x.Value.status == ImportStatus.HasErrors);
+
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): DeepSeek fallback results - Total: {TotalCount}, Success: {SuccessCount}, Failed: {FailedCount}, HasErrors: {HasErrorsCount}",
+                        operationName, "DeepSeekFallbackResultCheck", deepSeekResults.Count, deepSeekSuccessCount, deepSeekFailedCount, deepSeekHasErrorsCount);
+
+                    // Calculate overall final results
+                    int totalFinalSuccess = successCount + deepSeekSuccessCount;
+                    int totalFinalFailed = (failedCount - failedFileInfos.Length) + deepSeekFailedCount; // Subtract retried files from original failed count
+                    int totalFinalHasErrors = hasErrorsCount + deepSeekHasErrorsCount;
+
+                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Final combined results - Success: {FinalSuccessCount}, Failed: {FinalFailedCount}, HasErrors: {FinalHasErrorsCount}",
+                        operationName, "FinalResultSummary", totalFinalSuccess, totalFinalFailed, totalFinalHasErrors);
+
+                    stopwatch.Stop();
+                    log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms. Outcome: Import completed with DeepSeek fallback",
+                        operationName, stopwatch.ElapsedMilliseconds);
+                }
+                catch (Exception ex)
+                {
+                    stopwatch.Stop();
+                    log.Error(ex, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        operationName, stopwatch.ElapsedMilliseconds, ex.Message);
+                    throw; // Re-throw to allow higher-level error handling
+                }
+            }
+        }
             // Removed extra closing brace here
     }
 }

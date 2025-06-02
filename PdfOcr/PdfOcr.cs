@@ -53,6 +53,7 @@ namespace pdf_ocr
 
         public string Ocr(string inputPdfFile, PageSegMode pagemode)
         {
+            
             _logger.Information("METHOD_ENTRY: Ocr. Intention: Perform OCR on a PDF file. InitialState: {InitialState}", new { InputFile = inputPdfFile, PageSegMode = pagemode });
             try
             {

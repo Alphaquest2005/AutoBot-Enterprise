@@ -12,12 +12,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     using System.Diagnostics;
 
-    public class InvoiceProcessingContext
+    public class InvoiceProcessingContext(ILogger logger)
     {
         // Remove static logger
         // private static readonly ILogger _logger = Log.ForContext<InvoiceProcessingContext>();
 
-        public ILogger Logger { get; set; } // Add ILogger property
+        public ILogger Logger { get; set; } = logger; // Add ILogger property
 
         public string FilePath { get; set; }
 

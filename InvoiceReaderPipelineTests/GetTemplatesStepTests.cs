@@ -43,9 +43,8 @@ namespace InvoiceReaderPipelineTests
         {
             LogTestStart();
             PrepareTestEnvironment();
-            _invoiceProcessingContext = new InvoiceProcessingContext
-            {
-                Logger = _logger,
+            _invoiceProcessingContext = new InvoiceProcessingContext(_logger)
+                                            {
                 FilePath = "test_file.pdf"
             };
         }

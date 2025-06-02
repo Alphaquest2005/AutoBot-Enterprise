@@ -298,8 +298,8 @@ namespace InvoiceReader
 
                 LogCreatingInvoiceProcessingContext(logger); // Pass logger
                 // Context creation is less likely to fail, but keep in outer try
-                context = new InvoiceProcessingContext
-                {
+                context = new InvoiceProcessingContext(logger)
+                              {
                     FilePath = fileFullName,
                     FileInfo = fileInfo, // Use validated FileInfo
                     FileTypeId = fileTypeId,
@@ -310,7 +310,7 @@ namespace InvoiceReader
                     Client = client,
                     PdfText = new StringBuilder(),
                     Imports = new Dictionary<string, (string file, string, ImportStatus Success)>(),
-                    Logger = logger // Set the logger property
+                    
                     // Errors list initialized automatically
                 };
                 logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(Import), "ContextCreation", "InvoiceProcessingContext created.", $"ContextHashCode: {context.GetHashCode()}", "");
@@ -460,7 +460,7 @@ namespace InvoiceReader
 
              // Create a minimal context for the step
              logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(GetPdftxt), "ContextCreation", "Creating minimal context for GetPdftxt.", "", "");
-             context = new InvoiceProcessingContext
+             context = new InvoiceProcessingContext(logger)
              {
                  FilePath = fileFullName,
                  FileInfo = fileInfo, // Use validated FileInfo

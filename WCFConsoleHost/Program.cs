@@ -71,11 +71,9 @@ namespace AutoWaterNutServer
            
             
 
-            Console.WriteLine("");
             Log.Information("Services started. Press [Enter] to exit.");
-            Console.WriteLine("Press [Enter] to exit.");
             Console.ReadLine();
-            Console.WriteLine("");
+            Log.Information("User pressed [Enter] to exit.");
 
             //StopService(BatchServiceHost, "BatchService");
             }
@@ -83,10 +81,8 @@ namespace AutoWaterNutServer
             {
                 Log.Fatal(ex, "Application terminated unexpectedly.");
                 Debugger.Break();
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine(ex.StackTrace);
+                Log.Error("Exception Message: {ExceptionMessage}", ex.Message);
+                Log.Error("Exception StackTrace: {StackTrace}", ex.StackTrace);
             }
             finally
             {
@@ -115,17 +111,15 @@ namespace AutoWaterNutServer
                 host.UnknownMessageReceived +=host_UnknownMessageReceived;
                 host.Closed += host_Closed;
                 host.Open();
-                Console.WriteLine("Service '{0}' started.", host.Description.ServiceType.FullName);
+                Log.Information("Service '{ServiceType}' started.", host.Description.ServiceType.FullName);
 
                 foreach (var endpoint in host.Description.Endpoints)
                 {
-                    Console.WriteLine(string.Format("Listening on endpoint:"));
-                    Console.WriteLine($"Address: {endpoint.Address.Uri.ToString()}");
-                    Console.WriteLine($"Binding: {endpoint.Binding.Name}");
-                    Console.WriteLine($"Contract: {endpoint.Contract.ConfigurationName}");
+                    Log.Information("Listening on endpoint:");
+                    Log.Information("Address: {Address}", endpoint.Address.Uri.ToString());
+                    Log.Information("Binding: {Binding}", endpoint.Binding.Name);
+                    Log.Information("Contract: {Contract}", endpoint.Contract.ConfigurationName);
                 }
-
-                Console.WriteLine();
             }
             catch (Exception)
             {
@@ -175,7 +169,7 @@ namespace AutoWaterNutServer
         static void StopService(ServiceHost host)
         {
             host.Close();
-            Console.WriteLine("Service '{0}' stopped.", host.Description.ServiceType.FullName);
+            Log.Information("Service '{ServiceType}' stopped.", host.Description.ServiceType.FullName);
         }
     }
 }

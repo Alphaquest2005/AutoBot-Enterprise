@@ -326,7 +326,7 @@
     </PackageReference>
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging">
-      <Version>9.0.1</Version>
+      <Version>9.0.2</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Console">
       <Version>6.0.0</Version>
