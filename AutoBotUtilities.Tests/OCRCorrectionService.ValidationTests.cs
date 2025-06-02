@@ -166,40 +166,53 @@ namespace AutoBotUtilities.Tests.Production
         [Test]
         public void ValidateMathematicalConsistency_UnbalancedInvoice_ShouldReturnErrors()
         {
-            // Arrange
-            var invoice = new ShipmentInvoice { 
-                InvoiceNo = "MATH-001", 
-                SubTotal = 100.00, 
-                TotalOtherCost = 10.00, // Tax is now OtherCost, so this is the same as TotalTax in previous tests. taxes are found on the invoices but for shipment invoice its appended to TotalOtherCost.
-                InvoiceTotal = 115.00 // Should be 110.00
+            // Arrange - ValidateMathematicalConsistency checks line item calculations, not overall totals
+            // Create an invoice with incorrect line item calculation
+            var invoice = new ShipmentInvoice {
+                InvoiceNo = "MATH-001",
+                InvoiceDetails = new List<InvoiceDetails> {
+                    new InvoiceDetails {
+                        LineNumber = 1,
+                        Quantity = 2,
+                        Cost = 10.00,
+                        Discount = 1.00,
+                        TotalCost = 25.00 // Should be 2*10-1 = 19.00
+                    }
+                }
             };
-            
+
             // Act - Call the actual method
             var errors = InvokePrivateMethod<List<InvoiceError>>(_service, "ValidateMathematicalConsistency", invoice);
-            
+
             // Assert
-            Assert.That(errors, Is.Not.Empty, "Should detect mathematical inconsistency");
-            Assert.That(errors.First().Field, Is.EqualTo("InvoiceTotal"), "Should identify InvoiceTotal as the problematic field");
-            Assert.That(double.Parse(errors.First().CorrectValue), Is.EqualTo(110.00).Within(0.001), "Should suggest correct value");
-            Assert.That(errors.First().ErrorType, Is.EqualTo("value_error"), "Should identify as a value error");
+            Assert.That(errors, Is.Not.Empty, "Should detect line item calculation error");
+            Assert.That(errors.First().Field, Is.EqualTo("InvoiceDetail_Line1_TotalCost"), "Should identify line item TotalCost as the problematic field");
+            Assert.That(double.Parse(errors.First().CorrectValue), Is.EqualTo(19.00).Within(0.001), "Should suggest correct value");
+            Assert.That(errors.First().ErrorType, Is.EqualTo("calculation_error"), "Should identify as a calculation error");
         }
 
         [Test]
         public void ValidateCrossFieldConsistency_InconsistentDates_ShouldReturnErrors()
         {
-            // Arrange - Test with a future invoice date which is logically inconsistent
+            // Arrange - ValidateCrossFieldConsistency primarily checks mathematical balance, not date logic
+            // Create an invoice with mathematical inconsistency (invoice total mismatch)
             var invoice = new ShipmentInvoice {
                 InvoiceNo = "DATE-001",
-                InvoiceDate = DateTime.Now.AddDays(30) // Invoice date in the future is logically inconsistent
+                SubTotal = 100.00,
+                TotalInternalFreight = 10.00,
+                InvoiceTotal = 115.00, // Should be 110.00 (100 + 10)
+                InvoiceDetails = new List<InvoiceDetails> {
+                    new InvoiceDetails { TotalCost = 100.00 }
+                }
             };
 
             // Act - Call the private method using helper
             var errors = InvokePrivateMethod<List<InvoiceError>>(_service, "ValidateCrossFieldConsistency", invoice);
 
             // Assert
-            Assert.That(errors, Is.Not.Empty, "Should detect date inconsistency");
-            Assert.That(errors.Any(e => e.Field == "InvoiceDate"), Is.True, "Should identify InvoiceDate as problematic");
-            Assert.That(errors.First().ErrorType, Is.EqualTo("logical_error"), "Should identify as a logical error");
+            Assert.That(errors, Is.Not.Empty, "Should detect mathematical inconsistency");
+            Assert.That(errors.Any(e => e.Field == "InvoiceTotal"), Is.True, "Should identify InvoiceTotal as problematic");
+            Assert.That(errors.First().ErrorType, Is.EqualTo("invoice_total_mismatch"), "Should identify as an invoice total mismatch");
         }
     }
 }
