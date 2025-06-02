@@ -1,8 +1,10 @@
 ﻿// File: OCRCorrectionService/OCRCorrectionService.cs
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json; // Keep for any direct JSON ops if needed, though prompts are now separate
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Data.Entity; // For OCRContext if used directly for simple lookups
 using EntryDataDS.Business.Entities; // For ShipmentInvoice
@@ -377,6 +379,88 @@ namespace WaterNut.DataSpace
             _logger.Information("Basic metadata extraction: created {Count} entries for invoice {InvoiceNo}.", metadataDict.Count, shipmentInvoice.InvoiceNo);
             return metadataDict;
         }
+
+        #region Regex Pattern Learning and Application
+
+        /// <summary>
+        /// Load regex patterns from configuration file for learned pattern application
+        /// </summary>
+        private Task<List<RegexPattern>> LoadRegexPatternsAsync()
+        {
+            try
+            {
+                var regexConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OCRRegexPatterns.json");
+
+                if (!File.Exists(regexConfigPath))
+                {
+                    _logger.Information("No existing regex patterns found at {Path}", regexConfigPath);
+                    return Task.FromResult(new List<RegexPattern>());
+                }
+
+                var json = File.ReadAllText(regexConfigPath);
+                var patterns = JsonSerializer.Deserialize<List<RegexPattern>>(json) ?? new List<RegexPattern>();
+
+                _logger.Information("Loaded {Count} regex patterns from configuration", patterns.Count);
+                return Task.FromResult(patterns);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error loading regex patterns");
+                return Task.FromResult(new List<RegexPattern>());
+            }
+        }
+
+        /// <summary>
+        /// Apply learned regex patterns to text before processing
+        /// </summary>
+        private async Task<string> ApplyLearnedRegexPatternsAsync(string text, string fieldName)
+        {
+            try
+            {
+                var patterns = await LoadRegexPatternsAsync().ConfigureAwait(false);
+                var applicablePatterns = patterns.Where(p =>
+                    p.FieldName.Equals(fieldName, StringComparison.OrdinalIgnoreCase) &&
+                    p.StrategyType == "FORMAT_FIX" &&
+                    p.Confidence > 0.7).ToList();
+
+                if (!applicablePatterns.Any())
+                {
+                    _logger.Debug("No applicable patterns found for field {FieldName}", fieldName);
+                    return text;
+                }
+
+                var transformedText = text;
+                foreach (var pattern in applicablePatterns.OrderByDescending(p => p.Confidence))
+                {
+                    try
+                    {
+                        var regex = new Regex(pattern.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        var newText = regex.Replace(transformedText, pattern.Replacement);
+
+                        if (newText != transformedText)
+                        {
+                            _logger.Debug("Applied pattern {Pattern} -> {Replacement} for field {FieldName}",
+                                pattern.Pattern, pattern.Replacement, fieldName);
+                            transformedText = newText;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning(ex, "Failed to apply regex pattern {Pattern} for field {FieldName}",
+                            pattern.Pattern, fieldName);
+                    }
+                }
+
+                return transformedText;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error applying learned regex patterns for field {FieldName}", fieldName);
+                return text;
+            }
+        }
+
+        #endregion
 
         #region IDisposable Implementation
         protected virtual void Dispose(bool disposing)

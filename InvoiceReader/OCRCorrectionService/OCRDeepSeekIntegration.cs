@@ -86,17 +86,23 @@ namespace WaterNut.DataSpace
             var corrections = new List<CorrectionResult>();
             int errorIndexCounter = 0; // For detailed logging inside CreateCorrectionFromElement
 
-            if (responseDataRoot.TryGetProperty("errors", out var errorsArray) && errorsArray.ValueKind == JsonValueKind.Array)
+            // Debug logging to understand the JSON structure
+            _logger.Debug("ExtractCorrectionsFromResponseElement: Root element type is {ValueKind}", responseDataRoot.ValueKind);
+
+            // Handle case where root element is an Object with properties
+            if (responseDataRoot.ValueKind == JsonValueKind.Object)
             {
-                _logger.Debug("Found 'errors' array in DeepSeek response. Processing {Count} elements.", errorsArray.GetArrayLength());
-                foreach (var element in errorsArray.EnumerateArray())
+                if (responseDataRoot.TryGetProperty("errors", out var errorsArray) && errorsArray.ValueKind == JsonValueKind.Array)
                 {
-                    errorIndexCounter++;
-                    var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
-                    if (cr != null) corrections.Add(cr);
+                    _logger.Debug("Found 'errors' array in DeepSeek response. Processing {Count} elements.", errorsArray.GetArrayLength());
+                    foreach (var element in errorsArray.EnumerateArray())
+                    {
+                        errorIndexCounter++;
+                        var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
+                        if (cr != null) corrections.Add(cr);
+                    }
                 }
-            }
-            else if (responseDataRoot.TryGetProperty("corrections", out var correctionsArray) && correctionsArray.ValueKind == JsonValueKind.Array)
+                else if (responseDataRoot.TryGetProperty("corrections", out var correctionsArray) && correctionsArray.ValueKind == JsonValueKind.Array)
             {
                 _logger.Debug("Found 'corrections' array in DeepSeek response. Processing {Count} elements.", correctionsArray.GetArrayLength());
                  foreach (var element in correctionsArray.EnumerateArray())
@@ -123,6 +129,18 @@ namespace WaterNut.DataSpace
                 {
                     errorIndexCounter++;
                     var cr = CreateCorrectionFromNamedFieldProperty(property, originalDocumentText, errorIndexCounter);
+                    if (cr != null) corrections.Add(cr);
+                }
+            }
+            }
+            else if (responseDataRoot.ValueKind == JsonValueKind.Array)
+            {
+                // Handle case where root element is directly an Array of corrections
+                _logger.Debug("Root element is an Array. Processing {Count} elements directly.", responseDataRoot.GetArrayLength());
+                foreach (var element in responseDataRoot.EnumerateArray())
+                {
+                    errorIndexCounter++;
+                    var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
                     if (cr != null) corrections.Add(cr);
                 }
             }
@@ -297,7 +315,8 @@ namespace WaterNut.DataSpace
                     TestMatch = this.GetStringValueWithLogging(root, "test_match", dummyErrorIndex, isOptional: true) ?? "",
                     Confidence = this.GetDoubleValueWithLogging(root, "confidence", dummyErrorIndex, 0.75), // Default confidence
                     Reasoning = this.GetStringValueWithLogging(root, "reasoning", dummyErrorIndex, isOptional: true) ?? "",
-                    PreservesExistingGroups = this.GetBooleanValueWithLogging(root, "preserves_existing_groups", dummyErrorIndex, true) // Default true
+                    PreservesExistingGroups = this.GetBooleanValueWithLogging(root, "preserves_existing_groups", dummyErrorIndex, true), // Default true
+                    ContextLinesUsed = this.GetStringValueWithLogging(root, "context_lines_used", dummyErrorIndex, isOptional: true) ?? "" // For test compatibility
                 };
             }
             catch (JsonException jsonEx)
@@ -360,10 +379,14 @@ namespace WaterNut.DataSpace
 
             for (int i = 0; i < lines.Length; i++)
             {
-                // First, check for field name itself as a keyword on the line
-                if (lines[i].IndexOf(mappedName, StringComparison.OrdinalIgnoreCase) >= 0) return i + 1;
-                
-                // Then, check regex patterns
+                // First, check for original field name as a keyword on the line
+                if (lines[i].IndexOf(fieldName, StringComparison.OrdinalIgnoreCase) >= 0) return i + 1;
+
+                // Then, check for mapped field name if different from original
+                if (!string.Equals(fieldName, mappedName, StringComparison.OrdinalIgnoreCase) &&
+                    lines[i].IndexOf(mappedName, StringComparison.OrdinalIgnoreCase) >= 0) return i + 1;
+
+                // Finally, check regex patterns
                 foreach (var patternString in patterns)
                 {
                     try

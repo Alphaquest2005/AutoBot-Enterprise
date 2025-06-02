@@ -51,14 +51,68 @@ namespace WaterNut.DataSpace
         {
             if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
 
-            string cleaned = jsonResponse.Trim();
-            // Remove BOM if present at the start
-            if (cleaned.StartsWith("\uFEFF")) cleaned = cleaned.Substring(1);
+            // Debug: Log the exact input received (use @ prefix for object serialization)
+            _logger?.Information("CleanJsonResponse input: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
+                jsonResponse.Length,
+                jsonResponse.Length > 0 ? jsonResponse[0].ToString() : "EMPTY",
+                jsonResponse.StartsWith("{"),
+                jsonResponse);
 
-            // Remove markdown code block fences
-            cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
-            cleaned = Regex.Replace(cleaned, @"[\r\n]*```\s*$", "", RegexOptions.IgnoreCase);
+            string cleaned = jsonResponse.Trim();
+
+            // Debug: Log after trimming (use @ prefix for object serialization)
+            _logger?.Information("After trim: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
+                cleaned.Length,
+                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                cleaned.StartsWith("{"),
+                cleaned);
+
+            // Remove BOM if present at the start - check explicitly for BOM character code 65279
+            bool hasBom = cleaned.Length > 0 && cleaned[0] == '\uFEFF';
+            _logger?.Information("BOM check: HasBOM={HasBOM}, FirstCharCode={FirstCharCode}, Length={Length}, BOMCharCode=65279",
+                hasBom,
+                cleaned.Length > 0 ? ((int)cleaned[0]).ToString() : "EMPTY",
+                cleaned.Length);
+
+            if (hasBom)
+            {
+                cleaned = cleaned.Substring(1);
+                _logger?.Information("Removed BOM: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                    cleaned.Length,
+                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                    cleaned);
+            }
+
+            // Remove markdown code block fences - but only if they actually exist
+            var beforeMarkdownRemoval = cleaned;
+
+            // Check if the string actually starts with backticks before applying regex
+            if (cleaned.StartsWith("```"))
+            {
+                cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
+                _logger?.Information("Applied backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                    cleaned.Length,
+                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                    cleaned);
+            }
+
+            // Only apply the ending regex if the string ends with backticks
+            if (cleaned.EndsWith("```"))
+            {
+                cleaned = Regex.Replace(cleaned, @"[\r\n]*```\s*$", "", RegexOptions.IgnoreCase);
+                _logger?.Information("Applied ending backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                    cleaned.Length,
+                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                    cleaned);
+            }
+
             cleaned = cleaned.Trim();
+
+            // Debug: Log after final trim before JSON extraction
+            _logger?.Information("Before JSON extraction: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                cleaned.Length,
+                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                cleaned);
 
             // Find the first '{' or '[' and the last '}' or ']' to extract the core JSON part
             int firstBrace = cleaned.IndexOf('{');

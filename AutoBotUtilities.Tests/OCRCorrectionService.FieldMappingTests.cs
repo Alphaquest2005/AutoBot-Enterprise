@@ -223,7 +223,7 @@ namespace AutoBotUtilities.Tests.Production
                 FieldsInLine = new List<FieldInfo> { new FieldInfo { Key = "TotalAmount", Field = "InvoiceTotal" } }
             };
             // DeepSeek might return "TotalAmount" (matching key) or "InvoiceTotal" (matching mapped field)
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldExistingInLineContext", "TotalAmount", lineContext), Is.True);
+            Assert.That(_service.IsFieldExistingInLineContext("TotalAmount", lineContext), Is.True);
             _logger.Information("? IsFieldExistingInLineContext found field by Key.");
         }
 
@@ -236,7 +236,7 @@ namespace AutoBotUtilities.Tests.Production
                 FieldsInLine = new List<FieldInfo> { new FieldInfo { Key = "TotalKey", Field = "InvoiceTotal" } }
             };
             // DeepSeek might return "InvoiceTotal", which maps to "InvoiceTotal", matching FieldInfo.Field
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldExistingInLineContext", "InvoiceTotal", lineContext), Is.True);
+            Assert.That(_service.IsFieldExistingInLineContext("InvoiceTotal", lineContext), Is.True);
             _logger.Information("? IsFieldExistingInLineContext found field by mapped DB field name.");
         }
 
@@ -248,7 +248,7 @@ namespace AutoBotUtilities.Tests.Production
                 RegexPattern = @"SubTotal:\s*(?<SubTotalVal>\d+\.\d{2})",
                 FieldsInLine = new List<FieldInfo> { new FieldInfo { Key = "SubTotalVal", Field = "SubTotal" } }
             };
-            Assert.That(InvokePrivateMethod<bool>(_service, "IsFieldExistingInLineContext", "TaxAmount", lineContext), Is.False); // TaxAmount not in regex/fields
+            Assert.That(_service.IsFieldExistingInLineContext("TaxAmount", lineContext), Is.False); // TaxAmount not in regex/fields
             _logger.Information("? IsFieldExistingInLineContext correctly reports non-existent field.");
         }
         #endregion
