@@ -65,7 +65,7 @@ namespace WaterNut.Business.Services.Utils
         {
             try
             {
-                await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true).ConfigureAwait(false); //set to false to merge
+                await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true, null, log).ConfigureAwait(false); //set to false to merge
             }
             catch (Exception e)
             {
@@ -136,7 +136,7 @@ namespace WaterNut.Business.Services.Utils
             {
                 try
                 {
-                    await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true).ConfigureAwait(false);//set to false to merge
+                    await SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true, null, log).ConfigureAwait(false);//set to false to merge
                         
 
                     //if (VerifyCSVImport(file))
