@@ -20,6 +20,10 @@ namespace WaterNut.DataSpace
         // Primary Read method accepting list of lines
         public List<dynamic> Read(List<string> text)
         {
+            // **CRITICAL TEST**: This should ALWAYS appear if this Read method is called
+            _logger.Fatal("**CRITICAL_READ_ENTRY**: Invoice.Read(List<string>) method called with {LineCount} lines", text?.Count ?? 0);
+            Console.WriteLine($"**CRITICAL_READ_ENTRY**: Invoice.Read(List<string>) method called with {text?.Count ?? 0} lines");
+            
             var methodStopwatch = Stopwatch.StartNew();
             int? invoiceId = this.OcrInvoices?.Id;
             string invoiceName = this.OcrInvoices?.Name ?? "Unknown";
@@ -203,7 +207,9 @@ namespace WaterNut.DataSpace
                     methodName, partId);
                 // Pass null for top-level calls, indicating no instance filtering yet
                 // SetPartLineValues should handle its own logging
+                _logger.Fatal("**READ_CS_DEBUG**: About to call SetPartLineValues for PartId: {PartId}", partId);
                 var partResultList = SetPartLineValues(part, null);
+                _logger.Fatal("**READ_CS_DEBUG**: SetPartLineValues returned {Count} items for PartId: {PartId}", partResultList?.Count ?? 0, partId);
                 _logger.Verbose(
                     "{MethodName}: Finished SetPartLineValues for PartId: {PartId}. Returned {Count} items.",
                     methodName, partId, partResultList?.Count ?? 0);

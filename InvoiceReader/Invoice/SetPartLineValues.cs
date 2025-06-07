@@ -7,6 +7,7 @@ using Serilog.Events; // Added for LogEventLevel
 using System; // Added
 using System.Text; // Added for StringBuilder
 using OCR.Business.Entities; // Added for Part, Line, Fields
+using System.Collections; // Added for IGrouping
 
 namespace WaterNut.DataSpace
 {
@@ -68,7 +69,6 @@ namespace WaterNut.DataSpace
                 "V10" => SetPartLineValues_V10_OpusFreshImplementation(part, filterInstance),
                 "V11" => SetPartLineValues_V11_GeminiV8Fix(part, filterInstance),
                 "V12" => SetPartLineValues_V12_GeminiFreshImplementation(part, filterInstance),
-                "V13" => SetPartLineValues_Universal_V3(part, filterInstance),
                 _ => SetPartLineValues_V5_Current(part, filterInstance) // Default to current
             };
         }
@@ -393,7 +393,7 @@ namespace WaterNut.DataSpace
             // Now, consolidate this list by ItemDescription
             var consolidatedDetails = new List<IDictionary<string, object>>();
             var groupsToConsolidate = preConsolidatedItems
-                .GroupBy(p => p.GetValueOrDefault("ItemDescription", Guid.NewGuid().ToString())?.ToString());
+                .GroupBy(p => p.ContainsKey("ItemDescription") ? p["ItemDescription"]?.ToString() : Guid.NewGuid().ToString());
 
             int lineCounter = 1;
             foreach (var group in groupsToConsolidate)
@@ -402,8 +402,8 @@ namespace WaterNut.DataSpace
                 if (group.Count() > 1)
                 {
                     // Sum numeric values for consolidated items
-                    finalItem["Quantity"] = group.Sum(item => Convert.ToDouble(item.GetValueOrDefault("Quantity", 1.0)));
-                    finalItem["TotalCost"] = group.Sum(item => Convert.ToDouble(item.GetValueOrDefault("TotalCost", 0.0)));
+                    finalItem["Quantity"] = group.Sum(item => Convert.ToDouble(item.ContainsKey("Quantity") ? item["Quantity"] : 1.0));
+                    finalItem["TotalCost"] = group.Sum(item => Convert.ToDouble(item.ContainsKey("TotalCost") ? item["TotalCost"] : 0.0));
                 }
                 
                 if (!finalItem.ContainsKey("Quantity")) finalItem["Quantity"] = 1.0;
@@ -560,7 +560,7 @@ namespace WaterNut.DataSpace
                 _logger.Information(
                     "{MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance.ToString() }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x).ToList();
             }
 
             _logger.Verbose(
@@ -1468,7 +1468,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("**VERSION_2_TEST**: {MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x).ToList();
             }
 
             _logger.Verbose("**VERSION_2_TEST**: {MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
@@ -1732,7 +1732,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("**VERSION_3_TEST**: {MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x).ToList();
             }
 
             _logger.Verbose("**VERSION_3_TEST**: {MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
@@ -1995,7 +1995,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("**VERSION_4_TEST**: {MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance.ToString() }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x.ToString()).ToList();
             }
 
             _logger.Verbose("**VERSION_4_TEST**: {MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
@@ -2413,7 +2413,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("**VERSION_1_TEST**: {MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x).ToList();
             }
 
             _logger.Verbose("**VERSION_1_TEST**: {MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
@@ -2675,7 +2675,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("**VERSION_6_TEST**: {MethodName}: PartId: {PartId}: No direct data for FilterInstance: {FilterInstance}, but children have data. Adding instance for child aggregation.",
                     methodName, partId, filterInstance);
-                return new List<IGrouping<string, string>> { new Grouping<string, string>(filterInstance, new[] { filterInstance.ToString() }) };
+                return new[] { filterInstance }.ToLookup(x => x, x => x.ToString()).ToList();
             }
 
             _logger.Verbose("**VERSION_6_TEST**: {MethodName}: PartId: {PartId}: Neither parent nor children have data for FilterInstance: {FilterInstance}.",
@@ -4969,45 +4969,4 @@ namespace WaterNut.DataSpace
         AmazonOrder,
         StandardInvoice
     }
-
-    // V11 Supporting Classes and Implementation removed due to compilation issues
-    // The working V11 method is defined earlier in the file and delegates to V10 for testing
-    
-    /// <summary>
-    /// V13 Universal V3 Implementation - placeholder for now
-    /// </summary>
-    private List<IDictionary<string, object>> SetPartLineValues_Universal_V3(Part part, string filterInstance = null)
-    {
-        // Temporary implementation - delegate to V12 for now
-        return SetPartLineValues_V12_GeminiFreshImplementation(part, filterInstance);
-    }
-
 }
-
-    // Extension methods for V10
-    public static class DictionaryExtensions
-    {
-        public static object GetValueOrDefault(this IDictionary<string, object> dictionary, string key, object defaultValue = null)
-        {
-            return dictionary.ContainsKey(key) ? dictionary[key] : defaultValue;
-        }
-    }
-
-    // Helper class to create a grouping
-    public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
-    {
-        public TKey Key { get; }
-        private readonly IEnumerable<TElement> _elements;
-
-        public Grouping(TKey key, IEnumerable<TElement> elements)
-        {
-            Key = key;
-            _elements = elements;
-        }
-
-        public IEnumerator<TElement> GetEnumerator() => _elements.GetEnumerator();
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-}
-
