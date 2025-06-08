@@ -1,3 +1,4 @@
+// File: OCRCorrectionServiceTests.CoreFunctionality.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,6 @@ namespace AutoBotUtilities.Tests.Production
             var service = new OCRCorrectionService(_logger); // Utilities are instance methods
 
             var inputText = "Line1\n\n\nLine2  \t  Line3\n--------------------------\nLine4\n" + new string('a', 16000);
-            var expectedStart = "Line1\n\nLine2 Line3\nLine4\naaaaaaaaaa"; // Simplified expectation
 
             var cleanedText = service.CleanTextForAnalysis(inputText);
 
@@ -347,7 +347,7 @@ namespace AutoBotUtilities.Tests.Production
 
             // This test was originally about the regex patterns themselves, not a specific method.
             // We can check if these patterns match.
-            var giftCardPattern = @"(?:Gift\s*Card|Store\s*Credit|Promo\s*Code|Discount|Coupon|Credit\s*Memo|GC\s*Applied).*(?:[:\-\s])+\$?([0-9]+\.?[0-9]*)";
+            var giftCardPattern = @"^(?=.*(?:Gift\s*Card|Store\s*Credit|Promo\s*Code|Discount|Coupon|Credit\s*Memo|GC\s*Applied)).*?-?\$?\s*([0-9]+\.?[0-9]*)";
             // This pattern is illustrative. The actual detection is likely more complex or inside DeepSeek.
 
             foreach (var (text, expectedType, expectedAmount) in testCases)

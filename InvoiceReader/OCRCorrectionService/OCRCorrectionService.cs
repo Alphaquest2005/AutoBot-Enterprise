@@ -96,7 +96,7 @@ namespace WaterNut.DataSpace
                     string filePathForLearning = $"single_correction_{invoice.InvoiceNo}_{DateTime.UtcNow:yyyyMMddHHmmss}.txt"; // Placeholder
                     await this.UpdateRegexPatternsAsync(successfulCorrectionResultsForDB, fileText, filePathForLearning, metadata).ConfigureAwait(false); // From OCRDatabaseUpdates.cs
                 }
-                
+
                 // Return true if any corrections were successfully made OR if the invoice is now balanced.
                 return successfulValueApplications > 0 || OCRCorrectionService.TotalsZero(invoice, _logger);
             }
@@ -117,7 +117,7 @@ namespace WaterNut.DataSpace
                 _logger.Information("CorrectInvoicesAsync: No invoices provided for batch correction.");
                 return invoices ?? new List<ShipmentInvoice>();
             }
-             _logger.Information("Starting batch correction for {InvoiceCount} invoices using text from {FilePath}.", invoices.Count, singleDroppedFilePath);
+            _logger.Information("Starting batch correction for {InvoiceCount} invoices using text from {FilePath}.", invoices.Count, singleDroppedFilePath);
 
             string fileText = null;
             var txtFilePath = singleDroppedFilePath + ".txt"; // Common convention
@@ -150,7 +150,7 @@ namespace WaterNut.DataSpace
             }
             return invoices; // Return the list; some invoices may have been modified.
         }
-        
+
         /// <summary>
         /// Corrects a single invoice with comprehensive validation and subsequent regex/database updates.
         /// </summary>
@@ -161,8 +161,8 @@ namespace WaterNut.DataSpace
                 _logger.Warning("CorrectInvoiceWithRegexUpdatesAsync: Null invoice or empty file text for {InvoiceNo}.", invoice?.InvoiceNo ?? "N/A");
                 return false;
             }
-             _logger.Information("Starting comprehensive OCR correction with DB updates for invoice {InvoiceNo}.", invoice.InvoiceNo);
-            
+            _logger.Information("Starting comprehensive OCR correction with DB updates for invoice {InvoiceNo}.", invoice.InvoiceNo);
+
             try
             {
                 // 1. Extract/Build Metadata
@@ -181,8 +181,8 @@ namespace WaterNut.DataSpace
                 // 3. Apply Corrections to In-Memory Invoice Object
                 var appliedCorrections = await this.ApplyCorrectionsAsync(invoice, errors, fileText, metadata).ConfigureAwait(false); // From OCRCorrectionApplication.cs
                 var successfulCorrectionResults = appliedCorrections.Where(c => c.Success).ToList();
-                 _logger.Information("Applied {SuccessCount}/{TotalCount} value/format corrections (in-memory) for invoice {InvoiceNo}.",
-                    successfulCorrectionResults.Count, appliedCorrections.Count, invoice.InvoiceNo);
+                _logger.Information("Applied {SuccessCount}/{TotalCount} value/format corrections (in-memory) for invoice {InvoiceNo}.",
+                   successfulCorrectionResults.Count, appliedCorrections.Count, invoice.InvoiceNo);
 
                 // 4. Validate Post-Correction Totals
                 bool postCorrectionValid = OCRCorrectionService.TotalsZero(invoice, _logger);
@@ -194,7 +194,7 @@ namespace WaterNut.DataSpace
                     string filePathForLearning = $"comprehensive_corr_{invoice.InvoiceNo}_{DateTime.UtcNow:yyyyMMddHHmmss}.txt"; // Placeholder
                     await this.UpdateRegexPatternsAsync(successfulCorrectionResults, fileText, filePathForLearning, metadata).ConfigureAwait(false); // From OCRDatabaseUpdates.cs
                 }
-                
+
                 // Return true if any corrections were made that resulted in a successful DB update (implies learning happened)
                 // OR if the invoice is now balanced, even if no DB patterns were learnable.
                 // The success of UpdateRegexPatternsAsync is logged internally by it.
@@ -285,7 +285,7 @@ namespace WaterNut.DataSpace
         #endregion
 
         #region Internal Helpers (Moved from other files or new for orchestration)
-        
+
         // This helper might be called from ExtractFullOCRMetadata or other places.
         // It was originally in OCRMetadataExtractor.cs.
         private LineContext CreateLineContextFromMetadata(OCRFieldMetadata metadata, string fileText)
@@ -389,7 +389,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var regexConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OCRRegexPatterns.json");
+                var regexConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "OCRRegexPatterns.json");
 
                 if (!File.Exists(regexConfigPath))
                 {

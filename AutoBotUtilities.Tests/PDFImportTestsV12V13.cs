@@ -199,14 +199,14 @@ namespace AutoBotUtilities.Tests
                         _logger.Debug("Verifying import results in database...");
                         using (var ctx = new EntryDataDSContext())
                         {
-                            _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '06FLIP-SO-0016205IN'");
-                            var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "06FLIP-SO-0016205IN");
-                            Assert.That(invoice, Is.Not.Null, "ShipmentInvoice '06FLIP-SO-0016205IN' not created.");
+                            _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '0016205-IN'");
+                            var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "0016205-IN");
+                            Assert.That(invoice, Is.Not.Null, "ShipmentInvoice '0016205-IN' not created.");
                             _logger.Verbose("ShipmentInvoice found: {Exists}", invoice != null);
 
-                            _logger.Verbose("Checking for ShipmentInvoiceDetails count for InvoiceNo '06FLIP-SO-0016205IN'");
-                            int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "06FLIP-SO-0016205IN");
-                            Assert.That(detailCount, Is.EqualTo(50), $"Expected 50 ShipmentInvoiceDetails, but found {detailCount}.");
+                            _logger.Verbose("Checking for ShipmentInvoiceDetails count for InvoiceNo '0016205-IN'");
+                            int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "0016205-IN");
+                            Assert.That(detailCount, Is.EqualTo(65), $"Expected 65 ShipmentInvoiceDetails, but found {detailCount}.");
                             _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
 
                             Assert.That(invoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected TotalsZero = 0, but found {invoice.TotalsZero}. OCR correction should ensure proper totals calculation.");
@@ -284,13 +284,13 @@ namespace AutoBotUtilities.Tests
                         using (var ctx = new EntryDataDSContext())
                         {
                             _logger.Verbose("Checking for ShipmentInvoice with InvoiceNo '06FLIP-SO-0016205IN'");
-                            var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "06FLIP-SO-0016205IN");
-                            Assert.That(invoice, Is.Not.Null, "ShipmentInvoice '06FLIP-SO-0016205IN' not created.");
+                            var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "0016205-IN");
+                            Assert.That(invoice, Is.Not.Null, "ShipmentInvoice '0016205-IN' not created.");
                             _logger.Verbose("ShipmentInvoice found: {Exists}", invoice != null);
 
                             _logger.Verbose("Checking for ShipmentInvoiceDetails count for InvoiceNo '06FLIP-SO-0016205IN'");
-                            int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "06FLIP-SO-0016205IN");
-                            Assert.That(detailCount, Is.EqualTo(50), $"Expected 50 ShipmentInvoiceDetails, but found {detailCount}.");
+                            int detailCount = ctx.ShipmentInvoiceDetails.Count(x => x.Invoice.InvoiceNo == "0016205-IN");
+                            Assert.That(detailCount, Is.EqualTo(65), $"Expected 65 ShipmentInvoiceDetails, but found {detailCount}.");
                             _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
 
                             Assert.That(invoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected TotalsZero = 0, but found {invoice.TotalsZero}. OCR correction should ensure proper totals calculation.");

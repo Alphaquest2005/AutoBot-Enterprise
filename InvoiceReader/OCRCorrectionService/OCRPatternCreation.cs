@@ -79,18 +79,23 @@ namespace WaterNut.DataSpace
             string[] currencySymbols = { "$", "€", "£", "¥", "₹" }; // Extend as needed
             foreach (var symbol in currencySymbols)
             {
-                string escSymbol = Regex.Escape(symbol);
+                string escSymbolForPattern = Regex.Escape(symbol);
+
                 // Adding symbol: "99.99" -> "$99.99"
                 if (!original.Contains(symbol) && corrected.StartsWith(symbol) && corrected.Substring(symbol.Length).Trim() == original.Trim())
                 {
                     if (Regex.IsMatch(original.Trim(), @"^-?\d+(\.\d+)?$")) // Ensure original is a number
-                        return (@"^(-?\d+(\.\d+)?)$", escSymbol + "$1");
+                    {
+                        // In replacement strings, a literal '$' is '$$'. For other symbols, they are literal.
+                        string replacementSymbol = symbol == "$" ? "$$" : symbol;
+                        return (@"^(-?\d+(\.\d+)?)$", replacementSymbol + "$1"); // Correctly produces "$$$1" for dollar sign.
+                    }
                 }
                 // Removing symbol: "$99.99" -> "99.99"
                 if (original.StartsWith(symbol) && !corrected.Contains(symbol) && original.Substring(symbol.Length).Trim() == corrected.Trim())
                 {
                     if (Regex.IsMatch(corrected.Trim(), @"^-?\d+(\.\d+)?$"))
-                        return (escSymbol + @"\s*(-?\d+(\.\d+)?)", "$1");
+                        return (escSymbolForPattern + @"\s*(-?\d+(\.\d+)?)", "$1");
                 }
             }
             return null;
@@ -590,71 +595,89 @@ namespace WaterNut.DataSpace
             var patterns = new List<string>();
             var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldName);
 
-            string keyNameToUse = fieldInfo?.DisplayName ?? fieldName;
+            // Default to just the provided field name if no mapping exists
+            var keysToUse = new List<string> { fieldName };
 
-            if (fieldInfo == null)
+            if (fieldInfo != null)
             {
-                _logger.Debug("CreateFieldExtractionPatterns: No DB mapping for '{FieldName}', using generic text patterns based on DisplayName/FieldName '{KeyName}'.", fieldName, keyNameToUse);
-                patterns.AddRange(CreateTextPatternsFromKeyName(keyNameToUse));
+                // If a mapping exists, gather all aliases that point to the same DatabaseFieldInfo
+                keysToUse = DeepSeekToDBFieldMapping
+                    .Where(kvp => kvp.Value == fieldInfo)
+                    .Select(kvp => kvp.Key)
+                    .Union(new[] { fieldInfo.DatabaseFieldName, fieldInfo.DisplayName }) // Also include the canonical name and display name
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderByDescending(s => s.Length) // Process longer aliases first to avoid partial matches
+                    .ToList();
+                _logger?.Debug("Generating patterns for field {FieldName} using keys: {Keys}", fieldName, string.Join(", ", keysToUse));
             }
             else
             {
-                switch (fieldInfo.DataType?.ToLowerInvariant())
-                {
-                    case "decimal":
-                    case "double":
-                    case "currency":
-                    case "int":
-                    case "integer":
-                        patterns.AddRange(CreateMonetaryOrNumericPatternsFromKeyName(keyNameToUse));
-                        break;
-                    case "datetime":
-                        patterns.AddRange(CreateDatePatternsFromKeyName(keyNameToUse));
-                        break;
-                    case "string":
-                    default:
-                        patterns.AddRange(CreateTextPatternsFromKeyName(keyNameToUse));
-                        break;
-                }
+                _logger?.Debug("CreateFieldExtractionPatterns: No DB mapping for '{FieldName}', using generic text patterns for the name itself.", fieldName);
+            }
+
+            // Create a single regex group of all possible keys, e.g., (Invoice Total|Grand Total|Total)
+            var keyGroupPattern = string.Join("|", keysToUse.Select(k => Regex.Escape(k).Replace(" ", "\\s+")));
+
+            // Determine pattern type based on fieldInfo or guess from name
+            string dataType = fieldInfo?.DataType?.ToLowerInvariant() ?? "string";
+
+            switch (dataType)
+            {
+                case "decimal":
+                case "double":
+                case "currency":
+                case "int":
+                case "integer":
+                    patterns.AddRange(CreateMonetaryOrNumericPatternsFromKeyName(keyGroupPattern, true));
+                    break;
+                case "datetime":
+                    patterns.AddRange(CreateDatePatternsFromKeyName(keyGroupPattern, true));
+                    break;
+                case "string":
+                default:
+                    patterns.AddRange(CreateTextPatternsFromKeyName(keyGroupPattern, true));
+                    break;
             }
 
             if (sampleValues != null)
             {
                 foreach (var sample in sampleValues.Where(s => !string.IsNullOrWhiteSpace(s)))
                 {
-                    patterns.Add($@"(?i)(?:{Regex.Escape(keyNameToUse)}\s*[:\-=\s]\s*)?({Regex.Escape(sample)})");
+                    patterns.Add($@"(?i)(?:({keyGroupPattern})\s*[:\-=\s]\s*)?({Regex.Escape(sample)})");
                 }
             }
             return patterns.Distinct().ToList();
         }
 
-        private List<string> CreateMonetaryOrNumericPatternsFromKeyName(string keyName)
+        private List<string> CreateMonetaryOrNumericPatternsFromKeyName(string keyPattern, bool isGroup = false)
         {
-            string escKeyName = Regex.Escape(keyName);
+            // If it's a group, wrap it in non-capturing group (?:...) so we don't mess up the value capture group index
+            string keyRegex = isGroup ? $"(?:{keyPattern})" : $@"\b{Regex.Escape(keyPattern)}\b";
             string valuePattern = @"-?\$?€?£?\s*(?:[0-9]{1,3}(?:[,.]\d{3})*|[0-9]+)(?:[.,]\d{1,4})?";
             return new List<string> {
-                $@"(?i)\b{escKeyName}\b\s*[:\-=\s]\s*({valuePattern})",
-                $@"(?i)({valuePattern})\s*(?:associated with|for|is)?\s*\b{escKeyName}\b",
-                $@"(?i)\b{escKeyName}\b[^\w\s]*\s*({valuePattern})"
+                $@"(?i)\b{keyRegex}\b\s*[:\-=\s]\s*({valuePattern})",
+                $@"(?i)({valuePattern})\s*(?:associated with|for|is)?\s*\b{keyRegex}\b",
+                $@"(?i)\b{keyRegex}\b[^\w\s]*\s*({valuePattern})"
             };
         }
-        private List<string> CreateDatePatternsFromKeyName(string keyName)
+        private List<string> CreateDatePatternsFromKeyName(string keyPattern, bool isGroup = false)
         {
-            string escKeyName = Regex.Escape(keyName);
+            string keyRegex = isGroup ? $"(?:{keyPattern})" : $@"\b{Regex.Escape(keyPattern)}\b";
             string datePattern = @"(\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}|\d{4}[/\-.]\d{1,2}[/\-.]\d{1,2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,)?\s+\d{2,4})";
             return new List<string> {
-                $@"(?i)\b{escKeyName}\b\s*[:\-=\s]\s*{datePattern}",
-                $@"{datePattern}\s*(?:as of|for|is)?\s*\b{escKeyName}\b"
+                $@"(?i)\b{keyRegex}\b\s*[:\-=\s]\s*{datePattern}",
+                $@"{datePattern}\s*(?:as of|for|is)?\s*\b{keyRegex}\b"
             };
         }
-        private List<string> CreateTextPatternsFromKeyName(string keyName)
+        private List<string> CreateTextPatternsFromKeyName(string keyPattern, bool isGroup = false)
         {
-            string escKeyName = Regex.Escape(keyName);
+            string keyRegex = isGroup ? $"(?:{keyPattern})" : $@"\b{Regex.Escape(keyPattern)}\b";
             string valuePattern = @"(.+?)(?:\n|\r|$|\s{2,}(?:\b(?:Amount|Total|Date|Due|Item|Product|Price|Qty)\b)|--|==)";
             return new List<string> {
-                $@"(?i)\b{escKeyName}\b\s*[:\-=\s]\s*{valuePattern}",
-                $@"(?i)\b{escKeyName}\b\s*[:\-=\s]\s*""([^""]+)""",
-                $@"(?i)\b{escKeyName}\b\s*[:\-=\s]\s*'([^']*)'"
+                $@"(?i)\b{keyRegex}\b\s*[:\-=\s]\s*{valuePattern}",
+                $@"(?i)\b{keyRegex}\b\s*[:\-=\s]\s*""([^""]+)""",
+                $@"(?i)\b{keyRegex}\b\s*[:\-=\s]\s*'([^']*)'"
             };
         }
 

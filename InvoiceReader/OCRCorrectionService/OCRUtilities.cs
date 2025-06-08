@@ -22,24 +22,43 @@ namespace WaterNut.DataSpace
         {
             if (string.IsNullOrWhiteSpace(text)) return string.Empty;
 
-            string cleaned = text;
-            // Remove long separator lines (e.g., 20+ hyphens, underscores, equals)
-            cleaned = Regex.Replace(cleaned, @"(?:-{20,}|_{20,}|={20,}).*?$", "", RegexOptions.Multiline);
-            // Normalize multiple spaces/tabs to a single space, but preserve newlines carefully
-            cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
-            // Trim each line
-            cleaned = string.Join("\n", cleaned.Split('\n').Select(line => line.Trim()));
-            // Remove multiple consecutive blank lines
-            cleaned = Regex.Replace(cleaned, @"(\r\n|\r|\n){3,}", Environment.NewLine + Environment.NewLine);
+            // Log entry with version marker
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Start: {InitialText}", TruncateForLog(text, 200));
 
-            // Truncate if excessively long (e.g., for LLM prompt context)
-            int maxLength = 15000; // Adjusted based on typical LLM context limits, can be tuned
+            // 1. Normalize all line endings to a single '\n' for consistent processing.
+            string cleaned = text.Replace("\r\n", "\n").Replace("\r", "\n");
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 1 (Normalize Newlines): {Text}", TruncateForLog(cleaned, 200));
+
+            // 2. Remove long separator lines (e.g., ------------------)
+            cleaned = Regex.Replace(cleaned, @"(?m)^\s*(?:-{20,}|_{20,}|={20,})\s*$", "", RegexOptions.Multiline);
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 2 (Remove Separators): {Text}", TruncateForLog(cleaned, 200));
+
+            // 3. Trim whitespace from the start and end of every line.
+            cleaned = Regex.Replace(cleaned, @"(?m)^[ \t]+|[ \t]+$", "");
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 3 (Trim Lines): {Text}", TruncateForLog(cleaned, 200));
+
+            // 4. Collapse multiple spaces/tabs within a line to a single space.
+            cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 4 (Collapse Spaces): {Text}", TruncateForLog(cleaned, 200));
+
+            // 5. Collapse 3 or more consecutive newlines into exactly two (a single blank line).
+            cleaned = Regex.Replace(cleaned, @"\n{3,}", "\n\n");
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 5 (Collapse Newlines): {Text}", TruncateForLog(cleaned, 200));
+
+            // 6. Trim the entire block of text to remove any leading/trailing blank lines created by the process.
+            cleaned = cleaned.Trim();
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 6 (Final Trim): {Text}", TruncateForLog(cleaned, 200));
+
+            // 7. Truncate if excessively long
+            int maxLength = 15000;
             if (cleaned.Length > maxLength)
             {
                 cleaned = cleaned.Substring(0, maxLength) + "...[text truncated]";
-                _logger?.Debug("CleanTextForAnalysis: Text was truncated to {MaxLength} characters.", maxLength);
+                _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 7 (Truncate): Text was truncated to {MaxLength} characters.", maxLength);
             }
-            return cleaned.Trim();
+
+            _logger?.Debug("CleanTextForAnalysis | v2.1 | Final Result: {FinalText}", TruncateForLog(cleaned, 200));
+            return cleaned;
         }
 
         /// <summary>
@@ -51,7 +70,6 @@ namespace WaterNut.DataSpace
         {
             if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
 
-            // Debug: Log the exact input received (use @ prefix for object serialization)
             _logger?.Information("CleanJsonResponse input: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
                 jsonResponse.Length,
                 jsonResponse.Length > 0 ? jsonResponse[0].ToString() : "EMPTY",
@@ -60,14 +78,12 @@ namespace WaterNut.DataSpace
 
             string cleaned = jsonResponse.Trim();
 
-            // Debug: Log after trimming (use @ prefix for object serialization)
             _logger?.Information("After trim: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
                 cleaned.Length,
                 cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
                 cleaned.StartsWith("{"),
                 cleaned);
 
-            // Remove BOM if present at the start - check explicitly for BOM character code 65279
             bool hasBom = cleaned.Length > 0 && cleaned[0] == '\uFEFF';
             _logger?.Information("BOM check: HasBOM={HasBOM}, FirstCharCode={FirstCharCode}, Length={Length}, BOMCharCode=65279",
                 hasBom,
@@ -84,9 +100,6 @@ namespace WaterNut.DataSpace
             }
 
             // Remove markdown code block fences - but only if they actually exist
-            var beforeMarkdownRemoval = cleaned;
-
-            // Check if the string actually starts with backticks before applying regex
             if (cleaned.StartsWith("```"))
             {
                 cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
@@ -108,7 +121,6 @@ namespace WaterNut.DataSpace
 
             cleaned = cleaned.Trim();
 
-            // Debug: Log after final trim before JSON extraction
             _logger?.Information("Before JSON extraction: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
                 cleaned.Length,
                 cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
@@ -538,7 +550,7 @@ namespace WaterNut.DataSpace
             var metadataFields = new[] { "LineNumber", "FileLineNumber", "Section", "Instance" }; // Case sensitive based on typical usage
             return metadataFields.Contains(fieldName);
         }
-        
+
         #endregion
     }
 }
