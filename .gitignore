@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 
 # C extensions
 *.so
@@ -28,8 +28,6 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -84,11 +82,6 @@ ipython_config.py
 # pyenv
 .python-version
 
-# pipenv
-# According to https://github.com/pypa/pipenv/issues/1995#issuecomment-378563325,
-# Pipfile.lock should not be in .gitignore.
-# Pipfile.lock
-
 # PEP 582; __pypackages__ directory created by PEP 582 compatible tools like PDM, Poetry, ...
 __pypackages__/
 
@@ -125,3 +118,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# VS Code
+.vscode/
