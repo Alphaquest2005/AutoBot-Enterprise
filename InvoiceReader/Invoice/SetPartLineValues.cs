@@ -12,7 +12,8 @@ using System.Collections; // Added for IGrouping
 namespace WaterNut.DataSpace
 {
     using MoreLinq;
-
+// Temporary class for LogLevelOverride for debugging purposes.
+    // In a production environment, Serilog's LoggingLevelSwitch should be used for dynamic log level control.
     public partial class Invoice
     {
         #region V11 Static Members (moved here for proper compilation)
@@ -45,7 +46,7 @@ namespace WaterNut.DataSpace
         private List<IDictionary<string, object>> SetPartLineValues(Part part, string filterInstance = null)
         {
             // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
-            _logger.Fatal("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
+            _logger.Debug("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
             Console.WriteLine($"**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {filterInstance ?? "NULL"}");
             
             // **VERSION TESTING FRAMEWORK**: Route to different versions for comparison
@@ -69,6 +70,7 @@ namespace WaterNut.DataSpace
                 "V10" => SetPartLineValues_V10_OpusFreshImplementation(part, filterInstance),
                 "V11" => SetPartLineValues_V11_GeminiV8Fix(part, filterInstance),
                 "V12" => SetPartLineValues_V12_GeminiFreshImplementation(part, filterInstance),
+                "V13" => SetPartLineValues_Universal_V3(part, filterInstance),
                 _ => SetPartLineValues_V5_Current(part, filterInstance) // Default to current
             };
         }
@@ -76,24 +78,24 @@ namespace WaterNut.DataSpace
         private string GetVersionToTest()
         {
             // **CRITICAL VERSION DEBUG**: This log should ALWAYS appear if method is called
-            _logger.Fatal("**GETVERSIONTOTEST_ENTRY**: GetVersionToTest method called");
+            _logger.Debug("**GETVERSIONTOTEST_ENTRY**: GetVersionToTest method called");
             
             // **VERSION CONTROL**: Change this to test different versions
             // Available versions: V1, V2, V3, V4, V5, V6
             // This can be controlled by environment variable, config, or test parameter
             var versionFromEnv = Environment.GetEnvironmentVariable("SETPARTLINEVALUES_VERSION");
             
-            _logger.Fatal("**VERSION_DEBUG**: Environment variable SETPARTLINEVALUES_VERSION = '{EnvValue}'", versionFromEnv ?? "NULL");
+            _logger.Debug("**VERSION_DEBUG**: Environment variable SETPARTLINEVALUES_VERSION = '{EnvValue}'", versionFromEnv ?? "NULL");
             
             if (!string.IsNullOrEmpty(versionFromEnv))
             {
-                _logger.Fatal("**VERSION_CONTROL**: Using version {Version} from environment variable", versionFromEnv);
+                _logger.Debug("**VERSION_CONTROL**: Using version {Version} from environment variable", versionFromEnv);
                 return versionFromEnv;
             }
             
-            // **TEMPORARY**: Force V13 for testing
-            _logger.Fatal("**VERSION_DEBUG**: Environment variable not set, forcing V13 for testing");
-            return "V13";
+            // If environment variable is not set, default to V5
+            _logger.Debug("**VERSION_CONTROL**: Environment variable not set, defaulting to V5");
+            return "V5";
         }
         
         /// <summary>
@@ -181,48 +183,51 @@ namespace WaterNut.DataSpace
             var partId = part?.OCR_Part?.Id.ToString() ?? "Unknown";
             _logger.Information("{Version}: Executing for PartId: {PartId}, FilterInstance: {FilterInstance}", BespokeConstants.Version, partId, filterInstance);
 
-            try
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // Ensure debug logs are captured for this method
             {
-                // === GUARD CLAUSES ===
-                if (part?.Lines == null || !part.Lines.Any())
+                try
                 {
-                    _logger.Warning("{Version}: Part or Part.Lines is null/empty for PartId: {PartId}. Aborting.", BespokeConstants.Version, partId);
-                    return new List<IDictionary<string, object>>();
-                }
+                    // === GUARD CLAUSES ===
+                    if (part?.Lines == null || !part.Lines.Any())
+                    {
+                        _logger.Warning("{Version}: Part or Part.Lines is null/empty for PartId: {PartId}. Aborting.", BespokeConstants.Version, partId);
+                        return new List<IDictionary<string, object>>();
+                    }
 
-                // === 1. COLLECT: Recursively gather all field data into a flat list ===
-                var allFields = CollectAllFieldsRecursively(part, filterInstance);
-                if (!allFields.Any())
+                    // === 1. COLLECT: Recursively gather all field data into a flat list ===
+                    var allFields = CollectAllFieldsRecursively(part, filterInstance);
+                    if (!allFields.Any())
+                    {
+                        _logger.Warning("{Version}: No fields could be collected for PartId: {PartId}.", BespokeConstants.Version, partId);
+                        return new List<IDictionary<string, object>>();
+                    }
+                    _logger.Information("{Version}: Collected {Count} field captures across all parts and sections.", BespokeConstants.Version, allFields.Count);
+
+                    // === 2. IDENTIFY: Detect the invoice pattern ===
+                    var pattern = IdentifyInvoicePattern(allFields);
+                    _logger.Information("{Version}: Identified invoice pattern as: {Pattern}", BespokeConstants.Version, pattern);
+
+                    // === 3. REFINE: Deduplicate fields based on section precedence (Single > Ripped > Sparse) ===
+                    var refinedFields = RefineFieldsByPrecedence(allFields);
+                    _logger.Information("{Version}: Refined {OriginalCount} captures to {FinalCount} unique fields using section precedence.", BespokeConstants.Version, allFields.Count, refinedFields.Count);
+
+                    // === 4. BUILD: Route to the appropriate builder based on the pattern ===
+                    switch (pattern)
+                    {
+                        case InvoicePattern.TropicalVendors:
+                            return BuildTropicalVendorsResult(refinedFields);
+                        
+                        case InvoicePattern.Amazon:
+                        case InvoicePattern.Default:
+                        default:
+                            return BuildAmazonResult(refinedFields);
+                    }
+                }
+                catch (Exception ex)
                 {
-                    _logger.Warning("{Version}: No fields could be collected for PartId: {PartId}.", BespokeConstants.Version, partId);
-                    return new List<IDictionary<string, object>>();
+                    _logger.Error(ex, "{Version}: A critical error occurred in SetPartLineValues for PartId: {PartId}", BespokeConstants.Version, partId);
+                    return new List<IDictionary<string, object>>(); // Return empty list on failure
                 }
-                _logger.Information("{Version}: Collected {Count} field captures across all parts and sections.", BespokeConstants.Version, allFields.Count);
-
-                // === 2. IDENTIFY: Detect the invoice pattern ===
-                var pattern = IdentifyInvoicePattern(allFields);
-                _logger.Information("{Version}: Identified invoice pattern as: {Pattern}", BespokeConstants.Version, pattern);
-
-                // === 3. REFINE: Deduplicate fields based on section precedence (Single > Ripped > Sparse) ===
-                var refinedFields = RefineFieldsByPrecedence(allFields);
-                _logger.Information("{Version}: Refined {OriginalCount} captures to {FinalCount} unique fields using section precedence.", BespokeConstants.Version, allFields.Count, refinedFields.Count);
-
-                // === 4. BUILD: Route to the appropriate builder based on the pattern ===
-                switch (pattern)
-                {
-                    case InvoicePattern.TropicalVendors:
-                        return BuildTropicalVendorsResult(refinedFields);
-                    
-                    case InvoicePattern.Amazon:
-                    case InvoicePattern.Default:
-                    default:
-                        return BuildAmazonResult(refinedFields);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "{Version}: A critical error occurred in SetPartLineValues for PartId: {PartId}", BespokeConstants.Version, partId);
-                return new List<IDictionary<string, object>>(); // Return empty list on failure
             }
         }
 
@@ -249,7 +254,7 @@ namespace WaterNut.DataSpace
                             string fieldName = fieldData.Key.Fields?.Field;
                             if (string.IsNullOrEmpty(fieldName)) continue;
 
-                            captures.Add(new BespokeFieldCapture
+                            var newCapture = new BespokeFieldCapture
                             {
                                 Section = sectionData.Key.section,
                                 SourceFileLineNumber = sectionData.Key.lineNumber,
@@ -258,7 +263,9 @@ namespace WaterNut.DataSpace
                                 RawValue = fieldData.Value,
                                 ProcessedValue = GetValue(fieldData, _logger), // Assumes GetValue helper exists
                                 FieldDefinition = fieldData.Key.Fields
-                            });
+                            };
+                            captures.Add(newCapture);
+                            _logger.Debug("{Version}: Collected Field - Section: {Section}, Line: {Line}, Instance: {Instance}, Field: {Field}, Value: {Value}", BespokeConstants.Version, newCapture.Section, newCapture.SourceFileLineNumber, newCapture.Instance, newCapture.FieldName, newCapture.RawValue);
                         }
                     }
                 }
@@ -332,7 +339,11 @@ namespace WaterNut.DataSpace
                 .Where(g => g.Any(f => f.FieldName.Equals("ItemDescription", StringComparison.OrdinalIgnoreCase) && f.ProcessedValue != null)) // Ensure item has a description
                 .ToList();
 
-            _logger.Information("{Version}: Found {Count} distinct product instances to create as individual items.", BespokeConstants.Version, productGroupsByInstance.Count);
+            _logger.Debug("{Version}: Found {Count} distinct product instances to create as individual items.", BespokeConstants.Version, productGroupsByInstance.Count);
+            foreach (var instanceGroup in productGroupsByInstance)
+            {
+                _logger.Debug("{Version}: Processing Instance Group Key: {Key}", BespokeConstants.Version, instanceGroup.Key);
+            }
 
             int lineCounter = 1;
             foreach (var instanceGroup in productGroupsByInstance)
@@ -435,6 +446,354 @@ namespace WaterNut.DataSpace
         private bool IsProductFieldV12(string fieldName) => !string.IsNullOrEmpty(fieldName) && BespokeConstants.ProductFieldNames.Contains(fieldName);
 
         #endregion
+
+#region Universal V3 - Core Architecture
+
+    /// <summary>
+    /// A flattened representation of a single field extracted from the OCR data.
+    /// This is the core data structure used throughout the processing pipeline.
+    /// </summary>
+    private class UniversalFieldCapture_V3
+    {
+        public string Section { get; set; }
+        public int SourceFileLineNumber { get; set; }
+        public string FieldName { get; set; }
+        public object ProcessedValue { get; set; }
+        public string RawValue { get; set; }
+        public string Instance { get; set; }
+    }
+
+    /// <summary>
+    /// Defines the processing strategy to be used for an invoice chunk.
+    /// This is determined by heuristics rather than hardcoded supplier names.
+    /// </summary>
+    private enum ProcessingMode_V3
+    {
+        /// <summary>
+        /// Each product line is treated as a unique item. Ideal for multi-page orders
+        /// with many distinct items (e.g., Tropical Vendors, Walmart, TEMU).
+        /// </summary>
+        PreserveIndividualItems,
+
+        /// <summary>
+        /// Similar product lines are grouped and their quantities summed. Ideal for
+        /// invoices with multiple shipments or sections for the same items (e.g., Amazon).
+        /// </summary>
+        ConsolidateSimilarItems
+    }
+
+    /// <summary>
+    /// Static lookup tables for performance and clean code, initialized once.
+    /// </summary>
+    private static class UniversalConstants_V3
+    {
+        public const string Version = "**UNIVERSAL_V3**";
+        public const int PreservationInstanceThreshold = 10;
+        
+        // Array of primary keys used to split a document into multiple invoices.
+        public static readonly string[] InvoiceSplitterFieldKeys = { "InvoiceNo", "Order ID", "Order number" };
+
+        public static readonly Dictionary<string, int> SectionPrecedence = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Single"] = 1, ["Ripped"] = 2, ["Sparse"] = 3,
+        };
+        
+        // Expanded field names to handle variations across all invoice types.
+        public static readonly HashSet<string> HeaderFieldNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "InvoiceNo", "Order ID", "Order number", "Order#", "InvoiceDate", "Order Date", "Placed on", "Paid on",
+            "InvoiceTotal", "Total", "Grand Total", "Order total", "SubTotal", "Item(s) Subtotal",
+            "SupplierCode", "Sold By", "Seller", "SupplierName", "SupplierAddress", "Address",
+            "SupplierCountryCode", "PONumber", "Order Number", "Currency", "TotalInternalFreight", "Shipping/Handling", "Shipping",
+            "TotalOtherCost", "TotalInsurance", "TotalDeduction", "Savings", "Item discount", "Name", "TariffCode",
+            "Tax", "Sales Tax", "Buyer"
+        };
+
+        public static readonly HashSet<string> ProductFieldNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "ItemNumber", "Item name", "ItemDescription", "Description", "TariffCode", "Quantity", "Qty",
+            "Cost", "Price", "Item price", "TotalCost", "Amount", "Amount(USD)", "Units", "Discount",
+            "SalesFactor", "Gallons", "LineNumber", "InventoryItemId", "Shipping service"
+        };
+    }
+
+    #endregion
+    
+    /// <summary>
+    /// The primary entry point for the Universal V3 invoice processing engine.
+    /// </summary>
+    private List<IDictionary<string, object>> SetPartLineValues_Universal_V3(Part part, string filterInstance = null)
+    {
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            {
+                var partId = part?.OCR_Part?.Id.ToString() ?? "Unknown";
+                _logger.Information("{Version}: Executing for PartId: {PartId}", UniversalConstants_V3.Version, partId);
+                var finalResults = new List<IDictionary<string, object>>();
+
+                try
+                {
+                    // === 1. COLLECT & PRE-FILTER: Gather all fields and remove irrelevant document sections. ===
+                    var allFields = CollectAllFields_V3(part, filterInstance)
+                        .Where(f => !IsIgnoredSection_V3(f.RawValue))
+                        .ToList();
+
+                    if (!allFields.Any())
+                    {
+                        _logger.Warning("{Version}: No processable fields found for PartId: {PartId}.", UniversalConstants_V3.Version, partId);
+                        return finalResults;
+                    }
+
+                    // === 2. SPLIT: Dynamically chunk the fields into logical invoices. ===
+                    var invoiceChunks = SplitIntoInvoiceChunks_V3_Dynamic(allFields);
+                    _logger.Information("{Version}: Dynamically split document into {Count} logical invoice(s).", UniversalConstants_V3.Version, invoiceChunks.Count);
+
+                    // === 3. PROCESS EACH CHUNK: Loop through each logical invoice and process it. ===
+                    foreach (var chunk in invoiceChunks)
+                    {
+                        var refinedFields = RefineFieldsByPrecedence_V3(chunk);
+                        if (!refinedFields.Any()) continue;
+
+                        var mode = IdentifyProcessingMode_V3(refinedFields.Values.ToList());
+                        _logger.Information("{Version}: Processing chunk with {FieldCount} fields using mode: {Mode}", UniversalConstants_V3.Version, refinedFields.Count, mode);
+
+                        IDictionary<string, object> chunkResult = mode switch
+                        {
+                            ProcessingMode_V3.PreserveIndividualItems => BuildResult_V3(refinedFields, consolidate: false),
+                            ProcessingMode_V3.ConsolidateSimilarItems => BuildResult_V3(refinedFields, consolidate: true),
+                            _ => null
+                        };
+
+                        if (chunkResult != null && ((List<IDictionary<string, object>>)chunkResult["InvoiceDetails"]).Any())
+                        {
+                            finalResults.Add(chunkResult);
+                        }
+                    }
+
+                    _logger.Information("{Version}: Successfully processed {Count} invoices from the document.", UniversalConstants_V3.Version, finalResults.Count);
+                    return finalResults;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "{Version}: A critical error occurred for PartId: {PartId}", UniversalConstants_V3.Version, partId);
+                    return new List<IDictionary<string, object>>();
+                }
+            }
+    }
+
+    #region Universal V3 - Pipeline Methods
+
+    /// <summary>
+    /// Dynamically splits a flat list of fields into chunks, each representing a logical invoice.
+    /// </summary>
+    private List<List<UniversalFieldCapture_V3>> SplitIntoInvoiceChunks_V3_Dynamic(List<UniversalFieldCapture_V3> allFields)
+    {
+        var invoiceChunks = new List<List<UniversalFieldCapture_V3>>();
+        var currentChunk = new List<UniversalFieldCapture_V3>();
+        var seenIdentifiers = new HashSet<string>();
+
+        var sortedFields = allFields.OrderBy(f => f.SourceFileLineNumber).ThenBy(f => f.Instance);
+
+        foreach (var field in sortedFields)
+        {
+            bool isSplitter = UniversalConstants_V3.InvoiceSplitterFieldKeys.Contains(field.FieldName, StringComparer.OrdinalIgnoreCase);
+            string identifierValue = field.ProcessedValue?.ToString();
+
+            if (isSplitter && !string.IsNullOrEmpty(identifierValue) && seenIdentifiers.Add(identifierValue))
+            {
+                if (currentChunk.Any()) invoiceChunks.Add(currentChunk);
+                currentChunk = new List<UniversalFieldCapture_V3>();
+                _logger.Information("{Version}: New invoice chunk detected with key '{Key}' and value '{Value}'.", UniversalConstants_V3.Version, field.FieldName, identifierValue);
+            }
+            currentChunk.Add(field);
+        }
+
+        if (currentChunk.Any()) invoiceChunks.Add(currentChunk);
+
+        return invoiceChunks.Any() ? invoiceChunks : new List<List<UniversalFieldCapture_V3>> { allFields };
+    }
+
+    /// <summary>
+    /// Heuristically determines the processing mode for a single invoice chunk.
+    /// </summary>
+    private ProcessingMode_V3 IdentifyProcessingMode_V3(List<UniversalFieldCapture_V3> chunkFields)
+    {
+        int uniqueInstanceCount = chunkFields.Where(f => IsProductField_V3(f.FieldName)).Select(f => f.Instance).Distinct().Count();
+        if (uniqueInstanceCount > UniversalConstants_V3.PreservationInstanceThreshold)
+        {
+            return ProcessingMode_V3.PreserveIndividualItems;
+        }
+
+        string textCorpus = string.Join(" ", chunkFields.Select(f => f.RawValue));
+        if (textCorpus.IndexOf("amazon.com", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return ProcessingMode_V3.ConsolidateSimilarItems;
+        }
+
+        return ProcessingMode_V3.PreserveIndividualItems;
+    }
+    
+    /// <summary>
+    /// A unified builder method that can either preserve or consolidate items.
+    /// </summary>
+    private IDictionary<string, object> BuildResult_V3(Dictionary<(string, string), UniversalFieldCapture_V3> refinedFields, bool consolidate)
+    {
+        var invoiceResult = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        var invoiceDetails = new List<IDictionary<string, object>>();
+
+        var productGroupsByInstance = refinedFields.Values
+            .Where(f => IsProductField_V3(f.FieldName))
+            .GroupBy(f => f.Instance)
+            .Where(g => g.Any(f => UniversalConstants_V3.ProductFieldNames.Contains(f.FieldName) && (f.FieldName.Contains("Description") || f.FieldName.Contains("name"))))
+            .ToList();
+        
+        var initialItems = productGroupsByInstance.Select(group =>
+        {
+            var item = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            foreach (var field in group) item[field.FieldName] = field.ProcessedValue;
+            return item;
+        }).ToList();
+        
+        if (consolidate)
+        {
+            var consolidatedGroups = initialItems
+                .GroupBy(p => p.GetValueOrDefault("ItemDescription", p.GetValueOrDefault("Description", p.GetValueOrDefault("Item name", Guid.NewGuid().ToString())))?.ToString());
+            
+            int lineNumber = 1;
+            foreach (var group in consolidatedGroups)
+            {
+                var finalItem = new Dictionary<string, object>(group.First(), StringComparer.OrdinalIgnoreCase);
+                if (group.Count() > 1)
+                {
+                    finalItem["Quantity"] = group.Sum(item => Convert.ToDouble(item.GetValueOrDefault("Quantity", item.GetValueOrDefault("Qty", 1.0))));
+                    finalItem["TotalCost"] = group.Sum(item => Convert.ToDouble(item.GetValueOrDefault("TotalCost", item.GetValueOrDefault("Amount", item.GetValueOrDefault("Item price", 0.0)))));
+                }
+                NormalizeProductFields_V3(finalItem);
+                finalItem["LineNumber"] = lineNumber++;
+                invoiceDetails.Add(finalItem);
+            }
+        }
+        else
+        {
+            int lineNumber = 1;
+            foreach (var item in initialItems)
+            {
+                NormalizeProductFields_V3(item);
+                item["LineNumber"] = lineNumber++;
+                invoiceDetails.Add(item);
+            }
+        }
+
+        invoiceResult["InvoiceDetails"] = invoiceDetails;
+        
+        var headerFields = refinedFields.Values
+            .Where(f => IsHeaderField_V3(f.FieldName))
+            .GroupBy(f => f.FieldName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First().ProcessedValue);
+
+        foreach (var header in headerFields) invoiceResult[header.Key] = header.Value;
+        NormalizeHeaderFields_V3(invoiceResult);
+        
+        invoiceResult["ApplicationSettingsId"] = 1183;
+        return invoiceResult;
+    }
+
+    #endregion
+
+    #region Universal V3 - Utility & Helper Methods
+
+    private List<UniversalFieldCapture_V3> CollectAllFields_V3(Part part, string filterInstance)
+    {
+        var captures = new List<UniversalFieldCapture_V3>();
+        if (part == null) return captures;
+
+        if (part.Lines != null)
+        {
+            foreach (var line in part.Lines.Where(l => l?.Values != null))
+            {
+                foreach (var sectionData in line.Values)
+                {
+                    foreach (var fieldData in sectionData.Value)
+                    {
+                        string instanceStr = fieldData.Key.Instance;
+                        if (!string.IsNullOrEmpty(filterInstance) && instanceStr != filterInstance) continue;
+                        string fieldName = fieldData.Key.Fields?.Field;
+                        if (string.IsNullOrEmpty(fieldName)) continue;
+
+                        captures.Add(new UniversalFieldCapture_V3
+                        {
+                            Section = sectionData.Key.section,
+                            SourceFileLineNumber = sectionData.Key.lineNumber,
+                            Instance = instanceStr,
+                            FieldName = fieldName,
+                            RawValue = fieldData.Value,
+                            ProcessedValue = GetValue(fieldData, _logger)
+                        });
+                    }
+                }
+            }
+        }
+
+        if (part.ChildParts != null)
+        {
+            foreach (var childPart in part.ChildParts) captures.AddRange(CollectAllFields_V3(childPart, filterInstance));
+        }
+        return captures;
+    }
+    
+    private Dictionary<(string, string), UniversalFieldCapture_V3> RefineFieldsByPrecedence_V3(List<UniversalFieldCapture_V3> fields)
+    {
+        return fields
+            .GroupBy(f => (f.FieldName, f.Instance))
+            .ToDictionary(
+                group => group.Key,
+                group => group.OrderBy(f => UniversalConstants_V3.SectionPrecedence.GetValueOrDefault(f.Section, 99)).First()
+            );
+    }
+    
+    private bool IsIgnoredSection_V3(string rawText)
+    {
+        if (string.IsNullOrEmpty(rawText)) return false;
+        return rawText.IndexOf("Simplified Declaration Form", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private void NormalizeProductFields_V3(IDictionary<string, object> item)
+    {
+        if (!item.ContainsKey("Quantity") && item.ContainsKey("Qty")) item["Quantity"] = item["Qty"];
+        if (!item.ContainsKey("ItemDescription") && item.ContainsKey("Description")) item["ItemDescription"] = item["Description"];
+        if (!item.ContainsKey("ItemDescription") && item.ContainsKey("Item name")) item["ItemDescription"] = item["Item name"];
+        if (!item.ContainsKey("Cost") && item.ContainsKey("Price")) item["Cost"] = item["Price"];
+        if (!item.ContainsKey("Cost") && item.ContainsKey("Item price")) item["Cost"] = item["Item price"];
+        if (!item.ContainsKey("TotalCost") && item.ContainsKey("Amount")) item["TotalCost"] = item["Amount"];
+        if (!item.ContainsKey("TotalCost") && item.ContainsKey("Amount(USD)")) item["TotalCost"] = item["Amount(USD)"];
+        if (!item.ContainsKey("Quantity")) item["Quantity"] = 1.0;
+    }
+
+    private void NormalizeHeaderFields_V3(IDictionary<string, object> item)
+    {
+        if (!item.ContainsKey("InvoiceNo") && item.ContainsKey("Order #")) item["InvoiceNo"] = item["Order #"];
+        if (!item.ContainsKey("InvoiceNo") && item.ContainsKey("Order ID")) item["InvoiceNo"] = item["Order ID"];
+        if (!item.ContainsKey("InvoiceNo") && item.ContainsKey("Order number")) item["InvoiceNo"] = item["Order number"];
+        if (!item.ContainsKey("InvoiceDate") && item.ContainsKey("Order Date")) item["InvoiceDate"] = item["Order Date"];
+        if (!item.ContainsKey("InvoiceDate") && item.ContainsKey("Placed on")) item["InvoiceDate"] = item["Placed on"];
+        if (!item.ContainsKey("PONumber") && item.ContainsKey("Order Number")) item["PONumber"] = item["Order Number"];
+        if (!item.ContainsKey("InvoiceTotal") && item.ContainsKey("Grand Total")) item["InvoiceTotal"] = item["Grand Total"];
+        if (!item.ContainsKey("InvoiceTotal") && item.ContainsKey("Order total")) item["InvoiceTotal"] = item["Order total"];
+        if (!item.ContainsKey("SubTotal") && item.ContainsKey("Item(s) Subtotal")) item["SubTotal"] = item["Item(s) Subtotal"];
+        if (!item.ContainsKey("SupplierName") && item.ContainsKey("Sold By")) item["SupplierName"] = item["Sold By"];
+        if (!item.ContainsKey("SupplierName") && item.ContainsKey("Seller")) item["SupplierName"] = item["Seller"];
+        if (!item.ContainsKey("TotalInternalFreight") && item.ContainsKey("Shipping/Handling")) item["TotalInternalFreight"] = item["Shipping/Handling"];
+        if (!item.ContainsKey("TotalInternalFreight") && item.ContainsKey("Shipping")) item["TotalInternalFreight"] = item["Shipping"];
+        if (!item.ContainsKey("Tax") && item.ContainsKey("Sales Tax")) item["Tax"] = item["Sales Tax"];
+    }
+
+    private bool IsHeaderField_V3(string fieldName) => !string.IsNullOrEmpty(fieldName) && UniversalConstants_V3.HeaderFieldNames.Contains(fieldName);
+    private bool IsProductField_V3(string fieldName) => !string.IsNullOrEmpty(fieldName) && UniversalConstants_V3.ProductFieldNames.Contains(fieldName);
+    
+    /// <summary>
+    /// Placeholder for the existing GetValue helper method that converts raw strings to typed objects.
+    /// </summary>
+    
+    #endregion
 
         private List<IDictionary<string, object>> SetPartLineValues_V5_Current(Part part, string filterInstance = null)
         {
@@ -4968,5 +5327,13 @@ namespace WaterNut.DataSpace
         TropicalVendorsMultiPage,
         AmazonOrder,
         StandardInvoice
+    }
+}
+// Extension method for dictionary safety, defined outside the class or in a static helper class.
+public static class DictionaryExtensions
+{
+    public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue = default)
+    {
+        return dict.TryGetValue(key, out var value) ? value : defaultValue;
     }
 }

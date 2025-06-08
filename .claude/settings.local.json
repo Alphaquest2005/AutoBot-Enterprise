@@ -121,7 +121,8 @@
       "Bash(git add:*)",
       "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/MSBuild.exe\" \"AutoBotUtilities.Tests/AutoBotUtilities.Tests.csproj\" /t:Rebuild /p:Configuration=Debug /p:Platform=x64)",
       "Bash(/mnt/c/Program Files/Git/bin/git.exe add .)",
-      "Bash(\"/mnt/c/Program Files/Git/bin/git.exe\" add .)"
+      "Bash(\"/mnt/c/Program Files/Git/bin/git.exe\" add .)",
+      "Bash(\"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow\\vstest.console.exe\" \".\\AutoBotUtilities.Tests\\bin\\x64\\Debug\\net48\\AutoBotUtilities.Tests.dll\" /TestCaseFilter:\"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportAmazoncomOrder11291264431163432\" \"/Logger:console;verbosity=detailed\")"
     ],
     "deny": []
   }
