@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using OCR.Business.Entities;
 using System.Text.RegularExpressions; // Needed for Regex.IsMatch in ValidateUpdateRequest
+using System.Data.Entity; // For Include() and FirstOrDefaultAsync()
+using global::EntryDataDS.Business.Entities; // For ShipmentInvoice
 
 namespace WaterNut.DataSpace
 {
@@ -216,6 +218,612 @@ namespace WaterNut.DataSpace
                 context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
                 return context;
             }
+        }
+
+        #endregion
+
+        #region Pipeline Instance Methods (Testable)
+
+        /// <summary>
+        /// Generates regex pattern for a correction using DeepSeek integration.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<CorrectionResult> GenerateRegexPatternInternal(CorrectionResult correction, LineContext lineContext)
+        {
+            if (correction == null)
+            {
+                _logger.Error("GenerateRegexPatternInternal: Correction is null");
+                return null;
+            }
+
+            _logger.Information("🔍 **PIPELINE_REGEX_GENERATION_START**: Generating regex pattern for field {FieldName}", correction.FieldName);
+
+            try
+            {
+                // For omissions, we need to create new regex patterns
+                if (correction.CorrectionType == "omission" && lineContext != null)
+                {
+                    _logger.Information("🔍 **PIPELINE_OMISSION_PATTERN**: Creating new regex for omitted field {FieldName}", correction.FieldName);
+                    
+                    var regexResponse = await this.RequestNewRegexFromDeepSeek(correction, lineContext).ConfigureAwait(false);
+                    if (regexResponse != null && !string.IsNullOrEmpty(regexResponse.RegexPattern))
+                    {
+                        correction.SuggestedRegex = regexResponse.RegexPattern;
+                        correction.RequiresMultilineRegex = regexResponse.IsMultiline;
+                        correction.Confidence = regexResponse.Confidence;
+                        correction.Reasoning = regexResponse.Reasoning;
+                        
+                        _logger.Information("✅ **PIPELINE_REGEX_SUCCESS**: Generated regex pattern for {FieldName}: {Pattern}", 
+                            correction.FieldName, regexResponse.RegexPattern);
+                    }
+                    else
+                    {
+                        _logger.Warning("❌ **PIPELINE_REGEX_FAILED**: Failed to generate regex pattern for {FieldName}", correction.FieldName);
+                        correction.Success = false;
+                        correction.Reasoning = "Failed to generate regex pattern from DeepSeek";
+                    }
+                }
+                else
+                {
+                    _logger.Information("🔍 **PIPELINE_FORMAT_CORRECTION**: Field {FieldName} is format correction, no new regex needed", correction.FieldName);
+                }
+
+                return correction;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_REGEX_EXCEPTION**: Exception generating regex pattern for {FieldName}", correction.FieldName);
+                correction.Success = false;
+                correction.Reasoning = $"Exception during regex generation: {ex.Message}";
+                return correction;
+            }
+        }
+
+        /// <summary>
+        /// Validates generated regex pattern against known constraints.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal CorrectionResult ValidatePatternInternal(CorrectionResult correction)
+        {
+            if (correction == null)
+            {
+                _logger.Error("ValidatePatternInternal: Correction is null");
+                return null;
+            }
+
+            _logger.Information("🔍 **PIPELINE_PATTERN_VALIDATION_START**: Validating pattern for field {FieldName}", correction.FieldName);
+
+            try
+            {
+                // Validate field is supported
+                if (!this.IsFieldSupported(correction.FieldName))
+                {
+                    _logger.Warning("❌ **PIPELINE_VALIDATION_FAILED**: Field {FieldName} is not supported", correction.FieldName);
+                    correction.Success = false;
+                    correction.Reasoning = $"Field '{correction.FieldName}' is not supported for database updates";
+                    return correction;
+                }
+
+                // Validate new value if present
+                if (!string.IsNullOrEmpty(correction.NewValue))
+                {
+                    var fieldInfo = this.GetFieldValidationInfo(correction.FieldName);
+                    if (!string.IsNullOrEmpty(fieldInfo.ValidationPattern))
+                    {
+                        try
+                        {
+                            if (!Regex.IsMatch(correction.NewValue, fieldInfo.ValidationPattern))
+                            {
+                                _logger.Warning("❌ **PIPELINE_VALUE_VALIDATION_FAILED**: Value '{Value}' for {FieldName} doesn't match pattern {Pattern}", 
+                                    correction.NewValue, correction.FieldName, fieldInfo.ValidationPattern);
+                                correction.Success = false;
+                                correction.Reasoning = $"Value '{correction.NewValue}' doesn't match expected pattern";
+                                return correction;
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            _logger.Warning("⚠️ **PIPELINE_REGEX_VALIDATION_ERROR**: Invalid validation pattern for {FieldName}: {Error}", 
+                                correction.FieldName, ex.Message);
+                        }
+                    }
+                }
+
+                // Validate suggested regex if present
+                if (!string.IsNullOrEmpty(correction.SuggestedRegex))
+                {
+                    try
+                    {
+                        var testRegex = new Regex(correction.SuggestedRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        _logger.Information("✅ **PIPELINE_REGEX_VALID**: Suggested regex for {FieldName} is syntactically valid", correction.FieldName);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        _logger.Warning("❌ **PIPELINE_REGEX_INVALID**: Invalid suggested regex for {FieldName}: {Error}", 
+                            correction.FieldName, ex.Message);
+                        correction.Success = false;
+                        correction.Reasoning = $"Invalid regex pattern: {ex.Message}";
+                        return correction;
+                    }
+                }
+
+                _logger.Information("✅ **PIPELINE_VALIDATION_SUCCESS**: Pattern validation passed for field {FieldName}", correction.FieldName);
+                return correction;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_VALIDATION_EXCEPTION**: Exception validating pattern for {FieldName}", correction.FieldName);
+                correction.Success = false;
+                correction.Reasoning = $"Exception during validation: {ex.Message}";
+                return correction;
+            }
+        }
+
+        /// <summary>
+        /// Applies correction to database using appropriate strategy.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<DatabaseUpdateResult> ApplyToDatabaseInternal(CorrectionResult correction, TemplateContext templateContext)
+        {
+            if (correction == null || templateContext == null)
+            {
+                _logger.Error("ApplyToDatabaseInternal: Correction or TemplateContext is null");
+                return DatabaseUpdateResult.Failed("Null input parameters");
+            }
+
+            _logger.Information("🔍 **PIPELINE_DATABASE_UPDATE_START**: Applying correction to database for field {FieldName}", correction.FieldName);
+
+            try
+            {
+                using var context = new OCRContext();
+                
+                // Get field metadata from template context
+                var fieldMetadata = templateContext.GetFieldMetadata(correction.FieldName);
+                var updateContext = this.GetDatabaseUpdateContext(correction.FieldName, fieldMetadata);
+
+                if (updateContext.UpdateStrategy == DatabaseUpdateStrategy.SkipUpdate)
+                {
+                    _logger.Information("🔍 **PIPELINE_DATABASE_SKIP**: Skipping database update for field {FieldName}: {Reason}", 
+                        correction.FieldName, updateContext.ErrorMessage ?? "No metadata available");
+                    return DatabaseUpdateResult.Failed("Update skipped - no metadata available");
+                }
+
+                // Create update request
+                var lineContext = this.BuildLineContextForCorrection(correction, 
+                    templateContext.Metadata, templateContext.FileText);
+                var request = this.CreateUpdateRequestForStrategy(correction, lineContext, 
+                    templateContext.FilePath, templateContext.FileText);
+
+                // Validate request
+                var validationResult = this.ValidateUpdateRequest(request);
+                if (!validationResult.IsValid)
+                {
+                    _logger.Warning("❌ **PIPELINE_REQUEST_VALIDATION_FAILED**: Invalid request for {FieldName}: {Error}", 
+                        correction.FieldName, validationResult.ErrorMessage);
+                    return DatabaseUpdateResult.Failed($"Request validation failed: {validationResult.ErrorMessage}");
+                }
+
+                // Get and execute strategy
+                var strategy = _strategyFactory.GetStrategy(correction);
+                if (strategy == null)
+                {
+                    _logger.Warning("❌ **PIPELINE_NO_STRATEGY**: No database update strategy for {FieldName} correction type {CorrectionType}", 
+                        correction.FieldName, correction.CorrectionType);
+                    return DatabaseUpdateResult.Failed($"No strategy for correction type '{correction.CorrectionType}'");
+                }
+
+                _logger.Information("🔍 **PIPELINE_EXECUTING_STRATEGY**: Executing {StrategyType} for field {FieldName}", 
+                    strategy.StrategyType, correction.FieldName);
+
+                var dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+
+                // Log learning entry
+                await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
+
+                if (dbUpdateResult.IsSuccess)
+                {
+                    _logger.Information("✅ **PIPELINE_DATABASE_SUCCESS**: Database update successful for {FieldName}: {Message}", 
+                        correction.FieldName, dbUpdateResult.Message);
+                }
+                else
+                {
+                    _logger.Warning("❌ **PIPELINE_DATABASE_FAILED**: Database update failed for {FieldName}: {Error}", 
+                        correction.FieldName, dbUpdateResult.Message);
+                }
+
+                return dbUpdateResult;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_DATABASE_EXCEPTION**: Exception applying correction to database for {FieldName}", correction.FieldName);
+                return DatabaseUpdateResult.Failed($"Exception during database update: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Re-imports template using updated patterns and validates results.
+        /// Uses the existing ClearInvoiceForReimport() and template.Read() pattern.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<ReimportResult> ReimportAndValidateInternal(DatabaseUpdateResult updateResult, TemplateContext templateContext, string fileText)
+        {
+            var result = new ReimportResult();
+            
+            if (updateResult == null || !updateResult.IsSuccess || templateContext == null)
+            {
+                result.Success = false;
+                result.ErrorMessage = "Invalid input parameters for re-import";
+                return result;
+            }
+
+            _logger.Information("🔍 **PIPELINE_REIMPORT_START**: Re-importing template after database update");
+
+            try
+            {
+                var startTime = DateTime.UtcNow;
+
+                // Get the template from context - we need to reconstruct it from metadata
+                if (!templateContext.InvoiceId.HasValue)
+                {
+                    result.Success = false;
+                    result.ErrorMessage = "No InvoiceId available in template context for re-import";
+                    return result;
+                }
+
+                // Load the updated template from database
+                using var ocrContext = new OCRContext();
+                var ocrInvoice = await ocrContext.Invoices
+                    .Include(i => i.Parts.Select(p => p.Lines.Select(l => l.RegularExpressions)))
+                    .Include(i => i.Parts.Select(p => p.Lines.Select(l => l.Fields)))
+                    .FirstOrDefaultAsync(i => i.Id == templateContext.InvoiceId.Value)
+                    .ConfigureAwait(false);
+
+                if (ocrInvoice == null)
+                {
+                    result.Success = false;
+                    result.ErrorMessage = $"Template with InvoiceId {templateContext.InvoiceId} not found in database";
+                    return result;
+                }
+
+                _logger.Information("🔍 **PIPELINE_REIMPORT_TEMPLATE_LOADED**: Loaded template {InvoiceName} with {PartCount} parts", 
+                    ocrInvoice.Name, ocrInvoice.Parts?.Count ?? 0);
+
+                // Create new template instance with updated database patterns
+                var template = new Invoice(ocrInvoice, _logger);
+
+                // Step 1: Clear all mutable state (existing pattern from ReadFormattedTextStep.cs)
+                _logger.Information("🔍 **PIPELINE_REIMPORT_CLEAR**: Clearing template mutable state for re-import");
+                template.ClearInvoiceForReimport();
+
+                // Step 2: Re-read template with updated patterns (existing pattern from ReadFormattedTextStep.cs)
+                _logger.Information("🔍 **PIPELINE_REIMPORT_READ**: Re-reading template with updated database patterns");
+                var textLines = fileText?.Split(new[] { '\r', '\n' }, StringSplitOptions.None).ToList() ?? new List<string>();
+                var extractedData = template.Read(textLines);
+
+                if (extractedData == null || !extractedData.Any())
+                {
+                    result.Success = false;
+                    result.ErrorMessage = "Template re-read produced no data - possible template corruption";
+                    _logger.Warning("❌ **PIPELINE_REIMPORT_NO_DATA**: Template re-read produced no extracted data");
+                    return result;
+                }
+
+                _logger.Information("✅ **PIPELINE_REIMPORT_DATA_EXTRACTED**: Re-read extracted {RecordCount} data records", extractedData.Count);
+
+                // Step 3: Calculate TotalsZero to validate correction (existing pattern from ReadFormattedTextStep.cs)
+                bool isBalanced = OCRCorrectionService.TotalsZero(extractedData, out var totalsZero, _logger);
+                result.TotalsZero = totalsZero;
+
+                _logger.Information("🔍 **PIPELINE_REIMPORT_VALIDATION**: TotalsZero = {TotalsZero}, IsBalanced = {IsBalanced}", 
+                    totalsZero, isBalanced);
+
+                // Step 4: Extract individual field values for comparison
+                result.ExtractedValues = new Dictionary<string, object>();
+                if (extractedData.Any())
+                {
+                    var firstRecord = extractedData.First();
+                    if (firstRecord != null)
+                    {
+                        // Extract values for Caribbean customs fields
+                        foreach (var property in new[] { "InvoiceNo", "InvoiceTotal", "SubTotal", "TotalInternalFreight", 
+                            "TotalOtherCost", "TotalInsurance", "TotalDeduction" })
+                        {
+                            try
+                            {
+                                var value = ((IDictionary<string, object>)firstRecord).ContainsKey(property) 
+                                    ? ((IDictionary<string, object>)firstRecord)[property] 
+                                    : null;
+                                
+                                if (value != null)
+                                {
+                                    result.ExtractedValues[property] = value;
+                                    _logger.Information("🔍 **PIPELINE_REIMPORT_FIELD_{Field}**: Extracted value = {Value}", property, value);
+                                }
+                            }
+                            catch (Exception fieldEx)
+                            {
+                                _logger.Warning("⚠️ **PIPELINE_REIMPORT_FIELD_ERROR**: Error extracting field {Field}: {Error}", 
+                                    property, fieldEx.Message);
+                            }
+                        }
+                    }
+                }
+
+                // Step 5: Determine success based on improvement
+                result.Success = Math.Abs(totalsZero) < 0.01 || template.Success; // Balanced OR template reports success
+                result.Duration = DateTime.UtcNow - startTime;
+
+                if (result.Success)
+                {
+                    _logger.Information("✅ **PIPELINE_REIMPORT_SUCCESS**: Template re-import successful - TotalsZero = {TotalsZero}, Template.Success = {TemplateSuccess}", 
+                        totalsZero, template.Success);
+                }
+                else
+                {
+                    _logger.Warning("⚠️ **PIPELINE_REIMPORT_PARTIAL**: Template re-import completed but not fully balanced - TotalsZero = {TotalsZero}", 
+                        totalsZero);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_REIMPORT_EXCEPTION**: Exception during template re-import");
+                result.Success = false;
+                result.ErrorMessage = $"Exception during re-import: {ex.Message}";
+                result.Duration = DateTime.UtcNow - DateTime.UtcNow; // Zero duration on exception
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Updates actual invoice data using corrected values.
+        /// Bridges OCRContext changes to EntryDataDSContext by mapping extracted field values to ShipmentInvoice entity.
+        /// Applies Caribbean customs business rules for field mappings.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<InvoiceUpdateResult> UpdateInvoiceDataInternal(ReimportResult reimportResult, global::EntryDataDS.Business.Entities.ShipmentInvoice invoice)
+        {
+            var result = new InvoiceUpdateResult();
+            
+            if (reimportResult == null || !reimportResult.Success || invoice == null)
+            {
+                result.Success = false;
+                result.ErrorMessage = "Invalid input parameters for invoice update";
+                return result;
+            }
+
+            _logger.Information("🔍 **PIPELINE_INVOICE_UPDATE_START**: Updating invoice data for {InvoiceNo}", invoice.InvoiceNo);
+
+            try
+            {
+                var startTime = DateTime.UtcNow;
+                var fieldsUpdated = new List<string>();
+                var valuesChanged = new Dictionary<string, object>();
+                
+                // Calculate TotalsZero before update
+                double totalsZeroBefore;
+                OCRCorrectionService.TotalsZero(invoice, out totalsZeroBefore, _logger);
+                result.TotalsZeroBefore = totalsZeroBefore;
+                _logger.Information("🔍 **PIPELINE_INVOICE_BEFORE**: TotalsZero before correction = {TotalsZero:F2}", result.TotalsZeroBefore);
+
+                // Check if we have extracted values from re-import
+                if (reimportResult.ExtractedValues == null || !reimportResult.ExtractedValues.Any())
+                {
+                    _logger.Warning("⚠️ **PIPELINE_NO_EXTRACTED_VALUES**: No extracted values available from re-import to apply to invoice");
+                    result.Success = false;
+                    result.ErrorMessage = "No extracted values available for invoice update";
+                    return result;
+                }
+
+                // Map extracted values to ShipmentInvoice fields following Caribbean customs business rules
+                _logger.Information("🔍 **PIPELINE_FIELD_MAPPING_START**: Applying {Count} extracted values to invoice fields", reimportResult.ExtractedValues.Count);
+
+                foreach (var kvp in reimportResult.ExtractedValues)
+                {
+                    var fieldName = kvp.Key;
+                    var extractedValue = kvp.Value;
+                    
+                    _logger.Debug("🔍 **PIPELINE_MAPPING_FIELD**: {FieldName} = {ExtractedValue} (Type: {ValueType})", 
+                        fieldName, extractedValue, extractedValue?.GetType().Name ?? "null");
+
+                    try
+                    {
+                        // Map Caribbean customs fields to ShipmentInvoice properties
+                        switch (fieldName)
+                        {
+                            case "InvoiceNo":
+                                // InvoiceNo typically doesn't change during correction, but validate consistency
+                                if (extractedValue != null && extractedValue.ToString() != invoice.InvoiceNo)
+                                {
+                                    _logger.Warning("⚠️ **PIPELINE_INVOICE_NO_MISMATCH**: Extracted InvoiceNo '{ExtractedValue}' differs from invoice '{InvoiceNo}'", 
+                                        extractedValue, invoice.InvoiceNo);
+                                }
+                                break;
+
+                            case "SubTotal":
+                                if (TryParseDecimal(extractedValue, out var subTotal) && (double)subTotal != (double)(invoice.SubTotal ?? 0))
+                                {
+                                    valuesChanged["SubTotal"] = $"{(invoice.SubTotal ?? 0):F2} → {subTotal:F2}";
+                                    invoice.SubTotal = (double?)subTotal;
+                                    fieldsUpdated.Add("SubTotal");
+                                }
+                                break;
+
+                            case "InvoiceTotal":
+                                if (TryParseDecimal(extractedValue, out var invoiceTotal) && (double)invoiceTotal != (double)(invoice.InvoiceTotal ?? 0))
+                                {
+                                    valuesChanged["InvoiceTotal"] = $"{(invoice.InvoiceTotal ?? 0):F2} → {invoiceTotal:F2}";
+                                    invoice.InvoiceTotal = (double?)invoiceTotal;
+                                    fieldsUpdated.Add("InvoiceTotal");
+                                }
+                                break;
+
+                            case "TotalInternalFreight":
+                                if (TryParseDecimal(extractedValue, out var freight) && (double)freight != (double)(invoice.TotalInternalFreight ?? 0))
+                                {
+                                    valuesChanged["TotalInternalFreight"] = $"{(invoice.TotalInternalFreight ?? 0):F2} → {freight:F2}";
+                                    invoice.TotalInternalFreight = (double?)freight;
+                                    fieldsUpdated.Add("TotalInternalFreight");
+                                }
+                                break;
+
+                            case "TotalOtherCost":
+                                if (TryParseDecimal(extractedValue, out var otherCost) && (double)otherCost != (double)(invoice.TotalOtherCost ?? 0))
+                                {
+                                    valuesChanged["TotalOtherCost"] = $"{(invoice.TotalOtherCost ?? 0):F2} → {otherCost:F2}";
+                                    invoice.TotalOtherCost = (double?)otherCost;
+                                    fieldsUpdated.Add("TotalOtherCost");
+                                }
+                                break;
+
+                            case "TotalInsurance":
+                                // Caribbean Customs Rule: Customer-caused reductions (gift cards, store credits) → TotalInsurance (negative values)
+                                if (TryParseDecimal(extractedValue, out var insurance) && (double)insurance != (double)(invoice.TotalInsurance ?? 0))
+                                {
+                                    valuesChanged["TotalInsurance"] = $"{(invoice.TotalInsurance ?? 0):F2} → {insurance:F2}";
+                                    invoice.TotalInsurance = (double?)insurance;
+                                    fieldsUpdated.Add("TotalInsurance");
+                                    _logger.Information("🔍 **PIPELINE_CARIBBEAN_RULE_INSURANCE**: Applied customer reduction to TotalInsurance = {Insurance:F2}", insurance);
+                                }
+                                break;
+
+                            case "TotalDeduction":
+                                // Caribbean Customs Rule: Supplier-caused reductions (free shipping, discounts) → TotalDeduction (positive values)
+                                if (TryParseDecimal(extractedValue, out var deduction) && (double)deduction != (double)(invoice.TotalDeduction ?? 0))
+                                {
+                                    valuesChanged["TotalDeduction"] = $"{(invoice.TotalDeduction ?? 0):F2} → {deduction:F2}";
+                                    invoice.TotalDeduction = (double?)deduction;
+                                    fieldsUpdated.Add("TotalDeduction");
+                                    _logger.Information("🔍 **PIPELINE_CARIBBEAN_RULE_DEDUCTION**: Applied supplier reduction to TotalDeduction = {Deduction:F2}", deduction);
+                                }
+                                break;
+
+                            default:
+                                _logger.Debug("🔍 **PIPELINE_UNMAPPED_FIELD**: Field '{FieldName}' not mapped to ShipmentInvoice property", fieldName);
+                                break;
+                        }
+                    }
+                    catch (Exception fieldEx)
+                    {
+                        _logger.Warning(fieldEx, "⚠️ **PIPELINE_FIELD_UPDATE_ERROR**: Error updating field {FieldName} with value {Value}", 
+                            fieldName, extractedValue);
+                    }
+                }
+
+                // Log all field updates
+                if (fieldsUpdated.Any())
+                {
+                    _logger.Information("✅ **PIPELINE_FIELDS_UPDATED**: Updated {Count} fields: {Fields}", 
+                        fieldsUpdated.Count, string.Join(", ", fieldsUpdated));
+                    
+                    foreach (var change in valuesChanged)
+                    {
+                        _logger.Information("🔍 **PIPELINE_VALUE_CHANGE**: {FieldName}: {Change}", change.Key, change.Value);
+                    }
+                }
+                else
+                {
+                    _logger.Information("🔍 **PIPELINE_NO_CHANGES**: No field values changed during correction");
+                }
+
+                // Save changes to EntryDataDSContext
+                _logger.Information("🔍 **PIPELINE_DATABASE_SAVE**: Saving invoice changes to EntryDataDSContext");
+                
+                using (var entryDataContext = new global::EntryDataDS.Business.Entities.EntryDataDSContext())
+                {
+                    // Attach the invoice to the context if not already tracked
+                    if (entryDataContext.Entry(invoice).State == System.Data.Entity.EntityState.Detached)
+                    {
+                        entryDataContext.ShipmentInvoice.Attach(invoice);
+                        entryDataContext.Entry(invoice).State = System.Data.Entity.EntityState.Modified;
+                        _logger.Debug("🔍 **PIPELINE_ENTITY_ATTACHED**: Invoice attached to EntryDataDSContext as Modified");
+                    }
+
+                    int changesSaved = await entryDataContext.SaveChangesAsync().ConfigureAwait(false);
+                    _logger.Information("✅ **PIPELINE_DATABASE_SAVED**: Saved {ChangeCount} changes to database", changesSaved);
+                }
+
+                // Calculate TotalsZero after update to verify correction
+                double totalsZeroAfter;
+                OCRCorrectionService.TotalsZero(invoice, out totalsZeroAfter, _logger);
+                result.TotalsZeroAfter = totalsZeroAfter;
+                result.Duration = DateTime.UtcNow - startTime;
+                
+                // Determine success based on improvement in balance
+                bool isBalanced = Math.Abs(result.TotalsZeroAfter) <= 0.01;
+                bool isImproved = Math.Abs(result.TotalsZeroAfter) < Math.Abs(result.TotalsZeroBefore);
+                
+                result.Success = isBalanced || isImproved;
+                
+                if (isBalanced)
+                {
+                    _logger.Information("✅ **PIPELINE_INVOICE_UPDATE_SUCCESS**: Invoice fully balanced - TotalsZero {Before:F2} → {After:F2}", 
+                        result.TotalsZeroBefore, result.TotalsZeroAfter);
+                }
+                else if (isImproved)
+                {
+                    _logger.Information("⚠️ **PIPELINE_INVOICE_UPDATE_PARTIAL**: Invoice improved but not fully balanced - TotalsZero {Before:F2} → {After:F2}", 
+                        result.TotalsZeroBefore, result.TotalsZeroAfter);
+                }
+                else
+                {
+                    _logger.Warning("❌ **PIPELINE_INVOICE_UPDATE_NO_IMPROVEMENT**: Invoice balance did not improve - TotalsZero {Before:F2} → {After:F2}", 
+                        result.TotalsZeroBefore, result.TotalsZeroAfter);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_INVOICE_UPDATE_EXCEPTION**: Exception updating invoice data for {InvoiceNo}", invoice?.InvoiceNo);
+                result.Success = false;
+                result.ErrorMessage = $"Exception during invoice update: {ex.Message}";
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Safely parses a value to decimal, handling null, empty, string, and numeric types.
+        /// </summary>
+        private bool TryParseDecimal(object value, out decimal result)
+        {
+            result = 0;
+            
+            if (value == null)
+                return false;
+                
+            // Handle direct decimal/double/float types
+            if (value is decimal d)
+            {
+                result = d;
+                return true;
+            }
+            if (value is double dbl)
+            {
+                result = (decimal)dbl;
+                return true;
+            }
+            if (value is float flt)
+            {
+                result = (decimal)flt;
+                return true;
+            }
+            if (value is int i)
+            {
+                result = i;
+                return true;
+            }
+            
+            // Handle string parsing with culture-aware formatting
+            var stringValue = value.ToString()?.Trim();
+            if (string.IsNullOrEmpty(stringValue))
+                return false;
+                
+            // Remove common currency symbols and formatting
+            stringValue = stringValue.Replace("$", "").Replace(",", "").Replace("(", "-").Replace(")", "").Trim();
+            
+            return decimal.TryParse(stringValue, out result);
         }
 
         #endregion

@@ -24,6 +24,21 @@ namespace WaterNut.DataSpace
 
             // Log entry with version marker
             _logger?.Debug("CleanTextForAnalysis | v2.1 | Start: {InitialText}", TruncateForLog(text, 200));
+            
+            // **CRITICAL CHECK**: Track gift card content through cleaning process
+            bool initialHasGiftCard = text.Contains("Gift Card") || text.Contains("-$6.99");
+            _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_INITIAL**: Original text contains gift card? Expected=TRUE, Actual={HasGiftCard}", initialHasGiftCard);
+            if (initialHasGiftCard)
+            {
+                var giftLines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
+                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_INITIAL**: Found {Count} gift card lines: {Lines}", 
+                    giftLines.Count, string.Join(" | ", giftLines));
+            }
+            else
+            {
+                _logger?.Error("❌ **TEXT_CLEANING_ASSERTION_FAILED**: Original text does not contain gift card - cleaning cannot preserve what doesn't exist");
+            }
 
             // 1. Normalize all line endings to a single '\n' for consistent processing.
             string cleaned = text.Replace("\r\n", "\n").Replace("\r", "\n");
@@ -58,6 +73,27 @@ namespace WaterNut.DataSpace
             }
 
             _logger?.Debug("CleanTextForAnalysis | v2.1 | Final Result: {FinalText}", TruncateForLog(cleaned, 200));
+            
+            // **FINAL CHECK**: Verify gift card content survived cleaning process
+            bool finalHasGiftCard = cleaned.Contains("Gift Card") || cleaned.Contains("-$6.99");
+            _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_FINAL**: Cleaned text contains gift card? Expected=TRUE, Actual={HasGiftCard}", finalHasGiftCard);
+            
+            if (initialHasGiftCard && !finalHasGiftCard)
+            {
+                _logger?.Error("❌ **TEXT_CLEANING_DATA_LOSS**: Gift card content was LOST during cleaning process - DeepSeek will not detect missing fields");
+            }
+            else if (initialHasGiftCard && finalHasGiftCard)
+            {
+                _logger?.Information("✅ **TEXT_CLEANING_PRESERVED**: Gift card content successfully preserved through cleaning");
+            }
+            else if (finalHasGiftCard)
+            {
+                var finalGiftLines = cleaned.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
+                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_FINAL**: Final {Count} gift card lines: {Lines}", 
+                    finalGiftLines.Count, string.Join(" | ", finalGiftLines));
+            }
+            
             return cleaned;
         }
 

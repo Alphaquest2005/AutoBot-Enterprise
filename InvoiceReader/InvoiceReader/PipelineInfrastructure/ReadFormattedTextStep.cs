@@ -9,6 +9,8 @@ using System;
 using System.Runtime.InteropServices; // Added
 using OCR.Business.Entities; // Added for Template
 using Core.Common.Extensions; // Added for BetterExpando
+using WaterNut.DataSpace; // Added for functional pipeline extensions
+using System.Text.Json; // Added for template context serialization
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -25,8 +27,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // Ensure verbose logging for this method
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT TO FOCUS ON DEEPSEEK API DEBUGGING
+            // {
                 var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
                 string filePath = context?.FilePath ?? "Unknown";
                 context.Logger?.Information(
@@ -206,11 +208,26 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     context.Logger?.Warning("OCR_CORRECTION_DEBUG: Initial CsvLines is null");
                                 }
 
+                                // === OCR CORRECTION SECTION ENTRY ===
+                                context.Logger?.Error("🔍 **OCR_CORRECTION_ENTRY**: OCR correction section ENTERED in ReadFormattedTextStep");
+
                                 // Calculate and log TotalsZero using the CsvLines result
                                 OCRCorrectionService.TotalsZero(res, out var totalsZero, context.Logger);
-                                context.Logger?.Information(
-                                    "OCR_CORRECTION_DEBUG: TotalsZero calculation from CsvLines = {TotalsZero}",
+                                context.Logger?.Error(
+                                    "🔍 **OCR_CORRECTION_TOTALS**: Initial TotalsZero calculation from CsvLines = {TotalsZero}",
                                     totalsZero);
+                                
+                                // INTENTION CONFIRMATION: Check if TotalsZero matches expected unbalanced state
+                                bool isTotalsZeroUnbalanced = Math.Abs(totalsZero) > 0.01;
+                                context.Logger?.Error("🔍 **OCR_INTENTION_CHECK_1**: Is TotalsZero unbalanced (abs > 0.01)? Expected=TRUE, Actual={IsUnbalanced}", isTotalsZeroUnbalanced);
+                                if (!isTotalsZeroUnbalanced)
+                                {
+                                    context.Logger?.Error("🔍 **OCR_INTENTION_FAILED_1**: INTENTION FAILED - TotalsZero is balanced but we expected unbalanced (-147.97)");
+                                }
+                                else
+                                {
+                                    context.Logger?.Error("🔍 **OCR_INTENTION_MET_1**: INTENTION MET - TotalsZero is unbalanced as expected");
+                                }
 
                                 // Log line values for DeepSeek mapping
                                 context.Logger?.Information(
@@ -242,8 +259,23 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     maxCorrectionAttempts =
                                         1; // Circuit breaker: only 1 attempt to prevent infinite loops
 
-                                while (ShouldContinueCorrections(res, out double currentTotal, context.Logger)
-                                       && correctionAttempts < maxCorrectionAttempts)
+                                context.Logger?.Error("🔍 **OCR_CORRECTION_WHILE_CHECK**: About to check ShouldContinueCorrections condition");
+                                context.Logger?.Error("🔍 **OCR_INTENTION_SHOULD_CONTINUE**: We EXPECT ShouldContinueCorrections to return TRUE because TotalsZero should be -147.97 (unbalanced)");
+                                bool shouldContinue = WaterNut.DataSpace.OCRCorrectionService.ShouldContinueCorrections(res, out double currentTotal, context.Logger);
+                                context.Logger?.Error("🔍 **OCR_CORRECTION_SHOULD_CONTINUE**: ShouldContinueCorrections = {ShouldContinue}, CurrentTotal = {CurrentTotal}", shouldContinue, currentTotal);
+                                
+                                // INTENTION CONFIRMATION: ShouldContinueCorrections should return TRUE for unbalanced invoice
+                                context.Logger?.Error("🔍 **OCR_INTENTION_CHECK_2**: Should continue corrections? Expected=TRUE, Actual={ShouldContinue}", shouldContinue);
+                                if (!shouldContinue)
+                                {
+                                    context.Logger?.Error("🔍 **OCR_INTENTION_FAILED_2**: INTENTION FAILED - ShouldContinueCorrections returned FALSE but we expected TRUE due to unbalanced invoice");
+                                }
+                                else
+                                {
+                                    context.Logger?.Error("🔍 **OCR_INTENTION_MET_2**: INTENTION MET - ShouldContinueCorrections returned TRUE as expected for unbalanced invoice");
+                                }
+
+                                while (shouldContinue && correctionAttempts < maxCorrectionAttempts)
                                 {
                                     correctionAttempts++;
                                     context.Logger?.Information(
@@ -253,25 +285,60 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         currentTotal);
 
                                     // Apply OCR correction using the CsvLines result and template
-                                    await OCRCorrectionService.CorrectInvoices(res, template, context.Logger).ConfigureAwait(false);
+                                    context.Logger?.Error("🔍 **OCR_CORRECTION_SERVICE_CALL**: About to call OCRCorrectionService.CorrectInvoices");
+                                    context.Logger?.Error("🔍 **OCR_INTENTION_SERVICE**: We EXPECT CorrectInvoices to detect 'Gift Card Amount: -$6.99' and map it to TotalDeduction field");
+                                    
+                                    
+                                    await OCRCorrectionService.ExecuteFullPipelineForInvoiceAsync(res, template, context.Logger).ConfigureAwait(false);
+                                    
+                                    context.Logger?.Error("🔍 **OCR_CORRECTION_SERVICE_RETURN**: OCRCorrectionService.CorrectInvoices completed");
+                                    
+                                    // **CRITICAL DEBUGGING**: Log the state of 'res' immediately after OCR correction to verify corrections were applied
+                                    context.Logger?.Error("🔍 **POST_OCR_CORRECTION_RES_CHECK**: Checking 'res' dynamic structure for corrected values");
+                                    if (res != null && res.Count > 0)
+                                    {
+                                        for (int resIdx = 0; resIdx < res.Count; resIdx++)
+                                        {
+                                            var resItem = res[resIdx];
+                                            if (resItem is IDictionary<string, object> dict)
+                                            {
+                                                var tdVal = dict.TryGetValue("TotalDeduction", out var td) ? td?.ToString() : "NOT_FOUND";
+                                                var tiVal = dict.TryGetValue("TotalInsurance", out var ti) ? ti?.ToString() : "NOT_FOUND";
+                                                context.Logger?.Error("🔍 **POST_OCR_RES_ITEM_{Index}**: TotalDeduction={TD} | TotalInsurance={TI}", 
+                                                    resIdx, tdVal, tiVal);
+                                            }
+                                        }
+                                    }
+                                    
+                                    // INTENTION CONFIRMATION: Check if TotalDeduction was populated after correction
+                                    // Re-read the corrected values to check
+                                    if (OCRCorrectionService.TotalsZero(res, out var postCorrectionTotal, context.Logger))
+                                    {
+                                        context.Logger?.Error("🔍 **OCR_INTENTION_CHECK_3**: Post-correction TotalsZero = {PostTotal}, Expected=0 (balanced)", postCorrectionTotal);
+                                        if (Math.Abs(postCorrectionTotal) <= 0.01)
+                                        {
+                                            context.Logger?.Error("🔍 **OCR_INTENTION_MET_3**: INTENTION MET - OCR correction successfully balanced the invoice");
+                                        }
+                                        else
+                                        {
+                                            context.Logger?.Error("🔍 **OCR_INTENTION_FAILED_3**: INTENTION FAILED - OCR correction did not balance the invoice, TotalsZero still = {PostTotal}", postCorrectionTotal);
+                                        }
+                                    }
 
                                     // Clear all mutable state and re-read to get updated values
+                                    // This validates that the OCR correction service successfully updated the database regex patterns
                                     template.ClearInvoiceForReimport();
-                                    res = template.Read(textLines); // Re-read after correction
+                                    res = template.Read(textLines); // Re-read with updated patterns from database
 
-                                    if (OCRCorrectionService.TotalsZero(res, out var newTotalsZero, context.Logger))
-                                    {
-                                        context.Logger?.Information(
-                                            "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}",
-                                            correctionAttempts,
-                                            newTotalsZero);
-                                    }
-                                    else
-                                    {
-                                        context.Logger?.Information(
-                                            "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero failed.",
-                                            correctionAttempts);
-                                    }
+                                    // Check if corrections were successful by calculating TotalsZero on the corrected 'res' structure
+                                    OCRCorrectionService.TotalsZero(res, out var newTotalsZero, context.Logger);
+                                    context.Logger?.Information(
+                                        "OCR_CORRECTION_DEBUG: After correction attempt {Attempt}, new TotalsZero = {TotalsZero}",
+                                        correctionAttempts,
+                                        newTotalsZero);
+                                    
+                                    // Update the shouldContinue condition based on the corrected results
+                                    shouldContinue = WaterNut.DataSpace.OCRCorrectionService.ShouldContinueCorrections(res, out currentTotal, context.Logger);
 
                                 }
 
@@ -297,6 +364,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         "OCR_CORRECTION_DEBUG: No OCR correction needed. TotalsZero = {TotalsZero}",
                                         totalsZero);
                                 }
+
+                                context.Logger?.Error("🔍 **OCR_CORRECTION_EXIT**: OCR correction section COMPLETED in ReadFormattedTextStep");
 
                                 template.CsvLines = res;
                             }
@@ -456,8 +525,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 return overallSuccess; // Return overall success status
 
-
-            } // Closing brace for the 'using' block
+            // } // COMMENTED OUT: Closing brace for the 'using' block was removed
         } // Closing brace for the 'Execute' method
 
         // Validation specific to one template instance

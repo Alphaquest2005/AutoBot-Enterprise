@@ -23,7 +23,13 @@ namespace WaterNut.DataSpace
 {
     public class EntryDocSetUtils
     {
-        private static readonly ILogger _log = Log.ForContext<EntryDocSetUtils>(); // Add static logger
+        private static ILogger _log = Log.ForContext<EntryDocSetUtils>(); // Add static logger
+        
+        // Set the static logger to the passed logger to ensure consistency
+        private static void SetLogger(ILogger logger)
+        {
+            _log = logger ?? Log.ForContext<EntryDocSetUtils>();
+        }
 
         public static async Task<(AsycudaDocumentSet docSet, List<IGrouping<string, xcuda_ASYCUDA>> lst)>
             GetDuplicateDocuments(int docKey)
@@ -244,6 +250,9 @@ namespace WaterNut.DataSpace
         public static async Task<(DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)> CreateMonthYearAsycudaDocSet(
             ILogger log, DateTime startDate) // Add ILogger parameter
         {
+            // Set the static logger to the passed logger to ensure consistency
+            SetLogger(log);
+            
             string methodName = nameof(CreateMonthYearAsycudaDocSet);
             log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ StartDate: {StartDate} }}",
                 methodName, "BaseDataModel.GetCurrentSalesInfo", startDate); // Add METHOD_ENTRY log
@@ -289,6 +298,9 @@ namespace WaterNut.DataSpace
 
         public static async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(ILogger log, string docRef, bool isSystemDocSet) // Add ILogger parameter
         {
+            // Set the static logger to the passed logger to ensure consistency
+            SetLogger(log);
+            
             string methodName = nameof(GetAsycudaDocumentSet);
             log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ DocRef: {DocRef}, IsSystemDocSet: {IsSystemDocSet} }}",
                 methodName, "EntryDocSetUtils.CreateMonthYearAsycudaDocSet", docRef, isSystemDocSet); // Add METHOD_ENTRY log
@@ -336,6 +348,9 @@ namespace WaterNut.DataSpace
 
         public static async Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(ILogger log, string docRef, bool isSystemDocSet) // Add ILogger parameter
         {
+            // Set the static logger to the passed logger to ensure consistency
+            SetLogger(log);
+            
             string methodName = nameof(CreateAsycudaDocumentSet);
             log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ DocRef: {DocRef}, IsSystemDocSet: {IsSystemDocSet} }}",
                 methodName, "EntryDocSetUtils.GetAsycudaDocumentSet", docRef, isSystemDocSet); // Add METHOD_ENTRY log

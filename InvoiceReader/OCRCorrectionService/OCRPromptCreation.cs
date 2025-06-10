@@ -16,72 +16,90 @@ namespace WaterNut.DataSpace
         #region Enhanced Prompt Creation Methods for DeepSeek
 
         /// <summary>
-        /// Creates a prompt for DeepSeek to detect errors and omissions in invoice header fields.
+        /// Creates a simplified prompt for DeepSeek to detect missing invoice fields.
+        /// Focus on basic field detection without complex business rules.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
         {
-            // Serialize only relevant header fields for the prompt
-            var headerData = new Dictionary<string, object>();
-            var props = typeof(ShipmentInvoice).GetProperties().Where(p => p.DeclaringType == typeof(ShipmentInvoice) && p.Name != "InvoiceDetails" && p.Name != "Attachments" && p.Name != "TrackingState" && p.Name != "ModifiedProperties");
+            // **PROMPT_CREATION_START**: Log the beginning of prompt creation
+            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating SIMPLIFIED header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
             
-            foreach (var prop in props)
+            // Create a simple current values summary
+            var currentValues = new Dictionary<string, object>
             {
-                headerData[prop.Name] = prop.GetValue(invoice);
-            }
-            // Ensure key fields are present even if null, so LLM knows they are expected
-            string[] ensureKeys = { "InvoiceTotal", "SubTotal", "TotalDeduction", "InvoiceNo", "InvoiceDate", "SupplierName", "Currency" };
-            foreach(var key in ensureKeys) {
-                if(!headerData.ContainsKey(key)) headerData[key] = null;
-            }
+                ["InvoiceNo"] = invoice?.InvoiceNo,
+                ["InvoiceTotal"] = invoice?.InvoiceTotal,
+                ["SubTotal"] = invoice?.SubTotal,
+                ["TotalInternalFreight"] = invoice?.TotalInternalFreight,
+                ["TotalOtherCost"] = invoice?.TotalOtherCost,
+                ["TotalDeduction"] = invoice?.TotalDeduction,
+                ["TotalInsurance"] = invoice?.TotalInsurance,
+                ["InvoiceDate"] = invoice?.InvoiceDate,
+                ["SupplierName"] = invoice?.SupplierName,
+                ["Currency"] = invoice?.Currency
+            };
+            
+            var currentJson = JsonSerializer.Serialize(currentValues, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            
+            // **DATA_CHECK**: Log current invoice values before prompt creation
+            _logger.Information("🔍 **PROMPT_INVOICE_DATA**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal} | TotalDeduction={TotalDeduction} | TotalInsurance={TotalInsurance} | InvoiceTotal={InvoiceTotal}", 
+                invoice?.InvoiceNo, invoice?.SubTotal, invoice?.TotalDeduction, invoice?.TotalInsurance, invoice?.InvoiceTotal);
+            
+            // **FILE_TEXT_CHECK**: Verify the file text contains financial information
+            bool fileTextContainsFinancials = fileText?.Contains("$") == true || fileText?.Contains("Total") == true;
+            bool fileTextContainsGiftCard = fileText?.Contains("Gift Card") == true;
+            _logger.Information("🔍 **PROMPT_FILE_TEXT_CHECK**: File text contains financial data? Expected=TRUE, Actual={ContainsFinancials}", fileTextContainsFinancials);
+            _logger.Information("🔍 **PROMPT_FILE_TEXT_GIFTCARD**: File text contains Gift Card? Expected=TRUE, Actual={ContainsGiftCard}", fileTextContainsGiftCard);
+            _logger.Information("🔍 **PROMPT_FILE_TEXT_LENGTH**: File text length: {Length} characters", fileText?.Length ?? 0);
+            _logger.Information("🔍 **PROMPT_FILE_TEXT_PREVIEW**: First 500 chars: {Preview}", 
+                fileText?.Length > 500 ? fileText.Substring(0, 500) + "..." : fileText ?? "NULL");
+            
+            var prompt = $@"FIND MISSING INVOICE FIELDS:
 
-            var headerJson = JsonSerializer.Serialize(headerData, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+You are helping extract missing financial information from an invoice. Compare what was already extracted against the original text to find missing fields.
 
-            return $@"OCR HEADER FIELD ERROR DETECTION AND OMISSION ANALYSIS:
-Analyze the original invoice text against the extracted header data. Identify ALL discrepancies, including format errors, value errors, and MISSING fields (omissions).
+CURRENTLY EXTRACTED FIELDS:
+{currentJson}
 
-EXTRACTED HEADER DATA:
-{headerJson}
+ORIGINAL INVOICE TEXT:
+{this.CleanTextForAnalysis(fileText)}
 
-ORIGINAL INVOICE TEXT (condensed for brevity if long):
-{this.CleanTextForAnalysis(fileText)} 
+TASK: Find financial values in the original text that are missing from the extracted fields.
 
-CRITICAL REQUIREMENTS FOR EACH IDENTIFIED ERROR/OMISSION:
-1. ""field"": The EXACT name of the field from EXTRACTED HEADER DATA keys (e.g., ""InvoiceTotal"", ""TotalDeduction""). For true omissions not in keys, use the canonical name from your knowledge or the context if evident (e.g. ""TotalDeduction"" if a gift card line is found but TotalDeduction is null/missing in EXTRACTED HEADER DATA).
-2. ""extracted_value"": The current value from EXTRACTED HEADER DATA for that field. For omissions, this should be empty string or reflect the null/missing state from EXTRACTED HEADER DATA.
-3. ""correct_value"": The correct value as found or inferred from the ORIGINAL INVOICE TEXT.
-4. ""line_text"": The EXACT line from ORIGINAL INVOICE TEXT where the correct value (or clear evidence of omission) appears.
-5. ""line_number"": The 1-based line number in ORIGINAL INVOICE TEXT corresponding to ""line_text"".
-6. ""context_lines_before"": Array of up to 5 full text lines immediately PRECEDING ""line_text"".
-7. ""context_lines_after"": Array of up to 5 full text lines immediately FOLLOWING ""line_text"".
-8. ""requires_multiline_regex"": true/false. Indicate if extracting this field might require a regex pattern spanning multiple lines (e.g., for a multi-line address if SupplierAddress was the field).
-9. ""confidence"": Your confidence in this correction (0.0 to 1.0).
-10. ""error_type"": One of: ""omission"" (field present in text, missing/null in extracted), ""format_error"" (extracted, but wrong format e.g. 123,45 vs 123.45), ""value_error"" (extracted, format ok, but value wrong vs text), ""decimal_separator"", ""character_confusion"", ""calculation_error"" (if a total is inconsistent with components visible in header text).
-11. ""reasoning"": Brief explanation for the correction.
+Look for these common patterns:
+- Gift cards, store credits → ""TotalInsurance"" field (use negative values like -6.99)
+- Discounts, free shipping → ""TotalDeduction"" field (use positive values like 6.99)
+- Shipping costs → ""TotalInternalFreight"" field
+- Taxes, fees → ""TotalOtherCost"" field
+- Missing invoice total → ""InvoiceTotal"" field
+- Missing subtotal → ""SubTotal"" field
 
-DEDUCTION IDENTIFICATION (CRITICAL FOR OMISSIONS OF TotalDeduction):
-Actively search for these terms in ORIGINAL INVOICE TEXT. If found and TotalDeduction in EXTRACTED HEADER DATA is 0 or null, report as ""omission"":
-- ""Gift card"", ""Gift certificate"", ""GC Applied"", ""Discount Code"", ""Coupon Applied""
-- ""Store credit"", ""Account credit"", ""Promotional Credit""
-- Terms indicating a reduction in the total amount payable due to non-standard line item discounts.
-
-RESPONSE FORMAT (Strict JSON array of error objects under ""errors"" key):
+RESPONSE FORMAT - Return EXACTLY this JSON structure:
 {{
   ""errors"": [
     {{
-      ""field"": ""TotalDeduction"", ""extracted_value"": ""0.00"", ""correct_value"": ""5.99"",
-      ""line_text"": ""Gift Card Applied: -$5.99"", ""line_number"": 28,
-      ""context_lines_before"": [""L23: Item X"", ""L24: Subtotal: $100.00"", ""L25: Shipping: $10.00"", ""L26: Handling: $2.00"", ""L27: Tax: $7.00""],
-      ""context_lines_after"": [""L29: Grand Total: $101.01"", ""L30: Due Date: 01/15/2024"", ""L31: Payment Method: Visa ****1234"", ""L32: Auth Code: XYZ789"", ""L33: Thank you for your order!""],
-      ""requires_multiline_regex"": false, ""confidence"": 0.98, ""error_type"": ""omission"",
-      ""reasoning"": ""Gift card deduction clearly stated in text but not reflected in extracted TotalDeduction.""
+      ""field"": ""TotalInsurance"",
+      ""extracted_value"": ""null"",
+      ""correct_value"": ""-6.99"",
+      ""line_text"": ""Gift Card Amount: -$6.99"",
+      ""line_number"": 15,
+      ""confidence"": 0.95,
+      ""error_type"": ""omission"",
+      ""reasoning"": ""Gift card amount found in text but missing from extracted data""
     }}
-    // ... more error objects if any ...
   ]
 }}
-If no errors or omissions are found, return: {{""errors"": []}}
-Focus on fields critical for financial accuracy and identification: InvoiceTotal, SubTotal, all cost components, deductions, InvoiceNo, InvoiceDate, SupplierName.
-Provide full context lines as available; do not truncate them in the JSON.
+
+If no missing fields found, return: {{""errors"": []}}
+
+Focus on finding clear numerical values with dollar signs that are present in the text but missing from the extracted fields.
 ";
+            
+            // **PROMPT_CREATION_COMPLETE**: Log the final prompt being sent to DeepSeek
+            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: SIMPLIFIED prompt created with {PromptLength} characters", prompt.Length);
+            _logger.Information("🔍 **PROMPT_COMPLETE_CONTENT**: Complete simplified prompt sent to DeepSeek: {CompletePrompt}", prompt);
+            
+            return prompt;
         }
 
         /// <summary>
@@ -251,6 +269,17 @@ MATHEMATICAL VALIDATION RULES:
 1. For each line item (in InvoiceDetails if present): (Quantity * Cost) - Discount = TotalCost (approximately).
 2. Overall: SubTotal (sum of all line item TotalCosts) + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeduction = InvoiceTotal (approximately).
    (Allow for minor rounding differences, e.g., +/- $0.01 or $0.02).
+
+CARIBBEAN CUSTOMS FIELD MAPPING (CRITICAL):
+**SUPPLIER-CAUSED REDUCTIONS → TotalDeduction field:**
+- Free shipping credits/discounts
+- Supplier promotional discounts, volume discounts, manufacturer rebates
+- Any reduction where the SUPPLIER absorbs the cost
+
+**CUSTOMER-CAUSED REDUCTIONS → TotalInsurance field (negative value):**
+- Gift cards, store credits, account credits, loyalty points
+- Any reduction where the CUSTOMER uses previously acquired value
+- When correcting, use NEGATIVE values in TotalInsurance (e.g., -6.99 for a $6.99 gift card)
 
 REQUIREMENTS FOR YOUR RESPONSE:
 1. Analyze the ORIGINAL INVOICE TEXT to determine the true values for any fields in EXTRACTED INVOICE DATA that appear incorrect or cause mathematical imbalances.

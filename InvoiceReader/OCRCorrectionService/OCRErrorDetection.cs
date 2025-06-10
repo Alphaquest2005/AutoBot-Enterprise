@@ -18,6 +18,8 @@ using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using Org.BouncyCastle.Utilities;
 using Polly.Caching;
 using Serilog; // ILogger is available as this._logger
+using Serilog.Events; // For LogEventLevel
+using Core.Common.Extensions; // For LogLevelOverride
 
 namespace WaterNut.DataSpace
 {
@@ -108,27 +110,144 @@ namespace WaterNut.DataSpace
             Dictionary<string, OCRFieldMetadata> metadata = null)
         {
             _logger.Debug("Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
+            
+            // **DATAFLOW_ENTRY**: Log the exact data being passed into this method
+            _logger.Information("🔍 **DATAFLOW_HEADER_ERROR_DETECTION_ENTRY**: InvoiceNo={InvoiceNo} | FileText_Length={FileTextLength} | FileText_IsNull={FileTextIsNull}", 
+                invoice?.InvoiceNo, fileText?.Length ?? 0, fileText == null);
+            _logger.Information("🔍 **DATAFLOW_FILETEXT_GIFTCARD_CHECK**: FileText contains 'Gift Card'? {ContainsGiftCard}", 
+                fileText?.Contains("Gift Card") == true);
+            if (fileText?.Length > 0)
+            {
+                _logger.Information("🔍 **DATAFLOW_FILETEXT_SAMPLE**: First 300 chars: {Preview}", 
+                    fileText.Length > 300 ? fileText.Substring(0, 300) + "..." : fileText);
+            }
             try
             {
-                // Prompt creation is delegated to OCRPromptCreation.cs
-                var prompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText);
-                var deepSeekResponseJson = await _deepSeekApi.GetResponseAsync(prompt).ConfigureAwait(false);
-
-                if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
+                // **COMPREHENSIVE DEEPSEEK DEBUGGING** - Cover entire DeepSeek flow including parsing
+                using (LogLevelOverride.Begin(LogEventLevel.Verbose))
                 {
-                    _logger.Warning("Received empty response from DeepSeek for header error detection on invoice {InvoiceNo}.", invoice.InvoiceNo);
-                    return new List<InvoiceError>();
-                }
+                    // **FULL_SCOPE_DEBUGGING**: This LogLevelOverride captures ALL DeepSeek processing including:
+                    // 1. Prompt creation (CreateHeaderErrorDetectionPrompt)
+                    // 2. DeepSeek API call (_deepSeekApi.GetResponseAsync)
+                    // 3. Response parsing (ProcessDeepSeekCorrectionResponse)
+                    // 4. JSON element parsing (ParseDeepSeekResponseToElement)
+                    // 5. Correction extraction (ExtractCorrectionsFromResponseElement)
+                    // 6. Correction creation (CreateCorrectionFromElement)
+                    _logger.Error("🔍 **DEEPSEEK_COMPREHENSIVE_DEBUG_START**: Beginning complete DeepSeek debugging for invoice {InvoiceNo}", invoice.InvoiceNo);
+                    
+                    // Prompt creation is delegated to OCRPromptCreation.cs
+                    var prompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText);
+                    // **EXPECTATION 1**: DeepSeek should receive a prompt containing Amazon invoice text with "Gift Card Amount: -$6.99"
+                    _logger.Information("🔍 **EXPECTATION_1**: DeepSeek should receive prompt containing 'Gift Card Amount: -$6.99' and detect it as missing TotalInsurance field");
+                    
+                    // **DATA VERIFICATION**: Check if prompt contains the gift card text
+                    bool promptContainsGiftCard = prompt.Contains("Gift Card Amount") || prompt.Contains("Gift Card") || prompt.Contains("-$6.99");
+                    _logger.Information("🔍 **DATA_CHECK_1**: Prompt contains gift card text? Expected=TRUE, Actual={ContainsGiftCard}", promptContainsGiftCard);
+                    if (!promptContainsGiftCard)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED_1**: Prompt does not contain gift card text - DeepSeek cannot detect what's not in the prompt");
+                    }
+                    
+                    // **CRITICAL LOGGING**: Show what prompt is sent to DeepSeek for missing field detection
+                    _logger.Information("🔍 **DEEPSEEK_PROMPT_SENT**: Header error detection for invoice {InvoiceNo} | Prompt length: {PromptLength} chars", 
+                        invoice.InvoiceNo, prompt.Length);
+                    _logger.Information("🔍 **DEEPSEEK_PROMPT_PREVIEW**: First 2000 chars: {PromptPreview}", 
+                        prompt.Length > 2000 ? prompt.Substring(0, 2000) + "..." : prompt);
+                    
+                    // **FULL PROMPT LOGGING**: For debugging, log complete prompt
+                    _logger.Information("🔍 **DEEPSEEK_PROMPT_COMPLETE**: Full prompt content: {FullPrompt}", prompt);
+                        
+                    // **EXPECTATION 2**: DeepSeek API call should succeed and return meaningful content
+                    _logger.Information("🔍 **EXPECTATION_2**: DeepSeek API call should succeed and return corrections detecting missing TotalInsurance field");
+                    
+                    var deepSeekResponseJson = await _deepSeekApi.GetResponseAsync(prompt).ConfigureAwait(false);
+                    
+                    // **DATA VERIFICATION**: Check response validity
+                    bool responseReceived = !string.IsNullOrWhiteSpace(deepSeekResponseJson);
+                    _logger.Information("🔍 **DATA_CHECK_2**: DeepSeek response received? Expected=TRUE, Actual={ResponseReceived}", responseReceived);
+                    
+                    // **CRITICAL LOGGING**: Show what response comes back from DeepSeek
+                    _logger.Information("🔍 **DEEPSEEK_RESPONSE_RECEIVED**: Header error detection for invoice {InvoiceNo} | Response length: {ResponseLength} chars", 
+                        invoice.InvoiceNo, deepSeekResponseJson?.Length ?? 0);
+                    if (!string.IsNullOrWhiteSpace(deepSeekResponseJson))
+                    {
+                        _logger.Information("🔍 **DEEPSEEK_RESPONSE_PREVIEW**: First 1000 chars: {ResponsePreview}", 
+                            deepSeekResponseJson.Length > 1000 ? deepSeekResponseJson.Substring(0, 1000) + "..." : deepSeekResponseJson);
+                        
+                        // **FULL RESPONSE LOGGING**: For debugging, log complete response
+                        _logger.Information("🔍 **DEEPSEEK_RESPONSE_COMPLETE**: Full response content: {FullResponse}", deepSeekResponseJson);
+                        
+                        // **DATA VERIFICATION**: Check if response indicates corrections found
+                        bool responseHasCorrections = deepSeekResponseJson.Contains("\"errors\"") && 
+                                                    !deepSeekResponseJson.Contains("\"errors\": []") && 
+                                                    !deepSeekResponseJson.Contains("\"errors\":[]");
+                        _logger.Information("🔍 **DATA_CHECK_3**: Response contains corrections? Expected=TRUE, Actual={HasCorrections}", responseHasCorrections);
+                        
+                        if (!responseHasCorrections)
+                        {
+                            _logger.Error("❌ **ASSERTION_FAILED_2**: DeepSeek response contains no corrections - should detect missing TotalInsurance (-$6.99 gift card)");
+                        }
+                    }
                 
-                // Parsing and context enrichment is delegated
-                var detectedErrors = this.ProcessDeepSeekCorrectionResponse(deepSeekResponseJson, fileText) // From OCRDeepSeekIntegration.cs
-                                         .Select(cr => ConvertCorrectionResultToInvoiceError(cr)) // Convert to InvoiceError
-                                         .ToList(); 
-                
-                foreach (var error in detectedErrors) {
-                    EnrichDetectedErrorWithContext(error, metadata, fileText); // Local helper for context
-                }
-                return detectedErrors;
+                    if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
+                    {
+                        _logger.Warning("❌ **DEEPSEEK_RESPONSE_EMPTY**: Received empty response from DeepSeek for header error detection on invoice {InvoiceNo}. This explains why TotalInsurance/TotalDeduction are not detected.", invoice.InvoiceNo);
+                        return new List<InvoiceError>();
+                    }
+                    
+                    // **EXPECTATION 3**: ProcessDeepSeekCorrectionResponse should parse the JSON and extract corrections
+                    _logger.Information("🔍 **EXPECTATION_3**: ProcessDeepSeekCorrectionResponse should parse JSON and find TotalInsurance correction");
+                    
+                    // Parsing and context enrichment is delegated
+                    var correctionResults = this.ProcessDeepSeekCorrectionResponse(deepSeekResponseJson, fileText); // From OCRDeepSeekIntegration.cs
+                    
+                    // **DATA VERIFICATION**: Check if corrections were parsed correctly
+                    bool correctionsFound = correctionResults != null && correctionResults.Count > 0;
+                    _logger.Information("🔍 **DATA_CHECK_4**: Corrections parsed successfully? Expected=TRUE, Actual={CorrectionsFound}", correctionsFound);
+                    
+                    if (!correctionsFound)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED_3**: No corrections parsed from DeepSeek response - either JSON parsing failed or DeepSeek found no errors");
+                    }
+                    
+                    // **CRITICAL LOGGING**: Show what corrections DeepSeek detected
+                    _logger.Information("🔍 **DEEPSEEK_CORRECTIONS_PARSED**: Found {CorrectionCount} corrections from DeepSeek response", correctionResults.Count);
+                    
+                    // **DETAILED LOGGING**: Log each correction with expectations
+                    for (int i = 0; i < correctionResults.Count; i++)
+                    {
+                        var correction = correctionResults[i];
+                        _logger.Information("🔍 **DEEPSEEK_CORRECTION_DETAIL_{Index}**: Field={FieldName} | OldValue='{OldValue}' | NewValue='{NewValue}' | Type={CorrectionType} | Confidence={Confidence:F2}", 
+                            i + 1, correction.FieldName, correction.OldValue ?? "NULL", correction.NewValue ?? "NULL", correction.CorrectionType, correction.Confidence);
+                        
+                        // **EXPECTATION CHECK**: Look for TotalInsurance correction specifically
+                        if (correction.FieldName == "TotalInsurance" || correction.FieldName == "TotalDeduction")
+                        {
+                            _logger.Information("✅ **EXPECTATION_MET_3**: Found expected field correction for {FieldName}", correction.FieldName);
+                        }
+                    }
+                    
+                    // **EXPECTATION 4**: At least one correction should be for TotalInsurance with value 6.99
+                    bool hasTotalInsuranceCorrection = correctionResults.Any(c => 
+                        (c.FieldName == "TotalInsurance" || c.FieldName == "TotalDeduction") && 
+                        (c.NewValue?.Contains("6.99") == true));
+                    _logger.Information("🔍 **DATA_CHECK_5**: Has TotalInsurance/TotalDeduction correction with 6.99? Expected=TRUE, Actual={HasCorrection}", hasTotalInsuranceCorrection);
+                    
+                    if (!hasTotalInsuranceCorrection)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED_4**: No TotalInsurance/TotalDeduction correction found with expected value 6.99");
+                    }
+                    
+                    var detectedErrors = correctionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)) // Convert to InvoiceError
+                                                         .ToList(); 
+                    
+                    _logger.Information("🔍 **DEEPSEEK_ERRORS_CONVERTED**: Converted {ErrorCount} corrections to InvoiceError objects", detectedErrors.Count);
+                                    
+                    foreach (var error in detectedErrors) {
+                        EnrichDetectedErrorWithContext(error, metadata, fileText); // Local helper for context
+                    }
+                    return detectedErrors;
+                } // End focused DeepSeek debugging scope
             }
             catch (Exception ex)
             {

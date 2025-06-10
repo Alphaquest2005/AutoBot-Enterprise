@@ -22,10 +22,19 @@ namespace Core.Common.Extensions
             public LevelOverrideReset(Serilog.Events.LogEventLevel? previousLevelOverride)
             {
                 _previousLevelOverride = previousLevelOverride;
+                
+                // **ENTRY LOG**: This will always appear when LogLevelOverride.Begin() is called
+                Log.Logger.Information("🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: {NewLevel}, Previous: {PreviousLevel}", 
+                    _currentLevelOverride.Value?.ToString() ?? "NULL", 
+                    _previousLevelOverride?.ToString() ?? "NULL");
             }
 
             public void Dispose()
             {
+                // **EXIT LOG**: This will always appear when LogLevelOverride using statement exits
+                Log.Logger.Information("🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: {RestoredLevel}", 
+                    _previousLevelOverride?.ToString() ?? "NULL");
+                    
                 _currentLevelOverride.Value = _previousLevelOverride;
             }
         }

@@ -59,6 +59,12 @@ namespace WaterNut.DataSpace
         /// </summary>
         public async Task<bool> CorrectInvoiceAsync(ShipmentInvoice invoice, string fileText)
         {
+            // **DATAFLOW_ENTRY**: Log the exact parameters passed to this method
+            _logger.Information("🔍 **DATAFLOW_CORRECT_INVOICE_ENTRY**: InvoiceNo={InvoiceNo} | FileText_Length={FileTextLength} | FileText_IsNull={FileTextIsNull}", 
+                invoice?.InvoiceNo, fileText?.Length ?? 0, string.IsNullOrEmpty(fileText));
+            _logger.Information("🔍 **DATAFLOW_CORRECT_INVOICE_GIFTCARD**: FileText contains 'Gift Card'? {ContainsGiftCard}", 
+                fileText?.Contains("Gift Card") == true);
+                
             if (invoice == null || string.IsNullOrEmpty(fileText))
             {
                 _logger.Warning("CorrectInvoiceAsync: Null invoice or empty file text for invoice ID (if available): {InvoiceNo}.", invoice?.InvoiceNo ?? "N/A");
@@ -87,6 +93,16 @@ namespace WaterNut.DataSpace
                 var successfulValueApplications = appliedCorrections.Count(c => c.Success);
                 _logger.Information("Applied {SuccessCount}/{TotalCount} value/format corrections to in-memory invoice {InvoiceNo}.",
                     successfulValueApplications, appliedCorrections.Count, invoice.InvoiceNo);
+
+                // 3.5. Apply Caribbean customs business rules after standard OCR corrections
+                var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, appliedCorrections.Where(c => c.Success).ToList());
+                if (customsCorrections.Any())
+                {
+                    this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
+                    appliedCorrections.AddRange(customsCorrections); // Add customs corrections to the results
+                    _logger.Information("Applied {CustomsCount} Caribbean customs rule corrections to invoice {InvoiceNo}.", 
+                        customsCorrections.Count, invoice.InvoiceNo);
+                }
 
                 // 4. If any corrections were successfully applied to the object, update related database patterns.
                 var successfulCorrectionResultsForDB = appliedCorrections.Where(c => c.Success).ToList();
@@ -183,6 +199,16 @@ namespace WaterNut.DataSpace
                 var successfulCorrectionResults = appliedCorrections.Where(c => c.Success).ToList();
                 _logger.Information("Applied {SuccessCount}/{TotalCount} value/format corrections (in-memory) for invoice {InvoiceNo}.",
                    successfulCorrectionResults.Count, appliedCorrections.Count, invoice.InvoiceNo);
+
+                // 3.5. Apply Caribbean customs business rules after standard OCR corrections
+                var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, successfulCorrectionResults);
+                if (customsCorrections.Any())
+                {
+                    this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
+                    appliedCorrections.AddRange(customsCorrections); // Add customs corrections to the results
+                    _logger.Information("Applied {CustomsCount} Caribbean customs rule corrections to invoice {InvoiceNo}.", 
+                        customsCorrections.Count, invoice.InvoiceNo);
+                }
 
                 // 4. Validate Post-Correction Totals
                 bool postCorrectionValid = OCRCorrectionService.TotalsZero(invoice, _logger);
@@ -308,6 +334,571 @@ namespace WaterNut.DataSpace
                 // For simplicity, it can be done on-demand if needed by a consumer of LineContext.
             };
         }
+        #endregion
+
+        #region Pipeline Orchestration Methods (Testable)
+
+        /// <summary>
+        /// Executes complete correction pipeline for a single correction with retry logic.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<PipelineExecutionResult> ExecuteFullPipelineInternal(
+            CorrectionResult correction,
+            TemplateContext templateContext,
+            ShipmentInvoice invoice,
+            string fileText,
+            int maxRetries = 3)
+        {
+            var result = new PipelineExecutionResult
+            {
+                OriginalCorrection = correction,
+                StartTime = DateTime.UtcNow,
+                RetryAttempts = 0
+            };
+
+            _logger.Information("🔍 **PIPELINE_FULL_START**: Starting full pipeline for field {FieldName} with max {MaxRetries} retries", 
+                correction.FieldName, maxRetries);
+
+            try
+            {
+                for (int attempt = 1; attempt <= maxRetries; attempt++)
+                {
+                    result.RetryAttempts = attempt - 1;
+                    
+                    _logger.Information("🔍 **PIPELINE_ATTEMPT_{Attempt}**: Pipeline attempt {Attempt} of {MaxRetries} for field {FieldName}", 
+                        attempt, attempt, maxRetries, correction.FieldName);
+
+                    try
+                    {
+                        // Step 1: Generate regex pattern if needed
+                        var lineContext = correction.CreateLineContext(this, templateContext.Metadata, fileText);
+                        result.PatternGeneratedCorrection = await correction.GenerateRegexPattern(this, lineContext).ConfigureAwait(false);
+                        
+                        if (!result.PatternGeneratedCorrection.Success)
+                        {
+                            _logger.Warning("❌ **PIPELINE_PATTERN_GENERATION_FAILED_ATTEMPT_{Attempt}**: Pattern generation failed on attempt {Attempt}", attempt, attempt);
+                            continue; // Try next attempt
+                        }
+
+                        // Step 2: Validate pattern
+                        result.ValidatedCorrection = result.PatternGeneratedCorrection.ValidatePattern(this);
+                        
+                        if (!result.ValidatedCorrection.Success)
+                        {
+                            _logger.Warning("❌ **PIPELINE_VALIDATION_FAILED_ATTEMPT_{Attempt}**: Pattern validation failed on attempt {Attempt}", attempt, attempt);
+                            continue; // Try next attempt
+                        }
+
+                        // Step 3: Apply to database
+                        result.DatabaseResult = await result.ValidatedCorrection.ApplyToDatabase(templateContext, this).ConfigureAwait(false);
+                        
+                        if (!result.DatabaseResult.IsSuccess)
+                        {
+                            _logger.Warning("❌ **PIPELINE_DATABASE_FAILED_ATTEMPT_{Attempt}**: Database update failed on attempt {Attempt}: {Error}", 
+                                attempt, attempt, result.DatabaseResult.Message);
+                            continue; // Try next attempt
+                        }
+
+                        // Step 4: Re-import and validate
+                        result.ReimportResult = await result.DatabaseResult.ReimportAndValidate(templateContext, this, fileText).ConfigureAwait(false);
+                        
+                        if (!result.ReimportResult.Success)
+                        {
+                            _logger.Warning("❌ **PIPELINE_REIMPORT_FAILED_ATTEMPT_{Attempt}**: Re-import failed on attempt {Attempt}: {Error}", 
+                                attempt, attempt, result.ReimportResult.ErrorMessage);
+                            continue; // Try next attempt
+                        }
+
+                        // Step 5: Update invoice data
+                        result.InvoiceResult = await result.ReimportResult.UpdateInvoiceData(invoice, this).ConfigureAwait(false);
+                        
+                        if (result.InvoiceResult.Success)
+                        {
+                            _logger.Information("✅ **PIPELINE_SUCCESS_ATTEMPT_{Attempt}**: Full pipeline completed successfully on attempt {Attempt}", attempt, attempt);
+                            result.Success = true;
+                            break; // Success, exit retry loop
+                        }
+                        else
+                        {
+                            _logger.Warning("❌ **PIPELINE_INVOICE_UPDATE_FAILED_ATTEMPT_{Attempt}**: Invoice update failed on attempt {Attempt}: {Error}", 
+                                attempt, attempt, result.InvoiceResult.ErrorMessage);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "🚨 **PIPELINE_EXCEPTION_ATTEMPT_{Attempt}**: Exception during pipeline attempt {Attempt} for field {FieldName}", 
+                            attempt, attempt, correction.FieldName);
+                        
+                        if (attempt == maxRetries)
+                        {
+                            result.ErrorMessage = $"Pipeline failed after {maxRetries} attempts. Last error: {ex.Message}";
+                        }
+                    }
+                }
+
+                if (!result.Success)
+                {
+                    _logger.Error("❌ **PIPELINE_ALL_ATTEMPTS_FAILED**: All {MaxRetries} pipeline attempts failed for field {FieldName}", 
+                        maxRetries, correction.FieldName);
+                    
+                    // TODO: Implement developer email notification for persistent failures
+                    await this.NotifyDeveloperOfPersistentFailure(correction, result, templateContext.FilePath).ConfigureAwait(false);
+                }
+
+                result.EndTime = DateTime.UtcNow;
+                result.TotalDuration = result.EndTime - result.StartTime;
+
+                _logger.Information("🔍 **PIPELINE_FULL_COMPLETE**: Full pipeline completed for field {FieldName} - Success: {Success}, Duration: {Duration}ms, Attempts: {Attempts}", 
+                    correction.FieldName, result.Success, result.TotalDuration.TotalMilliseconds, result.RetryAttempts + 1);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_CRITICAL_EXCEPTION**: Critical exception in full pipeline for field {FieldName}", correction.FieldName);
+                result.Success = false;
+                result.ErrorMessage = $"Critical pipeline exception: {ex.Message}";
+                result.EndTime = DateTime.UtcNow;
+                result.TotalDuration = result.EndTime - result.StartTime;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Executes batch correction pipeline for multiple corrections.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal async Task<BatchPipelineResult> ExecuteBatchPipelineInternal(
+            IEnumerable<CorrectionResult> corrections,
+            TemplateContext templateContext,
+            ShipmentInvoice invoice,
+            string fileText,
+            int maxRetries = 3)
+        {
+            var result = new BatchPipelineResult
+            {
+                StartTime = DateTime.UtcNow,
+                TotalCorrections = corrections.Count()
+            };
+
+            _logger.Information("🔍 **PIPELINE_BATCH_START**: Starting batch pipeline for {Count} corrections", result.TotalCorrections);
+
+            try
+            {
+                foreach (var correction in corrections)
+                {
+                    try
+                    {
+                        var individualResult = await this.ExecuteFullPipelineInternal(
+                            correction, templateContext, invoice, fileText, maxRetries).ConfigureAwait(false);
+                        
+                        result.IndividualResults.Add(individualResult);
+                        result.RetryAttempts += individualResult.RetryAttempts;
+
+                        if (individualResult.Success)
+                        {
+                            result.SuccessfulCorrections++;
+                            if (individualResult.DatabaseUpdated)
+                                result.DatabaseUpdates++;
+                            if (individualResult.CorrectionApplied)
+                                result.InvoiceUpdates++;
+                        }
+                        else
+                        {
+                            result.FailedCorrections++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "🚨 **PIPELINE_BATCH_INDIVIDUAL_EXCEPTION**: Exception processing correction for field {FieldName}", correction.FieldName);
+                        result.FailedCorrections++;
+                    }
+                }
+
+                result.Success = result.SuccessfulCorrections > 0;
+                result.EndTime = DateTime.UtcNow;
+                result.TotalDuration = result.EndTime - result.StartTime;
+
+                _logger.Information("✅ **PIPELINE_BATCH_COMPLETE**: Batch pipeline completed - Success: {SuccessCount}/{TotalCount}, Duration: {Duration}ms, Success Rate: {SuccessRate:F1}%", 
+                    result.SuccessfulCorrections, result.TotalCorrections, result.TotalDuration.TotalMilliseconds, result.SuccessRate);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_BATCH_CRITICAL_EXCEPTION**: Critical exception in batch pipeline");
+                result.Success = false;
+                result.ErrorMessage = $"Critical batch pipeline exception: {ex.Message}";
+                result.EndTime = DateTime.UtcNow;
+                result.TotalDuration = result.EndTime - result.StartTime;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Creates template context from OCR field metadata.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal TemplateContext CreateTemplateContextInternal(Dictionary<string, OCRFieldMetadata> metadata, string fileText)
+        {
+            _logger.Information("🔍 **PIPELINE_TEMPLATE_CONTEXT_CREATE**: Creating template context from {MetadataCount} metadata entries", 
+                metadata?.Count ?? 0);
+
+            var context = new TemplateContext
+            {
+                Metadata = metadata ?? new Dictionary<string, OCRFieldMetadata>(),
+                FileText = fileText
+            };
+
+            try
+            {
+                // Extract template information from metadata
+                if (metadata != null && metadata.Any())
+                {
+                    var firstMetadata = metadata.Values.First();
+                    context.InvoiceId = firstMetadata.InvoiceId;
+                    context.InvoiceName = firstMetadata.InvoiceName;
+                    // FileTypeId would be accessed via navigation property when available
+
+                    // Collect unique IDs
+                    context.PartIds = metadata.Values
+                        .Where(m => m.PartId.HasValue)
+                        .Select(m => m.PartId.Value)
+                        .Distinct()
+                        .ToList();
+
+                    context.LineIds = metadata.Values
+                        .Where(m => m.LineId.HasValue)
+                        .Select(m => m.LineId.Value)
+                        .Distinct()
+                        .ToList();
+
+                    _logger.Information("✅ **PIPELINE_TEMPLATE_CONTEXT_SUCCESS**: Template context created - InvoiceId: {InvoiceId}, Parts: {PartCount}, Lines: {LineCount}", 
+                        context.InvoiceId, context.PartIds.Count, context.LineIds.Count);
+                }
+                else
+                {
+                    _logger.Information("⚠️ **PIPELINE_TEMPLATE_CONTEXT_MINIMAL**: Template context created with minimal information (no metadata)");
+                }
+
+                return context;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_TEMPLATE_CONTEXT_EXCEPTION**: Exception creating template context");
+                return context; // Return partial context
+            }
+        }
+
+        /// <summary>
+        /// Creates line context from correction result.
+        /// Testable instance method called by extension method.
+        /// </summary>
+        internal LineContext CreateLineContextInternal(CorrectionResult correction, Dictionary<string, OCRFieldMetadata> metadata, string fileText)
+        {
+            if (correction == null)
+            {
+                _logger.Error("CreateLineContextInternal: Correction is null");
+                return null;
+            }
+
+            _logger.Information("🔍 **PIPELINE_LINE_CONTEXT_CREATE**: Creating line context for field {FieldName}", correction.FieldName);
+
+            try
+            {
+                // Try to get metadata for this field
+                OCRFieldMetadata fieldMetadata = null;
+                if (metadata != null)
+                {
+                    if (metadata.TryGetValue(correction.FieldName, out var directMetadata))
+                    {
+                        fieldMetadata = directMetadata;
+                    }
+                    else
+                    {
+                        // Try mapped field name
+                        var mappedInfo = this.MapDeepSeekFieldToDatabase(correction.FieldName);
+                        if (mappedInfo != null && metadata.TryGetValue(mappedInfo.DatabaseFieldName, out var mappedMetadata))
+                        {
+                            fieldMetadata = mappedMetadata;
+                        }
+                    }
+                }
+
+                var lineContext = new LineContext
+                {
+                    LineNumber = correction.LineNumber,
+                    LineText = correction.LineText ?? (correction.LineNumber > 0 ? this.GetOriginalLineText(fileText, correction.LineNumber) : null),
+                    ContextLinesBefore = correction.ContextLinesBefore,
+                    ContextLinesAfter = correction.ContextLinesAfter,
+                    RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                    WindowText = correction.LineNumber > 0 ? this.ExtractWindowText(fileText, correction.LineNumber, 5) : null
+                };
+
+                if (fieldMetadata != null)
+                {
+                    lineContext.LineId = fieldMetadata.LineId;
+                    lineContext.RegexId = fieldMetadata.RegexId;
+                    lineContext.RegexPattern = fieldMetadata.LineRegex;
+                    lineContext.PartId = fieldMetadata.PartId;
+                    lineContext.LineName = fieldMetadata.LineName;
+                    lineContext.PartName = fieldMetadata.PartName;
+                    lineContext.PartTypeId = fieldMetadata.PartTypeId;
+                    
+                    _logger.Information("✅ **PIPELINE_LINE_CONTEXT_SUCCESS**: Line context created with metadata - LineId: {LineId}, PartId: {PartId}", 
+                        lineContext.LineId, lineContext.PartId);
+                }
+                else
+                {
+                    lineContext.IsOrphaned = true;
+                    lineContext.RequiresNewLineCreation = correction.CorrectionType == "omission";
+                    
+                    _logger.Information("⚠️ **PIPELINE_LINE_CONTEXT_ORPHANED**: Line context created without metadata - Orphaned: {IsOrphaned}", 
+                        lineContext.IsOrphaned);
+                }
+
+                return lineContext;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PIPELINE_LINE_CONTEXT_EXCEPTION**: Exception creating line context for field {FieldName}", correction.FieldName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Main entry point for functional pipeline integration with ReadFormattedTextStep.
+        /// Detects invoice errors and executes complete correction pipeline.
+        /// Called from ReadFormattedTextStep.cs OCR correction section.
+        /// </summary>
+        public static async Task<bool> ExecuteFullPipelineForInvoiceAsync(List<dynamic> csvLines, Invoice template, ILogger logger)
+        {
+            logger?.Information("🔍 **PIPELINE_MAIN_ENTRY**: ExecuteFullPipelineForInvoiceAsync called with {CsvLineCount} CSV lines", csvLines?.Count ?? 0);
+
+            try
+            {
+                // Create service instance for this correction session
+                using var service = new OCRCorrectionService(logger);
+
+                // Extract ShipmentInvoice from csvLines (convert dynamic to structured entity)
+                var invoice = service.ConvertCsvLinesToShipmentInvoice(csvLines);
+                if (invoice == null)
+                {
+                    logger?.Warning("❌ **PIPELINE_MAIN_NO_INVOICE**: Could not extract ShipmentInvoice from CSV lines");
+                    return false;
+                }
+
+                // Extract file text from template FormattedPdfText
+                var fileText = template?.FormattedPdfText;
+                if (string.IsNullOrEmpty(fileText))
+                {
+                    logger?.Warning("❌ **PIPELINE_MAIN_NO_TEXT**: No FormattedPdfText available from template");
+                    return false;
+                }
+
+                // Extract metadata from template for pipeline context
+                // Create a basic dictionary from the invoice for metadata extraction
+                var invoiceDict = service.ConvertShipmentInvoiceToDict(invoice);
+                var metadata = service.ExtractEnhancedOCRMetadata(invoiceDict, template);
+                var templateContext = metadata.CreateTemplateContext(service, fileText);
+                templateContext.FilePath = template?.FilePath ?? "unknown";
+
+                logger?.Information("🔍 **PIPELINE_MAIN_CONTEXT**: Created template context - InvoiceId: {InvoiceId}, Metadata: {MetadataCount}", 
+                    templateContext.InvoiceId, templateContext.Metadata?.Count ?? 0);
+
+                // Step 1: Detect invoice errors using comprehensive analysis
+                var corrections = await service.DetectInvoiceErrorsAsync(invoice, fileText, templateContext.Metadata).ConfigureAwait(false);
+                if (!corrections.Any())
+                {
+                    logger?.Information("✅ **PIPELINE_MAIN_NO_ERRORS**: No errors detected - invoice appears balanced");
+                    return true;
+                }
+
+                logger?.Information("🔍 **PIPELINE_MAIN_ERRORS_DETECTED**: Found {ErrorCount} errors to correct: {ErrorTypes}", 
+                    corrections.Count, string.Join(", ", corrections.Select(c => $"{c.Field}({c.ErrorType})")));
+
+                // Convert InvoiceError to CorrectionResult for pipeline processing
+                var correctionResults = corrections.Select(error => new CorrectionResult
+                {
+                    FieldName = error.Field,
+                    OldValue = error.ExtractedValue,
+                    NewValue = error.CorrectValue,
+                    CorrectionType = error.ErrorType,
+                    Success = true,
+                    Confidence = error.Confidence,
+                    Reasoning = error.Reasoning,
+                    LineNumber = error.LineNumber,
+                    LineText = error.LineText,
+                    ContextLinesBefore = error.ContextLinesBefore,
+                    ContextLinesAfter = error.ContextLinesAfter,
+                    RequiresMultilineRegex = error.RequiresMultilineRegex
+                }).ToList();
+
+                // Step 2: Execute batch pipeline for all corrections
+                var batchResult = await correctionResults.ExecuteBatchPipeline(
+                    service, templateContext, invoice, fileText, maxRetries: 3).ConfigureAwait(false);
+
+                if (batchResult.Success)
+                {
+                    logger?.Information("✅ **PIPELINE_MAIN_SUCCESS**: Batch pipeline completed successfully - {SuccessCount}/{TotalCount} corrections applied", 
+                        batchResult.SuccessfulCorrections, batchResult.TotalCorrections);
+
+                    // Step 3: Update the original csvLines with corrected invoice data
+                    service.UpdateCsvLinesFromInvoice(csvLines, invoice);
+
+                    // Calculate final TotalsZero to verify correction
+                    OCRCorrectionService.TotalsZero(csvLines, out var finalTotalsZero, logger);
+                    logger?.Information("🔍 **PIPELINE_MAIN_FINAL_TOTALS**: Final TotalsZero after pipeline = {TotalsZero:F2}", finalTotalsZero);
+
+                    return Math.Abs(finalTotalsZero) <= 0.01; // Return true if balanced
+                }
+                else
+                {
+                    logger?.Warning("❌ **PIPELINE_MAIN_FAILED**: Batch pipeline failed - {FailureCount}/{TotalCount} corrections failed: {ErrorMessage}", 
+                        batchResult.FailedCorrections, batchResult.TotalCorrections, batchResult.ErrorMessage);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.Error(ex, "🚨 **PIPELINE_MAIN_EXCEPTION**: Critical exception in ExecuteFullPipelineForInvoiceAsync");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Notifies developer of persistent correction failures.
+        /// TODO: Implement actual email notification system.
+        /// </summary>
+        private async Task NotifyDeveloperOfPersistentFailure(CorrectionResult correction, PipelineExecutionResult result, string filePath)
+        {
+            _logger.Warning("📧 **DEVELOPER_NOTIFICATION**: Persistent failure for field {FieldName} after {Attempts} attempts - Developer notification would be sent", 
+                correction.FieldName, result.RetryAttempts + 1);
+
+            // TODO: Implement developer email notification
+            // This would integrate with the existing email system to send detailed failure reports
+            // including correction details, error messages, and suggested manual actions
+
+            await Task.Delay(1).ConfigureAwait(false); // Placeholder for async operation
+        }
+
+        /// <summary>
+        /// Converts dynamic CSV lines to a ShipmentInvoice entity for pipeline processing.
+        /// </summary>
+        private ShipmentInvoice ConvertCsvLinesToShipmentInvoice(List<dynamic> csvLines)
+        {
+            if (csvLines == null || !csvLines.Any())
+            {
+                _logger.Warning("ConvertCsvLinesToShipmentInvoice: No CSV lines provided");
+                return null;
+            }
+
+            try
+            {
+                // Extract the first invoice data from the CSV lines
+                // This uses the same logic as in OCRLegacySupport.CreateTempShipmentInvoice
+                var firstItem = csvLines.FirstOrDefault();
+                if (firstItem == null)
+                {
+                    _logger.Warning("ConvertCsvLinesToShipmentInvoice: First CSV item is null");
+                    return null;
+                }
+
+                IDictionary<string, object> invoiceDict = null;
+                if (firstItem is List<IDictionary<string, object>> invoiceList && invoiceList.Any())
+                {
+                    invoiceDict = invoiceList.First();
+                }
+                else if (firstItem is IDictionary<string, object> singleDict)
+                {
+                    invoiceDict = singleDict;
+                }
+
+                if (invoiceDict == null)
+                {
+                    _logger.Warning("ConvertCsvLinesToShipmentInvoice: Could not extract invoice dictionary from CSV lines");
+                    return null;
+                }
+
+                // Use the existing CreateTempShipmentInvoice method from OCRLegacySupport
+                return OCRCorrectionService.CreateTempShipmentInvoice(invoiceDict, _logger);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error converting CSV lines to ShipmentInvoice");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Converts a ShipmentInvoice entity back to a dictionary for metadata extraction.
+        /// </summary>
+        private IDictionary<string, object> ConvertShipmentInvoiceToDict(ShipmentInvoice invoice)
+        {
+            if (invoice == null)
+            {
+                _logger.Warning("ConvertShipmentInvoiceToDict: Invoice is null");
+                return new Dictionary<string, object>();
+            }
+
+            var dict = new Dictionary<string, object>
+            {
+                ["InvoiceNo"] = invoice.InvoiceNo,
+                ["InvoiceDate"] = invoice.InvoiceDate,
+                ["InvoiceTotal"] = invoice.InvoiceTotal,
+                ["SubTotal"] = invoice.SubTotal,
+                ["TotalInternalFreight"] = invoice.TotalInternalFreight,
+                ["TotalOtherCost"] = invoice.TotalOtherCost,
+                ["TotalInsurance"] = invoice.TotalInsurance,
+                ["TotalDeduction"] = invoice.TotalDeduction,
+                ["Currency"] = invoice.Currency,
+                ["SupplierName"] = invoice.SupplierName,
+                ["SupplierAddress"] = invoice.SupplierAddress
+            };
+
+            // Add invoice details if available
+            if (invoice.InvoiceDetails?.Any() == true)
+            {
+                var detailsList = invoice.InvoiceDetails.Select(detail => new Dictionary<string, object>
+                {
+                    ["LineNumber"] = detail.LineNumber,
+                    ["ItemDescription"] = detail.ItemDescription,
+                    ["Quantity"] = detail.Quantity,
+                    ["Cost"] = detail.Cost,
+                    ["TotalCost"] = detail.TotalCost,
+                    ["Discount"] = detail.Discount,
+                    ["Units"] = detail.Units
+                }).ToList();
+
+                dict["InvoiceDetails"] = detailsList;
+            }
+
+            return dict;
+        }
+
+        /// <summary>
+        /// Updates the original CSV lines with corrected invoice data.
+        /// </summary>
+        private void UpdateCsvLinesFromInvoice(List<dynamic> csvLines, ShipmentInvoice correctedInvoice)
+        {
+            if (csvLines == null || !csvLines.Any() || correctedInvoice == null)
+            {
+                _logger.Warning("UpdateCsvLinesFromInvoice: Invalid input parameters");
+                return;
+            }
+
+            try
+            {
+                // Use the existing UpdateDynamicResultsWithCorrections method from OCRLegacySupport
+                OCRCorrectionService.UpdateDynamicResultsWithCorrections(csvLines, new List<ShipmentInvoice> { correctedInvoice }, _logger);
+                _logger.Information("Successfully updated CSV lines with corrected invoice data for {InvoiceNo}", correctedInvoice.InvoiceNo);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating CSV lines from corrected invoice {InvoiceNo}", correctedInvoice?.InvoiceNo);
+            }
+        }
+
         #endregion
 
         // Helper to get full metadata for an invoice, using only ShipmentInvoice and fileText.

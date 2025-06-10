@@ -73,8 +73,9 @@ namespace EntryDataDS.Business.Entities
                                                 - (this.TotalDeduction ?? 0))
                                                - (this.InvoiceTotal ?? 0);
 
-                // TotalsZero is the sum of both checks
-                return detailLevelDifference + headerLevelDifference;
+                // TotalsZero is the sum of absolute values to prevent cancellation effects
+                // This ensures that if either check shows imbalance, the total reflects it
+                return Math.Abs(detailLevelDifference) + Math.Abs(headerLevelDifference);
             }
             // No setter - calculated property
         }

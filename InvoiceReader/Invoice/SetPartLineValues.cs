@@ -47,14 +47,14 @@ namespace WaterNut.DataSpace
         {
             // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
             _logger.Debug("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
-            Console.WriteLine($"**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {filterInstance ?? "NULL"}");
+            // Console.WriteLine($"**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {filterInstance ?? "NULL"}");
             
             // **VERSION TESTING FRAMEWORK**: Route to different versions for comparison
             // Set this property to control which version to test
             var versionToTest = GetVersionToTest();
             
-            _logger.Information("**VERSION_ROUTER**: Using version {Version} for testing", versionToTest);
-            Console.WriteLine($"**VERSION_ROUTER**: Using version {versionToTest} for testing");
+            _logger.Debug("**VERSION_ROUTER**: Using version {Version} for testing", versionToTest);
+            // Console.WriteLine($"**VERSION_ROUTER**: Using version {versionToTest} for testing");
             
             return versionToTest switch
             {
@@ -183,7 +183,7 @@ namespace WaterNut.DataSpace
             var partId = part?.OCR_Part?.Id.ToString() ?? "Unknown";
             _logger.Information("{Version}: Executing for PartId: {PartId}, FilterInstance: {FilterInstance}", BespokeConstants.Version, partId, filterInstance);
 
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // Ensure debug logs are captured for this method
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // Ensure debug logs are captured for this method - COMMENTED OUT TO PREVENT ROGUE LOGGING
             {
                 try
                 {
@@ -524,7 +524,7 @@ namespace WaterNut.DataSpace
     /// </summary>
     private List<IDictionary<string, object>> SetPartLineValues_Universal_V3(Part part, string filterInstance = null)
     {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT TO PREVENT ROGUE LOGGING
             {
                 var partId = part?.OCR_Part?.Id.ToString() ?? "Unknown";
                 _logger.Information("{Version}: Executing for PartId: {PartId}", UniversalConstants_V3.Version, partId);
@@ -3574,7 +3574,8 @@ namespace WaterNut.DataSpace
 
             _logger.Information("**VERSION_7**: Enhanced Multi-Page Section Deduplication for PartId: {PartId}, FilterInstance: {FilterInstance}",
                 partId, filterInstanceStr);
-            Console.WriteLine($"**VERSION_7**: Enhanced Multi-Page Section Deduplication for PartId: {partId}, FilterInstance: {filterInstanceStr}");
+            _logger.Debug("**VERSION_7**: Enhanced Multi-Page Section Deduplication for PartId: {PartId}, FilterInstance: {FilterInstance}", partId, filterInstanceStr);
+            // Console.WriteLine($"**VERSION_7**: Enhanced Multi-Page Section Deduplication for PartId: {partId}, FilterInstance: {filterInstanceStr}");
 
             var finalPartItems = new List<IDictionary<string, object>>();
 
@@ -4210,7 +4211,7 @@ namespace WaterNut.DataSpace
         /// </summary>
         private List<IDictionary<string, object>> SetPartLineValues_V10_OpusFreshImplementation(Part part, string filterInstance = null)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT TO PREVENT ROGUE LOGGING
             {
                 _logger.Information("**FRESH_IMPL**: Processing invoice with PartId: {PartId}, FilterInstance: {FilterInstance}", 
                     part?.OCR_Part?.Id ?? 0, filterInstance ?? "none");
@@ -4817,7 +4818,8 @@ namespace WaterNut.DataSpace
 
             _logger.Information("**VERSION_8**: Tropical Vendors Individual Items Extraction for PartId: {PartId}, FilterInstance: {FilterInstance}",
                 partId, filterInstanceStr);
-            Console.WriteLine($"**VERSION_8**: Tropical Vendors Individual Items Extraction for PartId: {partId}, FilterInstance: {filterInstanceStr}");
+            _logger.Debug("**VERSION_8**: Tropical Vendors Individual Items Extraction for PartId: {PartId}, FilterInstance: {FilterInstance}", partId, filterInstanceStr);
+            // Console.WriteLine($"**VERSION_8**: Tropical Vendors Individual Items Extraction for PartId: {partId}, FilterInstance: {filterInstanceStr}");
 
             var finalPartItems = new List<IDictionary<string, object>>();
 

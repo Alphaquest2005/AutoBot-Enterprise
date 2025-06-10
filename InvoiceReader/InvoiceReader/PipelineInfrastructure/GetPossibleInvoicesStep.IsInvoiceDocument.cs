@@ -15,10 +15,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
         var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
         // Template null check happens in caller's Where clause
         int invoiceId = invoice.OcrInvoices?.Id ?? -1; // Handle null OcrInvoices defensively
-        logger?.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+        logger?.Debug("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
             nameof(IsInvoiceDocument), "Check if document matches a specific invoice template", $"InvoiceId: {invoiceId}, FilePath: {filePath}");
 
-        logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+        logger?.Debug("ACTION_START: {ActionName}. Context: [{ActionContext}]",
             $"{nameof(IsInvoiceDocument)} - Invoice {invoiceId}", $"Checking if document matches template {invoiceId} for file: {filePath}");
 
         try
@@ -54,7 +54,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                 logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                     nameof(IsInvoiceDocument), "RegexProcessing", "Testing regex pattern against file text.", $"RegexId: {regexId}, Pattern: '{pattern}', InvoiceId: {invoiceId}");
 
-                logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                logger?.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                     $"Regex.IsMatch for RegexId {regexId}", "SYNC_EXPECTED");
                 var regexStopwatch = Stopwatch.StartNew();
                 isMatch = Regex.IsMatch(fileText,
@@ -62,7 +62,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                     RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture,
                     RegexTimeout); // Use defined timeout
                 regexStopwatch.Stop();
-                logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                logger?.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     $"Regex.IsMatch for RegexId {regexId}", regexStopwatch.ElapsedMilliseconds, "Sync call returned");
 
                 if (isMatch)
@@ -71,12 +71,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                         nameof(IsInvoiceDocument), "RegexProcessing", "Regex match FOUND.", $"RegexId: {regexId}, InvoiceId: {invoiceId}, FilePath: {filePath}");
 
                     // Check if all parts can start
-                    logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                    logger?.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                         $"CanPartStart for Invoice {invoiceId}", "SYNC_EXPECTED");
                     var canPartStartStopwatch = Stopwatch.StartNew();
                     var res = invoice.Parts.All(x => CanPartStart(fileText, x, logger) && x.ChildParts.All(z => CanPartStart(fileText, z, logger))); // Pass logger
                     canPartStartStopwatch.Stop();
-                    logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    logger?.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         $"CanPartStart for Invoice {invoiceId}", canPartStartStopwatch.ElapsedMilliseconds, "Sync call returned");
 
                     if (res)
@@ -84,9 +84,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                         logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                             nameof(IsInvoiceDocument), "PartValidation", "All parts can start.", $"InvoiceId: {invoiceId}");
                         methodStopwatch.Stop();
-                        logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        logger?.Debug("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
                             nameof(IsInvoiceDocument), "Document matches template", $"IsMatch: true, InvoiceId: {invoiceId}", methodStopwatch.ElapsedMilliseconds);
-                        logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        logger?.Debug("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
                             $"{nameof(IsInvoiceDocument)} - Invoice {invoiceId}", $"Document identified as template {invoiceId} for file: {filePath}", methodStopwatch.ElapsedMilliseconds);
                         return res; // Exit method on first match and successful part check
                     }
@@ -141,7 +141,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
     {
         var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch
         int partId = x?.OCR_Part?.Id ?? -1; // Handle nulls defensively
-        logger?.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+        logger?.Debug("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
             nameof(CanPartStart), "Check if all start patterns for a part are found in the document text", $"PartId: {partId}");
 
         try
@@ -152,7 +152,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                     nameof(CanPartStart), "Validation", "No start patterns found for part.", $"PartId: {partId}");
 
                 methodStopwatch.Stop(); // Stop stopwatch
-                logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                logger?.Debug("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
                     nameof(CanPartStart), "Part cannot start (no patterns)", $"CanStart: false, PartId: {partId}", methodStopwatch.ElapsedMilliseconds);
                 return false; // Cannot check without patterns
             }
@@ -173,7 +173,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                     logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                         nameof(CanPartStart), "RegexProcessing", "Testing start regex pattern against file text.", $"PartId: {partId}, RegexId: {regexId}, Pattern: '{pattern}'");
 
-                    logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
+                    logger?.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                         $"Regex.IsMatch for Part {partId} Start RegexId {regexId}", "SYNC_EXPECTED");
                     var regexStopwatch = Stopwatch.StartNew();
                     bool isMatch = Regex.IsMatch(
@@ -182,7 +182,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                         RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.ExplicitCapture,
                         RegexTimeout);
                     regexStopwatch.Stop();
-                    logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                    logger?.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         $"Regex.IsMatch for Part {partId} Start RegexId {regexId}", regexStopwatch.ElapsedMilliseconds, "Sync call returned");
 
                     logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
@@ -192,7 +192,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                 });
 
             methodStopwatch.Stop(); // Stop stopwatch
-            logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+            logger?.Debug("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
                 nameof(CanPartStart), $"Part can start: {canStart}", $"CanStart: {canStart}, PartId: {partId}", methodStopwatch.ElapsedMilliseconds);
             return canStart;
         }

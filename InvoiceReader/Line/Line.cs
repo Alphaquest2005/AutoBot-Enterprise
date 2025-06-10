@@ -35,7 +35,7 @@ namespace WaterNut.DataSpace
 
             OCR_Lines = lines;
             _logger.Verbose("{MethodName}: Assigned OCR_Lines (Id: {LineId}) to Line property.", methodName, lineId);
-            _logger.Information("Exiting {MethodName} successfully for LineId: {LineId}", methodName, lineId);
+            _logger.Debug("Exiting {MethodName} successfully for LineId: {LineId}", methodName, lineId);
         }
 
 

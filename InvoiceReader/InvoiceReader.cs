@@ -19,6 +19,12 @@ namespace InvoiceReader
     public class InvoiceReader
     {
         private static ILogger _logger = Log.ForContext<InvoiceReader>();
+        
+        // Set the static logger to the passed logger to ensure consistency
+        private static void SetLogger(ILogger logger)
+        {
+            _logger = logger ?? Log.ForContext<InvoiceReader>();
+        }
 
         static InvoiceReader()
         {
@@ -213,6 +219,9 @@ namespace InvoiceReader
 
         public static async Task<List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>>> Import(string fileFullName, int fileTypeId, string emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSets, FileTypes fileType, Client client, ILogger logger)
         {
+            // Set the static logger to the passed logger to ensure consistency
+            SetLogger(logger);
+            
             var methodStopwatch = Stopwatch.StartNew();
             // InvocationId is now passed via the enriched logger from ImportPDF
             // var invocationId = Guid.NewGuid(); // Generate unique InvocationId

@@ -516,16 +516,14 @@ namespace AutoBotUtilities.Tests
 
             try
             {
-                using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-                {
-                    // Strategy: Set global minimum level high, then use LogLevelOverride for detailed investigation
-                    // Configure LogFilterState for targeted logging - Error level globally, detailed for OCR correction
-                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error; // High global level to reduce noise
-                LogFilterState.TargetSourceContextForDetails = "InvoiceReader.OCRCorrectionService"; // Target OCR correction service
-                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose; // Enable very detailed logging for OCR correction
-                _logger.Information("LogFilterState configured: Global=Error, OCR Correction Service=Verbose");
-                _logger.Information("TargetSourceContextForDetails='{TargetContext}', DetailTargetMinimumLevel='{DetailLevel}'",
-                                    LogFilterState.TargetSourceContextForDetails, LogFilterState.DetailTargetMinimumLevel);
+                // STRATEGY: Configure logging to show OCR correction dataflow and logic flow
+                _logger.Information("🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process");
+                _logger.Information("🔍 **TEST_EXPECTATION**: We expect OCR correction to detect Gift Card Amount: -$6.99 and map it to TotalDeduction field");
+                
+                // Configure logging to show our OCR correction logs  
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
@@ -606,7 +604,6 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                 }
 
                 Assert.That(true);
-                } // Close LogLevelOverride using block
             }
             catch (Exception e)
             {

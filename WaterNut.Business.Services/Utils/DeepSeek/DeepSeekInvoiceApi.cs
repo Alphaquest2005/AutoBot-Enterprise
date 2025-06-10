@@ -663,89 +663,221 @@ try
         /// </summary>
         public async Task<string> GetResponseAsync(string prompt)
         {
-            return await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
+            // **DEEPSEEK_API_ENTRY**: Log complete API call entry state with all parameters
+            _logger.Error("🔍 **DEEPSEEK_API_ENTRY**: GetResponseAsync called with prompt length={PromptLength}", prompt?.Length ?? 0);
+            _logger.Error("🔍 **DEEPSEEK_API_CONFIG**: Model={Model}, Temperature={Temperature}, MaxTokens={MaxTokens}", Model, DefaultTemperature, DefaultMaxTokens);
+            
+            // **PROMPT_VALIDATION**: Validate prompt contains expected Amazon invoice content
+            bool promptContainsGiftCard = prompt?.Contains("Gift Card") == true;
+            bool promptContainsAmount = prompt?.Contains("-$6.99") == true || prompt?.Contains("6.99") == true;
+            _logger.Error("🔍 **DEEPSEEK_PROMPT_VALIDATION**: Contains gift card? {ContainsGiftCard} | Contains amount? {ContainsAmount}", promptContainsGiftCard, promptContainsAmount);
+            
+            if (!promptContainsGiftCard)
+            {
+                _logger.Error("❌ **DEEPSEEK_ASSERTION_FAILED**: Prompt does not contain 'Gift Card' - DeepSeek cannot detect missing gift card fields");
+            }
+            
+            // **COMPLETE_PROMPT_LOGGING**: Log the full prompt being sent to DeepSeek
+            _logger.Error("🔍 **DEEPSEEK_COMPLETE_PROMPT**: Full prompt content: {FullPrompt}", prompt);
+            
+            var result = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
+            
+            // **DEEPSEEK_API_EXIT**: Log complete API call exit state
+            _logger.Error("🔍 **DEEPSEEK_API_EXIT**: GetResponseAsync returning response length={ResponseLength}", result?.Length ?? 0);
+            
+            return result;
         }
 
         public async Task<string> GetCompletionAsync(string prompt, double temperature, int maxTokens)
         {
+            // **HTTP_CLIENT_VALIDATION**: Validate HTTP client setup
+            _logger.Error("🔍 **HTTP_CLIENT_VALIDATION**: HttpClient initialized? {Initialized}, BaseUrl={BaseUrl}", _httpClient != null, _baseUrl);
+            
             if (_httpClient == null) throw new InvalidOperationException("HttpClient is not initialized.");
             if (string.IsNullOrWhiteSpace(_baseUrl)) throw new InvalidOperationException("Base URL is not set.");
 
             try
             {
+                // **REQUEST_BODY_CONSTRUCTION**: Log request body construction with parameters
+                _logger.Error("🔍 **REQUEST_BODY_CONSTRUCTION**: Building DeepSeek API request body");
+                _logger.Error("🔍 **REQUEST_PARAMETERS**: Model={Model}, Temperature={Temperature}, MaxTokens={MaxTokens}, PromptLength={PromptLength}", 
+                    Model, temperature, maxTokens, prompt?.Length ?? 0);
+                
                 var requestBody = new
                 {
                     model = Model,
                     messages = new[] { new { role = "user", content = prompt } },
                     temperature = temperature,
                     max_tokens = maxTokens,
-                    stream = false // Not using streaming responses here
+                    stream = false
                 };
 
                 var json = JsonSerializer.Serialize(requestBody);
+                
+                // **REQUEST_JSON_LOGGING**: Log the complete JSON request being sent
+                _logger.Error("🔍 **REQUEST_JSON_COMPLETE**: Complete JSON request: {RequestJson}", json);
+                
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                // **HTTP_REQUEST_STATE**: Log HTTP request state before sending
+                _logger.Error("🔍 **HTTP_REQUEST_STATE**: About to send POST request to {Url}", $"{_baseUrl}/chat/completions");
+                _logger.Error("🔍 **HTTP_REQUEST_HEADERS**: ContentType=application/json, Encoding=UTF8, Method=POST");
 
-                // Use the retry policy for the HTTP request
+                // **STATE_TRANSITION**: Request construction → HTTP execution with retry policy
+                _logger.Error("🔍 **STATE_TRANSITION**: REQUEST_CONSTRUCTION → HTTP_EXECUTION_WITH_RETRY");
+                
                 var response = await _retryPolicy.ExecuteAsync(async () =>
                 {
+                    _logger.Error("🔍 **HTTP_RETRY_ATTEMPT**: Executing HTTP request (with retry policy)");
                     using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
                     requestMessage.Content = content;
-                    return await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                    
+                    var httpResponse = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                    
+                    // **HTTP_RESPONSE_STATUS**: Log immediate response status
+                    _logger.Error("🔍 **HTTP_RESPONSE_STATUS**: StatusCode={StatusCode}, IsSuccess={IsSuccess}", 
+                        httpResponse.StatusCode, httpResponse.IsSuccessStatusCode);
+                    
+                    return httpResponse;
                 }).ConfigureAwait(false);
+                
+                // **STATE_TRANSITION**: HTTP execution → Response processing
+                _logger.Error("🔍 **STATE_TRANSITION**: HTTP_EXECUTION → RESPONSE_PROCESSING");
 
-                return await HandleApiResponse(response).ConfigureAwait(false);
+                var result = await HandleApiResponse(response).ConfigureAwait(false);
+                
+                // **COMPLETION_SUCCESS**: Log successful completion
+                _logger.Error("✅ **COMPLETION_SUCCESS**: DeepSeek API call completed successfully, response length={Length}", result?.Length ?? 0);
+                
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "API request failed after retries.");
-                throw; // Re-throw the exception after logging
+                _logger.Error(ex, "🚨 **COMPLETION_CRITICAL_ERROR**: DeepSeek API request failed after retries - Exception: {ExceptionType}", ex.GetType().Name);
+                throw;
             }
         }
 
         private async Task<string> HandleApiResponse(HttpResponseMessage response)
         {
+            // **RESPONSE_ENTRY_STATE**: Log response processing entry
+            _logger.Error("🔍 **RESPONSE_ENTRY_STATE**: HandleApiResponse called with status {StatusCode}", response.StatusCode);
+            
+            // **STATE_TRANSITION**: HTTP response → Content reading
+            _logger.Error("🔍 **STATE_TRANSITION**: HTTP_RESPONSE → CONTENT_READING");
+            
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            _logger.Debug("API Response Status: {StatusCode}", response.StatusCode);
-            _logger.Verbose("Raw API Response Content: {ResponseContent}", TruncateForLog(responseContent));
+            
+            // **RESPONSE_CONTENT_LOGGING**: Log complete raw response content
+            _logger.Error("🔍 **RESPONSE_CONTENT_RAW**: Complete raw API response: {ResponseContent}", responseContent);
+            _logger.Error("🔍 **RESPONSE_CONTENT_LENGTH**: Response content length={Length} chars", responseContent?.Length ?? 0);
+            
+            // **RESPONSE_STATUS_VALIDATION**: Detailed status code analysis
+            _logger.Error("🔍 **RESPONSE_STATUS_VALIDATION**: StatusCode={StatusCode}, IsSuccess={IsSuccess}, ReasonPhrase='{ReasonPhrase}'", 
+                response.StatusCode, response.IsSuccessStatusCode, response.ReasonPhrase);
 
-            // Check for specific error status codes
-            if (response.StatusCode == (HttpStatusCode)429) // Too Many Requests
+            // **ERROR_HANDLING**: Check for specific error status codes
+            if (response.StatusCode == (HttpStatusCode)429)
             {
-                _logger.Warning("API rate limit exceeded (HTTP 429).");
+                _logger.Error("❌ **RESPONSE_RATE_LIMIT**: API rate limit exceeded (HTTP 429) - DeepSeek API overloaded");
                 throw new RateLimitException((int)response.StatusCode, $"API rate limit exceeded. Response: {responseContent}");
             }
 
-            // Check for other non-success status codes
             if (!response.IsSuccessStatusCode)
             {
-                _logger.Error("API Error: {StatusCode} - {Content}", response.StatusCode, TruncateForLog(responseContent));
+                _logger.Error("❌ **RESPONSE_ERROR_STATUS**: API request failed with status {StatusCode} - Content: {Content}", 
+                    response.StatusCode, responseContent);
                 throw new HttpRequestException($"API request failed with status {(int)response.StatusCode}. Response: {responseContent}");
             }
 
-            // Parse the successful response
+            // **STATE_TRANSITION**: Success response → JSON parsing
+            _logger.Error("🔍 **STATE_TRANSITION**: SUCCESS_RESPONSE → JSON_PARSING");
+            
             try
             {
+                // **JSON_PARSING_START**: Log JSON parsing attempt
+                _logger.Error("🔍 **JSON_PARSING_START**: Attempting to parse DeepSeek response JSON");
+                
                 using var doc = JsonDocument.Parse(responseContent);
                 var root = doc.RootElement;
-                var messageContent = root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
-
-                if (string.IsNullOrWhiteSpace(messageContent))
+                
+                // **JSON_STRUCTURE_ANALYSIS**: Analyze the response structure
+                _logger.Error("🔍 **JSON_STRUCTURE_ANALYSIS**: Root element type={ElementType}", root.ValueKind);
+                
+                // **CHOICES_EXTRACTION**: Extract choices array
+                if (root.TryGetProperty("choices", out var choicesElement))
                 {
-                    _logger.Warning("API response content is empty or null.");
-                    return string.Empty;
+                    _logger.Error("🔍 **CHOICES_EXTRACTION**: Found 'choices' property of type {ChoicesType}", choicesElement.ValueKind);
+                    
+                    if (choicesElement.ValueKind == JsonValueKind.Array && choicesElement.GetArrayLength() > 0)
+                    {
+                        _logger.Error("🔍 **CHOICES_ARRAY_INFO**: Choices array has {Length} elements", choicesElement.GetArrayLength());
+                        
+                        var firstChoice = choicesElement[0];
+                        
+                        // **MESSAGE_EXTRACTION**: Extract message from first choice
+                        if (firstChoice.TryGetProperty("message", out var messageElement))
+                        {
+                            _logger.Error("🔍 **MESSAGE_EXTRACTION**: Found 'message' property");
+                            
+                            // **CONTENT_EXTRACTION**: Extract content from message
+                            if (messageElement.TryGetProperty("content", out var contentElement))
+                            {
+                                var messageContent = contentElement.GetString();
+                                
+                                // **CONTENT_VALIDATION**: Validate extracted content
+                                bool contentIsEmpty = string.IsNullOrWhiteSpace(messageContent);
+                                _logger.Error("🔍 **CONTENT_VALIDATION**: Content empty? {IsEmpty}, Length={Length}", 
+                                    contentIsEmpty, messageContent?.Length ?? 0);
+                                
+                                if (contentIsEmpty)
+                                {
+                                    _logger.Error("❌ **CONTENT_ASSERTION_FAILED**: DeepSeek response content is empty - no OCR corrections provided");
+                                    return string.Empty;
+                                }
+                                
+                                // **CONTENT_ANALYSIS**: Analyze the content for expected structure
+                                bool containsErrors = messageContent.Contains("\"errors\"");
+                                bool containsGiftCard = messageContent.Contains("TotalInsurance") || messageContent.Contains("TotalDeduction");
+                                _logger.Error("🔍 **CONTENT_ANALYSIS**: Contains errors structure? {ContainsErrors} | Contains field corrections? {ContainsGiftCard}", 
+                                    containsErrors, containsGiftCard);
+                                
+                                // **COMPLETE_CONTENT_LOGGING**: Log the complete extracted content
+                                _logger.Error("🔍 **CONTENT_COMPLETE**: Complete extracted content: {MessageContent}", messageContent);
+                                
+                                return messageContent;
+                            }
+                            else
+                            {
+                                _logger.Error("❌ **CONTENT_EXTRACTION_FAILED**: 'content' property not found in message");
+                            }
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **MESSAGE_EXTRACTION_FAILED**: 'message' property not found in first choice");
+                        }
+                    }
+                    else
+                    {
+                        _logger.Error("❌ **CHOICES_ARRAY_INVALID**: Choices array is empty or invalid");
+                    }
                 }
-
-                _logger.Verbose("Extracted content: {MessageContent}", TruncateForLog(messageContent));
-                return messageContent;
+                else
+                {
+                    _logger.Error("❌ **CHOICES_EXTRACTION_FAILED**: 'choices' property not found in response");
+                }
+                
+                _logger.Error("❌ **JSON_PARSING_FAILED**: Could not extract content from DeepSeek response structure");
+                return string.Empty;
             }
             catch (JsonException jsonEx)
             {
-                _logger.Error(jsonEx, "Failed to parse successful API response JSON. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                _logger.Error(jsonEx, "🚨 **JSON_PARSING_EXCEPTION**: Failed to parse DeepSeek response JSON - Response: {ResponseContent}", responseContent);
                 throw new HttpRequestException("Failed to parse API response JSON.", jsonEx);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unexpected error parsing successful API response. Content was: {ResponseContent}", TruncateForLog(responseContent));
+                _logger.Error(ex, "🚨 **RESPONSE_PROCESSING_EXCEPTION**: Unexpected error parsing DeepSeek response - Response: {ResponseContent}", responseContent);
                 throw new HttpRequestException("Error processing API response.", ex);
             }
         }

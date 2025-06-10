@@ -27,7 +27,8 @@ namespace WaterNut.DataSpace
         public string LineText { get; set; }
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-        public bool RequiresMultilineRegex { get; set; } 
+        public bool RequiresMultilineRegex { get; set; }
+        public string SuggestedRegex { get; set; } // Added for pipeline pattern generation
         
         public string FullContext => string.Join("\n", 
             ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));

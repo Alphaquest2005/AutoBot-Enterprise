@@ -290,7 +290,8 @@ namespace WaterNut.DataSpace
 
             _lines.Clear();
             _lines.AddRange(newLines);
-            Console.WriteLine($"[STATE] Updated _lines to {newLines.Count} items");
+            _logger.Debug("[STATE] Updated _lines to {Count} items", newLines.Count);
+            // Console.WriteLine($"[STATE] Updated _lines to {newLines.Count} items");
             return true;
         }
 

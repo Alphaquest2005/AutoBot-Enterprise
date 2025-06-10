@@ -647,6 +647,32 @@ namespace AutoBotUtilities.Tests
 
                     _log.LogInfoCategorized(LogCategory.InternalStep, "OCR Database Baseline - Total Templates: {TemplateCount}, Tropical Vendors Template Exists: {TropicalExists}",
                         this.invocationId, propertyValues: new object[] { initialInvoiceTemplateCount, tropicalVendorsTemplateExists });
+
+                    // 🔍 **INTENTION_CONFIRMATION_LOGGING**: Add comprehensive database state analysis
+                    _log.Error("🔍 **DATABASE_STATE_INTENTION_CHECK_1**: Is Tropical Vendors template missing? Expected=TRUE, Actual={IsTemplateMissing}", !tropicalVendorsTemplateExists);
+                    
+                    if (tropicalVendorsTemplateExists)
+                    {
+                        _log.Error("🔍 **DATABASE_STATE_INTENTION_FAILED_1**: INTENTION FAILED - Tropical Vendors template already exists but test expects it to be missing");
+                        
+                        // Get detailed information about existing template
+                        var existingTemplate = await ocrCtx.Invoices.FirstOrDefaultAsync(i => i.Name == "Tropical Vendors").ConfigureAwait(false);
+                        if (existingTemplate != null)
+                        {
+                            _log.Error("🔍 **DATABASE_STATE_EXISTING_TEMPLATE**: Template ID={TemplateId}, FileTypeId={FileTypeId}, ApplicationSettingsId={AppSettingsId}, IsActive={IsActive}",
+                                existingTemplate.Id, existingTemplate.FileTypeId, existingTemplate.ApplicationSettingsId, existingTemplate.IsActive);
+                        }
+                        
+                        // Check when it was created and by what process
+                        var allTropicalTemplates = await ocrCtx.Invoices.Where(i => i.Name.Contains("Tropical")).ToListAsync().ConfigureAwait(false);
+                        _log.Error("🔍 **DATABASE_STATE_ALL_TROPICAL_TEMPLATES**: Found {Count} templates containing 'Tropical': {@Templates}",
+                            allTropicalTemplates.Count, 
+                            allTropicalTemplates.Select(t => new { t.Id, t.Name, t.FileTypeId, t.ApplicationSettingsId }).ToList());
+                    }
+                    else
+                    {
+                        _log.Error("🔍 **DATABASE_STATE_INTENTION_MET_1**: INTENTION MET - Tropical Vendors template is missing as expected");
+                    }
                 }
 
                 // Check ShipmentInvoice database for Tropical Vendors invoice (0016205-IN)
@@ -660,15 +686,39 @@ namespace AutoBotUtilities.Tests
                         this.invocationId, propertyValues: new object[] { totalInvoicesBefore, totalDetailsBefore, tropicalVendorsInvoiceExists });
                 }
 
-                // ASSERT: Tropical Vendors data should NOT exist before processing
-                Assert.That(tropicalVendorsTemplateExists, Is.False, "Tropical Vendors OCR template should NOT exist before processing - test setup issue");
-                Assert.That(tropicalVendorsInvoiceExists, Is.False, "Tropical Vendors invoice (0016205-IN) should NOT exist before processing - test setup issue");
+                // 🔍 **DATA_FIRST_DEBUGGING**: Instead of failing, understand WHY template exists and clear database
+                _log.Error("🔍 **TEST_DESIGN_INTENTION_CHECK_2**: Should clear database before assertions? Expected=YES, Current=NO");
+                _log.Error("🔍 **TEST_DESIGN_INTENTION_EXPLANATION**: Test expects clean state but checks before clearing - this creates false failures");
+                
+                // Clear database BEFORE assertions to ensure clean test state
+                _log.LogInfoCategorized(LogCategory.InternalStep, "Clearing database to ensure clean test baseline", this.invocationId);
+                Infrastructure.Utils.ClearDataBase();
+                
+                // Re-check database state after clearing
+                using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                {
+                    var templateCountAfterClear = await ocrCtx.Invoices.CountAsync().ConfigureAwait(false);
+                    var tropicalExistsAfterClear = await ocrCtx.Invoices.AnyAsync(i => i.Name == "Tropical Vendors").ConfigureAwait(false);
+                    
+                    _log.Error("🔍 **DATABASE_STATE_AFTER_CLEAR**: Template Count={Count}, Tropical Vendors Exists={Exists}", 
+                        templateCountAfterClear, tropicalExistsAfterClear);
+                        
+                    tropicalVendorsTemplateExists = tropicalExistsAfterClear;
+                }
+                
+                using (var ctx = new EntryDataDSContext())
+                {
+                    var invoiceExistsAfterClear = await ctx.ShipmentInvoice.AnyAsync(si => si.InvoiceNo == "0016205-IN").ConfigureAwait(false);
+                    _log.Error("🔍 **DATABASE_STATE_AFTER_CLEAR**: Tropical Vendors Invoice (0016205-IN) Exists={Exists}", invoiceExistsAfterClear);
+                    tropicalVendorsInvoiceExists = invoiceExistsAfterClear;
+                }
+
+                // NOW assert clean state
+                Assert.That(tropicalVendorsTemplateExists, Is.False, "Tropical Vendors OCR template should NOT exist after database clear");
+                Assert.That(tropicalVendorsInvoiceExists, Is.False, "Tropical Vendors invoice (0016205-IN) should NOT exist after database clear");
 
                 // Phase 4: Send fresh template email and process using EmailProcessor (complete workflow)
                 _log.LogInfoCategorized(LogCategory.InternalStep, "Phase 4: Send fresh template email and process using EmailProcessor - complete workflow", this.invocationId);
-
-                // Clear database before processing
-                Infrastructure.Utils.ClearDataBase();
 
                 // Send a fresh copy of the template email so it will be unseen and processed by EmailProcessor
                 _log.LogInfoCategorized(LogCategory.InternalStep, "Sending fresh template email to ensure it's unseen for EmailProcessor", this.invocationId);
@@ -734,9 +784,14 @@ namespace AutoBotUtilities.Tests
                     _log.LogInfoCategorized(LogCategory.InternalStep, "Calling EmailProcessor.ProcessEmailsAsync with beforeImport: {BeforeImport}",
                         this.invocationId, propertyValues: new object[] { beforeImport });
 
+                    // 🔍 **COMPREHENSIVE_LOGGING**: Track EmailProcessor and UpdateRegEx workflow
+                    _log.Error("🔍 **EMAILPROCESSOR_INTENTION_CHECK_3**: Will EmailProcessor call UpdateRegEx for template emails? Expected=YES");
+                    _log.Error("🔍 **EMAILPROCESSOR_WORKFLOW_ENTRY**: About to call EmailProcessor.ProcessEmailsAsync - this should detect template emails and call UpdateRegEx action");
+                    
                     // Use EmailProcessor to process all emails - this will automatically call UpdateInvoice.UpdateRegEx for template emails
                     await AutoBot.EmailProcessor.ProcessEmailsAsync(appSettings, beforeImport, ctx, CancellationToken.None, _log).ConfigureAwait(false);
 
+                    _log.Error("🔍 **EMAILPROCESSOR_WORKFLOW_EXIT**: EmailProcessor.ProcessEmailsAsync completed - checking if UpdateRegEx was called");
                     _log.LogInfoCategorized(LogCategory.InternalStep, "EmailProcessor.ProcessEmailsAsync completed - all emails processed through complete workflow",
                         this.invocationId);
 
@@ -752,6 +807,24 @@ namespace AutoBotUtilities.Tests
                 {
                     var finalInvoiceTemplateCount = await ocrCtx.Invoices.CountAsync().ConfigureAwait(false);
                     var tropicalVendorsTemplate = await ocrCtx.Invoices.FirstOrDefaultAsync(i => i.Name == "Tropical Vendors").ConfigureAwait(false);
+
+                    // 🔍 **INTENTION_CONFIRMATION_LOGGING**: Check if UpdateRegEx created the template
+                    _log.Error("🔍 **UPDATEREGEX_INTENTION_CHECK_4**: Was Tropical Vendors template created by UpdateRegEx? Expected=YES, Actual={TemplateCreated}", tropicalVendorsTemplate != null);
+                    
+                    if (tropicalVendorsTemplate != null)
+                    {
+                        _log.Error("🔍 **UPDATEREGEX_INTENTION_MET_4**: INTENTION MET - Tropical Vendors template was successfully created");
+                        _log.Error("🔍 **UPDATEREGEX_TEMPLATE_DETAILS**: Template ID={TemplateId}, FileTypeId={FileTypeId}, ApplicationSettingsId={AppSettingsId}",
+                            tropicalVendorsTemplate.Id, tropicalVendorsTemplate.FileTypeId, tropicalVendorsTemplate.ApplicationSettingsId);
+                    }
+                    else
+                    {
+                        _log.Error("🔍 **UPDATEREGEX_INTENTION_FAILED_4**: INTENTION FAILED - Tropical Vendors template was NOT created by UpdateRegEx");
+                        
+                        // Check what templates DO exist
+                        var allTemplates = await ocrCtx.Invoices.Select(i => new { i.Id, i.Name, i.FileTypeId, i.ApplicationSettingsId }).ToListAsync().ConfigureAwait(false);
+                        _log.Error("🔍 **UPDATEREGEX_ALL_TEMPLATES_AFTER**: Found {Count} templates after processing: {@Templates}", allTemplates.Count, allTemplates);
+                    }
 
                     _log.LogInfoCategorized(LogCategory.InternalStep, "OCR Database After Processing - Total Templates: {FinalCount} (was {InitialCount}), Tropical Vendors Created: {TropicalCreated}",
                         this.invocationId, propertyValues: new object[] { finalInvoiceTemplateCount, initialInvoiceTemplateCount, tropicalVendorsTemplate != null });

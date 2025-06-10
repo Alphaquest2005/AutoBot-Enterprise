@@ -39,27 +39,54 @@ namespace WaterNut.DataSpace
 
             if (invoice == null)
             {
-                log.Warning("TotalsZero (ShipmentInvoice): Null invoice provided.");
+                log.Error("🚨 **CRITICAL_ERROR**: TotalsZero (ShipmentInvoice): Null invoice provided");
                 return false;
             }
 
-            var baseTotal = (invoice.SubTotal ?? 0) +
-                          (invoice.TotalInternalFreight ?? 0) +
-                          (invoice.TotalOtherCost ?? 0) +
-                          (invoice.TotalInsurance ?? 0);
+            // 🔍 **ASSUMPTION**: All nullable fields should be treated as 0.0 when null
+            var subTotal = invoice.SubTotal ?? 0;
+            var freight = invoice.TotalInternalFreight ?? 0;
+            var otherCost = invoice.TotalOtherCost ?? 0;
+            var insurance = invoice.TotalInsurance ?? 0;
             var deductionAmount = invoice.TotalDeduction ?? 0;
             var reportedInvoiceTotal = invoice.InvoiceTotal ?? 0;
 
+            log.Error("🔍 **CALCULATION_INPUTS_SHIPMENT**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal:F2} | Freight={Freight:F2} | OtherCost={OtherCost:F2} | Insurance={Insurance:F2} | Deduction={Deduction:F2} | ReportedTotal={ReportedTotal:F2}",
+                invoice.InvoiceNo, subTotal, freight, otherCost, insurance, deductionAmount, reportedInvoiceTotal);
+
+            // 🔍 **ASSUMPTION**: BaseTotal = SubTotal + Freight + OtherCost + Insurance
+            var baseTotal = subTotal + freight + otherCost + insurance;
+            log.Error("🔍 **CALCULATION_STEP1_SHIPMENT**: BaseTotal = ({SubTotal:F2} + {Freight:F2} + {OtherCost:F2} + {Insurance:F2}) = {BaseTotal:F2}",
+                subTotal, freight, otherCost, insurance, baseTotal);
+
+            // 🔍 **ASSUMPTION**: FinalTotal = BaseTotal - Deduction
             var calculatedFinalTotal = baseTotal - deductionAmount;
+            log.Error("🔍 **CALCULATION_STEP2_SHIPMENT**: FinalTotal = ({BaseTotal:F2} - {Deduction:F2}) = {FinalTotal:F2}",
+                baseTotal, deductionAmount, calculatedFinalTotal);
+
+            // 🔍 **ASSUMPTION**: Difference = |FinalTotal - ReportedTotal|
             differenceAmount = Math.Abs(calculatedFinalTotal - reportedInvoiceTotal);
+            log.Error("🔍 **CALCULATION_STEP3_SHIPMENT**: Difference = |{FinalTotal:F2} - {ReportedTotal:F2}| = {Difference:F4}",
+                calculatedFinalTotal, reportedInvoiceTotal, differenceAmount);
 
+            // 🔍 **ASSUMPTION**: Invoice is balanced if difference < 0.01
             bool isZero = differenceAmount < 0.01;
+            var tolerance = 0.01;
+            log.Error("🔍 **CALCULATION_RESULT_SHIPMENT**: IsBalanced = ({Difference:F4} < {Tolerance:F2}) = {IsBalanced}",
+                differenceAmount, tolerance, isZero);
 
+            // Store result for extension method access
             _totalsZeroAmounts.Remove(invoice);
             _totalsZeroAmounts.Add(invoice, new StrongBox<double>(differenceAmount));
 
-            log.Debug("TotalsZero Check for ShipmentInvoice {InvoiceNo}: BaseCalc={BaseTotal:F2}, Deduction={Deduction:F2}, ExpectedFinal={ExpectedFinal:F2}, ReportedFinal={ReportedTotal:F2}, Diff={Difference:F4}, IsZero={IsZeroResult}",
-                invoice.InvoiceNo, baseTotal, deductionAmount, calculatedFinalTotal, reportedInvoiceTotal, differenceAmount, isZero);
+            if (isZero)
+            {
+                log.Error("✅ **CALCULATION_VALID**: ShipmentInvoice {InvoiceNo} is balanced (diff={Difference:F4})", invoice.InvoiceNo, differenceAmount);
+            }
+            else
+            {
+                log.Error("❌ **CALCULATION_UNBALANCED**: ShipmentInvoice {InvoiceNo} is unbalanced (diff={Difference:F4})", invoice.InvoiceNo, differenceAmount);
+            }
 
             return isZero;
         }
@@ -74,8 +101,18 @@ namespace WaterNut.DataSpace
             out double totalImbalanceSum,
             ILogger logger = null)
         {
+            var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+            
+            log.Error("🔍 **DIRECT_TOTALS_ZERO_ENTRY**: TotalsZero(List<dynamic>) called with {ItemCount} items", dynamicInvoiceResults?.Count ?? 0);
+            
             List<InvoiceBalanceStatus> bals = TotalsZeroInternal(dynamicInvoiceResults,out totalImbalanceSum, logger);
-            return bals.Any() && bals.All(s => s.IsBalanced);
+            
+            bool allBalanced = bals.Any() && bals.All(s => s.IsBalanced);
+            
+            log.Error("🔍 **DIRECT_TOTALS_ZERO_RESULT**: ProcessedStatuses={StatusCount} | AllBalanced={AllBalanced} | TotalImbalanceSum={TotalSum:F5}", 
+                bals.Count, allBalanced, totalImbalanceSum);
+            
+            return allBalanced;
         }
 
         /// <summary>
@@ -130,10 +167,33 @@ namespace WaterNut.DataSpace
                     var status = ProcessSingleDynamicInvoiceForListInternal(invoiceDict, defaultIdentifier, log);
                     allStatuses.Add(status);
 
-                    // Add to the total sum of imbalances
+                    // **CRITICAL_DEBUGGING**: Log the status details to debug totalImbalanceSum calculation
+                    log.Error("🔍 **TOTALS_ZERO_INTERNAL_STATUS**: InvoiceId={InvoiceId} | IsBalanced={IsBalanced} | ImbalanceAmount={ImbalanceAmount:F5} | ErrorMessage={ErrorMessage}", 
+                        status.InvoiceIdentifier, status.IsBalanced, status.ImbalanceAmount, status.ErrorMessage ?? "NULL");
+
+                    // Add to the total sum of imbalances using absolute values to prevent cancellation
                     if (status.ErrorMessage == null) // Only add if successfully processed
                     {
-                        totalImbalanceSum += status.ImbalanceAmount;
+                        double absImbalance = Math.Abs(status.ImbalanceAmount);
+                        totalImbalanceSum += absImbalance;
+                        log.Error("🔍 **TOTALS_ZERO_INTERNAL_SUM_ADDED**: Added abs({ImbalanceAmount:F5})={AbsImbalance:F5} to totalImbalanceSum, new total={TotalSum:F5}", 
+                            status.ImbalanceAmount, absImbalance, totalImbalanceSum);
+                        
+                        // CRITICAL: Verify that if individual imbalance > 0, total sum > 0 (no cancellation)
+                        if (absImbalance > 0.01 && totalImbalanceSum <= 0.01)
+                        {
+                            log.Error("🚨 **TOTALS_ZERO_INTERNAL_CANCELLATION_ERROR**: Individual imbalance {AbsImbalance:F5} > 0.01 but totalSum {TotalSum:F5} <= 0.01 - this indicates cancellation occurred!", 
+                                absImbalance, totalImbalanceSum);
+                        }
+                    }
+                    else
+                    {
+                        log.Error("❌ **TOTALS_ZERO_INTERNAL_SUM_SKIPPED**: Skipped adding {ImbalanceAmount:F5} due to ErrorMessage='{ErrorMessage}'", 
+                            status.ImbalanceAmount, status.ErrorMessage);
+                        // If ANY invoice fails processing, mark the entire calculation as unreliable
+                        totalImbalanceSum = double.MaxValue;
+                        log.Error("🚨 **TOTALS_ZERO_INTERNAL_ERROR**: Setting totalImbalanceSum=MaxValue due to processing error - calculation unreliable");
+                        break; // Exit early since calculation is now invalid
                     }
                 }
                 dynamicItemIndex++;
@@ -169,6 +229,10 @@ namespace WaterNut.DataSpace
 
             bool isBalanced = TotalsZero(tempInvoice, out double imbalance, log);
 
+            // **CRITICAL_DEBUGGING**: Log the specific calculation result to compare with direct method
+            log.Error("🔍 **SHOULDCONTINUE_SINGLE_INVOICE_CALC**: InvoiceNo={InvoiceNo} | IsBalanced={IsBalanced} | Imbalance={Imbalance:F5} | Method=TotalsZero(ShipmentInvoice)",
+                tempInvoice.InvoiceNo, isBalanced, imbalance);
+
             return new InvoiceBalanceStatus
             {
                 InvoiceIdentifier = tempInvoice.InvoiceNo,
@@ -186,28 +250,47 @@ namespace WaterNut.DataSpace
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
 
+            log.Error("🔍 **SHOULDCONTINUE_ENTRY**: ShouldContinueCorrections called with {ResCount} dynamic items", res?.Count ?? 0);
+            log.Error("🔍 **ASSUMPTION_SHOULDCONTINUE**: Should return TRUE if any invoice is unbalanced (difference >= 0.01)");
+
             // Use the TotalsZero overload that outputs the sum
             List<InvoiceBalanceStatus> balanceStatuses = TotalsZeroInternal(res, out totalImbalanceSum, log);
 
+            log.Error("🔍 **SHOULDCONTINUE_PROCESSED**: Processed {StatusCount} invoice balance statuses | TotalImbalanceSum={TotalSum:F4}", 
+                balanceStatuses.Count, totalImbalanceSum);
+
             if (!balanceStatuses.Any())
             {
-                log.Information("ShouldContinueCorrections: No processable invoice data found in 'res'. Assuming corrections should not continue.");
-                // totalImbalanceSum would be MaxValue from TotalsZero if list is empty or no processable items
+                log.Error("❌ **SHOULDCONTINUE_NO_DATA**: No processable invoice data found in 'res'. Returning FALSE.");
                 return false;
             }
 
+            // Log each balance status for analysis
+            for (int i = 0; i < balanceStatuses.Count; i++)
+            {
+                var status = balanceStatuses[i];
+                log.Error("🔍 **SHOULDCONTINUE_STATUS_{Index}**: ID={InvoiceId} | IsBalanced={IsBalanced} | Imbalance={Imbalance:F4} | Error={Error}", 
+                    i, status.InvoiceIdentifier, status.IsBalanced, status.ImbalanceAmount, status.ErrorMessage ?? "None");
+            }
+
             bool anyUnbalanced = balanceStatuses.Any(s => !s.IsBalanced);
+            int unbalancedCount = balanceStatuses.Count(s => !s.IsBalanced);
+            int balancedCount = balanceStatuses.Count(s => s.IsBalanced);
+
+            log.Error("🔍 **SHOULDCONTINUE_ANALYSIS**: Total={Total} | Balanced={Balanced} | Unbalanced={Unbalanced} | AnyUnbalanced={AnyUnbalanced}", 
+                balanceStatuses.Count, balancedCount, unbalancedCount, anyUnbalanced);
 
             if (anyUnbalanced)
             {
-                log.Information("ShouldContinueCorrections: At least one invoice is NOT balanced (Total Imbalance Sum for all processed: {TotalImbalance:F4}). Corrections should continue.",
+                log.Error("✅ **SHOULDCONTINUE_TRUE**: At least one invoice is unbalanced. Corrections should continue. TotalImbalance={TotalImbalance:F4}",
                     totalImbalanceSum);
                 return true;
             }
             else
             {
-                log.Information("ShouldContinueCorrections: All processed invoices are balanced. (Total Imbalance Sum for all processed: {TotalImbalance:F4}). Balance corrections might not be primary focus.",
+                log.Error("❌ **SHOULDCONTINUE_FALSE**: All invoices are balanced. Corrections not needed. TotalImbalance={TotalImbalance:F4}",
                     totalImbalanceSum);
+                log.Error("🎯 **ROOT_CAUSE**: ShouldContinueCorrections returning FALSE - this blocks OCR correction loop execution");
                 return false;
             }
         }
@@ -216,25 +299,67 @@ namespace WaterNut.DataSpace
         public static async Task<bool> CorrectInvoices(ShipmentInvoice invoice, string fileText, ILogger logger)
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+            
+            // **PROOF OF ENTRY**: Use LogLevelOverride to ensure this log ALWAYS appears regardless of global settings
+            using (Core.Common.Extensions.LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Verbose))
+            {
+                log.Information("🔍 **OCR_CORRECTION_ENTRY**: CorrectInvoices(ShipmentInvoice invoice, string fileText, ILogger logger) method called for Invoice: {InvoiceNo}", 
+                    invoice?.InvoiceNo ?? "NULL");
+            }
             if (TotalsZero(invoice, out double diff, log))
             {
                 log.Information("CorrectInvoices (single ShipmentInvoice): Invoice {InvNo} is already balanced. Diff: {Difference:F4}. Skipping correction.", invoice.InvoiceNo, diff);
+                
+                // **PROOF OF EXIT**: Use LogLevelOverride to ensure this log ALWAYS appears
+                using (Core.Common.Extensions.LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Verbose))
+                {
+                    log.Information("🔍 **OCR_CORRECTION_EXIT**: CorrectInvoices (single invoice) exiting early - already balanced");
+                }
                 return true;
             }
 
             log.Information("CorrectInvoices (single ShipmentInvoice): Invoice {InvNo} is not balanced. Diff: {Difference:F4}. Proceeding with correction.", invoice.InvoiceNo, diff);
             using var service = new OCRCorrectionService(log);
-            return await service.CorrectInvoiceAsync(invoice, fileText).ConfigureAwait(false);
+            var result = await service.CorrectInvoiceAsync(invoice, fileText).ConfigureAwait(false);
+            
+            // **PROOF OF EXIT**: Use LogLevelOverride to ensure this log ALWAYS appears
+            using (Core.Common.Extensions.LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Verbose))
+            {
+                log.Information("🔍 **OCR_CORRECTION_EXIT**: CorrectInvoices (single invoice) completed with result: {Result}", result);
+            }
+            return result;
         }
 
         public static async Task CorrectInvoices(List<dynamic> res, Invoice template, ILogger logger)
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+            
+            // **PROOF OF ENTRY**: Use LogLevelOverride to ensure this log ALWAYS appears regardless of global settings
+            using (Core.Common.Extensions.LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Verbose))
+            {
+                log.Error("🔍 **OCR_CORRECTION_SERVICE_ENTRY**: CorrectInvoices static method ENTERED with ResCount: {ResCount}, Template: {TemplateName}", 
+                    res?.Count ?? 0, template?.OcrInvoices?.Name ?? "NULL");
+                
+                // Log the dynamic res structure with custom serialization
+                if (res != null && res.Any())
+                {
+                    log.Error("🔍 **OCR_DYNAMIC_RES_STRUCTURE**: res contains {Count} items", res.Count);
+                    for (int i = 0; i < Math.Min(res.Count, 3); i++) // Log first 3 items
+                    {
+                        var item = res[i];
+                        if (item != null)
+                        {
+                            log.Error("🔍 **OCR_RES_ITEM_{Index}**: Type={Type}, Value={@Value}", i, item.GetType().Name, item);
+                        }
+                    }
+                }
+                
             if (res == null || !res.Any() || template == null)
             {
-                log.Warning("CorrectInvoices (static batch): Input 'res' or 'template' is null/empty. Skipping.");
+                log.Error("🔍 **OCR_CORRECTION_EXIT_EARLY**: CorrectInvoices method exiting early - null/empty inputs");
                 return;
             }
+            } // End LogLevelOverride for entry log
 
             try
             {
@@ -242,59 +367,160 @@ namespace WaterNut.DataSpace
                 log.Information("Starting static batch OCR correction for {DynamicResultCount} dynamic results against template {TemplateLogId} ({TemplateName})",
                     res.Count, templateLogId, template.OcrInvoices?.Name);
 
+                log.Error("🔍 **OCR_DATAFLOW_TEXT_LOAD**: About to load original text from template FilePath: {FilePath}", template.FilePath);
+                log.Error("🔍 **OCR_DATAFLOW_TEMPLATE_INFO**: Template.Id={TemplateId}, Template.Name={TemplateName}", template.OcrInvoices?.Id, template.OcrInvoices?.Name);
                 string originalText = GetOriginalTextFromFile(template.FilePath, log);
+                log.Error("🔍 **OCR_DATAFLOW_TEXT_LOADED**: Original text loaded, length: {TextLength} | IsNull: {IsNull} | IsEmpty: {IsEmpty}", 
+                    originalText?.Length ?? 0, originalText == null, string.IsNullOrEmpty(originalText));
+                    
+                if (!string.IsNullOrEmpty(originalText))
+                {
+                    log.Error("🔍 **OCR_DATAFLOW_TEXT_PREVIEW**: First 500 chars: {Preview}", 
+                        originalText.Length > 500 ? originalText.Substring(0, 500) + "..." : originalText);
+                }
+                
+                // Log a sample of the original text to see if it contains gift card info
+                if (!string.IsNullOrEmpty(originalText))
+                {
+                    var lines = originalText.Split('\n').Take(50).ToList(); // First 50 lines
+                    var giftCardLines = lines.Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99") || l.Contains("$6.99")).ToList();
+                    log.Error("🔍 **OCR_DATAFLOW_GIFT_CARD_SEARCH**: Found {GiftCardLineCount} lines containing gift card related text: {@GiftCardLines}", giftCardLines.Count, giftCardLines);
+                    
+                    // INTENTION CONFIRMATION: Gift card text should be present in original text
+                    bool hasGiftCardText = giftCardLines.Any(l => l.Contains("Gift Card Amount"));
+                    bool hasGiftCardAmount = giftCardLines.Any(l => l.Contains("-$6.99"));
+                    log.Error("🔍 **OCR_INTENTION_CHECK_6**: Gift card text found? Expected=TRUE, Actual={HasGiftCard}", hasGiftCardText);
+                    log.Error("🔍 **OCR_INTENTION_CHECK_7**: Gift card amount found? Expected=TRUE, Actual={HasAmount}", hasGiftCardAmount);
+                    
+                    if (!hasGiftCardText)
+                    {
+                        log.Error("🔍 **OCR_INTENTION_FAILED_6**: INTENTION FAILED - 'Gift Card Amount' text not found in original PDF text");
+                    }
+                    else
+                    {
+                        log.Error("🔍 **OCR_INTENTION_MET_6**: INTENTION MET - 'Gift Card Amount' text found in original PDF text");
+                    }
+                    
+                    if (!hasGiftCardAmount)
+                    {
+                        log.Error("🔍 **OCR_INTENTION_FAILED_7**: INTENTION FAILED - '-$6.99' amount not found in original PDF text");
+                    }
+                    else
+                    {
+                        log.Error("🔍 **OCR_INTENTION_MET_7**: INTENTION MET - '-$6.99' amount found in original PDF text");
+                    }
+                }
+                
                 if (string.IsNullOrEmpty(originalText) && res.Any(item => (item is List<IDictionary<string, object>> l && l.Any()) || (item is IDictionary<string, object>)))
                 {
-                    log.Warning("Original text file not found or empty for template {TemplateLogId} at path '{FilePath}'. Corrections will be limited.",
+                    log.Error("🔍 **OCR_DATAFLOW_TEXT_MISSING**: Original text file not found or empty for template {TemplateLogId} at path '{FilePath}'. Corrections will be limited.",
                         templateLogId, template.FilePath + ".txt");
                 }
 
                 List<ShipmentInvoiceWithMetadata> allShipmentInvoicesWithMetadata;
                 using (var tempServiceForMeta = new OCRCorrectionService(log))
                 {
+                    log.Error("🔍 **OCR_DATAFLOW_CONVERSION_ENTRY**: About to convert dynamic res to ShipmentInvoices");
                     allShipmentInvoicesWithMetadata = ConvertDynamicToShipmentInvoicesWithMetadata(res, template, tempServiceForMeta, log);
+                    log.Error("🔍 **OCR_DATAFLOW_CONVERSION_EXIT**: Conversion completed, got {Count} ShipmentInvoices", allShipmentInvoicesWithMetadata?.Count ?? 0);
                 }
 
                 if (!allShipmentInvoicesWithMetadata.Any())
                 {
-                    log.Information("No ShipmentInvoices could be converted from dynamic results for template {TemplateLogId}. Ending correction process.", templateLogId);
+                    log.Error("🔍 **OCR_DATAFLOW_EXIT_NO_INVOICES**: No ShipmentInvoices could be converted from dynamic results for template {TemplateLogId}. Ending correction process.", templateLogId);
                     return;
                 }
 
-                log.Information("Converted {Count} ShipmentInvoices with metadata for processing against template {TemplateLogId}.", allShipmentInvoicesWithMetadata.Count, templateLogId);
+                log.Error("🔍 **OCR_DATAFLOW_INVOICE_DETAILS**: Converted {Count} ShipmentInvoices with metadata for processing against template {TemplateLogId}.", allShipmentInvoicesWithMetadata.Count, templateLogId);
+                
+                // Log each converted ShipmentInvoice details to see what values were extracted
+                foreach (var invoiceWithMeta in allShipmentInvoicesWithMetadata)
+                {
+                    var inv = invoiceWithMeta.Invoice;
+                    log.Error("🔍 **OCR_DATAFLOW_INVOICE_VALUES**: InvoiceNo={InvoiceNo}, SubTotal={SubTotal}, InvoiceTotal={InvoiceTotal}, TotalInternalFreight={TotalInternalFreight}, TotalOtherCost={TotalOtherCost}, TotalDeduction={TotalDeduction}, TotalInsurance={TotalInsurance}", 
+                        inv.InvoiceNo, inv.SubTotal, inv.InvoiceTotal, inv.TotalInternalFreight, inv.TotalOtherCost, inv.TotalDeduction, inv.TotalInsurance);
+                }
 
                 EnhancedCorrectionResult overallCorrectionResults = new EnhancedCorrectionResult();
 
                 using var correctionServiceInstance = new OCRCorrectionService(log);
+                log.Error("🔍 **OCR_LOGIC_FLOW_LOOP_START**: Starting processing loop for {Count} invoices", allShipmentInvoicesWithMetadata.Count);
+                
                 foreach (var invoiceWithMeta in allShipmentInvoicesWithMetadata)
                 {
                     var currentShipmentInvoice = invoiceWithMeta.Invoice;
-                    log.Information("Processing corrections for invoice (derived) {InvoiceNo} from template {TemplateLogId}", currentShipmentInvoice.InvoiceNo, templateLogId);
+                    log.Error("🔍 **OCR_LOGIC_FLOW_INVOICE_START**: Processing corrections for invoice {InvoiceNo} from template {TemplateLogId}", currentShipmentInvoice.InvoiceNo, templateLogId);
 
-                    if (TotalsZero(currentShipmentInvoice, log))
+                    bool isBalanced = TotalsZero(currentShipmentInvoice, log);
+                    log.Error("🔍 **OCR_LOGIC_FLOW_BALANCE_CHECK**: Invoice {InvoiceNo} TotalsZero check = {IsBalanced}", currentShipmentInvoice.InvoiceNo, isBalanced);
+                    log.Error("🔍 **OCR_INTENTION_BALANCE**: We EXPECT this invoice to be unbalanced (TotalsZero != 0) so OCR correction can fix the missing TotalDeduction field");
+                    
+                    // INTENTION CONFIRMATION: Invoice should be unbalanced
+                    log.Error("🔍 **OCR_INTENTION_CHECK_4**: Is invoice unbalanced? Expected=TRUE, Actual={IsUnbalanced}", !isBalanced);
+                    if (isBalanced)
                     {
-                        log.Information("Invoice {InvoiceNo} from batch is already balanced. Skipping intensive error detection/application for this item.", currentShipmentInvoice.InvoiceNo);
+                        log.Error("🔍 **OCR_INTENTION_FAILED_4**: INTENTION FAILED - Invoice is balanced but we expected unbalanced due to missing TotalDeduction");
+                        log.Error("🔍 **OCR_LOGIC_FLOW_SKIP_BALANCED**: Invoice {InvoiceNo} is already balanced. Skipping intensive error detection/application.", currentShipmentInvoice.InvoiceNo);
                         continue;
                     }
+                    else
+                    {
+                        log.Error("🔍 **OCR_INTENTION_MET_4**: INTENTION MET - Invoice is unbalanced as expected, proceeding with error detection");
+                    }
 
+                    log.Error("🔍 **OCR_LOGIC_FLOW_ERROR_DETECTION**: About to detect errors for unbalanced invoice {InvoiceNo}", currentShipmentInvoice.InvoiceNo);
+                    log.Error("🔍 **OCR_INTENTION_ERROR_DETECTION**: We EXPECT DetectInvoiceErrorsAsync to find missing TotalDeduction field by analyzing originalText for 'Gift Card Amount: -$6.99'");
                     var errors = await correctionServiceInstance.DetectInvoiceErrorsAsync(currentShipmentInvoice, originalText, invoiceWithMeta.FieldMetadata).ConfigureAwait(false);
+                    log.Error("🔍 **OCR_LOGIC_FLOW_ERRORS_FOUND**: Found {ErrorCount} errors for invoice {InvoiceNo}", errors?.Count ?? 0, currentShipmentInvoice.InvoiceNo);
+                    
+                    // INTENTION CONFIRMATION: Should find at least 1 error (missing TotalDeduction)
+                    bool foundErrors = errors?.Count > 0;
+                    log.Error("🔍 **OCR_INTENTION_CHECK_5**: Found errors? Expected=TRUE, Actual={FoundErrors}, ErrorCount={ErrorCount}", foundErrors, errors?.Count ?? 0);
+                    
+                    if (errors?.Count == 0)
+                    {
+                        log.Error("🔍 **OCR_INTENTION_FAILED_5**: INTENTION FAILED - No errors detected but we expected to find missing TotalDeduction field error");
+                    }
+                    else
+                    {
+                        log.Error("🔍 **OCR_INTENTION_MET_5**: INTENTION MET - Errors detected as expected, proceeding with corrections");
+                    }
+                    
                     if (errors.Any())
                     {
+                        log.Error("🔍 **OCR_LOGIC_FLOW_APPLY_CORRECTIONS**: About to apply corrections for {ErrorCount} errors", errors.Count);
                         var appliedCorrections = await correctionServiceInstance.ApplyCorrectionsAsync(currentShipmentInvoice, errors, originalText, invoiceWithMeta.FieldMetadata).ConfigureAwait(false);
                         var successfulValueApplications = appliedCorrections.Where(c => c.Success).ToList();
+                        log.Error("🔍 **OCR_LOGIC_FLOW_CORRECTIONS_APPLIED**: Applied {TotalCorrections} corrections, {SuccessfulCount} successful", appliedCorrections.Count, successfulValueApplications.Count);
 
                         overallCorrectionResults.TotalCorrections += appliedCorrections.Count;
                         overallCorrectionResults.SuccessfulUpdates += successfulValueApplications.Count;
 
                         if (successfulValueApplications.Any())
                         {
+                            log.Error("🔍 **OCR_LOGIC_FLOW_UPDATE_PATTERNS**: About to update regex patterns for {SuccessfulCount} successful corrections", successfulValueApplications.Count);
                             await correctionServiceInstance.UpdateRegexPatternsAsync(successfulValueApplications, originalText, template.FilePath, invoiceWithMeta.FieldMetadata).ConfigureAwait(false);
                         }
                     }
+                    else
+                    {
+                        log.Error("🔍 **OCR_LOGIC_FLOW_NO_ERRORS**: No errors detected for invoice {InvoiceNo}, skipping correction application", currentShipmentInvoice.InvoiceNo);
+                    }
                 }
 
-                UpdateDynamicResultsWithCorrections(res, allShipmentInvoicesWithMetadata.Select(x => x.Invoice).ToList(), log);
-                UpdateTemplateLineValues(template, allShipmentInvoicesWithMetadata.Select(x => x.Invoice).ToList(), log);
+                // **CRITICAL DEBUGGING**: Log the final state of corrected ShipmentInvoice objects before writing back to dynamic structure
+                var finalCorrectedInvoices = allShipmentInvoicesWithMetadata.Select(x => x.Invoice).ToList();
+                log.Error("🔍 **PRE_UPDATE_DYNAMIC_FINAL_STATE**: About to update dynamic results with {Count} corrected ShipmentInvoices", finalCorrectedInvoices.Count);
+                
+                for (int idx = 0; idx < finalCorrectedInvoices.Count; idx++)
+                {
+                    var finalInv = finalCorrectedInvoices[idx];
+                    log.Error("🔍 **PRE_UPDATE_DYNAMIC_INVOICE_{Index}**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal} | TotalDeduction={TotalDeduction} | TotalInsurance={TotalInsurance} | InvoiceTotal={InvoiceTotal}", 
+                        idx, finalInv.InvoiceNo, finalInv.SubTotal, finalInv.TotalDeduction, finalInv.TotalInsurance, finalInv.InvoiceTotal);
+                }
+                
+                UpdateDynamicResultsWithCorrections(res, finalCorrectedInvoices, log);
+                UpdateTemplateLineValues(template, finalCorrectedInvoices, log);
 
                 log.Information("Completed static batch OCR correction for template {TemplateLogId}. Applied {SuccessfulValueChanges} value changes to in-memory objects. Check logs for DB pattern update details.",
                     templateLogId, overallCorrectionResults.SuccessfulUpdates);
@@ -302,6 +528,12 @@ namespace WaterNut.DataSpace
             catch (Exception ex)
             {
                 log.Error(ex, "Error in static CorrectInvoices (batch dynamic) method for template ID {TemplateId}.", template?.OcrInvoices?.Id ?? template.OcrInvoices.Id);
+            }
+            
+            // **PROOF OF EXIT**: Use LogLevelOverride to ensure this log ALWAYS appears regardless of global settings
+            using (Core.Common.Extensions.LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Verbose))
+            {
+                log.Information("🔍 **OCR_CORRECTION_EXIT**: CorrectInvoices method completed successfully");
             }
         }
 
@@ -541,17 +773,34 @@ namespace WaterNut.DataSpace
             }
             try
             {
-                var txtFile = Path.ChangeExtension(templateFilePath, ".txt");
+                // **CRITICAL_DEBUG**: Log all file path attempts to understand why text loading fails
+                logger?.Error("🔍 **FILE_PATH_DEBUG_INPUT**: templateFilePath = '{TemplatePath}'", templateFilePath);
+                
+                // **FIX**: For PDF files, we want to append .txt, not replace the extension
+                // This maintains compatibility: someFile.pdf → someFile.pdf.txt (correct)
+                // Instead of: someFile.pdf → someFile.txt (incorrect)
+                var txtFile = templateFilePath + ".txt";
+                logger?.Error("🔍 **FILE_PATH_DEBUG_APPEND_TXT**: Append .txt result = '{TxtFile}' | Exists = {Exists}", txtFile, File.Exists(txtFile));
+                
                 if (File.Exists(txtFile))
                 {
-                    return File.ReadAllText(txtFile);
+                    var content = File.ReadAllText(txtFile);
+                    logger?.Error("🔍 **FILE_PATH_DEBUG_SUCCESS_APPEND**: Successfully read {Length} characters from '{TxtFile}'", content.Length, txtFile);
+                    return content;
                 }
-                if (!txtFile.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                
+                // **FALLBACK**: Try the old method for backward compatibility
+                var txtFileOld = Path.ChangeExtension(templateFilePath, ".txt");
+                logger?.Error("🔍 **FILE_PATH_DEBUG_FALLBACK**: Path.ChangeExtension fallback = '{TxtFile}' | Exists = {Exists}", txtFileOld, File.Exists(txtFileOld));
+                
+                if (File.Exists(txtFileOld))
                 {
-                    txtFile = templateFilePath + ".txt";
-                    if (File.Exists(txtFile)) return File.ReadAllText(txtFile);
+                    var content = File.ReadAllText(txtFileOld);
+                    logger?.Error("🔍 **FILE_PATH_DEBUG_SUCCESS_FALLBACK**: Successfully read {Length} characters from '{TxtFile}'", content.Length, txtFileOld);
+                    return content;
                 }
-                logger?.Warning("Text file not found for template path: {TemplatePath} (tried {TxtFilePath})", templateFilePath, Path.ChangeExtension(templateFilePath, ".txt"));
+                
+                logger?.Warning("Text file not found for template path: {TemplatePath} (tried {TxtFilePath} and {TxtFilePathOld})", templateFilePath, txtFile, txtFileOld);
             }
             catch (Exception ex)
             {
@@ -564,11 +813,19 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+                
+                // 🔍 **ASSUMPTION**: Dictionary contains all required invoice fields
+                log.Error("🔍 **CONVERSION_INPUTS_DYNAMIC**: Converting dictionary with {KeyCount} keys: {@Keys}", 
+                    x?.Count ?? 0, x?.Keys.ToList() ?? new List<string>());
+
                 var invoice = new ShipmentInvoice();
                 T GetValue<T>(string key, T defaultValue = default)
                 {
                     if (x.TryGetValue(key, out var val) && val != null)
                     {
+                        log.Error("🔍 **CONVERSION_FIELD**: Key='{Key}' | RawValue='{RawValue}' | Type={ValueType} | TargetType={TargetType}", 
+                            key, val.ToString(), val.GetType().Name, typeof(T).Name);
                         try
                         {
                             if (typeof(T) == typeof(DateTime?) && val is string sVal && DateTime.TryParse(sVal, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime dt))
@@ -580,9 +837,14 @@ namespace WaterNut.DataSpace
                         }
                         catch (Exception convEx)
                         {
-                            logger?.Verbose("CreateTempShipmentInvoice: Could not convert key '{Key}' value '{ValText}' (type: {ValType}) to target type {Type}. Error: {ExMsg}",
+                            log.Error("❌ **CONVERSION_FAILED**: Key='{Key}' | Value='{ValText}' | SourceType={ValType} | TargetType={TargetType} | Error={ExMsg}",
                                 key, val.ToString(), val.GetType().Name, typeof(T).Name, convEx.Message);
                         }
+                    }
+                    else
+                    {
+                        log.Error("🔍 **CONVERSION_MISSING**: Key='{Key}' not found in dictionary or is null, using default={Default}", 
+                            key, defaultValue?.ToString() ?? "NULL");
                     }
                     return defaultValue;
                 }
@@ -590,13 +852,21 @@ namespace WaterNut.DataSpace
                 {
                     if (x.TryGetValue(key, out var val) && val != null)
                     {
+                        log.Error("🔍 **CONVERSION_DOUBLE**: Key='{Key}' | RawValue='{RawValue}' | Type={ValueType}", 
+                            key, val.ToString(), val.GetType().Name);
+                        
                         if (val is double d) return d;
                         if (val is decimal dec) return (double)dec;
                         if (val is int i) return (double)i;
                         if (val is long l) return (double)l;
                         if (double.TryParse(val.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
                             return dbl;
-                        logger?.Verbose("CreateTempShipmentInvoice: Could not parse key '{Key}' value '{ValText}' to double?", key, val.ToString());
+                        
+                        log.Error("❌ **CONVERSION_PARSE_FAILED**: Key='{Key}' | Value='{ValText}' could not be parsed to double", key, val.ToString());
+                    }
+                    else
+                    {
+                        log.Error("🔍 **CONVERSION_DOUBLE_MISSING**: Key='{Key}' not found in dictionary or is null", key);
                     }
                     return null;
                 }
@@ -610,6 +880,10 @@ namespace WaterNut.DataSpace
                 invoice.TotalInsurance = GetNullableDouble("TotalInsurance");
                 invoice.TotalDeduction = GetNullableDouble("TotalDeduction");
                 invoice.Currency = GetValue<string>("Currency");
+
+                // Log the final converted values
+                log.Error("🔍 **CONVERSION_RESULT_DYNAMIC**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal} | Freight={Freight} | OtherCost={OtherCost} | Insurance={Insurance} | Deduction={Deduction} | InvoiceTotal={InvoiceTotal}",
+                    invoice.InvoiceNo, invoice.SubTotal, invoice.TotalInternalFreight, invoice.TotalOtherCost, invoice.TotalInsurance, invoice.TotalDeduction, invoice.InvoiceTotal);
                 invoice.SupplierName = GetValue<string>("SupplierName");
                 invoice.SupplierAddress = GetValue<string>("SupplierAddress");
 
@@ -665,12 +939,30 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                // **CRITICAL DEBUGGING**: Log the exact data being passed to this method
+                logger.Error("🔍 **UPDATE_DYNAMIC_ENTRY**: UpdateDynamicResultsWithCorrections called with ResCount={ResCount}, CorrectedInvoicesCount={CorrectedCount}", 
+                    res?.Count ?? 0, correctedInvoices?.Count ?? 0);
+                
+                // **LOG CORRECTED INVOICE VALUES**: Show what values should be written back to dynamic structure
+                for (int idx = 0; idx < (correctedInvoices?.Count ?? 0); idx++)
+                {
+                    var corrInv = correctedInvoices[idx];
+                    logger.Error("🔍 **UPDATE_DYNAMIC_CORRECTED_INVOICE_{Index}**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal} | TotalDeduction={TotalDeduction} | TotalInsurance={TotalInsurance} | InvoiceTotal={InvoiceTotal}", 
+                        idx, corrInv.InvoiceNo, corrInv.SubTotal, corrInv.TotalDeduction, corrInv.TotalInsurance, corrInv.InvoiceTotal);
+                }
+                
                 int correctedInvoiceIdx = 0;
                 for (int i = 0; i < res.Count; i++)
                 {
                     if (correctedInvoiceIdx >= correctedInvoices.Count) break;
 
                     Action<IDictionary<string, object>, ShipmentInvoice> updateDict = (dict, correctedInv) => {
+                        // **CRITICAL DEBUGGING**: Log before and after values for key fields
+                        var oldTotalDeduction = dict.TryGetValue("TotalDeduction", out var oldTDVal) ? oldTDVal : "NOT_FOUND";
+                        var oldTotalInsurance = dict.TryGetValue("TotalInsurance", out var oldTIVal) ? oldTIVal : "NOT_FOUND";
+                        logger.Error("🔍 **UPDATE_DYNAMIC_BEFORE**: InvoiceNo={InvoiceNo} | OLD TotalDeduction={OldTD} | OLD TotalInsurance={OldTI}", 
+                            correctedInv.InvoiceNo, oldTotalDeduction, oldTotalInsurance);
+                        
                         dict["InvoiceNo"] = correctedInv.InvoiceNo;
                         if (correctedInv.InvoiceDate.HasValue) dict["InvoiceDate"] = correctedInv.InvoiceDate.Value.ToString("yyyy-MM-dd HH:mm:ss"); else dict.Remove("InvoiceDate");
                         if (correctedInv.SupplierName != null) dict["SupplierName"] = correctedInv.SupplierName; else dict.Remove("SupplierName");
@@ -683,6 +975,12 @@ namespace WaterNut.DataSpace
                         dict["TotalOtherCost"] = correctedInv.TotalOtherCost;
                         dict["TotalInsurance"] = correctedInv.TotalInsurance;
                         dict["TotalDeduction"] = correctedInv.TotalDeduction;
+                        
+                        // **CRITICAL DEBUGGING**: Log after values are set
+                        logger.Error("🔍 **UPDATE_DYNAMIC_AFTER**: InvoiceNo={InvoiceNo} | NEW TotalDeduction={NewTD} | NEW TotalInsurance={NewTI}", 
+                            correctedInv.InvoiceNo, correctedInv.TotalDeduction, correctedInv.TotalInsurance);
+                        logger.Error("🔍 **UPDATE_DYNAMIC_DICT_VERIFY**: Dictionary now contains TotalDeduction={DictTD} | TotalInsurance={DictTI}", 
+                            dict["TotalDeduction"], dict["TotalInsurance"]);
 
                         if (correctedInv.InvoiceDetails != null && correctedInv.InvoiceDetails.Any())
                         {

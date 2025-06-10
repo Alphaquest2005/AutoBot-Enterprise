@@ -20,21 +20,54 @@ namespace AutoBot
     {
         public static async Task UpdateRegEx(FileTypes fileTypes, FileInfo[] files, ILogger log)
         {
+            // 🔍 **COMPREHENSIVE_LOGGING**: Track UpdateRegEx entry and parameters
+            log.Error("🔍 **UPDATEREGEX_ENTRY**: UpdateRegEx method ENTERED");
+            log.Error("🔍 **UPDATEREGEX_PARAMETERS**: FileType={FileTypeName} (ID={FileTypeId}), Files Count={FileCount}",
+                fileTypes?.FileImporterInfos?.EntryType, fileTypes?.Id, files?.Length ?? 0);
+            
+            if (files != null)
+            {
+                var txtFiles = files.Where(x => x.Extension == ".txt").ToList();
+                log.Error("🔍 **UPDATEREGEX_TXT_FILES**: Found {TxtFileCount} .txt files: {@TxtFileNames}",
+                    txtFiles.Count, txtFiles.Select(f => f.Name).ToList());
+            }
 
             var regExCommands = RegExCommands(fileTypes, log);
 
             foreach (var info in files.Where(x => x.Extension == ".txt"))
             {
+                log.Error("🔍 **UPDATEREGEX_PROCESSING_FILE**: Processing file={FileName}, Size={FileSize} bytes", 
+                    info.FullName, info.Length);
+                    
                 var infoTxt = File.ReadAllText(info.FullName);
+                log.Error("🔍 **UPDATEREGEX_FILE_CONTENT_LENGTH**: File content length={ContentLength} characters", infoTxt.Length);
+                
                 var commands = Regex.Matches(infoTxt, @"(?<Command>\w+):\s(?<Params>.+?)($|\r)",
                     RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
+                log.Error("🔍 **UPDATEREGEX_COMMANDS_FOUND**: Found {CommandCount} commands in file", commands.Count);
+                
                 foreach (Match cmdinfo in commands)
                 {
-                    if (InvoiceReader.InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_PROCESSING**: Processing command='{Command}'", cmdinfo.Value);
+                    
+                    if (InvoiceReader.InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) 
+                    {
+                        log.Error("🔍 **UPDATEREGEX_COMMAND_SKIPPED**: Command already processed, skipping");
+                        continue;
+                    }
+                    
                     var cmdName = cmdinfo.Groups["Command"].Value.Trim();
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_NAME**: Extracted command name='{CommandName}'", cmdName);
 
-                    if (!regExCommands.ContainsKey(cmdName)) continue;
+                    if (!regExCommands.ContainsKey(cmdName)) 
+                    {
+                        log.Error("🔍 **UPDATEREGEX_COMMAND_NOT_FOUND**: Command '{CommandName}' not found in regExCommands dictionary", cmdName);
+                        log.Error("🔍 **UPDATEREGEX_AVAILABLE_COMMANDS**: Available commands: {@AvailableCommands}", regExCommands.Keys.ToList());
+                        continue;
+                    }
+                    
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_FOUND**: Command '{CommandName}' found in regExCommands, executing...", cmdName);
 
                     var cmdParamInfo = cmdinfo.Groups["Params"].Value;
                     var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
@@ -46,12 +79,20 @@ namespace AutoBot
                         cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
                     }
 
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_PARAMS**: Command '{CommandName}' parameters: {@Parameters}", cmdName, cmdparamDic);
+                    
                     ValidateParams(cmdparamDic, regExCommands[cmdName].Params);
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_EXECUTING**: Executing command '{CommandName}' with validated parameters", cmdName);
+                    
                     await Task.Run(() => regExCommands[cmdName].Action.Invoke(cmdparamDic)).ConfigureAwait(false);
+                    
+                    log.Error("🔍 **UPDATEREGEX_COMMAND_COMPLETED**: Command '{CommandName}' execution completed", cmdName);
 
                 }
 
             }
+            
+            log.Error("🔍 **UPDATEREGEX_EXIT**: UpdateRegEx method COMPLETED");
         }
 
         private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(
@@ -499,9 +540,20 @@ namespace AutoBot
                     var pInvoice = paramInfo["Name"];
                     var pIDRegex = paramInfo["IDRegex"];
                     var pDocumentType = paramInfo.ContainsKey("DocumentType") ? paramInfo["DocumentType"]: null;
+                    
+                    // 🔍 **COMPREHENSIVE_LOGGING**: Track AddInvoice execution
+                    Console.WriteLine($"🔍 **ADDINVOICE_ENTRY**: AddInvoice method ENTERED for Name='{pInvoice}', IDRegex='{pIDRegex}', DocumentType='{pDocumentType}'");
+                    
                     var invoice = ctx.Invoices.Include(x => x.InvoiceIdentificatonRegEx)
                         .FirstOrDefault(x => x.Name == pInvoice);
-                    if (invoice != null) return;
+                        
+                    if (invoice != null) 
+                    {
+                        Console.WriteLine($"🔍 **ADDINVOICE_EXISTS**: Invoice '{pInvoice}' already exists with ID={invoice.Id}, skipping creation");
+                        return;
+                    }
+                    
+                    Console.WriteLine($"🔍 **ADDINVOICE_CREATING**: Creating new invoice template for '{pInvoice}'");
                     invoice = new Invoices() {Name = pInvoice,
                         InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>()
                         {
@@ -524,7 +576,9 @@ namespace AutoBot
 
                     };
                     ctx.Invoices.Add(invoice);
+                    Console.WriteLine($"🔍 **ADDINVOICE_SAVING**: Saving invoice '{pInvoice}' to database");
                     ctx.SaveChanges();
+                    Console.WriteLine($"🔍 **ADDINVOICE_SUCCESS**: Invoice '{pInvoice}' successfully created with ID={invoice.Id}");
 
 
                 }

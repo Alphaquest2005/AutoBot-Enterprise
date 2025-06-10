@@ -1,0 +1,245 @@
+{
+  "InvoiceId": 5,
+  "InvoiceName": "Amazon",
+  "Parts": [
+    {
+      "PartId": 1028,
+      "PartTypeId": 3,
+      "Lines": [
+        {
+          "LineId": 35,
+          "LineName": "Freight",
+          "RegexId": 75,
+          "RegexPattern": "Shipping \u0026 Handling:[\\s]\u002B(?\u003CCurrency\u003E\\w{3})?[\\s\\$]\u002B(?\u003CFreight\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 107,
+              "Key": "Freight",
+              "Field": "TotalInternalFreight",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 36,
+          "LineName": "SalesTax",
+          "RegexId": 76,
+          "RegexPattern": "Estimated tax to be collected:(\\s\u002B(?\u003CCurrency\u003E\\w{3}))?\\s\u002B\\$?(?\u003CSalesTax\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 108,
+              "Key": "SalesTax",
+              "Field": "TotalOtherCost",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 37,
+          "LineName": "InvoiceTotal",
+          "RegexId": 77,
+          "RegexPattern": "((Grand)|(Order)) Total:(\\s*(?\u003CCurrency\u003EUSD))?\\s*\\$?(?\u003CInvoiceTotal\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 109,
+              "Key": "InvoiceTotal",
+              "Field": "InvoiceTotal",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": true
+            }
+          ]
+        },
+        {
+          "LineId": 39,
+          "LineName": "Summary",
+          "RegexId": 79,
+          "RegexPattern": "((?\u003CSupplierCode\u003EAmazon.com)\\s- Order (?\u003CInvoiceNo\u003E[\\d\\-]\u002B) (?\u003CInvoiceDate\u003E[\\d/]\u002B),\\s)|(Order Placed: (?\u003CInvoiceDate\u003E[\\w\\,\\s]\u002B)[\\r\\n](?\u003CSupplierCode\u003EAmazon.com) order number\\: (?\u003CInvoiceNo\u003E[\\d\\-]\u002B))",
+          "Fields": [
+            {
+              "FieldId": 110,
+              "Key": "SupplierCode",
+              "Field": "SupplierCode",
+              "EntityType": "Invoice",
+              "DataType": "String",
+              "IsRequired": true
+            },
+            {
+              "FieldId": 111,
+              "Key": "InvoiceNo",
+              "Field": "InvoiceNo",
+              "EntityType": "Invoice",
+              "DataType": "String",
+              "IsRequired": true
+            },
+            {
+              "FieldId": 112,
+              "Key": "InvoiceDate",
+              "Field": "InvoiceDate",
+              "EntityType": "Invoice",
+              "DataType": "English Date",
+              "IsRequired": true
+            },
+            {
+              "FieldId": 739,
+              "Key": "InvoiceNo",
+              "Field": "Name",
+              "EntityType": "Invoice",
+              "DataType": "String",
+              "IsRequired": true
+            }
+          ]
+        },
+        {
+          "LineId": 78,
+          "LineName": "SubTotal",
+          "RegexId": 131,
+          "RegexPattern": "Item\\(s\\) Subtotal[:\\r\\n\\s]\u002B(\\s*(?\u003CCurrency\u003EUSD))?\\s*\\$?(?\u003CSubTotal\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 133,
+              "Key": "SubTotal",
+              "Field": "SubTotal",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": true
+            }
+          ]
+        },
+        {
+          "LineId": 1830,
+          "LineName": "Gift Card",
+          "RegexId": 2030,
+          "RegexPattern": "Gift Card Amount:\\-\\$(?\u003CGiftCard\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 2579,
+              "Key": "GiftCard",
+              "Field": "TotalOtherCost",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 1831,
+          "LineName": "FreeShipping",
+          "RegexId": 2031,
+          "RegexPattern": "Free Shipping:[\\s\\-\\$]\u002B(?\u003CCurrency\u003E\\w{3})[\\s\\-\\$]\u002B(?\u003CFreeShipping\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 2580,
+              "Key": "FreeShipping",
+              "Field": "TotalDeduction",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2089,
+          "LineName": "Shipping \u0026 Handling",
+          "RegexId": 2327,
+          "RegexPattern": "Shipping \\\u0026 Handling[:\\s]\u002B(?\u003CCurrency\u003E\\w{3})[\\s\\-\\$]\u002B(?\u003CShipping\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3099,
+              "Key": "Shipping",
+              "Field": "TotalInternalFreight",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2090,
+          "LineName": "Coupons",
+          "RegexId": 2328,
+          "RegexPattern": "Your Coupon Savings[:\\s\\-\\$]\u002B(?\u003CCurrency\u003E\\w{3})[\\s\\-\\$]\u002B(?\u003CCoupon\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3100,
+              "Key": "Coupon",
+              "Field": "TotalInsurance",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2092,
+          "LineName": "Estimated Tax",
+          "RegexId": 2330,
+          "RegexPattern": "Estimated tax.*[:\\s\\-\\$]\u002B(?\u003CCurrency\u003E\\w{3})[\\s\\-\\$]\u002B(?\u003CTax\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3107,
+              "Key": "Tax",
+              "Field": "TotalOtherCost",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2093,
+          "LineName": "Subscribe and Save",
+          "RegexId": 2331,
+          "RegexPattern": "Subscribe[\\\u0026\\s]\u002BSave[:\\s\\-\\$]\u002B(?\u003CCurrency\u003E\\w{3})[\\s\\-\\$]\u002B(?\u003CSave\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3108,
+              "Key": "Save",
+              "Field": "TotalDeduction",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2094,
+          "LineName": "Lightening Deal",
+          "RegexId": 2332,
+          "RegexPattern": "Lightning[\\s]\u002BDeal([:\\s\\-\\$\\\u0022]\u002B(?\u003CCurrency\u003E\\w{3}))?[:\\s\\-\\$\\\u0022\u201C]\u002B(?\u003CSave\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3109,
+              "Key": "Save",
+              "Field": "TotalDeduction",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        },
+        {
+          "LineId": 2095,
+          "LineName": "Buy More Save",
+          "RegexId": 2333,
+          "RegexPattern": "Buy more, save.\u002B([:\\s\\-\\$\\\u0022]\u002B(?\u003CCurrency\u003E\\w{3}))?[:\\s\\-\\$\\\u0022\u201C]\u002B(?\u003CSave\u003E[\\d,.]\u002B)",
+          "Fields": [
+            {
+              "FieldId": 3110,
+              "Key": "Save",
+              "Field": "TotalDeduction",
+              "EntityType": "Invoice",
+              "DataType": "Number",
+              "IsRequired": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "SampleFileText": "------------------------------------------Single Column-------------------------\r\n5/9/25, 9:09 AM Amazon.com - Order 112-91 26443-1163432\n\namazoncom\n\nPrint this page for your records,\n\n \n\nOrder Placed: April 15, 2025\nAmazon.com order number: 112-9126443-1163432\nOrder Total: $166.30\n\n \n\nShipped on April 17, 2025\n\nItems Ordered Price\n1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White $119.99\nSold by: Amazon.com Services, Inc\n\nSupplied by: Other\n\nCondi"
+}

@@ -27,30 +27,89 @@ namespace WaterNut.DataSpace
         public List<CorrectionResult> ProcessDeepSeekCorrectionResponse(string deepSeekResponseJson, string originalDocumentText)
         {
             var corrections = new List<CorrectionResult>();
+            
+            // **PARSING_ENTRY_STATE**: Log entry state with complete input parameters
+            _logger.Error("🔍 **PARSING_ENTRY_STATE**: ProcessDeepSeekCorrectionResponse called");
+            _logger.Error("🔍 **PARSING_INPUT_PARAMS**: Response length={ResponseLength}, OriginalText length={OriginalTextLength}", 
+                deepSeekResponseJson?.Length ?? 0, originalDocumentText?.Length ?? 0);
+            
             if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
             {
-                _logger.Warning("ProcessDeepSeekCorrectionResponse: Received null or empty response from DeepSeek.");
+                _logger.Error("❌ **PARSING_ASSERTION_FAILED**: Received null or empty response from DeepSeek - cannot parse corrections");
                 return corrections;
+            }
+
+            // **RAW_RESPONSE_LOGGING**: Log complete raw response for debugging
+            _logger.Error("🔍 **PARSING_RAW_RESPONSE**: Complete DeepSeek JSON response: {RawResponse}", deepSeekResponseJson);
+            
+            // **EXPECTATION**: Raw response should contain valid JSON with 'errors' array
+            bool responseContainsErrors = deepSeekResponseJson.Contains("\"errors\"");
+            _logger.Error("🔍 **PARSING_EXPECTATION_1**: Raw response contains 'errors' key? Expected=TRUE, Actual={ContainsErrors}", responseContainsErrors);
+            
+            if (!responseContainsErrors)
+            {
+                _logger.Error("❌ **PARSING_ASSERTION_FAILED_1**: Raw response does not contain 'errors' key - DeepSeek response format unexpected");
             }
 
             try
             {
-                _logger.Information("Processing DeepSeek correction response. Length: {Length}", deepSeekResponseJson.Length);
-                JsonElement? responseDataRoot = ParseDeepSeekResponseToElement(deepSeekResponseJson); // Uses helper in this file
+                _logger.Error("🔍 **PARSING_STATE_TRANSITION**: RAW_RESPONSE → JSON_ELEMENT_PARSING");
+                
+                // **STATE TRANSITION 1**: Raw string → JsonElement
+                JsonElement? responseDataRoot = ParseDeepSeekResponseToElement(deepSeekResponseJson);
+                
+                // **PARSING_RESULT**: Check if JSON parsing succeeded
+                bool jsonParsingSucceeded = responseDataRoot.HasValue;
+                _logger.Error("🔍 **PARSING_RESULT_1**: JSON parsing succeeded? Expected=TRUE, Actual={Succeeded}", jsonParsingSucceeded);
                 
                 if (responseDataRoot == null)
                 {
-                    _logger.Warning("Failed to parse DeepSeek correction response into a valid JSON structure.");
+                    _logger.Error("❌ **PARSING_ASSERTION_FAILED_2**: Failed to parse DeepSeek response into valid JSON structure - data loss occurred");
                     return corrections;
                 }
 
-                corrections = ExtractCorrectionsFromResponseElement(responseDataRoot.Value, originalDocumentText); // Uses helper in this file
-                _logger.Information("Extracted {CorrectionCount} corrections from DeepSeek response.", corrections.Count);
+                // **JSON_STRUCTURE_LOGGING**: Log the parsed JSON structure
+                _logger.Error("🔍 **PARSING_JSON_STRUCTURE**: Parsed JSON root type={ValueKind}", responseDataRoot.Value.ValueKind);
+                
+                _logger.Error("🔍 **PARSING_STATE_TRANSITION**: JSON_ELEMENT_PARSING → CORRECTION_EXTRACTION");
+                
+                // **STATE TRANSITION 2**: JsonElement → CorrectionResult list
+                corrections = ExtractCorrectionsFromResponseElement(responseDataRoot.Value, originalDocumentText);
+                
+                // **PARSING_RESULT**: Check if correction extraction succeeded
+                bool correctionExtractionSucceeded = corrections != null && corrections.Count >= 0;
+                _logger.Error("🔍 **PARSING_RESULT_2**: Correction extraction succeeded? Expected=TRUE, Actual={Succeeded}, ExtractedCount={Count}", 
+                    correctionExtractionSucceeded, corrections?.Count ?? 0);
+                
+                _logger.Error("🔍 **PARSING_FINAL_STATE**: Extracted {CorrectionCount} corrections from DeepSeek response", corrections.Count);
+                
+                // **EXPECTATION**: Should have found at least 1 correction for TotalInsurance
+                bool foundExpectedCorrections = corrections.Any(c => c.FieldName == "TotalInsurance" || c.FieldName == "TotalDeduction");
+                _logger.Error("🔍 **PARSING_EXPECTATION_2**: Found TotalInsurance/TotalDeduction corrections? Expected=TRUE, Actual={Found}", foundExpectedCorrections);
+                
+                if (!foundExpectedCorrections)
+                {
+                    _logger.Error("❌ **PARSING_ASSERTION_FAILED_3**: No TotalInsurance/TotalDeduction corrections found - Amazon gift card amount not detected");
+                }
+                
+                // **DETAILED_CORRECTION_LOGGING**: Log each extracted correction with full details
+                for (int i = 0; i < corrections.Count; i++)
+                {
+                    var correction = corrections[i];
+                    _logger.Error("🔍 **PARSING_CORRECTION_{Index}**: Field={FieldName}, OldValue='{OldValue}', NewValue='{NewValue}', LineText='{LineText}', Confidence={Confidence}", 
+                        i + 1, correction.FieldName, correction.OldValue, correction.NewValue, correction.LineText, correction.Confidence);
+                }
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error processing DeepSeek correction response. Response snippet: {Snippet}", this.TruncateForLog(deepSeekResponseJson, 200));
+                _logger.Error(ex, "🚨 **PARSING_CRITICAL_ERROR**: Exception during DeepSeek response processing - potential data corruption. Response snippet: {Snippet}", 
+                    this.TruncateForLog(deepSeekResponseJson, 200));
+                
+                // **ERROR_RECOVERY_LOGGING**: Log the exact point of failure
+                _logger.Error("🔍 **PARSING_ERROR_RECOVERY**: Exception type={ExceptionType}, Message='{Message}'", ex.GetType().Name, ex.Message);
             }
+            
+            _logger.Error("🔍 **PARSING_EXIT_STATE**: ProcessDeepSeekCorrectionResponse returning {Count} corrections", corrections.Count);
             return corrections;
         }
 
@@ -59,21 +118,76 @@ namespace WaterNut.DataSpace
         /// </summary>
         private JsonElement? ParseDeepSeekResponseToElement(string rawResponse)
         {
+            // **PARSE_ENTRY_STATE**: Log JSON parsing entry with input parameters
+            _logger.Error("🔍 **PARSE_ENTRY_STATE**: ParseDeepSeekResponseToElement called with response length={Length}", rawResponse?.Length ?? 0);
+            _logger.Error("🔍 **PARSE_RAW_INPUT**: Raw response content: {RawResponse}", rawResponse);
+            
             try
             {
-                var cleanJson = this.CleanJsonResponse(rawResponse); // From OCRUtilities.cs
+                // **STATE TRANSITION**: Raw response → Cleaned JSON
+                _logger.Error("🔍 **PARSE_STATE_TRANSITION**: RAW_RESPONSE → JSON_CLEANING");
+                
+                var cleanJson = this.CleanJsonResponse(rawResponse);
+                
+                // **CLEANING_RESULT**: Check if cleaning succeeded and what changed
+                bool cleaningSucceeded = !string.IsNullOrEmpty(cleanJson);
+                bool contentChanged = rawResponse != cleanJson;
+                _logger.Error("🔍 **PARSE_CLEANING_RESULT**: Cleaning succeeded? {Succeeded}, Content changed? {Changed}, CleanedLength={CleanedLength}", 
+                    cleaningSucceeded, contentChanged, cleanJson?.Length ?? 0);
+                
+                if (contentChanged)
+                {
+                    _logger.Error("⚠️ **PARSE_CONTENT_MODIFIED**: JSON cleaning modified content - potential data loss");
+                    _logger.Error("🔍 **PARSE_CLEANED_CONTENT**: Cleaned JSON: {CleanedJson}", cleanJson);
+                }
+                
                 if (string.IsNullOrEmpty(cleanJson))
                 {
-                    _logger.Warning("CleanJsonResponse returned empty for raw response. Cannot parse.");
+                    _logger.Error("❌ **PARSE_ASSERTION_FAILED**: CleanJsonResponse returned empty - data completely lost during cleaning");
                     return null;
                 }
                 
+                // **STATE TRANSITION**: Cleaned JSON → JsonDocument
+                _logger.Error("🔍 **PARSE_STATE_TRANSITION**: JSON_CLEANING → JSON_DOCUMENT_PARSING");
+                
                 using var document = JsonDocument.Parse(cleanJson);
-                return document.RootElement.Clone(); // Clone to allow document to be disposed
+                var rootElement = document.RootElement.Clone();
+                
+                // **PARSING_SUCCESS**: Log successful parsing with structure details
+                _logger.Error("✅ **PARSE_SUCCESS**: JSON parsed successfully to {ElementType}", rootElement.ValueKind);
+                
+                // **STRUCTURE_VERIFICATION**: Check if required 'errors' property exists
+                if (rootElement.ValueKind == JsonValueKind.Object && rootElement.TryGetProperty("errors", out var errorsProperty))
+                {
+                    _logger.Error("🔍 **PARSE_STRUCTURE_VALID**: Found 'errors' property of type {ErrorsType} with {ArrayLength} elements", 
+                        errorsProperty.ValueKind, 
+                        errorsProperty.ValueKind == JsonValueKind.Array ? errorsProperty.GetArrayLength() : -1);
+                }
+                else
+                {
+                    _logger.Error("❌ **PARSE_STRUCTURE_INVALID**: Parsed JSON missing 'errors' property - unexpected DeepSeek response format");
+                    _logger.Error("🔍 **PARSE_AVAILABLE_PROPERTIES**: Available properties: {Properties}", 
+                        rootElement.ValueKind == JsonValueKind.Object ? 
+                            string.Join(", ", rootElement.EnumerateObject().Select(p => p.Name)) : "N/A");
+                }
+                
+                return rootElement;
             }
             catch (JsonException jsonEx)
             {
-                _logger.Warning(jsonEx, "Failed to parse DeepSeek response as JSON. Cleaned snippet: {Snippet}", this.TruncateForLog(this.CleanJsonResponse(rawResponse), 200));
+                _logger.Error(jsonEx, "🚨 **PARSE_JSON_EXCEPTION**: Failed to parse cleaned response as JSON - data corruption detected");
+                _logger.Error("🔍 **PARSE_ERROR_DETAILS**: Exception message='{Message}', Path='{Path}', Position={Position}", 
+                    jsonEx.Message, jsonEx.Path, jsonEx.BytePositionInLine);
+                
+                // **ERROR_CONTEXT**: Show the problematic cleaned JSON that failed to parse
+                var cleanedForError = this.CleanJsonResponse(rawResponse);
+                _logger.Error("🔍 **PARSE_ERROR_CONTEXT**: Cleaned JSON that failed to parse: {FailedJson}", cleanedForError);
+                
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **PARSE_CRITICAL_EXCEPTION**: Unexpected exception during JSON parsing");
                 return null;
             }
         }
@@ -84,20 +198,74 @@ namespace WaterNut.DataSpace
         private List<CorrectionResult> ExtractCorrectionsFromResponseElement(JsonElement responseDataRoot, string originalDocumentText)
         {
             var corrections = new List<CorrectionResult>();
-            int errorIndexCounter = 0; // For detailed logging inside CreateCorrectionFromElement
+            int errorIndexCounter = 0;
 
-            // Debug logging to understand the JSON structure
-            _logger.Debug("ExtractCorrectionsFromResponseElement: Root element type is {ValueKind}", responseDataRoot.ValueKind);
+            // **EXTRACTION_ENTRY_STATE**: Log extraction entry with input parameters
+            _logger.Error("🔍 **EXTRACTION_ENTRY_STATE**: ExtractCorrectionsFromResponseElement called with rootType={ValueKind}", responseDataRoot.ValueKind);
+            _logger.Error("🔍 **EXTRACTION_INPUT_PARAMS**: OriginalText length={TextLength}", originalDocumentText?.Length ?? 0);
+            
+            // **STRUCTURE_ANALYSIS**: Analyze the JSON structure to understand DeepSeek response format
+            _logger.Error("🔍 **EXTRACTION_STRUCTURE_ANALYSIS**: JSON root element type={ValueKind}", responseDataRoot.ValueKind);
+            
+            // **EXPECTATION**: Root should be Object containing 'errors' array
+            bool isExpectedObjectType = responseDataRoot.ValueKind == JsonValueKind.Object;
+            _logger.Error("🔍 **EXTRACTION_EXPECTATION_1**: Root is Object type? Expected=TRUE, Actual={IsObject}", isExpectedObjectType);
+            
+            if (!isExpectedObjectType)
+            {
+                _logger.Error("❌ **EXTRACTION_ASSERTION_FAILED_1**: Root is not Object type - cannot extract 'errors' property");
+                return corrections;
+            }
 
-            // Handle case where root element is an Object with properties
+            // **STATE TRANSITION**: Object root → 'errors' property extraction
             if (responseDataRoot.ValueKind == JsonValueKind.Object)
             {
-                if (responseDataRoot.TryGetProperty("errors", out var errorsArray) && errorsArray.ValueKind == JsonValueKind.Array)
+                _logger.Error("🔍 **EXTRACTION_STATE_TRANSITION**: OBJECT_ROOT → ERRORS_PROPERTY_EXTRACTION");
+                
+                // **PROPERTY_SEARCH**: Look for 'errors' property
+                bool hasErrorsProperty = responseDataRoot.TryGetProperty("errors", out var errorsArray);
+                _logger.Error("🔍 **EXTRACTION_PROPERTY_SEARCH**: 'errors' property found? Expected=TRUE, Actual={Found}", hasErrorsProperty);
+                
+                if (!hasErrorsProperty)
                 {
-                    _logger.Debug("Found 'errors' array in DeepSeek response. Processing {Count} elements.", errorsArray.GetArrayLength());
+                    _logger.Error("❌ **EXTRACTION_ASSERTION_FAILED_2**: 'errors' property not found in JSON object");
+                    
+                    // **DIAGNOSTIC_INFO**: Show available properties for debugging
+                    var availableProperties = responseDataRoot.EnumerateObject().Select(p => p.Name).ToList();
+                    _logger.Error("🔍 **EXTRACTION_AVAILABLE_PROPERTIES**: Available properties: {Properties}", string.Join(", ", availableProperties));
+                    return corrections;
+                }
+                
+                // **ARRAY_VALIDATION**: Check if 'errors' property is array type
+                bool errorsIsArray = errorsArray.ValueKind == JsonValueKind.Array;
+                _logger.Error("🔍 **EXTRACTION_ARRAY_VALIDATION**: 'errors' is Array type? Expected=TRUE, Actual={IsArray}, ActualType={ActualType}", 
+                    errorsIsArray, errorsArray.ValueKind);
+                
+                if (errorsArray.ValueKind == JsonValueKind.Array)
+                {
+                    int arrayLength = errorsArray.GetArrayLength();
+                    _logger.Error("🔍 **EXTRACTION_ARRAY_INFO**: Processing 'errors' array with {Count} elements", arrayLength);
+                    
+                    // **EXPECTATION**: Should have at least 1 error for TotalInsurance
+                    bool hasExpectedErrors = arrayLength > 0;
+                    _logger.Error("🔍 **EXTRACTION_EXPECTATION_2**: Array has errors? Expected=TRUE, Actual={HasErrors}, Count={Count}", hasExpectedErrors, arrayLength);
+                    
+                    if (!hasExpectedErrors)
+                    {
+                        _logger.Error("❌ **EXTRACTION_ASSERTION_FAILED_3**: 'errors' array is empty - DeepSeek found no missing fields (should find TotalInsurance)");
+                        return corrections;
+                    }
+                    
+                    // **STATE TRANSITION**: Array processing → Element extraction
+                    _logger.Error("🔍 **EXTRACTION_STATE_TRANSITION**: ERRORS_ARRAY → ELEMENT_PROCESSING");
+                    
                     foreach (var element in errorsArray.EnumerateArray())
                     {
                         errorIndexCounter++;
+                        
+                        // **ELEMENT_PROCESSING**: Log each error element processing
+                        _logger.Error("🔍 **EXTRACTION_ELEMENT_{Index}_START**: Processing error element {Index} of type {ElementType}", 
+                            errorIndexCounter, errorIndexCounter, element.ValueKind);
                         var cr = CreateCorrectionFromElement(element, originalDocumentText, errorIndexCounter);
                         if (cr != null) corrections.Add(cr);
                     }
@@ -158,26 +326,69 @@ namespace WaterNut.DataSpace
         /// </summary>
         private CorrectionResult CreateCorrectionFromElement(JsonElement element, string originalText, int itemIndex)
         {
-            // Uses GetStringValueWithLogging etc. from OCRUtilities.cs
+            // **CORRECTION_CREATION_ENTRY**: Log correction creation entry state
+            _logger.Error("🔍 **CORRECTION_CREATION_ENTRY_{Index}**: Creating CorrectionResult from element {Index} of type {ElementType}", itemIndex, itemIndex, element.ValueKind);
+            
+            // **ELEMENT_STRUCTURE_LOGGING**: Log the complete element structure for debugging
+            if (element.ValueKind == JsonValueKind.Object)
+            {
+                var properties = element.EnumerateObject().Select(p => $"{p.Name}={p.Value}").ToList();
+                _logger.Error("🔍 **CORRECTION_ELEMENT_{Index}_STRUCTURE**: Element properties: {Properties}", itemIndex, string.Join(", ", properties));
+            }
+            
+            // **FIELD_EXTRACTION**: Extract critical fields with validation
+            _logger.Error("🔍 **CORRECTION_FIELD_EXTRACTION_{Index}**: Extracting 'field' and 'correct_value' from element", itemIndex);
+            
             var fieldName = this.GetStringValueWithLogging(element, "field", itemIndex);
             var newValue = this.GetStringValueWithLogging(element, "correct_value", itemIndex);
-
-            if (string.IsNullOrEmpty(fieldName) || newValue == null) // newValue can be empty string "" for deletions
+            
+            // **CRITICAL_FIELD_VALIDATION**: Validate required fields
+            bool hasRequiredFields = !string.IsNullOrEmpty(fieldName) && newValue != null;
+            _logger.Error("🔍 **CORRECTION_VALIDATION_{Index}**: Required fields present? Expected=TRUE, Actual={HasFields}, FieldName='{FieldName}', NewValue='{NewValue}'", 
+                itemIndex, hasRequiredFields, fieldName, newValue);
+            
+            // **CARIBBEAN_CUSTOMS_CHECK**: Check if this is the expected TotalInsurance/TotalDeduction correction
+            bool isExpectedField = fieldName == "TotalInsurance" || fieldName == "TotalDeduction";
+            bool isExpectedGiftCardValue = newValue == "-6.99" || newValue == "6.99";
+            _logger.Error("🔍 **CORRECTION_CARIBBEAN_CHECK_{Index}**: Is expected field? {IsExpectedField} | Is gift card value? {IsGiftCardValue}", 
+                itemIndex, isExpectedField, isExpectedGiftCardValue);
+            
+            if (isExpectedField && isExpectedGiftCardValue)
             {
-                _logger.Warning("Skipping correction item {ItemIndex}: 'field' or 'correct_value' is missing or null.", itemIndex);
+                _logger.Error("✅ **CORRECTION_SUCCESS_{Index}**: Found expected Caribbean customs correction: {FieldName} = {Value}", itemIndex, fieldName, newValue);
+            }
+            else if (isExpectedField)
+            {
+                _logger.Error("⚠️ **CORRECTION_PARTIAL_{Index}**: Found expected field {FieldName} but value {Value} may not be gift card amount", itemIndex, fieldName, newValue);
+            }
+
+            if (string.IsNullOrEmpty(fieldName) || newValue == null)
+            {
+                _logger.Error("❌ **CORRECTION_ASSERTION_FAILED_{Index}**: 'field' or 'correct_value' is missing - skipping correction", itemIndex);
                 return null;
             }
+            
+            // **OPTIONAL_FIELD_EXTRACTION**: Extract optional fields with detailed logging
+            _logger.Error("🔍 **CORRECTION_OPTIONAL_EXTRACTION_{Index}**: Extracting optional fields", itemIndex);
 
             var oldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, isOptional: true);
             var lineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, isOptional: true);
             var lineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, isOptional: true);
-            var confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, isOptional: true); // Default confidence
+            var confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, isOptional: true);
             var reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, isOptional: true);
             var errorType = this.GetStringValueWithLogging(element, "error_type", itemIndex, isOptional: true);
             var requiresMultiline = this.GetBooleanValueWithLogging(element, "requires_multiline_regex", itemIndex, false, isOptional: true);
+            
+            // **FIELD_VALIDATION_LOGGING**: Log extracted field values for verification
+            _logger.Error("🔍 **CORRECTION_EXTRACTED_FIELDS_{Index}**: OldValue='{OldValue}', LineText='{LineText}', LineNumber={LineNumber}, Confidence={Confidence}, ErrorType='{ErrorType}'", 
+                itemIndex, oldValue, lineText, lineNumber, confidence, errorType);
 
             var contextBefore = this.ParseContextLinesArray(element, "context_lines_before", itemIndex);
             var contextAfter = this.ParseContextLinesArray(element, "context_lines_after", itemIndex);
+            
+            // **CONTEXT_LOGGING**: Log context lines for verification
+            _logger.Error("🔍 **CORRECTION_CONTEXT_{Index}**: ContextBefore={BeforeCount} lines, ContextAfter={AfterCount} lines", 
+                itemIndex, contextBefore?.Count ?? 0, contextAfter?.Count ?? 0);
             
             // If oldValue is not provided by DeepSeek and it's not an omission, try to find it.
             if (string.IsNullOrEmpty(oldValue) && errorType != "omission" && DetermineCorrectionType(null, newValue, errorType) != "omission")
