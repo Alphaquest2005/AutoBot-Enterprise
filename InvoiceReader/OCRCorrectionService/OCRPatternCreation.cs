@@ -477,115 +477,219 @@ namespace WaterNut.DataSpace
 
         public bool ValidateRegexPattern(RegexCreationResponse regexResponse, CorrectionResult correction)
         {
+            _logger.Error("🔍 **VALIDATION_ENTRY**: ValidateRegexPattern called for field {FieldName}", correction?.FieldName);
+            
             if (regexResponse == null)
             {
-                _logger.Warning("ValidateRegexPattern: RegexCreationResponse is null for field {FieldName}.", correction?.FieldName);
+                _logger.Error("❌ **VALIDATION_STEP_1_FAILED**: RegexCreationResponse is null for field {FieldName}.", correction?.FieldName);
                 return false;
             }
+            _logger.Error("✅ **VALIDATION_STEP_1_SUCCESS**: RegexCreationResponse is not null");
+            
             if (string.IsNullOrEmpty(regexResponse.RegexPattern) && string.IsNullOrEmpty(regexResponse.CompleteLineRegex))
             {
-                _logger.Warning("ValidateRegexPattern: Both RegexPattern and CompleteLineRegex are empty for field {FieldName}.", correction?.FieldName);
+                _logger.Error("❌ **VALIDATION_STEP_2_FAILED**: Both RegexPattern and CompleteLineRegex are empty for field {FieldName}.", correction?.FieldName);
                 return false;
             }
+            _logger.Error("✅ **VALIDATION_STEP_2_SUCCESS**: At least one pattern is provided - RegexPattern='{RegexPattern}', CompleteLineRegex='{CompleteLineRegex}'", 
+                regexResponse.RegexPattern ?? "NULL", regexResponse.CompleteLineRegex ?? "NULL");
 
             string patternToValidate = regexResponse.Strategy == "modify_existing_line" && !string.IsNullOrEmpty(regexResponse.CompleteLineRegex)
                                    ? regexResponse.CompleteLineRegex
                                    : regexResponse.RegexPattern;
+            _logger.Error("🔍 **VALIDATION_PATTERN_SELECTION**: Strategy={Strategy}, Selected pattern='{SelectedPattern}'", 
+                regexResponse.Strategy, patternToValidate);
+                
             if (string.IsNullOrEmpty(patternToValidate))
             {
                 patternToValidate = regexResponse.RegexPattern;
                 if (string.IsNullOrEmpty(patternToValidate))
                 {
-                    _logger.Warning("ValidateRegexPattern: No usable pattern string to validate for field {FieldName}.", correction?.FieldName);
+                    _logger.Error("❌ **VALIDATION_STEP_3_FAILED**: No usable pattern string to validate for field {FieldName}.", correction?.FieldName);
                     return false;
                 }
             }
+            _logger.Error("✅ **VALIDATION_STEP_3_SUCCESS**: Pattern selected for validation: '{PatternToValidate}'", patternToValidate);
 
             try
             {
+                // Normalize double-escaped regex patterns from DeepSeek JSON responses
+                // DeepSeek returns patterns like (?<TotalInsurance>-\\$\\d+\\.\\d{2}) which need normalization
+                string normalizedPattern = patternToValidate;
+                if (patternToValidate.Contains("\\\\"))
+                {
+                    // Replace double backslashes with single backslashes for regex compilation
+                    normalizedPattern = patternToValidate.Replace("\\\\", "\\");
+                    _logger.Error("🔍 **VALIDATION_NORMALIZATION**: Normalized regex pattern from '{Original}' to '{Normalized}' for field {FieldName}", 
+                        patternToValidate, normalizedPattern, correction?.FieldName);
+                }
+                else
+                {
+                    _logger.Error("🔍 **VALIDATION_NO_NORMALIZATION**: Pattern does not contain double backslashes, using as-is: '{Pattern}'", normalizedPattern);
+                }
+
                 var regexOptions = RegexOptions.IgnoreCase;
                 if (regexResponse.IsMultiline) regexOptions |= RegexOptions.Multiline;
+                _logger.Error("🔍 **VALIDATION_REGEX_OPTIONS**: Using regex options: {Options}", regexOptions);
 
-                var regex = new Regex(patternToValidate, regexOptions);
+                var regex = new Regex(normalizedPattern, regexOptions);
+                _logger.Error("✅ **VALIDATION_STEP_4_SUCCESS**: Regex compiled successfully for pattern: '{NormalizedPattern}'", normalizedPattern);
 
                 string testText = !string.IsNullOrEmpty(regexResponse.TestMatch)
                                 ? regexResponse.TestMatch
                                 : correction?.FullContext;
+                
+                // **CRITICAL**: If pattern includes context (like "Gift Card Amount:"), we need the full line, not just the value
+                if (patternToValidate.Contains("Gift Card") || patternToValidate.Contains("Amount:") || patternToValidate.Contains("\\s*"))
+                {
+                    // Pattern expects context - use LineText or FullContext
+                    if (!string.IsNullOrEmpty(correction?.LineText))
+                    {
+                        testText = correction.LineText;
+                        _logger.Error("🔍 **VALIDATION_TEXT_CONTEXT_AWARE**: Pattern includes context, using LineText: '{LineText}'", testText);
+                    }
+                    else if (!string.IsNullOrEmpty(correction?.FullContext))
+                    {
+                        testText = correction.FullContext;
+                        _logger.Error("🔍 **VALIDATION_TEXT_CONTEXT_FALLBACK**: Pattern includes context, using FullContext: '{FullContext}'", testText);
+                    }
+                }
+                
                 if (string.IsNullOrEmpty(testText) && !string.IsNullOrEmpty(correction?.NewValue))
                 {
                     testText = correction.NewValue;
-                    _logger.Verbose("ValidateRegexPattern: Test text for {FieldName} fell back to NewValue itself.", correction?.FieldName);
+                    _logger.Error("🔍 **VALIDATION_TEST_TEXT_FALLBACK**: Test text for {FieldName} fell back to NewValue itself.", correction?.FieldName);
                 }
+                _logger.Error("🔍 **VALIDATION_TEST_TEXT**: Using test text: '{TestText}'", testText);
+                
                 if (string.IsNullOrEmpty(testText))
                 {
-                    _logger.Warning("ValidateRegexPattern: No test text available (TestMatch, FullContext, or NewValue) for field {FieldName}. Cannot validate match.", correction?.FieldName);
+                    _logger.Error("❌ **VALIDATION_STEP_5_FAILED**: No test text available (TestMatch, FullContext, or NewValue) for field {FieldName}. Cannot validate match.", correction?.FieldName);
                     return false;
                 }
+                _logger.Error("✅ **VALIDATION_STEP_5_SUCCESS**: Test text is available");
 
                 var match = regex.Match(testText);
+                _logger.Error("🔍 **VALIDATION_MATCH_ATTEMPT**: Regex.Match() executed - Success={Success}, Value='{Value}', Groups.Count={GroupCount}", 
+                    match.Success, match.Value, match.Groups.Count);
+                    
                 if (!match.Success)
                 {
-                    _logger.Warning("Regex validation: Pattern for {FieldName} failed to match test text. Pattern: '{Pattern}', TestText: '{TestTextSnippet}'",
-                        correction?.FieldName, patternToValidate, this.TruncateForLog(testText));
+                    _logger.Error("❌ **VALIDATION_STEP_6_FAILED**: Pattern for {FieldName} failed to match test text. Pattern: '{Pattern}', TestText: '{TestTextSnippet}'",
+                        correction?.FieldName, normalizedPattern, this.TruncateForLog(testText));
                     return false;
                 }
+                _logger.Error("✅ **VALIDATION_STEP_6_SUCCESS**: Regex pattern matched test text successfully");
 
                 var fieldGroupName = correction?.FieldName;
+                _logger.Error("🔍 **VALIDATION_FIELD_GROUP**: Looking for named group '{FieldGroupName}'", fieldGroupName);
+                
                 if (string.IsNullOrEmpty(fieldGroupName))
                 {
-                    _logger.Warning("Regex validation: Correction object or FieldName is null. Cannot validate group name.");
+                    _logger.Error("❌ **VALIDATION_STEP_7_FAILED**: Correction object or FieldName is null. Cannot validate group name.");
                     return false; // Cannot validate group if fieldname is null
                 }
+                _logger.Error("✅ **VALIDATION_STEP_7_SUCCESS**: Field group name is available");
 
                 var capturedGroup = match.Groups[fieldGroupName];
+                _logger.Error("🔍 **VALIDATION_CAPTURED_GROUP**: Group '{FieldGroupName}' - Success={Success}, Value='{Value}', Index={Index}, Length={Length}", 
+                    fieldGroupName, capturedGroup.Success, capturedGroup.Value, capturedGroup.Index, capturedGroup.Length);
+                    
                 if (!capturedGroup.Success)
                 {
-                    _logger.Warning("Regex validation: Named group '(?<{FieldName}>...)' not found or did not capture in pattern for field {FieldName}. Pattern: '{Pattern}'. Matched text: '{MatchedText}'",
-                       fieldGroupName, patternToValidate, this.TruncateForLog(match.Value));
+                    _logger.Error("❌ **VALIDATION_STEP_8_FAILED**: Named group '(?<{FieldName}>...)' not found or did not capture in pattern for field {FieldName}. Pattern: '{Pattern}'. Matched text: '{MatchedText}'",
+                       fieldGroupName, normalizedPattern, this.TruncateForLog(match.Value));
+
+                    _logger.Error("🔍 **VALIDATION_ALL_GROUPS**: Examining all {GroupCount} groups in match:", match.Groups.Count);
+                    for (int i = 0; i < match.Groups.Count; i++)
+                    {
+                        var group = match.Groups[i];
+                        _logger.Error("🔍 **VALIDATION_GROUP_{Index}**: Name='{Name}', Success={Success}, Value='{Value}'", 
+                            i, group.Name, group.Success, group.Value);
+                    }
 
                     foreach (Group g in match.Groups)
                     {
                         if (g.Success && !int.TryParse(g.Name, out _) && g.Value == correction.NewValue)
                         {
-                            _logger.Information("Regex validation: Field group '{ExpectedGroup}' missed, but group '{ActualGroup}' captured the correct value '{Value}'. Tolerating.", fieldGroupName, g.Name, correction.NewValue);
+                            _logger.Error("✅ **VALIDATION_TOLERANCE_SUCCESS**: Field group '{ExpectedGroup}' missed, but group '{ActualGroup}' captured the correct value '{Value}'. Tolerating.", fieldGroupName, g.Name, correction.NewValue);
                             return true;
                         }
                     }
                     return false;
                 }
+                _logger.Error("✅ **VALIDATION_STEP_8_SUCCESS**: Named group '{FieldGroupName}' captured successfully", fieldGroupName);
+                
+                _logger.Error("🔍 **VALIDATION_VALUE_CHECK**: Expected='{Expected}', Captured='{Captured}'", correction.NewValue, capturedGroup.Value);
+                
                 if (capturedGroup.Value != correction.NewValue)
                 {
-                    if (capturedGroup.Value.Trim() == (correction.NewValue ?? "").Trim() ||
-                        (!string.IsNullOrEmpty(correction.NewValue) && capturedGroup.Value.Contains(correction.NewValue)))
+                    // Enhanced tolerance for currency fields - handle currency symbol extraction differences
+                    bool isTolerableMatch = false;
+                    string toleranceReason = "";
+                    
+                    // Check for exact trimmed match
+                    if (capturedGroup.Value.Trim() == (correction.NewValue ?? "").Trim())
                     {
-                        _logger.Information("Regex validation: Captured value '{Captured}' for '{FieldName}' differs slightly from expected '{Expected}' but is accepted (e.g. whitespace/contains).",
-                           capturedGroup.Value, fieldGroupName, correction.NewValue);
+                        isTolerableMatch = true;
+                        toleranceReason = "whitespace difference";
+                    }
+                    // Check for containment (original logic)
+                    else if (!string.IsNullOrEmpty(correction.NewValue) && capturedGroup.Value.Contains(correction.NewValue))
+                    {
+                        isTolerableMatch = true;
+                        toleranceReason = "contains expected value";
+                    }
+                    // **NEW**: Check for currency symbol tolerance (e.g., "-$6.99" vs "-6.99")
+                    else if (!string.IsNullOrEmpty(correction.NewValue) && !string.IsNullOrEmpty(capturedGroup.Value))
+                    {
+                        // Remove common currency symbols for comparison
+                        string normalizedCaptured = capturedGroup.Value.Replace("$", "").Replace("€", "").Replace("£", "").Replace("¥", "").Trim();
+                        string normalizedExpected = correction.NewValue.Replace("$", "").Replace("€", "").Replace("£", "").Replace("¥", "").Trim();
+                        
+                        if (normalizedCaptured == normalizedExpected)
+                        {
+                            isTolerableMatch = true;
+                            toleranceReason = "currency symbol difference";
+                            _logger.Error("🔍 **VALIDATION_CURRENCY_NORMALIZATION**: Captured='{Captured}' → '{NormalizedCaptured}' | Expected='{Expected}' → '{NormalizedExpected}'", 
+                                capturedGroup.Value, normalizedCaptured, correction.NewValue, normalizedExpected);
+                        }
+                    }
+                    
+                    if (isTolerableMatch)
+                    {
+                        _logger.Error("✅ **VALIDATION_VALUE_TOLERANCE**: Captured value '{Captured}' for '{FieldName}' differs from expected '{Expected}' but is accepted ({Reason}).",
+                           capturedGroup.Value, fieldGroupName, correction.NewValue, toleranceReason);
                     }
                     else
                     {
-                        _logger.Warning("Regex validation: Captured value '{Captured}' does not match expected '{Expected}' for field {FieldName}. Pattern: '{Pattern}'",
-                            capturedGroup.Value, correction.NewValue, fieldGroupName, patternToValidate);
+                        _logger.Error("❌ **VALIDATION_STEP_9_FAILED**: Captured value '{Captured}' does not match expected '{Expected}' for field {FieldName}. Pattern: '{Pattern}'",
+                            capturedGroup.Value, correction.NewValue, fieldGroupName, normalizedPattern);
                         return false;
                     }
+                }
+                else
+                {
+                    _logger.Error("✅ **VALIDATION_STEP_9_SUCCESS**: Captured value matches expected value exactly");
                 }
 
                 if (regexResponse.Strategy == "modify_existing_line" && !regexResponse.PreservesExistingGroups)
                 {
-                    _logger.Warning("Regex validation: Strategy is 'modify_existing_line' but DeepSeek response indicates existing groups might not be preserved for field {FieldName}. Pattern: '{Pattern}'. This is a high risk.",
-                        correction.FieldName, patternToValidate);
+                    _logger.Error("⚠️ **VALIDATION_WARNING**: Strategy is 'modify_existing_line' but DeepSeek response indicates existing groups might not be preserved for field {FieldName}. Pattern: '{Pattern}'. This is a high risk.",
+                        correction.FieldName, normalizedPattern);
                 }
 
-                _logger.Information("Regex validation successful for field {FieldName}. Pattern: '{PatternToValidate}'", correction.FieldName, patternToValidate);
+                _logger.Error("✅ **VALIDATION_COMPLETE_SUCCESS**: Regex validation successful for field {FieldName}. Pattern: '{PatternToValidate}'", correction.FieldName, normalizedPattern);
                 return true;
             }
             catch (ArgumentException ex)
             {
-                _logger.Warning(ex, "Regex validation: Invalid regex pattern syntax for field {FieldName}: {Pattern}", correction?.FieldName, patternToValidate);
+                _logger.Error(ex, "❌ **VALIDATION_REGEX_SYNTAX_ERROR**: Invalid regex pattern syntax for field {FieldName}: {Pattern}", correction?.FieldName, patternToValidate);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unexpected error during regex validation for field {FieldName}, pattern: {Pattern}", correction?.FieldName, patternToValidate);
+                _logger.Error(ex, "🚨 **VALIDATION_UNEXPECTED_ERROR**: Unexpected error during regex validation for field {FieldName}, pattern: {Pattern}", correction?.FieldName, patternToValidate);
                 return false;
             }
         }

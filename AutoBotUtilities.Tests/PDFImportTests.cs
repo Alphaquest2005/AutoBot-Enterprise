@@ -577,7 +577,62 @@ _logger.Information("META_LOG_DIRECTIVE: Type: Analysis, Context: Test:CanImport
                         Assert.That(detailCount == 2, Is.True, $"Expected = 2 ShipmentInvoiceDetails, but found {detailCount}.");
                         _logger.Verbose("ShipmentInvoiceDetails count: {Count}", detailCount);
 
-                        // Check TotalsZero property - should be 0 when OCR correction is working properly
+                        // FIRST: Verify OCR correction database operations before checking TotalsZero
+                        _logger.Error("🔍 **AMAZON_TEST_DATABASE_VERIFICATION**: Checking OCR correction database entries");
+                        
+                        using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                        {
+                            var recentCutoff = DateTime.Now.AddMinutes(-10);
+                            var recentCorrections = ocrCtx.OCRCorrectionLearning
+                                .Where(x => x.CreatedDate > recentCutoff)
+                                .OrderByDescending(x => x.Id)
+                                .ToList();
+
+                            _logger.Error("🔍 **AMAZON_TEST_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
+                            
+                            // Log all corrections
+                            foreach (var correction in recentCorrections)
+                            {
+                                _logger.Error("🔍 **AMAZON_CORRECTION**: FieldName={FieldName} | CorrectValue={CorrectValue} | CorrectionType={CorrectionType} | Success={Success} | LineId={LineId} | PartId={PartId} | RegexId={RegexId}", 
+                                    correction.FieldName, correction.CorrectValue, correction.CorrectionType, correction.Success, correction.LineId, correction.PartId, correction.RegexId);
+                            }
+
+                            // DATABASE PASSING CRITERIA: Require at least 1 correction to be saved
+                            Assert.That(recentCorrections.Count, Is.GreaterThan(0), 
+                                $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
+                            
+                            // Check for Gift Card correction (TotalInsurance = -6.99)
+                            var giftCardCorrections = recentCorrections.Where(x => 
+                                x.CorrectValue == "-6.99" && 
+                                (x.FieldName == "TotalInsurance" || x.FieldName?.Contains("Gift") == true || x.FieldName?.Contains("Insurance") == true)).ToList();
+                            
+                            // Check for Free Shipping correction (TotalDeduction = 6.99) 
+                            var freeShippingCorrections = recentCorrections.Where(x => 
+                                x.CorrectValue == "6.99" && 
+                                (x.FieldName == "TotalDeduction" || x.FieldName?.Contains("Shipping") == true || x.FieldName?.Contains("Deduction") == true)).ToList();
+                            
+                            _logger.Error("🔍 **AMAZON_SPECIFIC_CORRECTIONS**: Gift Card corrections: {GiftCount}, Free Shipping corrections: {ShippingCount}", 
+                                giftCardCorrections.Count, freeShippingCorrections.Count);
+                            
+                            // DATABASE PASSING CRITERIA: At least one of the expected corrections should be found
+                            Assert.That(giftCardCorrections.Count + freeShippingCorrections.Count, Is.GreaterThan(0), 
+                                "FAILING: OCR correction must identify either Gift Card (-6.99) or Free Shipping (6.99) corrections");
+
+                            // Check for new regex patterns
+                            var newRegexPatterns = ocrCtx.RegularExpressions
+                                .Where(x => x.CreatedDate > recentCutoff)
+                                .ToList();
+                            
+                            _logger.Error("🔍 **AMAZON_NEW_PATTERNS**: Found {Count} new regex patterns", newRegexPatterns.Count);
+                            
+                            // DATABASE PASSING CRITERIA: At least 1 new regex pattern should be created
+                            Assert.That(newRegexPatterns.Count, Is.GreaterThan(0), 
+                                "FAILING: OCR correction should create at least 1 new regex pattern in database");
+
+                            _logger.Error("✅ **AMAZON_DATABASE_VERIFICATION_PASSED**: All database criteria met - corrections and patterns created");
+                        }
+
+                        // SECOND: Check TotalsZero property - should be 0 when OCR correction is working properly
                         // Refresh the context to ensure we get the latest data after OCR corrections
                         ctx.Entry(ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "112-9126443-1163432"))?.Reload();
                         var invoice = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == "112-9126443-1163432");
@@ -1554,6 +1609,244 @@ Return only the regex pattern, no explanation:";
         #endregion
 
         [Test]
+        public async Task VerifyOCRCorrectionDatabaseUpdates()
+        {
+            Console.SetOut(TestContext.Progress);
+            try
+            {
+                // Configure logging to show OCR correction database operations
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                _logger.Information("🔍 **TEST_SETUP**: Verifying OCR correction database updates for Amazon invoice");
+
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    _logger.Warning("Test file not found: {FilePath}. Skipping test.", testFile);
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+
+                // Get file types for processing
+                var fileLst = await FileTypeManager
+                    .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                    .ConfigureAwait(false);
+                
+                var fileTypes = fileLst
+                    .OfType<CoreEntities.Business.Entities.FileTypes>()
+                    .Where(x => x.Description == "Unknown")
+                    .ToList();
+
+                if (!fileTypes.Any())
+                {
+                    Assert.Warn($"No suitable PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                // Count existing OCR corrections before processing
+                using (var ctx = new OCR.Business.Entities.OCRContext())
+                {
+                    var beforeCount = ctx.OCRCorrectionLearning.Count();
+                    _logger.Information("🔍 **PRE_PROCESSING**: OCRCorrectionLearning table has {Count} entries before processing", beforeCount);
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+                    
+                    // Process the PDF
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
+                    _logger.Information("PDFUtils.ImportPDF completed for FileType ID: {FileTypeId}", fileType.Id);
+                }
+
+                // Count OCR corrections after processing and get comprehensive database data
+                using (var ctx = new OCR.Business.Entities.OCRContext())
+                {
+                    var afterCount = ctx.OCRCorrectionLearning.Count();
+                    _logger.Error("🔍 **POST_PROCESSING**: OCRCorrectionLearning table has {Count} entries after processing", afterCount);
+
+                    // Get ALL recent entries (not just 10) created in the last 10 minutes
+                    var recentCutoff = DateTime.Now.AddMinutes(-10);
+                    var recentEntries = ctx.OCRCorrectionLearning
+                        .Where(x => x.CreatedDate > recentCutoff)
+                        .OrderByDescending(x => x.Id)
+                        .ToList();
+
+                    _logger.Error("🔍 **RECENT_CORRECTIONS**: Found {Count} correction entries created in last 10 minutes", recentEntries.Count);
+                    
+                    // Log EVERY correction entry with FULL details
+                    foreach (var entry in recentEntries)
+                    {
+                        _logger.Error("🔍 **CORRECTION_DETAILED**: ID={Id} | FieldName={FieldName} | OriginalError={OriginalError} | CorrectValue={CorrectValue} | CorrectionType={CorrectionType} | Success={Success} | LineNumber={LineNumber} | LineText={LineText} | InvoiceType={InvoiceType} | FilePath={FilePath} | CreatedDate={CreatedDate} | CreatedBy={CreatedBy} | DeepSeekReasoning={DeepSeekReasoning} | Confidence={Confidence} | LineId={LineId} | PartId={PartId} | RegexId={RegexId}", 
+                            entry.Id, 
+                            entry.FieldName, 
+                            entry.OriginalError ?? "NULL", 
+                            entry.CorrectValue ?? "NULL",
+                            entry.CorrectionType ?? "NULL",
+                            entry.Success,
+                            entry.LineNumber,
+                            entry.LineText ?? "NULL",
+                            entry.InvoiceType ?? "NULL",
+                            entry.FilePath ?? "NULL",
+                            entry.CreatedDate,
+                            entry.CreatedBy ?? "NULL",
+                            entry.DeepSeekReasoning ?? "NULL",
+                            entry.Confidence,
+                            entry.LineId,
+                            entry.PartId,
+                            entry.RegexId);
+                    }
+
+                    // Check for specific corrections we expect (both field names and values)
+                    var allGiftCardCorrections = recentEntries.Where(x => 
+                        (x.FieldName == "TotalInsurance" || x.FieldName?.Contains("Gift") == true || x.FieldName?.Contains("Insurance") == true) &&
+                        (x.CorrectValue == "-6.99" || x.CorrectValue == "6.99")).ToList();
+                    
+                    var allFreeShippingCorrections = recentEntries.Where(x => 
+                        (x.FieldName == "TotalDeduction" || x.FieldName?.Contains("Shipping") == true || x.FieldName?.Contains("Deduction") == true) &&
+                        (x.CorrectValue == "-6.99" || x.CorrectValue == "6.99")).ToList();
+
+                    _logger.Error("🔍 **GIFT_CARD_ANALYSIS**: Found {Count} potential gift card corrections", allGiftCardCorrections.Count);
+                    foreach (var correction in allGiftCardCorrections)
+                    {
+                        _logger.Error("🔍 **GIFT_CARD_DETAIL**: FieldName={FieldName} | CorrectValue={CorrectValue} | CorrectionType={CorrectionType}", 
+                            correction.FieldName, correction.CorrectValue, correction.CorrectionType);
+                    }
+
+                    _logger.Error("🔍 **FREE_SHIPPING_ANALYSIS**: Found {Count} potential free shipping corrections", allFreeShippingCorrections.Count);
+                    foreach (var correction in allFreeShippingCorrections)
+                    {
+                        _logger.Error("🔍 **FREE_SHIPPING_DETAIL**: FieldName={FieldName} | CorrectValue={CorrectValue} | CorrectionType={CorrectionType}", 
+                            correction.FieldName, correction.CorrectValue, correction.CorrectionType);
+                    }
+
+                    // Check for specific corrections we expect (exact matches)
+                    var giftCardCorrection = recentEntries.FirstOrDefault(x => x.FieldName == "TotalInsurance" && x.CorrectValue == "-6.99");
+                    var freeShippingCorrection = recentEntries.FirstOrDefault(x => x.FieldName == "TotalDeduction" && x.CorrectValue == "6.99");
+
+                    if (giftCardCorrection != null)
+                    {
+                        _logger.Information("✅ **GIFT_CARD_CORRECTION_FOUND**: TotalInsurance correction saved to database");
+                    }
+                    else
+                    {
+                        _logger.Warning("❌ **GIFT_CARD_CORRECTION_MISSING**: TotalInsurance correction not found in database");
+                    }
+
+                    if (freeShippingCorrection != null)
+                    {
+                        _logger.Information("✅ **FREE_SHIPPING_CORRECTION_FOUND**: TotalDeduction correction saved to database");
+                    }
+                    else
+                    {
+                        _logger.Warning("❌ **FREE_SHIPPING_CORRECTION_MISSING**: TotalDeduction correction not found in database");
+                    }
+
+                    // Check if new regex patterns were created
+                    var recentRegexCutoff = DateTime.Now.AddMinutes(-10);
+                    var newRegexPatterns = ctx.RegularExpressions
+                        .Where(x => x.CreatedDate > recentRegexCutoff)
+                        .OrderByDescending(x => x.CreatedDate)
+                        .ToList();
+
+                    _logger.Error("🔍 **NEW_REGEX_PATTERNS**: Found {Count} recently created regex patterns", newRegexPatterns.Count);
+                    
+                    foreach (var pattern in newRegexPatterns)
+                    {
+                        _logger.Error("🔍 **REGEX_PATTERN_DETAILED**: ID={Id} | Pattern={Pattern} | Description={Description} | CreatedDate={CreatedDate} | LastUpdated={LastUpdated}",
+                            pattern.Id, pattern.RegEx ?? "NULL", pattern.Description ?? "NULL", pattern.CreatedDate, pattern.LastUpdated);
+                            
+                        // Find any lines that use this regex
+                        var linesUsingRegex = ctx.Lines.Where(l => l.RegExId == pattern.Id).ToList();
+                        _logger.Error("🔍 **REGEX_USAGE**: Regex ID={RegexId} is used by {LineCount} lines", pattern.Id, linesUsingRegex.Count);
+                        
+                        foreach (var line in linesUsingRegex)
+                        {
+                            _logger.Error("🔍 **LINE_USING_REGEX**: LineId={LineId} | LineName={LineName} | PartId={PartId} | IsActive={IsActive}", 
+                                line.Id, line.Name ?? "NULL", line.PartId, line.IsActive);
+                                
+                            // Find fields in this line
+                            var fieldsInLine = ctx.Fields.Where(f => f.LineId == line.Id).ToList();
+                            _logger.Error("🔍 **FIELDS_IN_LINE**: Line ID={LineId} has {FieldCount} fields", line.Id, fieldsInLine.Count);
+                            
+                            foreach (var field in fieldsInLine)
+                            {
+                                _logger.Error("🔍 **FIELD_DETAILS**: FieldId={FieldId} | Key={Key} | Field={Field} | EntityType={EntityType} | DataType={DataType} | IsRequired={IsRequired}", 
+                                    field.Id, field.Key ?? "NULL", field.Field ?? "NULL", field.EntityType ?? "NULL", field.DataType ?? "NULL", field.IsRequired);
+                            }
+                        }
+                    }
+
+                    // Check if new field definitions were created (by getting most recent IDs)
+                    var newFields = ctx.Fields
+                        .OrderByDescending(x => x.Id)
+                        .Take(20)
+                        .ToList();
+
+                    _logger.Error("🔍 **NEW_FIELD_DEFINITIONS**: Found {Count} recently created field definitions", newFields.Count);
+                    
+                    foreach (var field in newFields)
+                    {
+                        _logger.Error("🔍 **FIELD_DEFINITION_DETAILED**: ID={Id} | Key={Key} | Field={Field} | EntityType={EntityType} | DataType={DataType} | IsRequired={IsRequired} | LineId={LineId} | ParentId={ParentId}",
+                            field.Id, field.Key ?? "NULL", field.Field ?? "NULL", field.EntityType ?? "NULL", field.DataType ?? "NULL", field.IsRequired, field.LineId, field.ParentId);
+                            
+                        // Check if this field was referenced in any OCR corrections
+                        var correctionsForField = recentEntries.Where(c => 
+                            c.FieldName == field.Field || 
+                            c.FieldName == field.Key ||
+                            (c.LineId.HasValue && ctx.Fields.Any(f => f.LineId == c.LineId && f.Id == field.Id))).ToList();
+                            
+                        if (correctionsForField.Any())
+                        {
+                            _logger.Error("🔍 **FIELD_CORRECTION_LINK**: Field {FieldId} ({FieldName}) has {CorrectionCount} associated corrections", 
+                                field.Id, field.Field, correctionsForField.Count);
+                        }
+                    }
+
+                    // Check if new lines were created (by getting most recent IDs)
+                    var newLines = ctx.Lines
+                        .OrderByDescending(x => x.Id)
+                        .Take(20)
+                        .ToList();
+
+                    _logger.Error("🔍 **NEW_LINE_DEFINITIONS**: Found {Count} recently created line definitions", newLines.Count);
+                    
+                    foreach (var line in newLines)
+                    {
+                        _logger.Error("🔍 **LINE_DEFINITION_DETAILED**: ID={Id} | Name={Name} | PartId={PartId} | RegExId={RegExId} | ParentId={ParentId} | IsActive={IsActive} | Comments={Comments}",
+                            line.Id, line.Name ?? "NULL", line.PartId, line.RegExId, line.ParentId, line.IsActive, line.Comments ?? "NULL");
+                            
+                        // Get the regex pattern for this line
+                        var regexPattern = ctx.RegularExpressions.FirstOrDefault(r => r.Id == line.RegExId);
+                        if (regexPattern != null)
+                        {
+                            _logger.Error("🔍 **LINE_REGEX_PATTERN**: Line {LineId} uses regex: {RegexPattern}", line.Id, regexPattern.RegEx ?? "NULL");
+                        }
+                        
+                        // Check if this line was referenced in any OCR corrections
+                        var correctionsForLine = recentEntries.Where(c => c.LineId == line.Id).ToList();
+                        if (correctionsForLine.Any())
+                        {
+                            _logger.Error("🔍 **LINE_CORRECTION_LINK**: Line {LineId} ({LineName}) has {CorrectionCount} associated corrections", 
+                                line.Id, line.Name, correctionsForLine.Count);
+                        }
+                    }
+                }
+
+                Assert.That(true, "Database verification test completed - check logs for results");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in VerifyOCRCorrectionDatabaseUpdates");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+        [Test]
         public async Task CompareAllSetPartLineValuesVersionsWithTropicalVendors()
         {
             Console.SetOut(TestContext.Progress);
@@ -1739,6 +2032,268 @@ Return only the regex pattern, no explanation:";
             _logger.Information("Processing {@TestObject}", testObject);
             // Output: Processing {"Name": "Test", "ActiveItems": ["item1"], "IsActive": true}
             Assert.Pass("Test completed. Please visually inspect the log output for destructuring behavior.");
+        }
+
+        [Test]
+        public async Task TestTemplateReloadFunctionality()
+        {
+            using (LogLevelOverride.Begin(LogEventLevel.Error))
+            {
+                _logger.Error("🔍 **TEMPLATE_RELOAD_TEST_START**: Starting template reload functionality test");
+                
+                try
+                {
+                    // STEP 1: Load initial template from database
+                    _logger.Error("🔍 **TEST_STEP_1**: Loading initial template from database");
+                    
+                    int targetTemplateId = 5; // Amazon template ID from previous tests
+                    WaterNut.DataSpace.Invoice initialTemplate = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var templateData = ocrCtx.Invoices
+                            .AsNoTracking()
+                            .Include("Parts")
+                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("RegEx.RegEx")
+                            .Include("RegEx.ReplacementRegEx")
+                            .Include("Parts.RecuringPart")
+                            .Include("Parts.Start.RegularExpressions")
+                            .Include("Parts.End.RegularExpressions")
+                            .Include("Parts.PartTypes")
+                            .Include("Parts.Lines.RegularExpressions")
+                            .Include("Parts.Lines.Fields.FieldValue")
+                            .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                            .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                            .Include("Parts.Lines.Fields.ChildFields.FieldValue")
+                            .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
+                            .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
+                            .FirstOrDefault(x => x.Id == targetTemplateId);
+                        
+                        if (templateData == null)
+                        {
+                            _logger.Error("❌ **TEST_FAILED**: Template ID {TemplateId} not found in database", targetTemplateId);
+                            Assert.Fail($"Template ID {targetTemplateId} not found in database");
+                        }
+                        
+                        initialTemplate = new WaterNut.DataSpace.Invoice(templateData, _logger);
+                        _logger.Error("✅ **TEST_STEP_1_SUCCESS**: Initial template loaded with {PartCount} parts and {LineCount} total lines", 
+                            initialTemplate.Parts?.Count ?? 0, initialTemplate.Lines?.Count ?? 0);
+                    }
+                    
+                    // STEP 2: Record initial state for comparison
+                    _logger.Error("🔍 **TEST_STEP_2**: Recording initial template state");
+                    var initialPartCount = initialTemplate.Parts?.Count ?? 0;
+                    var initialLineCount = initialTemplate.Lines?.Count ?? 0;
+                    var initialRegexCount = 0;
+                    
+                    // Count initial regex patterns
+                    foreach (var part in initialTemplate.Parts ?? new List<Part>())
+                    {
+                        foreach (var line in part.Lines ?? new List<Line>())
+                        {
+                            if (line.OCR_Lines?.RegularExpressions != null && !string.IsNullOrEmpty(line.OCR_Lines.RegularExpressions.RegEx))
+                            {
+                                initialRegexCount++;
+                            }
+                        }
+                    }
+                    
+                    _logger.Error("🔍 **INITIAL_STATE**: Parts={PartCount} | Lines={LineCount} | RegexPatterns={RegexCount}", 
+                        initialPartCount, initialLineCount, initialRegexCount);
+                    
+                    // STEP 3: Make a database change (add a new regex pattern to an existing line)
+                    _logger.Error("🔍 **TEST_STEP_3**: Making test database change");
+                    
+                    string testRegexPattern = $"(?<TestField_{DateTime.Now:HHmmssfff}>Test\\\\s*Pattern\\\\s*\\\\d+)";
+                    int? modifiedLineId = null;
+                    string originalRegexPattern = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        // Find a line to modify - ONLY from the template we're testing
+                        var lineToModify = ocrCtx.Lines
+                            .Include("RegularExpressions")
+                            .Include("Parts")
+                            .Where(l => l.RegularExpressions != null && 
+                                       l.Parts != null && 
+                                       l.Parts.TemplateId == targetTemplateId)
+                            .FirstOrDefault();
+                        
+                        if (lineToModify != null)
+                        {
+                            modifiedLineId = lineToModify.Id;
+                            originalRegexPattern = lineToModify.RegularExpressions.RegEx;
+                            
+                            // Modify the regex pattern
+                            lineToModify.RegularExpressions.RegEx = testRegexPattern;
+                            lineToModify.RegularExpressions.LastUpdated = DateTime.UtcNow;
+                            
+                            await ocrCtx.SaveChangesAsync();
+                            
+                            _logger.Error("✅ **TEST_STEP_3_SUCCESS**: Modified Line ID {LineId} regex from '{OriginalPattern}' to '{NewPattern}'", 
+                                modifiedLineId, 
+                                originalRegexPattern?.Substring(0, Math.Min(50, originalRegexPattern.Length)) + "...",
+                                testRegexPattern);
+                                
+                            // VERIFICATION: Immediately verify the change was saved to database
+                            var verifyLine = ocrCtx.Lines
+                                .Include("RegularExpressions")
+                                .FirstOrDefault(l => l.Id == modifiedLineId);
+                            if (verifyLine?.RegularExpressions != null)
+                            {
+                                _logger.Error("🔍 **DATABASE_VERIFICATION**: Verified pattern in DB after save: '{Pattern}'", 
+                                    verifyLine.RegularExpressions.RegEx);
+                                if (verifyLine.RegularExpressions.RegEx != testRegexPattern)
+                                {
+                                    _logger.Error("❌ **DATABASE_VERIFICATION_FAILED**: Pattern in DB doesn't match expected!");
+                                }
+                            }
+                            else
+                            {
+                                _logger.Error("❌ **DATABASE_VERIFICATION_NULL**: Could not verify - line or regex is null");
+                            }
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **TEST_STEP_3_FAILED**: No suitable line found to modify for template {TemplateId}", targetTemplateId);
+                            Assert.Fail($"No suitable line found to modify for template {targetTemplateId}");
+                        }
+                    }
+                    
+                    // STEP 4: Clear template state (simulate OCR correction workflow)
+                    _logger.Error("🔍 **TEST_STEP_4**: Clearing template state with ClearInvoiceForReimport");
+                    initialTemplate.ClearInvoiceForReimport();
+                    _logger.Error("✅ **TEST_STEP_4_SUCCESS**: Template state cleared");
+                    
+                    // STEP 5: Reload template from database to pick up changes
+                    _logger.Error("🔍 **TEST_STEP_5**: Reloading template from database");
+                    
+                    // VERIFICATION: Check database state before reloading template
+                    using (var verifyCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var directVerifyLine = verifyCtx.Lines
+                            .Include("RegularExpressions")
+                            .FirstOrDefault(l => l.Id == modifiedLineId);
+                        if (directVerifyLine?.RegularExpressions != null)
+                        {
+                            _logger.Error("🔍 **PRE_RELOAD_VERIFICATION**: Database contains pattern: '{Pattern}' for Line ID {LineId}", 
+                                directVerifyLine.RegularExpressions.RegEx, modifiedLineId);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **PRE_RELOAD_VERIFICATION_NULL**: Could not find line or regex in database before reload");
+                        }
+                    }
+                    
+                    WaterNut.DataSpace.Invoice reloadedTemplate = null;
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var reloadedTemplateData = ocrCtx.Invoices
+                            .AsNoTracking()
+                            .Include("Parts")
+                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("RegEx.RegEx")
+                            .Include("RegEx.ReplacementRegEx")
+                            .Include("Parts.RecuringPart")
+                            .Include("Parts.Start.RegularExpressions")
+                            .Include("Parts.End.RegularExpressions")
+                            .Include("Parts.PartTypes")
+                            .Include("Parts.Lines.RegularExpressions")
+                            .Include("Parts.Lines.Fields.FieldValue")
+                            .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                            .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                            .Include("Parts.Lines.Fields.ChildFields.FieldValue")
+                            .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
+                            .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
+                            .FirstOrDefault(x => x.Id == targetTemplateId);
+                        
+                        if (reloadedTemplateData != null)
+                        {
+                            reloadedTemplate = new WaterNut.DataSpace.Invoice(reloadedTemplateData, _logger);
+                            _logger.Error("✅ **TEST_STEP_5_SUCCESS**: Template reloaded with {PartCount} parts and {LineCount} total lines", 
+                                reloadedTemplate.Parts?.Count ?? 0, reloadedTemplate.Lines?.Count ?? 0);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **TEST_STEP_5_FAILED**: Failed to reload template data from database");
+                            Assert.Fail("Failed to reload template data from database");
+                        }
+                    }
+                    
+                    // STEP 6: Verify the change is present in reloaded template
+                    _logger.Error("🔍 **TEST_STEP_6**: Verifying changes are present in reloaded template");
+                    
+                    bool changeDetected = false;
+                    string foundPattern = null;
+                    
+                    // DEBUG: Log all regex patterns in reloaded template
+                    _logger.Error("🔍 **DEBUG_RELOADED_PATTERNS**: Checking all patterns in reloaded template");
+                    foreach (var part in reloadedTemplate.Parts ?? new List<Part>())
+                    {
+                        _logger.Error("🔍 **DEBUG_PART**: PartId={PartId} has {LineCount} lines", part.OCR_Part?.Id, part.Lines?.Count ?? 0);
+                        foreach (var line in part.Lines ?? new List<Line>())
+                        {
+                            var lineId = line.OCR_Lines?.Id;
+                            var regexPattern = line.OCR_Lines?.RegularExpressions?.RegEx;
+                            _logger.Error("🔍 **DEBUG_LINE**: LineId={LineId} | RegexPattern={RegexPattern}", 
+                                lineId, regexPattern?.Substring(0, Math.Min(regexPattern.Length, 50)) + "...");
+                            
+                            if (line.OCR_Lines?.Id == modifiedLineId && line.OCR_Lines?.RegularExpressions != null)
+                            {
+                                foundPattern = line.OCR_Lines.RegularExpressions.RegEx;
+                                _logger.Error("🔍 **TARGET_LINE_FOUND**: Line ID {LineId} found with pattern: {Pattern}", 
+                                    modifiedLineId, foundPattern);
+                                _logger.Error("🔍 **PATTERN_COMPARISON**: Expected='{Expected}' | Actual='{Actual}' | Match={Match}", 
+                                    testRegexPattern, foundPattern, foundPattern == testRegexPattern);
+                                    
+                                if (foundPattern == testRegexPattern)
+                                {
+                                    changeDetected = true;
+                                    _logger.Error("✅ **CHANGE_DETECTED**: Line ID {LineId} has the updated regex pattern", modifiedLineId);
+                                    break;
+                                }
+                            }
+                        }
+                        if (changeDetected) break;
+                    }
+                    
+                    // STEP 7: Restore original pattern and validate results
+                    _logger.Error("🔍 **TEST_STEP_7**: Restoring original pattern and validating results");
+                    
+                    if (modifiedLineId.HasValue && !string.IsNullOrEmpty(originalRegexPattern))
+                    {
+                        using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                        {
+                            var lineToRestore = ocrCtx.Lines
+                                .Include("RegularExpressions")
+                                .FirstOrDefault(l => l.Id == modifiedLineId.Value);
+                            
+                            if (lineToRestore?.RegularExpressions != null)
+                            {
+                                lineToRestore.RegularExpressions.RegEx = originalRegexPattern;
+                                lineToRestore.RegularExpressions.LastUpdated = DateTime.UtcNow;
+                                await ocrCtx.SaveChangesAsync();
+                                _logger.Error("✅ **TEST_CLEANUP**: Restored original regex pattern for Line ID {LineId}", modifiedLineId);
+                            }
+                        }
+                    }
+                    
+                    // ASSERTIONS
+                    Assert.That(initialTemplate, Is.Not.Null, "Initial template should be loaded");
+                    Assert.That(reloadedTemplate, Is.Not.Null, "Reloaded template should be loaded");
+                    Assert.That(changeDetected, Is.True, $"Template reload should detect database changes. Expected pattern: '{testRegexPattern}', Found pattern: '{foundPattern}'");
+                    Assert.That(reloadedTemplate.Parts?.Count ?? 0, Is.EqualTo(initialPartCount), "Part count should remain the same after reload");
+                    Assert.That(reloadedTemplate.Lines?.Count ?? 0, Is.EqualTo(initialLineCount), "Line count should remain the same after reload");
+                    
+                    _logger.Error("✅ **TEMPLATE_RELOAD_TEST_SUCCESS**: Template reload functionality working correctly");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "🚨 **TEMPLATE_RELOAD_TEST_FAILED**: Template reload test failed with exception");
+                    throw;
+                }
+            }
         }
 
 

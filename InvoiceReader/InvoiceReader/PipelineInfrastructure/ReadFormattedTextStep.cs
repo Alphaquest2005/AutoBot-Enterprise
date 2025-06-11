@@ -27,8 +27,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT TO FOCUS ON DEEPSEEK API DEBUGGING
-            // {
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // ENABLED TO SEE TEMPLATE RELOAD DEBUGGING
+            {
                 var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
                 string filePath = context?.FilePath ?? "Unknown";
                 context.Logger?.Information(
@@ -71,8 +71,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 bool overallSuccess = true; // Track if at least one template was read successfully
 
-                foreach (var template in context.MatchedTemplates)
+                var templatesList = context.MatchedTemplates.ToList();
+                for (int templateIndex = 0; templateIndex < templatesList.Count; templateIndex++)
                 {
+                    var template = templatesList[templateIndex];
                     int? templateId = template?.OcrInvoices?.Id; // Get template ID safely
                     string templateName = template?.OcrInvoices?.Name ?? "Unknown";
 
@@ -257,7 +259,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                 int correctionAttempts = 0;
                                 const int
                                     maxCorrectionAttempts =
-                                        1; // Circuit breaker: only 1 attempt to prevent infinite loops
+                                        3; // Circuit breaker: allow multiple attempts to find all omissions (Gift Card + Free Shipping)
 
                                 context.Logger?.Error("🔍 **OCR_CORRECTION_WHILE_CHECK**: About to check ShouldContinueCorrections condition");
                                 context.Logger?.Error("🔍 **OCR_INTENTION_SHOULD_CONTINUE**: We EXPECT ShouldContinueCorrections to return TRUE because TotalsZero should be -147.97 (unbalanced)");
@@ -290,6 +292,35 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     
                                     
                                     await OCRCorrectionService.ExecuteFullPipelineForInvoiceAsync(res, template, context.Logger).ConfigureAwait(false);
+                                    
+                                    // CRITICAL: Update template Lines.Values with corrected values before regenerating CSVLines
+                                    context.Logger?.Error("🔍 **LINES_VALUES_UPDATE_START**: Updating template Lines.Values with corrected invoice values");
+                                    
+                                    // Convert 'res' back to ShipmentInvoice objects for UpdateTemplateLineValues
+                                    var correctedInvoices = res.Select(dynamic =>
+                                    {
+                                        if (dynamic is IDictionary<string, object> dict)
+                                        {
+                                            return OCRCorrectionService.ConvertDynamicToShipmentInvoice(dict, context.Logger);
+                                        }
+                                        return null;
+                                    }).Where(inv => inv != null).ToList();
+                                    
+                                    // Update the template Lines.Values with corrected values
+                                    if (correctedInvoices.Any())
+                                    {
+                                        OCRCorrectionService.UpdateTemplateLineValues(template, correctedInvoices, context.Logger);
+                                        context.Logger?.Error("✅ **LINES_VALUES_UPDATE_SUCCESS**: Updated template Lines.Values for {Count} corrected invoices", correctedInvoices.Count);
+                                        
+                                        // Regenerate CSVLines from updated Lines.Values
+                                        context.Logger?.Error("🔍 **CSVLINES_REGENERATE_START**: Regenerating CSVLines from updated Lines.Values");
+                                        res = template.Read(textLines);
+                                        context.Logger?.Error("✅ **CSVLINES_REGENERATE_SUCCESS**: Regenerated CSVLines with corrected values");
+                                    }
+                                    else
+                                    {
+                                        context.Logger?.Error("⚠️ **LINES_VALUES_UPDATE_SKIPPED**: No corrected invoices to update Lines.Values with");
+                                    }
                                     
                                     context.Logger?.Error("🔍 **OCR_CORRECTION_SERVICE_RETURN**: OCRCorrectionService.CorrectInvoices completed");
                                     
@@ -327,8 +358,147 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                                     // Clear all mutable state and re-read to get updated values
                                     // This validates that the OCR correction service successfully updated the database regex patterns
+                                    context.Logger?.Error("🔍 **TEMPLATE_CLEAR_START**: Clearing template state with ClearInvoiceForReimport");
                                     template.ClearInvoiceForReimport();
+                                    context.Logger?.Error("✅ **TEMPLATE_CLEAR_SUCCESS**: Template state cleared");
+                                    
+                                    // CRITICAL FIX: Force template reload from database to pick up new regex patterns
+                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_START**: Reloading template from database to pick up new regex patterns");
+                                    
+                                    // Log current template state before reload
+                                    var currentTemplateId = template.OcrInvoices?.Id;
+                                    var currentPartsCount = template.Parts?.Count ?? 0;
+                                    var currentLinesCount = template.Lines?.Count ?? 0;
+                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_CURRENT_STATE**: TemplateId={TemplateId} | Parts={PartsCount} | Lines={LinesCount}", 
+                                        currentTemplateId, currentPartsCount, currentLinesCount);
+                                    
+                                    // Get fresh template from database with new regex patterns
+                                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                                    {
+                                        context.Logger?.Error("🔍 **TEMPLATE_RELOAD_DATABASE_CONNECTION**: OCRContext created for template reload");
+                                        
+                                        // Check if template exists in database first
+                                        context.Logger?.Error("🔍 **TEMPLATE_RELOAD_ID**: Reloading template ID={TemplateId}", currentTemplateId);
+                                        
+                                        if (currentTemplateId.HasValue)
+                                        {
+                                            // First verify template exists
+                                            var templateExists = ocrCtx.Invoices.Any(x => x.Id == currentTemplateId.Value);
+                                            context.Logger?.Error("🔍 **TEMPLATE_RELOAD_EXISTS_CHECK**: Template ID {TemplateId} exists in database: {Exists}", currentTemplateId.Value, templateExists);
+                                            
+                                            if (!templateExists)
+                                            {
+                                                context.Logger?.Error("❌ **TEMPLATE_RELOAD_NOT_FOUND**: Template ID {TemplateId} not found in database", currentTemplateId.Value);
+                                            }
+                                            else
+                                            {
+                                                // Use the same query pattern as GetTemplatesStep.GetActiveTemplatesQuery
+                                                context.Logger?.Error("🔍 **TEMPLATE_RELOAD_QUERY_START**: Executing database query for template reload");
+                                                var reloadedTemplateData = ocrCtx.Invoices
+                                                    .AsNoTracking()
+                                                    .Include("Parts")
+                                                    .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                                                    .Include("RegEx.RegEx")
+                                                    .Include("RegEx.ReplacementRegEx")
+                                                    .Include("Parts.RecuringPart")
+                                                    .Include("Parts.Start.RegularExpressions")
+                                                    .Include("Parts.End.RegularExpressions")
+                                                    .Include("Parts.PartTypes")
+                                                    .Include("Parts.Lines.RegularExpressions")
+                                                    .Include("Parts.Lines.Fields.FieldValue")
+                                                    .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                                                    .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                                                    .Include("Parts.Lines.Fields.ChildFields.FieldValue")
+                                                    .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.RegEx")
+                                                    .Include("Parts.Lines.Fields.ChildFields.FormatRegEx.ReplacementRegEx")
+                                                    .FirstOrDefault(x => x.Id == currentTemplateId.Value);
+                                                context.Logger?.Error("🔍 **TEMPLATE_RELOAD_QUERY_COMPLETE**: Database query executed");
+                                                    
+                                                if (reloadedTemplateData != null)
+                                                {
+                                                    var reloadedPartsCount = reloadedTemplateData.Parts?.Count ?? 0;
+                                                    var reloadedLinesCount = reloadedTemplateData.Parts?.SelectMany(p => p.Lines ?? new List<OCR.Business.Entities.Lines>()).Count() ?? 0;
+                                                    
+                                                    context.Logger?.Error("✅ **TEMPLATE_RELOAD_SUCCESS**: Found reloaded template data | Parts={PartsCount} | Lines={LinesCount}", 
+                                                        reloadedPartsCount, reloadedLinesCount);
+                                                    
+                                                    // Log comparison of regex patterns between old and new
+                                                    var oldRegexPatterns = new List<string>();
+                                                    foreach (var part in template.Parts ?? new List<Part>())
+                                                    {
+                                                        foreach (var line in part.Lines ?? new List<Line>())
+                                                        {
+                                                            if (line.OCR_Lines?.RegularExpressions != null && !string.IsNullOrEmpty(line.OCR_Lines.RegularExpressions.RegEx))
+                                                            {
+                                                                oldRegexPatterns.Add($"Line{line.OCR_Lines.Id}:{line.OCR_Lines.RegularExpressions.RegEx.Substring(0, Math.Min(50, line.OCR_Lines.RegularExpressions.RegEx.Length))}...");
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    var newRegexPatterns = new List<string>();
+                                                    foreach (var part in reloadedTemplateData.Parts ?? new List<OCR.Business.Entities.Parts>())
+                                                    {
+                                                        foreach (var line in part.Lines ?? new List<OCR.Business.Entities.Lines>())
+                                                        {
+                                                            if (line.RegularExpressions != null && !string.IsNullOrEmpty(line.RegularExpressions.RegEx))
+                                                            {
+                                                                newRegexPatterns.Add($"Line{line.Id}:{line.RegularExpressions.RegEx.Substring(0, Math.Min(50, line.RegularExpressions.RegEx.Length))}...");
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_REGEX_COMPARISON**: Old patterns: {OldCount} | New patterns: {NewCount}", oldRegexPatterns.Count, newRegexPatterns.Count);
+                                                    
+                                                    // Log specific differences
+                                                    var addedPatterns = newRegexPatterns.Except(oldRegexPatterns).ToList();
+                                                    var removedPatterns = oldRegexPatterns.Except(newRegexPatterns).ToList();
+                                                    
+                                                    if (addedPatterns.Any())
+                                                    {
+                                                        context.Logger?.Error("🔍 **TEMPLATE_RELOAD_ADDED_PATTERNS**: {AddedCount} new patterns: {@AddedPatterns}", addedPatterns.Count, addedPatterns);
+                                                    }
+                                                    if (removedPatterns.Any())
+                                                    {
+                                                        context.Logger?.Error("🔍 **TEMPLATE_RELOAD_REMOVED_PATTERNS**: {RemovedCount} removed patterns: {@RemovedPatterns}", removedPatterns.Count, removedPatterns);
+                                                    }
+                                                    if (!addedPatterns.Any() && !removedPatterns.Any())
+                                                    {
+                                                        context.Logger?.Error("⚠️ **TEMPLATE_RELOAD_NO_CHANGES**: No regex pattern changes detected between old and new template");
+                                                    }
+                                                    
+                                                    // Create new Invoice object with reloaded data but preserve context
+                                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_CREATE_INVOICE**: Creating new Invoice object from reloaded data");
+                                                    var reloadedTemplate = new Invoice(reloadedTemplateData, context.Logger);
+                                                    reloadedTemplate.FileType = template.FileType;
+                                                    reloadedTemplate.DocSet = template.DocSet;
+                                                    reloadedTemplate.FilePath = template.FilePath;
+                                                    reloadedTemplate.EmailId = template.EmailId;
+                                                    reloadedTemplate.FormattedPdfText = template.FormattedPdfText; // Preserve the original text
+                                                    
+                                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_UPDATE_REFERENCES**: Updating template references in context");
+                                                    // Update the reference in the context to use the reloaded template
+                                                    // Update the current template in the list and local reference
+                                                    templatesList[templateIndex] = reloadedTemplate;
+                                                    context.MatchedTemplates = templatesList;
+                                                    template = reloadedTemplate; // Update local reference too
+                                                    
+                                                    context.Logger?.Error("✅ **TEMPLATE_RELOAD_APPLIED**: Template reloaded with fresh regex patterns from database");
+                                                }
+                                                else
+                                                {
+                                                    context.Logger?.Error("❌ **TEMPLATE_RELOAD_FAILED**: Query returned null - could not find template ID={TemplateId} in database", currentTemplateId);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            context.Logger?.Error("❌ **TEMPLATE_RELOAD_NO_ID**: Template has no ID, cannot reload from database");
+                                        }
+                                    }
+                                    
+                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_RE_READ_START**: Re-reading template with updated patterns from database");
                                     res = template.Read(textLines); // Re-read with updated patterns from database
+                                    context.Logger?.Error("🔍 **TEMPLATE_RELOAD_RE_READ_COMPLETE**: Template re-read completed, result count: {ResultCount}", res?.Count ?? 0);
 
                                     // Check if corrections were successful by calculating TotalsZero on the corrected 'res' structure
                                     OCRCorrectionService.TotalsZero(res, out var newTotalsZero, context.Logger);
@@ -525,7 +695,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 return overallSuccess; // Return overall success status
 
-            // } // COMMENTED OUT: Closing brace for the 'using' block was removed
+            } // ENABLED: Closing brace for the 'using' block
         } // Closing brace for the 'Execute' method
 
         // Validation specific to one template instance

@@ -334,9 +334,14 @@ namespace WaterNut.DataSpace
                                                .FirstOrDefaultAsync(l => l.Id == request.LineId.Value).ConfigureAwait(false);
                 if (existingLineDbEntity == null) return DatabaseUpdateResult.Failed($"Existing Line with ID {request.LineId.Value} not found for modification.");
 
+                // Normalize double-escaped regex patterns from DeepSeek JSON responses
+                string normalizedCompleteLineRegex = !string.IsNullOrEmpty(regexResp.CompleteLineRegex) && regexResp.CompleteLineRegex.Contains("\\\\")
+                    ? regexResp.CompleteLineRegex.Replace("\\\\", "\\")
+                    : regexResp.CompleteLineRegex;
+
                 if (existingLineDbEntity.RegularExpressions == null)
                 {
-                    var newRegexForExistingLine = await this.GetOrCreateRegexAsync(context, regexResp.CompleteLineRegex, regexResp.IsMultiline, regexResp.MaxLines, $"Modified for omission: {request.FieldName}").ConfigureAwait(false);
+                    var newRegexForExistingLine = await this.GetOrCreateRegexAsync(context, normalizedCompleteLineRegex, regexResp.IsMultiline, regexResp.MaxLines, $"Modified for omission: {request.FieldName}").ConfigureAwait(false);
                     // Intentionally not saving here, GetOrCreateRegexAsync just prepares. Main SaveChangesAsync will commit.
                     if (newRegexForExistingLine.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false); // Save if new to get ID
                     existingLineDbEntity.RegExId = newRegexForExistingLine.Id;
@@ -344,7 +349,7 @@ namespace WaterNut.DataSpace
                 }
                 else
                 {
-                    existingLineDbEntity.RegularExpressions.RegEx = regexResp.CompleteLineRegex;
+                    existingLineDbEntity.RegularExpressions.RegEx = normalizedCompleteLineRegex;
                     existingLineDbEntity.RegularExpressions.MultiLine = regexResp.IsMultiline;
                     existingLineDbEntity.RegularExpressions.MaxLines = regexResp.MaxLines;
                     existingLineDbEntity.RegularExpressions.LastUpdated = DateTime.UtcNow;
@@ -371,7 +376,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🔍 **CREATE_NEW_LINE_START**: Creating new line for omission - FieldName={FieldName} | Pattern={Pattern}", 
                     request.FieldName, regexResp.RegexPattern);
                 
-                var newRegexEntity = await this.GetOrCreateRegexAsync(context, regexResp.RegexPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
+                // Normalize double-escaped regex patterns from DeepSeek JSON responses
+                string normalizedPattern = regexResp.RegexPattern.Contains("\\\\") 
+                    ? regexResp.RegexPattern.Replace("\\\\", "\\") 
+                    : regexResp.RegexPattern;
+                    
+                _logger.Error("🔍 **CREATE_NEW_REGEX_NORMALIZED**: Pattern normalization - Original={Original} | Normalized={Normalized}", 
+                    regexResp.RegexPattern, normalizedPattern);
+                
+                var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
                 
                 _logger.Error("🔍 **CREATE_NEW_REGEX**: Created/found regex entity - RegexId={RegexId} | Pattern={Pattern} | TrackingState={TrackingState}", 
                     newRegexEntity.Id, newRegexEntity.RegEx, newRegexEntity.TrackingState.ToString());

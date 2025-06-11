@@ -859,8 +859,52 @@ namespace WaterNut.DataSpace
                         if (val is decimal dec) return (double)dec;
                         if (val is int i) return (double)i;
                         if (val is long l) return (double)l;
-                        if (double.TryParse(val.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
-                            return dbl;
+                        
+                        // CRITICAL FIX: Use currency-aware parsing for string values
+                        var valStr = val.ToString();
+                        if (!string.IsNullOrEmpty(valStr))
+                        {
+                            // Apply currency-aware cleaning logic similar to ParseCorrectedValue
+                            string cleanedValue = valStr.Trim();
+                            
+                            // Remove currency symbols ($, €, £, etc.)
+                            cleanedValue = Regex.Replace(cleanedValue, @"[\$€£¥₹₽¢₿]", "").Trim();
+                            
+                            // Handle parentheses as negative indicators (accounting format)
+                            bool isNegative = false;
+                            if (cleanedValue.StartsWith("(") && cleanedValue.EndsWith(")"))
+                            {
+                                isNegative = true;
+                                cleanedValue = cleanedValue.Substring(1, cleanedValue.Length - 2).Trim();
+                            }
+                            
+                            // Handle comma and decimal point variations
+                            if (cleanedValue.Contains(',') && cleanedValue.Contains('.'))
+                            {
+                                if (cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.'))
+                                { // Format: 1,234.56 (comma as thousands separator)
+                                    cleanedValue = cleanedValue.Replace(",", "");
+                                }
+                                else
+                                { // Format: 1.234,56 (dot as thousands separator)
+                                    cleanedValue = cleanedValue.Replace(".", "").Replace(",", ".");
+                                }
+                            }
+                            else if (cleanedValue.Contains(','))
+                            { // Format: 123,45 (comma as decimal separator)
+                                cleanedValue = cleanedValue.Replace(",", ".");
+                            }
+                            
+                            log.Error("🔍 **CONVERSION_CURRENCY_CLEANED**: Key='{Key}' | Original='{Original}' | Cleaned='{Cleaned}' | IsNegative={IsNegative}", 
+                                key, valStr, cleanedValue, isNegative);
+                            
+                            if (double.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
+                            {
+                                var result = isNegative ? -dbl : dbl;
+                                log.Error("✅ **CONVERSION_CURRENCY_SUCCESS**: Key='{Key}' | FinalValue={FinalValue}", key, result);
+                                return result;
+                            }
+                        }
                         
                         log.Error("❌ **CONVERSION_PARSE_FAILED**: Key='{Key}' | Value='{ValText}' could not be parsed to double", key, val.ToString());
                     }
@@ -921,6 +965,14 @@ namespace WaterNut.DataSpace
                 logger?.Error(ex, "Error creating temporary ShipmentInvoice from dictionary.");
                 return new ShipmentInvoice { InvoiceNo = "ERROR_CREATION", InvoiceDetails = new List<InvoiceDetails>() };
             }
+        }
+
+        /// <summary>
+        /// Public wrapper for CreateTempShipmentInvoice to support Lines.Values updates
+        /// </summary>
+        public static ShipmentInvoice ConvertDynamicToShipmentInvoice(IDictionary<string, object> dict, ILogger logger = null)
+        {
+            return CreateTempShipmentInvoice(dict, logger);
         }
 
         public static int CountTotalInvoices(List<dynamic> res)
@@ -1024,7 +1076,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void UpdateTemplateLineValues(Invoice template, List<ShipmentInvoice> correctedInvoices, ILogger log)
+        public static void UpdateTemplateLineValues(Invoice template, List<ShipmentInvoice> correctedInvoices, ILogger log)
         {
             if (template?.Lines == null || !correctedInvoices.Any()) return;
             var templateLogId = template.OcrInvoices?.Id.ToString() ?? template.OcrInvoices.Id.ToString();
