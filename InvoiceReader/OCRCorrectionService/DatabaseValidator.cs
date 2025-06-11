@@ -28,27 +28,54 @@ namespace InvoiceReader.OCRCorrectionService
 
         /// <summary>
         /// Detects duplicate field mappings where the same regex key maps to multiple fields.
-        /// Critical issue: Gift Card regex maps to both TotalOtherCost and TotalInsurance.
+        /// ENHANCED: Also detects LineId conflicts where same regex pattern maps to different fields through different Keys.
+        /// Critical issue: Gift Card regex (LineId 1830) maps to both TotalOtherCost and TotalInsurance through different Keys.
         /// </summary>
         public List<DuplicateFieldMapping> DetectDuplicateFieldMappings()
         {
-            _logger.Information("🔍 **DUPLICATE_DETECTION_START**: Analyzing database for duplicate field mappings");
+            return DetectDuplicateFieldMappings(null);
+        }
+
+        public List<DuplicateFieldMapping> DetectDuplicateFieldMappings(int? invoiceId)
+        {
+            var scope = invoiceId.HasValue ? $"InvoiceId {invoiceId.Value}" : "entire database";
+            _logger.Information("🔍 **DUPLICATE_DETECTION_START**: Analyzing {Scope} for duplicate field mappings and LineId conflicts", scope);
 
             try
             {
-                // Query to find fields with same LineId and Key but different Field names
-                var duplicateGroups = _context.Fields
+                var duplicates = new List<DuplicateFieldMapping>();
+
+                // Build base query with optional invoice filtering
+                var baseQuery = _context.Fields
                     .Include(f => f.Lines)
                     .Include(f => f.Lines.Parts)
                     .Include(f => f.Lines.Parts.Invoices)
-                    .Where(f => f.Lines != null && f.Key != null && f.Field != null)
+                    .Where(f => f.Lines != null && f.Field != null);
+
+                if (invoiceId.HasValue)
+                {
+                    baseQuery = baseQuery.Where(f => f.Lines.Parts.TemplateId == invoiceId.Value);
+                }
+
+                // Original logic: Find fields with same LineId and Key but different Field names
+                var keyDuplicateGroups = baseQuery
+                    .Where(f => f.Key != null)
                     .GroupBy(f => new { f.LineId, f.Key })
                     .Where(g => g.Select(f => f.Field).Distinct().Count() > 1) // Multiple different Field values for same LineId+Key
                     .ToList();
 
-                var duplicates = new List<DuplicateFieldMapping>();
+                // NEW ENHANCED LOGIC: Find LineId conflicts (same LineId, different Keys, different Fields)
+                var lineIdConflictGroups = baseQuery
+                    .Where(f => f.LineId != null)
+                    .GroupBy(f => f.LineId) // Group by LineId only, not LineId + Key
+                    .Where(g => g.Select(f => f.Field).Distinct().Count() > 1) // Multiple different Field targets for same LineId
+                    .ToList();
 
-                foreach (var group in duplicateGroups)
+                _logger.Information("🔍 **DETECTION_RESULTS**: Found {KeyDuplicates} Key-based duplicates and {LineIdConflicts} LineId conflicts", 
+                    keyDuplicateGroups.Count, lineIdConflictGroups.Count);
+
+                // Process Key-based duplicates (original logic)
+                foreach (var group in keyDuplicateGroups)
                 {
                     var fieldsInGroup = group.ToList();
                     var firstField = fieldsInGroup.First();
@@ -69,15 +96,66 @@ namespace InvoiceReader.OCRCorrectionService
                             IsRequired = f.IsRequired
                         }).ToList()
                     };
-
+                    duplicate.Key += " (Key-based duplicate)"; // Mark type for clarity
                     duplicates.Add(duplicate);
 
-                    _logger.Warning("❌ **DUPLICATE_FIELD_MAPPING_DETECTED**: Line '{LineName}' (ID={LineId}) Key='{Key}' maps to {Count} different fields: {Fields}",
-                        duplicate.LineName, duplicate.LineId, duplicate.Key, duplicate.DuplicateFields.Count,
+                    _logger.Warning("❌ **KEY_DUPLICATE_DETECTED**: Line '{LineName}' (ID={LineId}) Key='{Key}' maps to {Count} different fields: {Fields}",
+                        duplicate.LineName, duplicate.LineId, group.Key.Key, duplicate.DuplicateFields.Count,
                         string.Join(", ", duplicate.DuplicateFields.Select(f => $"{f.Field}({f.EntityType})")));
                 }
 
-                _logger.Information("🔍 **DUPLICATE_DETECTION_COMPLETE**: Found {Count} duplicate field mapping groups", duplicates.Count);
+                // Process LineId conflicts (enhanced logic for Gift Card type issues)
+                foreach (var group in lineIdConflictGroups)
+                {
+                    var fieldsInGroup = group.ToList();
+                    var firstField = fieldsInGroup.First();
+                    
+                    // Skip if this conflict was already captured as a Key-based duplicate
+                    var lineIdValue = group.Key;
+                    bool alreadyCaptured = duplicates.Any(d => d.LineId == lineIdValue);
+                    if (alreadyCaptured)
+                    {
+                        _logger.Debug("⏭️ **LINEID_CONFLICT_SKIPPED**: LineId={LineId} already captured as Key-based duplicate", lineIdValue);
+                        continue;
+                    }
+                    
+                    var duplicate = new DuplicateFieldMapping
+                    {
+                        LineId = lineIdValue,
+                        Key = $"LineId-{lineIdValue} (LineId conflict)", // Mark as LineId conflict
+                        LineName = firstField.Lines?.Name ?? "Unknown",
+                        InvoiceName = firstField.Lines?.Parts?.Invoices?.Name ?? "Unknown",
+                        DuplicateFields = fieldsInGroup.Select(f => new FieldMappingInfo
+                        {
+                            FieldId = f.Id,
+                            Field = f.Field,
+                            EntityType = f.EntityType,
+                            DataType = f.DataType,
+                            AppendValues = f.AppendValues,
+                            IsRequired = f.IsRequired
+                        }).ToList()
+                    };
+                    duplicates.Add(duplicate);
+
+                    _logger.Warning("❌ **LINEID_CONFLICT_DETECTED**: Line '{LineName}' (ID={LineId}) has {Count} different field mappings through different Keys: {Fields}",
+                        duplicate.LineName, duplicate.LineId, duplicate.DuplicateFields.Count,
+                        string.Join(", ", duplicate.DuplicateFields.Select(f => $"{f.Field}({f.EntityType}) via Key '{f.FieldId}'")));
+                        
+                    // Special logging for Gift Card conflict
+                    if (lineIdValue == 1830)
+                    {
+                        _logger.Error("🎯 **GIFT_CARD_CONFLICT**: LineId 1830 (Gift Card) has {Count} conflicting field mappings - this is the reported issue", duplicate.DuplicateFields.Count);
+                        foreach (var field in duplicate.DuplicateFields)
+                        {
+                            var status = field.Field == "TotalInsurance" ? "✅ CORRECT (Caribbean customs)" : "❌ INCORRECT (should be deleted)";
+                            _logger.Error("   📋 **CONFLICT_DETAIL**: FieldId={FieldId}, Field='{Field}', EntityType='{EntityType}' - {Status}",
+                                field.FieldId, field.Field, field.EntityType, status);
+                        }
+                    }
+                }
+
+                _logger.Information("🔍 **DUPLICATE_DETECTION_COMPLETE**: Found {Count} total duplicate/conflict groups ({KeyCount} Key-based + {LineIdCount} LineId conflicts)", 
+                    duplicates.Count, keyDuplicateGroups.Count, lineIdConflictGroups.Count - duplicates.Count(d => d.Key.Contains("Key-based")));
                 return duplicates;
             }
             catch (Exception ex)
@@ -116,7 +194,8 @@ namespace InvoiceReader.OCRCorrectionService
                         LineName = duplicate.LineName,
                         Key = duplicate.Key,
                         Field = primaryField.Field,
-                        Reason = primaryField.SelectionReason
+                        Reason = primaryField.SelectionReason,
+                        FieldId = primaryField.FieldId
                     });
                     result.KeptCount++;
 
@@ -139,7 +218,8 @@ namespace InvoiceReader.OCRCorrectionService
                                     LineName = duplicate.LineName,
                                     Key = duplicate.Key,
                                     Field = fieldToRemove.Field,
-                                    Reason = $"Duplicate of {primaryField.Field}"
+                                    Reason = $"Duplicate of {primaryField.Field}",
+                                    FieldId = fieldToRemove.FieldId
                                 });
                                 result.RemovedCount++;
                             }
@@ -151,13 +231,56 @@ namespace InvoiceReader.OCRCorrectionService
                     }
                 }
 
-                // Save changes
+                // Save changes with enhanced verification
                 var changesSaved = _context.SaveChanges();
                 _logger.Information("💾 **CLEANUP_SAVE**: Saved {ChangeCount} database changes", changesSaved);
 
-                result.Success = true;
-                _logger.Information("✅ **CLEANUP_COMPLETE**: Successfully cleaned up {RemovedCount} duplicate mappings, kept {KeptCount} primary mappings",
-                    result.RemovedCount, result.KeptCount);
+                // Verify that the expected number of changes were actually saved
+                if (changesSaved != result.RemovedCount)
+                {
+                    _logger.Warning("⚠️ **CLEANUP_SAVE_MISMATCH**: Expected to save {ExpectedChanges} deletions, but SaveChanges() returned {ActualChanges}", 
+                        result.RemovedCount, changesSaved);
+                }
+
+                // Additional verification: try to reload deleted entities to confirm they're gone
+                var verificationFailed = false;
+                foreach (var action in result.CleanupActions.Where(a => a.ActionType == "REMOVE_DUPLICATE" && a.FieldId.HasValue))
+                {
+                    try
+                    {
+                        // Try to reload the deleted entity - it should not exist
+                        var deletedEntity = _context.Fields.FirstOrDefault(f => f.Id == action.FieldId.Value);
+                        if (deletedEntity != null)
+                        {
+                            _logger.Error("🚨 **CLEANUP_VERIFICATION_FAILED**: Deleted entity FieldId={FieldId} still exists in database", 
+                                action.FieldId.Value);
+                            verificationFailed = true;
+                        }
+                        else
+                        {
+                            _logger.Debug("✅ **CLEANUP_VERIFICATION_SUCCESS**: Confirmed deletion of FieldId={FieldId} (Field='{Field}')", 
+                                action.FieldId.Value, action.Field);
+                        }
+                    }
+                    catch (Exception verifyEx)
+                    {
+                        _logger.Warning(verifyEx, "⚠️ **CLEANUP_VERIFICATION_ERROR**: Could not verify deletion of FieldId={FieldId}", 
+                            action.FieldId.Value);
+                    }
+                }
+
+                if (verificationFailed)
+                {
+                    _logger.Error("🚨 **CLEANUP_VERIFICATION_FAILED**: Some deleted entities could still be found in database");
+                    result.Success = false;
+                    result.ErrorMessage = "Database verification failed - some entities may not have been deleted";
+                }
+                else
+                {
+                    result.Success = true;
+                    _logger.Information("✅ **CLEANUP_COMPLETE**: Successfully cleaned up {RemovedCount} duplicate mappings, kept {KeptCount} primary mappings",
+                        result.RemovedCount, result.KeptCount);
+                }
             }
             catch (Exception ex)
             {
@@ -651,6 +774,7 @@ namespace InvoiceReader.OCRCorrectionService
         public string Key { get; set; }
         public string Field { get; set; }
         public string Reason { get; set; }
+        public int? FieldId { get; set; }  // Added to track specific field IDs for verification
     }
 
     public class DataTypeIssue

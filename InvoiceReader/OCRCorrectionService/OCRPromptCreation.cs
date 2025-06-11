@@ -182,8 +182,13 @@ Full context lines are important for multi-line items.
             var existingNamedGroups = lineContext.FieldsInLine?.Select(f => f.Key).Where(k => !string.IsNullOrEmpty(k)).Distinct().ToList() ?? new List<string>();
             var existingNamedGroupsString = existingNamedGroups.Any() ? string.Join(", ", existingNamedGroups) : "None";
 
-            return $@"CREATE REGEX PATTERN FOR OCR FIELD EXTRACTION:
-An OCR process failed to extract a field. Your task is to create or modify a regex pattern to capture this missing field.
+            return $@"CREATE C# COMPLIANT REGEX PATTERN FOR OCR FIELD EXTRACTION:
+An OCR process failed to extract a field. Your task is to create or modify a C# compliant regex pattern to capture this missing field.
+
+CRITICAL REQUIREMENTS:
+- All regex patterns MUST be C# compliant (use single backslashes, not double backslashes)
+- Use pseudo datatypes: ""Number"" (not decimal), ""String"" (not string), ""English Date"" (not DateTime)
+- Patterns must work with .NET Regex class without escaping issues
 
 OMITTED FIELD DETAILS:
 - Field Name to Capture: ""{correction.FieldName}""
@@ -229,7 +234,7 @@ STRICT JSON RESPONSE FORMAT:
   ""preserves_existing_groups"": (true if 'modify_existing_line', otherwise true)
 }}
 
-EXAMPLE - Creating a new line for a missing ""GiftWrapFee"":
+EXAMPLE - Creating a new line for a missing ""GiftWrapFee"" (C# COMPLIANT):
 Value ""$2.50"" found on line ""Gift Wrap Fee: $2.50""
 {{
   ""strategy"": ""create_new_line"",
@@ -239,7 +244,7 @@ Value ""$2.50"" found on line ""Gift Wrap Fee: $2.50""
   ""max_lines"": 1,
   ""test_match"": ""$2.50"",
   ""confidence"": 0.95,
-  ""reasoning"": ""Fee is on its own distinct line. Pattern captures currency value."",
+  ""reasoning"": ""Fee is on its own distinct line. C# compliant pattern captures currency value using single backslashes."",
   ""preserves_existing_groups"": true
 }}
 Focus on creating a robust and accurate pattern. If modifying, ensure no existing data capture is broken.

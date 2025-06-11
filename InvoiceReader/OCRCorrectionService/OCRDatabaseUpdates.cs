@@ -401,77 +401,218 @@ namespace WaterNut.DataSpace
         /// </summary>
         internal CorrectionResult ValidatePatternInternal(CorrectionResult correction)
         {
-            if (correction == null)
+            // COMPREHENSIVE VALIDATION LOGGING: Use LogLevelOverride to focus on validation logic
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
-                _logger.Error("ValidatePatternInternal: Correction is null");
-                return null;
-            }
-
-            _logger.Information("🔍 **PIPELINE_PATTERN_VALIDATION_START**: Validating pattern for field {FieldName}", correction.FieldName);
-
-            try
-            {
-                // Validate field is supported
-                if (!this.IsFieldSupported(correction.FieldName))
+                _logger.Error("🔍 **VALIDATION_SECTION_ENTRY**: ValidatePatternInternal called for validation analysis");
+                
+                if (correction == null)
                 {
-                    _logger.Warning("❌ **PIPELINE_VALIDATION_FAILED**: Field {FieldName} is not supported", correction.FieldName);
-                    correction.Success = false;
-                    correction.Reasoning = $"Field '{correction.FieldName}' is not supported for database updates";
-                    return correction;
+                    _logger.Error("❌ **VALIDATION_NULL_INPUT**: Correction parameter is null - cannot validate");
+                    return null;
                 }
 
-                // Validate new value if present
-                if (!string.IsNullOrEmpty(correction.NewValue))
+                // LOG COMPLETE CORRECTION DATA FOR ANALYSIS
+                _logger.Error("🔍 **VALIDATION_INPUT_DATA**: Complete correction object analysis");
+                _logger.Error("🔍 **VALIDATION_FIELD_NAME**: FieldName = '{FieldName}' (Length: {Length})", 
+                    correction.FieldName ?? "NULL", correction.FieldName?.Length ?? 0);
+                _logger.Error("🔍 **VALIDATION_OLD_VALUE**: OldValue = '{OldValue}' (Type: {Type})", 
+                    correction.OldValue ?? "NULL", correction.OldValue?.GetType().Name ?? "NULL");
+                _logger.Error("🔍 **VALIDATION_NEW_VALUE**: NewValue = '{NewValue}' (Type: {Type}, Length: {Length})", 
+                    correction.NewValue ?? "NULL", correction.NewValue?.GetType().Name ?? "NULL", correction.NewValue?.Length ?? 0);
+                _logger.Error("🔍 **VALIDATION_CORRECTION_TYPE**: CorrectionType = '{CorrectionType}'", 
+                    correction.CorrectionType ?? "NULL");
+                _logger.Error("🔍 **VALIDATION_SUGGESTED_REGEX**: SuggestedRegex = '{SuggestedRegex}' (Length: {Length})", 
+                    correction.SuggestedRegex ?? "NULL", correction.SuggestedRegex?.Length ?? 0);
+                _logger.Error("🔍 **VALIDATION_SUCCESS_STATE**: Current Success = {Success}", correction.Success);
+                _logger.Error("🔍 **VALIDATION_CONFIDENCE**: Confidence = {Confidence}", correction.Confidence);
+                _logger.Error("🔍 **VALIDATION_REASONING**: Current Reasoning = '{Reasoning}'", 
+                    correction.Reasoning ?? "NULL");
+
+                _logger.Error("🔍 **VALIDATION_STEP_1_START**: Checking field support for '{FieldName}'", correction.FieldName);
+
+                try
                 {
-                    var fieldInfo = this.GetFieldValidationInfo(correction.FieldName);
-                    if (!string.IsNullOrEmpty(fieldInfo.ValidationPattern))
+                    // STEP 1: Validate field is supported with detailed logging
+                    bool fieldSupported = this.IsFieldSupported(correction.FieldName);
+                    _logger.Error("🔍 **VALIDATION_FIELD_SUPPORT_RESULT**: IsFieldSupported('{FieldName}') = {IsSupported}", 
+                        correction.FieldName, fieldSupported);
+                    
+                    if (!fieldSupported)
                     {
+                        _logger.Error("❌ **VALIDATION_STEP_1_FAILED**: Field '{FieldName}' is not supported for database updates", correction.FieldName);
+                        _logger.Error("🔍 **VALIDATION_SUPPORTED_FIELDS**: Available supported fields: {SupportedFields}", 
+                            string.Join(", ", this.GetSupportedMappedFields() ?? new List<string>()));
+                        
+                        correction.Success = false;
+                        correction.Reasoning = $"Field '{correction.FieldName}' is not supported for database updates";
+                        _logger.Error("🔍 **VALIDATION_SECTION_EXIT**: Exiting due to unsupported field");
+                        return correction;
+                    }
+                    _logger.Error("✅ **VALIDATION_STEP_1_PASSED**: Field '{FieldName}' is supported", correction.FieldName);
+
+                    // STEP 2: Validate new value if present with detailed field info analysis
+                    _logger.Error("🔍 **VALIDATION_STEP_2_START**: Validating new value if present");
+                    if (!string.IsNullOrEmpty(correction.NewValue))
+                    {
+                        _logger.Error("🔍 **VALIDATION_NEW_VALUE_PRESENT**: NewValue is present, getting field validation info");
+                        
+                        var fieldInfo = this.GetFieldValidationInfo(correction.FieldName);
+                        _logger.Error("🔍 **VALIDATION_FIELD_INFO**: Field validation info retrieved");
+                        _logger.Error("🔍 **VALIDATION_FIELD_INFO_DETAILS**: IsValid={IsValid} | DatabaseFieldName='{DbFieldName}' | EntityType='{EntityType}' | DataType='{DataType}' | IsRequired={IsRequired} | IsMonetary={IsMonetary}", 
+                            fieldInfo.IsValid, 
+                            fieldInfo.DatabaseFieldName ?? "NULL", 
+                            fieldInfo.EntityType ?? "NULL", 
+                            fieldInfo.DataType ?? "NULL", 
+                            fieldInfo.IsRequired, 
+                            fieldInfo.IsMonetary);
+                        _logger.Error("🔍 **VALIDATION_FIELD_PATTERN**: ValidationPattern = '{Pattern}' (Length: {Length})", 
+                            fieldInfo.ValidationPattern ?? "NULL", fieldInfo.ValidationPattern?.Length ?? 0);
+                        _logger.Error("🔍 **VALIDATION_FIELD_MAX_LENGTH**: MaxLength = {MaxLength}", fieldInfo.MaxLength?.ToString() ?? "NULL");
+                        _logger.Error("🔍 **VALIDATION_FIELD_ERROR**: ErrorMessage = '{ErrorMessage}'", fieldInfo.ErrorMessage ?? "NULL");
+                        
+                        if (!string.IsNullOrEmpty(fieldInfo.ValidationPattern))
+                        {
+                            _logger.Error("🔍 **VALIDATION_PATTERN_MATCHING_START**: Testing NewValue '{NewValue}' against pattern '{Pattern}'", 
+                                correction.NewValue, fieldInfo.ValidationPattern);
+                            
+                            try
+                            {
+                                bool patternMatches = Regex.IsMatch(correction.NewValue, fieldInfo.ValidationPattern);
+                                _logger.Error("🔍 **VALIDATION_PATTERN_MATCH_RESULT**: Regex.IsMatch('{Value}', '{Pattern}') = {MatchResult}", 
+                                    correction.NewValue, fieldInfo.ValidationPattern, patternMatches);
+                                
+                                if (!patternMatches)
+                                {
+                                    _logger.Error("❌ **VALIDATION_STEP_2_FAILED**: Value '{Value}' for {FieldName} doesn't match pattern {Pattern}", 
+                                        correction.NewValue, correction.FieldName, fieldInfo.ValidationPattern);
+                                    
+                                    // TEST WHAT WOULD MATCH THE PATTERN
+                                    _logger.Error("🔍 **VALIDATION_PATTERN_ANALYSIS**: Analyzing what would match pattern '{Pattern}'", fieldInfo.ValidationPattern);
+                                    var testValues = new[] { "6.99", "$6.99", "-6.99", "-$6.99", "123.45", "$123.45" };
+                                    foreach (var testValue in testValues)
+                                    {
+                                        try
+                                        {
+                                            bool testMatches = Regex.IsMatch(testValue, fieldInfo.ValidationPattern);
+                                            _logger.Error("🔍 **VALIDATION_PATTERN_TEST**: TestValue '{TestValue}' matches pattern = {TestResult}", 
+                                                testValue, testMatches);
+                                        }
+                                        catch (Exception testEx)
+                                        {
+                                            _logger.Error("🔍 **VALIDATION_PATTERN_TEST_ERROR**: TestValue '{TestValue}' caused error: {Error}", 
+                                                testValue, testEx.Message);
+                                        }
+                                    }
+                                    
+                                    correction.Success = false;
+                                    correction.Reasoning = $"Value '{correction.NewValue}' doesn't match expected pattern for field type '{fieldInfo.DataType}'";
+                                    _logger.Error("🔍 **VALIDATION_SECTION_EXIT**: Exiting due to pattern mismatch");
+                                    return correction;
+                                }
+                                _logger.Error("✅ **VALIDATION_STEP_2_PASSED**: Value '{Value}' matches validation pattern", correction.NewValue);
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                _logger.Error("⚠️ **VALIDATION_PATTERN_REGEX_ERROR**: Invalid validation pattern for {FieldName}: {Error}", 
+                                    correction.FieldName, ex.Message);
+                                _logger.Error("🔍 **VALIDATION_PATTERN_REGEX_DETAILS**: Pattern='{Pattern}' | Exception={Exception}", 
+                                    fieldInfo.ValidationPattern, ex.ToString());
+                                // Continue validation despite pattern error
+                            }
+                        }
+                        else
+                        {
+                            _logger.Error("🔍 **VALIDATION_NO_PATTERN**: No validation pattern defined for field '{FieldName}' - skipping pattern validation", correction.FieldName);
+                        }
+                    }
+                    else
+                    {
+                        _logger.Error("🔍 **VALIDATION_NO_NEW_VALUE**: NewValue is null or empty - skipping value validation");
+                    }
+
+                    // STEP 3: Validate suggested regex if present with comprehensive syntax testing
+                    _logger.Error("🔍 **VALIDATION_STEP_3_START**: Validating suggested regex if present");
+                    if (!string.IsNullOrEmpty(correction.SuggestedRegex))
+                    {
+                        _logger.Error("🔍 **VALIDATION_SUGGESTED_REGEX_PRESENT**: SuggestedRegex is present, testing compilation");
+                        _logger.Error("🔍 **VALIDATION_REGEX_PATTERN**: Full pattern = '{Pattern}'", correction.SuggestedRegex);
+                        
                         try
                         {
-                            if (!Regex.IsMatch(correction.NewValue, fieldInfo.ValidationPattern))
+                            var testRegex = new Regex(correction.SuggestedRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            _logger.Error("✅ **VALIDATION_REGEX_COMPILATION_SUCCESS**: Suggested regex compiled successfully");
+                            _logger.Error("🔍 **VALIDATION_REGEX_OPTIONS**: Compiled with options: IgnoreCase={IgnoreCase}, Multiline={Multiline}", 
+                                testRegex.Options.HasFlag(RegexOptions.IgnoreCase), 
+                                testRegex.Options.HasFlag(RegexOptions.Multiline));
+                            
+                            // TEST REGEX WITH SAMPLE DATA
+                            if (!string.IsNullOrEmpty(correction.NewValue))
                             {
-                                _logger.Warning("❌ **PIPELINE_VALUE_VALIDATION_FAILED**: Value '{Value}' for {FieldName} doesn't match pattern {Pattern}", 
-                                    correction.NewValue, correction.FieldName, fieldInfo.ValidationPattern);
-                                correction.Success = false;
-                                correction.Reasoning = $"Value '{correction.NewValue}' doesn't match expected pattern";
-                                return correction;
+                                _logger.Error("🔍 **VALIDATION_REGEX_TEST_START**: Testing compiled regex against NewValue");
+                                try
+                                {
+                                    bool regexMatches = testRegex.IsMatch(correction.NewValue);
+                                    _logger.Error("🔍 **VALIDATION_REGEX_TEST_RESULT**: Regex.IsMatch('{Value}') = {MatchResult}", 
+                                        correction.NewValue, regexMatches);
+                                    
+                                    if (regexMatches)
+                                    {
+                                        var match = testRegex.Match(correction.NewValue);
+                                        _logger.Error("🔍 **VALIDATION_REGEX_MATCH_DETAILS**: Match.Success={Success} | Match.Value='{MatchValue}' | Groups.Count={GroupCount}", 
+                                            match.Success, match.Value, match.Groups.Count);
+                                        
+                                        foreach (Group group in match.Groups)
+                                        {
+                                            _logger.Error("🔍 **VALIDATION_REGEX_GROUP**: Group[{Index}] = '{Value}' (Name: {Name})", 
+                                                group.Index, group.Value, group.Name);
+                                        }
+                                    }
+                                }
+                                catch (Exception regexTestEx)
+                                {
+                                    _logger.Error("⚠️ **VALIDATION_REGEX_TEST_ERROR**: Error testing regex against value: {Error}", regexTestEx.Message);
+                                }
                             }
+                            
+                            _logger.Error("✅ **VALIDATION_STEP_3_PASSED**: Suggested regex for {FieldName} is syntactically valid", correction.FieldName);
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.Warning("⚠️ **PIPELINE_REGEX_VALIDATION_ERROR**: Invalid validation pattern for {FieldName}: {Error}", 
+                            _logger.Error("❌ **VALIDATION_STEP_3_FAILED**: Invalid suggested regex for {FieldName}: {Error}", 
                                 correction.FieldName, ex.Message);
+                            _logger.Error("🔍 **VALIDATION_REGEX_ERROR_DETAILS**: Pattern='{Pattern}' | Exception={Exception}", 
+                                correction.SuggestedRegex, ex.ToString());
+                            
+                            correction.Success = false;
+                            correction.Reasoning = $"Invalid regex pattern: {ex.Message}";
+                            _logger.Error("🔍 **VALIDATION_SECTION_EXIT**: Exiting due to invalid regex");
+                            return correction;
                         }
                     }
-                }
+                    else
+                    {
+                        _logger.Error("🔍 **VALIDATION_NO_SUGGESTED_REGEX**: SuggestedRegex is null or empty - skipping regex validation");
+                    }
 
-                // Validate suggested regex if present
-                if (!string.IsNullOrEmpty(correction.SuggestedRegex))
+                    _logger.Error("✅ **VALIDATION_ALL_STEPS_PASSED**: All validation steps completed successfully for field {FieldName}", correction.FieldName);
+                    _logger.Error("🔍 **VALIDATION_FINAL_STATE**: Final Success={Success} | Final Reasoning='{Reasoning}'", 
+                        correction.Success, correction.Reasoning ?? "NULL");
+                    _logger.Error("🔍 **VALIDATION_SECTION_EXIT**: ValidatePatternInternal completed successfully");
+                    
+                    return correction;
+                }
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var testRegex = new Regex(correction.SuggestedRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                        _logger.Information("✅ **PIPELINE_REGEX_VALID**: Suggested regex for {FieldName} is syntactically valid", correction.FieldName);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        _logger.Warning("❌ **PIPELINE_REGEX_INVALID**: Invalid suggested regex for {FieldName}: {Error}", 
-                            correction.FieldName, ex.Message);
-                        correction.Success = false;
-                        correction.Reasoning = $"Invalid regex pattern: {ex.Message}";
-                        return correction;
-                    }
+                    _logger.Error(ex, "🚨 **VALIDATION_EXCEPTION**: Exception during pattern validation for {FieldName}", correction.FieldName);
+                    _logger.Error("🔍 **VALIDATION_EXCEPTION_DETAILS**: ExceptionType={Type} | Message={Message} | StackTrace={StackTrace}", 
+                        ex.GetType().Name, ex.Message, ex.StackTrace);
+                    
+                    correction.Success = false;
+                    correction.Reasoning = $"Exception during validation: {ex.Message}";
+                    _logger.Error("🔍 **VALIDATION_SECTION_EXIT**: Exiting due to exception");
+                    return correction;
                 }
-
-                _logger.Information("✅ **PIPELINE_VALIDATION_SUCCESS**: Pattern validation passed for field {FieldName}", correction.FieldName);
-                return correction;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "🚨 **PIPELINE_VALIDATION_EXCEPTION**: Exception validating pattern for {FieldName}", correction.FieldName);
-                correction.Success = false;
-                correction.Reasoning = $"Exception during validation: {ex.Message}";
-                return correction;
             }
         }
 

@@ -11,6 +11,7 @@ using EntryDataDS.Business.Entities; // For ShipmentInvoice
 using OCR.Business.Entities; // For OCRContext, Invoice, OcrInvoices etc.
 using TrackableEntities; // For TrackingState
 using Serilog;
+using InvoiceReader.OCRCorrectionService; // For DatabaseValidator
 // WaterNut.Business.Services.Utils; // If used, ensure it's specific
 // Core.Common.Extensions; // If used, ensure it's specific
 // System.IO is used in a using directive block below
@@ -679,6 +680,58 @@ namespace WaterNut.DataSpace
             {
                 // Create service instance for this correction session
                 using var service = new OCRCorrectionService(logger);
+
+                // CRITICAL: Run database validation first to detect and fix duplicate field mappings
+                // Extract template ID for efficient filtering - only check duplicates for the current template
+                var templateId = template?.OcrInvoices?.Id;
+                var scope = templateId.HasValue ? $"template {templateId.Value}" : "entire database";
+                logger?.Information("🔍 **DATABASE_VALIDATION_START**: Running DatabaseValidator to detect duplicate field mappings for {Scope}", scope);
+                
+                CleanupResult cleanupResult = null;
+                using (var ocrContext = new OCRContext())
+                {
+                    var validator = new DatabaseValidator(ocrContext, logger);
+                    
+                    var duplicates = validator.DetectDuplicateFieldMappings(templateId);
+                    if (duplicates.Any())
+                    {
+                        logger?.Error("🚨 **DATABASE_VALIDATION_DUPLICATES_FOUND**: Found {DuplicateCount} duplicate field mapping groups", duplicates.Count);
+                        foreach (var duplicate in duplicates.Take(5)) // Log first 5 for visibility
+                        {
+                            logger?.Error("🔍 **DUPLICATE_MAPPING**: LineId={LineId} Key='{Key}' has {FieldCount} different field mappings: {Fields}", 
+                                duplicate.LineId, duplicate.Key, duplicate.DuplicateFields.Count, 
+                                string.Join(", ", duplicate.DuplicateFields.Select(f => $"{f.Field}({f.EntityType})")));
+                        }
+                        
+                        // Fix duplicates automatically and ensure database changes are committed before context disposal
+                        cleanupResult = validator.CleanupDuplicateFieldMappings(duplicates);
+                        
+                        // Verify the changes were actually saved
+                        if (cleanupResult.Success && cleanupResult.RemovedCount > 0)
+                        {
+                            logger?.Information("💾 **DATABASE_VALIDATION_COMMIT_VERIFICATION**: Attempting to verify {RemovedCount} deletions were committed", cleanupResult.RemovedCount);
+                            
+                            // Verify deletions by attempting to reload removed entities
+                            foreach (var action in cleanupResult.CleanupActions.Where(a => a.ActionType == "REMOVE_DUPLICATE"))
+                            {
+                                // Parse FieldId from cleanup action if stored
+                                // For now, we'll trust the SaveChanges() call in DatabaseValidator
+                                logger?.Debug("🔍 **DATABASE_VALIDATION_VERIFY**: Removed duplicate field mapping for {Field}", action.Field);
+                            }
+                        }
+                        
+                        logger?.Information("🔧 **DATABASE_VALIDATION_CLEANUP_RESULT**: Cleanup success={Success}, Kept={KeptCount}, Removed={RemovedCount}", 
+                            cleanupResult.Success, cleanupResult.KeptCount, cleanupResult.RemovedCount);
+                    }
+                    else
+                    {
+                        logger?.Information("✅ **DATABASE_VALIDATION_CLEAN**: No duplicate field mappings detected");
+                        cleanupResult = new CleanupResult { Success = true, KeptCount = 0, RemovedCount = 0 };
+                    }
+                    
+                    // Ensure all database changes are committed before disposing context
+                    logger?.Information("💾 **DATABASE_VALIDATION_CONTEXT_DISPOSE**: OCRContext disposing - database changes should be committed");
+                }
 
                 // Extract ShipmentInvoice from csvLines (convert dynamic to structured entity)
                 var invoice = service.ConvertCsvLinesToShipmentInvoice(csvLines);

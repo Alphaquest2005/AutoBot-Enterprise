@@ -29,25 +29,26 @@ namespace WaterNut.DataSpace
             var mapping = new Dictionary<string, DatabaseFieldInfo>(StringComparer.OrdinalIgnoreCase);
 
             // Invoice Header Canonical Names (Primary keys for mapping)
-            var invoiceTotal = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "decimal", true, "Invoice Total Amount");
-            var subTotal = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "decimal", true, "Subtotal");
-            var totalInternalFreight = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "decimal", false, "Freight/Shipping Charges");
-            var totalOtherCost = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "decimal", false, "Taxes and Other Costs");
-            var totalInsurance = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "decimal", false, "Insurance Charges");
-            var totalDeduction = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "decimal", false, "Deductions/Discounts/Gift Cards");
-            var invoiceNo = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "string", true, "Invoice Number");
-            var invoiceDate = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "DateTime", true, "Invoice Date");
-            var currency = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "string", false, "Currency Code (e.g., USD)");
-            var supplierName = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "string", true, "Supplier/Vendor Name");
-            var supplierAddress = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "string", false, "Supplier Address");
+            // Using pseudo datatypes consistent with ImportByDataType.cs: "Number", "String", "Date", "English Date"
+            var invoiceTotal = new DatabaseFieldInfo("InvoiceTotal", "ShipmentInvoice", "Number", true, "Invoice Total Amount");
+            var subTotal = new DatabaseFieldInfo("SubTotal", "ShipmentInvoice", "Number", true, "Subtotal");
+            var totalInternalFreight = new DatabaseFieldInfo("TotalInternalFreight", "ShipmentInvoice", "Number", false, "Freight/Shipping Charges");
+            var totalOtherCost = new DatabaseFieldInfo("TotalOtherCost", "ShipmentInvoice", "Number", false, "Taxes and Other Costs");
+            var totalInsurance = new DatabaseFieldInfo("TotalInsurance", "ShipmentInvoice", "Number", false, "Insurance Charges");
+            var totalDeduction = new DatabaseFieldInfo("TotalDeduction", "ShipmentInvoice", "Number", false, "Deductions/Discounts/Gift Cards");
+            var invoiceNo = new DatabaseFieldInfo("InvoiceNo", "ShipmentInvoice", "String", true, "Invoice Number");
+            var invoiceDate = new DatabaseFieldInfo("InvoiceDate", "ShipmentInvoice", "English Date", true, "Invoice Date");
+            var currency = new DatabaseFieldInfo("Currency", "ShipmentInvoice", "String", false, "Currency Code (e.g., USD)");
+            var supplierName = new DatabaseFieldInfo("SupplierName", "ShipmentInvoice", "String", true, "Supplier/Vendor Name");
+            var supplierAddress = new DatabaseFieldInfo("SupplierAddress", "ShipmentInvoice", "String", false, "Supplier Address");
 
             // Invoice Detail Canonical Names (Primary keys for mapping - used when fieldName is simple like "Quantity")
-            var itemDescription = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "string", true, "Product/Service Description");
-            var quantity = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "decimal", true, "Quantity");
-            var cost = new DatabaseFieldInfo("Cost", "InvoiceDetails", "decimal", true, "Unit Price/Cost");
-            var totalCost = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "decimal", true, "Line Item Total Amount");
-            var discount = new DatabaseFieldInfo("Discount", "InvoiceDetails", "decimal", false, "Line Item Discount");
-            var units = new DatabaseFieldInfo("Units", "InvoiceDetails", "string", false, "Unit of Measure (e.g., EA, KG)");
+            var itemDescription = new DatabaseFieldInfo("ItemDescription", "InvoiceDetails", "String", true, "Product/Service Description");
+            var quantity = new DatabaseFieldInfo("Quantity", "InvoiceDetails", "Number", true, "Quantity");
+            var cost = new DatabaseFieldInfo("Cost", "InvoiceDetails", "Number", true, "Unit Price/Cost");
+            var totalCost = new DatabaseFieldInfo("TotalCost", "InvoiceDetails", "Number", true, "Line Item Total Amount");
+            var discount = new DatabaseFieldInfo("Discount", "InvoiceDetails", "Number", false, "Line Item Discount");
+            var units = new DatabaseFieldInfo("Units", "InvoiceDetails", "String", false, "Unit of Measure (e.g., EA, KG)");
 
             // Add canonical names first
             mapping["InvoiceTotal"] = invoiceTotal;
@@ -115,7 +116,7 @@ namespace WaterNut.DataSpace
         {
             public string DatabaseFieldName { get; } // The canonical C# property name / DB column name.
             public string EntityType { get; }      // Name of the entity class, e.g., "ShipmentInvoice", "InvoiceDetails".
-            public string DataType { get; }        // Expected data type, e.g., "string", "decimal", "DateTime", "int".
+            public string DataType { get; }        // Expected pseudo data type, e.g., "String", "Number", "English Date".
             public bool IsRequired { get; }        // Whether the field is considered mandatory.
             public string DisplayName { get; }     // A user-friendly or common name for the field, useful for prompts/logs.
 
@@ -202,7 +203,7 @@ namespace WaterNut.DataSpace
                 EntityType = fieldInfo.EntityType,
                 IsRequired = fieldInfo.IsRequired,
                 DataType = fieldInfo.DataType,
-                IsMonetary = (fieldInfo.DataType == "decimal" || fieldInfo.DataType == "currency"), // Example
+                IsMonetary = (fieldInfo.DataType == "Number"), // Use Number pseudo datatype for monetary fields
                 MaxLength = GetMaxLengthForField(fieldInfo), // Helper
                 ValidationPattern = GetValidationPatternForField(fieldInfo) // Helper
             };
@@ -221,26 +222,26 @@ namespace WaterNut.DataSpace
                 case "ItemDescription": return 1000;
                 case "Units": return 50;
                 default:
-                    return fieldInfo.DataType?.ToLowerInvariant() == "string" ? 255 : (int?)null; // Default for other strings
+                    return fieldInfo.DataType?.Equals("String", StringComparison.OrdinalIgnoreCase) == true ? 255 : (int?)null; // Default for String pseudo datatype
             }
         }
 
         // Helper method for GetFieldValidationInfo
         private string GetValidationPatternForField(DatabaseFieldInfo fieldInfo)
         {
-            // These are example patterns. Real-world patterns can be more complex.
-            switch (fieldInfo.DataType?.ToLowerInvariant())
+            // C# compliant regex patterns using pseudo datatypes consistent with ImportByDataType.cs
+            switch (fieldInfo.DataType)
             {
-                case "decimal": case "currency":
-                    return @"^-?\$?€?£?\s*(?:\d{1,3}(?:[,.]\d{3})*|\d+)(?:[.,]\d{1,4})?$"; // Handles 1,234.56 or 1.234,56 patterns roughly
-                case "datetime":
-                    return @"^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z?)?$|^\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}$|^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s\d{1,2}(?:st|nd|rd|th)?(?:,)?\s\d{2,4}$";
-                case "int": case "integer":
-                     return @"^-?\d+$";
-                case "string":
-                    return fieldInfo.IsRequired ? @"^\s*\S+[\s\S]*$" : @"^[\s\S]*$"; // Non-whitespace if required
+                case "Number":
+                    return @"^-?\$?€?£?\s*(?:\d{1,3}(?:[,.\s]\d{3})*|\d+)(?:[.,]\d{1,4})?$"; // C# compliant currency pattern
+                case "English Date":
+                    return @"^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{2,4}$"; // C# compliant English date pattern
+                case "Date":
+                    return @"^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z?)?$|^\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}$"; // C# compliant ISO and common date patterns
+                case "String":
+                    return fieldInfo.IsRequired ? @"^\s*\S+[\s\S]*$" : @"^[\s\S]*$"; // Non-whitespace if required, C# compliant
                 default:
-                    return @"^[\s\S]*$"; // Allow anything for unknown types
+                    return @"^[\s\S]*$"; // Allow anything for unknown types, C# compliant
             }
         }
 
