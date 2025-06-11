@@ -193,15 +193,31 @@ namespace WaterNut.DataSpace
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Information("Executing OmissionUpdateStrategy for field: {FieldName}, New Value: '{NewValue}'", request.FieldName, request.NewValue);
+                _logger.Error("🔍 **OMISSION_STRATEGY_START**: Executing OmissionUpdateStrategy for field: {FieldName}", request.FieldName);
+                _logger.Error("🔍 **OMISSION_STRATEGY_INPUT**: OldValue={OldValue} | NewValue={NewValue} | LineText={LineText}", 
+                    request.OldValue ?? "NULL", request.NewValue ?? "NULL", request.LineText ?? "NULL");
+                _logger.Error("🔍 **OMISSION_STRATEGY_CONTEXT**: LineId={LineId} | PartId={PartId} | RegexId={RegexId}", 
+                    request.LineId?.ToString() ?? "NULL", request.PartId?.ToString() ?? "NULL", request.RegexId?.ToString() ?? "NULL");
                 try
                 {
+                    // STEP 1: Field mapping validation with detailed logging
+                    _logger.Error("🔍 **STRATEGY_STEP_1**: Getting field mapping for {FieldName}", request.FieldName);
                     var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
+                    _logger.Error("🔍 **STRATEGY_FIELD_MAPPING**: FieldMapping = {IsNull} | DatabaseFieldName = {DatabaseFieldName} | EntityType = {EntityType} | DataType = {DataType}", 
+                        fieldMappingInfo == null ? "NULL" : "NOT_NULL",
+                        fieldMappingInfo?.DatabaseFieldName ?? "NULL",
+                        fieldMappingInfo?.EntityType ?? "NULL", 
+                        fieldMappingInfo?.DataType ?? "NULL");
+                    
                     if (fieldMappingInfo == null && request.CorrectionType != "omitted_line_item")
                     {
+                        _logger.Error("❌ **STRATEGY_STEP_1_FAILED**: Unknown field mapping for field {FieldName}", request.FieldName);
                         return DatabaseUpdateResult.Failed($"Unknown field mapping for omitted field '{request.FieldName}'. Cannot determine EntityType/DataType.");
                     }
+                    _logger.Error("✅ **STRATEGY_STEP_1_SUCCESS**: Field mapping validation passed for {FieldName}", request.FieldName);
 
+                    // STEP 2: Create correction and line context for DeepSeek
+                    _logger.Error("🔍 **STRATEGY_STEP_2**: Creating correction and line context for DeepSeek API call");
                     var correctionForPrompt = new CorrectionResult
                     {
                         FieldName = request.FieldName,
@@ -230,34 +246,83 @@ namespace WaterNut.DataSpace
                     {
                         lineContextForPrompt.FieldsInLine = serviceInstance.ExtractNamedGroupsFromRegex(request.ExistingRegex)
                                                                 .Select(g => new FieldInfo { Key = g }).ToList();
+                        _logger.Error("🔍 **STRATEGY_EXISTING_REGEX**: Found existing regex with {FieldCount} fields", lineContextForPrompt.FieldsInLine?.Count ?? 0);
                     }
 
+                    // STEP 3: Call DeepSeek API for regex generation
+                    _logger.Error("🔍 **STRATEGY_STEP_3**: Calling DeepSeek API for regex generation");
                     var regexResponse = await serviceInstance.RequestNewRegexFromDeepSeek(correctionForPrompt, lineContextForPrompt).ConfigureAwait(false);
+                    _logger.Error("🔍 **STRATEGY_DEEPSEEK_RESPONSE**: RegexResponse = {IsNull} | Pattern = {Pattern} | Strategy = {Strategy}", 
+                        regexResponse == null ? "NULL" : "NOT_NULL",
+                        regexResponse?.RegexPattern ?? "NULL",
+                        regexResponse?.Strategy ?? "NULL");
 
-                    if (regexResponse == null || !serviceInstance.ValidateRegexPattern(regexResponse, correctionForPrompt))
+                    if (regexResponse == null)
                     {
-                        return DatabaseUpdateResult.Failed($"Failed to get or validate regex pattern from DeepSeek for omission: '{request.FieldName}'.");
+                        _logger.Error("❌ **STRATEGY_STEP_3_FAILED**: DeepSeek API returned null response for field {FieldName}", request.FieldName);
+                        return DatabaseUpdateResult.Failed($"DeepSeek API returned null response for omission: '{request.FieldName}'.");
                     }
 
+                    // STEP 4: Validate the regex pattern
+                    _logger.Error("🔍 **STRATEGY_STEP_4**: Validating regex pattern from DeepSeek");
+                    bool isValidPattern = serviceInstance.ValidateRegexPattern(regexResponse, correctionForPrompt);
+                    _logger.Error("🔍 **STRATEGY_PATTERN_VALIDATION**: Pattern validation result = {IsValid}", isValidPattern);
+                    
+                    if (!isValidPattern)
+                    {
+                        _logger.Error("❌ **STRATEGY_STEP_4_FAILED**: Regex pattern validation failed for field {FieldName}", request.FieldName);
+                        return DatabaseUpdateResult.Failed($"Failed to validate regex pattern from DeepSeek for omission: '{request.FieldName}'.");
+                    }
+                    _logger.Error("✅ **STRATEGY_STEP_3_4_SUCCESS**: DeepSeek API call and pattern validation successful for {FieldName}", request.FieldName);
+
+                    // STEP 5: Choose strategy based on DeepSeek response and available context
+                    _logger.Error("🔍 **STRATEGY_STEP_5**: Choosing database update strategy");
+                    _logger.Error("🔍 **STRATEGY_DECISION_CONTEXT**: Strategy={Strategy} | HasLineId={HasLineId} | HasRegexId={HasRegexId} | HasPartId={HasPartId}", 
+                        regexResponse.Strategy ?? "NULL", 
+                        request.LineId.HasValue, 
+                        request.RegexId.HasValue, 
+                        request.PartId.HasValue);
+                    
                     if (regexResponse.Strategy == "modify_existing_line" && request.LineId.HasValue && request.RegexId.HasValue)
                     {
-                        _logger.Information("Omission strategy for {FieldName}: Modifying existing line {LineId}", request.FieldName, request.LineId.Value);
-                        return await this.ModifyExistingLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
+                        _logger.Error("🔍 **STRATEGY_STEP_5_MODIFY**: Executing modify existing line strategy for {FieldName} with LineId {LineId}", request.FieldName, request.LineId.Value);
+                        var modifyResult = await this.ModifyExistingLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
+                        _logger.Error("🔍 **STRATEGY_MODIFY_RESULT**: ModifyExistingLine result - Success={Success} | Message={Message}", 
+                            modifyResult.IsSuccess, modifyResult.Message ?? "NULL");
+                        return modifyResult;
                     }
                     else
                     {
-                        _logger.Information("Omission strategy for {FieldName}: Creating new line definition.", request.FieldName);
+                        _logger.Error("🔍 **STRATEGY_STEP_5_CREATE**: Executing create new line strategy for {FieldName}", request.FieldName);
                         if (!request.PartId.HasValue)
                         {
+                            // This should NOT happen now that GetDatabaseUpdateContext determines PartId upfront
+                            _logger.Error("❌ **STRATEGY_UNEXPECTED_NO_PARTID**: PartId is null - this should have been determined in GetDatabaseUpdateContext for field {FieldName}", request.FieldName);
+                            _logger.Error("🔍 **STRATEGY_FALLBACK_PARTID**: Attempting fallback PartId determination");
                             request.PartId = await this.DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request.FieldName, serviceInstance).ConfigureAwait(false);
-                            if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed($"Cannot create new line for omission '{request.FieldName}' without a valid PartId.");
-                            _logger.Information("Determined PartId {PartId} for new omission line of field {FieldName}", request.PartId.Value, request.FieldName);
+                            if (!request.PartId.HasValue) 
+                            {
+                                _logger.Error("❌ **STRATEGY_STEP_5_FAILED**: Cannot determine PartId for new line creation even with fallback");
+                                return DatabaseUpdateResult.Failed($"Cannot create new line for omission '{request.FieldName}' without a valid PartId.");
+                            }
+                            _logger.Error("⚠️ **STRATEGY_PARTID_FALLBACK_SUCCESS**: Fallback determined PartId {PartId} for new omission line of field {FieldName}", request.PartId.Value, request.FieldName);
                         }
-                        return await this.CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
+                        else
+                        {
+                            _logger.Error("✅ **STRATEGY_PARTID_PROVIDED**: Using pre-determined PartId {PartId} for new omission line of field {FieldName}", request.PartId.Value, request.FieldName);
+                        }
+                        var createResult = await this.CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
+                        _logger.Error("🔍 **STRATEGY_CREATE_RESULT**: CreateNewLine result - Success={Success} | Message={Message}", 
+                            createResult.IsSuccess, createResult.Message ?? "NULL");
+                        return createResult;
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.Error("🚨 **STRATEGY_EXCEPTION**: Exception in OmissionUpdateStrategy for field {FieldName}", request.FieldName);
+                    _logger.Error("🚨 **STRATEGY_EXCEPTION_DETAILS**: ExceptionType={ExceptionType} | Message={Message}", 
+                        ex.GetType().Name, ex.Message);
+                    _logger.Error("🚨 **STRATEGY_EXCEPTION_STACK**: StackTrace={StackTrace}", ex.StackTrace);
                     _logger.Error(ex, "Failed to execute OmissionUpdateStrategy for {FieldName}", request.FieldName);
                     return DatabaseUpdateResult.Failed($"Omission strategy database error: {ex.Message}", ex);
                 }
@@ -293,38 +358,64 @@ namespace WaterNut.DataSpace
 
                 var newFieldEntity = await this.GetOrCreateFieldAsync(context, request.FieldName, dbFieldName, entityType, dataType, request.LineId.Value).ConfigureAwait(false);
 
+                _logger.Error("🔍 **DATABASE_COMMIT_MODIFY_LINE**: About to save modified line to database - LineId={LineId} | RegexId={RegexId}", 
+                    existingLineDbEntity.Id, existingLineDbEntity.RegExId);
                 await context.SaveChangesAsync().ConfigureAwait(false); // Commit all prepared changes for this operation
-                _logger.Information("Successfully modified Line {LineId} (Regex {RegexId}) and added/verified Field {FieldId} for omitted field {OmittedFieldName}",
+                _logger.Error("✅ **DATABASE_COMMIT_SUCCESS_MODIFY**: Successfully modified Line {LineId} (Regex {RegexId}) and added/verified Field {FieldId} for omitted field {OmittedFieldName}",
                     existingLineDbEntity.Id, existingLineDbEntity.RegExId, newFieldEntity.Id, request.FieldName);
                 return DatabaseUpdateResult.Success(newFieldEntity.Id, "Modified existing line for omission");
             }
 
             private async Task<DatabaseUpdateResult> CreateNewLineForOmissionAsync(OCRContext context, RegexUpdateRequest request, RegexCreationResponse regexResp, DatabaseFieldInfo fieldInfo, OCRCorrectionService serviceInstance)
             {
+                _logger.Error("🔍 **CREATE_NEW_LINE_START**: Creating new line for omission - FieldName={FieldName} | Pattern={Pattern}", 
+                    request.FieldName, regexResp.RegexPattern);
+                
                 var newRegexEntity = await this.GetOrCreateRegexAsync(context, regexResp.RegexPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
-                if (newRegexEntity.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false);
+                
+                _logger.Error("🔍 **CREATE_NEW_REGEX**: Created/found regex entity - RegexId={RegexId} | Pattern={Pattern} | TrackingState={TrackingState}", 
+                    newRegexEntity.Id, newRegexEntity.RegEx, newRegexEntity.TrackingState.ToString());
+                
+                if (newRegexEntity.TrackingState == TrackingState.Added) {
+                    _logger.Error("🔍 **DATABASE_SAVE_NEW_REGEX**: Saving new regex to get ID");
+                    await context.SaveChangesAsync().ConfigureAwait(false);
+                    _logger.Error("✅ **DATABASE_SAVE_NEW_REGEX_SUCCESS**: New regex saved with ID={RegexId}", newRegexEntity.Id);
+                }
 
+                var lineName = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}";
+                
                 var newLineEntity = new Lines
                 {
                     PartId = request.PartId.Value,
                     RegExId = newRegexEntity.Id,
-                    Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}",
+                    Name = lineName,
                     IsActive = true,
                     // SortOrder logic removed assuming Lines entity does not have it. Add back if it does.
                     // SortOrder = (await context.Lines.Where(l => l.PartId == request.PartId.Value).MaxAsync(l => (int?)l.SortOrder) ?? 0) + 10, 
                     TrackingState = TrackingState.Added
                 };
+                
+                _logger.Error("🔍 **CREATE_NEW_LINE_ENTITY**: Creating line entity - LineName={LineName} | PartId={PartId} | RegexId={RegexId}", 
+                    lineName, request.PartId.Value, newRegexEntity.Id);
+                
                 context.Lines.Add(newLineEntity);
+                
+                _logger.Error("🔍 **DATABASE_SAVE_NEW_LINE**: About to save new line to database");
                 await context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.Error("✅ **DATABASE_SAVE_NEW_LINE_SUCCESS**: New line saved with ID={LineId}", newLineEntity.Id);
 
                 string dbFieldName = fieldInfo?.DatabaseFieldName ?? request.FieldName;
                 string entityType = fieldInfo?.EntityType ?? (request.FieldName.Contains("InvoiceDetail") ? "InvoiceDetails" : "ShipmentInvoice");
                 string dataType = fieldInfo?.DataType ?? "string";
 
+                _logger.Error("🔍 **CREATE_NEW_FIELD**: Creating field entity - FieldName={FieldName} | DbFieldName={DbFieldName} | EntityType={EntityType} | DataType={DataType} | LineId={LineId}", 
+                    request.FieldName, dbFieldName, entityType, dataType, newLineEntity.Id);
+
                 var newFieldEntity = await this.GetOrCreateFieldAsync(context, request.FieldName, dbFieldName, entityType, dataType, newLineEntity.Id).ConfigureAwait(false);
 
+                _logger.Error("🔍 **DATABASE_SAVE_NEW_FIELD**: About to save new field to database");
                 await context.SaveChangesAsync().ConfigureAwait(false);
-                _logger.Information("Successfully created new Line {NewLineId} (Regex {RegexId}) and Field {NewFieldId} for omitted field {OmittedFieldName}",
+                _logger.Error("✅ **DATABASE_SAVE_SUCCESS_CREATE**: Successfully created new Line {NewLineId} (Regex {RegexId}) and Field {NewFieldId} for omitted field {OmittedFieldName}",
                     newLineEntity.Id, newRegexEntity.Id, newFieldEntity.Id, request.FieldName);
                 return DatabaseUpdateResult.Success(newFieldEntity.Id, "Created new line for omission");
             }

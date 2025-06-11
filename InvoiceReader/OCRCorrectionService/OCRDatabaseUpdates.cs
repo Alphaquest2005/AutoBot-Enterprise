@@ -7,6 +7,8 @@ using OCR.Business.Entities;
 using System.Text.RegularExpressions; // Needed for Regex.IsMatch in ValidateUpdateRequest
 using System.Data.Entity; // For Include() and FirstOrDefaultAsync()
 using global::EntryDataDS.Business.Entities; // For ShipmentInvoice
+using Core.Common.Extensions; // For LogLevelOverride
+using Serilog.Events; // For LogEventLevel
 
 namespace WaterNut.DataSpace
 {
@@ -46,30 +48,79 @@ namespace WaterNut.DataSpace
 
                 try
                 {
+                    // ENHANCED LOGGING: Track complete correction input
+                    _logger?.Error("🔍 **DB_UPDATE_CORRECTION_INPUT**: FieldName={FieldName} | OldValue={OldValue} | NewValue={NewValue} | CorrectionType={CorrectionType} | Success={Success} | Confidence={Confidence}", 
+                        correction.FieldName, correction.OldValue, correction.NewValue, correction.CorrectionType, correction.Success, correction.Confidence);
+                    
                     // 1. Check if database update should be skipped based on metadata availability
                     var fieldMetadata = invoiceMetadata?.ContainsKey(correction.FieldName) == true ? invoiceMetadata[correction.FieldName] : null;
+                    
+                    // ENHANCED LOGGING: Show metadata availability
+                    if (fieldMetadata != null)
+                    {
+                        _logger?.Error("🔍 **DB_UPDATE_METADATA_FOUND**: FieldName={FieldName} | FieldId={FieldId} | LineId={LineId} | RegexId={RegexId} | PartId={PartId} | Field={Field} | EntityType={EntityType}", 
+                            correction.FieldName, fieldMetadata.FieldId, fieldMetadata.LineId, fieldMetadata.RegexId, fieldMetadata.PartId, fieldMetadata.Field, fieldMetadata.EntityType);
+                    }
+                    else
+                    {
+                        _logger?.Error("❌ **DB_UPDATE_NO_METADATA**: FieldName={FieldName} | InvoiceMetadataCount={MetadataCount} | InvoiceMetadataKeys={MetadataKeys}", 
+                            correction.FieldName, invoiceMetadata?.Count ?? 0, invoiceMetadata?.Keys.ToList() ?? new List<string>());
+                    }
+                    
                     var updateContext = this.GetDatabaseUpdateContext(correction.FieldName, fieldMetadata);
+                    
+                    // ENHANCED LOGGING: Show update context decision
+                    _logger?.Error("🔍 **DB_UPDATE_CONTEXT**: FieldName={FieldName} | UpdateStrategy={UpdateStrategy} | IsValid={IsValid} | ErrorMessage={ErrorMessage}", 
+                        correction.FieldName, updateContext.UpdateStrategy, updateContext.IsValid, updateContext.ErrorMessage ?? "NULL");
 
                     if (updateContext.UpdateStrategy == DatabaseUpdateStrategy.SkipUpdate)
                     {
-                        _logger?.Information("Skipping database update for field {FieldName}: {Reason}",
-                            correction.FieldName, updateContext.ErrorMessage ?? "No metadata available");
+                        _logger?.Error("⚠️ **DB_UPDATE_SKIPPED**: Field {FieldName} skipped - Strategy={Strategy} | Reason={Reason}",
+                            correction.FieldName, updateContext.UpdateStrategy, updateContext.ErrorMessage ?? "No metadata available");
                         continue; // Skip this correction entirely
                     }
 
                     // 2. Create the RegexUpdateRequest from the CorrectionResult and other context
                     //    CreateUpdateRequestForStrategy is an instance method in OCRCorrectionService.cs (main part)
-                    request = this.CreateUpdateRequestForStrategy(correction,
-                                                                  this.BuildLineContextForCorrection(correction, invoiceMetadata, fileText),
-                                                                  filePath,
-                                                                  fileText);
+                    var lineContext = this.BuildLineContextForCorrection(correction, invoiceMetadata, fileText);
+                    
+                    // ENHANCED LOGGING: Show line context creation
+                    if (lineContext != null)
+                    {
+                        _logger?.Error("🔍 **DB_UPDATE_LINE_CONTEXT**: FieldName={FieldName} | LineId={LineId} | RegexId={RegexId} | PartId={PartId} | LineNumber={LineNumber} | IsOrphaned={IsOrphaned}", 
+                            correction.FieldName, lineContext.LineId, lineContext.RegexId, lineContext.PartId, lineContext.LineNumber, lineContext.IsOrphaned);
+                    }
+                    else
+                    {
+                        _logger?.Error("❌ **DB_UPDATE_NO_LINE_CONTEXT**: FieldName={FieldName} | Could not build line context", correction.FieldName);
+                    }
+                    
+                    request = this.CreateUpdateRequestForStrategy(correction, lineContext, filePath, fileText);
+                    
+                    // ENHANCED LOGGING: Show created request
+                    if (request != null)
+                    {
+                        _logger?.Error("🔍 **DB_UPDATE_REQUEST_CREATED**: FieldName={FieldName} | LineId={LineId} | RegexId={RegexId} | OldValue={OldValue} | NewValue={NewValue} | CorrectionType={CorrectionType}", 
+                            request.FieldName, request.LineId, request.RegexId, request.OldValue ?? "NULL", request.NewValue ?? "NULL", request.CorrectionType ?? "NULL");
+                    }
+                    else
+                    {
+                        _logger?.Error("❌ **DB_UPDATE_REQUEST_FAILED**: FieldName={FieldName} | CreateUpdateRequestForStrategy returned null", correction.FieldName);
+                        continue;
+                    }
 
                     // 3. Validate the request for basic soundness before selecting a strategy
                     //    ValidateUpdateRequest is an instance method defined below in this file.
                     var validationResult = this.ValidateUpdateRequest(request);
+                    
+                    // ENHANCED LOGGING: Show validation result
+                    _logger?.Error("🔍 **DB_UPDATE_VALIDATION**: FieldName={FieldName} | IsValid={IsValid} | ErrorMessage={ErrorMessage}", 
+                        correction.FieldName, validationResult.IsValid, validationResult.ErrorMessage ?? "NULL");
+                    
                     if (!validationResult.IsValid)
                     {
-                        _logger?.Warning("Invalid RegexUpdateRequest for field {FieldName}: {ErrorMessage}. Skipping DB update.", correction.FieldName, validationResult.ErrorMessage);
+                        _logger?.Error("❌ **DB_UPDATE_VALIDATION_FAILED**: FieldName={FieldName} | ValidationError={ErrorMessage} | Skipping DB update", 
+                            correction.FieldName, validationResult.ErrorMessage);
                         dbUpdateResult = DatabaseUpdateResult.Failed($"Validation failed: {validationResult.ErrorMessage}");
                         dbFailureCount++;
                         // LogCorrectionLearningAsync is an instance method defined below in this file.
@@ -79,10 +130,17 @@ namespace WaterNut.DataSpace
 
                     // 4. Get the appropriate strategy
                     strategy = _strategyFactory.GetStrategy(correction);
-                    if (strategy == null)
+                    
+                    // ENHANCED LOGGING: Show strategy selection
+                    if (strategy != null)
                     {
-                        _logger?.Warning("No database update strategy found for correction type '{CorrectionType}' on field {FieldName}. Skipping DB update.",
-                            correction.CorrectionType, correction.FieldName);
+                        _logger?.Error("🔍 **DB_UPDATE_STRATEGY_SELECTED**: FieldName={FieldName} | CorrectionType={CorrectionType} | StrategyType={StrategyType}", 
+                            correction.FieldName, correction.CorrectionType, strategy.StrategyType);
+                    }
+                    else
+                    {
+                        _logger?.Error("❌ **DB_UPDATE_NO_STRATEGY**: FieldName={FieldName} | CorrectionType={CorrectionType} | No strategy found for this type", 
+                            correction.FieldName, correction.CorrectionType);
                         dbUpdateResult = DatabaseUpdateResult.Failed($"No strategy for type '{correction.CorrectionType}'");
                         dbFailureCount++;
                         await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
@@ -90,8 +148,13 @@ namespace WaterNut.DataSpace
                     }
 
                     // 4. Execute the strategy
-                    _logger?.Information("Executing DB update strategy '{StrategyType}' for field {FieldName}.", strategy.StrategyType, correction.FieldName);
+                    _logger?.Error("🔍 **DB_UPDATE_STRATEGY_EXECUTING**: FieldName={FieldName} | StrategyType={StrategyType} | About to execute strategy", 
+                        correction.FieldName, strategy.StrategyType);
                     dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+                    
+                    // ENHANCED LOGGING: Show strategy execution result
+                    _logger?.Error("🔍 **DB_UPDATE_STRATEGY_RESULT**: FieldName={FieldName} | StrategyType={StrategyType} | IsSuccess={IsSuccess} | Message={Message}", 
+                        correction.FieldName, strategy.StrategyType, dbUpdateResult.IsSuccess, dbUpdateResult.Message ?? "NULL");
 
                     // 5. Process the result of the strategy execution
                     if (dbUpdateResult.IsSuccess)
@@ -144,12 +207,27 @@ namespace WaterNut.DataSpace
 
             try
             {
+                // ENHANCED LOGGING: Track context creation input
+                _logger?.Error("🔍 **GET_DB_CONTEXT_INPUT**: FieldName={FieldName} | HasMetadata={HasMetadata}", 
+                    fieldName, metadata != null);
+                
+                if (metadata != null)
+                {
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_METADATA**: FieldName={FieldName} | FieldId={FieldId} | LineId={LineId} | RegexId={RegexId} | PartId={PartId}", 
+                        fieldName, metadata.FieldId, metadata.LineId, metadata.RegexId, metadata.PartId);
+                }
+                
                 // 1. Validate field support
-                if (!this.IsFieldSupported(fieldName))
+                bool fieldSupported = this.IsFieldSupported(fieldName);
+                _logger?.Error("🔍 **GET_DB_CONTEXT_FIELD_SUPPORT**: FieldName={FieldName} | IsSupported={IsSupported}", 
+                    fieldName, fieldSupported);
+                
+                if (!fieldSupported)
                 {
                     context.IsValid = false;
                     context.ErrorMessage = $"Field '{fieldName}' is not supported for database updates.";
                     context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                    _logger?.Error("❌ **GET_DB_CONTEXT_UNSUPPORTED**: FieldName={FieldName} | Not supported for database updates", fieldName);
                     return context;
                 }
 
@@ -172,8 +250,38 @@ namespace WaterNut.DataSpace
                 // 4. Determine strategy based on available metadata
                 if (metadata == null)
                 {
-                    context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
-                    context.IsValid = true; // Valid to skip for known fields
+                    // For omitted fields, lack of metadata is expected - they need new patterns created
+                    // Allow the strategy to proceed with CreateNewPattern approach
+                    context.UpdateStrategy = DatabaseUpdateStrategy.CreateNewPattern;
+                    context.IsValid = true;
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_NO_METADATA_OMISSION**: FieldName={FieldName} | No metadata available (expected for omissions), using CreateNewPattern strategy", fieldName);
+                    
+                    // CRITICAL FIX: Determine PartId immediately using existing template structure
+                    // PartId should NEVER be null for existing templates - header/detail parts are mandatory and known
+                    int? determinedPartId = this.DeterminePartIdForOmissionField(fieldName, fieldInfo);
+                    
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_PARTID_DETERMINATION**: FieldName={FieldName} | DeterminedPartId={PartId} | FieldEntityType={EntityType}", 
+                        fieldName, determinedPartId?.ToString() ?? "NULL", fieldInfo?.EntityType ?? "NULL");
+                    
+                    if (!determinedPartId.HasValue)
+                    {
+                        context.IsValid = false;
+                        context.ErrorMessage = $"Cannot determine PartId for omitted field '{fieldName}' - template structure incomplete";
+                        context.UpdateStrategy = DatabaseUpdateStrategy.SkipUpdate;
+                        _logger?.Error("❌ **GET_DB_CONTEXT_NO_PARTID**: Cannot determine PartId for {FieldName} - template may be incomplete", fieldName);
+                        return context;
+                    }
+                    
+                    // Create RequiredIds structure with determined PartId for omission processing
+                    context.RequiredIds = new RequiredDatabaseIds
+                    {
+                        FieldId = null,     // Will be created
+                        LineId = null,      // Will be created 
+                        RegexId = null,     // Will be created
+                        PartId = determinedPartId.Value // DETERMINED from existing template structure
+                    };
+                    
+                    _logger?.Error("✅ **GET_DB_CONTEXT_PARTID_SUCCESS**: FieldName={FieldName} | Assigned PartId={PartId} based on field type", fieldName, determinedPartId.Value);
                     return context;
                 }
 
@@ -185,22 +293,30 @@ namespace WaterNut.DataSpace
                     RegexId = metadata.RegexId,
                     PartId = metadata.PartId
                 };
+                
+                // ENHANCED LOGGING: Show ID availability for strategy decision
+                _logger?.Error("🔍 **GET_DB_CONTEXT_IDS**: FieldName={FieldName} | FieldId={FieldId} | LineId={LineId} | RegexId={RegexId} | PartId={PartId}", 
+                    fieldName, metadata.FieldId?.ToString() ?? "NULL", metadata.LineId?.ToString() ?? "NULL", 
+                    metadata.RegexId?.ToString() ?? "NULL", metadata.PartId?.ToString() ?? "NULL");
 
                 // 6. Determine update strategy based on available IDs
                 // Priority: Complete regex context > Line context for new patterns > Field format updates > Log only
                 if (metadata.RegexId.HasValue && metadata.LineId.HasValue && metadata.FieldId.HasValue)
                 {
                     context.UpdateStrategy = DatabaseUpdateStrategy.UpdateRegexPattern;
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_STRATEGY**: FieldName={FieldName} | Strategy=UpdateRegexPattern | Has all required IDs", fieldName);
                 }
                 else if (metadata.LineId.HasValue || metadata.PartId.HasValue)
                 {
                     // If we have line context but missing regex ID, create new pattern
                     context.UpdateStrategy = DatabaseUpdateStrategy.CreateNewPattern;
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_STRATEGY**: FieldName={FieldName} | Strategy=CreateNewPattern | Has line/part context", fieldName);
                 }
                 else if (metadata.FieldId.HasValue)
                 {
                     // Only use field format updates when we don't have line context
                     context.UpdateStrategy = DatabaseUpdateStrategy.UpdateFieldFormat;
+                    _logger?.Error("🔍 **GET_DB_CONTEXT_STRATEGY**: FieldName={FieldName} | Strategy=UpdateFieldFormat | Has field ID only", fieldName);
                 }
                 else
                 {
@@ -365,78 +481,198 @@ namespace WaterNut.DataSpace
         /// </summary>
         internal async Task<DatabaseUpdateResult> ApplyToDatabaseInternal(CorrectionResult correction, TemplateContext templateContext)
         {
-            if (correction == null || templateContext == null)
+            // EXPANDED DATABASE UPDATE LOGGING: Cover entire failing database update section
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
-                _logger.Error("ApplyToDatabaseInternal: Correction or TemplateContext is null");
-                return DatabaseUpdateResult.Failed("Null input parameters");
-            }
-
-            _logger.Information("🔍 **PIPELINE_DATABASE_UPDATE_START**: Applying correction to database for field {FieldName}", correction.FieldName);
-
-            try
-            {
-                using var context = new OCRContext();
+                _logger.Information("🔍 **DATABASE_SECTION_ENTRY**: ApplyToDatabaseInternal called for field {FieldName}", correction?.FieldName ?? "NULL");
                 
-                // Get field metadata from template context
-                var fieldMetadata = templateContext.GetFieldMetadata(correction.FieldName);
-                var updateContext = this.GetDatabaseUpdateContext(correction.FieldName, fieldMetadata);
+                // DATA FLOW ASSERTION: Validate input parameters with detailed data logging
+                _logger.Information("🔍 **DATA_EXPECTATION**: Expecting non-null correction and templateContext parameters");
+                _logger.Information("🔍 **DATA_ACTUAL_CORRECTION**: Correction = {IsNull} | FieldName = {FieldName} | CorrectionType = {CorrectionType} | Success = {Success}", 
+                    correction == null ? "NULL" : "NOT_NULL", 
+                    correction?.FieldName ?? "NULL", 
+                    correction?.CorrectionType ?? "NULL", 
+                    correction?.Success.ToString() ?? "NULL");
+                _logger.Information("🔍 **DATA_ACTUAL_TEMPLATE_CONTEXT**: TemplateContext = {IsNull} | InvoiceId = {InvoiceId} | MetadataCount = {MetadataCount}", 
+                    templateContext == null ? "NULL" : "NOT_NULL", 
+                    templateContext?.InvoiceId?.ToString() ?? "NULL", 
+                    templateContext?.Metadata?.Count.ToString() ?? "NULL");
 
-                if (updateContext.UpdateStrategy == DatabaseUpdateStrategy.SkipUpdate)
+                if (correction == null || templateContext == null)
                 {
-                    _logger.Information("🔍 **PIPELINE_DATABASE_SKIP**: Skipping database update for field {FieldName}: {Reason}", 
-                        correction.FieldName, updateContext.ErrorMessage ?? "No metadata available");
-                    return DatabaseUpdateResult.Failed("Update skipped - no metadata available");
+                    _logger.Error("❌ **ASSERTION_FAILED**: Input validation failed - correction or templateContext is null");
+                    _logger.Error("🔍 **LOGIC_FLOW**: Returning Failed result due to null input parameters");
+                    return DatabaseUpdateResult.Failed("Null input parameters");
                 }
+                
+                _logger.Information("✅ **ASSERTION_PASSED**: Input validation passed - both correction and templateContext are non-null");
 
-                // Create update request
-                var lineContext = this.BuildLineContextForCorrection(correction, 
-                    templateContext.Metadata, templateContext.FileText);
-                var request = this.CreateUpdateRequestForStrategy(correction, lineContext, 
-                    templateContext.FilePath, templateContext.FileText);
+                _logger.Information("🔍 **PIPELINE_DATABASE_UPDATE_START**: Applying correction to database for field {FieldName}", correction.FieldName);
 
-                // Validate request
-                var validationResult = this.ValidateUpdateRequest(request);
-                if (!validationResult.IsValid)
+                try
                 {
-                    _logger.Warning("❌ **PIPELINE_REQUEST_VALIDATION_FAILED**: Invalid request for {FieldName}: {Error}", 
-                        correction.FieldName, validationResult.ErrorMessage);
-                    return DatabaseUpdateResult.Failed($"Request validation failed: {validationResult.ErrorMessage}");
-                }
+                    _logger.Information("🔍 **DATA_FLOW**: Creating OCRContext for database operations");
+                    using var context = new OCRContext();
+                    _logger.Information("✅ **DATABASE_CONNECTION**: OCRContext created successfully");
+                    
+                    // DETAILED METADATA ANALYSIS
+                    _logger.Information("🔍 **DATA_EXPECTATION**: Attempting to get field metadata for {FieldName}", correction.FieldName);
+                    var fieldMetadata = templateContext.GetFieldMetadata(correction.FieldName);
+                    _logger.Information("🔍 **DATA_ACTUAL_METADATA**: FieldMetadata = {IsNull} | FieldId = {FieldId} | LineId = {LineId} | RegexId = {RegexId}", 
+                        fieldMetadata == null ? "NULL" : "NOT_NULL",
+                        fieldMetadata?.FieldId?.ToString() ?? "NULL",
+                        fieldMetadata?.LineId?.ToString() ?? "NULL", 
+                        fieldMetadata?.RegexId?.ToString() ?? "NULL");
 
-                // Get and execute strategy
-                var strategy = _strategyFactory.GetStrategy(correction);
-                if (strategy == null)
+                    _logger.Information("🔍 **LOGIC_FLOW**: Calling GetDatabaseUpdateContext to determine update strategy");
+                    var updateContext = this.GetDatabaseUpdateContext(correction.FieldName, fieldMetadata);
+                    _logger.Information("🔍 **DATA_ACTUAL_UPDATE_CONTEXT**: UpdateStrategy = {Strategy} | IsValid = {IsValid} | ErrorMessage = {ErrorMessage}", 
+                        updateContext.UpdateStrategy.ToString(), 
+                        updateContext.IsValid, 
+                        updateContext.ErrorMessage ?? "NULL");
+
+                    // STRATEGY DECISION ASSERTION
+                    _logger.Information("🔍 **DATA_EXPECTATION**: UpdateStrategy should NOT be SkipUpdate for successful correction");
+                    if (updateContext.UpdateStrategy == DatabaseUpdateStrategy.SkipUpdate)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED**: UpdateStrategy is SkipUpdate - correction will be skipped");
+                        _logger.Error("🔍 **LOGIC_FLOW**: Returning Failed result due to SkipUpdate strategy");
+                        _logger.Information("🔍 **PIPELINE_DATABASE_SKIP**: Skipping database update for field {FieldName}: {Reason}", 
+                            correction.FieldName, updateContext.ErrorMessage ?? "No metadata available");
+                        return DatabaseUpdateResult.Failed("Update skipped - no metadata available");
+                    }
+                    _logger.Information("✅ **ASSERTION_PASSED**: UpdateStrategy is valid - proceeding with database update");
+
+                    // LINE CONTEXT CREATION WITH DATA FLOW
+                    _logger.Information("🔍 **DATA_FLOW**: Building line context for correction");
+                    var lineContext = this.BuildLineContextForCorrection(correction, 
+                        templateContext.Metadata, templateContext.FileText);
+                    _logger.Information("🔍 **DATA_ACTUAL_LINE_CONTEXT**: LineContext = {IsNull} | LineId = {LineId} | RegexId = {RegexId} | IsOrphaned = {IsOrphaned} | RequiresNewLineCreation = {RequiresNewLineCreation}", 
+                        lineContext == null ? "NULL" : "NOT_NULL",
+                        lineContext?.LineId?.ToString() ?? "NULL",
+                        lineContext?.RegexId?.ToString() ?? "NULL",
+                        lineContext?.IsOrphaned.ToString() ?? "NULL",
+                        lineContext?.RequiresNewLineCreation.ToString() ?? "NULL");
+
+                    // REQUEST CREATION WITH DATA FLOW
+                    _logger.Information("🔍 **DATA_FLOW**: Creating update request for strategy");
+                    var request = this.CreateUpdateRequestForStrategy(correction, lineContext, 
+                        templateContext.FilePath, templateContext.FileText);
+                    _logger.Information("🔍 **DATA_ACTUAL_REQUEST**: Request = {IsNull} | FieldName = {FieldName} | LineId = {LineId} | RegexId = {RegexId} | NewValue = {NewValue} | CorrectionType = {CorrectionType}", 
+                        request == null ? "NULL" : "NOT_NULL",
+                        request?.FieldName ?? "NULL",
+                        request?.LineId?.ToString() ?? "NULL",
+                        request?.RegexId?.ToString() ?? "NULL",
+                        request?.NewValue ?? "NULL",
+                        request?.CorrectionType ?? "NULL");
+
+                    // REQUEST VALIDATION WITH ASSERTIONS
+                    _logger.Information("🔍 **DATA_EXPECTATION**: Request validation should pass for well-formed correction");
+                    var validationResult = this.ValidateUpdateRequest(request);
+                    _logger.Information("🔍 **DATA_ACTUAL_VALIDATION**: IsValid = {IsValid} | ErrorMessage = {ErrorMessage}", 
+                        validationResult.IsValid, 
+                        validationResult.ErrorMessage ?? "NULL");
+                    
+                    if (!validationResult.IsValid)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED**: Request validation failed - {Error}", validationResult.ErrorMessage);
+                        _logger.Error("🔍 **LOGIC_FLOW**: Returning Failed result due to validation failure");
+                        _logger.Warning("❌ **PIPELINE_REQUEST_VALIDATION_FAILED**: Invalid request for {FieldName}: {Error}", 
+                            correction.FieldName, validationResult.ErrorMessage);
+                        return DatabaseUpdateResult.Failed($"Request validation failed: {validationResult.ErrorMessage}");
+                    }
+                    _logger.Information("✅ **ASSERTION_PASSED**: Request validation passed - proceeding with strategy execution");
+
+                    // STRATEGY SELECTION WITH DATA FLOW
+                    _logger.Information("🔍 **DATA_FLOW**: Getting database update strategy for correction type {CorrectionType}", correction.CorrectionType);
+                    _logger.Information("🔍 **DATA_EXPECTATION**: Strategy factory should return non-null strategy for correction type {CorrectionType}", correction.CorrectionType);
+                    var strategy = _strategyFactory.GetStrategy(correction);
+                    _logger.Information("🔍 **DATA_ACTUAL_STRATEGY**: Strategy = {IsNull} | StrategyType = {StrategyType}", 
+                        strategy == null ? "NULL" : "NOT_NULL",
+                        strategy?.StrategyType ?? "NULL");
+                    
+                    if (strategy == null)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED**: No strategy found for correction type {CorrectionType}", correction.CorrectionType);
+                        _logger.Error("🔍 **LOGIC_FLOW**: Returning Failed result due to missing strategy");
+                        _logger.Warning("❌ **PIPELINE_NO_STRATEGY**: No database update strategy for {FieldName} correction type {CorrectionType}", 
+                            correction.FieldName, correction.CorrectionType);
+                        return DatabaseUpdateResult.Failed($"No strategy for correction type '{correction.CorrectionType}'");
+                    }
+                    _logger.Information("✅ **ASSERTION_PASSED**: Strategy found - proceeding with strategy execution");
+
+                    _logger.Information("🔍 **PIPELINE_EXECUTING_STRATEGY**: Executing {StrategyType} for field {FieldName}", 
+                        strategy.StrategyType, correction.FieldName);
+
+                    // CRITICAL STRATEGY EXECUTION WITH COMPREHENSIVE DATA FLOW
+                    _logger.Information("🔍 **DATABASE_UPDATE_VERBOSE_START**: Starting detailed database update for {FieldName} with DeepSeek regex", correction.FieldName);
+                    _logger.Information("🔍 **DATABASE_UPDATE_CORRECTION_DETAIL**: Correction Data = FieldName:{FieldName} | OldValue:{OldValue} | NewValue:{NewValue} | CorrectionType:{CorrectionType} | Success:{Success} | Confidence:{Confidence} | LineText:{LineText} | SuggestedRegex:{SuggestedRegex}", 
+                        correction.FieldName, 
+                        correction.OldValue ?? "NULL", 
+                        correction.NewValue ?? "NULL", 
+                        correction.CorrectionType ?? "NULL", 
+                        correction.Success, 
+                        correction.Confidence, 
+                        correction.LineText ?? "NULL",
+                        correction.SuggestedRegex ?? "NULL");
+                    _logger.Information("🔍 **DATABASE_UPDATE_REQUEST_DETAIL**: Request Data = FieldName:{FieldName} | LineId:{LineId} | RegexId:{RegexId} | OldValue:{OldValue} | NewValue:{NewValue} | CorrectionType:{CorrectionType} | WindowText_Length:{WindowTextLength}", 
+                        request.FieldName ?? "NULL", 
+                        request.LineId?.ToString() ?? "NULL", 
+                        request.RegexId?.ToString() ?? "NULL", 
+                        request.OldValue ?? "NULL", 
+                        request.NewValue ?? "NULL", 
+                        request.CorrectionType ?? "NULL",
+                        request.WindowText?.Length.ToString() ?? "NULL");
+                    _logger.Information("🔍 **DATABASE_UPDATE_STRATEGY_DETAIL**: {StrategyType} strategy about to execute with OCRContext", strategy.StrategyType);
+                    
+                    _logger.Information("🔍 **DATA_EXPECTATION**: Strategy ExecuteAsync should return successful DatabaseUpdateResult");
+                    DatabaseUpdateResult dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+                    
+                    _logger.Information("🔍 **DATABASE_UPDATE_RESULT_DETAIL**: ExecuteAsync completed - Success:{Success} | Message:{Message} | RecordId:{RecordId} | IsException:{IsException}", 
+                        dbUpdateResult.IsSuccess, 
+                        dbUpdateResult.Message ?? "NULL", 
+                        dbUpdateResult.RecordId?.ToString() ?? "NULL",
+                        dbUpdateResult.Exception != null);
+                    
+                    if (!dbUpdateResult.IsSuccess)
+                    {
+                        _logger.Error("❌ **ASSERTION_FAILED**: Strategy ExecuteAsync returned failure - {Message}", dbUpdateResult.Message);
+                        _logger.Error("🔍 **LOGIC_FLOW**: Database update failed during strategy execution");
+                    }
+                    else
+                    {
+                        _logger.Information("✅ **ASSERTION_PASSED**: Strategy ExecuteAsync returned success - database pattern should be updated");
+                    }
+                    
+                    _logger.Information("🔍 **DATABASE_UPDATE_VERBOSE_END**: Completed detailed database update for {FieldName}", correction.FieldName);
+
+                    // Log learning entry with data flow
+                    _logger.Information("🔍 **DATA_FLOW**: Logging correction to OCRCorrectionLearning table");
+                    await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
+                    _logger.Information("✅ **DATABASE_LEARNING**: OCRCorrectionLearning entry created");
+
+                    if (dbUpdateResult.IsSuccess)
+                    {
+                        _logger.Information("✅ **PIPELINE_DATABASE_SUCCESS**: Database update successful for {FieldName}: {Message}", 
+                            correction.FieldName, dbUpdateResult.Message);
+                    }
+                    else
+                    {
+                        _logger.Warning("❌ **PIPELINE_DATABASE_FAILED**: Database update failed for {FieldName}: {Error}", 
+                            correction.FieldName, dbUpdateResult.Message);
+                    }
+
+                    _logger.Information("🔍 **DATABASE_SECTION_EXIT**: ApplyToDatabaseInternal returning with Success={Success}", dbUpdateResult.IsSuccess);
+                    return dbUpdateResult;
+                }
+                catch (Exception ex)
                 {
-                    _logger.Warning("❌ **PIPELINE_NO_STRATEGY**: No database update strategy for {FieldName} correction type {CorrectionType}", 
-                        correction.FieldName, correction.CorrectionType);
-                    return DatabaseUpdateResult.Failed($"No strategy for correction type '{correction.CorrectionType}'");
+                    _logger.Error(ex, "🚨 **PIPELINE_DATABASE_EXCEPTION**: Exception applying correction to database for {FieldName}", correction.FieldName);
+                    _logger.Error("🔍 **EXCEPTION_DATA**: ExceptionType = {ExceptionType} | Message = {Message} | StackTrace = {StackTrace}", 
+                        ex.GetType().Name, ex.Message, ex.StackTrace);
+                    _logger.Error("🔍 **LOGIC_FLOW**: Returning Failed result due to exception");
+                    return DatabaseUpdateResult.Failed($"Exception during database update: {ex.Message}", ex);
                 }
-
-                _logger.Information("🔍 **PIPELINE_EXECUTING_STRATEGY**: Executing {StrategyType} for field {FieldName}", 
-                    strategy.StrategyType, correction.FieldName);
-
-                var dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
-
-                // Log learning entry
-                await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
-
-                if (dbUpdateResult.IsSuccess)
-                {
-                    _logger.Information("✅ **PIPELINE_DATABASE_SUCCESS**: Database update successful for {FieldName}: {Message}", 
-                        correction.FieldName, dbUpdateResult.Message);
-                }
-                else
-                {
-                    _logger.Warning("❌ **PIPELINE_DATABASE_FAILED**: Database update failed for {FieldName}: {Error}", 
-                        correction.FieldName, dbUpdateResult.Message);
-                }
-
-                return dbUpdateResult;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "🚨 **PIPELINE_DATABASE_EXCEPTION**: Exception applying correction to database for {FieldName}", correction.FieldName);
-                return DatabaseUpdateResult.Failed($"Exception during database update: {ex.Message}", ex);
             }
         }
 
@@ -826,6 +1062,76 @@ namespace WaterNut.DataSpace
             return decimal.TryParse(stringValue, out result);
         }
 
+        /// <summary>
+        /// Determines PartId for an omitted field based on field type and existing template structure.
+        /// This should NEVER return null for existing templates as header/detail parts are mandatory.
+        /// </summary>
+        /// <param name="fieldName">The field name being corrected</param>
+        /// <param name="fieldInfo">Field mapping information</param>
+        /// <returns>PartId for the appropriate template part</returns>
+        private int? DeterminePartIdForOmissionField(string fieldName, DatabaseFieldInfo fieldInfo)
+        {
+            try
+            {
+                using var context = new OCRContext();
+                
+                // Determine target part type based on field information
+                string targetPartTypeName = "Header"; // Default to Header for most invoice fields
+                
+                if (fieldInfo != null)
+                {
+                    if (fieldInfo.EntityType == "InvoiceDetails")
+                    {
+                        targetPartTypeName = "LineItem";
+                    }
+                    // ShipmentInvoice fields go to Header (default)
+                }
+                else if (!string.IsNullOrEmpty(fieldName))
+                {
+                    // Fallback: try to infer from field name
+                    var inferredFieldInfo = this.MapDeepSeekFieldToDatabase(fieldName);
+                    if (inferredFieldInfo?.EntityType == "InvoiceDetails" || fieldName.ToLower().Contains("invoicedetail"))
+                    {
+                        targetPartTypeName = "LineItem";
+                    }
+                }
+
+                _logger?.Error("🔍 **DETERMINE_PARTID**: FieldName={FieldName} | TargetPartType={PartType} | FieldEntityType={EntityType}", 
+                    fieldName, targetPartTypeName, fieldInfo?.EntityType ?? "INFERRED");
+
+                // Find the part with matching PartType
+                var part = context.Parts.Include(p => p.PartTypes)
+                                       .FirstOrDefault(p => p.PartTypes.Name.Equals(targetPartTypeName, StringComparison.OrdinalIgnoreCase));
+
+                if (part != null)
+                {
+                    _logger?.Error("✅ **DETERMINE_PARTID_SUCCESS**: FieldName={FieldName} | Found PartId={PartId} for PartType={PartType}", 
+                        fieldName, part.Id, targetPartTypeName);
+                    return part.Id;
+                }
+
+                _logger?.Error("⚠️ **DETERMINE_PARTID_FALLBACK**: Could not find part with PartType={PartType} for field {FieldName}, using first available part", 
+                    targetPartTypeName, fieldName);
+                
+                // Fallback: use first available part (should not happen for well-formed templates)
+                var firstPart = context.Parts.OrderBy(p => p.Id).FirstOrDefault();
+                if (firstPart != null)
+                {
+                    _logger?.Error("⚠️ **DETERMINE_PARTID_FALLBACK_SUCCESS**: Using fallback PartId={PartId} for field {FieldName}", 
+                        firstPart.Id, fieldName);
+                    return firstPart.Id;
+                }
+
+                _logger?.Error("❌ **DETERMINE_PARTID_FAILED**: No Parts found in database for field {FieldName} - template structure incomplete", fieldName);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "❌ **DETERMINE_PARTID_EXCEPTION**: Exception determining PartId for field {FieldName}", fieldName);
+                return null;
+            }
+        }
+
         #endregion
 
         #region Helper Methods
@@ -934,6 +1240,19 @@ namespace WaterNut.DataSpace
 
             try
             {
+                // DETAILED DATABASE LOGGING: Show exactly what's being saved
+                _logger.Error("🔍 **DATABASE_SAVE_ENTRY**: Preparing OCRCorrectionLearning entry");
+                _logger.Error("🔍 **DATABASE_SAVE_FIELD**: FieldName={FieldName} | OldValue={OldValue} | NewValue={NewValue}", 
+                    request.FieldName, request.OldValue ?? "NULL", request.NewValue ?? "NULL");
+                _logger.Error("🔍 **DATABASE_SAVE_LINE**: LineNumber={LineNumber} | LineText={LineText}", 
+                    request.LineNumber, request.LineText ?? "NULL");
+                _logger.Error("🔍 **DATABASE_SAVE_CORRECTION**: CorrectionType={CorrectionType} | Confidence={Confidence}", 
+                    request.CorrectionType ?? "NULL", request.Confidence);
+                _logger.Error("🔍 **DATABASE_SAVE_RESULT**: Success={Success} | Operation={Operation} | RecordId={RecordId}", 
+                    dbUpdateResult.IsSuccess, dbUpdateResult.Operation ?? "NULL", dbUpdateResult.RecordId?.ToString() ?? "NULL");
+                _logger.Error("🔍 **DATABASE_SAVE_IDS**: LineId={LineId} | PartId={PartId} | RegexId={RegexId}", 
+                    request.LineId?.ToString() ?? "NULL", request.PartId?.ToString() ?? "NULL", request.RegexId?.ToString() ?? "NULL");
+
                 var learning = new OCRCorrectionLearning
                 {
                     FieldName = request.FieldName,
@@ -962,12 +1281,19 @@ namespace WaterNut.DataSpace
                     RegexId = (dbUpdateResult.IsSuccess && dbUpdateResult.Operation != null && (dbUpdateResult.Operation.Contains("Regex") || dbUpdateResult.Operation.Contains("Pattern"))) ?
                                 dbUpdateResult.RecordId : request.RegexId
                 };
+                
+                _logger.Error("🔍 **DATABASE_SAVE_LEARNING_OBJECT**: Creating learning entry with computed RegexId={ComputedRegexId}", 
+                    learning.RegexId?.ToString() ?? "NULL");
+                
                 context.OCRCorrectionLearning.Add(learning);
+                
+                _logger.Error("🔍 **DATABASE_SAVE_COMMIT**: About to save OCRCorrectionLearning entry to database");
                 await context.SaveChangesAsync().ConfigureAwait(false); // Save learning entry
+                _logger.Error("✅ **DATABASE_SAVE_SUCCESS**: OCRCorrectionLearning entry saved successfully for field {FieldName}", request.FieldName);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to log correction learning entry for field {FieldName}. Error: {DbUpdateErrorMessage}", request.FieldName, dbUpdateResult.Message);
+                _logger.Error(ex, "❌ **DATABASE_SAVE_FAILED**: Failed to log correction learning entry for field {FieldName}. Error: {DbUpdateErrorMessage}", request.FieldName, dbUpdateResult.Message);
                 // Do not re-throw, logging failure should not halt main processing.
             }
         }
