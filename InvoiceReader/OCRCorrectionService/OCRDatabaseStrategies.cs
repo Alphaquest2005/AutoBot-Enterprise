@@ -349,10 +349,15 @@ namespace WaterNut.DataSpace
                 }
                 else
                 {
+                    // PHASE 3: Database Pattern Persistence Fix - Enhanced with verification
+                    var oldPattern = existingLineDbEntity.RegularExpressions.RegEx;
                     existingLineDbEntity.RegularExpressions.RegEx = normalizedCompleteLineRegex;
                     existingLineDbEntity.RegularExpressions.MultiLine = regexResp.IsMultiline;
                     existingLineDbEntity.RegularExpressions.MaxLines = regexResp.MaxLines;
                     existingLineDbEntity.RegularExpressions.LastUpdated = DateTime.UtcNow;
+                    
+                    _logger.Error("🔄 **PATTERN_UPDATE**: LineId {LineId} | Old: '{Old}' → New: '{New}'", 
+                        existingLineDbEntity.Id, oldPattern, normalizedCompleteLineRegex);
                     // No need to set TrackingState if EF tracks changes on loaded entities
                 }
                 // No need to set existingLineDbEntity.TrackingState = TrackingState.Modified explicitly if EF change tracking is on.
@@ -365,7 +370,29 @@ namespace WaterNut.DataSpace
 
                 _logger.Error("🔍 **DATABASE_COMMIT_MODIFY_LINE**: About to save modified line to database - LineId={LineId} | RegexId={RegexId}", 
                     existingLineDbEntity.Id, existingLineDbEntity.RegExId);
+                
+                // PHASE 3: Database Pattern Persistence Fix - Enhanced with verification
                 await context.SaveChangesAsync().ConfigureAwait(false); // Commit all prepared changes for this operation
+                
+                // CRITICAL: Verify the pattern was actually saved to database
+                using (var verifyCtx = new OCRContext())
+                {
+                    var verifyLine = await verifyCtx.Lines.Include(l => l.RegularExpressions)
+                        .FirstOrDefaultAsync(l => l.Id == existingLineDbEntity.Id).ConfigureAwait(false);
+                    var savedPattern = verifyLine?.RegularExpressions?.RegEx;
+                    
+                    if (savedPattern == normalizedCompleteLineRegex)
+                    {
+                        _logger.Error("✅ **DATABASE_SAVE_VERIFIED**: Pattern successfully persisted to database for LineId {LineId}", existingLineDbEntity.Id);
+                    }
+                    else
+                    {
+                        _logger.Error("❌ **DATABASE_SAVE_FAILED**: Expected '{Expected}', Found '{Actual}' for LineId {LineId}", 
+                            normalizedCompleteLineRegex, savedPattern, existingLineDbEntity.Id);
+                        return new DatabaseUpdateResult { IsSuccess = false, Message = "Pattern save verification failed" };
+                    }
+                }
+                
                 _logger.Error("✅ **DATABASE_COMMIT_SUCCESS_MODIFY**: Successfully modified Line {LineId} (Regex {RegexId}) and added/verified Field {FieldId} for omitted field {OmittedFieldName}",
                     existingLineDbEntity.Id, existingLineDbEntity.RegExId, newFieldEntity.Id, request.FieldName);
                 return DatabaseUpdateResult.Success(newFieldEntity.Id, "Modified existing line for omission");

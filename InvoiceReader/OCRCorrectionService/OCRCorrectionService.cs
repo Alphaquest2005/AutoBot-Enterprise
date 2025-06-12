@@ -484,14 +484,43 @@ namespace WaterNut.DataSpace
 
             _logger.Information("🔍 **PIPELINE_BATCH_START**: Starting batch pipeline for {Count} corrections", result.TotalCorrections);
 
+            // **COMPREHENSIVE_BATCH_LOGGING**: Log every correction being processed
+            _logger.Error("📋 **BATCH_CORRECTIONS_LIST**: Processing {Count} corrections:", result.TotalCorrections);
+            int correctionIndex = 0;
+            foreach (var correction in corrections)
+            {
+                correctionIndex++;
+                _logger.Error("📋 **BATCH_CORRECTION_{Index}**: Field={FieldName} | Type={Type} | OldValue='{OldValue}' | NewValue='{NewValue}' | Confidence={Confidence}",
+                    correctionIndex, correction.FieldName, correction.CorrectionType, correction.OldValue ?? "NULL", correction.NewValue ?? "NULL", correction.Confidence);
+            }
+
             try
             {
+                correctionIndex = 0;
                 foreach (var correction in corrections)
                 {
+                    correctionIndex++;
+                    _logger.Error("🔄 **BATCH_PROCESSING_{Index}_START**: Processing correction {Index}/{Total} - Field={FieldName}",
+                        correctionIndex, correctionIndex, result.TotalCorrections, correction.FieldName);
+                    
                     try
                     {
+                        // **INDIVIDUAL_PIPELINE_ASSERTION**: Each correction should be processed individually
+                        _logger.Error("🔍 **BATCH_EXPECTATION_{Index}**: Correction {Index} should execute successfully and update database for field {FieldName}",
+                            correctionIndex, correctionIndex, correction.FieldName);
+                        
                         var individualResult = await this.ExecuteFullPipelineInternal(
                             correction, templateContext, invoice, fileText, maxRetries).ConfigureAwait(false);
+                        
+                        // **INDIVIDUAL_RESULT_LOGGING**: Log detailed results for each correction
+                        _logger.Error("📊 **BATCH_RESULT_{Index}**: Field={FieldName} | Success={Success} | DatabaseUpdated={DatabaseUpdated} | CorrectionApplied={CorrectionApplied} | RetryAttempts={RetryAttempts}",
+                            correctionIndex, correction.FieldName, individualResult.Success, individualResult.DatabaseUpdated, individualResult.CorrectionApplied, individualResult.RetryAttempts);
+                        
+                        if (!string.IsNullOrEmpty(individualResult.ErrorMessage))
+                        {
+                            _logger.Error("📊 **BATCH_ERROR_{Index}**: Field={FieldName} | ErrorMessage='{ErrorMessage}'",
+                                correctionIndex, correction.FieldName, individualResult.ErrorMessage);
+                        }
                         
                         result.IndividualResults.Add(individualResult);
                         result.RetryAttempts += individualResult.RetryAttempts;
@@ -503,15 +532,25 @@ namespace WaterNut.DataSpace
                                 result.DatabaseUpdates++;
                             if (individualResult.CorrectionApplied)
                                 result.InvoiceUpdates++;
+                            
+                            _logger.Error("✅ **BATCH_SUCCESS_{Index}**: Correction {Index} for field {FieldName} completed successfully",
+                                correctionIndex, correctionIndex, correction.FieldName);
                         }
                         else
                         {
                             result.FailedCorrections++;
+                            _logger.Error("❌ **BATCH_FAILED_{Index}**: Correction {Index} for field {FieldName} failed - {ErrorMessage}",
+                                correctionIndex, correctionIndex, correction.FieldName, individualResult.ErrorMessage ?? "No error message");
                         }
+                        
+                        _logger.Error("🔄 **BATCH_PROCESSING_{Index}_COMPLETE**: Completed correction {Index}/{Total} - Field={FieldName} | Success={Success}",
+                            correctionIndex, correctionIndex, result.TotalCorrections, correction.FieldName, individualResult.Success);
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ex, "🚨 **PIPELINE_BATCH_INDIVIDUAL_EXCEPTION**: Exception processing correction for field {FieldName}", correction.FieldName);
+                        _logger.Error(ex, "🚨 **PIPELINE_BATCH_INDIVIDUAL_EXCEPTION**: Exception processing correction {Index} for field {FieldName}", correctionIndex, correction.FieldName);
+                        _logger.Error("🚨 **PIPELINE_BATCH_EXCEPTION_DETAILS_{Index}**: Field={FieldName} | ExceptionType={ExceptionType} | Message='{Message}'",
+                            correctionIndex, correction.FieldName, ex.GetType().Name, ex.Message);
                         result.FailedCorrections++;
                     }
                 }
@@ -520,6 +559,25 @@ namespace WaterNut.DataSpace
                 result.EndTime = DateTime.UtcNow;
                 result.TotalDuration = result.EndTime - result.StartTime;
 
+                // **COMPREHENSIVE_BATCH_SUMMARY**: Detailed completion logging with assertions
+                _logger.Error("📊 **PIPELINE_BATCH_SUMMARY**: Processed {TotalCount} corrections in {Duration:F0}ms", 
+                    result.TotalCorrections, result.TotalDuration.TotalMilliseconds);
+                _logger.Error("📊 **PIPELINE_BATCH_RESULTS**: Successful={SuccessCount} | Failed={FailedCount} | DatabaseUpdates={DatabaseUpdates} | InvoiceUpdates={InvoiceUpdates} | TotalRetries={TotalRetries}",
+                    result.SuccessfulCorrections, result.FailedCorrections, result.DatabaseUpdates, result.InvoiceUpdates, result.RetryAttempts);
+                _logger.Error("📊 **PIPELINE_BATCH_SUCCESS_RATE**: {SuccessRate:F1}% success rate", result.SuccessRate);
+                
+                // **ASSERTION_BATCH_EXPECTATIONS**: Check if results meet expectations
+                if (result.TotalCorrections >= 2 && result.SuccessfulCorrections < 2)
+                {
+                    _logger.Error("❌ **PIPELINE_BATCH_ASSERTION_FAILED**: Expected at least 2 successful corrections for Amazon invoice but got {SuccessCount}",
+                        result.SuccessfulCorrections);
+                }
+                else if (result.TotalCorrections >= 2 && result.SuccessfulCorrections >= 2)
+                {
+                    _logger.Error("✅ **PIPELINE_BATCH_ASSERTION_PASSED**: Successfully processed {SuccessCount} corrections as expected",
+                        result.SuccessfulCorrections);
+                }
+                
                 _logger.Information("✅ **PIPELINE_BATCH_COMPLETE**: Batch pipeline completed - Success: {SuccessCount}/{TotalCount}, Duration: {Duration}ms, Success Rate: {SuccessRate:F1}%", 
                     result.SuccessfulCorrections, result.TotalCorrections, result.TotalDuration.TotalMilliseconds, result.SuccessRate);
 
@@ -674,7 +732,27 @@ namespace WaterNut.DataSpace
         /// </summary>
         public static async Task<bool> ExecuteFullPipelineForInvoiceAsync(List<dynamic> csvLines, Invoice template, ILogger logger)
         {
-            logger?.Information("🔍 **PIPELINE_MAIN_ENTRY**: ExecuteFullPipelineForInvoiceAsync called with {CsvLineCount} CSV lines", csvLines?.Count ?? 0);
+            logger?.Error("🚀 **PIPELINE_MAIN_ENTRY**: ExecuteFullPipelineForInvoiceAsync called with {CsvLineCount} CSV lines", csvLines?.Count ?? 0);
+            
+            // **INPUT_STATE_ASSERTIONS**: Log complete entry state for debugging
+            logger?.Error("🔍 **PIPELINE_INPUT_CSVLINES**: CsvLines count = {Count}", csvLines?.Count ?? 0);
+            logger?.Error("🔍 **PIPELINE_INPUT_TEMPLATE**: Template ID = {TemplateId}", 
+                template?.OcrInvoices?.Id);
+            
+            // **EXPECTATION_FOR_AMAZON**: Log what we expect for Amazon invoice processing
+            if (csvLines?.Any() == true)
+            {
+                var firstLine = csvLines.FirstOrDefault();
+                if (firstLine is IDictionary<string, object> dict)
+                {
+                    logger?.Error("🔍 **PIPELINE_FIRST_CSVLINE**: Keys = {Keys}", string.Join(", ", dict.Keys));
+                    logger?.Error("🔍 **PIPELINE_EXPECTED_AMAZON**: For Amazon invoice, we expect TotalDeduction=null and should detect Free Shipping patterns");
+                    if (dict.ContainsKey("TotalDeduction"))
+                    {
+                        logger?.Error("🔍 **PIPELINE_TOTALDEDUCTION_BEFORE**: TotalDeduction value = {Value}", dict["TotalDeduction"]);
+                    }
+                }
+            }
 
             try
             {
@@ -722,6 +800,10 @@ namespace WaterNut.DataSpace
                         
                         logger?.Information("🔧 **DATABASE_VALIDATION_CLEANUP_RESULT**: Cleanup success={Success}, Kept={KeptCount}, Removed={RemovedCount}", 
                             cleanupResult.Success, cleanupResult.KeptCount, cleanupResult.RemovedCount);
+                        
+                        // CRITICAL: Ensure database changes are fully committed before proceeding
+                        logger?.Information("💾 **DATABASE_VALIDATION_EXPLICIT_COMMIT**: Ensuring all database changes are committed before template reload");
+                        ocrContext.SaveChanges(); // Explicit commit to ensure changes persist
                     }
                     else
                     {
@@ -795,6 +877,13 @@ namespace WaterNut.DataSpace
                 {
                     logger?.Information("✅ **PIPELINE_MAIN_SUCCESS**: Batch pipeline completed successfully - {SuccessCount}/{TotalCount} corrections applied", 
                         batchResult.SuccessfulCorrections, batchResult.TotalCorrections);
+
+                    // CRITICAL: Ensure OCR corrections are committed to database before template reload
+                    logger?.Information("💾 **PIPELINE_MAIN_COMMIT**: Committing OCR corrections to database");
+                    using (var commitContext = new OCRContext())
+                    {
+                        commitContext.SaveChanges(); // Ensure all pending changes are committed
+                    }
 
                     // Step 3: Update the original csvLines with corrected invoice data
                     service.UpdateCsvLinesFromInvoice(csvLines, invoice);

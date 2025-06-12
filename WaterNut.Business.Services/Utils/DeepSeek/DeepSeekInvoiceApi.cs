@@ -680,6 +680,7 @@ try
             // **COMPLETE_PROMPT_LOGGING**: Log the full prompt being sent to DeepSeek
             _logger.Error("🔍 **DEEPSEEK_COMPLETE_PROMPT**: Full prompt content: {FullPrompt}", prompt);
             
+            
             var result = await GetCompletionAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
             
             // **DEEPSEEK_API_EXIT**: Log complete API call exit state

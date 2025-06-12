@@ -16,13 +16,13 @@ namespace WaterNut.DataSpace
         #region Enhanced Prompt Creation Methods for DeepSeek
 
         /// <summary>
-        /// Creates a simplified prompt for DeepSeek to detect missing invoice fields.
-        /// Focus on basic field detection without complex business rules.
+        /// Creates an enhanced prompt for DeepSeek with OCR architecture context and deduplication awareness.
+        /// Explains multi-section OCR strategy and precedence hierarchy to improve field detection.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
         {
-            // **PROMPT_CREATION_START**: Log the beginning of prompt creation
-            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating SIMPLIFIED header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            // **PROMPT_CREATION_START**: Log the beginning of enhanced prompt creation
+            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating ENHANCED OCR-aware header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
             
             // Create a simple current values summary
             var currentValues = new Dictionary<string, object>
@@ -41,65 +41,153 @@ namespace WaterNut.DataSpace
             
             var currentJson = JsonSerializer.Serialize(currentValues, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             
-            // **DATA_CHECK**: Log current invoice values before prompt creation
+            // Analyze OCR sections present in the file text
+            var ocrSections = AnalyzeOCRSections(fileText);
+            
+            // **DATA_CHECK**: Log current invoice values and OCR analysis before prompt creation
             _logger.Information("🔍 **PROMPT_INVOICE_DATA**: InvoiceNo={InvoiceNo} | SubTotal={SubTotal} | TotalDeduction={TotalDeduction} | TotalInsurance={TotalInsurance} | InvoiceTotal={InvoiceTotal}", 
                 invoice?.InvoiceNo, invoice?.SubTotal, invoice?.TotalDeduction, invoice?.TotalInsurance, invoice?.InvoiceTotal);
+            _logger.Information("🔍 **PROMPT_OCR_SECTIONS**: Detected {SectionCount} OCR sections: {Sections}", ocrSections.Count, string.Join(", ", ocrSections));
             
             // **FILE_TEXT_CHECK**: Verify the file text contains financial information
             bool fileTextContainsFinancials = fileText?.Contains("$") == true || fileText?.Contains("Total") == true;
             bool fileTextContainsGiftCard = fileText?.Contains("Gift Card") == true;
-            _logger.Information("🔍 **PROMPT_FILE_TEXT_CHECK**: File text contains financial data? Expected=TRUE, Actual={ContainsFinancials}", fileTextContainsFinancials);
-            _logger.Information("🔍 **PROMPT_FILE_TEXT_GIFTCARD**: File text contains Gift Card? Expected=TRUE, Actual={ContainsGiftCard}", fileTextContainsGiftCard);
+            bool fileTextContainsFreeShipping = fileText?.Contains("Free Shipping") == true;
+            _logger.Information("🔍 **PROMPT_FILE_TEXT_CHECK**: Financial={Financials} | GiftCard={GiftCard} | FreeShipping={FreeShipping}", 
+                fileTextContainsFinancials, fileTextContainsGiftCard, fileTextContainsFreeShipping);
             _logger.Information("🔍 **PROMPT_FILE_TEXT_LENGTH**: File text length: {Length} characters", fileText?.Length ?? 0);
-            _logger.Information("🔍 **PROMPT_FILE_TEXT_PREVIEW**: First 500 chars: {Preview}", 
-                fileText?.Length > 500 ? fileText.Substring(0, 500) + "..." : fileText ?? "NULL");
             
-            var prompt = $@"FIND MISSING INVOICE FIELDS:
+            var prompt = $@"INTELLIGENT OCR ERROR COMPENSATION AND MISSING FIELD DETECTION:
 
-You are helping extract missing financial information from an invoice. Compare what was already extracted against the original text to find missing fields.
+CRITICAL OCR ARCHITECTURE CONTEXT:
+This invoice was processed using MULTIPLE OCR TECHNIQUES to compensate for OCR errors and ensure complete data extraction:
 
-CURRENTLY EXTRACTED FIELDS:
+1. MULTIPLE OCR SECTIONS EXPLANATION:
+   Detected sections: {string.Join(", ", ocrSections)}
+   - 'Single Column': Primary OCR method, cleanest results but may miss complex layouts
+   - 'Ripped': Secondary OCR method, handles fragmented text better  
+   - 'SparseText': Tertiary OCR method, captures scattered text that others miss
+
+2. ERROR COMPENSATION STRATEGY:
+   Each OCR method has different strengths/weaknesses:
+   - Single Column might miss data in complex table layouts or faded text
+   - Ripped might capture data that Single Column omitted due to layout issues
+   - SparseText might find scattered amounts that both others missed
+
+3. DATA PRECEDENCE HIERARCHY: 'Single Column' > 'Ripped' > 'SparseText'
+   - If Single Column has complete data, prefer it
+   - If Single Column is incomplete/missing data, use Ripped to fill gaps
+   - If both Single and Ripped miss data, use SparseText to complete
+   - When you see IDENTICAL values in multiple sections, this is the SAME invoice data processed by different OCR methods
+
+4. CRITICAL DEDUPLICATION RULES:
+   - Same amount appearing in multiple sections = SAME invoice data, count ONCE
+   - Different amounts in different sections = potential OCR errors, apply precedence
+   - Missing data in higher precedence section = use lower precedence to fill gaps
+
+5. CARIBBEAN CUSTOMS FIELD MAPPING (CRITICAL):
+   **SUPPLIER-CAUSED REDUCTIONS → TotalDeduction field (positive values):**
+   - Free shipping credits/discounts, promotional discounts, volume discounts
+   - Any reduction where the SUPPLIER absorbs the cost
+   
+   **CUSTOMER-CAUSED REDUCTIONS → TotalInsurance field (negative values):**
+   - Gift cards, store credits, account credits, loyalty points  
+   - Any reduction where the CUSTOMER uses previously acquired value
+   - ALWAYS use NEGATIVE values (e.g., -6.99 for $6.99 gift card)
+
+CURRENTLY EXTRACTED FIELDS (from primary OCR):
 {currentJson}
 
-ORIGINAL INVOICE TEXT:
+COMPLETE MULTI-SECTION OCR TEXT (analyze ALL sections for missing data):
 {this.CleanTextForAnalysis(fileText)}
 
-TASK: Find financial values in the original text that are missing from the extracted fields.
-
-Look for these common patterns:
-- Gift cards, store credits → ""TotalInsurance"" field (use negative values like -6.99)
-- Discounts, free shipping → ""TotalDeduction"" field (use positive values like 6.99)
-- Shipping costs → ""TotalInternalFreight"" field
-- Taxes, fees → ""TotalOtherCost"" field
-- Missing invoice total → ""InvoiceTotal"" field
-- Missing subtotal → ""SubTotal"" field
+INTELLIGENT FIELD DETECTION TASK:
+1. Identify fields missing from EXTRACTED DATA that exist in ANY OCR section
+2. Use precedence rules to determine best value when conflicts exist  
+3. Fill gaps where higher-precedence sections failed but lower-precedence succeeded
+4. Deduplicate identical values that appear across multiple sections
+5. Apply Caribbean customs field mapping rules correctly
 
 RESPONSE FORMAT - Return EXACTLY this JSON structure:
 {{
   ""errors"": [
     {{
+      ""field"": ""TotalDeduction"",
+      ""extracted_value"": ""null"",
+      ""correct_value"": ""6.99"",
+      ""line_text"": ""Free Shipping: -$0.46\\nFree Shipping: -$6.53"",
+      ""line_number"": 69,
+      ""confidence"": 0.95,
+      ""error_type"": ""omission"",
+      ""reasoning"": ""Free shipping amounts (-$0.46 + -$6.53 = $6.99 total) found in multiple OCR sections but missing from extracted data. Caribbean customs requires mapping supplier reductions to TotalDeduction. Deduplicated identical amounts across sections.""
+    }},
+    {{
       ""field"": ""TotalInsurance"",
       ""extracted_value"": ""null"",
       ""correct_value"": ""-6.99"",
       ""line_text"": ""Gift Card Amount: -$6.99"",
-      ""line_number"": 15,
-      ""confidence"": 0.95,
+      ""line_number"": 85,
+      ""confidence"": 0.98,
       ""error_type"": ""omission"",
-      ""reasoning"": ""Gift card amount found in text but missing from extracted data""
+      ""reasoning"": ""Gift card amount found in OCR sections but missing from extracted data. Caribbean customs requires mapping customer reductions to TotalInsurance as negative values.""
     }}
   ]
 }}
 
 If no missing fields found, return: {{""errors"": []}}
 
-Focus on finding clear numerical values with dollar signs that are present in the text but missing from the extracted fields.
+CRITICAL INSTRUCTIONS:
+- When calculating totals from multiple occurrences, deduplicate identical amounts first
+- Apply Caribbean customs field mapping rules (supplier→TotalDeduction, customer→TotalInsurance negative)
+- Use precedence hierarchy to resolve conflicts between OCR sections
+- Focus on financial fields critical for invoice balance and customs compliance
 ";
             
-            // **PROMPT_CREATION_COMPLETE**: Log the final prompt being sent to DeepSeek
-            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: SIMPLIFIED prompt created with {PromptLength} characters", prompt.Length);
-            _logger.Information("🔍 **PROMPT_COMPLETE_CONTENT**: Complete simplified prompt sent to DeepSeek: {CompletePrompt}", prompt);
+            // **PROMPT_CREATION_COMPLETE**: Log the final enhanced prompt being sent to DeepSeek
+            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: ENHANCED OCR-aware prompt created with {PromptLength} characters", prompt.Length);
+            _logger.Information("🔍 **PROMPT_OCR_AWARENESS**: Prompt includes {SectionCount} OCR sections and deduplication context", ocrSections.Count);
+            _logger.Information("🔍 **PROMPT_COMPLETE_CONTENT**: Complete enhanced prompt sent to DeepSeek: {CompletePrompt}", prompt);
             
             return prompt;
+        }
+
+        /// <summary>
+        /// Analyzes the file text to identify which OCR sections are present.
+        /// </summary>
+        private List<string> AnalyzeOCRSections(string fileText)
+        {
+            var sections = new List<string>();
+            
+            if (string.IsNullOrEmpty(fileText))
+            {
+                return sections;
+            }
+            
+            // Look for common OCR section indicators (using .NET Framework 4.8 compatible methods)
+            if (fileText.IndexOf("Single Column", StringComparison.OrdinalIgnoreCase) >= 0 || 
+                fileText.IndexOf("SingleColumn", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                sections.Add("Single Column");
+            }
+            
+            if (fileText.IndexOf("Ripped", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                sections.Add("Ripped");
+            }
+            
+            if (fileText.IndexOf("SparseText", StringComparison.OrdinalIgnoreCase) >= 0 || 
+                fileText.IndexOf("Sparse Text", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                sections.Add("SparseText");
+            }
+            
+            // If no specific sections detected, assume multiple methods were used
+            if (sections.Count == 0)
+            {
+                sections.Add("Multiple OCR Methods");
+            }
+            
+            return sections;
         }
 
         /// <summary>
@@ -189,6 +277,20 @@ CRITICAL REQUIREMENTS:
 - All regex patterns MUST be C# compliant (use single backslashes, not double backslashes)
 - Use pseudo datatypes: ""Number"" (not decimal), ""String"" (not string), ""English Date"" (not DateTime)
 - Patterns must work with .NET Regex class without escaping issues
+- MANDATORY: Include identifying text in regex patterns to prevent false matches
+- ⚠️  CRITICAL: Place currency symbols OUTSIDE named capture groups to avoid validation failures
+
+⚠️  CRITICAL WARNING - AVOID GENERIC PATTERNS:
+❌ WRONG: ""(?<TotalDeduction>\\d+\\.\\d{{2}})"" - This matches ANY decimal number!
+✅ CORRECT: ""Free Shipping:\\s*(?<TotalDeduction>-?\\$[\\d,]+\\.?\\d*)"" - This only matches after ""Free Shipping:""
+
+⚠️  CRITICAL WARNING - CURRENCY SYMBOL PLACEMENT:
+❌ WRONG: ""Gift Card Amount:\\s*(?<TotalInsurance>-?\\$\\d+\\.\\d{{2}})"" - Currency symbol INSIDE capture group
+✅ CORRECT: ""Gift Card Amount:\\s*\\$?(?<TotalInsurance>-?\\d+\\.\\d{{2}})"" - Currency symbol OUTSIDE capture group
+   
+The validation system expects numeric values without currency symbols. Always place $ € £ ¥ symbols outside capture groups!
+
+Generic patterns cause incorrect field mapping and data corruption. Always include qualifying text!
 
 OMITTED FIELD DETAILS:
 - Field Name to Capture: ""{correction.FieldName}""
@@ -211,7 +313,7 @@ YOUR TASK & REQUIREMENTS:
     *   ""modify_existing_line"": Choose if `Current Regex` is not ""None"" AND the new field logically belongs on the same line AND you can safely add a new capture group `(?<{correction.FieldName}>...)` while PRESERVING ALL `Existing Named Groups`.
     *   ""create_new_line"": Choose if no `Current Regex`, or modification is too complex/risky, or the field appears on a new conceptual line.
 2.  PROVIDE REGEX:
-    *   `regex_pattern`: ALWAYS provide the specific regex part that captures the `Expected Value` for `FieldName`, like `(?<{correction.FieldName}>your_pattern_for_value)`.
+    *   `regex_pattern`: CRITICAL - MUST include qualifying/identifying text before the capture group to avoid false matches. Pattern format: `identifying_text\\s*(?<{correction.FieldName}>value_pattern)`. For example: `Gift Card Amount:\\s*(?<TotalInsurance>-?\\$[\\d,]+\\.?\\d*)` instead of just `(?<TotalInsurance>-?\\$[\\d,]+\\.?\\d*)`.
     *   `complete_line_regex`: IF strategy is ""modify_existing_line"", provide the FULL modified `Current Regex` string that includes the new group and preserves all old ones. Otherwise, leave empty or null.
 3.  DEFINE EXTRACTION BEHAVIOR:
     *   `is_multiline`: true/false. Does your `regex_pattern` (or the new part in `complete_line_regex`) need to span multiple text lines?
@@ -238,13 +340,27 @@ EXAMPLE - Creating a new line for a missing ""GiftWrapFee"" (C# COMPLIANT):
 Value ""$2.50"" found on line ""Gift Wrap Fee: $2.50""
 {{
   ""strategy"": ""create_new_line"",
-  ""regex_pattern"": ""(?<GiftWrapFee>\\$\\d+\\.\\d{{2}})"",
+  ""regex_pattern"": ""Gift Wrap Fee:\\s*(?<GiftWrapFee>\\$\\d+\\.\\d{{2}})"",
   ""complete_line_regex"": null,
   ""is_multiline"": false,
   ""max_lines"": 1,
-  ""test_match"": ""$2.50"",
+  ""test_match"": ""Gift Wrap Fee: $2.50"",
   ""confidence"": 0.95,
-  ""reasoning"": ""Fee is on its own distinct line. C# compliant pattern captures currency value using single backslashes."",
+  ""reasoning"": ""Fee is on its own distinct line. Pattern includes 'Gift Wrap Fee:' identifier to avoid false matches on other dollar amounts. C# compliant pattern using single backslashes."",
+  ""preserves_existing_groups"": true
+}}
+
+EXAMPLE - Amazon Free Shipping (multiple values to sum):
+Values ""-$0.46"" and ""-$6.53"" found on lines ""Free Shipping: -$0.46"" and ""Free Shipping: -$6.53""
+{{
+  ""strategy"": ""create_new_line"",
+  ""regex_pattern"": ""Free Shipping:\\s*(?<TotalDeduction>-?\\$[\\d,]+\\.?\\d*)"",
+  ""complete_line_regex"": null,
+  ""is_multiline"": false,
+  ""max_lines"": 1,
+  ""test_match"": ""Free Shipping: -$0.46"",
+  ""confidence"": 0.95,
+  ""reasoning"": ""Pattern includes 'Free Shipping:' identifier to match only shipping deductions, not other dollar amounts. Multiple matches will be summed as absolute values."",
   ""preserves_existing_groups"": true
 }}
 Focus on creating a robust and accurate pattern. If modifying, ensure no existing data capture is broken.

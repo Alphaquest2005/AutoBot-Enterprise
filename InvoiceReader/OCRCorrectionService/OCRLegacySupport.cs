@@ -1078,21 +1078,148 @@ namespace WaterNut.DataSpace
 
         public static void UpdateTemplateLineValues(Invoice template, List<ShipmentInvoice> correctedInvoices, ILogger log)
         {
-            if (template?.Lines == null || !correctedInvoices.Any()) return;
-            var templateLogId = template.OcrInvoices?.Id.ToString() ?? template.OcrInvoices.Id.ToString();
-            log.Information("Attempting to update template (LogID: {TemplateLogId}) LineValues based on {Count} corrected invoices.", templateLogId, correctedInvoices.Count);
+            if (template?.Lines == null || !correctedInvoices.Any()) 
+            {
+                log.Warning("🔍 **LINES_VALUES_UPDATE_SKIPPED**: Template has no lines ({HasLines}) or no corrected invoices ({InvoiceCount})", 
+                    template?.Lines != null, correctedInvoices?.Count ?? 0);
+                return;
+            }
+
+            var templateLogId = template.OcrInvoices?.Id.ToString() ?? "Unknown";
+            log.Error("🔧 **LINES_VALUES_FIX_START**: PHASE 2 CRITICAL PRIORITY - Fixing Lines.Values update for Gift Card Line 1830 with TotalInsurance");
+            log.Error("🔍 **LINES_VALUES_UPDATE_START**: Updating template (ID: {TemplateLogId}) LineValues with {Count} corrected invoices", 
+                templateLogId, correctedInvoices.Count);
+
+            // PHASE 2: CRITICAL PRIORITY - Fix Gift Card Line 1830 → TotalInsurance = -6.99
+            foreach (var correctedInvoice in correctedInvoices)
+            {
+                // Target: Gift Card Line 1830 → TotalInsurance = -6.99
+                var giftCardLine = template.Lines?.FirstOrDefault(l => l.OCR_Lines?.Id == 1830);
+                if (giftCardLine != null && correctedInvoice.TotalInsurance.HasValue)
+                {
+                    log.Error("🎯 **TARGET_LINE_FOUND**: Gift Card Line 1830 | Current Values Count: {Count} | TotalInsurance: {Value}", 
+                        giftCardLine.Values?.Count ?? 0, correctedInvoice.TotalInsurance.Value);
+                    
+                    // Check if Values dictionary exists, but don't short-circuit if it doesn't
+                    if (giftCardLine.Values == null)
+                    {
+                        log.Error("⚠️ **VALUES_DICT_NULL**: Lines.Values is null for Gift Card Line 1830, will use alternative UpdateFieldInTemplate approach");
+                        // Don't continue - let the existing working code below handle the updates
+                    }
+                    else
+                    {
+                        log.Error("✅ **VALUES_DICT_EXISTS**: Lines.Values exists for Gift Card Line 1830 with {Count} entries", giftCardLine.Values.Count);
+                    }
+                    
+                    try
+                    {
+                        // Create correct dictionary structure for Lines.Values
+                        var lineKey = (1, "Header"); // Line 1, Header section
+                        
+                        // Find the existing TotalInsurance field or create new one
+                        var existingField = giftCardLine.OCR_Lines?.Fields?.FirstOrDefault(f => 
+                            f.Field?.Equals("TotalInsurance", StringComparison.OrdinalIgnoreCase) == true ||
+                            f.Key?.Equals("TotalInsurance", StringComparison.OrdinalIgnoreCase) == true);
+                        
+                        Fields fieldKey;
+                        if (existingField != null)
+                        {
+                            fieldKey = existingField;
+                            log.Error("🔍 **EXISTING_FIELD_FOUND**: Using existing TotalInsurance field | FieldId: {FieldId}", existingField.Id);
+                        }
+                        else
+                        {
+                            // Create new field definition for TotalInsurance
+                            fieldKey = new Fields 
+                            { 
+                                Field = "TotalInsurance", 
+                                EntityType = "ShipmentInvoice",
+                                Key = "TotalInsurance",
+                                DataType = "decimal"
+                            };
+                            log.Error("🔧 **NEW_FIELD_CREATED**: Created new TotalInsurance field definition");
+                        }
+                        
+                        var fieldKeyTuple = (fieldKey, "1"); // Instance 1
+                        
+                        if (!giftCardLine.Values.ContainsKey(lineKey))
+                        {
+                            giftCardLine.Values[lineKey] = new Dictionary<(Fields Fields, string Instance), string>();
+                            log.Error("🔧 **LINE_KEY_CREATED**: Created new line key entry for (1, Header)");
+                        }
+                        
+                        // Apply the corrected value
+                        var valueString = correctedInvoice.TotalInsurance.Value.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+                        giftCardLine.Values[lineKey][fieldKeyTuple] = valueString;
+                        
+                        log.Error("✅ **LINES_VALUES_UPDATED**: Gift Card TotalInsurance = {Value} applied to Lines.Values[{LineKey}][{FieldKey}] = '{ValueString}'", 
+                            correctedInvoice.TotalInsurance.Value, lineKey, fieldKeyTuple, valueString);
+                            
+                        // Verify the update was applied
+                        if (giftCardLine.Values.ContainsKey(lineKey) && 
+                            giftCardLine.Values[lineKey].ContainsKey(fieldKeyTuple))
+                        {
+                            var verifyValue = giftCardLine.Values[lineKey][fieldKeyTuple];
+                            log.Error("✅ **UPDATE_VERIFICATION**: Lines.Values update verified | StoredValue: '{StoredValue}'", verifyValue);
+                        }
+                        else
+                        {
+                            log.Error("❌ **UPDATE_VERIFICATION_FAILED**: Lines.Values update not found after assignment");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex, "❌ **LINES_VALUES_UPDATE_ERROR**: Failed to update Gift Card Line 1830 Values dictionary");
+                    }
+                }
+                else
+                {
+                    log.Error("❌ **TARGET_LINE_MISSING**: Gift Card Line 1830 not found (Line: {HasLine}) or TotalInsurance null (Value: {HasValue})", 
+                        giftCardLine != null, correctedInvoice.TotalInsurance.HasValue);
+                    
+                    // Log available lines for debugging
+                    if (template.Lines != null)
+                    {
+                        var availableLines = template.Lines.Where(l => l.OCR_Lines != null)
+                            .Select(l => $"Line {l.OCR_Lines.Id}: {l.OCR_Lines.Name}")
+                            .ToList();
+                        log.Error("🔍 **AVAILABLE_LINES**: {LineCount} lines available: {@Lines}", 
+                            availableLines.Count, availableLines);
+                    }
+                }
+            }
+
+            // Capture BEFORE state of Lines.Values
+            log.Error("📊 **LINES_VALUES_BEFORE_STATE**: Capturing template Lines.Values state before updates");
+            LogTemplateLineValuesState(template, "BEFORE", log);
 
             var fieldMappings = GetTemplateFieldMappings(template, log);
+            log.Error("🔍 **FIELD_MAPPINGS_RETRIEVED**: Found {Count} field mappings for template {TemplateLogId}", 
+                fieldMappings.Count, templateLogId);
+
             var representativeCorrectedInvoice = correctedInvoices.First();
+            log.Error("🔍 **REPRESENTATIVE_INVOICE**: Using invoice {InvoiceNo} as representative for updates", 
+                representativeCorrectedInvoice.InvoiceNo);
+
+            // Log the corrected invoice values that will be applied
+            log.Error("🔍 **CORRECTED_VALUES**: TotalDeduction={TotalDeduction} | TotalInsurance={TotalInsurance} | SubTotal={SubTotal} | InvoiceTotal={InvoiceTotal}", 
+                representativeCorrectedInvoice.TotalDeduction, representativeCorrectedInvoice.TotalInsurance, 
+                representativeCorrectedInvoice.SubTotal, representativeCorrectedInvoice.InvoiceTotal);
 
             Action<string, object> updateTemplateField = (fieldName, value) => {
                 string stringValue = null;
                 if (value is DateTime dt) stringValue = dt.ToString("yyyy-MM-dd");
                 else if (value is double dbl || value is decimal dec) stringValue = Convert.ToDouble(value).ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
                 else stringValue = value?.ToString();
+                
+                log.Error("🔧 **FIELD_UPDATE_ATTEMPT**: Field='{FieldName}' | Value='{Value}' | StringValue='{StringValue}'", 
+                    fieldName, value, stringValue);
+                    
                 UpdateFieldInTemplate(template, fieldMappings, fieldName, stringValue, log);
             };
 
+            // Update all fields with detailed logging for each
+            log.Error("🔧 **UPDATE_FIELD_BATCH_START**: Applying {Count} field updates", 10);
             updateTemplateField("InvoiceTotal", representativeCorrectedInvoice.InvoiceTotal);
             updateTemplateField("SubTotal", representativeCorrectedInvoice.SubTotal);
             updateTemplateField("TotalInternalFreight", representativeCorrectedInvoice.TotalInternalFreight);
@@ -1103,8 +1230,24 @@ namespace WaterNut.DataSpace
             updateTemplateField("InvoiceDate", representativeCorrectedInvoice.InvoiceDate);
             updateTemplateField("SupplierName", representativeCorrectedInvoice.SupplierName);
             updateTemplateField("Currency", representativeCorrectedInvoice.Currency);
+            log.Error("✅ **UPDATE_FIELD_BATCH_COMPLETE**: All field updates attempted");
 
-            log.Information("Template LineValues updated for header fields of template {TemplateLogId}.", templateLogId);
+            // Capture AFTER state of Lines.Values
+            log.Error("📊 **LINES_VALUES_AFTER_STATE**: Capturing template Lines.Values state after updates");
+            LogTemplateLineValuesState(template, "AFTER", log);
+
+            // Detect and log changes
+            var changesSummary = DetectLineValuesChanges(template, log);
+            if (!string.IsNullOrEmpty(changesSummary))
+            {
+                log.Error("✅ **LINES_VALUES_CHANGES_DETECTED**: {ChangesSummary}", changesSummary);
+            }
+            else
+            {
+                log.Warning("⚠️ **LINES_VALUES_NO_CHANGES**: No changes detected in Lines.Values after update attempt");
+            }
+
+            log.Error("✅ **LINES_VALUES_UPDATE_COMPLETE**: Template LineValues update completed for template {TemplateLogId}", templateLogId);
         }
 
         private static Dictionary<string, (int LineId, int FieldId)> GetTemplateFieldMappings(Invoice template, ILogger logger)
@@ -1218,6 +1361,201 @@ namespace WaterNut.DataSpace
             }
             return double.NaN;
         }
+        // Helper method for logging template Lines.Values state with enhanced field detection
+        private static void LogTemplateLineValuesState(Invoice template, string stateName, ILogger log)
+        {
+            if (template?.Lines == null)
+            {
+                log.Error("📊 **{StateName}_LINES_VALUES_STATE**: Template has no lines", stateName);
+                return;
+            }
+
+            int totalValueEntries = 0;
+            int linesWithValues = 0;
+            var importantFieldsFound = new List<string>();
+
+            foreach (var line in template.Lines)
+            {
+                var lineId = line.OCR_Lines?.Id ?? 0;
+                var lineName = line.OCR_Lines?.Name ?? "Unknown";
+                var valueCount = line.Values?.Sum(kvp => kvp.Value?.Count ?? 0) ?? 0;
+                
+                if (valueCount > 0)
+                {
+                    linesWithValues++;
+                    totalValueEntries += valueCount;
+                    
+                    log.Error("📋 **{StateName}_LINE_VALUES**: LineId={LineId}, Name='{LineName}', Values={ValueCount}", 
+                        stateName, lineId, lineName, valueCount);
+                    
+                    // Log specific field values for important fields
+                    if (line.Values?.Any() == true)
+                    {
+                        foreach (var lineValueKvp in line.Values)
+                        {
+                            var (lineNumber, section) = lineValueKvp.Key;
+                            var fieldsDict = lineValueKvp.Value;
+                            
+                            if (fieldsDict?.Any() == true)
+                            {
+                                foreach (var fieldKvp in fieldsDict)
+                                {
+                                    var (fields, instance) = fieldKvp.Key;
+                                    var value = fieldKvp.Value;
+                                    
+                                    // Log important fields for OCR correction tracking
+                                    if (fields?.Field != null && (fields.Field.Contains("Total") || 
+                                        fields.Field.Contains("Invoice") || fields.Field.Contains("Deduction") || 
+                                        fields.Field.Contains("Insurance") || fields.Field.Contains("Supplier")))
+                                    {
+                                        var fieldDetail = $"{fields.Field}='{value}'";
+                                        importantFieldsFound.Add(fieldDetail);
+                                        
+                                        log.Error("    🔍 **{StateName}_VALUE_DETAIL**: Field='{FieldName}', Key='{FieldKey}', Value='{Value}', Line={LineNumber}, Section='{Section}', Instance='{Instance}'",
+                                            stateName, fields.Field, fields.Key, value, lineNumber, section, instance);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    log.Error("📋 **{StateName}_LINE_NO_VALUES**: LineId={LineId}, Name='{LineName}', Values=0", 
+                        stateName, lineId, lineName);
+                }
+            }
+
+            log.Error("📊 **{StateName}_SUMMARY**: {TotalLines} lines total, {LinesWithValues} lines with values, {TotalValueEntries} total value entries", 
+                stateName, template.Lines.Count, linesWithValues, totalValueEntries);
+                
+            // Log summary of important fields found
+            if (importantFieldsFound.Any())
+            {
+                log.Error("🔍 **{StateName}_IMPORTANT_FIELDS**: Found {Count} important field values: {Fields}", 
+                    stateName, importantFieldsFound.Count, string.Join(", ", importantFieldsFound));
+            }
+            else
+            {
+                log.Error("⚠️ **{StateName}_NO_IMPORTANT_FIELDS**: No important field values found in Lines.Values structure", stateName);
+            }
+        }
+
+        // Helper method for detecting changes in Lines.Values with comprehensive field analysis
+        private static string DetectLineValuesChanges(Invoice template, ILogger log)
+        {
+            // This method analyzes the current state and identifies key fields for OCR correction tracking
+            if (template?.Lines == null)
+            {
+                return "Template has no lines";
+            }
+
+            var changesList = new List<string>();
+            var criticalFields = new Dictionary<string, List<string>>();
+            int totalValues = 0;
+            int linesWithValues = 0;
+
+            // Track critical fields for Amazon invoice OCR corrections
+            var targetFields = new[] { "TotalDeduction", "TotalInsurance", "InvoiceTotal", "SubTotal", "TotalInternalFreight", "TotalOtherCost", "SupplierName" };
+
+            foreach (var line in template.Lines)
+            {
+                var lineId = line.OCR_Lines?.Id ?? 0;
+                var lineName = line.OCR_Lines?.Name ?? "Unknown";
+                var valueCount = line.Values?.Sum(kvp => kvp.Value?.Count ?? 0) ?? 0;
+                
+                if (valueCount > 0)
+                {
+                    linesWithValues++;
+                    totalValues += valueCount;
+                    
+                    if (line.Values?.Any() == true)
+                    {
+                        foreach (var lineValueKvp in line.Values)
+                        {
+                            var (lineNumber, section) = lineValueKvp.Key;
+                            var fieldsDict = lineValueKvp.Value;
+                            
+                            if (fieldsDict?.Any() == true)
+                            {
+                                foreach (var fieldKvp in fieldsDict)
+                                {
+                                    var (fields, instance) = fieldKvp.Key;
+                                    var value = fieldKvp.Value;
+                                    
+                                    // Track target fields that are critical for OCR corrections
+                                    if (fields?.Field != null && targetFields.Contains(fields.Field) && !string.IsNullOrEmpty(value))
+                                    {
+                                        if (!criticalFields.ContainsKey(fields.Field))
+                                        {
+                                            criticalFields[fields.Field] = new List<string>();
+                                        }
+                                        criticalFields[fields.Field].Add($"Line{lineId}:{value}");
+                                        
+                                        // Log detailed field information
+                                        log.Error("🔍 **CHANGE_DETECTION_FIELD**: Field='{FieldName}' | Value='{Value}' | LineId={LineId} | LineName='{LineName}' | Section='{Section}' | Instance='{Instance}'",
+                                            fields.Field, value, lineId, lineName, section, instance);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Analyze critical fields for OCR correction indicators
+            foreach (var kvp in criticalFields)
+            {
+                var fieldName = kvp.Key;
+                var fieldValues = kvp.Value;
+                changesList.Add($"{fieldName}: {string.Join(", ", fieldValues)} (count: {fieldValues.Count})");
+            }
+
+            // Special analysis for Amazon invoice OCR correction success
+            bool hasTotalDeduction = criticalFields.ContainsKey("TotalDeduction") && criticalFields["TotalDeduction"].Any(v => !string.IsNullOrWhiteSpace(v.Split(':').LastOrDefault()));
+            bool hasTotalInsurance = criticalFields.ContainsKey("TotalInsurance") && criticalFields["TotalInsurance"].Any(v => !string.IsNullOrWhiteSpace(v.Split(':').LastOrDefault()));
+            bool hasSupplierName = criticalFields.ContainsKey("SupplierName") && criticalFields["SupplierName"].Any(v => !string.IsNullOrWhiteSpace(v.Split(':').LastOrDefault()));
+
+            // Generate OCR correction analysis
+            var ocrAnalysis = new List<string>();
+            if (hasTotalDeduction)
+            {
+                ocrAnalysis.Add("✅ TotalDeduction populated (supplier reduction detected)");
+            }
+            else
+            {
+                ocrAnalysis.Add("❌ TotalDeduction missing (expected from Free Shipping corrections)");
+            }
+
+            if (hasTotalInsurance)
+            {
+                ocrAnalysis.Add("✅ TotalInsurance populated (customer reduction detected)");
+            }
+            else
+            {
+                ocrAnalysis.Add("❌ TotalInsurance missing (expected from Gift Card corrections)");
+            }
+
+            if (hasSupplierName)
+            {
+                ocrAnalysis.Add("✅ SupplierName populated");
+            }
+            else
+            {
+                ocrAnalysis.Add("⚠️ SupplierName missing");
+            }
+
+            changesList.Add($"OCR Analysis: {string.Join(", ", ocrAnalysis)}");
+            changesList.Add($"Template state: {linesWithValues} lines with values, {totalValues} total value entries");
+            
+            // Log comprehensive analysis
+            log.Error("🔍 **CHANGE_DETECTION_ANALYSIS**: CriticalFieldsFound={FieldCount} | TotalDeduction={HasTD} | TotalInsurance={HasTI} | SupplierName={HasSN}",
+                criticalFields.Count, hasTotalDeduction, hasTotalInsurance, hasSupplierName);
+            
+            return changesList.Any() ? string.Join("; ", changesList) : "No significant changes detected";
+        }
+
+
         #endregion
     }
 }

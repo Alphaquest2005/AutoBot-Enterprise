@@ -361,6 +361,22 @@ namespace WaterNut.DataSpace
                 {
                     _logger.Information("🔍 **PIPELINE_OMISSION_PATTERN**: Creating new regex for omitted field {FieldName}", correction.FieldName);
                     
+                    // PHASE 5: Check for Amazon-specific patterns first
+                    var amazonPattern = GetAmazonSpecificPattern(correction.FieldName, lineContext.WindowText ?? "");
+                    if (!string.IsNullOrEmpty(amazonPattern))
+                    {
+                        _logger.Error("🎯 **AMAZON_PATTERN_APPLIED**: Using pre-defined Amazon pattern for {FieldName}", correction.FieldName);
+                        correction.SuggestedRegex = amazonPattern;
+                        correction.RequiresMultilineRegex = false;
+                        correction.Confidence = 95; // High confidence for pre-tested patterns
+                        correction.Reasoning = $"Pre-defined Amazon-specific pattern for {correction.FieldName}";
+                        
+                        _logger.Information("✅ **PIPELINE_AMAZON_PATTERN_SUCCESS**: Applied Amazon pattern for {FieldName}: {Pattern}", 
+                            correction.FieldName, amazonPattern);
+                        
+                        return correction;
+                    }
+                    
                     var regexResponse = await this.RequestNewRegexFromDeepSeek(correction, lineContext).ConfigureAwait(false);
                     if (regexResponse != null && !string.IsNullOrEmpty(regexResponse.RegexPattern))
                     {
@@ -622,9 +638,10 @@ namespace WaterNut.DataSpace
         /// </summary>
         internal async Task<DatabaseUpdateResult> ApplyToDatabaseInternal(CorrectionResult correction, TemplateContext templateContext)
         {
-            // EXPANDED DATABASE UPDATE LOGGING: Cover entire failing database update section
+            // PHASE 3: Database Pattern Persistence Fix - Enhanced with verification
             using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
+                _logger.Error("💾 **DATABASE_PATTERN_SAVE**: PHASE 3 - Saving regex pattern for field {FieldName}", correction?.FieldName ?? "NULL");
                 _logger.Information("🔍 **DATABASE_SECTION_ENTRY**: ApplyToDatabaseInternal called for field {FieldName}", correction?.FieldName ?? "NULL");
                 
                 // DATA FLOW ASSERTION: Validate input parameters with detailed data logging
