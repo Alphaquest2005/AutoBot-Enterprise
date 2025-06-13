@@ -19,7 +19,7 @@ namespace WaterNut.DataSpace
         {
             string StrategyType { get; }
             Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance);
-            bool CanHandle(CorrectionResult correction);
+            bool CanHandle(RegexUpdateRequest request);
         }
 
         public abstract class DatabaseUpdateStrategyBase : IDatabaseUpdateStrategy
@@ -33,7 +33,7 @@ namespace WaterNut.DataSpace
 
             public abstract string StrategyType { get; }
             public abstract Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance);
-            public abstract bool CanHandle(CorrectionResult correction);
+            public abstract bool CanHandle(RegexUpdateRequest request);
 
             protected async Task<RegularExpressions> GetOrCreateRegexAsync(OCRContext context, string pattern, bool multiLine = false, int maxLines = 1, string description = null)
             {
@@ -98,18 +98,18 @@ namespace WaterNut.DataSpace
 
             public override string StrategyType => "FieldFormat";
 
-            public override bool CanHandle(CorrectionResult correction)
+            public override bool CanHandle(RegexUpdateRequest request)
             {
-                if (string.IsNullOrEmpty(correction.OldValue) && !string.IsNullOrEmpty(correction.NewValue))
+                if (string.IsNullOrEmpty(request.OldValue) && !string.IsNullOrEmpty(request.NewValue))
                     return false;
 
-                return correction.CorrectionType == "FieldFormat" ||
-                       correction.CorrectionType == "FORMAT_FIX" ||
-                       correction.CorrectionType == "format_correction" ||
-                       correction.CorrectionType == "decimal_separator" ||
-                       correction.CorrectionType == "DecimalSeparator" ||  // Handle both cases
-                       correction.CorrectionType == "character_confusion" ||
-                       IsPotentialFormatCorrection(correction.OldValue, correction.NewValue);
+                return request.CorrectionType == "FieldFormat" ||
+                       request.CorrectionType == "FORMAT_FIX" ||
+                       request.CorrectionType == "format_correction" ||
+                       request.CorrectionType == "decimal_separator" ||
+                       request.CorrectionType == "DecimalSeparator" ||  // Handle both cases
+                       request.CorrectionType == "character_confusion" ||
+                       IsPotentialFormatCorrection(request.OldValue, request.NewValue);
             }
 
             private bool IsPotentialFormatCorrection(string oldValue, string newValue)
@@ -189,7 +189,7 @@ namespace WaterNut.DataSpace
             public OmissionUpdateStrategy(ILogger logger) : base(logger) { }
 
             public override string StrategyType => "Omission";
-            public override bool CanHandle(CorrectionResult correction) => correction.CorrectionType == "omission" || correction.CorrectionType == "omitted_line_item";
+            public override bool CanHandle(RegexUpdateRequest request) => request.CorrectionType == "omission" || request.CorrectionType == "omitted_line_item";
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
@@ -505,23 +505,22 @@ namespace WaterNut.DataSpace
                 _logger = logger;
             }
 
-            public IDatabaseUpdateStrategy GetStrategy(CorrectionResult correction)
+            public IDatabaseUpdateStrategy GetStrategy(RegexUpdateRequest request)
             {
-                if (correction.CorrectionType == "omission" || correction.CorrectionType == "omitted_line_item")
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // Prioritize specific strategies
+                if (new OmissionUpdateStrategy(_logger).CanHandle(request))
                 {
                     return new OmissionUpdateStrategy(_logger);
                 }
-
-                var ffStrategy = new FieldFormatUpdateStrategy(_logger);
-                if (ffStrategy.CanHandle(correction))
+                if (new FieldFormatUpdateStrategy(_logger).CanHandle(request))
                 {
-                    return ffStrategy;
+                    return new FieldFormatUpdateStrategy(_logger);
                 }
 
-                _logger.Warning("No specific database update strategy found for correction type: {CorrectionType} on field {FieldName}. DB update might be skipped or logged only.",
-                    correction.CorrectionType, correction.FieldName);
-
-                return null;
+                // Default or fallback strategy (if any)
+                throw new InvalidOperationException($"No suitable update strategy found for correction type: {request.CorrectionType}");
             }
         }
         #endregion

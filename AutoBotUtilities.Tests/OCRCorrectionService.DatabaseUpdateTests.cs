@@ -254,32 +254,26 @@ namespace AutoBotUtilities.Tests.Production
         public async Task FieldFormatUpdateStrategy_DecimalCommaToPoint_ShouldCreateDbEntries()
         {
             // Arrange
-            var correction = new CorrectionResult
-            {
-                FieldName = "InvoiceTotal",
-                OldValue = "123,45",
-                NewValue = "123.45",
-                CorrectionType = "FieldFormat",
-                Confidence = 0.95
-            };
-
-            OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(correction);
-            Assert.That(strategy, Is.InstanceOf<OCRCorrectionService.FieldFormatUpdateStrategy>(), "Strategy should be FieldFormatUpdateStrategy");
+            var correctionType = "FieldFormat";
+            var fieldName = "InvoiceTotal";
 
             using (var ctx = new OCRContext())
             {
                 var testPart = await this.GetOrCreateTestPartAsync(ctx).ConfigureAwait(false);
                 var testLine = await this.GetOrCreateTestLineAsync(ctx, testPart.Id).ConfigureAwait(false);
-                var testField = await this.GetOrCreateTestFieldAsync(ctx, "InvoiceTotal", testLine.Id, dataType: "decimal").ConfigureAwait(false);
+                var testField = await this.GetOrCreateTestFieldAsync(ctx, fieldName, testLine.Id, dataType: "decimal").ConfigureAwait(false);
 
                 var request = new RegexUpdateRequest
                 {
-                    FieldName = correction.FieldName,
-                    OldValue = correction.OldValue,
-                    NewValue = correction.NewValue,
-                    CorrectionType = correction.CorrectionType,
+                    FieldName = fieldName,
+                    OldValue = "123,45",
+                    NewValue = "123.45",
+                    CorrectionType = correctionType,
                     LineId = testField.Id // IMPORTANT: For FieldFormatStrategy, LineId in request is Fields.Id
                 };
+
+                OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(request);
+                Assert.That(strategy, Is.InstanceOf<OCRCorrectionService.FieldFormatUpdateStrategy>(), "Strategy should be FieldFormatUpdateStrategy");
 
                 // Act
                 var dbResult = await strategy.ExecuteAsync(ctx, request, this._service).ConfigureAwait(false);
@@ -311,20 +305,32 @@ namespace AutoBotUtilities.Tests.Production
         [Category("FieldFormatStrategy")]
         public async Task FieldFormatUpdateStrategy_AddDollarSign_ShouldCreateDbEntries()
         {
-            var correction = new CorrectionResult { FieldName = "SubTotal", OldValue = "99.99", NewValue = "$99.99", CorrectionType = "FieldFormat" };
-            OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(correction);
+            var correctionType = "FieldFormat";
+            var fieldName = "SubTotal";
+
             using (var ctx = new OCRContext())
             {
                 var testPart = await this.GetOrCreateTestPartAsync(ctx).ConfigureAwait(false);
                 var testLine = await this.GetOrCreateTestLineAsync(ctx, testPart.Id).ConfigureAwait(false);
-                var testField = await this.GetOrCreateTestFieldAsync(ctx, "SubTotal", testLine.Id, dataType: "decimal").ConfigureAwait(false);
-                var request = new RegexUpdateRequest { FieldName = correction.FieldName, OldValue = correction.OldValue, NewValue = correction.NewValue, LineId = testField.Id };
+                var testField = await this.GetOrCreateTestFieldAsync(ctx, fieldName, testLine.Id, dataType: "decimal").ConfigureAwait(false);
+
+                var request = new RegexUpdateRequest
+                                  {
+                                      FieldName = fieldName,
+                                      OldValue = "99.99",
+                                      NewValue = "$99.99",
+                                      CorrectionType = correctionType,
+                                      LineId = testField.Id
+                                  };
+
+                OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(request);
                 var dbResult = await strategy.ExecuteAsync(ctx, request, this._service).ConfigureAwait(false);
+
                 Assert.That(dbResult.IsSuccess, Is.True, dbResult.Message);
                 _createdFieldFormatIds.Add(dbResult.RecordId.Value);
                 var entry = await ctx.OCR_FieldFormatRegEx.Include(f => f.RegEx).Include(f => f.ReplacementRegEx).FirstAsync(f => f.Id == dbResult.RecordId.Value).ConfigureAwait(false);
                 Assert.That(entry.RegEx.RegEx, Is.EqualTo(@"^(-?\d+(\.\d+)?)$"));
-                Assert.That(entry.ReplacementRegEx.RegEx, Is.EqualTo("\\$$1"));
+                StringAssert.AreEqualIgnoringCase(@"\$$1", entry.ReplacementRegEx.RegEx);
                 _createdRegexIds.Add(entry.RegEx.Id);
                 _createdRegexIds.Add(entry.ReplacementRegEx.Id);
             }
@@ -340,22 +346,6 @@ namespace AutoBotUtilities.Tests.Production
         {
             // Arrange - Use a known field name that exists in the field mapping
             var fieldNameToOmit = "TotalDeduction"; // Use a known field instead of random field name
-            var correction = new CorrectionResult
-            {
-                FieldName = fieldNameToOmit,
-                NewValue = "25.00",
-                OldValue = "", // Key for omission
-                CorrectionType = "omission",
-                Confidence = 0.95,
-                LineNumber = 10,
-                LineText = $"Total Deduction: 25.00 USD", // Line where value is found
-                ContextLinesBefore = new List<string> { "Context Before 1", "Context Before 2" },
-                ContextLinesAfter = new List<string> { "Context After 1", "Context After 2" },
-                RequiresMultilineRegex = false
-            };
-
-            OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(correction);
-            Assert.That(strategy, Is.InstanceOf<OCRCorrectionService.OmissionUpdateStrategy>(), "Strategy should be OmissionUpdateStrategy");
 
             using (var ctx = new OCRContext())
             {
@@ -363,22 +353,23 @@ namespace AutoBotUtilities.Tests.Production
 
                 var request = new RegexUpdateRequest
                 {
-                    FieldName = correction.FieldName,
-                    NewValue = correction.NewValue,
-                    OldValue = correction.OldValue,
-                    CorrectionType = correction.CorrectionType,
-                    LineNumber = correction.LineNumber,
-                    LineText = correction.LineText,
-                    ContextLinesBefore = correction.ContextLinesBefore,
-                    ContextLinesAfter = correction.ContextLinesAfter,
-                    RequiresMultilineRegex = correction.RequiresMultilineRegex,
-                    // PartId is crucial for "create_new_line", strategy will try to determine it if null,
-                    // but providing it from test (based on where field *should* go) is more robust.
-                    // OmissionUpdateStrategy.DeterminePartIdForNewOmissionLineAsync will be called.
+                    FieldName = fieldNameToOmit,
+                    NewValue = "25.00",
+                    OldValue = "", // Key for omission
+                    CorrectionType = "omission",
+                    Confidence = 0.95,
+                    LineNumber = 10,
+                    LineText = $"Total Deduction: 25.00 USD", // Line where value is found
+                    ContextLinesBefore = new List<string> { "Context Before 1", "Context Before 2" },
+                    ContextLinesAfter = new List<string> { "Context After 1", "Context After 2" },
+                    RequiresMultilineRegex = false,
                     PartId = testPart.Id // Explicitly provide PartId for new line
                 };
 
-                _logger.Information("Attempting OmissionUpdateStrategy with LIVE DeepSeek call for field: {FieldName}", correction.FieldName);
+                OCRCorrectionService.IDatabaseUpdateStrategy strategy = _strategyFactory.GetStrategy(request);
+                Assert.That(strategy, Is.InstanceOf<OCRCorrectionService.OmissionUpdateStrategy>(), "Strategy should be OmissionUpdateStrategy");
+
+                _logger.Information("Attempting OmissionUpdateStrategy with LIVE DeepSeek call for field: {FieldName}", request.FieldName);
 
                 // Act
                 DatabaseUpdateResult dbResult = null;
@@ -392,7 +383,6 @@ namespace AutoBotUtilities.Tests.Production
                     Assert.Fail($"Live DeepSeek call or processing failed: {apiEx.Message}");
                 }
 
-
                 // Assert
                 Assert.That(dbResult, Is.Not.Null, "DBResult should not be null.");
                 _logger.Information("Omission Strategy Result: Success={IsSuccess}, Message='{Message}', RecordId={RecordId}",
@@ -400,35 +390,29 @@ namespace AutoBotUtilities.Tests.Production
 
                 if (!dbResult.IsSuccess)
                 {
-                    // Log DeepSeek's raw response if possible (would require modifying strategy to return it or log it)
                     _logger.Warning("OmissionUpdateStrategy failed. Message: {FailureMessage}", dbResult.Message);
-                    // If it failed because DeepSeek returned bad regex, that's a valid test outcome for an integration test.
-                    // The key is that the system handled it (e.g., didn't crash).
                 }
                 Assert.That(dbResult.IsSuccess, Is.True, $"Omission DB update failed: {dbResult.Message}");
 
-                // If successful, dbResult.RecordId should be the ID of the new Field.
                 Assert.That(dbResult.RecordId, Is.Not.Null, "RecordId (new Field.Id) should be populated on success.");
                 _createdFieldIds.Add(dbResult.RecordId.Value);
 
                 var newField = await ctx.Fields.Include(f => f.Lines.RegularExpressions)
                                    .FirstOrDefaultAsync(f => f.Id == dbResult.RecordId.Value).ConfigureAwait(false);
                 Assert.That(newField, Is.Not.Null, "Newly created Field not found in DB.");
-                Assert.That(newField.Key, Is.EqualTo(fieldNameToOmit)); // DeepSeek should use fieldName for capture group
+                Assert.That(newField.Key, Is.EqualTo(fieldNameToOmit));
                 Assert.That(newField.Lines, Is.Not.Null, "New field should be associated with a Line.");
                 _createdLineIds.Add(newField.LineId);
 
                 Assert.That(newField.Lines.RegularExpressions, Is.Not.Null, "New Line should have an associated Regex.");
                 _createdRegexIds.Add(newField.Lines.RegularExpressions.Id);
 
-                // Check if the regex contains the named capture group for the field
                 StringAssert.Contains($"(?<{fieldNameToOmit}>", newField.Lines.RegularExpressions.RegEx, "Regex should contain the named capture group.");
 
-                // Validate the regex works on the provided LineText (conceptual, actual validation is in OCRCorrectionService)
                 var regex = new System.Text.RegularExpressions.Regex(newField.Lines.RegularExpressions.RegEx);
-                var match = regex.Match(correction.LineText);
-                Assert.That(match.Success, Is.True, $"Generated regex '{newField.Lines.RegularExpressions.RegEx}' did not match line text '{correction.LineText}'");
-                Assert.That(match.Groups[fieldNameToOmit].Value, Is.EqualTo(correction.NewValue), "Captured value does not match expected NewValue.");
+                var match = regex.Match(request.LineText);
+                Assert.That(match.Success, Is.True, $"Generated regex '{newField.Lines.RegularExpressions.RegEx}' did not match line text '{request.LineText}'");
+                Assert.That(match.Groups[fieldNameToOmit].Value, Is.EqualTo(request.NewValue), "Captured value does not match expected NewValue.");
 
                 _logger.Information("✓ OmissionUpdateStrategy_CreateNewLine_WithLiveDeepSeek test passed for field {FieldName}. New Field ID: {FieldId}, New Line ID: {LineId}, New Regex ID: {RegexId}. Regex: '{Regex}'",
                                     fieldNameToOmit, newField.Id, newField.LineId, newField.Lines.RegularExpressions.Id, newField.Lines.RegularExpressions.RegEx);

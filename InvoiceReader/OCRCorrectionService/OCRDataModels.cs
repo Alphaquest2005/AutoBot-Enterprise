@@ -29,8 +29,13 @@ namespace WaterNut.DataSpace
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
         public bool RequiresMultilineRegex { get; set; }
         public string SuggestedRegex { get; set; } // Added for pipeline pattern generation
+        public string ExistingRegex { get; set; } // Added for existing regex pattern
+        public int? LineId { get; set; }
+        public int? PartId { get; set; }
+        public int? RegexId { get; set; }
+        public string WindowText { get; set; } // Added for window text context
         
-        public string FullContext => string.Join("\n", 
+        public string FullContext => string.Join("\n",
             ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));
     }
 
@@ -91,12 +96,15 @@ namespace WaterNut.DataSpace
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
         public bool RequiresMultilineRegex { get; set; }
+        public string SuggestedRegex { get; set; } // Added for pipeline pattern generation
         public string FilePath { get; set; }
-        public string InvoiceType { get; set; }     
+        public string InvoiceType { get; set; }
         public int? LineId { get; set; }                                                 
         public int? PartId { get; set; }            
         public int? RegexId { get; set; }           
         public string ExistingRegex { get; set; }   
+        public string PartName { get; set; }
+        public int? InvoiceId { get; set; }
     }
     
     /// <summary>
@@ -143,7 +151,8 @@ namespace WaterNut.DataSpace
         public string InvoiceName { get; set; }        
         public string Section { get; set; }            
         public string Instance { get; set; }           
-        public double? Confidence { get; set; }        
+        public double? Confidence { get; set; }
+        public string InvoiceType { get; set; } // Added for InvoiceType
         public List<FieldFormatRegexInfo> FormatRegexes { get; set; } = new List<FieldFormatRegexInfo>();
     }
 

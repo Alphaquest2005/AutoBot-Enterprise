@@ -360,9 +360,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     // **COMPREHENSIVE_OCR_DEBUGGING**: Wrap OCR correction call in LogLevelOverride for maximum visibility
                                     using (LogLevelOverride.Begin(LogEventLevel.Verbose))
                                     {
-                                        context.Logger?.Error("🚀 **PATHWAY_ATTEMPT_{Attempt}_PIPELINE_START**: OCR correction pipeline starting with Verbose logging enabled", correctionAttempts);
-                                        await OCRCorrectionService.ExecuteFullPipelineForInvoiceAsync(res, template, context.Logger).ConfigureAwait(false);
-                                        context.Logger?.Error("✅ **PATHWAY_ATTEMPT_{Attempt}_PIPELINE_COMPLETE**: OCR correction pipeline completed", correctionAttempts);
+                                        context.Logger?.Error("🚀 **PATHWAY_ATTEMPT_{Attempt}_CORRECTION_START**: OCR correction starting with Verbose logging enabled", correctionAttempts);
+                                        await OCRCorrectionService.CorrectInvoices(res, template, context.Logger).ConfigureAwait(false);
+                                        context.Logger?.Error("✅ **PATHWAY_ATTEMPT_{Attempt}_CORRECTION_COMPLETE**: OCR correction completed", correctionAttempts);
                                     }
                                     
                                     // **CRITICAL DATABASE VERIFICATION**: Check database state AFTER OCR correction 

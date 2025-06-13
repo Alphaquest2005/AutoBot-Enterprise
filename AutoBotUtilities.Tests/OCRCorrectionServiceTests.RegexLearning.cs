@@ -196,7 +196,7 @@ namespace AutoBotUtilities.Tests.Production
 
                 // Step 3: Update regex patterns - Note: Without metadata, database updates will be skipped
                 // but file-based pattern learning should still work
-                await _service.UpdateRegexPatternsAsync(corrections, fileText, null, null);
+                await _service.UpdateRegexPatternsAsync(corrections.Select(c => CreateRegexUpdateRequest(c, fileText, null, null)));
 
                 // Step 4: Verify that the method completed without errors (database updates skipped due to null metadata)
                 _logger.Information("UpdateRegexPatternsAsync completed - database updates were skipped due to null metadata");
@@ -316,5 +316,72 @@ namespace AutoBotUtilities.Tests.Production
         }
 
         #endregion
+
+        /// <summary>
+        /// Helper method to create a RegexUpdateRequest from a CorrectionResult for testing purposes.
+        /// This mimics the logic in OCRCorrectionService.CreateRegexUpdateRequest but is simplified for tests.
+        /// </summary>
+        private RegexUpdateRequest CreateRegexUpdateRequest(CorrectionResult correction, string fileText, Dictionary<string, OCRFieldMetadata> metadata, int? invoiceId)
+        {
+            var request = new RegexUpdateRequest
+            {
+                FieldName = correction.FieldName,
+                OldValue = correction.OldValue,
+                NewValue = correction.NewValue,
+                CorrectionType = correction.CorrectionType,
+                Confidence = correction.Confidence,
+                DeepSeekReasoning = correction.Reasoning,
+                LineNumber = correction.LineNumber,
+                RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                ExistingRegex = correction.ExistingRegex,
+                SuggestedRegex = correction.SuggestedRegex,
+                LineId = correction.LineId,
+                PartId = correction.PartId,
+                RegexId = correction.RegexId,
+                InvoiceId = invoiceId
+            };
+
+            if (!string.IsNullOrEmpty(fileText))
+            {
+                var lines = fileText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                if (correction.LineNumber > 0 && correction.LineNumber <= lines.Length)
+                {
+                    request.LineText = lines[correction.LineNumber - 1];
+                }
+                request.WindowText = correction.WindowText;
+                if (string.IsNullOrEmpty(request.WindowText) && correction.LineNumber > 0)
+                {
+                    int windowStart = Math.Max(0, correction.LineNumber - 1 - 2);
+                    int windowEnd = Math.Min(lines.Length, correction.LineNumber - 1 + 3);
+                    request.WindowText = string.Join(Environment.NewLine, lines.Skip(windowStart).Take(windowEnd - windowStart));
+                }
+                request.ContextLinesBefore = GetContextLines(lines, correction.LineNumber, -2);
+                request.ContextLinesAfter = GetContextLines(lines, correction.LineNumber, 2);
+            }
+
+            if (metadata != null && metadata.TryGetValue(correction.FieldName, out var fieldMetadata))
+            {
+                request.PartName = fieldMetadata.PartName;
+                request.InvoiceType = fieldMetadata.InvoiceType;
+            }
+
+            return request;
+        }
+
+        /// <summary>
+        /// Helper method to get context lines for testing purposes.
+        /// </summary>
+        private List<string> GetContextLines(string[] allLines, int currentLineNumber, int offset)
+        {
+            var contextLines = new List<string>();
+            int startIndex = currentLineNumber - 1 + offset;
+            int endIndex = currentLineNumber - 1 + offset + Math.Abs(offset);
+
+            for (int i = Math.Max(0, startIndex); i < Math.Min(allLines.Length, endIndex); i++)
+            {
+                contextLines.Add(allLines[i]);
+            }
+            return contextLines;
+        }
     }
 }

@@ -499,7 +499,10 @@ namespace WaterNut.DataSpace
                         if (successfulValueApplications.Any())
                         {
                             log.Error("🔍 **OCR_LOGIC_FLOW_UPDATE_PATTERNS**: About to update regex patterns for {SuccessfulCount} successful corrections", successfulValueApplications.Count);
-                            await correctionServiceInstance.UpdateRegexPatternsAsync(successfulValueApplications, originalText, template.FilePath, invoiceWithMeta.FieldMetadata).ConfigureAwait(false);
+                            var regexUpdateRequests = successfulValueApplications.Select(cr =>
+                                correctionServiceInstance.CreateRegexUpdateRequest(cr, originalText, invoiceWithMeta.FieldMetadata, currentShipmentInvoice.Id))
+                                .ToList();
+                            await correctionServiceInstance.UpdateRegexPatternsAsync(regexUpdateRequests).ConfigureAwait(false);
                         }
                     }
                     else
