@@ -66,7 +66,7 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _totalcorrections;
         [DataMember]
-        public Nullable<decimal> AvgConfidence 
+        public Nullable<double> AvgConfidence 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _avgconfidence;
+        Nullable<double> _avgconfidence;
         [DataMember]
         public Nullable<int> SuccessfulCorrections 
         {
@@ -111,7 +111,7 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _failedcorrections;
         [DataMember]
-        public Nullable<decimal> SuccessRate 
+        public Nullable<double> SuccessRate 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _successrate;
+        Nullable<double> _successrate;
         [DataMember]
         public Nullable<System.DateTime> FirstCorrection 
         {

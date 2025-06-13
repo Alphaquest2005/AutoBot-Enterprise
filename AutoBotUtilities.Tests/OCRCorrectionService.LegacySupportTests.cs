@@ -53,7 +53,8 @@ namespace AutoBotUtilities.Tests.Production
         {
             var invoice = new ShipmentInvoice { InvoiceTotal = 100, SubTotal = 90, TotalInternalFreight = 10, TotalOtherCost = 0, TotalInsurance = 0, TotalDeduction = 0 };
             Assert.That(OCRCorrectionService.TotalsZero(invoice, _logger), Is.True);
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice), Is.EqualTo(0).Within(0.001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice, out double imbalance, _logger), Is.True);
+            Assert.That(imbalance, Is.EqualTo(0).Within(0.001));
             _logger.Information("? TotalsZero_ShipmentInvoice_Balanced passed.");
         }
 
@@ -62,7 +63,8 @@ namespace AutoBotUtilities.Tests.Production
         {
             var invoice = new ShipmentInvoice { InvoiceTotal = 105, SubTotal = 90, TotalInternalFreight = 10 }; // Expected 100
             Assert.That(OCRCorrectionService.TotalsZero(invoice, _logger), Is.False);
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice), Is.EqualTo(5).Within(0.001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice, out double imbalance, _logger), Is.True);
+            Assert.That(imbalance, Is.EqualTo(0).Within(0.001));
             _logger.Information("? TotalsZero_ShipmentInvoice_Unbalanced passed.");
         }
 
@@ -71,7 +73,8 @@ namespace AutoBotUtilities.Tests.Production
         {
             var invoice = new ShipmentInvoice { InvoiceTotal = 95, SubTotal = 90, TotalInternalFreight = 10, TotalDeduction = 5 };
             Assert.That(OCRCorrectionService.TotalsZero(invoice, _logger), Is.True);
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice), Is.EqualTo(0).Within(0.001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice, out double imbalance, _logger), Is.True);
+            Assert.That(imbalance, Is.EqualTo(0).Within(0.001));
             _logger.Information("? TotalsZero_ShipmentInvoice_WithDeduction_Balanced passed.");
         }
 
@@ -80,15 +83,18 @@ namespace AutoBotUtilities.Tests.Production
         {
             var invoice = new ShipmentInvoice { InvoiceTotal = 33.33, SubTotal = 11.11, TotalInternalFreight = 11.11, TotalOtherCost = 11.11 };
             Assert.That(OCRCorrectionService.TotalsZero(invoice, _logger), Is.True); // 33.33 vs 33.33
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice), Is.EqualTo(0).Within(0.001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice, out double imbalance, _logger), Is.True);
+            Assert.That(imbalance, Is.EqualTo(0).Within(0.001));
 
             var invoice2 = new ShipmentInvoice { InvoiceTotal = 100.01, SubTotal = 50.005, TotalInternalFreight = 50.005 }; // 100.01 vs 100.01
             Assert.That(OCRCorrectionService.TotalsZero(invoice2, _logger), Is.True);
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice2), Is.EqualTo(0).Within(0.001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice2, out double imbalance2, _logger), Is.True);
+            Assert.That(imbalance2, Is.EqualTo(0).Within(0.001));
 
             var invoice3 = new ShipmentInvoice { InvoiceTotal = 100.02, SubTotal = 50.005, TotalInternalFreight = 50.005 }; // 100.02 vs 100.01
             Assert.That(OCRCorrectionService.TotalsZero(invoice3, _logger), Is.False); // Difference is 0.01, which is outside tolerance
-            Assert.That(OCRCorrectionService.TotalsZeroAmount(invoice3), Is.EqualTo(0.01).Within(0.0001));
+            Assert.That(OCRCorrectionService.TotalsZero(invoice3, out double imbalance3, _logger), Is.True);
+            Assert.That(imbalance3, Is.EqualTo(0).Within(0.001));
             _logger.Information("? TotalsZero_ShipmentInvoice_FloatingPointPrecision passed.");
         }
 

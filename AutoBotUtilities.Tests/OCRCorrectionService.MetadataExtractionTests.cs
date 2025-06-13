@@ -122,8 +122,10 @@ namespace AutoBotUtilities.Tests.Production
             };
 
             Assert.That(siwm.Invoice.InvoiceNo, Is.EqualTo("META-001"));
-            Assert.That(siwm.GetFieldMetadata("InvoiceTotal"), Is.EqualTo(ocrMeta));
-            Assert.That(siwm.GetFieldMetadata("NonExistent"), Is.Null);
+            // Changed from: Assert.That(siwm.GetFieldMetadata("InvoiceTotal"), Is.EqualTo(ocrMeta));
+            Assert.That(siwm.FieldMetadata["InvoiceTotal"], Is.EqualTo(ocrMeta));
+            // Changed from: Assert.That(siwm.GetFieldMetadata("NonExistent"), Is.Null);
+            Assert.That(siwm.FieldMetadata.ContainsKey("NonExistent"), Is.False);
             _logger.Information("✓ ShipmentInvoiceWithMetadata created and accessed correctly");
         }
 

@@ -193,7 +193,7 @@ public string DeepSeekReasoning
 
        
        [NumberValidationAttribute]
-public Nullable<decimal> Confidence
+public Nullable<double> Confidence
 		{ 
 		    get { return this.ocrcorrectionlearning.Confidence; }
 			set

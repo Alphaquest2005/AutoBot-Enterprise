@@ -51,8 +51,8 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
-        <EntityTypeShape EntityType="WaterNutDBModel.OCRCorrectionLearning" Width="1.5" PointX="0.75" PointY="13.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.vw_OCRCorrectionAnalysis" Width="1.5" PointX="2.75" PointY="13.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCRCorrectionLearning" Width="2.125" PointX="11.375" PointY="14.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.vw_OCRCorrectionAnalysis" Width="1.5" PointX="0.75" PointY="13.75" />
       </Diagram>
       <Diagram DiagramId="2a65efe28dcf4398b5a10bc2fc674aa6" Name="Query" >
       </Diagram>

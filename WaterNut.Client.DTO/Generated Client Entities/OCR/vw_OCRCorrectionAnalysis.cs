@@ -61,7 +61,7 @@ namespace OCR.Client.DTO
         private Nullable<int> _TotalCorrections;
 
         [DataMember]
-        public Nullable<decimal> AvgConfidence
+        public Nullable<double> AvgConfidence
 		{ 
 		    get { return _AvgConfidence; }
 			set
@@ -71,7 +71,7 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.AvgConfidence
 			}
 		}
-        private Nullable<decimal> _AvgConfidence;
+        private Nullable<double> _AvgConfidence;
 
         [DataMember]
         public Nullable<int> SuccessfulCorrections
@@ -100,7 +100,7 @@ namespace OCR.Client.DTO
         private Nullable<int> _FailedCorrections;
 
         [DataMember]
-        public Nullable<decimal> SuccessRate
+        public Nullable<double> SuccessRate
 		{ 
 		    get { return _SuccessRate; }
 			set
@@ -110,7 +110,7 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.SuccessRate
 			}
 		}
-        private Nullable<decimal> _SuccessRate;
+        private Nullable<double> _SuccessRate;
 
         [DataMember]
         public Nullable<System.DateTime> FirstCorrection

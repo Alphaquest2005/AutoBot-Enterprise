@@ -156,7 +156,7 @@ namespace OCR.Business.Entities
         }
         string _deepseekreasoning;
         [DataMember]
-        public Nullable<decimal> Confidence 
+        public Nullable<double> Confidence 
         {
             get
             {
@@ -169,7 +169,7 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _confidence;
+        Nullable<double> _confidence;
         [DataMember]
         public string InvoiceType 
         {

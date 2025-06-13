@@ -11,10 +11,10 @@
     {
         public vw_OCRCorrectionAnalysisMap()
         {                        
-              this.HasKey(t => new {t.FieldName, t.CorrectionType});        
+              this.HasKey(t => t.FieldName);        
               this.ToTable("vw_OCRCorrectionAnalysis");
               this.Property(t => t.FieldName).HasColumnName("FieldName").IsRequired().HasMaxLength(255);
-              this.Property(t => t.CorrectionType).HasColumnName("CorrectionType").IsRequired().HasMaxLength(100);
+              this.Property(t => t.CorrectionType).HasColumnName("CorrectionType").HasMaxLength(100);
               this.Property(t => t.TotalCorrections).HasColumnName("TotalCorrections");
               this.Property(t => t.AvgConfidence).HasColumnName("AvgConfidence");
               this.Property(t => t.SuccessfulCorrections).HasColumnName("SuccessfulCorrections");

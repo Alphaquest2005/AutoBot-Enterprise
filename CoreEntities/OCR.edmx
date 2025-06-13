@@ -52,7 +52,7 @@
           <Property Name="WindowText" Type="nvarchar(max)" />
           <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" />
           <Property Name="DeepSeekReasoning" Type="nvarchar(max)" />
-          <Property Name="Confidence" Type="decimal" Precision="5" Scale="4" />
+          <Property Name="Confidence" Type="float" />
           <Property Name="InvoiceType" Type="nvarchar" MaxLength="100" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
           <Property Name="Success" Type="bit" Nullable="false" />
@@ -233,15 +233,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
         <EntityType Name="vw_OCRCorrectionAnalysis">
           <Key>
             <PropertyRef Name="FieldName" />
-            <PropertyRef Name="CorrectionType" />
           </Key>
           <Property Name="FieldName" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" />
           <Property Name="TotalCorrections" Type="int" />
-          <Property Name="AvgConfidence" Type="decimal" Precision="38" Scale="6" />
+          <Property Name="AvgConfidence" Type="float" />
           <Property Name="SuccessfulCorrections" Type="int" />
           <Property Name="FailedCorrections" Type="int" />
-          <Property Name="SuccessRate" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="SuccessRate" Type="float" />
           <Property Name="FirstCorrection" Type="datetime2" Precision="7" />
           <Property Name="LastCorrection" Type="datetime2" Precision="7" />
         </EntityType>
@@ -1514,13 +1513,13 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="WindowText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CorrectionType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DeepSeekReasoning" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Confidence" Type="Decimal" Precision="5" Scale="4" />
+          <Property Name="Confidence" Type="Double" />
           <Property Name="InvoiceType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Success" Type="Boolean" Nullable="false" />
           <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="RequiresMultilineRegex" Type="Boolean" />
           <Property Name="ContextLinesBefore" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ContextLinesAfter" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1531,15 +1530,14 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
         <EntityType Name="vw_OCRCorrectionAnalysis">
           <Key>
             <PropertyRef Name="FieldName" />
-            <PropertyRef Name="CorrectionType" />
           </Key>
           <Property Name="FieldName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CorrectionType" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectionType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TotalCorrections" Type="Int32" />
-          <Property Name="AvgConfidence" Type="Decimal" Precision="38" Scale="6" />
+          <Property Name="AvgConfidence" Type="Double" />
           <Property Name="SuccessfulCorrections" Type="Int32" />
           <Property Name="FailedCorrections" Type="Int32" />
-          <Property Name="SuccessRate" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="SuccessRate" Type="Double" />
           <Property Name="FirstCorrection" Type="DateTime" Precision="7" />
           <Property Name="LastCorrection" Type="DateTime" Precision="7" />
         </EntityType>

@@ -59,7 +59,7 @@ public string FieldName
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "CorrectionType is required")]
+       
        
                 
                 [MaxLength(100, ErrorMessage = "CorrectionType has a max length of 100 letters ")]
@@ -93,7 +93,7 @@ public Nullable<int> TotalCorrections
 
        
        [NumberValidationAttribute]
-public Nullable<decimal> AvgConfidence
+public Nullable<double> AvgConfidence
 		{ 
 		    get { return this.vw_ocrcorrectionanalysis.AvgConfidence; }
 			set
@@ -138,7 +138,7 @@ public Nullable<int> FailedCorrections
 
        
        [NumberValidationAttribute]
-public Nullable<decimal> SuccessRate
+public Nullable<double> SuccessRate
 		{ 
 		    get { return this.vw_ocrcorrectionanalysis.SuccessRate; }
 			set

@@ -317,8 +317,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private Decimal? _confidenceFilter;
-        public Decimal? ConfidenceFilter
+		private Double? _confidenceFilter;
+        public Double? ConfidenceFilter
         {
             get
             {
@@ -762,7 +762,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public string DeepSeekReasoning { get; set; } 
                     
  
-                    public Nullable<decimal> Confidence { get; set; } 
+                    public Nullable<double> Confidence { get; set; } 
                     
  
                     public string InvoiceType { get; set; } 

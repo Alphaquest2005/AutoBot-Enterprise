@@ -139,7 +139,7 @@ namespace OCR.Client.DTO
         private string _DeepSeekReasoning;
 
         [DataMember]
-        public Nullable<decimal> Confidence
+        public Nullable<double> Confidence
 		{ 
 		    get { return _Confidence; }
 			set
@@ -149,7 +149,7 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.Confidence
 			}
 		}
-        private Nullable<decimal> _Confidence;
+        private Nullable<double> _Confidence;
 
         [DataMember]
         public string InvoiceType

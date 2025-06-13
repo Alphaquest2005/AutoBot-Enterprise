@@ -227,8 +227,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private Decimal? _avgConfidenceFilter;
-        public Decimal? AvgConfidenceFilter
+		private Double? _avgConfidenceFilter;
+        public Double? AvgConfidenceFilter
         {
             get
             {
@@ -281,8 +281,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private Decimal? _successRateFilter;
-        public Decimal? SuccessRateFilter
+		private Double? _successRateFilter;
+        public Double? SuccessRateFilter
         {
             get
             {
@@ -576,7 +576,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public Nullable<int> TotalCorrections { get; set; } 
                     
  
-                    public Nullable<decimal> AvgConfidence { get; set; } 
+                    public Nullable<double> AvgConfidence { get; set; } 
                     
  
                     public Nullable<int> SuccessfulCorrections { get; set; } 
@@ -585,7 +585,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public Nullable<int> FailedCorrections { get; set; } 
                     
  
-                    public Nullable<decimal> SuccessRate { get; set; } 
+                    public Nullable<double> SuccessRate { get; set; } 
                     
  
                     public Nullable<System.DateTime> FirstCorrection { get; set; } 
