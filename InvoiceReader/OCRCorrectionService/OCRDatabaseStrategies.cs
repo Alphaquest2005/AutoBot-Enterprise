@@ -109,7 +109,7 @@ namespace WaterNut.DataSpace
         }
         #endregion
 
-        #region Omission Update Strategy (With Validation & Retry Loop)
+        #region Omission Update Strategy (With All Fixes)
 
         public class OmissionUpdateStrategy : DatabaseUpdateStrategyBase
         {
@@ -120,9 +120,8 @@ namespace WaterNut.DataSpace
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
                 _logger.Error("🔍 **OMISSION_STRATEGY_START**: Executing for field: {FieldName}", request.FieldName);
-
-                // Defensive check for null request properties that cause exceptions downstream.
-                if (string.IsNullOrEmpty(request.FieldName) || string.IsNullOrEmpty(request.NewValue))
+                
+                if (string.IsNullOrEmpty(request.FieldName) || request.NewValue == null)
                 {
                     _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing critical FieldName or NewValue. Aborting.");
                     return DatabaseUpdateResult.Failed("Request object has null FieldName or NewValue.");
@@ -137,18 +136,20 @@ namespace WaterNut.DataSpace
                     if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
 
                     // ================== CRITICAL FIX: Properly populate prompt contexts ==================
-                    var correctionForPrompt = new CorrectionResult
+                    var correctionForPrompt = new CorrectionResult 
                     {
                         FieldName = request.FieldName,
                         NewValue = request.NewValue,
                         LineText = request.LineText,
                         LineNumber = request.LineNumber
                     };
-                    var lineContextForPrompt = new LineContext
+                    var lineContextForPrompt = new LineContext 
                     {
                         LineNumber = request.LineNumber,
                         LineText = request.LineText,
-                        FullContextWithLineNumbers = string.Join("\n", request.ContextLinesBefore.Concat(new[] { $">>> LINE {request.LineNumber}: {request.LineText} <<<" }).Concat(request.ContextLinesAfter))
+                        // Fix for CS0200: Populate the lists, not the read-only property
+                        ContextLinesBefore = request.ContextLinesBefore,
+                        ContextLinesAfter = request.ContextLinesAfter
                     };
                     // =====================================================================================
 
@@ -158,7 +159,7 @@ namespace WaterNut.DataSpace
                     for (int attempt = 1; attempt <= maxAttempts; attempt++)
                     {
                         _logger.Information("  -> Regex generation attempt {Attempt}/{MaxAttempts} for field '{FieldName}'", attempt, maxAttempts, request.FieldName);
-
+                        
                         if (attempt == 1)
                         {
                             regexResponse = await serviceInstance.RequestNewRegexFromDeepSeek(correctionForPrompt, lineContextForPrompt).ConfigureAwait(false);
@@ -181,14 +182,14 @@ namespace WaterNut.DataSpace
                             _logger.Information("  -> ✅ Regex validation successful for field '{FieldName}' on attempt {Attempt}.", request.FieldName, attempt);
                             if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
                             if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new line.");
-
+                            
                             return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
                         }
-
+                        
                         failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text.";
                         _logger.Warning("  -> ❌ Attempt {Attempt} failed validation. Reason: {Reason}", attempt, failureReason);
                     }
-
+                    
                     return DatabaseUpdateResult.Failed($"DeepSeek failed to generate a valid regex for '{request.FieldName}' after {maxAttempts} attempts. Last failure reason: {failureReason}");
                 }
                 catch (Exception ex)
@@ -199,7 +200,7 @@ namespace WaterNut.DataSpace
             }
 
             private async Task<DatabaseUpdateResult> CreateNewLineForOmissionAsync(
-                OCRContext context, RegexUpdateRequest request, RegexCreationResponse regexResp,
+                OCRContext context, RegexUpdateRequest request, RegexCreationResponse regexResp, 
                 DatabaseFieldInfo fieldInfo, OCRCorrectionService serviceInstance)
             {
                 _logger.Error("  - [DB_SAVE_INTENT]: Preparing to create new Line, Field, and Regex for Omission of '{FieldName}'.", request.FieldName);
