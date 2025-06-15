@@ -108,7 +108,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                         if (template.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice)
                         {
-                            var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, context.Logger).ConfigureAwait(false);
+                            var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, template.FormattedPdfText, context.Logger).ConfigureAwait(false);
                             template.CsvLines = correctedRes;
                         }
 

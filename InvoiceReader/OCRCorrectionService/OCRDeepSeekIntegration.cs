@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Serilog; // ILogger is available as this._logger
+using Serilog;
 
 namespace WaterNut.DataSpace
 {
     /// <summary>
     /// Handles direct interactions with the DeepSeek LLM API for OCR correction tasks,
-    /// including general response parsing and specific regex creation requests.
+    /// including general response parsing and specific regex creation/correction requests.
     /// </summary>
     public partial class OCRCorrectionService
     {
@@ -82,20 +82,20 @@ namespace WaterNut.DataSpace
             if (string.IsNullOrEmpty(fieldName) || newValue == null) return null;
 
             return new CorrectionResult
-                       {
-                           FieldName = fieldName,
-                           OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
-                           NewValue = newValue,
-                           LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
-                           LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
-                           Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
-                           Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
-                           CorrectionType = DetermineCorrectionType(
+            {
+                FieldName = fieldName,
+                OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
+                NewValue = newValue,
+                LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
+                LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
+                Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
+                Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
+                CorrectionType = DetermineCorrectionType(
                                this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
                                newValue,
                                this.GetStringValueWithLogging(element, "error_type", itemIndex, true)),
-                           Success = true
-                       };
+                Success = true
+            };
         }
 
         #endregion
@@ -126,6 +126,35 @@ namespace WaterNut.DataSpace
             }
         }
 
+        /// <summary>
+        /// NEW: Requests a CORRECTION for a previously failed regex pattern from DeepSeek.
+        /// </summary>
+        public async Task<RegexCreationResponse> RequestRegexCorrectionFromDeepSeek(
+            CorrectionResult correction,
+            LineContext lineContext,
+            RegexCreationResponse failedResponse,
+            string failureReason)
+        {
+            if (correction == null || lineContext == null || failedResponse == null) return null;
+            try
+            {
+                _logger.Information("🤖 **DEEPSEEK_REGEX_CORRECTION**: Requesting fix for failed regex for field {FieldName}", correction.FieldName);
+
+                var prompt = this.CreateRegexCorrectionPrompt(correction, lineContext, failedResponse, failureReason);
+                var responseJson = await this._deepSeekApi
+                                       .GetCompletionAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
+                                       .ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(responseJson)) return null;
+
+                return ParseRegexCreationResponseJson(responseJson);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 Error requesting regex CORRECTION from DeepSeek for field {FieldName}", correction.FieldName);
+                return null;
+            }
+        }
+
         private RegexCreationResponse ParseRegexCreationResponseJson(string responseJson)
         {
             try
@@ -138,43 +167,41 @@ namespace WaterNut.DataSpace
                 int dummyErrorIndex = -1;
 
                 return new RegexCreationResponse
-                           {
-                               Strategy =
+                {
+                    Strategy =
                                    this.GetStringValueWithLogging(root, "strategy", dummyErrorIndex)
                                    ?? "create_new_line",
-                               RegexPattern =
+                    RegexPattern =
                                    this.GetStringValueWithLogging(root, "regex_pattern", dummyErrorIndex) ?? "",
-                               CompleteLineRegex =
+                    CompleteLineRegex =
                                    this.GetStringValueWithLogging(
                                        root,
                                        "complete_line_regex",
                                        dummyErrorIndex,
                                        isOptional: true) ?? "",
-                               IsMultiline =
+                    IsMultiline =
                                    this.GetBooleanValueWithLogging(root, "is_multiline", dummyErrorIndex, false),
-                               MaxLines = this.GetIntValueWithLogging(root, "max_lines", dummyErrorIndex, 1),
-                               TestMatch =
+                    MaxLines = this.GetIntValueWithLogging(root, "max_lines", dummyErrorIndex, 1),
+                    TestMatch =
                                    this.GetStringValueWithLogging(root, "test_match", dummyErrorIndex, isOptional: true)
                                    ?? "",
-                               Confidence = this.GetDoubleValueWithLogging(root, "confidence", dummyErrorIndex, 0.75),
-                               Reasoning =
+                    Confidence = this.GetDoubleValueWithLogging(root, "confidence", dummyErrorIndex, 0.75),
+                    Reasoning =
                                    this.GetStringValueWithLogging(root, "reasoning", dummyErrorIndex, isOptional: true)
                                    ?? "",
-                               PreservesExistingGroups = this.GetBooleanValueWithLogging(
+                    PreservesExistingGroups = this.GetBooleanValueWithLogging(
                                    root,
                                    "preserves_existing_groups",
                                    dummyErrorIndex,
                                    true),
-                               // **FIX**: The 'ContextLinesUsed' property was removed from the RegexCreationResponse model.
-                               // This line, which attempted to assign to it, is now removed to fix the compilation error.
-                           };
+                };
             }
             catch (JsonException jsonEx)
             {
                 _logger.Error(
                     jsonEx,
                     "Error parsing DeepSeek regex creation JSON response. Cleaned snippet: {Snippet}",
-                    this.TruncateForLog(this.CleanJsonResponse(responseJson), 200));
+                    TruncateForLog(this.CleanJsonResponse(responseJson), 200));
                 return null;
             }
             catch (Exception ex)
@@ -190,19 +217,27 @@ namespace WaterNut.DataSpace
 
         private string FindOriginalValueInText(string fieldName, string text)
         {
-            // Implementation remains unchanged
+            // Implementation can be simple or complex depending on needs.
             return null;
         }
 
         private int FindLineNumberInTextByFieldName(string fieldName, string text)
         {
-            // Implementation remains unchanged
+            // Placeholder for a more complex implementation.
             return 0;
         }
 
         private int FindLineNumberInTextByExactLine(string lineToFind, string text)
         {
-            // Implementation remains unchanged
+            if (string.IsNullOrEmpty(lineToFind) || string.IsNullOrEmpty(text))
+                return 0;
+
+            var lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(lineToFind))
+                    return i + 1; // 1-based line number
+            }
             return 0;
         }
 
@@ -210,13 +245,32 @@ namespace WaterNut.DataSpace
             List<CorrectionResult> corrections,
             string originalText)
         {
-            // Implementation remains unchanged
+            foreach (var correction in corrections)
+            {
+                if (correction.LineNumber == 0 && !string.IsNullOrEmpty(correction.LineText))
+                {
+                    correction.LineNumber = FindLineNumberInTextByExactLine(correction.LineText, originalText);
+                }
+                EnrichContextLinesFromText(correction, originalText);
+            }
             return corrections;
         }
 
         private void EnrichContextLinesFromText(CorrectionResult correction, string originalText)
         {
-            // Implementation remains unchanged
+            if (correction.LineNumber <= 0 || string.IsNullOrEmpty(originalText)) return;
+
+            var lines = originalText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            int centerIndex = correction.LineNumber - 1;
+
+            int beforeStart = Math.Max(0, centerIndex - 5);
+            correction.ContextLinesBefore = lines.Skip(beforeStart).Take(centerIndex - beforeStart).ToList();
+
+            int afterStart = centerIndex + 1;
+            if (afterStart < lines.Length)
+            {
+                correction.ContextLinesAfter = lines.Skip(afterStart).Take(5).ToList();
+            }
         }
 
         private string DetermineCorrectionType(string oldValue, string newValue, string errorTypeFromDeepSeek = null)
@@ -242,5 +296,4 @@ namespace WaterNut.DataSpace
 
         #endregion
     }
-
 }

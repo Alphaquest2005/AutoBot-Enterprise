@@ -90,9 +90,9 @@ namespace AutoBotUtilities.Tests.Production
             string longText = new string('x', 250);
             string shortText = "abc";
 
-            Assert.That(service.TruncateForLog(longText, 200), Is.EqualTo(new string('x', 200) + "..."));
-            Assert.That(service.TruncateForLog(shortText, 200), Is.EqualTo("abc"));
-            Assert.That(service.TruncateForLog(null, 200), Is.EqualTo(string.Empty));
+            Assert.That(OCRCorrectionService.TruncateForLog(longText, 200), Is.EqualTo(new string('x', 200) + "..."));
+            Assert.That(OCRCorrectionService.TruncateForLog(shortText, 200), Is.EqualTo("abc"));
+            Assert.That(OCRCorrectionService.TruncateForLog(null, 200), Is.EqualTo(string.Empty));
             _logger.Information("✓ TruncateForLog works correctly.");
         }
 

@@ -25,6 +25,14 @@ namespace InvoiceReader.PipelineInfrastructure
         // private static readonly ILogger _logger = Log.ForContext<GetTemplatesStep>();
         private static IEnumerable<Invoice> _allTemplates = null;
 
+        // ADD THIS NEW METHOD
+        public static void InvalidateTemplateCache()
+        {
+            // This method acts as a "reset" button for the static cache.
+            _allTemplates = null;
+        }
+
+
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
             var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution

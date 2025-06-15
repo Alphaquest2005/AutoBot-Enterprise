@@ -189,15 +189,15 @@ namespace WaterNut.DataSpace
             return cleaned.Substring(startIndex, endIndex - startIndex + 1);
         }
 
-        /// <summary>
-        /// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
-        /// Useful for logging or displaying long strings.
-        /// </summary>
-        public string TruncateForLog(string text, int maxLength = 200) // Reduced default for logs
-        {
-            if (string.IsNullOrEmpty(text)) return string.Empty;
-            return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
-        }
+        ///// <summary>
+        ///// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
+        ///// Useful for logging or displaying long strings.
+        ///// </summary>
+        //public static string TruncateForLog(string text, int maxLength = 200) // Reduced default for logs
+        //{
+        //    if (string.IsNullOrEmpty(text)) return string.Empty;
+        //    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+        //}
 
         #endregion
 

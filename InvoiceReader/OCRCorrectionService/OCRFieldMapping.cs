@@ -175,39 +175,39 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Validates if a given field name (after potential prefix stripping) is supported by the mapping.
         /// </summary>
-        public bool IsFieldSupported(string rawFieldName)
-        {
-            if (string.IsNullOrWhiteSpace(rawFieldName)) return false;
-            string fieldNameToMap = rawFieldName.Trim();
-            if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
-            {
-                var parts = fieldNameToMap.Split('_');
-                if (parts.Length >= 3) fieldNameToMap = parts.Last();
-            }
-            return DeepSeekToDBFieldMapping.ContainsKey(fieldNameToMap);
-        }
+        //public bool IsFieldSupported(string rawFieldName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(rawFieldName)) return false;
+        //    string fieldNameToMap = rawFieldName.Trim();
+        //    if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        var parts = fieldNameToMap.Split('_');
+        //        if (parts.Length >= 3) fieldNameToMap = parts.Last();
+        //    }
+        //    return DeepSeekToDBFieldMapping.ContainsKey(fieldNameToMap);
+        //}
         
         /// <summary>
         /// Retrieves validation rules (data type, required, pattern, etc.) for a given field name.
         /// </summary>
-        public FieldValidationInfo GetFieldValidationInfo(string rawFieldName)
-        {
-            var fieldInfo = MapDeepSeekFieldToDatabase(rawFieldName);
-            if (fieldInfo == null)
-                return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{rawFieldName}' is unknown or not mapped." };
+        //public FieldValidationInfo GetFieldValidationInfo(string rawFieldName)
+        //{
+        //    var fieldInfo = MapDeepSeekFieldToDatabase(rawFieldName);
+        //    if (fieldInfo == null)
+        //        return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{rawFieldName}' is unknown or not mapped." };
 
-            return new FieldValidationInfo
-            {
-                IsValid = true, // Indicates that we have validation rules, not that the value IS valid
-                DatabaseFieldName = fieldInfo.DatabaseFieldName,
-                EntityType = fieldInfo.EntityType,
-                IsRequired = fieldInfo.IsRequired,
-                DataType = fieldInfo.DataType,
-                IsMonetary = (fieldInfo.DataType == "Number"), // Use Number pseudo datatype for monetary fields
-                MaxLength = GetMaxLengthForField(fieldInfo), // Helper
-                ValidationPattern = GetValidationPatternForField(fieldInfo) // Helper
-            };
-        }
+        //    return new FieldValidationInfo
+        //    {
+        //        IsValid = true, // Indicates that we have validation rules, not that the value IS valid
+        //        DatabaseFieldName = fieldInfo.DatabaseFieldName,
+        //        EntityType = fieldInfo.EntityType,
+        //        IsRequired = fieldInfo.IsRequired,
+        //        DataType = fieldInfo.DataType,
+        //        IsMonetary = (fieldInfo.DataType == "Number"), // Use Number pseudo datatype for monetary fields
+        //        MaxLength = GetMaxLengthForField(fieldInfo), // Helper
+        //        ValidationPattern = GetValidationPatternForField(fieldInfo) // Helper
+        //    };
+        //}
 
         // Helper method for GetFieldValidationInfo
         private int? GetMaxLengthForField(DatabaseFieldInfo fieldInfo)

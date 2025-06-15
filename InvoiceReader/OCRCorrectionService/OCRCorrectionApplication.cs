@@ -21,74 +21,28 @@ namespace WaterNut.DataSpace
             Dictionary<string, OCRFieldMetadata> currentInvoiceMetadata)
         {
             var correctionResults = new List<CorrectionResult>();
-            if (invoice == null || errors == null || !errors.Any())
-            {
-                _logger.Information("ApplyCorrectionsAsync: No invoice or errors to apply.");
-                return correctionResults;
-            }
+            if (invoice == null || errors == null || !errors.Any()) return correctionResults;
 
-            // --- AGGREGATION LOGIC ---
-            var aggregatedErrors = new List<InvoiceError>();
-            var errorsToProcessIndividually = new List<InvoiceError>();
+            // This method now ONLY applies direct, high-confidence, non-aggregate value fixes.
+            // Aggregate parts are handled by the pattern learning and re-import process.
+            const double CONFIDENCE_THRESHOLD = 0.90;
+            var errorsToApplyDirectly = errors
+                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD && e.ErrorType != "omission_aggregate_part" && e.ErrorType != "omission")
+                .ToList();
 
-            var groupedByField = errors.GroupBy(e => e.Field);
+            _logger.Information("Applying {Count} direct value/format corrections to invoice {InvoiceNo}.",
+                errorsToApplyDirectly.Count, invoice.InvoiceNo);
 
-            foreach (var group in groupedByField)
-            {
-                var aggregateParts = group.Where(e => e.ErrorType == "omission_aggregate_part").ToList();
-                if (aggregateParts.Any())
-                {
-                    decimal sum = 0;
-                    foreach (var part in aggregateParts)
-                    {
-                        if (decimal.TryParse(part.CorrectValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var partValue))
-                        {
-                            sum += partValue;
-                        }
-                    }
-
-                    var masterError = aggregateParts.First();
-                    masterError.CorrectValue = sum.ToString("F2");
-                    masterError.ErrorType = "omission";
-                    masterError.Reasoning = $"Aggregated value from {aggregateParts.Count} line items.";
-                    aggregatedErrors.Add(masterError);
-                    _logger.Information("Aggregated {Count} parts for field '{Field}' to a total of {Sum}", aggregateParts.Count, group.Key, sum);
-
-                    errorsToProcessIndividually.AddRange(group.Where(e => e.ErrorType != "omission_aggregate_part"));
-                }
-                else
-                {
-                    errorsToProcessIndividually.AddRange(group);
-                }
-            }
-
-            var finalErrorsToApply = errorsToProcessIndividually.Concat(aggregatedErrors).ToList();
-            // --- END AGGREGATION LOGIC ---
-
-            _logger.Information("Applying corrections to invoice {InvoiceNo}: {TotalCount} final corrections after aggregation.",
-                invoice.InvoiceNo, finalErrorsToApply.Count);
-
-            var correctedFields = new HashSet<string>();
-
-            foreach (var error in finalErrorsToApply)
+            foreach (var error in errorsToApplyDirectly)
             {
                 var result = await this.ApplySingleValueOrFormatCorrectionToInvoiceAsync(invoice, error).ConfigureAwait(false);
                 correctionResults.Add(result);
-                LogCorrectionResult(result, "STANDARD_FIX_APPLIED");
-
-                if (result.Success)
-                {
-                    correctedFields.Add(result.FieldName);
-                }
+                LogCorrectionResult(result, "DIRECT_FIX_APPLIED");
             }
-
-            // Recalculation can be complex and is sometimes better handled after the entire pipeline step.
-            // RecalculateDependentFields(invoice, correctedFields);
 
             if (correctionResults.Any(r => r.Success))
             {
                 invoice.TrackingState = TrackingState.Modified;
-                _logger.Information("Invoice {InvoiceNo} marked as modified due to successful value applications.", invoice.InvoiceNo);
             }
 
             return correctionResults;
@@ -189,7 +143,7 @@ namespace WaterNut.DataSpace
 
             _logger.Write(level, "[{Priority}] {Status} correction for Field: {Field}, Type: {Type}. Old: '{OldVal}', New: '{NewVal}'. Conf: {Conf:P0}. Reason: '{Reason}'. Message: {Msg}",
                 priority, status, result.FieldName, result.CorrectionType,
-                this.TruncateForLog(result.OldValue, 50), this.TruncateForLog(result.NewValue, 50),
+                TruncateForLog(result.OldValue, 50), TruncateForLog(result.NewValue, 50),
                 result.Confidence, result.Reasoning ?? "N/A", result.ErrorMessage ?? "N/A");
         }
 

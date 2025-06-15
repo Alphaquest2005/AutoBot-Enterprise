@@ -42,16 +42,11 @@ namespace WaterNut.DataSpace
             _logger = logger ?? Log.Logger.ForContext<OCRCorrectionService>();
             try
             {
-                _logger.Error("🔍 **OCR_CONSTRUCTOR**: Attempting to initialize DeepSeekInvoiceApi...");
                 _deepSeekApi = new DeepSeekInvoiceApi(_logger);
-                _logger.Error("✅ **OCR_CONSTRUCTOR**: DeepSeekInvoiceApi initialized SUCCESSFULLY.");
             }
             catch (Exception ex)
             {
-                // This will log the REAL error to your console/file
-                _logger.Error(ex, "🚨🚨🚨 CRITICAL FAILURE: The DeepSeekInvoiceApi constructor threw an exception. This is the root cause of the NullReferenceException. 🚨🚨🚨");
-                // Re-throw the exception to ensure the application still behaves as it did before,
-                // but now you have the log of the true cause.
+                _logger.Error(ex, "CRITICAL FAILURE: The DeepSeekInvoiceApi constructor threw an exception.");
                 throw;
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
@@ -90,17 +85,17 @@ namespace WaterNut.DataSpace
 
                 var successfulDetectionsForDB = allDetectedErrors.Select(
                     e => new CorrectionResult
-                             {
-                                 FieldName = e.Field,
-                                 OldValue = e.ExtractedValue,
-                                 NewValue = e.CorrectValue,
-                                 CorrectionType = e.ErrorType,
-                                 Confidence = e.Confidence,
-                                 Reasoning = e.Reasoning,
-                                 LineText = e.LineText,
-                                 LineNumber = e.LineNumber,
-                                 Success = true
-                             }).ToList();
+                    {
+                        FieldName = e.Field,
+                        OldValue = e.ExtractedValue,
+                        NewValue = e.CorrectValue,
+                        CorrectionType = e.ErrorType,
+                        Confidence = e.Confidence,
+                        Reasoning = e.Reasoning,
+                        LineText = e.LineText,
+                        LineNumber = e.LineNumber,
+                        Success = true
+                    }).ToList();
 
                 if (successfulDetectionsForDB.Any())
                 {
@@ -130,29 +125,29 @@ namespace WaterNut.DataSpace
             if (shipmentInvoice == null) return metadataDict;
 
             Action<string, object> addMetaIfValuePresent = (propName, value) =>
+            {
+                if (value == null || (value is string s && string.IsNullOrEmpty(s))) return;
+                var mappedInfo = this.MapDeepSeekFieldToDatabase(propName);
+                if (mappedInfo == null) return;
+
+                int lineNumberInText = this.FindLineNumberInTextByFieldName(mappedInfo.DisplayName, fileText);
+                string lineTextFromDoc =
+                    lineNumberInText > 0 ? this.GetOriginalLineText(fileText, lineNumberInText) : null;
+
+                metadataDict[mappedInfo.DatabaseFieldName] = new OCRFieldMetadata
                 {
-                    if (value == null || (value is string s && string.IsNullOrEmpty(s))) return;
-                    var mappedInfo = this.MapDeepSeekFieldToDatabase(propName);
-                    if (mappedInfo == null) return;
-
-                    int lineNumberInText = this.FindLineNumberInTextByFieldName(mappedInfo.DisplayName, fileText);
-                    string lineTextFromDoc =
-                        lineNumberInText > 0 ? this.GetOriginalLineText(fileText, lineNumberInText) : null;
-
-                    metadataDict[mappedInfo.DatabaseFieldName] = new OCRFieldMetadata
-                                                                     {
-                                                                         FieldName = mappedInfo.DatabaseFieldName,
-                                                                         Value = value.ToString(),
-                                                                         RawValue = value.ToString(),
-                                                                         LineNumber = lineNumberInText,
-                                                                         LineText = lineTextFromDoc,
-                                                                         Key = mappedInfo.DisplayName,
-                                                                         Field = mappedInfo.DatabaseFieldName,
-                                                                         EntityType = mappedInfo.EntityType,
-                                                                         DataType = mappedInfo.DataType,
-                                                                         IsRequired = mappedInfo.IsRequired
-                                                                     };
+                    FieldName = mappedInfo.DatabaseFieldName,
+                    Value = value.ToString(),
+                    RawValue = value.ToString(),
+                    LineNumber = lineNumberInText,
+                    LineText = lineTextFromDoc,
+                    Key = mappedInfo.DisplayName,
+                    Field = mappedInfo.DatabaseFieldName,
+                    EntityType = mappedInfo.EntityType,
+                    DataType = mappedInfo.DataType,
+                    IsRequired = mappedInfo.IsRequired
                 };
+            };
 
             addMetaIfValuePresent("InvoiceNo", shipmentInvoice.InvoiceNo);
             addMetaIfValuePresent("InvoiceDate", shipmentInvoice.InvoiceDate);
@@ -169,43 +164,58 @@ namespace WaterNut.DataSpace
             return metadataDict;
         }
 
+        /// <summary>
+        /// CRITICAL FIX v3: This method now ensures that the granular, accurate line-level context
+        /// from the CorrectionResult is passed directly into the RegexUpdateRequest, preventing
+        /// context-passing bugs that led to validation failures.
+        /// </summary>
         public RegexUpdateRequest CreateRegexUpdateRequest(
             CorrectionResult correction,
-            string fileText,
+            string fileText, // fileText is now mainly for fallback.
             Dictionary<string, OCRFieldMetadata> metadata,
-            int? invoiceId)
+            int? templateId)
         {
             var request = new RegexUpdateRequest
-                              {
-                                  FieldName = correction.FieldName,
-                                  OldValue = correction.OldValue,
-                                  NewValue = correction.NewValue,
-                                  CorrectionType = correction.CorrectionType,
-                                  Confidence = correction.Confidence,
-                                  DeepSeekReasoning = correction.Reasoning,
-                                  LineNumber = correction.LineNumber,
-                                  RequiresMultilineRegex = correction.RequiresMultilineRegex,
-                                  ExistingRegex = correction.ExistingRegex,
-                                  SuggestedRegex = correction.SuggestedRegex,
-                                  LineId = correction.LineId,
-                                  PartId = correction.PartId,
-                                  RegexId = correction.RegexId,
-                                  InvoiceId = invoiceId
-                              };
-
-            if (!string.IsNullOrEmpty(fileText))
             {
-                var lines = fileText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                if (correction.LineNumber > 0 && correction.LineNumber <= lines.Length)
-                {
-                    request.LineText = lines[correction.LineNumber - 1];
-                }
+                FieldName = correction.FieldName,
+                OldValue = correction.OldValue,
+                NewValue = correction.NewValue,
+                CorrectionType = correction.CorrectionType,
+                Confidence = correction.Confidence,
+                DeepSeekReasoning = correction.Reasoning,
+                RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                SuggestedRegex = correction.SuggestedRegex,
+                ExistingRegex = correction.ExistingRegex,
+                LineId = correction.LineId,
+                PartId = correction.PartId,
+                RegexId = correction.RegexId,
+                InvoiceId = templateId,
 
-                request.WindowText = correction.WindowText;
+                // ================== CRITICAL FIX ==================
+                // Directly inherit the accurate line number and text from the correction object.
+                // This was the source of the context-passing bug.
+                LineNumber = correction.LineNumber,
+                LineText = correction.LineText,
+                WindowText = correction.WindowText,
+                ContextLinesBefore = correction.ContextLinesBefore,
+                ContextLinesAfter = correction.ContextLinesAfter
+                // ================================================
+            };
+
+            // This block is now a safety fallback. The primary source of LineText should be the correction object.
+            if (!string.IsNullOrEmpty(fileText) && string.IsNullOrEmpty(request.LineText) && request.LineNumber > 0)
+            {
+                _logger.Warning("CreateRegexUpdateRequest: LineText was missing from CorrectionResult for line {LineNum}. Falling back to extracting from full text.", request.LineNumber);
+                var lines = fileText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                if (request.LineNumber <= lines.Length)
+                {
+                    request.LineText = lines[request.LineNumber - 1];
+                }
             }
 
             return request;
         }
+
 
         #endregion
 
@@ -217,8 +227,8 @@ namespace WaterNut.DataSpace
             {
                 if (disposing)
                 {
+                    // dispose managed state (managed objects)
                 }
-
                 _disposed = true;
             }
         }
@@ -231,5 +241,4 @@ namespace WaterNut.DataSpace
 
         #endregion
     }
-
 }
