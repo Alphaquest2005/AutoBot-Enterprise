@@ -49,11 +49,11 @@ namespace WaterNut.DataSpace
                 // The new, correct key for a duplicate is: Same Field, Same Value, and a Regex that describes the line.
                 // We will use the SuggestedRegex for this.
                 var uniqueErrors = allDetectedErrors
-                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Value = e.CorrectValue, Regex = e.SuggestedRegex })
+                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Regex = e.SuggestedRegex })
                     .Select(g => {
                         var bestError = g.OrderByDescending(e => e.Confidence).First();
-                        _logger.Debug("    - For Key [Field: '{Field}', Value: '{Value}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2}",
-                            g.Key.Field, g.Key.Value, g.Key.Regex, bestError.Confidence);
+                        _logger.Debug("    - For Key [Field: '{Field}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2}",
+                            g.Key.Field,  g.Key.Regex, bestError.Confidence);
                         return bestError;
                     })
                     .ToList();
@@ -155,20 +155,27 @@ namespace WaterNut.DataSpace
             }
         }
 
+        // File: OCRCorrectionService/OCRErrorDetection.cs
+
         private InvoiceError ConvertCorrectionResultToInvoiceError(CorrectionResult cr)
         {
             if (cr == null) return null;
             return new InvoiceError
-            {
-                Field = cr.FieldName,
-                ExtractedValue = cr.OldValue,
-                CorrectValue = cr.NewValue,
-                Confidence = cr.Confidence,
-                ErrorType = cr.CorrectionType,
-                Reasoning = cr.Reasoning,
-                LineNumber = cr.LineNumber,
-                LineText = cr.LineText,
-            };
+                       {
+                           Field = cr.FieldName,
+                           ExtractedValue = cr.OldValue,
+                           CorrectValue = cr.NewValue,
+                           Confidence = cr.Confidence,
+                           ErrorType = cr.CorrectionType,
+                           Reasoning = cr.Reasoning,
+                           LineNumber = cr.LineNumber,
+                           LineText = cr.LineText,
+                           // ======================================================================================
+                           //                          *** DEFINITIVE FIX IS HERE ***
+                           //      Ensure the regex property is passed through during conversion.
+                           // ======================================================================================
+                           SuggestedRegex = cr.SuggestedRegex
+                       };
         }
 
         private int GetLineNumberForMatch(string[] lines, Match match)

@@ -75,6 +75,8 @@ namespace WaterNut.DataSpace
             return ValidateAndEnrichParsedCorrections(corrections, originalDocumentText);
         }
 
+        // File: OCRCorrectionService/OCRDeepSeekIntegration.cs
+
         private CorrectionResult CreateCorrectionFromElement(JsonElement element, string originalText, int itemIndex)
         {
             var fieldName = this.GetStringValueWithLogging(element, "field", itemIndex);
@@ -82,20 +84,25 @@ namespace WaterNut.DataSpace
             if (string.IsNullOrEmpty(fieldName) || newValue == null) return null;
 
             return new CorrectionResult
-            {
-                FieldName = fieldName,
-                OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
-                NewValue = newValue,
-                LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
-                LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
-                Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
-                Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
-                CorrectionType = DetermineCorrectionType(
+                       {
+                           FieldName = fieldName,
+                           OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
+                           NewValue = newValue,
+                           LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
+                           LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
+                           Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
+                           Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
+                           CorrectionType = DetermineCorrectionType(
                                this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
                                newValue,
                                this.GetStringValueWithLogging(element, "error_type", itemIndex, true)),
-                Success = true
-            };
+                           // ======================================================================================
+                           //                          *** DEFINITIVE FIX IS HERE ***
+                           //      Explicitly parse the 'suggested_regex' field from the JSON response.
+                           // ======================================================================================
+                           SuggestedRegex = this.GetStringValueWithLogging(element, "suggested_regex", itemIndex, true), // isOptional = true
+                           Success = true
+                       };
         }
 
         #endregion

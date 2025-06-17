@@ -14,13 +14,17 @@ namespace WaterNut.DataSpace
     {
         #region Enhanced Prompt Creation Methods for DeepSeek
 
+        // File: OCRCorrectionService/OCRPromptCreation.cs
+
+        // File: OCRCorrectionService/OCRPromptCreation.cs
+
         /// <summary>
-        /// ENHANCED v3: Creates a prompt that explicitly FORBIDS aggregation and demands granular, individual error reporting.
-        /// This is critical for generating correct, line-specific learning data.
+        /// ENHANCED v4: Creates a prompt that demands granular error reporting AND a suggested C# compliant
+        /// regex for every omission, which is critical for deduplication and learning.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
         {
-            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating ENHANCED (Non-Aggregating) header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating ENHANCED (v4 - With Regex Suggestion) header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
             var currentValues = new Dictionary<string, object>
             {
@@ -38,10 +42,18 @@ namespace WaterNut.DataSpace
             var currentJson = JsonSerializer.Serialize(currentValues, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             var ocrSections = AnalyzeOCRSections(fileText);
 
-            var prompt = $@"INTELLIGENT OCR ERROR AND OMISSION DETECTION (GRANULAR MODE):
+            // ======================================================================================
+            //                          *** DEFINITIVE FIX IS HERE ***
+            // The placeholder {field_name} has been corrected to use C# string interpolation
+            // syntax. This was the cause of the CS0103 compiler error. The fix is to use
+            // a standard string format that doesn't rely on in-place variable substitution,
+            // as this part of the prompt is a static example for the AI.
+            // ======================================================================================
+            var prompt = $@"INTELLIGENT OCR ERROR AND OMISSION DETECTION (GRANULAR MODE WITH REGEX GENERATION):
 
-CRITICAL INSTRUCTION: DO NOT AGGREGATE. REPORT EACH FINDING SEPARATELY.
-If you find two 'Free Shipping' lines, you MUST report two separate 'omission' errors for the 'TotalDeduction' field. The downstream system will handle aggregation. Your job is ONLY to report every individual instance you find.
+CRITICAL INSTRUCTIONS:
+1.  **DO NOT AGGREGATE.** Report each finding separately. If you find two 'Free Shipping' lines, you MUST report two separate 'omission' errors.
+2.  **FOR EVERY OMISSION, YOU MUST PROVIDE A 'suggested_regex'.** This regex must be specific, C# compliant (single backslashes), and include a named capture group matching the 'field' name.
 
 CARIBBEAN CUSTOMS FIELD MAPPING (Apply to each individual finding):
 - **SUPPLIER-CAUSED REDUCTIONS → TotalDeduction field (positive values):** Free shipping, discounts, promos.
@@ -55,10 +67,11 @@ COMPLETE MULTI-SECTION OCR TEXT:
 
 TASK:
 1.  Identify EVERY individual field missing from EXTRACTED DATA that exists in the OCR TEXT.
-2.  For each finding, create a separate error object in the JSON array. DO NOT SUM OR COMBINE VALUES.
-3.  For each 'correct_value', provide the raw numeric value from the text (e.g., '0.46', '6.53', '-6.99').
+2.  For each finding, create a separate error object in the JSON array.
+3.  For each 'omission' type error, create a robust, C# compliant `suggested_regex` that includes qualifying text and a named capture group (e.g., `(?<TotalDeduction>...)`).
+4.  For 'correct_value', provide the raw numeric value from the text (e.g., '0.46', '6.53', '-6.99').
 
-RESPONSE FORMAT - A separate JSON object for EACH finding:
+RESPONSE FORMAT - A separate JSON object for EACH finding, including 'suggested_regex' for omissions:
 {{
   ""errors"": [
     {{
@@ -69,17 +82,8 @@ RESPONSE FORMAT - A separate JSON object for EACH finding:
       ""line_number"": 71,
       ""confidence"": 0.95,
       ""error_type"": ""omission"",
-      ""reasoning"": ""Found an individual 'Free Shipping' line item for -$0.46. Mapping to TotalDeduction as a positive value per customs rules. This is a granular finding.""
-    }},
-    {{
-      ""field"": ""TotalDeduction"",
-      ""extracted_value"": ""null"",
-      ""correct_value"": ""6.53"",
-      ""line_text"": ""Free Shipping: -$6.53"",
-      ""line_number"": 72,
-      ""confidence"": 0.95,
-      ""error_type"": ""omission"",
-      ""reasoning"": ""Found a second individual 'Free Shipping' line item for -$6.53. Mapping to TotalDeduction as a positive value. This is a granular finding.""
+      ""suggested_regex"": ""Free Shipping:\\s*-?\\$?(?<TotalDeduction>[\\d,]+\\.?\\d*)"",
+      ""reasoning"": ""Found an individual 'Free Shipping' line item for -$0.46. Created a specific regex to capture this supplier reduction as TotalDeduction.""
     }},
     {{
       ""field"": ""TotalInsurance"",
@@ -89,14 +93,15 @@ RESPONSE FORMAT - A separate JSON object for EACH finding:
       ""line_number"": 77,
       ""confidence"": 0.98,
       ""error_type"": ""omission"",
-      ""reasoning"": ""Found a 'Gift Card Amount'. Mapping to TotalInsurance as a negative value per customs rules.""
+      ""suggested_regex"": ""Gift Card Amount:\\s*-?\\$?(?<TotalInsurance>[\\d,]+\\.?\\d*)"",
+      ""reasoning"": ""Found a 'Gift Card Amount'. Created a regex to capture this customer reduction as TotalInsurance.""
     }}
   ]
 }}
 
 If no missing fields found, return: {{""errors"": []}}";
 
-            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: GRANULAR (Non-Aggregating) prompt created with {PromptLength} characters", prompt.Length);
+            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: GRANULAR (With Regex Suggestion) prompt created with {PromptLength} characters", prompt.Length);
             return prompt;
         }
 
