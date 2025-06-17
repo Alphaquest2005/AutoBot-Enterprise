@@ -151,7 +151,6 @@ namespace WaterNut.DataSpace
                 log.Error("   - **STEP 5: LEARN & CORRECT**: Initiating AI error detection and database pattern learning.");
                 using (var correctionService = new OCRCorrectionService(log))
                 {
-                    // Use the unwrapped flat list for conversion and metadata extraction
                     var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(actualInvoiceData, freshTemplate, correctionService, log);
                     if (!shipmentInvoicesWithMeta.Any())
                     {
@@ -168,7 +167,28 @@ namespace WaterNut.DataSpace
                         return res;
                     }
 
-                    var updateRequests = allDetectedErrors.Select(e => { /* ... create requests ... */ return new RegexUpdateRequest(); }).ToList();
+                    // ======================================================================================
+                    //                          *** DEFINITIVE FIX IS HERE ***
+                    // Correctly map all properties from the detected error to the database update request.
+                    // ======================================================================================
+                    var updateRequests = allDetectedErrors.Select(e => new RegexUpdateRequest
+                    {
+                        FieldName = e.Field,
+                        OldValue = e.ExtractedValue,
+                        NewValue = e.CorrectValue,
+                        CorrectionType = e.ErrorType,
+                        Confidence = e.Confidence,
+                        DeepSeekReasoning = e.Reasoning,
+                        LineNumber = e.LineNumber,
+                        LineText = e.LineText,
+                        ContextLinesBefore = e.ContextLinesBefore,
+                        ContextLinesAfter = e.ContextLinesAfter,
+                        RequiresMultilineRegex = e.RequiresMultilineRegex,
+                        SuggestedRegex = e.SuggestedRegex,
+                        InvoiceId = template.OcrInvoices.Id, // Pass template context
+                        FilePath = template.FilePath
+                    }).ToList();
+
                     await correctionService.UpdateRegexPatternsAsync(updateRequests).ConfigureAwait(false);
 
                     // Critical step: Update the in-memory flat list with corrected values.
