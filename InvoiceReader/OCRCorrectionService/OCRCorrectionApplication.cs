@@ -147,6 +147,16 @@ namespace WaterNut.DataSpace
                 result.Confidence, result.Reasoning ?? "N/A", result.ErrorMessage ?? "N/A");
         }
 
+        /// <summary>
+        /// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
+        /// Useful for logging or displaying long strings.
+        /// </summary>
+        public static string TruncateForLog(string text, int maxLength)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength - 3) + "...";
+        }
+
         #endregion
     }
 }

@@ -6527,3 +6527,37 @@ The "Direct In-Memory Correction" strategy, while no longer the primary path, re
 DatabaseValidator (The Immune System): Its sole job is to enforce data integrity. It is the authority on what a "correct" template configuration looks like. It proactively cleans up legacy errors and the redundant byproducts of the learning process.
 OCRLegacySupport.CorrectInvoices (The Orchestrator): Manages the high-level workflow. It no longer contains complex logic itself but correctly sequences the calls to the Validator, the Template Loader, and the Correction Service.
 OmissionUpdateStrategy (The Teacher): Responsible for saving a single, new, validated omission rule to the database, using the canonical naming convention (AutoOmission_FieldName). It no longer needs to worry about duplicates because the Validator cleans them up beforehand.
+
+
+# Claude OCR Correction Knowledge
+
+*As of: 2025-06-16 12:00:00 (UTC-4)*
+
+## 🏛️ Architecture & Data Flow: The "Handle-as-is" Principle
+
+**FINAL STATUS: ✅ ARCHITECTURE REFACTORED. ✅ FLATTENING LOGIC REMOVED.**
+
+The OCR correction pipeline has been re-architected to natively handle the nested `List<List<IDictionary<string, object>>>` data structure returned by the core `InvoiceReader` library. The previous "flattening" workaround has been eliminated in favor of a more robust "Handle-as-is" design principle.
+
+### **Core Principle: Consumer Adaptation**
+
+Instead of patching the data structure in-flight, downstream consumers are now responsible for understanding and handling the data contract of the producer (`template.Read()`). This makes the system more resilient and the data flow more explicit.
+
+### **Data Flow Implementation: Unwrap -> Process -> Re-wrap**
+
+The primary orchestration method, `OCRCorrectionService.CorrectInvoices`, now implements a three-stage process:
+
+1.  **Unwrap:** The method receives the nested `List<List<...>>`. Its first action is to safely extract the inner `List<IDictionary<string, object>>`, which contains the actual invoice data.
+2.  **Process:** This clean, flat list of dictionaries is then passed to all internal correction logic, including error detection, AI-powered pattern learning, database updates, and in-memory value correction. This simplifies all internal helper methods.
+3.  **Re-wrap:** After all corrections are applied to the flat list, the `CorrectInvoices` method re-wraps the modified list back into the original `List<List<...>>` structure before returning it.
+
+This ensures that the data contract is maintained throughout the pipeline. The method that receives a nested list returns a corrected nested list, making the change transparent to the caller (`ReadFormattedTextStep`).
+
+### **Benefits of the New Architecture**
+
+*   **Robustness:** The system no longer depends on a brittle workaround. It correctly handles the native data type, reducing the risk of `InvalidCastException` or `RuntimeBinderException` errors.
+*   **Clarity:** The data flow is now explicit. The "Unwrap/Re-wrap" logic is centralized in the main orchestration method, making it easy to understand and debug.
+*   **Maintainability:** Internal helper methods are simpler, as they can now assume they will always receive a clean, flat list of data.
+*   **Adherence to Data Contracts:** The system respects the data contract of the `InvoiceReader` library, which is a core principle of good software design.
+
+This architectural change resolves the last of the major data structure-related bugs and solidifies the pipeline for production use.

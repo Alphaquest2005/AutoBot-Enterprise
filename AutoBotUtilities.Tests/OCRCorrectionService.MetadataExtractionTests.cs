@@ -236,50 +236,61 @@ namespace AutoBotUtilities.Tests.Production
 
         #region ConvertDynamicToShipmentInvoicesWithMetadata (from OCRLegacySupport, but uses instance methods)
 
+        /// <summary>
+        /// Tests that the ConvertDynamicToShipmentInvoicesWithMetadata static method correctly handles
+        /// a flat List of IDictionary objects, which is its expected input after the main
+        /// orchestration method has unwrapped the nested list from template.Read().
+        /// </summary>
         [Test]
         [Category("MetadataExtraction")]
-        public void ConvertDynamicToShipmentInvoicesWithMetadata_ValidInput_ShouldConvertAndExtract()
+        public void ConvertDynamicToShipmentInvoicesWithMetadata_WithFlatList_ShouldConvertAndExtract()
         {
             // Arrange
+            _logger.Information("🚀 **TEST_START**: ConvertDynamicToShipmentInvoicesWithMetadata_WithFlatList_ShouldConvertAndExtract");
+            _logger.Information("   - **INTENTION**: Verify that the helper method correctly processes a pre-unwrapped, flat list of invoice data dictionaries.");
+
             var runtimeInvoiceDict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
             {
                 ["InvoiceNo"] = "DYN-001",
                 ["InvoiceTotal"] = 500.0,
                 ["SubTotal"] = 450.0,
-                // Add a field that maps to the mock template
-                ["InvoiceKey"] = "DYN-KEY-001" // This maps to InvoiceNo field via Key
+                // This field maps to the 'InvoiceNo' DB field via the 'Key' property in the mock template.
+                ["InvoiceKey"] = "DYN-KEY-001"
             };
-            var dynamicResults = new List<dynamic> { new List<IDictionary<string, object>> { runtimeInvoiceDict } };
+
+            // This helper method now expects a FLAT list, as the unwrapping logic is handled
+            // by its caller, the `CorrectInvoices` orchestrator.
+            var flatInvoiceData = new List<IDictionary<string, object>> { runtimeInvoiceDict };
 
             // Act
-            // This static method internally creates an OCRCorrectionService instance.
-            // We are testing the static public API here.
+            _logger.Information("   - **ACTION**: Calling the static ConvertDynamicToShipmentInvoicesWithMetadata method with the flat list.");
             var ocrCorrectionService = new OCRCorrectionService(_logger);
             var resultList = OCRCorrectionService.ConvertDynamicToShipmentInvoicesWithMetadata(
-                dynamicResults,
+                flatInvoiceData,
                 _mockOcrTemplate,
                 ocrCorrectionService,
                 _logger);
 
             // Assert
-            Assert.That(resultList, Is.Not.Null);
-            Assert.That(resultList.Count, Is.EqualTo(1));
+            _logger.Information("   - **ASSERT**: Verifying the conversion and metadata extraction results.");
+            Assert.That(resultList, Is.Not.Null, "The result list should not be null.");
+            Assert.That(resultList.Count, Is.EqualTo(1), "The result list should contain one converted invoice.");
 
             var firstInvoiceWithMeta = resultList.First();
-            Assert.That(firstInvoiceWithMeta.Invoice, Is.Not.Null);
-            Assert.That(firstInvoiceWithMeta.Invoice.InvoiceNo, Is.EqualTo("DYN-001")); // From "InvoiceNo"
-            Assert.That(firstInvoiceWithMeta.Invoice.InvoiceTotal, Is.EqualTo(500.0));
+            Assert.That(firstInvoiceWithMeta.Invoice, Is.Not.Null, "The converted ShipmentInvoice object should not be null.");
+            Assert.That(firstInvoiceWithMeta.Invoice.InvoiceNo, Is.EqualTo("DYN-001"), "InvoiceNo should be correctly mapped.");
+            Assert.That(firstInvoiceWithMeta.Invoice.InvoiceTotal, Is.EqualTo(500.0), "InvoiceTotal should be correctly mapped.");
 
-            Assert.That(firstInvoiceWithMeta.FieldMetadata, Is.Not.Null);
-            // Check if metadata for a template-mapped field was extracted.
-            // "InvoiceKey" in runtime data maps to the "InvoiceNo" field definition in the template.
-            // The metadata key will be the runtime key "InvoiceKey".
-            Assert.That(firstInvoiceWithMeta.FieldMetadata.ContainsKey("InvoiceKey"), Is.True, "Metadata for 'InvoiceKey' should exist.");
+            Assert.That(firstInvoiceWithMeta.FieldMetadata, Is.Not.Null, "The FieldMetadata dictionary should not be null.");
+
+            // The metadata extraction should correctly link the runtime field key ("InvoiceKey")
+            // to its corresponding database field definition ("InvoiceNo").
+            Assert.That(firstInvoiceWithMeta.FieldMetadata.ContainsKey("InvoiceKey"), Is.True, "Metadata for runtime key 'InvoiceKey' should exist.");
             var invoiceKeyMeta = firstInvoiceWithMeta.FieldMetadata["InvoiceKey"];
-            Assert.That(invoiceKeyMeta.FieldId, Is.EqualTo(1001)); // Field ID for InvoiceNo
-            Assert.That(invoiceKeyMeta.Field, Is.EqualTo("InvoiceNo")); // The DB field it maps to
+            Assert.That(invoiceKeyMeta.FieldId, Is.EqualTo(1001), "The FieldId in metadata should match the mock template's definition for InvoiceNo.");
+            Assert.That(invoiceKeyMeta.Field, Is.EqualTo("InvoiceNo"), "The metadata's 'Field' property should point to the canonical database field name.");
 
-            _logger.Information("✓ ConvertDynamicToShipmentInvoicesWithMetadata converted and extracted metadata.");
+            _logger.Information("✅ **TEST_PASS**: ConvertDynamicToShipmentInvoicesWithMetadata correctly converted the flat list and extracted metadata.");
         }
 
         #endregion

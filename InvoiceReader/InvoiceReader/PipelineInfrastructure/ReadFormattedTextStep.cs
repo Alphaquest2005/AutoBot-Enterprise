@@ -1,3 +1,5 @@
+// File: WaterNut.DataSpace.PipelineInfrastructure/ReadFormattedTextStep.cs
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
@@ -22,11 +25,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
+            // Use LogLevelOverride to ensure all detailed assertive logs are visible during execution
             using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
                 var methodStopwatch = Stopwatch.StartNew();
                 string filePath = context?.FilePath ?? "Unknown";
-                context.Logger?.Information("METHOD_ENTRY: {MethodName}. Intention: Read formatted PDF text and apply OCR corrections if necessary.", nameof(Execute));
+                context.Logger?.Information("METHOD_ENTRY: {MethodName}. Intention: Read formatted text, apply corrections to the native data structure, and validate the outcome.", nameof(Execute));
 
                 if (context.MatchedTemplates == null || !context.MatchedTemplates.Any())
                 {
@@ -51,53 +55,66 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                     try
                     {
+                        // --- INITIAL READ ---
                         var res = template.Read(textLines);
 
-                        // --- LOGGING AND VALIDATION OF RAW DATA ---
+                        // --- ASSERTIVE LOGGING: INITIAL DATA STATE ---
+                        var jsonOptions = new JsonSerializerOptions { WriteIndented = true, ReferenceHandler = ReferenceHandler.Preserve };
                         var resType = res?.GetType().FullName ?? "NULL";
                         var firstItemType = (res != null && res.Any()) ? res[0]?.GetType().FullName ?? "NULL" : "N/A (List is empty or null)";
-                        context.Logger?.Error("🔬 **TYPE_ANALYSIS**: The 'res' object from template.Read() has Type: '{ResType}'. The first element has Type: '{FirstItemType}'.", resType, firstItemType);
+                        context.Logger?.Error("🔬 **TYPE_ANALYSIS (INITIAL_READ)**: The 'res' object from template.Read() has Type: '{ResType}'. The first element has Type: '{FirstItemType}'.", resType, firstItemType);
 
+                        string initialResJson = "[]";
                         try
                         {
-                            var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-                            string resAsJson = JsonSerializer.Serialize(res, jsonOptions);
-                            context.Logger?.Error("📜 **JSON_SERIALIZATION_DUMP**: Full 'res' object serialized to JSON:\n{JsonOutput}", resAsJson);
+                            initialResJson = JsonSerializer.Serialize(res, jsonOptions);
                         }
                         catch (Exception jsonEx)
                         {
-                            context.Logger?.Error(jsonEx, "📜 **JSON_SERIALIZATION_FAILED**: Could not serialize the 'res' object.");
+                            initialResJson = $"Serialization failed: {jsonEx.Message}";
+                        }
+                        context.Logger?.Error("📜 **DATA_OUTPUT_DUMP (INITIAL_READ)**: The data produced by the initial read: {DataJson}", initialResJson);
+
+                        // --- OCR CORRECTION SERVICE CALL ---
+                        context.Logger?.Information("🚀 **CORRECTION_PIPELINE_START**: Calling OCRCorrectionService to analyze and correct the data structure as-is.");
+                        var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, template.FormattedPdfText, context.Logger).ConfigureAwait(false);
+
+                        // --- ASSERTIVE LOGGING: CORRECTED DATA STATE & COMPARISON ---
+                        var correctedResType = correctedRes?.GetType().FullName ?? "NULL";
+                        var firstCorrectedItemType = (correctedRes != null && correctedRes.Any()) ? correctedRes[0]?.GetType().FullName ?? "NULL" : "N/A";
+                        context.Logger?.Error("🔬 **TYPE_ANALYSIS (AFTER_CORRECTION)**: The 'correctedRes' object returned from service has Type: '{correctedResType}'. First element Type: '{firstCorrectedItemType}'.", correctedResType, firstCorrectedItemType);
+
+                        string correctedResJson = "[]";
+                        try
+                        {
+                            correctedResJson = JsonSerializer.Serialize(correctedRes, jsonOptions);
+                        }
+                        catch (Exception jsonEx)
+                        {
+                            correctedResJson = $"Serialization failed: {jsonEx.Message}";
+                        }
+                        context.Logger?.Error("📜 **DATA_OUTPUT_DUMP (AFTER_CORRECTION)**: The data after the correction service ran: {DataJson}", correctedResJson);
+
+                        if (initialResJson == correctedResJson)
+                        {
+                            context.Logger?.Information("⚖️ **DATA_COMPARISON**: Data is UNCHANGED. This is expected if the invoice was already balanced or no corrections were possible.");
+                        }
+                        else
+                        {
+                            context.Logger?.Information("✅ **DATA_COMPARISON**: Data was MODIFIED by the correction service as expected.");
                         }
 
-                        // --- DEFINITIVE BUG FIX: FLATTEN NESTED LIST ---
-                        if (res != null && res.Any() && res[0] is IList nestedList)
+                        // --- VALIDATE THE FINAL DATA STRUCTURE ---
+                        if (IsDataStructureInvalid(correctedRes, context.Logger))
                         {
-                            var flattenedList = new List<dynamic>();
-                            foreach (var item in nestedList)
-                            {
-                                flattenedList.Add(item);
-                            }
-
-                            context.Logger?.Error("🚨 **NESTED_LIST_DETECTED**: template.Read() returned a nested list. Flattening structure from List<List<...>> to List<...> to correct the bug.");
-                            res = flattenedList;
-
-                            var newResType = res?.GetType().FullName ?? "NULL";
-                            var newFirstItemType = (res != null && res.Any()) ? res[0]?.GetType().FullName ?? "NULL" : "N/A";
-                            context.Logger?.Error("✅ **FLATTENING_COMPLETE**: The 'res' object is now Type: '{NewResType}'. The first element is now Type: '{NewFirstItemType}'.", newResType, newFirstItemType);
-                        }
-
-                        LogAndValidateInitialOcrData(context, res, template);
-
-                        if (IsDataStructureInvalid(res))
-                        {
-                            var typeName = (res != null && res.Any()) ? res[0]?.GetType().FullName : "N/A";
-                            context.Logger?.Error("🚨🚨🚨 CRITICAL DATA TYPE MISMATCH: After potential flattening, the data structure is still invalid. First item type: {ItemType}. Aborting.", typeName);
-                            context.AddError($"Critical data structure error from template.Read() for TemplateId: {template.OcrInvoices.Id}.");
+                            context.AddError($"Critical data structure error from correction service for TemplateId: {template.OcrInvoices.Id}.");
                             continue;
                         }
 
-                        template.CsvLines = res;
+                        // Assign the corrected (and still nested) data structure back to the template.
+                        template.CsvLines = correctedRes;
 
+                        // Continue with downstream processing
                         FileTypes fileType = HandleImportSuccessStateStep.ResolveFileType(context.Logger, template);
                         if (fileType?.FileImporterInfos == null)
                         {
@@ -106,15 +123,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         }
                         template.FileType = fileType;
 
-                        if (template.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice)
-                        {
-                            var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, template.FormattedPdfText, context.Logger).ConfigureAwait(false);
-                            template.CsvLines = correctedRes;
-                        }
+                        // This is now redundant as CorrectInvoices handles this, but keep as a potential future hook.
+                        // if (template.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice)
+                        // {
+                        //     // var reCorrectedRes = await OCRCorrectionService.CorrectInvoices(correctedRes, template, textLines, template.FormattedPdfText, context.Logger).ConfigureAwait(false);
+                        //     // template.CsvLines = reCorrectedRes;
+                        // }
 
                         if (!ExecutionSuccess(context.Logger, template, filePath))
                         {
-                            context.AddError($"No CsvLines generated for TemplateId: {template?.OcrInvoices?.Id}.");
+                            context.AddError($"No CsvLines present after correction for TemplateId: {template?.OcrInvoices?.Id}.");
                             return false;
                         }
 
@@ -136,10 +154,51 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         #region Private Helper & Logging Methods
 
-        private bool IsDataStructureInvalid(List<dynamic> res)
+        /// <summary>
+        /// Validates the data structure returned by the template.Read() or correction service.
+        /// It now correctly handles both the expected nested List<List<...>> and a fallback flat List<...>.
+        /// </summary>
+        private bool IsDataStructureInvalid(List<dynamic> res, ILogger logger)
         {
-            if (res == null || !res.Any()) return false; // Not invalid, just empty
-            return !(res[0] is IDictionary<string, object>);
+            if (res == null || !res.Any())
+            {
+                logger?.Information("Data structure is valid (null or empty list).");
+                return false; // Not invalid, just empty or null.
+            }
+
+            var firstItem = res[0];
+
+            if (firstItem is IList nestedList)
+            {
+                // It's a nested list, check the inner structure.
+                if (!nestedList.Cast<object>().Any())
+                {
+                    logger?.Information("Data structure is valid (nested list is empty).");
+                    return false; // An empty inner list is valid.
+                }
+
+                var firstInnerItem = nestedList.Cast<object>().First();
+                if (firstInnerItem is IDictionary<string, object>)
+                {
+                    logger?.Information("Data structure is valid (List<List<IDictionary<string, object>>>).");
+                    return false; // Correct nested structure.
+                }
+                else
+                {
+                    logger?.Error("🚨 CRITICAL DATA TYPE MISMATCH: Nested list contains items of unexpected type: {ItemType}", firstInnerItem?.GetType().FullName ?? "NULL");
+                    return true; // Invalid inner structure.
+                }
+            }
+            else if (firstItem is IDictionary<string, object>)
+            {
+                logger?.Information("Data structure is valid (flat List<IDictionary<string, object>>).");
+                return false; // A flat list of dictionaries is also acceptable.
+            }
+            else
+            {
+                logger?.Error("🚨 CRITICAL DATA TYPE MISMATCH: Top-level list contains items of unexpected type: {ItemType}", firstItem?.GetType().FullName ?? "NULL");
+                return true; // Top-level item is neither a list nor a dictionary.
+            }
         }
 
         private void LogTemplateStructure(Invoice template, ILogger logger)
