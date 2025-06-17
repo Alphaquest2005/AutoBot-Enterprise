@@ -77,7 +77,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                         // --- OCR CORRECTION SERVICE CALL ---
                         context.Logger?.Information("🚀 **CORRECTION_PIPELINE_START**: Calling OCRCorrectionService to analyze and correct the data structure as-is.");
-                        var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, template.FormattedPdfText, context.Logger).ConfigureAwait(false);
+                        var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, context.Logger).ConfigureAwait(false);
 
                         // --- ASSERTIVE LOGGING: CORRECTED DATA STATE & COMPARISON ---
                         var correctedResType = correctedRes?.GetType().FullName ?? "NULL";

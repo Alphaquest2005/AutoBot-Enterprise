@@ -43,17 +43,18 @@ namespace WaterNut.DataSpace
                     allDetectedErrors.AddRange(amazonErrors);
                 }
 
-                // --- CONSOLIDATION (THE CRITICAL FIX) ---
+                // --- CONSOLIDATION (YOUR CORRECTED LOGIC) ---
                 _logger.Information("  **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using robust regex-based key.", allDetectedErrors.Count);
 
-                // The new, correct key for a duplicate is: Same Field, Same Value, and a Regex that describes the line.
-                // We will use the SuggestedRegex for this.
+                // De-duplicate based on the target Field and the Regex that identifies the error's source pattern.
+                // This correctly groups multiple detections of the same logical error.
                 var uniqueErrors = allDetectedErrors
                     .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Regex = e.SuggestedRegex })
                     .Select(g => {
+                        // From each group of duplicates, select the one with the highest confidence score.
                         var bestError = g.OrderByDescending(e => e.Confidence).First();
                         _logger.Debug("    - For Key [Field: '{Field}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2}",
-                            g.Key.Field,  g.Key.Regex, bestError.Confidence);
+                            g.Key.Field, g.Key.Regex, bestError.Confidence);
                         return bestError;
                     })
                     .ToList();
@@ -85,7 +86,6 @@ namespace WaterNut.DataSpace
             var amazonErrors = new List<InvoiceError>();
             var lines = fileText.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
 
-            // --- Check for Gift Card Amount (TotalInsurance) ---
             var giftCardRegex = new Regex(@"(Gift Card Amount:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
             var giftCardMatch = giftCardRegex.Match(fileText);
             if (giftCardMatch.Success)
@@ -94,16 +94,15 @@ namespace WaterNut.DataSpace
                 {
                     Field = "TotalInsurance",
                     ErrorType = "omission",
-                    CorrectValue = $"-{giftCardMatch.Groups[2].Value.Trim()}", // Always negative
+                    CorrectValue = $"-{giftCardMatch.Groups[2].Value.Trim()}",
                     Confidence = 0.98,
                     Reasoning = "Rule-based: Amazon Gift Card Amount detected.",
                     LineText = giftCardMatch.Value.Trim(),
                     LineNumber = GetLineNumberForMatch(lines, giftCardMatch),
-                    SuggestedRegex = @"Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)" // CANONICAL REGEX
+                    SuggestedRegex = @"Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)"
                 });
             }
 
-            // --- Check for Free Shipping (TotalDeduction) ---
             var freeShippingRegex = new Regex(@"(Free Shipping:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
             foreach (Match match in freeShippingRegex.Matches(fileText))
             {
@@ -111,12 +110,12 @@ namespace WaterNut.DataSpace
                 {
                     Field = "TotalDeduction",
                     ErrorType = "omission",
-                    CorrectValue = match.Groups[2].Value.Trim(), // Value is positive
+                    CorrectValue = match.Groups[2].Value.Trim(),
                     Confidence = 0.95,
                     Reasoning = "Rule-based: Individual Free Shipping amount detected.",
                     LineText = match.Value.Trim(),
                     LineNumber = GetLineNumberForMatch(lines, match),
-                    SuggestedRegex = @"Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.?\d*)" // CANONICAL REGEX
+                    SuggestedRegex = @"Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.?\d*)"
                 });
             }
 
@@ -124,9 +123,6 @@ namespace WaterNut.DataSpace
             return amazonErrors;
         }
 
-        /// <summary>
-        /// Calls the DeepSeek API using the granular error detection prompt.
-        /// </summary>
         private async Task<List<InvoiceError>> DetectHeaderFieldErrorsAndOmissionsAsync(
             ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata = null)
         {
@@ -155,27 +151,21 @@ namespace WaterNut.DataSpace
             }
         }
 
-        // File: OCRCorrectionService/OCRErrorDetection.cs
-
         private InvoiceError ConvertCorrectionResultToInvoiceError(CorrectionResult cr)
         {
             if (cr == null) return null;
             return new InvoiceError
-                       {
-                           Field = cr.FieldName,
-                           ExtractedValue = cr.OldValue,
-                           CorrectValue = cr.NewValue,
-                           Confidence = cr.Confidence,
-                           ErrorType = cr.CorrectionType,
-                           Reasoning = cr.Reasoning,
-                           LineNumber = cr.LineNumber,
-                           LineText = cr.LineText,
-                           // ======================================================================================
-                           //                          *** DEFINITIVE FIX IS HERE ***
-                           //      Ensure the regex property is passed through during conversion.
-                           // ======================================================================================
-                           SuggestedRegex = cr.SuggestedRegex
-                       };
+            {
+                Field = cr.FieldName,
+                ExtractedValue = cr.OldValue,
+                CorrectValue = cr.NewValue,
+                Confidence = cr.Confidence,
+                ErrorType = cr.CorrectionType,
+                Reasoning = cr.Reasoning,
+                LineNumber = cr.LineNumber,
+                LineText = cr.LineText,
+                SuggestedRegex = cr.SuggestedRegex
+            };
         }
 
         private int GetLineNumberForMatch(string[] lines, Match match)

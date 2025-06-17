@@ -65,7 +65,6 @@ namespace WaterNut.DataSpace
             totalImbalanceSum = 0.0;
             if (dynamicInvoiceResults == null || !dynamicInvoiceResults.Any()) return true;
 
-            // Natively handle the nested list structure by unwrapping it first.
             var dictionaries = new List<IDictionary<string, object>>();
             if (dynamicInvoiceResults.Any() && dynamicInvoiceResults[0] is IList nestedList)
             {
@@ -88,46 +87,31 @@ namespace WaterNut.DataSpace
             return !TotalsZero(res, out totalImbalanceSum, logger);
         }
 
-        /// <summary>
-        /// FINAL CORRECTED VERSION: Orchestrates the entire correction pipeline. It now natively handles
-        /// the nested list structure using an "Unwrap -> Process -> Re-wrap" pattern and ensures
-        /// all data is explicitly mapped between steps.
-        /// </summary>
-        public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Invoice template, List<string> textLines, string originalText, ILogger logger)
+        public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Invoice template, List<string> textLines, ILogger logger)
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
-            var jsonOptions = new JsonSerializerOptions { WriteIndented = true, ReferenceHandler = ReferenceHandler.Preserve };
 
             try
             {
                 log.Error("🏁 **CORRECT_INVOICES_ENTRY**: Starting correction process with native data structure handling.");
-                log.Error("   - **ARCHITECTURAL_INTENT**: Handle nested data structure, Heal DB -> Read -> Learn -> Re-Read.");
+                log.Error("   - **ARCHITECTURAL_INTENT**: Heal DB -> Read -> Detect -> Apply -> Learn -> Sync -> Re-wrap.");
 
-                // --- STEP 1: UNWRAP THE NESTED LIST STRUCTURE ---
-                log.Error("   - **STEP 1: UNWRAP_DATA**: Safely unwrapping data structure for processing.");
                 var actualInvoiceData = new List<IDictionary<string, object>>();
                 if (res != null && res.Any() && res[0] is IList nestedList)
                 {
                     actualInvoiceData = nestedList.OfType<IDictionary<string, object>>().ToList();
-                    log.Error("     - ✅ **DATA_UNWRAPPED**: Detected and unwrapped nested list. Processing {Count} invoice dictionaries.", actualInvoiceData.Count);
                 }
                 else
                 {
-                    log.Error("     - ⚠️ **DATA_STRUCTURE_UNEXPECTED**: Input was not a nested list. Processing as a flat list. This may indicate an upstream change.");
                     actualInvoiceData = res?.OfType<IDictionary<string, object>>().ToList() ?? new List<IDictionary<string, object>>();
                 }
 
-                // --- STEP 2: HEAL DATABASE ---
-                log.Error("   - **STEP 2: HEAL**: Initiating proactive database validation and healing.");
                 using (var dbContextForValidation = new OCRContext())
                 {
                     var validator = new DatabaseValidator(dbContextForValidation, log);
                     validator.ValidateAndHealTemplate();
                 }
-                log.Error("   - ✅ STEP 2 COMPLETE: Database healing process finished.");
 
-                // STEP 3: RELOAD HEALED TEMPLATE
-                log.Error("   - **STEP 3: RELOAD (Initial)**: Reloading template from healed database state.");
                 GetTemplatesStep.InvalidateTemplateCache();
                 var freshTemplate = GetTemplatesStep.GetAllTemplates(
                     new InvoiceProcessingContext(logger) { FilePath = template.FilePath },
@@ -140,8 +124,6 @@ namespace WaterNut.DataSpace
                     return res;
                 }
 
-                // STEP 4: CHECK BALANCE
-                log.Error("   - **STEP 4: CHECK BALANCE**: Checking if invoice is balanced after initial read with healed template.");
                 if (!ShouldContinueCorrections(res, out var imbalance, log))
                 {
                     log.Error("     - ✅ **INTENTION_MET**: Invoice is balanced by {Imbalance:F2}. No AI correction needed.", imbalance);
@@ -149,8 +131,6 @@ namespace WaterNut.DataSpace
                 }
                 log.Error("     - ❌ **INTENTION_FAILED**: Invoice unbalanced by {Imbalance:F2}. Proceeding to AI learning.", imbalance);
 
-                // STEP 5: LEARN AND CORRECT (Operates on the unwrapped 'actualInvoiceData')
-                log.Error("   - **STEP 5: LEARN & CORRECT**: Initiating AI error detection and database pattern learning.");
                 using (var correctionService = new OCRCorrectionService(log))
                 {
                     var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(actualInvoiceData, freshTemplate, correctionService, log);
@@ -161,13 +141,19 @@ namespace WaterNut.DataSpace
                     }
 
                     var invoiceWrapper = shipmentInvoicesWithMeta.First();
-                    var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, originalText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
+                    var fullDocumentText = template.FormattedPdfText;
+
+                    var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
 
                     if (!allDetectedErrors.Any())
                     {
-                        log.Error("     - ⚠️ WARNING: Correction pipeline was triggered, but AI error detection found no specific omissions. The imbalance of {Imbalance:F2} remains unexplained.", imbalance);
+                        log.Error("     - ⚠️ WARNING: Correction pipeline was triggered, but AI error detection found no omissions. The imbalance of {Imbalance:F2} remains unexplained.", imbalance);
                         return res;
                     }
+                    log.Information("     - ✅ AI detected {ErrorCount} potential errors/omissions.", allDetectedErrors.Count);
+
+                    var appliedCorrections = await correctionService.ApplyCorrectionsAsync(invoiceWrapper.Invoice, allDetectedErrors, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
+                    log.Information("     - ✅ Applied {AppliedCount} corrections directly to the invoice object.", appliedCorrections.Count(c => c.Success));
 
                     var updateRequests = allDetectedErrors.Select(e => new RegexUpdateRequest
                     {
@@ -184,7 +170,9 @@ namespace WaterNut.DataSpace
                         RequiresMultilineRegex = e.RequiresMultilineRegex,
                         SuggestedRegex = e.SuggestedRegex,
                         InvoiceId = template.OcrInvoices.Id,
-                        FilePath = template.FilePath
+                        FilePath = template.FilePath,
+                        // This property is now correctly populated for better tracking.
+                        //InvoiceNumber = invoiceWrapper.Invoice.InvoiceNo
                     }).ToList();
 
                     await correctionService.UpdateRegexPatternsAsync(updateRequests).ConfigureAwait(false);
@@ -193,7 +181,6 @@ namespace WaterNut.DataSpace
                     UpdateDynamicResultsWithCorrections(actualInvoiceData, correctedInvoices, log);
                 }
 
-                // --- STEP 6: RE-WRAP THE CORRECTED DATA ---
                 var finalResult = new List<dynamic> { actualInvoiceData };
                 log.Error("   - **STEP 6: RE-WRAP_DATA**: Correction process complete. Re-wrapping corrected data into nested list structure before returning.");
 
@@ -207,10 +194,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-        /// <summary>
-        /// Updates a list of dynamic dictionary items with values from corrected ShipmentInvoice objects.
-        /// This method now includes extensive, assertive logging to provide a full audit trail of changes.
-        /// </summary>
         public static void UpdateDynamicResultsWithCorrections(
             List<IDictionary<string, object>> dynamicItems,
             List<ShipmentInvoice> correctedInvoices,
@@ -220,7 +203,6 @@ namespace WaterNut.DataSpace
             var correctedInvoiceMap = correctedInvoices.ToDictionary(inv => inv.InvoiceNo, inv => inv);
 
             logger.Information("🔄 **SYNC_DATA_START**: Synchronizing {CorrectedCount} corrected ShipmentInvoice objects back into a list of {DynamicCount} dynamic data items.", correctedInvoices.Count, dynamicItems.Count);
-            logger.Information("   - **ARCHITECTURAL_INTENT**: This step is critical for ensuring the main pipeline continues with corrected data after the self-healing/learning process.");
 
             foreach (var dynamicItem in dynamicItems)
             {
@@ -230,12 +212,10 @@ namespace WaterNut.DataSpace
                     {
                         logger.Information("   -  syncing InvoiceNo: {InvoiceNo}", correctedInv.InvoiceNo);
 
-                        // Helper action to log only when a value changes.
                         Action<string, object> logChange = (field, newVal) =>
                         {
                             object oldVal = dynamicItem.ContainsKey(field) ? dynamicItem[field] : null;
 
-                            // Use robust object comparison that handles nulls and type differences.
                             if (!object.Equals(oldVal, newVal))
                             {
                                 logger.Information("     - 📝 Field '{Field}': OLD='{Old}' -> NEW='{New}'",
@@ -245,22 +225,16 @@ namespace WaterNut.DataSpace
                             }
                         };
 
-                        // Apply changes and log them
                         logChange("InvoiceTotal", correctedInv.InvoiceTotal);
                         dynamicItem["InvoiceTotal"] = correctedInv.InvoiceTotal;
-
                         logChange("SubTotal", correctedInv.SubTotal);
                         dynamicItem["SubTotal"] = correctedInv.SubTotal;
-
                         logChange("TotalInternalFreight", correctedInv.TotalInternalFreight);
                         dynamicItem["TotalInternalFreight"] = correctedInv.TotalInternalFreight;
-
                         logChange("TotalOtherCost", correctedInv.TotalOtherCost);
                         dynamicItem["TotalOtherCost"] = correctedInv.TotalOtherCost;
-
                         logChange("TotalInsurance", correctedInv.TotalInsurance);
                         dynamicItem["TotalInsurance"] = correctedInv.TotalInsurance;
-
                         logChange("TotalDeduction", correctedInv.TotalDeduction);
                         dynamicItem["TotalDeduction"] = correctedInv.TotalDeduction;
                     }
@@ -268,16 +242,6 @@ namespace WaterNut.DataSpace
             }
             logger.Information("✅ **SYNC_DATA_COMPLETE**: Finished synchronizing corrected data. The dynamic data list is now updated.");
         }
-
-        ///// <summary>
-        ///// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
-        ///// Useful for logging or displaying long strings.
-        ///// </summary>
-        //public static string TruncateForLog(string text, int maxLength)
-        //{
-        //    if (string.IsNullOrEmpty(text)) return "";
-        //    return text.Length <= maxLength ? text : text.Substring(0, maxLength - 3) + "...";
-        //}
 
         public static string GetOriginalTextFromFile(string templateFilePath, ILogger logger)
         {
@@ -303,63 +267,56 @@ namespace WaterNut.DataSpace
 
         private static ShipmentInvoice CreateTempShipmentInvoice(IDictionary<string, object> x, ILogger logger)
         {
-            logger?.Debug("📋 **CONVERSION_START**: Attempting to convert IDictionary to ShipmentInvoice.");
+            var invoice = new ShipmentInvoice { InvoiceDetails = new List<InvoiceDetails>() };
             try
             {
-                var invoice = new ShipmentInvoice { InvoiceDetails = new List<InvoiceDetails>() };
-
-                double? GetNullableDouble(string key)
-                {
-                    if (!x.TryGetValue(key, out var val) || val == null) return null;
-                    var valStr = val.ToString();
-                    if (string.IsNullOrWhiteSpace(valStr)) return null;
-
-                    string cleanedValue = Regex.Replace(valStr.Trim(), @"[^\d.,-]", "").Trim();
-                    if (cleanedValue.Contains(',') && cleanedValue.Contains('.'))
-                    {
-                        cleanedValue = cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.')
-                                           ? cleanedValue.Replace(",", "")
-                                           : cleanedValue.Replace(".", "").Replace(",", ".");
-                    }
-                    else if (cleanedValue.Contains(',')) cleanedValue = cleanedValue.Replace(",", ".");
-
-                    if (double.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
-                    {
-                        logger?.Debug("     - Parsed key '{Key}' with value '{Value}' to double {DoubleValue}", key, valStr, dbl);
-                        return dbl;
-                    }
-                    return null;
-                }
-
-                T GetValue<T>(string key) where T : class => x.TryGetValue(key, out var v) ? v as T : null;
-
-                invoice.InvoiceNo = GetValue<string>("InvoiceNo") ?? GetValue<string>("Name") ?? $"TempInv_{Guid.NewGuid().ToString().Substring(0, 8)}";
-                invoice.InvoiceTotal = GetNullableDouble("InvoiceTotal");
-                invoice.SubTotal = GetNullableDouble("SubTotal");
-                invoice.TotalInternalFreight = GetNullableDouble("TotalInternalFreight");
-                invoice.TotalOtherCost = GetNullableDouble("TotalOtherCost");
-                invoice.TotalInsurance = GetNullableDouble("TotalInsurance");
-                invoice.TotalDeduction = GetNullableDouble("TotalDeduction");
-
-                logger?.Debug("✅ **CONVERSION_SUCCESS**: Finished converting IDictionary. Final Invoice Total: {Total}", invoice.InvoiceTotal?.ToString() ?? "null");
-                return invoice;
+                invoice.InvoiceNo = (x.TryGetValue("InvoiceNo", out var v) ? v?.ToString() : null) ?? (x.TryGetValue("Name", out var n) ? n?.ToString() : null) ?? $"TempInv_{Guid.NewGuid().ToString().Substring(0, 8)}";
+                invoice.InvoiceTotal = GetNullableDouble(x, "InvoiceTotal", logger);
+                invoice.SubTotal = GetNullableDouble(x, "SubTotal", logger);
+                invoice.TotalInternalFreight = GetNullableDouble(x, "TotalInternalFreight", logger);
+                invoice.TotalOtherCost = GetNullableDouble(x, "TotalOtherCost", logger);
+                invoice.TotalInsurance = GetNullableDouble(x, "TotalInsurance", logger);
+                invoice.TotalDeduction = GetNullableDouble(x, "TotalDeduction", logger);
             }
             catch (Exception ex)
             {
                 logger?.Error(ex, "🚨 **CONVERSION_EXCEPTION**: Error creating temporary ShipmentInvoice.");
                 return null;
             }
+            return invoice;
+        }
+
+        private static double? GetNullableDouble(IDictionary<string, object> x, string key, ILogger logger)
+        {
+            if (!x.TryGetValue(key, out var val) || val == null) return null;
+            var valStr = val.ToString();
+            if (string.IsNullOrWhiteSpace(valStr)) return null;
+
+            string cleanedValue = Regex.Replace(valStr.Trim(), @"[^\d.,-]", "").Trim();
+            if (cleanedValue.Contains(',') && cleanedValue.Contains('.'))
+            {
+                cleanedValue = cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.')
+                                    ? cleanedValue.Replace(",", "")
+                                    : cleanedValue.Replace(".", "").Replace(",", ".");
+            }
+            else if (cleanedValue.Contains(',')) cleanedValue = cleanedValue.Replace(",", ".");
+
+            if (double.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
+            {
+                return dbl;
+            }
+            return null;
         }
 
         public static List<ShipmentInvoiceWithMetadata> ConvertDynamicToShipmentInvoicesWithMetadata(
-            List<IDictionary<string, object>> res, // Changed from List<dynamic>
+            List<IDictionary<string, object>> res,
             Invoice template, OCRCorrectionService serviceInstance, ILogger logger)
         {
             var allInvoices = new List<ShipmentInvoiceWithMetadata>();
             if (serviceInstance == null || res == null) return allInvoices;
             var fieldMappings = serviceInstance.CreateEnhancedFieldMapping(template);
 
-            foreach (var item in res) // No longer need OfType
+            foreach (var item in res)
             {
                 var shipmentInvoice = CreateTempShipmentInvoice(item, logger);
                 if (shipmentInvoice != null)
