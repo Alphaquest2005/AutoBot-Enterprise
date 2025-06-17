@@ -15,8 +15,8 @@ namespace WaterNut.DataSpace
         #region Enhanced Error Detection Orchestration
 
         /// <summary>
-        /// ENHANCED v3: Orchestrates a dual-pathway error detection strategy (AI + Rule-Based)
-        /// to produce a consolidated, granular list of potential invoice errors for the learning pipeline.
+        /// FINAL VERSION: Orchestrates a dual-pathway error detection strategy and consolidates results
+        /// using a robust, regex-based deduplication key to prevent redundant learning.
         /// </summary>
         private async Task<List<InvoiceError>> DetectInvoiceErrorsAsync(
             ShipmentInvoice invoice,
@@ -24,56 +24,49 @@ namespace WaterNut.DataSpace
             Dictionary<string, OCRFieldMetadata> metadata = null)
         {
             var allDetectedErrors = new List<InvoiceError>();
-            if (invoice == null)
-            {
-                _logger.Warning("DetectInvoiceErrorsAsync called with a null invoice.");
-                return allDetectedErrors;
-            }
+            if (invoice == null) return allDetectedErrors;
 
-            _logger.Error("🚀 **DETECTION_PIPELINE_ENTRY**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
-            _logger.Information("    **ARCHITECTURAL_INTENT**: Employ a dual-pathway strategy (AI + Rule-Based) and consolidate results to produce the most accurate set of granular corrections.");
+            _logger.Error("🚀 **DETECTION_PIPELINE_ENTRY_V2**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
 
             try
             {
-                // --- PATHWAY 1: DEEPSEEK AI-BASED DETECTION (GRANULAR) ---
+                // --- PATHWAY 1: DEEPSEEK AI-BASED DETECTION ---
                 _logger.Error("🤖 **DEEPSEEK_DETECTION_START**: Initiating primary AI-based granular error and omission detection.");
                 var deepSeekErrors = await DetectHeaderFieldErrorsAndOmissionsAsync(invoice, fileText, metadata).ConfigureAwait(false);
-                _logger.Error("🤖 **DEEPSEEK_DETECTION_RESULT**: DeepSeek pathway returned {Count} potential granular errors.", deepSeekErrors.Count);
                 allDetectedErrors.AddRange(deepSeekErrors);
 
                 // --- PATHWAY 2: RULE-BASED DETECTION (RELIABILITY BACKSTOP) ---
                 if (fileText?.IndexOf("Amazon.com", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    _logger.Error("🎯 **RULE_BASED_TRIGGER**: Amazon.com detected. Running secondary rule-based detector for reliability.");
+                    _logger.Error("🎯 **RULE_BASED_TRIGGER**: Amazon.com detected. Running secondary rule-based detector.");
                     var amazonErrors = DetectAmazonSpecificErrors(invoice, fileText);
-                    _logger.Error("🎯 **RULE_BASED_RESULT**: Rule-based Amazon detector returned {Count} potential errors.", amazonErrors.Count);
                     allDetectedErrors.AddRange(amazonErrors);
                 }
 
-                // --- CONSOLIDATION & DEDUPLICATION ---
-                _logger.Information("  **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors from all detection pathways.", allDetectedErrors.Count);
+                // --- CONSOLIDATION (THE CRITICAL FIX) ---
+                _logger.Information("  **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using robust regex-based key.", allDetectedErrors.Count);
+
+                // The new, correct key for a duplicate is: Same Field, Same Value, and a Regex that describes the line.
+                // We will use the SuggestedRegex for this.
                 var uniqueErrors = allDetectedErrors
-                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Line = e.LineNumber, Value = e.CorrectValue })
+                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Value = e.CorrectValue, Regex = e.SuggestedRegex })
                     .Select(g => {
                         var bestError = g.OrderByDescending(e => e.Confidence).First();
-                        _logger.Debug("    - For Field '{Field}' on Line {Line}, selected best error with confidence {Confidence:P2} (Reason: {Reasoning})", bestError.Field, bestError.LineNumber, bestError.Confidence, bestError.Reasoning);
+                        _logger.Debug("    - For Key [Field: '{Field}', Value: '{Value}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2}",
+                            g.Key.Field, g.Key.Value, g.Key.Regex, bestError.Confidence);
                         return bestError;
                     })
                     .ToList();
 
-                if (uniqueErrors.Any())
+                if (!uniqueErrors.Any())
                 {
-                    _logger.Error("✅ **INTENTION_MET**: As expected, the detection pipeline found {Count} unique errors. The correction process will now proceed.", uniqueErrors.Count);
-                }
-                else
-                {
-                    _logger.Error("❌ **INTENTION_FAILED**: The detection pipeline found ZERO errors. If the invoice is unbalanced, this is the root cause of the correction failure.");
+                    _logger.Error("❌ **INTENTION_FAILED**: The detection pipeline found ZERO unique errors. This is the root cause of the correction failure.");
                 }
 
-                // --- MANDATE LOG: Serialize the final, consolidated output ---
-                var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
-                var serializedErrors = System.Text.Json.JsonSerializer.Serialize(uniqueErrors, options);
-                _logger.Error("✅ **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects: {SerializedErrors}", uniqueErrors.Count, serializedErrors);
+                var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
+                var serializedErrors = JsonSerializer.Serialize(uniqueErrors, options);
+                _logger.Error("✅ **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects: {SerializedErrors}",
+                    uniqueErrors.Count, serializedErrors);
 
                 return uniqueErrors;
             }
@@ -85,61 +78,49 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Rule-based detector for common, high-volume Amazon invoice omissions. Provides reliable, granular data.
+        /// Rule-based detector that now generates a consistent, pre-defined regex for each finding.
         /// </summary>
         private List<InvoiceError> DetectAmazonSpecificErrors(ShipmentInvoice invoice, string fileText)
         {
             var amazonErrors = new List<InvoiceError>();
             var lines = fileText.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
-            var uniqueAmounts = new HashSet<string>();
-
-            _logger.Error("🔍 **AMAZON_DETECTOR_START**: Running rule-based detection for Amazon invoice.");
 
             // --- Check for Gift Card Amount (TotalInsurance) ---
-            var giftCardMatch = new Regex(@"Gift Card Amount:\s*(-?\$?[\d,]+\.?\d*)", RegexOptions.IgnoreCase).Match(fileText);
+            var giftCardRegex = new Regex(@"(Gift Card Amount:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
+            var giftCardMatch = giftCardRegex.Match(fileText);
             if (giftCardMatch.Success)
             {
-                string rawValue = giftCardMatch.Groups[1].Value;
-                if (uniqueAmounts.Add($"giftcard_{rawValue}"))
+                amazonErrors.Add(new InvoiceError
                 {
-                    var giftCardValue = rawValue.Replace("$", "").Trim();
-                    amazonErrors.Add(new InvoiceError
-                    {
-                        Field = "TotalInsurance",
-                        ErrorType = "omission",
-                        CorrectValue = giftCardValue,
-                        ExtractedValue = invoice.TotalInsurance?.ToString() ?? "null",
-                        Confidence = 0.98,
-                        Reasoning = "Rule-based: Amazon Gift Card Amount detected. Maps to TotalInsurance per Caribbean customs.",
-                        LineText = giftCardMatch.Value.Trim(),
-                        LineNumber = GetLineNumberForMatch(lines, giftCardMatch),
-                    });
-                }
+                    Field = "TotalInsurance",
+                    ErrorType = "omission",
+                    CorrectValue = $"-{giftCardMatch.Groups[2].Value.Trim()}", // Always negative
+                    Confidence = 0.98,
+                    Reasoning = "Rule-based: Amazon Gift Card Amount detected.",
+                    LineText = giftCardMatch.Value.Trim(),
+                    LineNumber = GetLineNumberForMatch(lines, giftCardMatch),
+                    SuggestedRegex = @"Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)" // CANONICAL REGEX
+                });
             }
 
             // --- Check for Free Shipping (TotalDeduction) ---
-            var freeShippingMatches = new Regex(@"Free Shipping:\s*(-?\$?[\d,]+\.?\d*)", RegexOptions.IgnoreCase).Matches(fileText);
-            foreach (Match match in freeShippingMatches)
+            var freeShippingRegex = new Regex(@"(Free Shipping:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
+            foreach (Match match in freeShippingRegex.Matches(fileText))
             {
-                string rawValue = match.Groups[1].Value;
-                if (uniqueAmounts.Add($"freeship_{rawValue}"))
+                amazonErrors.Add(new InvoiceError
                 {
-                    string cleanValueStr = rawValue.Replace("$", "").Replace("-", "").Trim();
-                    amazonErrors.Add(new InvoiceError
-                    {
-                        Field = "TotalDeduction",
-                        ErrorType = "omission",
-                        CorrectValue = cleanValueStr,
-                        ExtractedValue = "0",
-                        Confidence = 0.95,
-                        Reasoning = "Rule-based: Individual Free Shipping amount detected for pattern learning.",
-                        LineText = match.Value.Trim(),
-                        LineNumber = GetLineNumberForMatch(lines, match),
-                    });
-                }
+                    Field = "TotalDeduction",
+                    ErrorType = "omission",
+                    CorrectValue = match.Groups[2].Value.Trim(), // Value is positive
+                    Confidence = 0.95,
+                    Reasoning = "Rule-based: Individual Free Shipping amount detected.",
+                    LineText = match.Value.Trim(),
+                    LineNumber = GetLineNumberForMatch(lines, match),
+                    SuggestedRegex = @"Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.?\d*)" // CANONICAL REGEX
+                });
             }
 
-            _logger.Error("🔍 **AMAZON_DETECTOR_END**: Finished rule-based detection. Found {Count} unique errors.", amazonErrors.Count);
+            _logger.Error("🎯 **RULE_BASED_RESULT**: Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
             return amazonErrors;
         }
 

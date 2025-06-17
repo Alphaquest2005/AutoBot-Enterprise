@@ -14,6 +14,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Initial steps: GetTemplates, GetPdfText, GetPossibleInvoices, Format and Read
             var steps = new List<IPipelineStep<InvoiceProcessingContext>>
             {
+                //new DatabaseValidationStep(this._logger),
                 new GetTemplatesStep(),
                 new GetPdfTextStep(),
                 new GetPossibleInvoicesStep(),

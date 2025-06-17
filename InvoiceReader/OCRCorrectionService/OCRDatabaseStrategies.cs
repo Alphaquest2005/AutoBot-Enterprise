@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -37,7 +38,11 @@ namespace WaterNut.DataSpace
             public abstract bool CanHandle(RegexUpdateRequest request);
 
             protected async Task<RegularExpressions> GetOrCreateRegexAsync(
-                OCRContext context, string pattern, bool multiLine = false, int maxLines = 1, string description = null)
+                OCRContext context,
+                string pattern,
+                bool multiLine = false,
+                int maxLines = 1,
+                string description = null)
             {
                 var existingRegex = await context.RegularExpressions
                                         .FirstOrDefaultAsync(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines).ConfigureAwait(false);
@@ -63,8 +68,14 @@ namespace WaterNut.DataSpace
             }
 
             protected async Task<Fields> GetOrCreateFieldAsync(
-                OCRContext context, string fieldKey, string dbFieldName, string entityType, string dataType,
-                int lineId, bool isRequired = false, bool appendValues = true)
+                OCRContext context,
+                string fieldKey,
+                string dbFieldName,
+                string entityType,
+                string dataType,
+                int lineId,
+                bool isRequired = false,
+                bool appendValues = true)
             {
                 var existingField = await context.Fields.FirstOrDefaultAsync(
                                             f => f.LineId == lineId && ((!string.IsNullOrEmpty(fieldKey) && f.Key == fieldKey) || (string.IsNullOrEmpty(fieldKey) && f.Field == dbFieldName)))
@@ -95,21 +106,89 @@ namespace WaterNut.DataSpace
 
         #endregion
 
-        #region Field Format Strategy (Unchanged)
+        #region Field Format Strategy
+
         public class FieldFormatUpdateStrategy : DatabaseUpdateStrategyBase
         {
             public FieldFormatUpdateStrategy(ILogger logger) : base(logger) { }
+
             public override string StrategyType => "FieldFormat";
-            public override bool CanHandle(RegexUpdateRequest request) => request.CorrectionType == "FieldFormat";
+
+            public override bool CanHandle(RegexUpdateRequest request)
+            {
+                if (string.IsNullOrEmpty(request.OldValue) && !string.IsNullOrEmpty(request.NewValue)) return false;
+                return request.CorrectionType == "FieldFormat" || request.CorrectionType == "FORMAT_FIX" || request.CorrectionType == "format_correction" || request.CorrectionType == "decimal_separator" || request.CorrectionType == "DecimalSeparator" || request.CorrectionType == "character_confusion" || IsPotentialFormatCorrection(request.OldValue, request.NewValue);
+            }
+
+            private bool IsPotentialFormatCorrection(string oldValue, string newValue)
+            {
+                if (string.IsNullOrEmpty(oldValue) || string.IsNullOrEmpty(newValue) || oldValue == newValue) return false;
+                var oldNormalized = Regex.Replace(oldValue, @"[\s\$,€£\-()]", "");
+                var newNormalized = Regex.Replace(newValue, @"[\s\$,€£\-()]", "");
+                return string.Equals(oldNormalized, newNormalized, StringComparison.OrdinalIgnoreCase);
+            }
+
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                // Implementation remains the same
-                return DatabaseUpdateResult.Failed("FieldFormatUpdateStrategy not fully implemented in this version.");
+                _logger.Error("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, Value: '{OldValue}' -> '{NewValue}'", request.FieldName, request.OldValue, request.NewValue);
+
+                var requestJson = JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                _logger.Error("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest entering strategy: {RequestJson}", requestJson);
+
+                try
+                {
+                    if (!request.LineId.HasValue)
+                    {
+                        return DatabaseUpdateResult.Failed($"Field Definition ID (Fields.Id) is required for FieldFormatUpdateStrategy for field '{request.FieldName}'. It should be passed via RegexUpdateRequest.LineId.");
+                    }
+
+                    int fieldDefinitionId = request.LineId.Value;
+                    var fieldDef = await context.Fields.FindAsync(fieldDefinitionId).ConfigureAwait(false);
+                    if (fieldDef == null)
+                        return DatabaseUpdateResult.Failed($"Field definition with ID {fieldDefinitionId} not found for field '{request.FieldName}'.");
+
+                    var formatPatterns = serviceInstance.CreateAdvancedFormatCorrectionPatterns(request.OldValue, request.NewValue);
+                    if (!formatPatterns.HasValue || string.IsNullOrEmpty(formatPatterns.Value.Pattern))
+                    {
+                        return DatabaseUpdateResult.Failed($"Could not generate format correction regex for '{request.FieldName}': '{request.OldValue}' -> '{request.NewValue}'.");
+                    }
+
+                    _logger.Error("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
+                    _logger.Error("      - FieldId: {FieldId}", fieldDefinitionId);
+                    _logger.Error("      - Pattern Regex: '{Pattern}'", formatPatterns.Value.Pattern);
+                    _logger.Error("      - Replacement Regex: '{Replacement}'", formatPatterns.Value.Replacement);
+
+                    var patternRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
+                    var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
+
+                    if (patternRegexEntity.TrackingState == TrackingState.Added || replacementRegexEntity.TrackingState == TrackingState.Added)
+                    {
+                        await context.SaveChangesAsync().ConfigureAwait(false);
+                    }
+
+                    var existingFieldFormat = await context.OCR_FieldFormatRegEx.FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id).ConfigureAwait(false);
+                    if (existingFieldFormat != null)
+                    {
+                        return DatabaseUpdateResult.Success(existingFieldFormat.Id, "Existing FieldFormatRegEx");
+                    }
+
+                    var newFieldFormatRegex = new FieldFormatRegEx { FieldId = fieldDefinitionId, RegExId = patternRegexEntity.Id, ReplacementRegExId = replacementRegexEntity.Id, TrackingState = TrackingState.Added };
+                    context.OCR_FieldFormatRegEx.Add(newFieldFormatRegex);
+                    await context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return DatabaseUpdateResult.Success(newFieldFormatRegex.Id, "Created FieldFormatRegEx");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Failed to execute FieldFormatUpdateStrategy for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Failed($"Database error in FieldFormatUpdateStrategy: {ex.Message}", ex);
+                }
             }
         }
+
         #endregion
 
-        #region Omission Update Strategy (With All Fixes)
+        #region Omission Update Strategy (With Final Fix)
 
         public class OmissionUpdateStrategy : DatabaseUpdateStrategyBase
         {
@@ -120,10 +199,10 @@ namespace WaterNut.DataSpace
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
                 _logger.Error("🔍 **OMISSION_STRATEGY_START**: Executing for field: {FieldName}", request.FieldName);
-                
+
                 if (string.IsNullOrEmpty(request.FieldName) || request.NewValue == null)
                 {
-                    _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing critical FieldName or NewValue. Aborting.");
+                    _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing critical FieldName or NewValue. Aborting strategy.");
                     return DatabaseUpdateResult.Failed("Request object has null FieldName or NewValue.");
                 }
 
@@ -135,31 +214,30 @@ namespace WaterNut.DataSpace
                     var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
                     if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
 
-                    // ================== CRITICAL FIX: Properly populate prompt contexts ==================
-                    var correctionForPrompt = new CorrectionResult 
+                    // ================== CRITICAL FIX: Properly populate prompt contexts from the request ==================
+                    var correctionForPrompt = new CorrectionResult
                     {
                         FieldName = request.FieldName,
                         NewValue = request.NewValue,
                         LineText = request.LineText,
                         LineNumber = request.LineNumber
                     };
-                    var lineContextForPrompt = new LineContext 
+                    var lineContextForPrompt = new LineContext
                     {
                         LineNumber = request.LineNumber,
                         LineText = request.LineText,
-                        // Fix for CS0200: Populate the lists, not the read-only property
                         ContextLinesBefore = request.ContextLinesBefore,
                         ContextLinesAfter = request.ContextLinesAfter
                     };
-                    // =====================================================================================
+                    // ==============================================================================================================
 
                     RegexCreationResponse regexResponse = null;
                     string failureReason = "Initial generation failed.";
-                    int maxAttempts = 2;
+                    int maxAttempts = 2; // Initial attempt + 1 retry
                     for (int attempt = 1; attempt <= maxAttempts; attempt++)
                     {
                         _logger.Information("  -> Regex generation attempt {Attempt}/{MaxAttempts} for field '{FieldName}'", attempt, maxAttempts, request.FieldName);
-                        
+
                         if (attempt == 1)
                         {
                             regexResponse = await serviceInstance.RequestNewRegexFromDeepSeek(correctionForPrompt, lineContextForPrompt).ConfigureAwait(false);
@@ -182,15 +260,15 @@ namespace WaterNut.DataSpace
                             _logger.Information("  -> ✅ Regex validation successful for field '{FieldName}' on attempt {Attempt}.", request.FieldName, attempt);
                             if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
                             if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new line.");
-                            
+
                             return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
                         }
-                        
-                        failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text.";
+
+                        failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text '{correctionForPrompt.LineText}'.";
                         _logger.Warning("  -> ❌ Attempt {Attempt} failed validation. Reason: {Reason}", attempt, failureReason);
                     }
-                    
-                    return DatabaseUpdateResult.Failed($"DeepSeek failed to generate a valid regex for '{request.FieldName}' after {maxAttempts} attempts. Last failure reason: {failureReason}");
+
+                    return DatabaseUpdateResult.Failed($"DeepSeek failed to generate/validate a regex for '{request.FieldName}' after {maxAttempts} attempts. Last failure reason: {failureReason}");
                 }
                 catch (Exception ex)
                 {
@@ -200,19 +278,25 @@ namespace WaterNut.DataSpace
             }
 
             private async Task<DatabaseUpdateResult> CreateNewLineForOmissionAsync(
-                OCRContext context, RegexUpdateRequest request, RegexCreationResponse regexResp, 
-                DatabaseFieldInfo fieldInfo, OCRCorrectionService serviceInstance)
+                OCRContext context,
+                RegexUpdateRequest request,
+                RegexCreationResponse regexResp,
+                DatabaseFieldInfo fieldInfo,
+                OCRCorrectionService serviceInstance)
             {
                 _logger.Error("  - [DB_SAVE_INTENT]: Preparing to create new Line, Field, and Regex for Omission of '{FieldName}'.", request.FieldName);
                 string normalizedPattern = regexResp.RegexPattern.Replace("\\\\", "\\");
 
+                // 1. REGEX ENTITY
                 var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
                 if (newRegexEntity.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false);
 
-                var newLineEntity = new Lines { PartId = request.PartId.Value, RegExId = newRegexEntity.Id, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_")}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
+                // 2. LINE ENTITY
+                var newLineEntity = new Lines { PartId = request.PartId.Value, RegExId = newRegexEntity.Id, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
                 context.Lines.Add(newLineEntity);
                 await context.SaveChangesAsync().ConfigureAwait(false);
 
+                // 3. FIELD ENTITY
                 bool shouldAppend = fieldInfo.DatabaseFieldName == "TotalDeduction" || fieldInfo.DatabaseFieldName == "TotalOtherCost" || fieldInfo.DatabaseFieldName == "TotalInsurance";
                 var newFieldEntity = await this.GetOrCreateFieldAsync(context, request.FieldName, fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.DataType, newLineEntity.Id, false, shouldAppend).ConfigureAwait(false);
                 if (newFieldEntity.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false);
@@ -222,7 +306,9 @@ namespace WaterNut.DataSpace
             }
 
             private async Task<int?> DeterminePartIdForNewOmissionLineAsync(
-                OCRContext context, DatabaseFieldInfo fieldInfo, RegexUpdateRequest request)
+                OCRContext context,
+                DatabaseFieldInfo fieldInfo,
+                RegexUpdateRequest request)
             {
                 _logger.Error("🎯 [CONTRACT_VALIDATION_ENTRY]: Entering DeterminePartIdForNewOmissionLineAsync for Field '{FieldName}'.", request.FieldName);
                 if (!request.InvoiceId.HasValue)

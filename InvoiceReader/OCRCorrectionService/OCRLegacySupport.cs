@@ -17,6 +17,8 @@ namespace WaterNut.DataSpace
 {
     using System.Text.RegularExpressions;
     using WaterNut.Business.Services.Utils;
+    using WaterNut.DataSpace.PipelineInfrastructure;
+    using Core.Common.Extensions; // Required for BetterExpando
 
     public partial class OCRCorrectionService
     {
@@ -74,89 +76,143 @@ namespace WaterNut.DataSpace
             return !TotalsZero(res, out totalImbalanceSum, logger);
         }
 
-        /// <summary>
-        /// FINAL, ROBUST VERSION: Orchestrates the entire correction pipeline.
-        /// 1. Detects granular errors.
-        /// 2. Passes granular errors to the database learning strategies (which now validate and retry).
-        /// 3. Re-imports using a reloaded template to apply the new learnings.
-        /// 4. Synchronizes any final in-memory corrections.
-        /// </summary>
         public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Invoice template, List<string> textLines, string originalText, ILogger logger)
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
             try
             {
-                log.Information("🏁 **CORRECT_INVOICES_V5_START**: Beginning robust correction pipeline for template '{TemplateName}'.", template.OcrInvoices?.Name);
+                log.Information("🏁 **CORRECT_INVOICES_V10_START**: Final version with type safety fix.");
 
+                // STEP 1: Heal DB
+                using (var dbContextForValidation = new OCRContext())
+                {
+                    var validator = new DatabaseValidator(dbContextForValidation, log);
+                    validator.ValidateAndHealTemplate();
+                }
+
+                // STEP 2: Reload healed template
+                GetTemplatesStep.InvalidateTemplateCache();
+                //Invoice freshTemplate;
+                //using (var ctx = new OCRContext())
+                //{
+                //    var freshTemplateData = await ctx.Invoices
+                //        .AsNoTracking()
+                //        .Include(i => i.Parts.Select(p => p.Lines.Select(l => l.Fields)))
+                //        .Include(i => i.Parts.Select(p => p.Lines.Select(l => l.RegularExpressions)))
+                //        .Include(i => i.Parts.Select(p => p.PartTypes))
+                //        .FirstOrDefaultAsync(x => x.Id == template.OcrInvoices.Id).ConfigureAwait(false);
+
+                //    if (freshTemplateData == null)
+                //    {
+                //        log.Error("   - ❌ FATAL: Could not reload template data from DB. Aborting correction.");
+                //        return res;
+                //    }
+                //    freshTemplate = new Invoice(freshTemplateData, log)
+                //    {
+                //        DocSet = template.DocSet,
+                //        FilePath = template.FilePath,
+                //        EmailId = template.EmailId,
+                //        FileType = template.FileType
+                //    };
+                //}
+
+                var freshTemplate = GetTemplatesStep.GetAllTemplates(
+                    new InvoiceProcessingContext(logger)
+                        {
+                            DocSet = template.DocSet,
+                            FilePath = template.FilePath,
+                            EmailId = template.EmailId,
+                            FileType = template.FileType
+                        },
+                    new OCRContext()).First(x => x.OcrInvoices.Id == template.OcrInvoices.Id);
+
+                // STEP 3: Initial read with healed template
+                var initialReadRes = freshTemplate.Read(textLines);
+                if (initialReadRes != null && initialReadRes.Any() && initialReadRes[0] is IList)
+                {
+                    var flattened = (initialReadRes[0] as IList).Cast<object>().ToList();
+                    res = flattened.Select(item => (IDictionary<string, object>)item).Cast<dynamic>().ToList();
+                }
+
+                // STEP 4: Check balance
+                if (!ShouldContinueCorrections(res, out var imbalance, log))
+                {
+                    log.Information("✅ Invoice is balanced after reading with the healed template. No further correction needed.");
+                    return res;
+                }
+                log.Warning("  - Invoice still unbalanced by {Imbalance} after healing. Proceeding with AI learning.", imbalance);
+
+                // STEP 5: Learn and correct
                 using (var correctionService = new OCRCorrectionService(log))
                 {
-                    var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(res, template, correctionService, log);
+                    var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(res, freshTemplate, correctionService, log);
                     if (!shipmentInvoicesWithMeta.Any()) return res;
 
                     var invoiceWrapper = shipmentInvoicesWithMeta.First();
-                    var invoiceToCorrect = invoiceWrapper.Invoice;
-                    var invoiceMetadata = invoiceWrapper.FieldMetadata;
+                    var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, originalText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
+                    if (!allDetectedErrors.Any()) return res;
 
-                    var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceToCorrect, originalText, invoiceMetadata).ConfigureAwait(false);
-                    if (!allDetectedErrors.Any())
+                    var updateRequests = allDetectedErrors.Select(e =>
                     {
-                        log.Information("  - No errors detected. Invoice appears balanced or no correctable errors found. Returning original data.");
-                        return res;
+                        var correctionResult = new CorrectionResult
+                        {
+                            FieldName = e.Field,
+                            OldValue = e.ExtractedValue,
+                            NewValue = e.CorrectValue,
+                            CorrectionType = e.ErrorType,
+                            Confidence = e.Confidence,
+                            Reasoning = e.Reasoning,
+                            LineText = e.LineText,
+                            LineNumber = e.LineNumber,
+                            RequiresMultilineRegex = e.RequiresMultilineRegex,
+                            SuggestedRegex = e.SuggestedRegex
+                        };
+                        return correctionService.CreateRegexUpdateRequest(correctionResult, originalText, invoiceWrapper.FieldMetadata, freshTemplate.OcrInvoices.Id);
+                    }).ToList();
+
+                    await correctionService.UpdateRegexPatternsAsync(updateRequests).ConfigureAwait(false);
+
+                    // STEP 6: Final re-read
+                    log.Information("  - [FINAL_RE_READ]: Reloading template again to apply newly learned patterns.");
+                    GetTemplatesStep.InvalidateTemplateCache();
+                    Invoice finalTemplate;
+                    using (var ctx = new OCRContext())
+                    {
+                        var finalTemplateData = await ctx.Invoices.AsNoTracking().Include(i => i.Parts.Select(p => p.Lines.Select(l => l.Fields))).Include(i => i.Parts.Select(p => p.Lines.Select(l => l.RegularExpressions))).Include(i => i.Parts.Select(p => p.PartTypes)).FirstOrDefaultAsync(x => x.Id == template.OcrInvoices.Id).ConfigureAwait(false);
+                        finalTemplate = new Invoice(finalTemplateData, log);
                     }
 
-                    log.Error("  - [DB_LEARNING_START]: Learning patterns from {Count} raw, granular error detections.", allDetectedErrors.Count);
+                    var finalReadRes = finalTemplate.Read(textLines);
 
-                    var requestsForDB = allDetectedErrors
-                        .Where(e => e.ErrorType.StartsWith("omission") && e.Confidence >= 0.9)
-                        .Select(rawError => {
-                            // ================== CRITICAL FIX: CS1503 ==================
-                            // Convert the raw InvoiceError to the required CorrectionResult before creating the update request.
-                            var correctionForLearning = new CorrectionResult
-                            {
-                                FieldName = rawError.Field,
-                                OldValue = rawError.ExtractedValue,
-                                NewValue = rawError.CorrectValue,
-                                CorrectionType = rawError.ErrorType,
-                                Confidence = rawError.Confidence,
-                                Reasoning = rawError.Reasoning,
-                                LineText = rawError.LineText,
-                                LineNumber = rawError.LineNumber,
-                                ContextLinesBefore = rawError.ContextLinesBefore,
-                                ContextLinesAfter = rawError.ContextLinesAfter
-                            };
-                            return correctionService.CreateRegexUpdateRequest(correctionForLearning, originalText, invoiceMetadata, template.OcrInvoices.Id);
-                            // ==========================================================
-                        }).ToList();
-
-                    if (requestsForDB.Any())
+                    // ================== CRITICAL TYPE-SAFETY FIX ==================
+                    if (finalReadRes != null && finalReadRes.Any() && finalReadRes[0] is IList)
                     {
-                        await correctionService.UpdateRegexPatternsAsync(requestsForDB).ConfigureAwait(false);
+                        var flattenedFinal = (finalReadRes[0] as IList).Cast<object>().ToList();
+
+                        // Convert the BetterExpando objects back to standard dictionaries
+                        // that the downstream pipeline can understand.
+                        res = flattenedFinal.Select(item => (IDictionary<string, object>)item).Cast<dynamic>().ToList();
+
+                        log.Information("✅ **TYPE_SAFETY_FIX_APPLIED**: Converted re-read result back to List<IDictionary<string, object>> for downstream compatibility.");
+                    }
+                    // ================== END OF FIX ==================
+
+                    if (!ShouldContinueCorrections(res, out var finalImbalance, log))
+                    {
+                        log.Information("✅✅✅ **CORRECTION_SUCCESS**: Final re-read produced a balanced invoice! Final Imbalance: {FinalImbalance}", finalImbalance);
                     }
                     else
                     {
-                        log.Warning("  - [DB_LEARNING_SKIPPED]: No high-confidence omission errors found to learn from.");
+                        log.Error("🔥🔥🔥 **CORRECTION_FAILURE**: Even after learning and re-reading, invoice is still unbalanced by {FinalImbalance}. Further investigation needed.", finalImbalance);
                     }
-
-                    log.Error("  - [RELOAD_AND_REIMPORT]: Invalidating template cache and re-running import with new patterns.");
-                    GetTemplatesStep.InvalidateTemplateCache();
-
-                    var reimportedRes = template.Read(textLines);
-                    log.Error("  - [RE-IMPORT_COMPLETE]: Re-import with fresh template extracted {Count} new CsvLines.", reimportedRes?.Count ?? 0);
-
-                    if (reimportedRes != null && reimportedRes.Any())
-                    {
-                        var reimportedDict = reimportedRes.FirstOrDefault() as IDictionary<string, object>;
-                        log.Error("  - [RE-IMPORT_DATA_DUMP]: Re-imported data - TotalDeduction: {Deduction}, TotalInsurance: {Insurance}",
-                            reimportedDict?.GetValueOrDefault("TotalDeduction"),
-                            reimportedDict?.GetValueOrDefault("TotalInsurance"));
-                    }
-
-                    return reimportedRes;
                 }
+
+                log.Information("🏁 **CORRECT_INVOICES_V10_END**: OCR correction pipeline complete.");
+                return res;
             }
             catch (Exception ex)
             {
-                log.Error(ex, "🚨 **CORRECT_INVOICES_FAILED**: An unexpected error occurred in the main CorrectInvoices method.");
+                log.Error(ex, "🚨 **CORRECT_INVOICES_FAILED**: An unexpected error occurred.");
                 return res;
             }
         }
@@ -280,29 +336,12 @@ namespace WaterNut.DataSpace
             }
         }
 
-        /// <summary>
-        /// A placeholder method. In a full implementation, this would take corrected data and update
-        /// the internal state of the OCR.Business.Entities.Invoice object before it's used or saved.
-        /// </summary>
         public static void UpdateTemplateLineValues(
             Invoice template,
             List<ShipmentInvoice> correctedInvoices,
             ILogger log)
         {
             log.Information("UpdateTemplateLineValues: This method is a placeholder and has no effect in this version.");
-            // In a real scenario, you might iterate through correctedInvoices and update
-            // the `template.Lines.Values` dictionary to reflect the corrected data before any
-            // further processing steps that rely on that internal state.
-            // For example:
-            // var correctedInvoice = correctedInvoices.FirstOrDefault();
-            // if (correctedInvoice != null)
-            // {
-            //     var totalDeductionLine = template.Lines.FirstOrDefault(l => ...);
-            //     if(totalDeductionLine != null)
-            //     {
-            //          totalDeductionLine.Values["TotalDeduction"] = correctedInvoice.TotalDeduction.ToString();
-            //     }
-            // }
         }
 
         #endregion

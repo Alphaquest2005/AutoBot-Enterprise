@@ -12,41 +12,23 @@ namespace WaterNut.DataSpace
     public class CorrectionResult
     {
         public string FieldName { get; set; }
-
         public string OldValue { get; set; }
-
         public string NewValue { get; set; }
-
         public string CorrectionType { get; set; }
-
         public bool Success { get; set; }
-
         public string ErrorMessage { get; set; }
-
         public double Confidence { get; set; }
-
         public string Reasoning { get; set; }
-
         public int LineNumber { get; set; }
-
         public string LineText { get; set; }
-
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
-
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-
         public bool RequiresMultilineRegex { get; set; }
-
         public string SuggestedRegex { get; set; }
-
         public string ExistingRegex { get; set; }
-
         public int? LineId { get; set; }
-
         public int? PartId { get; set; }
-
         public int? RegexId { get; set; }
-
         public string WindowText { get; set; }
 
         public string FullContext =>
@@ -58,26 +40,21 @@ namespace WaterNut.DataSpace
     public class InvoiceError
     {
         public string Field { get; set; }
-
         public string ExtractedValue { get; set; }
-
         public string CorrectValue { get; set; }
-
         public double Confidence { get; set; }
-
         public string ErrorType { get; set; }
-
         public string Reasoning { get; set; }
-
         public int LineNumber { get; set; }
-
         public string LineText { get; set; }
-
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
-
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-
         public bool RequiresMultilineRegex { get; set; }
+
+        /// <summary>
+        /// A regex pattern suggested by the detection phase that can be used for de-duplication and learning.
+        /// </summary>
+        public string SuggestedRegex { get; set; }
     }
 
     #endregion
@@ -87,23 +64,19 @@ namespace WaterNut.DataSpace
     public class DatabaseUpdateResult
     {
         public bool IsSuccess { get; set; }
-
         public string Message { get; set; }
-
         public int? RecordId { get; set; }
-
         public string Operation { get; set; }
-
         public Exception Exception { get; set; }
 
         public static DatabaseUpdateResult Success(int recordId, string operation) =>
             new DatabaseUpdateResult
-                {
-                    IsSuccess = true,
-                    RecordId = recordId,
-                    Operation = operation,
-                    Message = $"Successfully {operation} (ID: {recordId})"
-                };
+            {
+                IsSuccess = true,
+                RecordId = recordId,
+                Operation = operation,
+                Message = $"Successfully {operation} (ID: {recordId})"
+            };
 
         public static DatabaseUpdateResult Failed(string message, Exception ex = null) =>
             new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
@@ -112,45 +85,25 @@ namespace WaterNut.DataSpace
     public class RegexUpdateRequest
     {
         public string FieldName { get; set; }
-
         public string OldValue { get; set; }
-
         public string NewValue { get; set; }
-
         public string CorrectionType { get; set; }
-
         public double Confidence { get; set; }
-
         public string DeepSeekReasoning { get; set; }
-
         public int LineNumber { get; set; }
-
         public string LineText { get; set; }
-
         public string WindowText { get; set; }
-
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
-
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-
         public bool RequiresMultilineRegex { get; set; }
-
         public string SuggestedRegex { get; set; }
-
         public string FilePath { get; set; }
-
         public string InvoiceType { get; set; }
-
         public int? LineId { get; set; }
-
         public int? PartId { get; set; }
-
         public int? RegexId { get; set; }
-
         public string ExistingRegex { get; set; }
-
         public string PartName { get; set; }
-
         public int? InvoiceId { get; set; }
     }
 
@@ -161,67 +114,41 @@ namespace WaterNut.DataSpace
     public class OCRFieldMetadata
     {
         public string FieldName { get; set; }
-
         public string Value { get; set; }
-
         public string RawValue { get; set; }
-
         public int LineNumber { get; set; }
-
         public int? FieldId { get; set; }
-
         public int? LineId { get; set; }
-
         public int? RegexId { get; set; }
-
         public string Key { get; set; }
-
         public string Field { get; set; }
-
         public string EntityType { get; set; }
-
         public string DataType { get; set; }
-
         public bool? IsRequired { get; set; }
-
         public string LineName { get; set; }
-
         public string LineRegex { get; set; }
-
         public string LineText { get; set; }
-
         public int? PartId { get; set; }
-
         public string PartName { get; set; }
-
         public int? PartTypeId { get; set; }
-
         public int? InvoiceId { get; set; }
-
         public string InvoiceName { get; set; }
-
         public string InvoiceType { get; set; }
-
         public List<FieldFormatRegexInfo> FormatRegexes { get; set; } = new List<FieldFormatRegexInfo>();
     }
 
     public class FieldFormatRegexInfo
     {
         public int? FormatRegexId { get; set; }
-
         public int? RegexId { get; set; }
-
         public int? ReplacementRegexId { get; set; }
-
         public string Pattern { get; set; }
-
         public string Replacement { get; set; }
     }
 
     public class ShipmentInvoiceWithMetadata
     {
         public ShipmentInvoice Invoice { get; set; }
-
         public Dictionary<string, OCRFieldMetadata> FieldMetadata { get; set; } =
             new Dictionary<string, OCRFieldMetadata>();
     }
@@ -229,19 +156,12 @@ namespace WaterNut.DataSpace
     public class EnhancedFieldMapping
     {
         public int LineId { get; set; }
-
         public int FieldId { get; set; }
-
         public int PartId { get; set; }
-
         public string RegexPattern { get; set; }
-
         public string Key { get; set; }
-
         public string FieldName { get; set; }
-
         public string EntityType { get; set; }
-
         public string DataType { get; set; }
     }
 
@@ -252,33 +172,19 @@ namespace WaterNut.DataSpace
     public class LineContext
     {
         public int LineNumber { get; set; }
-
         public string LineText { get; set; }
-
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
-
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
-
         public string WindowText { get; set; }
-
         public bool RequiresMultilineRegex { get; set; }
-
         public int? LineId { get; set; }
-
         public string LineName { get; set; }
-
         public string RegexPattern { get; set; }
-
         public int? RegexId { get; set; }
-
         public List<FieldInfo> FieldsInLine { get; set; } = new List<FieldInfo>();
-
         public int? PartId { get; set; }
-
         public string PartName { get; set; }
-
         public int? PartTypeId { get; set; }
-
         public string FullContextWithLineNumbers =>
             string.Join(
                 "\n",
@@ -289,56 +195,38 @@ namespace WaterNut.DataSpace
     public class FieldInfo
     {
         public int FieldId { get; set; }
-
         public string Key { get; set; }
-
         public string Field { get; set; }
-
         public string EntityType { get; set; }
-
         public string DataType { get; set; }
-
         public bool? IsRequired { get; set; }
     }
 
     public class RegexCreationResponse
     {
         public string Strategy { get; set; }
-
         public string RegexPattern { get; set; }
-
         public string CompleteLineRegex { get; set; }
-
         public bool IsMultiline { get; set; }
-
         public int MaxLines { get; set; }
-
         public string TestMatch { get; set; }
-
         public double Confidence { get; set; }
-
         public string Reasoning { get; set; }
-            
         public bool PreservesExistingGroups { get; set; } = true;
     }
 
     public class InvoiceContext
     {
         public int? InvoiceId { get; set; }
-
         public string InvoiceName { get; set; }
     }
 
     public class PartContext
     {
         public int? PartId { get; set; }
-
         public string PartName { get; set; }
-
         public int? PartTypeId { get; set; }
     }
-
-    // OCRDataModels.cs - Added to the end of the file, inside the namespace
 
     public class RegexPattern
     {
@@ -354,5 +242,4 @@ namespace WaterNut.DataSpace
     }
 
     #endregion
-
 }
