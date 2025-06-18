@@ -214,7 +214,6 @@ namespace WaterNut.DataSpace
                     var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
                     if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
 
-                    // ================== CRITICAL FIX: Properly populate prompt contexts from the request ==================
                     var correctionForPrompt = new CorrectionResult
                     {
                         FieldName = request.FieldName,
@@ -229,11 +228,10 @@ namespace WaterNut.DataSpace
                         ContextLinesBefore = request.ContextLinesBefore,
                         ContextLinesAfter = request.ContextLinesAfter
                     };
-                    // ==============================================================================================================
 
                     RegexCreationResponse regexResponse = null;
                     string failureReason = "Initial generation failed.";
-                    int maxAttempts = 2; // Initial attempt + 1 retry
+                    int maxAttempts = 2;
                     for (int attempt = 1; attempt <= maxAttempts; attempt++)
                     {
                         _logger.Information("  -> Regex generation attempt {Attempt}/{MaxAttempts} for field '{FieldName}'", attempt, maxAttempts, request.FieldName);
@@ -261,7 +259,7 @@ namespace WaterNut.DataSpace
                             if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
                             if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new line.");
 
-                            return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
+                            return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo).ConfigureAwait(false);
                         }
 
                         failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text '{correctionForPrompt.LineText}'.";
@@ -277,32 +275,47 @@ namespace WaterNut.DataSpace
                 }
             }
 
+            // ======================================================================================
+            //                          *** DEFINITIVE FIX IS HERE ***
+            // This method has been refactored to use a single, atomic SaveChangesAsync call,
+            // ensuring transactional integrity and aligning with our robust design principles.
+            // ======================================================================================
             private async Task<DatabaseUpdateResult> CreateNewLineForOmissionAsync(
                 OCRContext context,
                 RegexUpdateRequest request,
                 RegexCreationResponse regexResp,
-                DatabaseFieldInfo fieldInfo,
-                OCRCorrectionService serviceInstance)
+                DatabaseFieldInfo fieldInfo)
             {
                 _logger.Error("  - [DB_SAVE_INTENT]: Preparing to create new Line, Field, and Regex for Omission of '{FieldName}'.", request.FieldName);
                 string normalizedPattern = regexResp.RegexPattern.Replace("\\\\", "\\");
 
-                // 1. REGEX ENTITY
+                // Step 1: Prepare all entities in memory without saving.
                 var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
-                await SaveChangesWithAssertiveLogging(context, "GetOrCreateRegex").ConfigureAwait(false); // WRAPPED CALL
 
-                // 2. LINE ENTITY
-                var newLineEntity = new Lines { PartId = request.PartId.Value, RegExId = newRegexEntity.Id, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
+                var newLineEntity = new Lines { PartId = request.PartId.Value, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
+                // Associate the regex with the line. EF will handle the foreign key relationship.
+                newLineEntity.RegularExpressions = newRegexEntity;
                 context.Lines.Add(newLineEntity);
-                await SaveChangesWithAssertiveLogging(context, "AddNewLine").ConfigureAwait(false); // WRAPPED CALL
 
-                // 3. FIELD ENTITY
                 bool shouldAppend = fieldInfo.DatabaseFieldName == "TotalDeduction" || fieldInfo.DatabaseFieldName == "TotalOtherCost" || fieldInfo.DatabaseFieldName == "TotalInsurance" || fieldInfo.DatabaseFieldName == "TotalInternalFreight";
-                var newFieldEntity = await this.GetOrCreateFieldAsync(context, request.FieldName, fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.DataType, newLineEntity.Id, false, shouldAppend).ConfigureAwait(false);
-                await SaveChangesWithAssertiveLogging(context, "GetOrCreateField").ConfigureAwait(false); // WRAPPED CALL
+                var newFieldEntity = new Fields
+                {
+                    Key = request.FieldName,
+                    Field = fieldInfo.DatabaseFieldName,
+                    EntityType = fieldInfo.EntityType,
+                    DataType = fieldInfo.DataType,
+                    IsRequired = false,
+                    AppendValues = shouldAppend,
+                    TrackingState = TrackingState.Added
+                };
+                // Associate the field with the line. EF will set the LineId upon saving.
+                newLineEntity.Fields.Add(newFieldEntity);
 
-                _logger.Information("Successfully created new Line (ID: {LineId}) and Field (ID: {FieldId}) for omission.", newLineEntity.Id, newFieldEntity.Id);
-                return DatabaseUpdateResult.Success(newFieldEntity.Id, "Created new line, field, and regex for omission");
+                // Step 2: Commit all prepared entities in a single transaction.
+                await SaveChangesWithAssertiveLogging(context, "CreateNewLineForOmission").ConfigureAwait(false);
+
+                _logger.Information("Successfully created new Line (ID: {LineId}), Field (ID: {FieldId}), and Regex (ID: {RegexId}) for omission.", newLineEntity.Id, newFieldEntity.Id, newRegexEntity.Id);
+                return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line, field, and regex for omission");
             }
 
             private async Task<int?> DeterminePartIdForNewOmissionLineAsync(
@@ -316,7 +329,6 @@ namespace WaterNut.DataSpace
                     _logger.Error("   - [CONTRACT_VIOLATION]: Precondition failed. The RegexUpdateRequest does not have an InvoiceId. Cannot determine the correct Part.");
                     return null;
                 }
-                _logger.Error("   - [CONTRACT_MET]: Received InvoiceId (TemplateId): {InvoiceId}", request.InvoiceId.Value);
 
                 string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
                 _logger.Error("   - [LOGIC]: Determined Target Part Type is '{PartType}'.", targetPartTypeName);
@@ -335,34 +347,26 @@ namespace WaterNut.DataSpace
                 return part.Id;
             }
 
-            // Located in OCRDatabaseStrategies.cs
             private async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
             {
                 try
                 {
-                    // 1. Logs the INTENTION to save
                     _logger.Information("   - 💾 **DB_SAVE_INTENT**: Attempting to save changes to the database for operation: {OperationName}", operationName);
-
-                    // 2. Executes the save operation
                     int changes = await context.SaveChangesAsync().ConfigureAwait(false);
-
-                    // 3. Logs the OUTCOME (success)
                     _logger.Information("   - ✅ **DB_SAVE_SUCCESS**: Successfully committed {ChangeCount} changes for {OperationName}.", changes, operationName);
                     return changes;
                 }
                 catch (DbEntityValidationException vex)
                 {
-                    // 4. Logs the SPECIFIC failure (validation error)
                     var errorMessages = vex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
                     var fullErrorMessage = string.Join("; ", errorMessages);
                     _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED**: Operation {OperationName} failed due to validation errors. Details: {ValidationErrors}", operationName, fullErrorMessage);
-                    throw; // Re-throws to ensure the pipeline knows a critical operation failed.
+                    throw;
                 }
                 catch (Exception ex)
                 {
-                    // 5. Logs ANY OTHER failure
                     _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION**: Operation {OperationName} failed due to an unexpected database error.", operationName);
-                    throw; // Re-throws for visibility.
+                    throw;
                 }
             }
         }
@@ -386,7 +390,5 @@ namespace WaterNut.DataSpace
         }
 
         #endregion
-
-        
     }
 }
