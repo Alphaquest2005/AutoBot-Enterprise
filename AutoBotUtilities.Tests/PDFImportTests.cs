@@ -573,6 +573,7 @@ namespace AutoBotUtilities.Tests
                         for (int i = 0; i < 10; i++)
                         {
                             finalInvoice = await ctx.ShipmentInvoice
+                                               .Include(x => x.InvoiceDetails)
                                 .FirstOrDefaultAsync(inv => inv.InvoiceNo == "112-9126443-1163432")
                                 .ConfigureAwait(false);
 
