@@ -22,6 +22,10 @@ using WaterNut.DataSpace.PipelineInfrastructure;
 
 namespace WaterNut.DataSpace
 {
+    using MoreLinq;
+
+    using Invoices = global::EntryDataDS.Business.Entities.Invoices;
+
     public partial class OCRCorrectionService
     {
         #region Enhanced Public Static Methods (Now Multi-Invoice and Nested-List Aware)
@@ -155,7 +159,7 @@ namespace WaterNut.DataSpace
                     var appliedCorrections = await correctionService.ApplyCorrectionsAsync(invoiceWrapper.Invoice, allDetectedErrors, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
                     log.Information("     - ✅ Applied {AppliedCount} corrections directly to the invoice object.", appliedCorrections.Count(c => c.Success));
 
-                    var updateRequests = allDetectedErrors.Select(e => new RegexUpdateRequest
+                    var updateRequests = allDetectedErrors.DistinctBy(x => new {x.Field, x.SuggestedRegex}).Select(e => new RegexUpdateRequest
                     {
                         FieldName = e.Field,
                         OldValue = e.ExtractedValue,

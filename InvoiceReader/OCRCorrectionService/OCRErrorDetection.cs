@@ -49,7 +49,7 @@ namespace WaterNut.DataSpace
                 // De-duplicate based on the target Field and the Regex that identifies the error's source pattern.
                 // This correctly groups multiple detections of the same logical error.
                 var uniqueErrors = allDetectedErrors
-                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Regex = e.SuggestedRegex })
+                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(),Value = e.CorrectValue, Regex = e.SuggestedRegex })
                     .Select(g => {
                         // From each group of duplicates, select the one with the highest confidence score.
                         var bestError = g.OrderByDescending(e => e.Confidence).First();

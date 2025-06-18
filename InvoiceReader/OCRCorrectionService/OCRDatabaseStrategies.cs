@@ -289,17 +289,17 @@ namespace WaterNut.DataSpace
 
                 // 1. REGEX ENTITY
                 var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
-                if (newRegexEntity.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false);
+                await SaveChangesWithAssertiveLogging(context, "GetOrCreateRegex").ConfigureAwait(false); // WRAPPED CALL
 
                 // 2. LINE ENTITY
                 var newLineEntity = new Lines { PartId = request.PartId.Value, RegExId = newRegexEntity.Id, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
                 context.Lines.Add(newLineEntity);
-                await context.SaveChangesAsync().ConfigureAwait(false);
+                await SaveChangesWithAssertiveLogging(context, "AddNewLine").ConfigureAwait(false); // WRAPPED CALL
 
                 // 3. FIELD ENTITY
-                bool shouldAppend = fieldInfo.DatabaseFieldName == "TotalDeduction" || fieldInfo.DatabaseFieldName == "TotalOtherCost" || fieldInfo.DatabaseFieldName == "TotalInsurance";
+                bool shouldAppend = fieldInfo.DatabaseFieldName == "TotalDeduction" || fieldInfo.DatabaseFieldName == "TotalOtherCost" || fieldInfo.DatabaseFieldName == "TotalInsurance" || fieldInfo.DatabaseFieldName == "TotalInternalFreight";
                 var newFieldEntity = await this.GetOrCreateFieldAsync(context, request.FieldName, fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.DataType, newLineEntity.Id, false, shouldAppend).ConfigureAwait(false);
-                if (newFieldEntity.TrackingState == TrackingState.Added) await context.SaveChangesAsync().ConfigureAwait(false);
+                await SaveChangesWithAssertiveLogging(context, "GetOrCreateField").ConfigureAwait(false); // WRAPPED CALL
 
                 _logger.Information("Successfully created new Line (ID: {LineId}) and Field (ID: {FieldId}) for omission.", newLineEntity.Id, newFieldEntity.Id);
                 return DatabaseUpdateResult.Success(newFieldEntity.Id, "Created new line, field, and regex for omission");
@@ -334,6 +334,37 @@ namespace WaterNut.DataSpace
                 _logger.Error("   - [LOOKUP_SUCCESS]: Found correct Part. PartId: {PartId}, Name: '{PartName}'.", part.Id, part.PartTypes.Name);
                 return part.Id;
             }
+
+            // Located in OCRDatabaseStrategies.cs
+            private async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
+            {
+                try
+                {
+                    // 1. Logs the INTENTION to save
+                    _logger.Information("   - 💾 **DB_SAVE_INTENT**: Attempting to save changes to the database for operation: {OperationName}", operationName);
+
+                    // 2. Executes the save operation
+                    int changes = await context.SaveChangesAsync().ConfigureAwait(false);
+
+                    // 3. Logs the OUTCOME (success)
+                    _logger.Information("   - ✅ **DB_SAVE_SUCCESS**: Successfully committed {ChangeCount} changes for {OperationName}.", changes, operationName);
+                    return changes;
+                }
+                catch (DbEntityValidationException vex)
+                {
+                    // 4. Logs the SPECIFIC failure (validation error)
+                    var errorMessages = vex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
+                    var fullErrorMessage = string.Join("; ", errorMessages);
+                    _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED**: Operation {OperationName} failed due to validation errors. Details: {ValidationErrors}", operationName, fullErrorMessage);
+                    throw; // Re-throws to ensure the pipeline knows a critical operation failed.
+                }
+                catch (Exception ex)
+                {
+                    // 5. Logs ANY OTHER failure
+                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION**: Operation {OperationName} failed due to an unexpected database error.", operationName);
+                    throw; // Re-throws for visibility.
+                }
+            }
         }
 
         #endregion
@@ -355,5 +386,7 @@ namespace WaterNut.DataSpace
         }
 
         #endregion
+
+        
     }
 }
