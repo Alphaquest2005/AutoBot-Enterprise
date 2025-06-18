@@ -189,7 +189,9 @@ namespace WaterNut.DataSpace
                 log.Error("   - **STEP 6: RE-WRAP_DATA**: Correction process complete. Re-wrapping corrected data into nested list structure before returning.");
 
                 log.Error("🏁 **CORRECT_INVOICES_EXIT**: OCR correction pipeline complete.");
+                
                 return finalResult;
+
             }
             catch (Exception ex)
             {

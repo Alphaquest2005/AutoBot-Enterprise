@@ -11,6 +11,7 @@ using Core.Common.Extensions;
 using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Data.Entity.Validation;
 
 namespace WaterNut.DataSpace
 {
@@ -121,15 +122,20 @@ namespace WaterNut.DataSpace
             RegexUpdateRequest request,
             DatabaseUpdateResult dbUpdateResult)
         {
-            if (request == null) return;
+            if (request == null)
+            {
+                _logger.Error("🚨 **LEARNING_LOG_FAILED**: Attempted to log a null RegexUpdateRequest.");
+                return;
+            }
+
             dbUpdateResult ??= DatabaseUpdateResult.Failed("Internal error: DBUpdateResult was null.");
 
             try
             {
                 // Step 1: Prepare and validate the data *before* any logging.
                 double? safeConfidence = (request.Confidence >= 0 && request.Confidence <= 1.0)
-                                         ? Math.Round(request.Confidence, 4)
-                                         : (double?)null;
+                                             ? Math.Round(request.Confidence, 4)
+                                             : (double?)null;
 
                 // Step 2: Log the prepared, safe-to-log data.
                 _logger.Information(
@@ -143,13 +149,14 @@ namespace WaterNut.DataSpace
                 );
 
                 // Step 3: Create the entity for the database.
+
                 var learning = new OCRCorrectionLearning
                 {
                     FieldName = request.FieldName,
-                    OriginalError = request.OldValue ?? "",
-                    CorrectValue = request.NewValue ?? "",
+                    OriginalError = request.OldValue ?? string.Empty,
+                    CorrectValue = request.NewValue ?? string.Empty,
                     LineNumber = request.LineNumber,
-                    LineText = request.LineText ?? "",
+                    LineText = request.LineText ?? string.Empty,
                     WindowText = request.WindowText,
                     CorrectionType = request.CorrectionType,
                     DeepSeekReasoning = TruncateForLog(request.DeepSeekReasoning, 1000),
@@ -159,22 +166,35 @@ namespace WaterNut.DataSpace
                     Success = dbUpdateResult.IsSuccess,
                     ErrorMessage = dbUpdateResult.IsSuccess ? null : TruncateForLog(dbUpdateResult.Message, 2000),
                     CreatedBy = "OCRCorrectionService",
+                    // ======================================================================================
+                    //                          *** DEFINITIVE FIX IS HERE ***
+                    //        The CreatedOn property is now set to the current system time.
+                    // ======================================================================================
+                    CreatedDate = DateTime.Now,
                     RequiresMultilineRegex = request.RequiresMultilineRegex,
                     ContextLinesBefore = request.ContextLinesBefore != null ? string.Join("\n", request.ContextLinesBefore) : null,
                     ContextLinesAfter = request.ContextLinesAfter != null ? string.Join("\n", request.ContextLinesAfter) : null,
                     LineId = request.LineId,
                     PartId = request.PartId,
-                    RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId
+                    RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId,
+                    //InvoiceNumber = request.InvoiceNumber
                 };
 
-                // Step 4: Save to the database.
                 context.OCRCorrectionLearning.Add(learning);
                 await context.SaveChangesAsync().ConfigureAwait(false);
-                _logger.Information("✅ **LEARNING_LOG_SUCCESS**: Successfully saved learning record ID {LearningId} to database.", learning.Id);
+                _logger.Information("✅ **LEARNING_LOG_SUCCESS**: Successfully saved learning record ID {LearningId} for Field '{FieldName}'.", learning.Id, learning.FieldName);
+            }
+            catch (DbEntityValidationException vex)
+            {
+                var errorMessages = vex.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
+                var fullErrorMessage = string.Join("; ", errorMessages);
+                _logger.Error(vex, "🚨 **LEARNING_LOG_DB_VALIDATION_FAILED**: CRITICAL - DbEntityValidationException while saving record for Field '{FieldName}'. Errors: {ValidationErrors}", request.FieldName, fullErrorMessage);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 **LEARNING_LOG_FAILED**: CRITICAL - Exception while saving OCRCorrectionLearning record for Field '{FieldName}'.", request.FieldName);
+                _logger.Error(ex, "🚨 **LEARNING_LOG_FAILED**: CRITICAL - Unhandled exception while saving OCRCorrectionLearning record for Field '{FieldName}'.", request.FieldName);
             }
         }
 

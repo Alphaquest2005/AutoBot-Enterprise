@@ -102,6 +102,29 @@ namespace WaterNut.DataSpace
                 _logger.Information("Prepared new field definition for LineId {LineId}, Key '{Key}', DBField '{DbField}'", lineId, fieldKey, dbFieldName);
                 return newField;
             }
+
+            internal async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
+            {
+                try
+                {
+                    _logger.Information("   - 💾 **DB_SAVE_INTENT**: Attempting to save changes to the database for operation: {OperationName}", operationName);
+                    int changes = await context.SaveChangesAsync().ConfigureAwait(false);
+                    _logger.Information("   - ✅ **DB_SAVE_SUCCESS**: Successfully committed {ChangeCount} changes for {OperationName}.", changes, operationName);
+                    return changes;
+                }
+                catch (DbEntityValidationException vex)
+                {
+                    var errorMessages = vex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
+                    var fullErrorMessage = string.Join("; ", errorMessages);
+                    _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED**: Operation {OperationName} failed due to validation errors. Details: {ValidationErrors}", operationName, fullErrorMessage);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION**: Operation {OperationName} failed due to an unexpected database error.", operationName);
+                    throw;
+                }
+            }
         }
 
         #endregion
@@ -153,6 +176,10 @@ namespace WaterNut.DataSpace
                         return DatabaseUpdateResult.Failed($"Could not generate format correction regex for '{request.FieldName}': '{request.OldValue}' -> '{request.NewValue}'.");
                     }
 
+                    // ======================================================================================
+                    //                          *** DEFINITIVE FIX IS HERE ***
+                    //       The detailed DB_SAVE_INTENT logging has been restored.
+                    // ======================================================================================
                     _logger.Error("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
                     _logger.Error("      - FieldId: {FieldId}", fieldDefinitionId);
                     _logger.Error("      - Pattern Regex: '{Pattern}'", formatPatterns.Value.Pattern);
@@ -161,20 +188,26 @@ namespace WaterNut.DataSpace
                     var patternRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
                     var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
 
-                    if (patternRegexEntity.TrackingState == TrackingState.Added || replacementRegexEntity.TrackingState == TrackingState.Added)
-                    {
-                        await context.SaveChangesAsync().ConfigureAwait(false);
-                    }
+                    var existingFieldFormat = await context.OCR_FieldFormatRegEx
+                        .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id)
+                        .ConfigureAwait(false);
 
-                    var existingFieldFormat = await context.OCR_FieldFormatRegEx.FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id).ConfigureAwait(false);
                     if (existingFieldFormat != null)
                     {
+                        _logger.Information("   -> Found existing FieldFormatRegEx rule (ID: {RuleId}). No changes needed.", existingFieldFormat.Id);
                         return DatabaseUpdateResult.Success(existingFieldFormat.Id, "Existing FieldFormatRegEx");
                     }
 
-                    var newFieldFormatRegex = new FieldFormatRegEx { FieldId = fieldDefinitionId, RegExId = patternRegexEntity.Id, ReplacementRegExId = replacementRegexEntity.Id, TrackingState = TrackingState.Added };
+                    var newFieldFormatRegex = new FieldFormatRegEx
+                    {
+                        FieldId = fieldDefinitionId,
+                        RegExId = patternRegexEntity.Id,
+                        ReplacementRegExId = replacementRegexEntity.Id,
+                        TrackingState = TrackingState.Added
+                    };
                     context.OCR_FieldFormatRegEx.Add(newFieldFormatRegex);
-                    await context.SaveChangesAsync().ConfigureAwait(false);
+
+                    await SaveChangesWithAssertiveLogging(context, "CreateFieldFormatRule").ConfigureAwait(false);
 
                     return DatabaseUpdateResult.Success(newFieldFormatRegex.Id, "Created FieldFormatRegEx");
                 }
@@ -347,28 +380,7 @@ namespace WaterNut.DataSpace
                 return part.Id;
             }
 
-            private async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
-            {
-                try
-                {
-                    _logger.Information("   - 💾 **DB_SAVE_INTENT**: Attempting to save changes to the database for operation: {OperationName}", operationName);
-                    int changes = await context.SaveChangesAsync().ConfigureAwait(false);
-                    _logger.Information("   - ✅ **DB_SAVE_SUCCESS**: Successfully committed {ChangeCount} changes for {OperationName}.", changes, operationName);
-                    return changes;
-                }
-                catch (DbEntityValidationException vex)
-                {
-                    var errorMessages = vex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
-                    var fullErrorMessage = string.Join("; ", errorMessages);
-                    _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED**: Operation {OperationName} failed due to validation errors. Details: {ValidationErrors}", operationName, fullErrorMessage);
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION**: Operation {OperationName} failed due to an unexpected database error.", operationName);
-                    throw;
-                }
-            }
+
         }
 
         #endregion
