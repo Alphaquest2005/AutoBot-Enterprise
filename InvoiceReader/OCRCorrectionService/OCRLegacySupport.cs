@@ -138,6 +138,8 @@ namespace WaterNut.DataSpace
                 using (var correctionService = new OCRCorrectionService(log))
                 {
                     var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(actualInvoiceData, freshTemplate, correctionService, log);
+
+                    
                     if (!shipmentInvoicesWithMeta.Any())
                     {
                         log.Error("     - ❌ ERROR: Could not convert dynamic data to ShipmentInvoice object for AI analysis. Aborting.");
@@ -145,7 +147,8 @@ namespace WaterNut.DataSpace
                     }
 
                     var invoiceWrapper = shipmentInvoicesWithMeta.First();
-                    var fullDocumentText = template.FormattedPdfText;
+
+                   var fullDocumentText = template.FormattedPdfText;
 
                     var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
 

@@ -75,6 +75,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         }
                         context.Logger?.Error("📜 **DATA_OUTPUT_DUMP (INITIAL_READ)**: The data produced by the initial read: {DataJson}", initialResJson);
 
+                        
+
                         // --- OCR CORRECTION SERVICE CALL ---
                         context.Logger?.Information("🚀 **CORRECTION_PIPELINE_START**: Calling OCRCorrectionService to analyze and correct the data structure as-is.");
                         var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, context.Logger).ConfigureAwait(false);

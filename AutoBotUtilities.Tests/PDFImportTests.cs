@@ -511,7 +511,7 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public async Task CanImportAmazoncomOrder11291264431163432()
+        public async Task CanImportAmazoncomOrder11291264431163432_AfterLearning()
         {
             // Record the start time of the test to query for new DB entries later.
             var testStartTime = DateTime.Now.AddSeconds(-5); // Give a 5-second buffer
@@ -538,9 +538,123 @@ namespace AutoBotUtilities.Tests
                     return;
                 }
 
+
                 var fileLst = await FileTypeManager
-                    .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
-                    .ConfigureAwait(false);
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .ConfigureAwait(false);
+
+                var fileTypes = fileLst
+                     .OfType<CoreEntities.Business.Entities.FileTypes>()
+                     .Where(x => x.Description == "Unknown")
+                     .ToList();
+
+                if (!fileTypes.Any())
+                {
+                    Assert.Warn($"No suitable 'Unknown' PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+
+                    // This is an async call that kicks off the entire pipeline.
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
+
+                    _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
+
+                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    bool invoiceExists = false;
+                    ShipmentInvoice finalInvoice = null;
+
+                    _logger.Information("🔍 **VERIFICATION_START**: Checking for persisted ShipmentInvoice with retry logic...");
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        // Retry for up to 5 seconds to give the async pipeline time to commit the final save.
+                        for (int i = 0; i < 10; i++)
+                        {
+                            finalInvoice = await ctx.ShipmentInvoice
+                                               .Include(x => x.InvoiceDetails)
+                                .FirstOrDefaultAsync(inv => inv.InvoiceNo == "112-9126443-1163432")
+                                .ConfigureAwait(false);
+
+                            if (finalInvoice != null)
+                            {
+                                invoiceExists = true;
+                                _logger.Information("✅ **VERIFICATION_SUCCESS**: Found ShipmentInvoice '112-9126443-1163432' in the database on attempt {Attempt}.", i + 1);
+                                break;
+                            }
+
+                            _logger.Warning("  - Verification attempt {Attempt}/10 failed. Waiting 500ms before retry...", i + 1);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+
+                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice '112-9126443-1163432' not created after waiting for async persistence.");
+                    // ================== END OF ROBUST VERIFICATION ==================
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "112-9126443-1163432");
+                        Assert.That(detailCount, Is.EqualTo(2), $"Expected = 2 ShipmentInvoiceDetails, but found {detailCount}.");
+                    }
+
+                    _logger.Information("✅ **DATABASE_ASSERTIONS_PASSED**: ShipmentInvoice and correct number of Details exist.");
+
+                   
+                    // Final check on the persisted object's balance.
+                    Assert.That(finalInvoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected final persisted invoice to be balanced. Instead, TotalsZero was {finalInvoice.TotalsZero}.");
+                    _logger.Error("✅ **TOTALS_ZERO_PASSED**: Persisted invoice is mathematically balanced (TotalsZero = {TotalsZero}).", finalInvoice.TotalsZero);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in CanImportAmazoncomOrder11291264431163432");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+        [Test]
+        public async Task CanImportAmazoncomOrder11291264431163432_BeforeLearning()
+        {
+            // Record the start time of the test to query for new DB entries later.
+            var testStartTime = DateTime.Now.AddSeconds(-5); // Give a 5-second buffer
+
+            Console.SetOut(TestContext.Progress);
+
+            try
+            {
+                // STRATEGY: Configure logging to show OCR correction dataflow and logic flow
+                _logger.Information("🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process");
+                _logger.Information("🔍 **TEST_EXPECTATION**: We expect OCR correction to detect omissions and create a balanced invoice.");
+
+                // Configure logging to show our OCR correction logs  
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+                // prepare test for reimportation
+                using (var ctx = new EntryDataDSContext())
+                {
+                    var sql = @"DELETE FROM [OCR-Lines]
+FROM            [OCR-Lines] INNER JOIN
+                         [OCR-RegularExpressions] ON [OCR-Lines].RegExId = [OCR-RegularExpressions].Id
+WHERE        ([OCR-Lines].Name LIKE 'AutoOmission_%') AND ([OCR-Lines].PartId = 1028) AND ([OCR-RegularExpressions].RegEx IN (N'Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.\d{2})', 'Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)'));
+delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shipping: -$0.46','Gift Card Amount: -$6.99');";
+                    await ctx.Database.ExecuteSqlCommandAsync(sql).ConfigureAwait(false);
+                }
+
+                var fileLst = await FileTypeManager
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .ConfigureAwait(false);
 
                 var fileTypes = fileLst
                      .OfType<CoreEntities.Business.Entities.FileTypes>()
