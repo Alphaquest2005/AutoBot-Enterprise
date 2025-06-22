@@ -1,3 +1,4 @@
+﻿
 ﻿// File: OCRCorrectionService/OCRLegacySupport.cs
 
 using System;
@@ -22,6 +23,11 @@ using WaterNut.DataSpace.PipelineInfrastructure;
 
 namespace WaterNut.DataSpace
 {
+    using System.Linq;
+
+    using global::EntryDataDS.Business.Entities;
+    using InvoiceReader.OCRCorrectionService;
+    using InvoiceReader.PipelineInfrastructure;
     using MoreLinq;
 
     using Invoices = global::EntryDataDS.Business.Entities.Invoices;
@@ -139,51 +145,75 @@ namespace WaterNut.DataSpace
                 {
                     var shipmentInvoicesWithMeta = ConvertDynamicToShipmentInvoicesWithMetadata(actualInvoiceData, freshTemplate, correctionService, log);
 
-                    
+
                     if (!shipmentInvoicesWithMeta.Any())
                     {
                         log.Error("     - ❌ ERROR: Could not convert dynamic data to ShipmentInvoice object for AI analysis. Aborting.");
                         return res;
                     }
 
-                    var invoiceWrapper = shipmentInvoicesWithMeta.First();
+                    // ======================================================================================
+                    //                          *** DEFINITIVE FIX IS HERE ***
+                    // The logic now iterates over all invoices instead of just processing the first one.
+                    // This ensures all invoices are corrected and their data can be synced back.
+                    // ======================================================================================
 
-                   var fullDocumentText = template.FormattedPdfText;
+                    var allUpdateRequests = new List<RegexUpdateRequest>();
+                    var fullDocumentText = template.FormattedPdfText;
 
-                    var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
-
-                    if (!allDetectedErrors.Any())
+                    foreach (var invoiceWrapper in shipmentInvoicesWithMeta)
                     {
-                        log.Error("     - ⚠️ WARNING: Correction pipeline was triggered, but AI error detection found no omissions. The imbalance of {Imbalance:F2} remains unexplained.", imbalance);
-                        return res;
+                        log.Information("   - 🔎 Processing corrections for InvoiceNo: {InvoiceNo}", invoiceWrapper.Invoice.InvoiceNo);
+
+                        var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
+
+                        if (!allDetectedErrors.Any())
+                        {
+                            log.Error("     - ⚠️ WARNING for Invoice {InvoiceNo}: Correction pipeline triggered, but AI error detection found no omissions. The imbalance may remain.", invoiceWrapper.Invoice.InvoiceNo);
+                            continue; // Skip to the next invoice
+                        }
+                        log.Information("     - ✅ AI detected {ErrorCount} potential errors/omissions for Invoice {InvoiceNo}.", allDetectedErrors.Count, invoiceWrapper.Invoice.InvoiceNo);
+
+                        var appliedCorrections = await correctionService.ApplyCorrectionsAsync(invoiceWrapper.Invoice, allDetectedErrors, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
+                        log.Information("     - ✅ Applied {AppliedCount} corrections directly to Invoice {InvoiceNo}.", appliedCorrections.Count(c => c.Success), invoiceWrapper.Invoice.InvoiceNo);
+
+                        // Apply Caribbean customs rules for each invoice
+                        var customsCorrections = correctionService.ApplyCaribbeanCustomsRules(
+                            invoiceWrapper.Invoice,
+                            appliedCorrections.Where(c => c.Success).ToList());
+                        if (customsCorrections.Any())
+                        {
+                            correctionService.ApplyCaribbeanCustomsCorrectionsToInvoice(invoiceWrapper.Invoice, customsCorrections);
+                            log.Information("     - ✅ Applied {CustomsCount} Caribbean customs rules to Invoice {InvoiceNo}.", customsCorrections.Count, invoiceWrapper.Invoice.InvoiceNo);
+                        }
+
+                        // Accumulate database update requests from all detected errors for this invoice
+                        var updateRequestsForThisInvoice = allDetectedErrors.DistinctBy(x => new { x.Field, x.SuggestedRegex }).Select(e => new RegexUpdateRequest
+                        {
+                            FieldName = e.Field,
+                            OldValue = e.ExtractedValue,
+                            NewValue = e.CorrectValue,
+                            CorrectionType = e.ErrorType,
+                            Confidence = e.Confidence,
+                            DeepSeekReasoning = e.Reasoning,
+                            LineNumber = e.LineNumber,
+                            LineText = e.LineText,
+                            ContextLinesBefore = e.ContextLinesBefore,
+                            ContextLinesAfter = e.ContextLinesAfter,
+                            RequiresMultilineRegex = e.RequiresMultilineRegex,
+                            SuggestedRegex = e.SuggestedRegex,
+                            InvoiceId = template.OcrInvoices.Id,
+                            FilePath = template.FilePath,
+                            //InvoiceNumber = invoiceWrapper.Invoice.InvoiceNo
+                        }).ToList();
+
+                        allUpdateRequests.AddRange(updateRequestsForThisInvoice);
                     }
-                    log.Information("     - ✅ AI detected {ErrorCount} potential errors/omissions.", allDetectedErrors.Count);
 
-                    var appliedCorrections = await correctionService.ApplyCorrectionsAsync(invoiceWrapper.Invoice, allDetectedErrors, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
-                    log.Information("     - ✅ Applied {AppliedCount} corrections directly to the invoice object.", appliedCorrections.Count(c => c.Success));
+                    // Perform all database learning updates in one batch after processing all invoices
+                    await correctionService.UpdateRegexPatternsAsync(allUpdateRequests).ConfigureAwait(false);
 
-                    var updateRequests = allDetectedErrors.DistinctBy(x => new {x.Field, x.SuggestedRegex}).Select(e => new RegexUpdateRequest
-                    {
-                        FieldName = e.Field,
-                        OldValue = e.ExtractedValue,
-                        NewValue = e.CorrectValue,
-                        CorrectionType = e.ErrorType,
-                        Confidence = e.Confidence,
-                        DeepSeekReasoning = e.Reasoning,
-                        LineNumber = e.LineNumber,
-                        LineText = e.LineText,
-                        ContextLinesBefore = e.ContextLinesBefore,
-                        ContextLinesAfter = e.ContextLinesAfter,
-                        RequiresMultilineRegex = e.RequiresMultilineRegex,
-                        SuggestedRegex = e.SuggestedRegex,
-                        InvoiceId = template.OcrInvoices.Id,
-                        FilePath = template.FilePath,
-                        // This property is now correctly populated for better tracking.
-                        //InvoiceNumber = invoiceWrapper.Invoice.InvoiceNo
-                    }).ToList();
-
-                    await correctionService.UpdateRegexPatternsAsync(updateRequests).ConfigureAwait(false);
-
+                    // Sync all corrected invoices back to the original dynamic data structure
                     var correctedInvoices = shipmentInvoicesWithMeta.Select(siwm => siwm.Invoice).ToList();
                     UpdateDynamicResultsWithCorrections(actualInvoiceData, correctedInvoices, log);
                 }
@@ -192,7 +222,7 @@ namespace WaterNut.DataSpace
                 log.Error("   - **STEP 6: RE-WRAP_DATA**: Correction process complete. Re-wrapping corrected data into nested list structure before returning.");
 
                 log.Error("🏁 **CORRECT_INVOICES_EXIT**: OCR correction pipeline complete.");
-                
+
                 return finalResult;
 
             }

@@ -730,11 +730,11 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
                         Assert.That(recentCorrections.Count, Is.GreaterThan(0),
                             $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
 
-                        var newRegexPatterns = await ocrCtx.RegularExpressions
+                        var newRegexPatterns = await ocrCtx.OCRCorrectionLearning
                             .Where(x => x.CreatedDate > testStartTime)
                             .ToListAsync();
 
-                        _logger.Error("🔍 **AMAZON_NEW_PATTERNS**: Found {Count} new regex patterns", newRegexPatterns.Count);
+                        _logger.Error("🔍 **Corrections**: Found {Count} new regex patterns", newRegexPatterns.Count);
 
                         Assert.That(newRegexPatterns.Count, Is.GreaterThan(0),
                             "FAILING: OCR correction should create at least 1 new regex pattern in database");
