@@ -45,34 +45,200 @@ namespace WaterNut.DataSpace
 
         private List<IDictionary<string, object>> SetPartLineValues(Part part, string filterInstance = null)
         {
-            // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
-            _logger.Debug("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
-            // Console.WriteLine($"**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {filterInstance ?? "NULL"}");
-            
-            // **VERSION TESTING FRAMEWORK**: Route to different versions for comparison
-            // Set this property to control which version to test
-            var versionToTest = GetVersionToTest();
-            
-            _logger.Debug("**VERSION_ROUTER**: Using version {Version} for testing", versionToTest);
-            // Console.WriteLine($"**VERSION_ROUTER**: Using version {versionToTest} for testing");
-            
-            return versionToTest switch
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
-                "V1" => SetPartLineValues_V1_Working(part, filterInstance),
-                "V2" => SetPartLineValues_V2_BudgetMarine(part, filterInstance), 
-                "V3" => SetPartLineValues_V3_SheinNotAmazon(part, filterInstance),
-                "V4" => SetPartLineValues_V4_WorkingAllTests(part, filterInstance),
-                "V5" => SetPartLineValues_V5_Current(part, filterInstance),
-                "V6" => SetPartLineValues_V6_EnhancedSectionDeduplication(part, filterInstance),
-                "V7" => SetPartLineValues_V7_EnhancedMultiPageDeduplication(part, filterInstance),
-                "V8" => SetPartLineValues_V8_TropicalVendorsIndividualItems(part, filterInstance),
-                "V9" => SetPartLineValues_V9_OpusEnhancedDeduplication(part, filterInstance),
-                "V10" => SetPartLineValues_V10_OpusFreshImplementation(part, filterInstance),
-                "V11" => SetPartLineValues_V11_GeminiV8Fix(part, filterInstance),
-                "V12" => SetPartLineValues_V12_GeminiFreshImplementation(part, filterInstance),
-                "V13" => SetPartLineValues_Universal_V3(part, filterInstance),
-                _ => SetPartLineValues_V5_Current(part, filterInstance) // Default to current
-            };
+                // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
+                _logger.Error("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
+                
+                // **INPUT SERIALIZATION**: Serialize input parameters for LLM analysis
+                var partSerialized = SerializePartForDebugging(part);
+                _logger.Error("**SETPARTLINEVALUES_INPUT**: Part serialized: {@PartData}", partSerialized);
+                _logger.Error("**SETPARTLINEVALUES_INPUT**: FilterInstance: {FilterInstance}", filterInstance ?? "NULL");
+                
+                // **VERSION TESTING FRAMEWORK**: Route to different versions for comparison
+                var versionToTest = GetVersionToTest();
+                
+                _logger.Error("**VERSION_ROUTER**: Using version {Version} for testing", versionToTest);
+                _logger.Error("**VERSION_LOGIC**: Version routing decision based on environment variable or default to V5");
+                
+                List<IDictionary<string, object>> result;
+                
+                try
+                {
+                    _logger.Error("**VERSION_EXECUTION**: About to execute version {Version} with part containing {LineCount} lines", 
+                        versionToTest, part?.Lines?.Count ?? 0);
+                    
+                    result = versionToTest switch
+                    {
+                        "V1" => SetPartLineValues_V1_Working(part, filterInstance),
+                        "V2" => SetPartLineValues_V2_BudgetMarine(part, filterInstance), 
+                        "V3" => SetPartLineValues_V3_SheinNotAmazon(part, filterInstance),
+                        "V4" => SetPartLineValues_V4_WorkingAllTests(part, filterInstance),
+                        "V5" => SetPartLineValues_V5_Current(part, filterInstance),
+                        "V6" => SetPartLineValues_V6_EnhancedSectionDeduplication(part, filterInstance),
+                        "V7" => SetPartLineValues_V7_EnhancedMultiPageDeduplication(part, filterInstance),
+                        "V8" => SetPartLineValues_V8_TropicalVendorsIndividualItems(part, filterInstance),
+                        "V9" => SetPartLineValues_V9_OpusEnhancedDeduplication(part, filterInstance),
+                        "V10" => SetPartLineValues_V10_OpusFreshImplementation(part, filterInstance),
+                        "V11" => SetPartLineValues_V11_GeminiV8Fix(part, filterInstance),
+                        "V12" => SetPartLineValues_V12_GeminiFreshImplementation(part, filterInstance),
+                        "V13" => SetPartLineValues_Universal_V3(part, filterInstance),
+                        _ => SetPartLineValues_V5_Current(part, filterInstance) // Default to current
+                    };
+                    
+                    // **OUTPUT SERIALIZATION**: Serialize output for LLM analysis
+                    _logger.Error("**SETPARTLINEVALUES_OUTPUT**: Method completed successfully, returning {ItemCount} items", result?.Count ?? 0);
+                    
+                    if (result != null && result.Any())
+                    {
+                        for (int i = 0; i < result.Count; i++)
+                        {
+                            var item = result[i];
+                            _logger.Error("**SETPARTLINEVALUES_OUTPUT_ITEM_{ItemIndex}**: Keys: [{Keys}]", 
+                                i, string.Join(", ", item.Keys));
+                            
+                            // Log critical fields
+                            if (item.ContainsKey("InvoiceDetails"))
+                            {
+                                var invoiceDetails = item["InvoiceDetails"];
+                                if (invoiceDetails is IList detailsList)
+                                {
+                                    _logger.Error("**SETPARTLINEVALUES_OUTPUT_ITEM_{ItemIndex}**: InvoiceDetails contains {DetailCount} items", 
+                                        i, detailsList.Count);
+                                }
+                            }
+                            
+                            // Log mathematical fields for Amazon validation
+                            LogMathematicalFields(item, i);
+                        }
+                    }
+                    else
+                    {
+                        _logger.Error("**SETPARTLINEVALUES_OUTPUT**: Method returned null or empty result - THIS IS A BUG");
+                    }
+                    
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "**SETPARTLINEVALUES_ERROR**: Exception occurred during version {Version} execution", versionToTest);
+                    throw;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Helper method to serialize Part input for LLM debugging analysis
+        /// </summary>
+        private object SerializePartForDebugging(Part part)
+        {
+            if (part == null) return "NULL_PART";
+            
+            try
+            {
+                var serialized = new
+                {
+                    PartId = part.OCR_Part?.Id,
+                    LineCount = part.Lines?.Count ?? 0,
+                    ChildPartCount = part.ChildParts?.Count ?? 0,
+                    Lines = part.Lines?.Select((line, index) => new
+                    {
+                        LineIndex = index,
+                        ValuesCount = line.Values?.Count ?? 0,
+                        SectionSummary = line.Values?.Select(v => new
+                        {
+                            Section = v.Key.section,
+                            LineNumber = v.Key.lineNumber,
+                            FieldCount = v.Value?.Count ?? 0,
+                            Fields = v.Value?.Select(field => new
+                            {
+                                FieldName = field.Key.Fields?.Field,
+                                Instance = field.Key.Instance,
+                                Value = field.Value,
+                                DataType = field.Key.Fields?.DataType
+                            }).ToList()
+                        }).ToList()
+                    }).Take(10).ToList(), // Limit to first 10 lines for readability
+                    ChildParts = part.ChildParts?.Select(cp => new
+                    {
+                        LineCount = cp.Lines?.Count ?? 0
+                    }).ToList()
+                };
+                
+                return serialized;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "**SERIALIZATION_ERROR**: Failed to serialize Part for debugging");
+                return $"SERIALIZATION_FAILED: {ex.Message}";
+            }
+        }
+        
+        /// <summary>
+        /// Helper method to log mathematical fields for Amazon validation and aggregation tracking
+        /// </summary>
+        private void LogMathematicalFields(IDictionary<string, object> item, int itemIndex)
+        {
+            try
+            {
+                // Track all financial fields for mathematical validation
+                var financialFields = new[] 
+                { 
+                    "InvoiceTotal", "SubTotal", "TotalInternalFreight", "TotalOtherCost", 
+                    "TotalInsurance", "TotalDeduction", "FreeShipping", "Discount", "Tax"
+                };
+                
+                foreach (var fieldName in financialFields)
+                {
+                    if (item.ContainsKey(fieldName))
+                    {
+                        var value = item[fieldName];
+                        _logger.Error("**MATH_FIELD_ITEM_{ItemIndex}**: {FieldName} = {Value} (Type: {Type})", 
+                            itemIndex, fieldName, value, value?.GetType().Name ?? "NULL");
+                    }
+                }
+                
+                // CRITICAL: Track Free Shipping specifically for aggregation bug
+                if (item.ContainsKey("TotalDeduction"))
+                {
+                    _logger.Error("**FREE_SHIPPING_AGGREGATION_ITEM_{ItemIndex}**: TotalDeduction final value = {Value}", 
+                        itemIndex, item["TotalDeduction"]);
+                }
+                
+                // Calculate TotalsZero for Amazon mathematical validation
+                if (item.ContainsKey("InvoiceTotal") && item.ContainsKey("SubTotal"))
+                {
+                    try
+                    {
+                        var invoiceTotal = Convert.ToDouble(item["InvoiceTotal"]);
+                        var subTotal = Convert.ToDouble(item.ContainsKey("SubTotal") ? item["SubTotal"] : 0);
+                        var freight = Convert.ToDouble(item.ContainsKey("TotalInternalFreight") ? item["TotalInternalFreight"] : 0);
+                        var otherCost = Convert.ToDouble(item.ContainsKey("TotalOtherCost") ? item["TotalOtherCost"] : 0);
+                        var deduction = Convert.ToDouble(item.ContainsKey("TotalDeduction") ? item["TotalDeduction"] : 0);
+                        
+                        var calculatedTotal = subTotal + freight + otherCost - deduction;
+                        var totalsZero = invoiceTotal - calculatedTotal;
+                        
+                        _logger.Error("**AMAZON_MATH_VALIDATION_ITEM_{ItemIndex}**: " +
+                            "InvoiceTotal({InvoiceTotal}) - (SubTotal({SubTotal}) + Freight({Freight}) + OtherCost({OtherCost}) - Deduction({Deduction})) = TotalsZero({TotalsZero})",
+                            itemIndex, invoiceTotal, subTotal, freight, otherCost, deduction, totalsZero);
+                        
+                        if (Math.Abs(totalsZero) > 0.01)
+                        {
+                            _logger.Error("**AMAZON_MATH_ERROR_ITEM_{ItemIndex}**: TotalsZero = {TotalsZero} indicates mathematical inconsistency - LIKELY AGGREGATION BUG", 
+                                itemIndex, totalsZero);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "**MATH_CALCULATION_ERROR_ITEM_{ItemIndex}**: Failed to calculate TotalsZero", itemIndex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "**LOG_MATH_FIELDS_ERROR**: Failed to log mathematical fields for item {ItemIndex}", itemIndex);
+            }
         }
         
         private string GetVersionToTest()
@@ -797,12 +963,44 @@ namespace WaterNut.DataSpace
 
         private List<IDictionary<string, object>> SetPartLineValues_V5_Current(Part part, string filterInstance = null)
         {
-            //_logger.Debug("SetPartLineValues - Parameters: Part: {@part}, FilterInstance: {filterInstance}", part.Lines, filterInstance);
-
+            // **CRITICAL V5 AGGREGATION DEBUG**: Enhanced logging for Free Shipping bug tracking
+            _logger.Error("**V5_ENTRY**: SetPartLineValues_V5_Current called with PartId: {PartId}", part?.OCR_Part?.Id);
+            
             var currentPart = (WaterNut.DataSpace.Part)part;
             int? partId = currentPart?.OCR_Part?.Id;
             string filterInstanceStr = filterInstance?.ToString() ?? "None (Top Level)";
             string methodName = nameof(SetPartLineValues);
+
+            _logger.Error("**V5_INPUT_ANALYSIS**: PartId: {PartId}, FilterInstance: {FilterInstance}, LineCount: {LineCount}",
+                partId, filterInstanceStr, currentPart?.Lines?.Count ?? 0);
+            
+            // **CRITICAL**: Log all fields with AppendColumn = true for aggregation bug tracking
+            if (currentPart?.Lines != null)
+            {
+                foreach (var line in currentPart.Lines)
+                {
+                    if (line?.Values != null)
+                    {
+                        foreach (var sectionKvp in line.Values)
+                        {
+                            foreach (var fieldKvp in sectionKvp.Value)
+                            {
+                                var fieldName = fieldKvp.Key.Fields?.Field;
+                                var value = fieldKvp.Value;
+                                
+                                // Specifically track Free Shipping values
+                                if (fieldName?.Contains("FreeShipping") == true ||
+                                    fieldName?.Contains("Free Shipping") == true ||
+                                    fieldName?.Contains("TotalDeduction") == true)
+                                {
+                                    _logger.Error("**V5_FREE_SHIPPING_RAW**: Field: {FieldName}, Value: {Value}, Instance: {Instance}, Section: {Section}",
+                                        fieldName, value, fieldKvp.Key.Instance, sectionKvp.Key.section);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             _logger.Verbose("Entering {MethodName} for PartId: {PartId}, FilterInstance: {FilterInstance}",
                 methodName, partId, filterInstanceStr);
@@ -1330,17 +1528,24 @@ namespace WaterNut.DataSpace
 
         private FieldCapture SelectBestFieldCapture(List<FieldCapture> fieldCaptures, string methodName, string currentInstance)
         {
-            // Strategy: Select the most complete/accurate field value
-            // 1. Prefer non-empty values
-            // 2. Prefer higher quality sections (Single > Ripped > Sparse)
-            // 3. Prefer longer values (more complete capture)
+            if (fieldCaptures == null || !fieldCaptures.Any())
+                return null;
 
+            var fieldName = fieldCaptures.First().FieldName;
+            
+            // **CRITICAL FIX**: Check if this field should be aggregated (summed) rather than just selecting best
+            if (ShouldAggregateField(fieldName))
+            {
+                return AggregateFieldCaptures(fieldCaptures, methodName, currentInstance);
+            }
+
+            // Original logic for non-aggregated fields
             var sectionPriority = new Dictionary<string, int>
-    {
-        { "Single", 3 },
-        { "Ripped", 2 },
-        { "Sparse", 1 }
-    };
+            {
+                { "Single", 3 },
+                { "Ripped", 2 },
+                { "Sparse", 1 }
+            };
 
             var bestCapture = fieldCaptures
                 .Where(fc => !string.IsNullOrWhiteSpace(fc.RawValue)) // Prefer non-empty
@@ -1354,11 +1559,158 @@ namespace WaterNut.DataSpace
                     .Select(fc => $"{fc.Section}(p:{(sectionPriority.ContainsKey(fc.Section) ? sectionPriority[fc.Section] : 0)},len:{fc.RawValue?.Length ?? 0})")
                     .ToList();
 
-                _logger.Verbose("{MethodName}: Instance: {Instance} - Selected field '{FieldName}' from {Section} out of options: [{AllOptions}]",
-                    methodName, currentInstance, bestCapture?.FieldName, bestCapture?.Section, string.Join(", ", allOptions));
+                _logger.Error("**FIELD_SELECTION_V5**: Instance: {Instance} - Selected field '{FieldName}' from {Section} out of options: [{AllOptions}]",
+                    currentInstance, bestCapture?.FieldName, bestCapture?.Section, string.Join(", ", allOptions));
             }
 
             return bestCapture;
+        }
+
+        /// <summary>
+        /// **CRITICAL FIX**: Determines if a field should be aggregated (summed) instead of selecting the best single value
+        /// </summary>
+        private bool ShouldAggregateField(string fieldName)
+        {
+            if (string.IsNullOrEmpty(fieldName))
+                return false;
+
+            // Fields that should be aggregated (summed) when multiple instances exist
+            var aggregatableFields = new[]
+            {
+                "FreeShipping", "TotalDeduction", "Deduction", "Discount", "Tax", 
+                "TotalOtherCost", "TotalInternalFreight", "Freight", "Shipping",
+                "GiftCard", "TotalInsurance", "Insurance", "Coupon", "Save"
+            };
+
+            return aggregatableFields.Any(af => fieldName.Contains(af));
+        }
+
+        /// <summary>
+        /// **CRITICAL FIX**: Aggregates multiple field captures by summing their numeric values
+        /// </summary>
+        private FieldCapture AggregateFieldCaptures(List<FieldCapture> fieldCaptures, string methodName, string currentInstance)
+        {
+            var fieldName = fieldCaptures.First().FieldName;
+            
+            _logger.Error("**AGGREGATION_FIX_V5**: Starting aggregation for field '{FieldName}' with {Count} captures", 
+                fieldName, fieldCaptures.Count);
+
+            // Log all individual values before aggregation
+            foreach (var capture in fieldCaptures)
+            {
+                _logger.Error("**AGGREGATION_FIX_V5**: Individual value - Field: {FieldName}, Value: {Value}, Section: {Section}, Line: {Line}",
+                    capture.FieldName, capture.RawValue, capture.Section, capture.LineNumber);
+            }
+
+            // Filter to only numeric values for aggregation
+            var numericCaptures = fieldCaptures
+                .Where(fc => !string.IsNullOrWhiteSpace(fc.RawValue) && IsNumericValueForAggregation(fc.RawValue))
+                .ToList();
+
+            if (!numericCaptures.Any())
+            {
+                _logger.Error("**AGGREGATION_FIX_V5**: No numeric values found for '{FieldName}', falling back to best selection", fieldName);
+                // Fall back to best selection if no numeric values
+                return fieldCaptures
+                    .Where(fc => !string.IsNullOrWhiteSpace(fc.RawValue))
+                    .OrderByDescending(fc => GetSectionPriorityForAggregation(fc.Section))
+                    .FirstOrDefault() ?? fieldCaptures.First();
+            }
+
+            // **CRITICAL FIX**: Deduplicate by value before aggregation
+            var uniqueValues = new Dictionary<double, FieldCapture>();
+            
+            foreach (var capture in numericCaptures)
+            {
+                if (double.TryParse(capture.RawValue, out double value))
+                {
+                    var absoluteValue = Math.Abs(value);
+                    
+                    // Only keep the first occurrence of each unique value (or best section if duplicate)
+                    if (!uniqueValues.ContainsKey(absoluteValue))
+                    {
+                        uniqueValues[absoluteValue] = capture;
+                        _logger.Error("**AGGREGATION_FIX_V5**: Added unique value {Value} from {Section} (first occurrence)", 
+                            value, capture.Section);
+                    }
+                    else
+                    {
+                        // If duplicate value, keep the one from higher priority section
+                        var existingCapture = uniqueValues[absoluteValue];
+                        if (GetSectionPriorityForAggregation(capture.Section) > GetSectionPriorityForAggregation(existingCapture.Section))
+                        {
+                            uniqueValues[absoluteValue] = capture;
+                            _logger.Error("**AGGREGATION_FIX_V5**: Replaced duplicate value {Value} - using {NewSection} instead of {OldSection} (better section)", 
+                                value, capture.Section, existingCapture.Section);
+                        }
+                        else
+                        {
+                            _logger.Error("**AGGREGATION_FIX_V5**: Skipped duplicate value {Value} from {Section} (keeping {ExistingSection})", 
+                                value, capture.Section, existingCapture.Section);
+                        }
+                    }
+                }
+            }
+
+            // Calculate the aggregated sum from unique values only
+            double aggregatedSum = 0;
+            foreach (var kvp in uniqueValues)
+            {
+                var uniqueValue = kvp.Key;
+                var sourceCapture = kvp.Value;
+                aggregatedSum += uniqueValue;
+                _logger.Error("**AGGREGATION_FIX_V5**: Adding unique value {Value} from {Section} to sum (running total: {Total})", 
+                    uniqueValue, sourceCapture.Section, aggregatedSum);
+            }
+
+            _logger.Error("**AGGREGATION_FIX_V5**: Final aggregated sum for '{FieldName}': {FinalSum} (from {UniqueCount} unique values out of {TotalCount} captures)",
+                fieldName, aggregatedSum, uniqueValues.Count, numericCaptures.Count);
+
+            // Create a new FieldCapture with the aggregated value
+            var bestSourceCapture = numericCaptures
+                .OrderByDescending(fc => GetSectionPriorityForAggregation(fc.Section))
+                .First();
+
+            var aggregatedCapture = new FieldCapture
+            {
+                FieldName = fieldName,
+                FieldValue = aggregatedSum,
+                RawValue = aggregatedSum.ToString(),
+                Section = bestSourceCapture.Section,
+                LineNumber = bestSourceCapture.LineNumber
+            };
+
+            _logger.Error("**AGGREGATION_FIX_V5**: Created aggregated field capture - Field: {FieldName}, AggregatedValue: {Value}, Source: {Section}",
+                fieldName, aggregatedSum, bestSourceCapture.Section);
+
+            return aggregatedCapture;
+        }
+
+        /// <summary>
+        /// Helper to check if a string represents a numeric value for aggregation
+        /// </summary>
+        private bool IsNumericValueForAggregation(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            // Clean the value - remove currency symbols, commas, etc.
+            var cleanValue = value.Replace("$", "").Replace(",", "").Replace("-", "").Trim();
+            return double.TryParse(cleanValue, out _);
+        }
+
+        /// <summary>
+        /// Helper to get section priority for aggregation sorting
+        /// </summary>
+        private int GetSectionPriorityForAggregation(string section)
+        {
+            return section?.ToLower() switch
+            {
+                "single" => 3,
+                "ripped" => 2,
+                "sparse" => 1,
+                _ => 0
+            };
         }
 
 
