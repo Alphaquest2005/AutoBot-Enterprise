@@ -221,6 +221,8 @@ namespace WaterNut.DataSpace
 
         #endregion
 
+        // File: OCRCorrectionService/OCRDatabaseStrategies.cs
+
         #region Omission Update Strategy (With Final Fix)
 
         public class OmissionUpdateStrategy : DatabaseUpdateStrategyBase
@@ -289,6 +291,37 @@ namespace WaterNut.DataSpace
                         if (serviceInstance.ValidateRegexPattern(regexResponse, correctionForPrompt))
                         {
                             _logger.Information("  -> ✅ Regex validation successful for field '{FieldName}' on attempt {Attempt}.", request.FieldName, attempt);
+
+                            // ======================================================================================
+                            //                          *** DEFINITIVE FIX IS HERE ***
+                            //  Before creating a new line, check if a functionally identical rule already exists.
+                            // ======================================================================================
+                            string normalizedPattern = regexResponse.RegexPattern.Replace("\\\\", "\\");
+
+                            // Step 1: Get all Part IDs associated with the current template.
+                            var partIdsForTemplate = await context.Parts
+                                .Where(p => p.TemplateId == request.InvoiceId)
+                                .Select(p => p.Id)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
+
+                            // Step 2: Check for an existing line within those parts that has the same name prefix and regex.
+                            var existingLine = await context.Lines
+                                .AsNoTracking() // Use AsNoTracking for a read-only check.
+                                .Include(l => l.RegularExpressions)
+                                .FirstOrDefaultAsync(l =>
+                                    partIdsForTemplate.Contains(l.PartId) && // Check if the line belongs to a part in the current template
+                                    l.Name.StartsWith("AutoOmission_" + request.FieldName) &&
+                                    l.RegularExpressions.RegEx == normalizedPattern)
+                                .ConfigureAwait(false);
+
+                            if (existingLine != null)
+                            {
+                                _logger.Error("  -> ⏭️ SKIPPING RULE CREATION: An identical AutoOmission rule (LineId: {LineId}) with the same regex pattern ('{Pattern}') already exists for this template. This prevents database pollution and is the correct behavior.", existingLine.Id, normalizedPattern);
+                                return DatabaseUpdateResult.Success(existingLine.Id, "Skipped creation, identical rule already exists.");
+                            }
+
+                            // If no identical rule exists, proceed with creation.
                             if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
                             if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new line.");
 
@@ -308,11 +341,6 @@ namespace WaterNut.DataSpace
                 }
             }
 
-            // ======================================================================================
-            //                          *** DEFINITIVE FIX IS HERE ***
-            // This method has been refactored to use a single, atomic SaveChangesAsync call,
-            // ensuring transactional integrity and aligning with our robust design principles.
-            // ======================================================================================
             private async Task<DatabaseUpdateResult> CreateNewLineForOmissionAsync(
                 OCRContext context,
                 RegexUpdateRequest request,
@@ -379,10 +407,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("   - [LOOKUP_SUCCESS]: Found correct Part. PartId: {PartId}, Name: '{PartName}'.", part.Id, part.PartTypes.Name);
                 return part.Id;
             }
-
-
         }
-
         #endregion
 
         #region Strategy Factory

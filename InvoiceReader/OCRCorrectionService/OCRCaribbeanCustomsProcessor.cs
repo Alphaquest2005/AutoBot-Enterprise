@@ -23,7 +23,7 @@ namespace WaterNut.DataSpace
         public List<CorrectionResult> ApplyCaribbeanCustomsRules(ShipmentInvoice invoice, List<CorrectionResult> standardCorrections)
         {
             var customsCorrections = new List<CorrectionResult>();
-            
+
             if (invoice == null)
             {
                 _logger.Warning("ApplyCaribbeanCustomsRules: Invoice is null, skipping customs rules processing");
@@ -31,7 +31,7 @@ namespace WaterNut.DataSpace
             }
 
             _logger.Information("🏴‍☠️ **CARIBBEAN_SIMPLIFIED_START**: Applying simplified Caribbean customs rules to invoice {InvoiceNo}", invoice.InvoiceNo ?? "NULL");
-            _logger.Information("🏴‍☠️ **CARIBBEAN_INPUT_STATE**: TotalInsurance={TotalInsurance}, TotalDeduction={TotalDeduction}", 
+            _logger.Information("🏴‍☠️ **CARIBBEAN_INPUT_STATE**: TotalInsurance={TotalInsurance}, TotalDeduction={TotalDeduction}",
                 invoice?.TotalInsurance, invoice?.TotalDeduction);
 
             try
@@ -45,10 +45,10 @@ namespace WaterNut.DataSpace
                 customsCorrections.AddRange(supplierReductionCorrections);
 
                 _logger.Information("🏴‍☠️ **CARIBBEAN_SIMPLIFIED_COMPLETE**: Applied {CustomsRuleCount} Caribbean customs corrections", customsCorrections.Count);
-                
+
                 foreach (var correction in customsCorrections)
                 {
-                    _logger.Information("🏴‍☠️ **CARIBBEAN_CORRECTION**: {FieldName}: '{OldValue}' → '{NewValue}' | Reason: {Reasoning}", 
+                    _logger.Information("🏴‍☠️ **CARIBBEAN_CORRECTION**: {FieldName}: '{OldValue}' → '{NewValue}' | Reason: {Reasoning}",
                         correction.FieldName, correction.OldValue, correction.NewValue, correction.Reasoning);
                 }
             }
@@ -71,8 +71,8 @@ namespace WaterNut.DataSpace
             _logger.Information("🏴‍☠️ **CUSTOMER_VALUE_ANALYSIS**: Checking for customer-owned value applications (gift cards, store credits)");
 
             // Check if any corrections involved customer credits
-            var customerCreditCorrections = appliedCorrections.Where(c => 
-                c.Success && 
+            var customerCreditCorrections = appliedCorrections.Where(c =>
+                c.Success &&
                 (c.LineText?.IndexOf("Gift Card", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  c.LineText?.IndexOf("Store Credit", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  c.LineText?.IndexOf("Account Credit", StringComparison.OrdinalIgnoreCase) >= 0 ||
@@ -112,7 +112,7 @@ namespace WaterNut.DataSpace
                     );
 
                     corrections.Add(moveToInsurance);
-                    _logger.Information("🏴‍☠️ **CUSTOMER_CREDIT_MOVE**: Moved customer credit {Amount} from TotalDeduction to TotalInsurance (negative)", 
+                    _logger.Information("🏴‍☠️ **CUSTOMER_CREDIT_MOVE**: Moved customer credit {Amount} from TotalDeduction to TotalInsurance (negative)",
                         customerCredit.NewValue);
                 }
             }
@@ -130,8 +130,8 @@ namespace WaterNut.DataSpace
 
             _logger.Information("🏴‍☠️ **SUPPLIER_REDUCTION_ANALYSIS**: Checking for supplier-caused reductions (free shipping, discounts)");
 
-            var supplierReductions = appliedCorrections.Where(c => 
-                c.Success && 
+            var supplierReductions = appliedCorrections.Where(c =>
+                c.Success &&
                 (c.LineText?.IndexOf("Free Shipping", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  c.LineText?.IndexOf("Discount", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  c.LineText?.IndexOf("Promo", StringComparison.OrdinalIgnoreCase) >= 0 ||
@@ -169,7 +169,7 @@ namespace WaterNut.DataSpace
         /// </summary>
         public void ApplyCaribbeanCustomsCorrectionsToInvoice(ShipmentInvoice invoice, List<CorrectionResult> customsCorrections)
         {
-            _logger.Information("🏴‍☠️ **CARIBBEAN_APPLICATION_ENTRY**: Applying {Count} Caribbean customs corrections to invoice {InvoiceNo}", 
+            _logger.Information("🏴‍☠️ **CARIBBEAN_APPLICATION_ENTRY**: Applying {Count} Caribbean customs corrections to invoice {InvoiceNo}",
                 customsCorrections.Count, invoice?.InvoiceNo);
 
             foreach (var correction in customsCorrections)
@@ -181,12 +181,12 @@ namespace WaterNut.DataSpace
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "🚨 **CARIBBEAN_APPLICATION_ERROR**: Failed to apply correction {FieldName} = {NewValue}", 
+                    _logger.Error(ex, "🚨 **CARIBBEAN_APPLICATION_ERROR**: Failed to apply correction {FieldName} = {NewValue}",
                         correction.FieldName, correction.NewValue);
                 }
             }
 
-            _logger.Information("🏴‍☠️ **CARIBBEAN_APPLICATION_RESULT**: Final state - TotalInsurance={TotalInsurance}, TotalDeduction={TotalDeduction}", 
+            _logger.Information("🏴‍☠️ **CARIBBEAN_APPLICATION_RESULT**: Final state - TotalInsurance={TotalInsurance}, TotalDeduction={TotalDeduction}",
                 invoice?.TotalInsurance, invoice?.TotalDeduction);
         }
 
@@ -211,12 +211,12 @@ namespace WaterNut.DataSpace
         private string EnsureNegativeValue(string value)
         {
             if (string.IsNullOrEmpty(value)) return "0";
-            
+
             if (double.TryParse(value, out var numericValue))
             {
                 return (-Math.Abs(numericValue)).ToString("F2");
             }
-            
+
             return value;
         }
 
@@ -226,19 +226,19 @@ namespace WaterNut.DataSpace
         private string EnsurePositiveValue(string value)
         {
             if (string.IsNullOrEmpty(value)) return "0";
-            
+
             if (double.TryParse(value, out var numericValue))
             {
                 return Math.Abs(numericValue).ToString("F2");
             }
-            
+
             return value;
         }
 
         /// <summary>
         /// Creates a CorrectionResult for Caribbean customs transformations.
         /// </summary>
-        private CorrectionResult CreateCaribbeanTransformation(string fieldName, string oldValue, string newValue, 
+        private CorrectionResult CreateCaribbeanTransformation(string fieldName, string oldValue, string newValue,
             string reasoning, string lineText = null, int lineNumber = 0)
         {
             return new CorrectionResult
@@ -258,6 +258,7 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Applies a single Caribbean customs correction to the invoice.
+        /// This method MUTATES the invoice object directly based on the business rule.
         /// </summary>
         private void ApplySingleCaribbeanCorrection(ShipmentInvoice invoice, CorrectionResult correction)
         {
@@ -265,14 +266,30 @@ namespace WaterNut.DataSpace
             {
                 case "TotalInsurance":
                     if (double.TryParse(correction.NewValue, out var insuranceValue))
+                    {
+                        // Business rule transformations often set the value directly rather than aggregating,
+                        // as they represent a final decision based on a rule.
+                        // For example, ensuring the value is negative.
                         invoice.TotalInsurance = insuranceValue;
+                    }
+                    else
+                    {
+                        _logger.Warning("🏴‍☠️ Could not parse '{NewValue}' as a double for TotalInsurance.", correction.NewValue);
+                    }
                     break;
-                    
+
                 case "TotalDeduction":
                     if (double.TryParse(correction.NewValue, out var deductionValue))
+                    {
+                        // Same logic as above: set the value directly based on the rule.
                         invoice.TotalDeduction = deductionValue;
+                    }
+                    else
+                    {
+                        _logger.Warning("🏴‍☠️ Could not parse '{NewValue}' as a double for TotalDeduction.", correction.NewValue);
+                    }
                     break;
-                    
+
                 default:
                     _logger.Warning("🏴‍☠️ **CARIBBEAN_UNKNOWN_FIELD**: Unknown field for Caribbean correction: {FieldName}", correction.FieldName);
                     break;

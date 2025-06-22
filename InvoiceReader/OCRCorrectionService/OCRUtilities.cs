@@ -1,14 +1,15 @@
 ﻿// File: OCRCorrectionService/OCRUtilities.cs
+using EntryDataDS.Business.Entities; // For ShipmentInvoice in GetCurrentFieldValue
+using Serilog; // Assuming ILogger is from Serilog, available as this._logger
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using EntryDataDS.Business.Entities; // For ShipmentInvoice in GetCurrentFieldValue
-using Serilog; // Assuming ILogger is from Serilog, available as this._logger
 
 namespace WaterNut.DataSpace
 {
+    using System.Globalization;
     using System.IO;
 
     public partial class OCRCorrectionService
@@ -396,76 +397,99 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Parses a string value into an appropriate object type based on the target field's characteristics.
-        /// Used when applying corrections to ShipmentInvoice objects.
+        /// CRITICAL FIX: Now correctly returns the appropriate C# type for all supported data types.
+        /// Logging is enhanced to meet the Assertive Self-Documenting Logging Mandate v4.3.
         /// </summary>
-        public object ParseCorrectedValue(string valueToParse, string targetFieldName) // targetFieldName is canonical or mapped
+        public object ParseCorrectedValue(string valueToParse, string targetFieldName)
         {
-            if (valueToParse == null) return null; // Null input remains null
+            _logger.Error("➡️ **Enter ParseCorrectedValue** for Field '{Field}' with input value '{Value}'.", targetFieldName, valueToParse);
 
-            var fieldInfo = this.MapDeepSeekFieldToDatabase(targetFieldName); // From OCRFieldMapping.cs
-            string dataType = fieldInfo?.DataType?.ToLowerInvariant() ?? "string"; // Default to string if no type info
-
-            string cleanedValue = valueToParse;
-            // For numeric types, attempt more aggressive cleaning
-            if (dataType == "decimal" || dataType == "double" || dataType == "int" || dataType == "currency")
+            if (valueToParse == null)
             {
-                // Remove currency symbols, then group separators (commas), then ensure decimal point is '.'
-                cleanedValue = Regex.Replace(valueToParse, @"[\$€£]", "").Trim(); // Remove currency
-                // If it contains both , and . assume , is thousands, . is decimal e.g. 1,234.56 -> 1234.56
-                // If it contains , but no . assume , is decimal e.g. 123,45 -> 123.45
+                _logger.Error("   - ✅ **Exit ParseCorrectedValue**: Input was null, returning null.");
+                return null;
+            }
+
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(targetFieldName);
+            // Use a case-insensitive match for the data type.
+            string dataType = fieldInfo?.DataType?.ToLowerInvariant() ?? "string";
+            _logger.Error("   - **ANALYSIS**: Mapped Field '{Field}' to DataType '{DataType}'.", targetFieldName, dataType);
+
+            var numberStyles = NumberStyles.Any;
+            var cultureInfo = CultureInfo.InvariantCulture;
+
+            // --- Handle Numeric Types ---
+            if (dataType == "number" || dataType == "decimal" || dataType == "double" || dataType == "currency" || dataType == "int" || dataType == "integer")
+            {
+                string cleanedValue = Regex.Replace(valueToParse, @"[^\d.,-]", "").Trim();
+                _logger.Error("   - **CLEANING_NUMERIC**: Initial cleaning of '{Original}' resulted in '{Cleaned}'.", valueToParse, cleanedValue);
+
                 if (cleanedValue.Contains(',') && cleanedValue.Contains('.'))
                 {
-                    if (cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.'))
-                    { // 1,234.56
-                        cleanedValue = cleanedValue.Replace(",", "");
-                    }
-                    else
-                    { // 1.234,56
-                        cleanedValue = cleanedValue.Replace(".", "").Replace(",", ".");
-                    }
+                    cleanedValue = cleanedValue.LastIndexOf(',') < cleanedValue.LastIndexOf('.')
+                        ? cleanedValue.Replace(",", "")
+                        : cleanedValue.Replace(".", "").Replace(",", ".");
+                    _logger.Error("   - **CLEANING_CULTURE**: Handled mixed separators. Value is now '{Cleaned}'.", cleanedValue);
                 }
                 else if (cleanedValue.Contains(','))
-                { // Only comma: 123,45
-                    cleanedValue = cleanedValue.Replace(",", ".");
+                {
+                    cleanedValue = cleanedValue.Replace(',', '.');
+                    _logger.Error("   - **CLEANING_CULTURE**: Replaced comma decimal separator. Value is now '{Cleaned}'.", cleanedValue);
                 }
-                // Now, cleanedValue should only use '.' as decimal separator.
+
+                switch (dataType)
+                {
+                    case "number": // This is our primary pseudo-type
+                    case "decimal":
+                    case "double":
+                    case "currency":
+                        if (double.TryParse(cleanedValue, numberStyles, cultureInfo, out var doubleResult))
+                        {
+                            _logger.Error("   - ✅ **Exit ParseCorrectedValue**: Successfully parsed '{Cleaned}' as Double: {Result}.", cleanedValue, doubleResult);
+                            return doubleResult;
+                        }
+                        break;
+                    case "int":
+                    case "integer":
+                        if (int.TryParse(cleanedValue, numberStyles, cultureInfo, out var intResult))
+                        {
+                            _logger.Error("   - ✅ **Exit ParseCorrectedValue**: Successfully parsed '{Cleaned}' as Int32: {Result}.", cleanedValue, intResult);
+                            return intResult;
+                        }
+                        break;
+                }
             }
 
+            // ======================================================================================
+            //                          *** DEFINITIVE FIX IS HERE ***
+            //            Restored the missing data type handlers for non-numeric types.
+            // ======================================================================================
 
-            switch (dataType)
+            // --- Handle Date/Time Types ---
+            if (dataType.Contains("date")) // Catches "date", "datetime", "english date"
             {
-                case "decimal":
-                case "currency": // Assuming currency also maps to decimal
-                    if (decimal.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var decimalResult))
-                        return decimalResult;
-                    break;
-                case "double":
-                    if (double.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var doubleResult))
-                        return doubleResult;
-                    break;
-                case "int":
-                case "integer":
-                    if (int.TryParse(cleanedValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var intResult))
-                        return intResult;
-                    break;
-                case "datetime":
-                    if (DateTime.TryParse(valueToParse, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeLocal, out var dateResult)) // Be flexible with date parsing
-                        return dateResult;
-                    break;
-                case "bool":
-                case "boolean":
-                    if (bool.TryParse(valueToParse, out var boolResult))
-                        return boolResult;
-                    // Handle common string representations of bool
-                    if (valueToParse.Trim().Equals("1", StringComparison.OrdinalIgnoreCase)) return true;
-                    if (valueToParse.Trim().Equals("0", StringComparison.OrdinalIgnoreCase)) return false;
-                    break;
-                case "string":
-                default:
-                    return valueToParse; // Return original string if not a known special type or parsing fails
+                if (DateTime.TryParse(valueToParse, cultureInfo, DateTimeStyles.AssumeUniversal, out var dateResult))
+                {
+                    _logger.Error("   - ✅ **Exit ParseCorrectedValue**: Successfully parsed '{Original}' as DateTime: {Result}.", valueToParse, dateResult);
+                    return dateResult;
+                }
             }
-            _logger?.Warning("ParseCorrectedValue: Could not parse value '{OriginalValue}' (cleaned: '{CleanedVal}') as type '{DataType}' for field '{FieldName}'. Returning original string.", valueToParse, cleanedValue, dataType, targetFieldName);
-            return valueToParse; // Fallback to original string if parsing fails
+
+            // --- Handle Boolean Types ---
+            if (dataType == "bool" || dataType == "boolean")
+            {
+                if (bool.TryParse(valueToParse, out var boolResult))
+                {
+                    _logger.Error("   - ✅ **Exit ParseCorrectedValue**: Successfully parsed '{Original}' as Boolean: {Result}.", valueToParse, boolResult);
+                    return boolResult;
+                }
+                if (valueToParse.Trim().Equals("1")) return true;
+                if (valueToParse.Trim().Equals("0")) return false;
+            }
+
+            // --- Fallback for String and unhandled types ---
+            _logger.Error("   - ✅ **Exit ParseCorrectedValue**: No specific parsing rule matched for DataType '{DataType}'. Returning original string: '{Original}'.", dataType, valueToParse);
+            return valueToParse;
         }
 
         /// <summary>
