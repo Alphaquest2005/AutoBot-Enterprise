@@ -13,12 +13,12 @@ namespace WaterNut.DataSpace
 {
     public partial class OCRCorrectionService
     {
-        #region Enhanced Correction Application to In-Memory Objects (v4.2 - Logging Mandate Only)
+        #region Enhanced Correction Application to In-Memory Objects (v4.4 - Logging Mandate Only)
 
         /// <summary>
-        /// Applies all high-confidence corrections, including omissions, directly to the in-memory
-        /// ShipmentInvoice object. This implements the "Apply and Learn" strategy.
-        /// This version has enhanced logging to meet the "Assertive Self-Documenting Logging Mandate".
+        /// Applies all high-confidence corrections directly to the in-memory ShipmentInvoice object.
+        /// THIS VERSION CONTAINS LOGGING ENHANCEMENTS ONLY to meet the Assertive Self-Documenting Logging Mandate v4.4.
+        /// The underlying logic is preserved from the version that produced the logs.
         /// </summary>
         private async Task<List<CorrectionResult>> ApplyCorrectionsAsync(
             ShipmentInvoice invoice,
@@ -32,23 +32,17 @@ namespace WaterNut.DataSpace
             const double CONFIDENCE_THRESHOLD = 0.90;
             var errorsToApplyDirectly = errors.Where(e => e.Confidence >= CONFIDENCE_THRESHOLD).ToList();
 
-            _logger.Error("🚀 **APPLY_CORRECTIONS_START (v4.2)**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
-                errorsToApplyDirectly.Count,
-                CONFIDENCE_THRESHOLD,
-                invoice.InvoiceNo);
-
+            _logger.Error("🚀 **APPLY_CORRECTIONS_START (v4.4)**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
+                errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
             _logger.Error("   - **ARCHITECTURAL_INTENT**: The system will iterate through each detected high-confidence error and apply it to the in-memory invoice object one by one. For numeric fields, this will involve aggregation (summing values).");
 
-            // --- Log the initial state for a clear before/after comparison ---
             LogFinancialState("Initial State (Before Corrections)", invoice);
 
             foreach (var error in errorsToApplyDirectly)
             {
-                // The ApplySingleValueOrFormatCorrectionToInvoiceAsync method now contains enhanced logging.
                 var result = await this.ApplySingleValueOrFormatCorrectionToInvoiceAsync(invoice, error)
                                  .ConfigureAwait(false);
                 correctionResults.Add(result);
-                // Log the outcome of this specific correction attempt.
                 LogCorrectionResult(result, "DIRECT_FIX_APPLIED");
             }
 
@@ -57,7 +51,6 @@ namespace WaterNut.DataSpace
                 invoice.TrackingState = TrackingState.Modified;
             }
 
-            // --- Log the final state for verification ---
             LogFinancialState("Final State (After All Corrections)", invoice);
             _logger.Error("🏁 **APPLY_CORRECTIONS_COMPLETE** for invoice {InvoiceNo}.", invoice.InvoiceNo);
 
@@ -68,7 +61,6 @@ namespace WaterNut.DataSpace
             ShipmentInvoice invoice,
             InvoiceError error)
         {
-            // This method creates the loggable result object.
             var result = new CorrectionResult
             {
                 FieldName = error.Field,
@@ -78,13 +70,13 @@ namespace WaterNut.DataSpace
                 NewValue = error.CorrectValue,
                 LineText = error.LineText,
                 LineNumber = error.LineNumber,
-                ContextLinesBefore = error.ContextLinesBefore,
-                ContextLinesAfter = error.ContextLinesAfter,
-                RequiresMultilineRegex = error.RequiresMultilineRegex,
-                Reasoning = error.Reasoning
+                 ContextLinesBefore = error.ContextLinesBefore,
+                           ContextLinesAfter = error.ContextLinesAfter,
+                              RequiresMultilineRegex = error.RequiresMultilineRegex,
+                               Reasoning = error.Reasoning
             };
-            _logger.Error("   - ➡️ **APPLYING_SINGLE_CORRECTION**: Attempting to apply correction for Field '{Field}' with New Value '{NewValue}' from Line {LineNum}.",
-                error.Field, error.CorrectValue, error.LineNumber);
+            _logger.Error("   - ➡️ **APPLYING_SINGLE_CORRECTION**: Field='{Field}', CorrectValue='{NewValue}', Type='{Type}', Line={LineNum}, Text='{LineText}'",
+                error.Field, error.CorrectValue, error.ErrorType, error.LineNumber, TruncateForLog(error.LineText, 70));
 
             try
             {
@@ -97,106 +89,112 @@ namespace WaterNut.DataSpace
                     _logger.Warning("     - ⚠️ **PARSE_FAILURE**: {ErrorMessage}", result.ErrorMessage);
                     return result;
                 }
-                _logger.Error("     - **PARSE_SUCCESS**: Parsed '{Original}' into value '{Parsed}' of type {Type}.",
-                   error.CorrectValue, parsedCorrectedValue ?? "null", parsedCorrectedValue?.GetType().Name ?? "null");
+                _logger.Error("     - **PARSE_SUCCESS**: Parsed CorrectValue '{Original}' into system value '{Parsed}' of type {Type}.",
+                    error.CorrectValue, parsedCorrectedValue ?? "null", parsedCorrectedValue?.GetType().Name ?? "null");
 
-
-                // The ApplyFieldCorrection method contains the aggregation logic and its own detailed logging.
                 if (this.ApplyFieldCorrection(invoice, error.Field, parsedCorrectedValue))
                 {
-                    // The "NewValue" in the result should reflect the final, aggregated value on the invoice.
                     result.NewValue = this.GetCurrentFieldValue(invoice, error.Field)?.ToString();
                     result.Success = true;
-                    _logger.Error("     - ✅ **APPLY_SUCCESS**: Successfully applied correction for {Field}. Final invoice value is now '{NewVal}'.",
-                        error.Field,
-                        result.NewValue);
+                    _logger.Error("     - ✅ **APPLY_SUCCESS**: Correction for {Field} applied. Invoice's final value for this field is now '{NewVal}'.",
+                        error.Field, result.NewValue);
                 }
                 else
                 {
                     result.Success = false;
-                    result.ErrorMessage = $"Field '{error.Field}' not recognized or value '{error.CorrectValue}' not applied/aggregated to invoice object.";
+                    result.ErrorMessage = $"Field '{error.Field}' not recognized or value '{error.CorrectValue}' not applied/aggregated.";
                     _logger.Warning("     - ❌ **APPLY_FAILURE**: {ErrorMessage}", result.ErrorMessage);
                 }
-
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "     - 🚨 **APPLY_EXCEPTION**: Error applying single value/format correction for {Field} on invoice {InvoiceNo}", error.Field, invoice.InvoiceNo);
+                _logger.Error(ex, "     - 🚨 **APPLY_EXCEPTION** while applying correction for {Field}.", error.Field);
                 result.Success = false;
                 result.ErrorMessage = ex.Message;
                 return result;
             }
         }
 
-        /// <summary>
-        /// Applies a correction to a specific field on the ShipmentInvoice object,
-        /// with intelligent aggregation logic for numeric and string types. Logging enhanced to meet mandate.
-        /// </summary>
         public bool ApplyFieldCorrection(ShipmentInvoice invoice, string fieldNameFromError, object correctedValue)
         {
             var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError);
             var targetPropertyName = fieldInfo?.DatabaseFieldName ?? fieldNameFromError;
 
-            _logger.Error("       - ▶️ **Enter ApplyFieldCorrection** for Target Property: '{TargetProp}'", targetPropertyName);
+            _logger.Error("       - ▶️ **Enter ApplyFieldCorrection**: Target Property='{TargetProp}', Incoming Value='{Value}' (Type: {Type})",
+                targetPropertyName, correctedValue ?? "null", correctedValue?.GetType().Name ?? "null");
 
             try
             {
                 var invoiceProp = typeof(ShipmentInvoice).GetProperty(
                     targetPropertyName,
-                    System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public
-                                                              | System.Reflection.BindingFlags.Instance);
+                    System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
                 if (invoiceProp != null)
                 {
-                    var existingValue = invoiceProp.GetValue(invoice);
-                    var propertyType = Nullable.GetUnderlyingType(invoiceProp.PropertyType) ?? invoiceProp.PropertyType;
+                    object existingValue = invoiceProp.GetValue(invoice);
+                    _logger.Error("         - **STATE_CHECK**: Current value of '{TargetProp}' is '{ExistingValue}' (Type: {Type}).",
+                        targetPropertyName, existingValue ?? "null", existingValue?.GetType().Name ?? "null");
 
+                    var propertyType = Nullable.GetUnderlyingType(invoiceProp.PropertyType) ?? invoiceProp.PropertyType;
                     object finalValueToSet = correctedValue;
 
                     if (existingValue != null)
                     {
-                        _logger.Error("         - **AGGREGATION_CHECK**: Existing value found for '{Field}'. Type: {Type}, Value: '{Value}'. Applying aggregation logic.",
-                            targetPropertyName, existingValue.GetType().Name, existingValue);
+                        _logger.Error("         - **AGGREGATION_CHECK**: Existing value is not null. Applying aggregation logic.");
 
                         if (propertyType == typeof(double) || propertyType == typeof(decimal) || propertyType == typeof(int))
                         {
-                            var existingNumeric = Convert.ToDouble(existingValue);
-                            var newNumeric = Convert.ToDouble(correctedValue);
+                            _logger.Error("           - **LOGIC_PATH**: Matched Numeric Aggregation Path.");
+                            var existingNumeric = Convert.ToDouble(existingValue, System.Globalization.CultureInfo.InvariantCulture);
+                            var newNumeric = Convert.ToDouble(correctedValue, System.Globalization.CultureInfo.InvariantCulture);
                             finalValueToSet = existingNumeric + newNumeric;
-                            _logger.Error("           - **NUMERIC_AGGREGATION**: {Existing} + {New} = {Final}",
+                            _logger.Error("           - **NUMERIC_AGGREGATION**: Calculation: {Existing} + {New} = {Final}",
                                 existingNumeric, newNumeric, finalValueToSet);
                         }
                         else if (propertyType == typeof(string))
                         {
-                            // ... string aggregation logic with logging ...
+                            _logger.Error("           - **LOGIC_PATH**: Matched String Aggregation Path.");
+                            var existingString = existingValue.ToString();
+                            var newString = correctedValue?.ToString() ?? "";
+                            if (!string.IsNullOrWhiteSpace(existingString) && !string.IsNullOrWhiteSpace(newString))
+                            {
+                                finalValueToSet = $"{existingString}{Environment.NewLine}{newString}";
+                                _logger.Error("           - **STRING_AGGREGATION**: Concatenating values.");
+                            }
+                            else
+                            {
+                                finalValueToSet = string.IsNullOrWhiteSpace(existingString) ? newString : existingString;
+                            }
                         }
                     }
                     else
                     {
-                        _logger.Error("         - **NO_AGGREGATION**: No existing value for '{Field}'. Will set value directly.", targetPropertyName);
+                        _logger.Error("         - **NO_AGGREGATION**: Existing value is null. Will set value directly.");
                     }
+
+                    _logger.Error("         - **TYPE_CONVERSION**: Preparing to set final value '{FinalValue}' (Type: {Type}) to property of type {PropType}.",
+                        finalValueToSet ?? "null", finalValueToSet?.GetType().Name ?? "null", propertyType.Name);
 
                     var convertedValue = finalValueToSet != null
                                              ? Convert.ChangeType(finalValueToSet, propertyType, System.Globalization.CultureInfo.InvariantCulture)
                                              : null;
                     invoiceProp.SetValue(invoice, convertedValue);
+
                     _logger.Error("       - ✅ **Leave ApplyFieldCorrection**: Successfully set '{TargetProp}' to '{Value}'.", targetPropertyName, convertedValue ?? "null");
                     return true;
                 }
 
-                _logger.Warning("       - ❌ **PROPERTY_NOT_FOUND**: Property '{TargetPropertyName}' (from error field '{ErrorField}') not found on ShipmentInvoice header.",
-                    targetPropertyName, fieldNameFromError);
+                _logger.Warning("       - ❌ **PROPERTY_NOT_FOUND**: Property '{TargetPropertyName}' not found on ShipmentInvoice.", targetPropertyName);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "       - 🚨 **EXCEPTION in ApplyFieldCorrection** for {ErrorField} (target: {TargetProp}) with value '{Value}'",
-                    fieldNameFromError, targetPropertyName, correctedValue);
+                _logger.Error(ex, "       - 🚨 **EXCEPTION in ApplyFieldCorrection** for {TargetProp} with value '{Value}'", targetPropertyName, correctedValue);
                 return false;
             }
         }
 
-        // This helper method is new, to centralize the logging of the invoice's financial state
         private void LogFinancialState(string stage, ShipmentInvoice invoice)
         {
             if (invoice == null) return;
@@ -214,7 +212,6 @@ namespace WaterNut.DataSpace
         private void LogCorrectionResult(CorrectionResult result, string priority)
         {
             var status = result.Success ? "Applied/Aggregated" : "Failed";
-            // Use a more visible level for logging the outcome of each application attempt.
             var level = result.Success ? LogEventLevel.Error : LogEventLevel.Warning;
 
             _logger.Write(
