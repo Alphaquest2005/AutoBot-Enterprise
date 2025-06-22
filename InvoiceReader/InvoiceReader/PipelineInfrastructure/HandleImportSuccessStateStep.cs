@@ -30,12 +30,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Basic context validation
             if (context == null)
             {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<HandleImportSuccessStateStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Handle successful import state and process data file", 0, "HandleImportSuccessStateStep executed with null context.");
-                Log.ForContext<HandleImportSuccessStateStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(HandleImportSuccessStateStep), "Context validation", 0, "HandleImportSuccessStateStep executed with null context.");
-                return false;
+                throw new ArgumentNullException(nameof(context), "HandleImportSuccessStateStep executed with null context.");
             }
              if (!context.MatchedTemplates.Any())
             {

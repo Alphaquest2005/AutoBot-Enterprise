@@ -29,21 +29,25 @@ namespace AutoWaterNutServer
         
         static void Main(string[] args)
         {
-            // Configure Serilog
+            // Configure centralized Serilog logger for WCF services
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.Console()
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Application", "AutoWaterNutServer")
+                .WriteTo.Console(
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj} {Properties:j}{NewLine}{Exception}")
                 .WriteTo.File("logs/AutoWaterNutServer-.txt",
                               rollingInterval: RollingInterval.Day,
                               retainedFileCountLimit: 7,
-                              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj} {Properties:j}{NewLine}{Exception}")
                 .CreateLogger();
 
             AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
 
             try
             {
-                Log.Information("Application Starting...");
+                Log.Information("WCF Server Starting...");
+                Log.Information("Centralized logger configured for all WCF services");
 
                 Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-JosephBartholomew", "2080412a-8e17-8a71-cb4a-8e12f684d4da");
 
@@ -61,6 +65,8 @@ namespace AutoWaterNutServer
             //container.Compose(this);
 
 
+            Log.Information("Starting {ServiceCount} WCF services...", Services.OfType<IBusinessService>().Count());
+            
             Parallel.ForEach(Services.OfType<IBusinessService>(), service =>
                 {
                     var s = new ServiceHost(service.GetType());
@@ -93,10 +99,11 @@ namespace AutoWaterNutServer
         
         static void s_Faulted(object sender, EventArgs e)
         {
+            var serviceHost = sender as ServiceHost;
+            Log.Error("Service '{ServiceType}' faulted. Attempting restart...", serviceHost?.Description?.ServiceType?.FullName ?? "Unknown");
             Debugger.Break();
-            StopService(sender as ServiceHost);
-            StartService(sender as ServiceHost);
-
+            StopService(serviceHost);
+            StartService(serviceHost);
         }
 
         static void StartService(ServiceHost host)
@@ -161,9 +168,11 @@ namespace AutoWaterNutServer
 
         static void host_Faulted(object sender, EventArgs e)
         {
+            var serviceHost = sender as ServiceHost;
+            Log.Error("Host '{ServiceType}' faulted. Attempting restart...", serviceHost?.Description?.ServiceType?.FullName ?? "Unknown");
             Debugger.Break();
-            StopService(sender as ServiceHost);
-            StartService(sender as ServiceHost);
+            StopService(serviceHost);
+            StartService(serviceHost);
         }
 
         static void StopService(ServiceHost host)

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Common.Business.Services;
 using CounterPointQS.Business.Entities;
+using Serilog;
 
 namespace CounterPointQS.Business.Services
 {

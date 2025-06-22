@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CounterPointQS.Business.Entities;
 using Core.Common.UI;
 using WaterNut.DataLayer;
+using Serilog;
 
 
 namespace WaterNut.DataSpace
@@ -22,7 +23,7 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-        public async Task DownloadCPO(CounterPointPOs c, int asycudaDocumentSetId)
+        public async Task DownloadCPO(CounterPointPOs c, int asycudaDocumentSetId, ILogger logger)
         {
            if (c == null) return;
            if (asycudaDocumentSetId != 0)

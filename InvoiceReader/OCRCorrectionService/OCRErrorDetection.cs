@@ -26,19 +26,19 @@ namespace WaterNut.DataSpace
             var allDetectedErrors = new List<InvoiceError>();
             if (invoice == null) return allDetectedErrors;
 
-            _logger.Error("🚀 **DETECTION_PIPELINE_ENTRY_V2**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
+            _logger.Information("🚀 **DETECTION_PIPELINE_ENTRY_V2**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
 
             try
             {
                 // --- PATHWAY 1: DEEPSEEK AI-BASED DETECTION ---
-                _logger.Error("🤖 **DEEPSEEK_DETECTION_START**: Initiating primary AI-based granular error and omission detection.");
+                _logger.Information("🤖 **DEEPSEEK_DETECTION_START**: Initiating primary AI-based granular error and omission detection.");
                 var deepSeekErrors = await DetectHeaderFieldErrorsAndOmissionsAsync(invoice, fileText, metadata).ConfigureAwait(false);
                 allDetectedErrors.AddRange(deepSeekErrors);
 
                 // --- PATHWAY 2: RULE-BASED DETECTION (RELIABILITY BACKSTOP) ---
                 if (fileText?.IndexOf("Amazon.com", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    _logger.Error("🎯 **RULE_BASED_TRIGGER**: Amazon.com detected. Running secondary rule-based detector.");
+                    _logger.Information("🎯 **RULE_BASED_TRIGGER**: Amazon.com detected. Running secondary rule-based detector.");
                     var amazonErrors = DetectAmazonSpecificErrors(invoice, fileText);
                     allDetectedErrors.AddRange(amazonErrors);
                 }
@@ -66,7 +66,7 @@ namespace WaterNut.DataSpace
 
                 var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
                 var serializedErrors = JsonSerializer.Serialize(uniqueErrors, options);
-                _logger.Error("✅ **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects: {SerializedErrors}",
+                _logger.Information("✅ **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects: {SerializedErrors}",
                     uniqueErrors.Count, serializedErrors);
 
                 return uniqueErrors;
@@ -119,7 +119,7 @@ namespace WaterNut.DataSpace
                 });
             }
 
-            _logger.Error("🎯 **RULE_BASED_RESULT**: Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
+            _logger.Information("🎯 **RULE_BASED_RESULT**: Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
             return amazonErrors;
         }
 

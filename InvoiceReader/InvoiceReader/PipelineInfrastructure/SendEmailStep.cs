@@ -28,9 +28,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Null check context first
             if (context == null)
             {
-                Log.ForContext<SendEmailStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Send error email notification", 0, "SendEmailStep executed with null context.");
-                return false;
+                throw new ArgumentNullException(nameof(context), "SendEmailStep executed with null context.");
             }
 
             if (IsRequiredDataMissing(context.Logger, context)) // Handles its own logging, pass logger

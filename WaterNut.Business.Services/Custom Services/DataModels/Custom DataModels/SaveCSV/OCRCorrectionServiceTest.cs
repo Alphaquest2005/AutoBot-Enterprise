@@ -1,4 +1,5 @@
 using System;
+using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OCR.Business.Entities;
@@ -18,7 +19,8 @@ namespace WaterNut.DataSpace
                 
                 // Test 1: Service instantiation
                 Console.WriteLine("Test 1: Creating OCRCorrectionService instance...");
-                var service = new OCRCorrectionService();
+                var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+                var service = new OCRCorrectionService(logger);
                 Console.WriteLine("✓ OCRCorrectionService created successfully");
 
                 // Test 2: Test JSON parsing with sample data
@@ -98,7 +100,8 @@ namespace WaterNut.DataSpace
             {
                 Console.WriteLine("=== OCR Correction Workflow Test ===");
                 
-                var service = new OCRCorrectionService();
+                var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+                var service = new OCRCorrectionService(logger);
                 
                 // Sample errors that might be found by DeepSeek
                 var sampleErrors = new List<(string Field, string Error, string Value)>

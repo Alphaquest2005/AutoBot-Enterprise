@@ -95,11 +95,62 @@ vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"CompleteDetecti
 # Repository root
 /mnt/c/Insight Software/AutoBot-Enterprise/
 
+# Main Application Entry Points
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/Program.cs               # Console App (✅ Logging Implemented)
+/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/App.xaml.cs              # WPF App (❌ No Logging)
+/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/Program.cs         # WCF Service (⚠️ Basic Serilog)
+
+# Project Files
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/AutoBot1.csproj
+/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/AutoWaterNut.csproj
+/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/AutoWaterNutServer.csproj
+
 # Amazon test data
 /mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf.txt
 
 # OCR service files
 /mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/
+
+# Logging Infrastructure
+/mnt/c/Insight Software/AutoBot-Enterprise/Core.Common/Core.Common/Extensions/LogLevelOverride.cs
+/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md
 ```
 
-**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md`.
+## Logging Unification Status
+
+### Current Implementation Status:
+- ✅ **AutoBot1**: Fully implemented with LevelOverridableLogger and category-based filtering
+- ❌ **AutoWaterNut**: WPF application with no logging configuration
+- ⚠️ **AutoWaterNutServer**: Basic Serilog implementation, needs upgrade to LevelOverridableLogger
+- 📋 **67 Rogue Static Loggers**: Identified across solution requiring refactoring
+
+### Logging Strategy:
+- **LogLevelOverride System**: Advanced logging with selective exposure for focused debugging
+- **Global Minimum Level**: Set to Error to minimize log noise from extensive "log and test first" mandate
+- **Category-Based Filtering**: LogCategory enum with runtime filtering capabilities
+- **Centralized Entry Point**: Single logger creation at application entry points
+- **Constructor Injection**: Logger propagated through call chains via dependency injection
+- **Context Preservation**: InvocationId and structured logging maintained
+
+#### **LogLevelOverride Usage Pattern**:
+```csharp
+// Global logger set to Error level minimizes vast log output
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Error()  // Only errors shown by default
+    .CreateLogger();
+
+// Use LogLevelOverride to expose specific code sections for debugging
+using (LogLevelOverride.Begin(LogEventLevel.Information))
+{
+    // Only logs within this scope are visible at Information level
+    ProcessSpecificCodeSection();
+}
+```
+
+#### **Critical Issue - Inappropriate Error Logging**:
+- ❌ **444 inappropriate .Error() calls** found across InvoiceReader/OCR projects
+- ❌ **LLMs set logs to Error level** just to make them visible, not for actual errors
+- ❌ **Normal processing appears as errors** - confuses troubleshooting
+- 🔧 **Immediate Fix Needed**: OCRErrorDetection.cs (5 instances) and OCRDatabaseUpdates.cs (1 instance)
+
+**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md` and `/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md`.

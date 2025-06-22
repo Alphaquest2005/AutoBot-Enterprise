@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Common.UI;
 using CounterPointQS.Business.Entities;
 using WaterNut.DataLayer;
+using Serilog;
 
 namespace WaterNut.DataSpace
 {
@@ -16,13 +17,13 @@ namespace WaterNut.DataSpace
 
         public static CPPurchaseOrdersModel Instance { get; }
 
-        public async Task DownloadCPO(CounterPointPOs c, int asycudaDocumentSetId)
+        public async Task DownloadCPO(CounterPointPOs c, int asycudaDocumentSetId, ILogger logger)
         {
             if (c == null) return;
             if (asycudaDocumentSetId != 0)
             {
 
-                var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(null, "Purchase Orders", true).ConfigureAwait(false);
+                var sysDocSet = await EntryDocSetUtils.GetAsycudaDocumentSet(logger, "Purchase Orders", true).ConfigureAwait(false);
                 if (sysDocSet == null) throw new ApplicationException("No System Docset for 'Purchase Orders'");
 
 

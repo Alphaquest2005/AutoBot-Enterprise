@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Core.Common.Contracts;
 using CoreEntities.Client.DTO;
 using EntryDataQS.Client.DTO;
+using Serilog;
 
 namespace EntryDataQS.Client.Contracts
 {

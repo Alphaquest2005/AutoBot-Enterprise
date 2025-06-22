@@ -20,66 +20,71 @@ namespace AutoBot
 {
     public class DocumentUtils
     {
-        private static readonly ILogger _log = Log.ForContext<DocumentUtils>(); // Add static logger
+        private readonly ILogger _logger;
+        
+        public DocumentUtils(ILogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
-        public static async Task ImportPOEntries(ILogger log, bool overwriteExisting) // Add ILogger parameter
+        public async Task ImportPOEntries(bool overwriteExisting)
         {
             string methodName = nameof(ImportPOEntries);
-            log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ OverwriteExisting: {OverwriteExisting} }}",
+            _logger.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ OverwriteExisting: {OverwriteExisting} }}",
                 methodName, "N/A", overwriteExisting); // Add METHOD_ENTRY log
             var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
 
             try
             {
-                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Starting PO entries import.", methodName, "StartImport"); // Add step log
+                _logger.Information("INTERNAL_STEP ({MethodName} - {Stage}): Starting PO entries import.", methodName, "StartImport"); // Add step log
                 // Console.WriteLine("Import Entries"); // Remove Console.WriteLine
 
-                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Getting XML file types.", methodName, "GetFileTypes"); // Add step log
+                _logger.Information("INTERNAL_STEP ({MethodName} - {Stage}): Getting XML file types.", methodName, "GetFileTypes"); // Add step log
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ImportEntries (with fileTypes and DateTime.Today.AddHours(-12))", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ImportEntries (with fileTypes and DateTime.Today.AddHours(-12))", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var importEntriesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                if (await ImportEntries(overwriteExisting, fileTypes, log, DateTime.Today.AddHours(-12)).ConfigureAwait(false)) // Pass log
+                if (await ImportEntries(overwriteExisting, fileTypes, _logger, DateTime.Today.AddHours(-12)).ConfigureAwait(false)) // Pass _logger
                 {
                     importEntriesStopwatch.Stop();
-                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: true",
+                    _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: true",
                         "ImportEntries (with fileTypes and DateTime.Today.AddHours(-12))", importEntriesStopwatch.ElapsedMilliseconds, "Async call completed (await). ImportEntries returned true, indicating no files to import."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                     stopwatch.Stop(); // Stop stopwatch
-                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
                         methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
                     return;
                 }
                 importEntriesStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: false",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result: false",
                        "ImportEntries (with fileTypes and DateTime.Today.AddHours(-12))", importEntriesStopwatch.ElapsedMilliseconds, "Async call completed (await). ImportEntries returned false, indicating files were processed.");
 
 
                 //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting); // This call needs instrumentation too
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.RemoveDuplicateEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var removeDuplicatesStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.RemoveDuplicateEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.RemoveDuplicateEntries(_logger).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 removeDuplicatesStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.RemoveDuplicateEntries", removeDuplicatesStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.FixIncompleteEntries", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var fixIncompleteStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await EntryDocSetUtils.FixIncompleteEntries(log).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                await EntryDocSetUtils.FixIncompleteEntries(_logger).ConfigureAwait(false); // Need to check if this method accepts ILogger
                 fixIncompleteStopwatch.Stop();
-                 log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                 _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "EntryDocSetUtils.FixIncompleteEntries", fixIncompleteStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                 stopwatch.Stop(); // Stop stopwatch
-                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
                     methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
             }
             catch (Exception ex) // Catch specific exception variable
             {
                 stopwatch.Stop(); // Stop stopwatch
                 // Console.WriteLine(e); // Remove Console.WriteLine
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                _logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
                     methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
                 throw; // Re-throw the original exception
             }

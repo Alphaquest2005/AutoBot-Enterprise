@@ -20,71 +20,76 @@ namespace AutoBot
 {
     public class EmailSalesErrorsUtils
     {
-        private static readonly ILogger _log = Log.ForContext<EmailSalesErrorsUtils>(); // Add static logger
+        private readonly ILogger _logger;
+        
+        public EmailSalesErrorsUtils(ILogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
-        public static async Task EmailSalesErrors(ILogger log) // Add ILogger parameter
+        public async Task EmailSalesErrors()
         {
             string methodName = nameof(EmailSalesErrors);
-            log.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ }}",
+            _logger.Information("METHOD_ENTRY: {MethodName}. Caller: {CallerInfo}. Context: {{ }}",
                 methodName, "AllocateSalesUtils.AllocateSales"); // Add METHOD_ENTRY log
             var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Start stopwatch
 
             try
             {
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
-                var infoTuple = await BaseDataModel.CurrentSalesInfo(-1, log).ConfigureAwait(false); // Need to check if this method accepts ILogger
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "BaseDataModel.CurrentSalesInfo", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                var infoTuple = await BaseDataModel.CurrentSalesInfo(-1, _logger).ConfigureAwait(false); // Need to check if this method accepts ILogger
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "BaseDataModel.CurrentSalesInfo", stopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                 var directory = infoTuple.DirPath; // Or infoTuple.Item4 if you prefer direct item access
                 var errorfile = Path.Combine(directory, "SalesErrors.csv");
 
-                log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Checking if error file exists: {ErrorFilePath}", methodName, "CheckFileExists", errorfile); // Add step log
+                _logger.Information("INTERNAL_STEP ({MethodName} - {Stage}): Checking if error file exists: {ErrorFilePath}", methodName, "CheckFileExists", errorfile); // Add step log
                 if (!File.Exists(errorfile))
                 {
-                    log.Information("INTERNAL_STEP ({MethodName} - {Stage}): Error file does not exist. Exiting.", methodName, "ConditionalExit"); // Add step log
+                    _logger.Information("INTERNAL_STEP ({MethodName} - {Stage}): Error file does not exist. Exiting.", methodName, "ConditionalExit"); // Add step log
                     stopwatch.Stop(); // Stop stopwatch
-                    log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                    _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
                         methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
                     return;
                 }
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetSalesReportData", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetSalesReportData", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var getReportDataStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                var errors = GetSalesReportData(log, infoTuple); // Pass log
+                var errors = GetSalesReportData(_logger, infoTuple); // Pass _logger
                 getReportDataStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). ErrorCount: {ErrorCount}",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). ErrorCount: {ErrorCount}",
                     "GetSalesReportData", getReportDataStopwatch.ElapsedMilliseconds, "Sync call returned.", errors?.Count ?? 0); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CreateSalesReport", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CreateSalesReport", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var createReportStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                CreateSalesReport(log, errors, errorfile); // Pass log
+                CreateSalesReport(_logger, errors, errorfile); // Pass _logger
                 createReportStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "CreateSalesReport", createReportStopwatch.ElapsedMilliseconds, "Sync call returned."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetContactsList", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "GetContactsList", "SYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var getContactsStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                var contactsLst = GetContactsList(log); // Pass log
+                var contactsLst = GetContactsList(_logger); // Pass _logger
                 getContactsStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). ContactCount: {ContactCount}",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). ContactCount: {ContactCount}",
                     "GetContactsList", getContactsStopwatch.ElapsedMilliseconds, "Sync call returned.", contactsLst?.Count ?? 0); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
-                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SendSalesReport", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
+                _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SendSalesReport", "ASYNC_EXPECTED"); // Add INVOKING_OPERATION log
                 var sendReportStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                await SendSalesReport(log, errorfile, directory, infoTuple, contactsLst).ConfigureAwait(false); // Pass log
+                await SendSalesReport(_logger, errorfile, directory, infoTuple, contactsLst).ConfigureAwait(false); // Pass _logger
                 sendReportStopwatch.Stop();
-                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                     "SendSalesReport", sendReportStopwatch.ElapsedMilliseconds, "Async call completed (await)."); // Add OPERATION_INVOKED_AND_CONTROL_RETURNED log
 
                 stopwatch.Stop(); // Stop stopwatch
-                log.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
+                _logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.",
                     methodName, stopwatch.ElapsedMilliseconds); // Add METHOD_EXIT_SUCCESS log
             }
             catch (Exception ex) // Catch specific exception variable
             {
                 stopwatch.Stop(); // Stop stopwatch
-                log.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                _logger.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
                     methodName, stopwatch.ElapsedMilliseconds, ex.Message); // Add METHOD_EXIT_FAILURE log
                 throw; // Re-throw the original exception
             }

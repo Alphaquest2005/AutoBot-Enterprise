@@ -18,12 +18,11 @@ namespace InvoiceReader
 {
     public class InvoiceReader
     {
-        private static ILogger _logger = Log.ForContext<InvoiceReader>();
+        private readonly ILogger _logger;
         
-        // Set the static logger to the passed logger to ensure consistency
-        private static void SetLogger(ILogger logger)
+        public InvoiceReader(ILogger logger)
         {
-            _logger = logger ?? Log.ForContext<InvoiceReader>();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         static InvoiceReader()
@@ -47,7 +46,7 @@ namespace InvoiceReader
                 retainedFileCountLimit: 3,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
-            _logger = Log.ForContext<InvoiceReader>(); // Get logger instance for this class
+            // Static logger configuration removed - instances now require injected logger
         }
 
         public static Client Client { get; set; } = new Client
@@ -219,8 +218,7 @@ namespace InvoiceReader
 
         public static async Task<List<KeyValuePair<string, (string file, string DocumentType, ImportStatus Status)>>> Import(string fileFullName, int fileTypeId, string emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSets, FileTypes fileType, Client client, ILogger logger)
         {
-            // Set the static logger to the passed logger to ensure consistency
-            SetLogger(logger);
+            // Static logger removed - using injected logger parameter
             
             var methodStopwatch = Stopwatch.StartNew();
             // InvocationId is now passed via the enriched logger from ImportPDF

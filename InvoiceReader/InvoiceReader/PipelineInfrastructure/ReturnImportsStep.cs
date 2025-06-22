@@ -14,19 +14,17 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 {
     public class ReturnImportsStep : IPipelineStep<InvoiceProcessingContext>
     {
-        // Add a static logger instance for this class
-        private static readonly ILogger _logger = Log.ForContext<ReturnImportsStep>();
+        // Removed static logger - using context.Logger instead
 
         public Task<bool> Execute(InvoiceProcessingContext context)
         {
             // FilePath might not be relevant here if this is a final summary step across multiple files/templates
-            _logger.Debug("Executing ReturnImportsStep. Finalizing import process.");
+            context?.Logger?.Debug("Executing ReturnImportsStep. Finalizing import process.");
 
             // Null check context
             if (context == null)
             {
-                 _logger.Error("ReturnImportsStep executed with null context.");
-                 return Task.FromResult(false); // Cannot determine success without context
+                 throw new ArgumentNullException(nameof(context), "ReturnImportsStep executed with null context.");
             }
 
             bool overallSuccess = false; // Default to false
@@ -51,21 +49,21 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     overallSuccess = context.Imports.Any(x => x.Value.Success == ImportStatus.Success ||
                                                                x.Value.Success == ImportStatus.HasErrors);
 
-                     _logger.Information("Final import summary: Total Processed={Total}, Success={Success}, HasErrors={HasErrors}, Failed={Failed}. Overall Success Flag: {OverallSuccess}",
+                     context.Logger?.Information("Final import summary: Total Processed={Total}, Success={Success}, HasErrors={HasErrors}, Failed={Failed}. Overall Success Flag: {OverallSuccess}",
                         totalImports, successCount, hasErrorsCount, failedCount, overallSuccess);
                 }
                 else
                 {
-                     _logger.Warning("Context.Imports dictionary is null. Cannot determine overall import success.");
+                     context.Logger?.Warning("Context.Imports dictionary is null. Cannot determine overall import success.");
                      overallSuccess = false; // Treat as failure if Imports dictionary is missing
                 }
 
-                 _logger.Debug("Finished executing ReturnImportsStep. Returning Overall Success: {OverallSuccess}", overallSuccess);
+                 context.Logger?.Debug("Finished executing ReturnImportsStep. Returning Overall Success: {OverallSuccess}", overallSuccess);
                 return Task.FromResult(overallSuccess); // Indicate overall success or failure based on the check
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex, "Error during ReturnImportsStep execution.");
+                 context.Logger?.Error(ex, "Error during ReturnImportsStep execution.");
                  return Task.FromResult(false); // Indicate failure on error
             }
         }

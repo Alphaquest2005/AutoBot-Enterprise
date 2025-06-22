@@ -29,12 +29,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Basic context validation
             if (context == null)
             {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<AddNameSupplierStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Add Name and SupplierCode to extracted data if missing", 0, "AddNameSupplierStep executed with null context.");
-                Log.ForContext<AddNameSupplierStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(AddNameSupplierStep), "Context validation", 0, "AddNameSupplierStep executed with null context.");
-                return Task.FromResult(false);
+                // Cannot use context.Logger if context is null - throw exception instead
+                throw new ArgumentNullException(nameof(context), "AddNameSupplierStep executed with null context.");
             }
              if (!context.MatchedTemplates.Any())
             {

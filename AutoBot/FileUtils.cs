@@ -26,7 +26,7 @@ namespace AutoBot
             {
                 // Modify lambdas to accept ILogger and pass it down where applicable
                 {"ImportSalesEntries",(log, ft, fs) => DocumentUtils.ImportSalesEntries(log, false) }, // Signature needs update in DocumentUtils
-                {"AllocateSales",(log, ft, fs) => AllocateSalesUtils.AllocateSales(log) }, // Signature needs update in AllocateSalesUtils
+                {"AllocateSales",(log, ft, fs) => new AllocateSalesUtils(log).AllocateSales() }, // Create instance with logger
                 {"CreateEx9",(log, ft, fs) => CreateEX9Utils.CreateEx9(log,false, -1) }, // Signature needs update in CreateEX9Utils
                 {"ExportEx9Entries",(log, ft, fs) => EX9Utils.ExportEx9Entries(log,-1) }, // Signature needs update in EX9Utils
                 {"AssessEx9Entries",(log, ft, fs) => EX9Utils.AssessEx9Entries(log, -1) }, // Signature needs update in EX9Utils
@@ -38,7 +38,7 @@ namespace AutoBot
                 {"EmailPOEntries", (log, ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId, log) }, // Signature needs update in POUtils
                 {"DownloadSalesFiles",(log, ft, fs) => EX9Utils.DownloadSalesFiles(log, 10, "IM7History",false) }, // Signature needs update in EX9Utils
                 {"Xlsx2csv",  (log, ft, fs) => XLSXProcessor.Xlsx2csv(fs, new List < FileTypes >() { ft }, log) }, // Signature needs update in XLSXProcessor
-                {"SaveInfo", (log, ft, fs) => EmailTextProcessor.Execute(log, fs, ft) }, // Pass log to EmailTextProcessor.Execute (already updated)
+                {"SaveInfo", (log, ft, fs) => new EmailTextProcessor(log).Execute(fs, ft) }, // Create instance with logger
                 {"CleanupEntries",(log, ft, fs) => EntryDocSetUtils.CleanupEntries() }, // Signature needs update in EntryDocSetUtils
                 {"SubmitToCustoms",(log, ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1, log) }, // Signature needs update in SubmitSalesXmlToCustomsUtils
                 {"MapUnClassifiedItems", (log, ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs, log) }, // Signature needs update in ShipmentUtils
@@ -117,7 +117,7 @@ namespace AutoBot
                 {"ReDownloadPOFiles", (log, ft,fs) => EX9Utils.DownloadSalesFiles(log, 10, "IM7", true)}, // Signature needs update in EX9Utils
                 {"SubmitDiscrepanciesToCustoms", (log, types, infos) => DISUtils.SubmitDiscrepanciesToCustoms(types, infos, log) }, // Signature needs update in DISUtils
                 {"ClearShipmentData", (log, ft, fs) => ShipmentUtils.ClearShipmentData(ft, fs) }, // Signature needs update in ShipmentUtils
-                {"ImportPOEntries", (log, ft, fs) => DocumentUtils.ImportPOEntries(log,false) }, // Signature needs update in DocumentUtils
+                {"ImportPOEntries", (log, ft, fs) => new DocumentUtils(log).ImportPOEntries(false) }, // Using instance method
                 {"ImportAllAsycudaDocumentsInDataFolder", (log, ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false, log) }, // Signature needs update in ImportAllAsycudaDocumentsInDataFolderUtils
                 {"ImportEntries",(log, ft, fs) => DocumentUtils.ImportEntries(false, ft.Data.ToString(), log) }, // Signature needs update in DocumentUtils
                 {"ImportShipmentInfoFromTxt", (log, types, infos) => ShipmentUtils.ImportShipmentInfoFromTxt(types, infos, log) }, // Added mapping for new action, Signature needs update in ShipmentUtils

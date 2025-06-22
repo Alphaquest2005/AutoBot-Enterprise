@@ -724,7 +724,7 @@ namespace AutoBot
                                 _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {FileTypeId}, EmailId {EmailId}",
                                     "ImportUtils.ExecuteDataSpecificFileActions", "ASYNC_EXPECTED", shipmentFolderType.Id, placeholderEmailId);
                                 var dataSpecificStopwatch = Stopwatch.StartNew();
-                                await ImportUtils.ExecuteDataSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
+                                await new ImportUtils(_log).ExecuteDataSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
                                 dataSpecificStopwatch.Stop();
                                 _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). For FileType {FileTypeId}, EmailId {EmailId}.",
                                     "ImportUtils.ExecuteDataSpecificFileActions", dataSpecificStopwatch.ElapsedMilliseconds, "Async call completed (await).", shipmentFolderType.Id, placeholderEmailId);
@@ -733,7 +733,7 @@ namespace AutoBot
                                 _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {FileTypeId}, EmailId {EmailId}",
                                     "ImportUtils.ExecuteNonSpecificFileActions", "ASYNC_EXPECTED", shipmentFolderType.Id, placeholderEmailId);
                                 var nonSpecificStopwatch = Stopwatch.StartNew();
-                                await ImportUtils.ExecuteNonSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
+                                await new ImportUtils(_log).ExecuteNonSpecificFileActions(shipmentFolderType, allFilesInFolder.ToArray(), appSetting).ConfigureAwait(false);
                                 nonSpecificStopwatch.Stop();
                                 _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). For FileType {FileTypeId}, EmailId {EmailId}.",
                                     "ImportUtils.ExecuteNonSpecificFileActions", nonSpecificStopwatch.ElapsedMilliseconds, "Async call completed (await).", shipmentFolderType.Id, placeholderEmailId);

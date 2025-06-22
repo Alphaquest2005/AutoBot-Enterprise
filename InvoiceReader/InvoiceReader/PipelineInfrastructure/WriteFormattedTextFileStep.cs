@@ -26,12 +26,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Null check context first
             if (context == null)
             {
-                 // Cannot use context.Logger if context is null
-                Log.ForContext<WriteFormattedTextFileStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Write formatted PDF text to a file", 0, "WriteFormattedTextFileStep executed with null context.");
-                Log.ForContext<WriteFormattedTextFileStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(WriteFormattedTextFileStep), "Context validation", 0, "WriteFormattedTextFileStep executed with null context.");
-                 return false;
+                throw new ArgumentNullException(nameof(context), "WriteFormattedTextFileStep executed with null context.");
             }
 
             // Corrected logic: Check if data is PRESENT

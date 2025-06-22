@@ -80,7 +80,7 @@ namespace WaterNut.Business.Services.Importers
             return pTxt;
         }
 
-        private static string GetRawFileText(string droppedFilePath) => File.ReadAllText(droppedFilePath).Replace("", " ");
+        private static string GetRawFileText(string droppedFilePath) => File.ReadAllText(droppedFilePath);
 
         public  IEnumerable<string> GetHeadings(IEnumerable<string> lines)
         {

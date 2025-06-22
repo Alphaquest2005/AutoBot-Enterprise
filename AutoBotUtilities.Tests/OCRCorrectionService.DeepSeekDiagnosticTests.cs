@@ -73,8 +73,8 @@ namespace AutoBotUtilities.Tests.Production
         {
             _logger.Information("🔍 **TEST_1_START**: Testing CleanTextForAnalysis method with actual Amazon invoice text");
             
-            // Act
-            var cleanedText = InvokePrivateMethod<string>(_service, "CleanTextForAnalysis", _actualAmazonInvoiceText);
+            // Act - CleanTextForAnalysis is a public method, call directly
+            var cleanedText = _service.CleanTextForAnalysis(_actualAmazonInvoiceText);
             
             // Log results for analysis
             _logger.Information("🔍 **ORIGINAL_TEXT_LENGTH**: {Length} characters", _actualAmazonInvoiceText.Length);
@@ -331,9 +331,8 @@ namespace AutoBotUtilities.Tests.Production
   ]
 }";
             
-            // Act
-            var correctionResults = InvokePrivateMethod<List<CorrectionResult>>(_service, 
-                "ProcessDeepSeekCorrectionResponse", sampleDeepSeekResponse, _actualAmazonInvoiceText);
+            // Act - ProcessDeepSeekCorrectionResponse is a public method, call directly
+            var correctionResults = _service.ProcessDeepSeekCorrectionResponse(sampleDeepSeekResponse, _actualAmazonInvoiceText);
             
             // Log parsing results
             _logger.Information("🔍 **PARSING_RESULTS**: Parsed {Count} corrections from sample response", correctionResults?.Count ?? 0);

@@ -86,7 +86,7 @@ namespace AutoBotUtilities.Tests.Production
 
             for (int i = 0; i < iterations; i++)
             {
-                using (var service = new OCRCorrectionService())
+                using (var service = new OCRCorrectionService(_logger))
                 {
                     var invoice = CreateTestInvoice($"MEM-{i:D3}", 100 + i, 90 + i, 5, 5, 0, 0);
                     var fileText = $"Invoice #{invoice.InvoiceNo}\nTotal: ${invoice.InvoiceTotal:F2}";

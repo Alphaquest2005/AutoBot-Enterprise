@@ -105,10 +105,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             if (context == null)
             {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<FormatPdfTextStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ValidateContext), "Validate pipeline context", 0, "FormatPdfTextStep executed with null context.");
-                return false;
+                // Cannot use context.Logger if context is null - throw exception instead
+                throw new ArgumentNullException(nameof(context), "FormatPdfTextStep executed with null context.");
             }
             if (!context.MatchedTemplates.Any())
             {

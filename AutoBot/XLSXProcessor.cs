@@ -70,9 +70,9 @@ namespace AutoBotUtilities
                 {
                     // Assuming these Execute methods are synchronous. If they are async, they would also need await.
                     // Based on the original error, the issue was with rFileType, not these calls themselves.
-                    await ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
+                    await new ImportUtils(log).ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
                         BaseDataModel.Instance.CurrentApplicationSettings).ConfigureAwait(false);
-                    await ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
+                    await new ImportUtils(log).ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
                         BaseDataModel.Instance.CurrentApplicationSettings).ConfigureAwait(false);
                 }
                 else

@@ -177,7 +177,7 @@ namespace AutoBot
                                         log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for Email {EmailSubject}. InvocationId: {InvocationId}",
                                         $"ImportUtils.ExecuteEmailMappingActions", "ASYNC_EXPECTED", emailSubjectForLog, emailIterationInvocationId);
                                     
-                                    await ImportUtils.ExecuteEmailMappingActions(
+                                    await new ImportUtils(log).ExecuteEmailMappingActions(
                                         emailKey.EmailMessage.EmailMapping,
                                         new FileTypes() { EmailId = emailKey.EmailMessage.EmailId },
                                         attachments,
@@ -349,7 +349,7 @@ namespace AutoBot
                                                 var execDataSpecificStopwatch = Stopwatch.StartNew();
                                                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}). InvocationId: {InvocationId}",
                                                     "ImportUtils.ExecuteDataSpecificFileActions", "ASYNC_EXPECTED", fileTypeInvocationId);
-                                                await ImportUtils.ExecuteDataSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
+                                                await new ImportUtils(log).ExecuteDataSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
                                                 execDataSpecificStopwatch.Stop();
                                                log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). InvocationId: {InvocationId}",
                                                     "ImportUtils.ExecuteDataSpecificFileActions", execDataSpecificStopwatch.ElapsedMilliseconds, "Async call completed (await).", fileTypeInvocationId);
@@ -358,7 +358,7 @@ namespace AutoBot
                                                     var execNonSpecificSingleStopwatch = Stopwatch.StartNew();
                                                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (single email mode). InvocationId: {InvocationId}",
                                                         "ImportUtils.ExecuteNonSpecificFileActions", "ASYNC_EXPECTED", fileTypeInvocationId);
-                                                    await ImportUtils.ExecuteNonSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
+                                                    await new ImportUtils(log).ExecuteNonSpecificFileActions(fileTypeInstance, csvFiles, appSetting).ConfigureAwait(false);
                                                     execNonSpecificSingleStopwatch.Stop();
                                                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (single email mode). FileTypeInvocationId: {FileTypeInvocationId_Context}",
                                                         "ImportUtils.ExecuteNonSpecificFileActions", execNonSpecificSingleStopwatch.ElapsedMilliseconds, "Async call completed (await).", fileTypeInvocationId);
@@ -478,7 +478,7 @@ namespace AutoBot
                                log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) for FileType {FileTypeId}, DocSetId {DocSetId}. InvocationId: {InvocationId}",
                                     "ImportUtils.ExecuteNonSpecificFileActions (grouped)", "ASYNC_EXPECTED", t.Item1.Id, docSetIdGroup.Key, groupInvocationId);
                                 
-                                await ImportUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting)
+                                await new ImportUtils(log).ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting)
                                     .ConfigureAwait(false);
                                 
                                 execNonSpecificGroupedStopwatch.Stop();

@@ -39,12 +39,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Basic context validation
             if (context == null)
             {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<HandleErrorStateStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Handle error state during invoice processing", 0, "HandleErrorStateStep executed with null context.");
-                Log.ForContext<HandleErrorStateStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(HandleErrorStateStep), "Context validation", 0, "HandleErrorStateStep executed with null context.");
-                return false;
+                throw new ArgumentNullException(nameof(context), "HandleErrorStateStep executed with null context.");
             }
              // Removed static context assignment: _context = context;
              

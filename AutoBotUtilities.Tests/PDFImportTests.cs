@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Serilog.Events; // Added for LogEventLevel
 using Core.Common.Extensions; // Added for LogFilterState
@@ -1153,7 +1154,7 @@ Order Total: $166.30
                 _logger.Information("Testing DeepSeek correction for scenario: {ScenarioName}", scenario.Name);
 
                 // Use DeepSeek to extract the correct value from corrupted text
-                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi())
+                using (var deepSeekApi = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi(_logger, new HttpClient()))
                 {
                     // Create a specific prompt for this field correction
                     var correctionPrompt = CreateFieldCorrectionPrompt(scenario.Field, corruptedText, scenario.ExpectedCorrection);

@@ -35,7 +35,7 @@ namespace EntryDataQS.Client.Repositories
 
 
         public async Task SaveCSV(string droppedFilePath, string fileType, int docSet,
-            bool overWriteExisting)
+            bool overWriteExisting, Serilog.ILogger log)
         {
             using (var ctx = new EntryDataExClient())
             {

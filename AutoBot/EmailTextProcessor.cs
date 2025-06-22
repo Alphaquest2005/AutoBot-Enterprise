@@ -16,8 +16,13 @@ using Serilog.Context;
 // ReSharper disable once HollowTypeName
 public class EmailTextProcessor
 {
-    private static readonly ILogger _log = Log.ForContext<EmailTextProcessor>();
-    public static async Task<FileInfo[]> Execute(ILogger log, FileInfo[] csvFiles, FileTypes fileType)
+    private readonly ILogger _logger;
+    
+    public EmailTextProcessor(ILogger logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+    public async Task<FileInfo[]> Execute(FileInfo[] csvFiles, FileTypes fileType)
     {
         string operationName = nameof(Execute);
         var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // Use System.Diagnostics.Stopwatch
@@ -26,7 +31,7 @@ public class EmailTextProcessor
         // If not, it should be generated here and pushed to context.
         // For now, assuming caller handles InvocationId context.
 
-        log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}",
+        _logger.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}",
             operationName, fileType?.Id, csvFiles?.Length ?? 0);
 
         string dbStatement = null;
@@ -34,29 +39,29 @@ public class EmailTextProcessor
         {
             var res = new List<FileInfo>();
 
-            log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {FileCount} CSV files.", operationName, "FileProcessing", csvFiles?.Length ?? 0);
+            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Processing {FileCount} CSV files.", operationName, "FileProcessing", csvFiles?.Length ?? 0);
 
             foreach (var file in csvFiles)
             {
                 
-                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Reading lines from file {FileName}.", operationName, "ReadFile", file.Name);
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Reading lines from file {FileName}.", operationName, "ReadFile", file.Name);
                     // INVOKING_OPERATION for File.ReadAllLines
-                    log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "File.ReadAllLines", "SYNC_EXPECTED");
+                    _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "File.ReadAllLines", "SYNC_EXPECTED");
                     var lines = File.ReadAllLines(file.FullName);
-                    log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "File.ReadAllLines", "Sync call returned.");
-                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Read {LineCount} lines from file {FileName}.", operationName, "ReadFile", lines.Length, file.Name);
+                    _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "File.ReadAllLines", "Sync call returned.");
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Read {LineCount} lines from file {FileName}.", operationName, "ReadFile", lines.Length, file.Name);
 
-                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Getting email mappings from lines.", operationName, "GetMappings");
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Getting email mappings from lines.", operationName, "GetMappings");
                     var emailMappings = lines
                         .Where(line => !line.ToLower().Contains("Not Found".ToLower()))
-                        .Select(line => GetEmailMappings(log, fileType, line)) // Pass log
+                        .Select(line => GetEmailMappings(_logger, fileType, line)) // Pass _logger
                         .Where(x => !string.IsNullOrEmpty(x.line))
                         .ToList();
 
                     if (!emailMappings.Any())
                     {
                          // Empty Collection Warning
-                         log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection 'emailMappings'. Item count: 0. {EmptyCollectionExpectation}",
+                         _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Processing collection 'emailMappings'. Item count: 0. {EmptyCollectionExpectation}",
                              operationName, "GetMappings", "Expected mappings but found none after filtering.");
                     }
 
@@ -64,19 +69,19 @@ public class EmailTextProcessor
                     if (emailMappings.Any())
                     {
                         res.Add(file);
-                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {MappingCount} email mappings in file {FileName}.", operationName, "GetMappings", emailMappings.Count, file.Name);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {MappingCount} email mappings in file {FileName}.", operationName, "GetMappings", emailMappings.Count, file.Name);
                     }
                     else
                     {
-                         log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No email mappings found in file {FileName}.", operationName, "GetMappings", file.Name);
+                         _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): No email mappings found in file {FileName}.", operationName, "GetMappings", file.Name);
                     }
 
 
-                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Generating DB statement from mappings.", operationName, "GenerateDbStatement");
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Generating DB statement from mappings.", operationName, "GenerateDbStatement");
                     dbStatement = emailMappings.Select(linex =>
                             {
 
-                                var str = linex.im.Select(im => GetMappingData(log, im, linex.line)) // Pass log
+                                var str = linex.im.Select(im => GetMappingData(_logger, im, linex.line)) // Pass _logger
                                     .Select(kp =>
                                         {
                                             if(kp.InfoData.Key == "Currency" || kp.InfoData.Key == "FreightCurrency")
@@ -84,20 +89,20 @@ public class EmailTextProcessor
                                                 if(kp.InfoData.Value == "US")
                                                 {
                                                     kp.InfoData = new KeyValuePair<string, string>(kp.InfoData.Key, "USD");
-                                                    log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Corrected currency code from 'US' to 'USD' for key '{Key}'.", operationName, "CurrencyCorrection", kp.InfoData.Key);
+                                                    _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Corrected currency code from 'US' to 'USD' for key '{Key}'.", operationName, "CurrencyCorrection", kp.InfoData.Key);
                                                 }
                                             }
 
                                             fileType.Data.Add(kp.InfoData);
 
                                             // Replaced Console.WriteLine with Serilog
-                                            log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Added to fileType.Data - Key: '{Key}', Value: '{Value}'.",
+                                            _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Added to fileType.Data - Key: '{Key}', Value: '{Value}'.",
                                                 operationName, "AddFileData", kp.InfoData.Key, kp.InfoData.Value);
 
                                             return kp;
 
                                         })
-                                    .Select(kp => GetDbStatement(log, fileType, kp)) // Pass log
+                                    .Select(kp => GetDbStatement(_logger, fileType, kp)) // Pass _logger
                                     .DefaultIfEmpty("")
                                     .Aggregate((o, n) => $"{o}\r\n{n}");
                                 return str;
@@ -107,39 +112,39 @@ public class EmailTextProcessor
                         .DefaultIfEmpty("")
                         .Aggregate((o, n) => $"{o}\r\n{n}").Trim();
 
-                    log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Generated DB statement (length: {StatementLength}).", operationName, "GenerateDbStatement", dbStatement.Length);
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Generated DB statement (length: {StatementLength}).", operationName, "GenerateDbStatement", dbStatement.Length);
 
 
                     if (!string.IsNullOrEmpty(dbStatement))
                     {
-                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing DB statement.", operationName, "ExecuteDbStatement");
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing DB statement.", operationName, "ExecuteDbStatement");
                         // INVOKING_OPERATION for SyncConsigneeInDB
-                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.SyncConsigneeInDB", "ASYNC_EXPECTED");
-                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles, log).ConfigureAwait(false);
-                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "EntryDocSetUtils.SyncConsigneeInDB", "Async call completed (await).");
+                        _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "EntryDocSetUtils.SyncConsigneeInDB", "ASYNC_EXPECTED");
+                        await AutoBot.EntryDocSetUtils.SyncConsigneeInDB(fileType, csvFiles, _logger).ConfigureAwait(false);
+                        _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "EntryDocSetUtils.SyncConsigneeInDB", "Async call completed (await).");
 
                         // INVOKING_OPERATION for ExecuteSqlCommand
-                        log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CoreEntitiesContext.Database.ExecuteSqlCommand", "SYNC_EXPECTED");
+                        _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "CoreEntitiesContext.Database.ExecuteSqlCommand", "SYNC_EXPECTED");
                         new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
-                        log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "CoreEntitiesContext.Database.ExecuteSqlCommand", "Sync call returned.");
-                        log.Information("INTERNAL_STEP ({OperationName} - {Stage}): DB statement executed successfully.", operationName, "ExecuteDbStatement");
+                        _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "CoreEntitiesContext.Database.ExecuteSqlCommand", "Sync call returned.");
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): DB statement executed successfully.", operationName, "ExecuteDbStatement");
                     }
                     else
                     {
-                         log.Information("INTERNAL_STEP ({OperationName} - {Stage}): No DB statement to execute for file {FileName}.", operationName, "ExecuteDbStatement", file.Name);
+                         _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): No DB statement to execute for file {FileName}.", operationName, "ExecuteDbStatement", file.Name);
                     }
                 
             } // End foreach file
 
             stopwatch.Stop();
-            log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+            _logger.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
             return res.ToArray();
         }
         catch (Exception ex) // Catch specific exception variable
         {
             stopwatch.Stop();
             // Log the exception before re-throwing
-            log.Error(ex, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+            _logger.Error(ex, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                 operationName, stopwatch.ElapsedMilliseconds, ex.Message);
             throw; // Re-throw the original exception
         }
@@ -273,16 +278,16 @@ public class EmailTextProcessor
         // This is a simple utility method, maybe not worth full METHOD_ENTRY/EXIT logs
         // but can add a debug log if needed.
         // string methodName = nameof(ReplaceSpecialChar);
-        // _log.Debug("METHOD_ENTRY: {MethodName}. SubjectLength: {SubjectLength}", methodName, msgSubject?.Length ?? 0);
+        // __logger.Debug("METHOD_ENTRY: {MethodName}. SubjectLength: {SubjectLength}", methodName, msgSubject?.Length ?? 0);
         // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
         // INVOKING_OPERATION for Regex.Replace
-        // _log.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Regex.Replace in ReplaceSpecialChar", "SYNC_EXPECTED");
+        // __logger.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "Regex.Replace in ReplaceSpecialChar", "SYNC_EXPECTED");
         var result = Regex.Replace(msgSubject, @"[^0-9a-zA-Z.\s\-]+", rstring);
-        // _log.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "Regex.Replace in ReplaceSpecialChar", "Sync call returned.");
+        // __logger.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. ({AsyncGuidance})", "Regex.Replace in ReplaceSpecialChar", "Sync call returned.");
 
         // stopwatch.Stop();
-        // _log.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", methodName, stopwatch.ElapsedMilliseconds);
+        // __logger.Debug("METHOD_EXIT_SUCCESS: {MethodName}. Total execution time: {ExecutionDurationMs}ms.", methodName, stopwatch.ElapsedMilliseconds);
         return result;
     }
 }

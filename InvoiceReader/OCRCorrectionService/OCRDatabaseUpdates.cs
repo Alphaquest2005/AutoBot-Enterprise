@@ -28,7 +28,7 @@ namespace WaterNut.DataSpace
                 {
                     var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
                     var serializedRequests = JsonSerializer.Serialize(regexUpdateRequests, options);
-                    _logger.Error("   - [DB_LEARNING_INPUT_DUMP]: Full list of {Count} RegexUpdateRequest objects received: {SerializedRequests}",
+                    _logger.Debug("   - [DB_LEARNING_INPUT_DUMP]: Full list of {Count} RegexUpdateRequest objects received: {SerializedRequests}",
                         regexUpdateRequests.Count(), serializedRequests);
                 }
                 catch (Exception ex)

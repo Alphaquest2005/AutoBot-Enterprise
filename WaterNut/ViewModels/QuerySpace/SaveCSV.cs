@@ -70,13 +70,13 @@ namespace WaterNut.QuerySpace
                     if (fileName.ToLower().Trim().EndsWith(".csv"))
                     {
                         await
-                            EntryDataExRepository.Instance.SaveCSV(fileName, fileType, asycudaDocumentSetId, overwrite)
+                            EntryDataExRepository.Instance.SaveCSV(fileName, fileType, asycudaDocumentSetId, overwrite, log)
                                 .ConfigureAwait(false);
                     }
                     if (fileName.ToLower().Trim().EndsWith(".pdf"))
                     {
                         await
-                           new AutoBotUtilities.ImportUtils().SavePDF(fileName, fileType, asycudaDocumentSetId, overwrite)
+                           new AutoBotUtilities.ImportUtils(Serilog.Log.Logger).SavePDF(fileName, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
                     if (fileName.ToLower().Trim().EndsWith(".xlsx"))

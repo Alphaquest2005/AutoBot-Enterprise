@@ -31,12 +31,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
              // Basic context validation
             if (context == null)
             {
-                // Cannot use context.Logger if context is null
-                Log.ForContext<AddMissingRequiredFieldValuesStep>().Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Add missing required field values to extracted data", 0, "AddMissingRequiredFieldValuesStep executed with null context.");
-                Log.ForContext<AddMissingRequiredFieldValuesStep>().Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(AddMissingRequiredFieldValuesStep), "Context validation", 0, "AddMissingRequiredFieldValuesStep executed with null context.");
-                return Task.FromResult(false);
+                // Cannot use context.Logger if context is null - throw exception instead
+                throw new ArgumentNullException(nameof(context), "AddMissingRequiredFieldValuesStep executed with null context.");
             }
              if ( !context.MatchedTemplates.Any())
             {

@@ -20,9 +20,14 @@ namespace AutoBotUtilities
 
     public class ImportUtils
     {
-        private static readonly ILogger _log = Log.ForContext<ImportUtils>();
+        private readonly ILogger _logger;
+        
+        public ImportUtils(ILogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
-        public static async Task ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public async Task ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             string operationName = nameof(ExecuteEmailMappingActions);
             string operationInvocationId = Guid.NewGuid().ToString();
@@ -35,16 +40,16 @@ namespace AutoBotUtilities
             using (LogContext.PushProperty("EmailMappingId", emailMapping?.Id))
             {
                 var stopwatch = Stopwatch.StartNew();
-                _log.Information("ACTION_START: {ActionName}. EmailMappingId: {EmailMappingId}, FileTypeId: {FileTypeId}, FileCount: {FileCount}", 
+                _logger.Information("ACTION_START: {ActionName}. EmailMappingId: {EmailMappingId}, FileTypeId: {FileTypeId}, FileCount: {FileCount}", 
                     operationName, emailMapping?.Id, fileType?.Id, files?.Length ?? 0);
 
                 try
                 {
                     if (emailMapping == null)
                     {
-                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): EmailMapping is null. Cannot execute actions.", operationName, "ParameterValidation");
+                        _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): EmailMapping is null. Cannot execute actions.", operationName, "ParameterValidation");
                         stopwatch.Stop();
-                        _log.Information("ACTION_END_SUCCESS: {ActionName} (Validation Failed: No EmailMapping). Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                        _logger.Information("ACTION_END_SUCCESS: {ActionName} (Validation Failed: No EmailMapping). Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                         return;
                     }
 
@@ -55,7 +60,7 @@ namespace AutoBotUtilities
                     if (missingActions.Any())
                     {
                         string missingActionsStr = string.Join(", ", missingActions.Select(x => x.Actions.Name));
-                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
+                        _logger.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
                         throw new ApplicationException($"The following actions were missing: {missingActionsStr}");
                     }
 
@@ -65,7 +70,7 @@ namespace AutoBotUtilities
                         .Select(x => (Name: x.Actions.Name, Delegate: FileUtils.FileActions[x.Actions.Name]))
                         .ToList();
                     
-                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} email mapping actions to execute.", operationName, "ActionEnumeration", actionsToPerform.Count);
+                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} email mapping actions to execute.", operationName, "ActionEnumeration", actionsToPerform.Count);
 
                     foreach (var actionInfo in actionsToPerform)
                     {
@@ -74,24 +79,24 @@ namespace AutoBotUtilities
                     }
                     
                     stopwatch.Stop();
-                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                    _logger.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception e)
                 {
                     stopwatch.Stop();
-                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                    _logger.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
                         operationName, stopwatch.ElapsedMilliseconds, e.Message);
                     try
                     {
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to forward error email. EmailId: {EmailIdForForward}", operationName, "ErrorForwarding", fileType?.EmailId);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to forward error email. EmailId: {EmailIdForForward}", operationName, "ErrorForwarding", fileType?.EmailId);
                         await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
-                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
-                            Array.Empty<string>(), _log).ConfigureAwait(false);
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully forwarded error email.", operationName, "ErrorForwarding");
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _logger),
+                            Array.Empty<string>(), _logger).ConfigureAwait(false);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully forwarded error email.", operationName, "ErrorForwarding");
                     }
                     catch (Exception forwardEx)
                     {
-                        _log.Error(forwardEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to forward error email.", operationName, "ErrorForwarding");
+                        _logger.Error(forwardEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to forward error email.", operationName, "ErrorForwarding");
                     }
                     // Rethrowing to allow higher-level handlers if necessary, or it could be handled here.
                     // For now, let's assume the error email is sufficient notification from this level.
@@ -99,7 +104,7 @@ namespace AutoBotUtilities
             }
         }
 
-        public static async Task ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Func<ILogger, FileTypes, FileInfo[], Task> Delegate) actionInfo)
+        public async Task ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Func<ILogger, FileTypes, FileInfo[], Task> Delegate) actionInfo)
         {
             string operationName = nameof(ExecuteActions);
             // This InvocationId is for this specific action execution.
@@ -116,7 +121,7 @@ namespace AutoBotUtilities
                     DocSetReference = fileType?.DocSetRefernece
                 };
 
-                _log.Information("ACTION_START: {ActionName_Context}. Context: {ActionContextProperties}, FileCount: {FileCount}", 
+                _logger.Information("ACTION_START: {ActionName_Context}. Context: {ActionContextProperties}, FileCount: {FileCount}", 
                     actionInfo.Name, contextProperties, files?.Length ?? 0);
                 var stopwatch = Stopwatch.StartNew();
                 
@@ -126,7 +131,7 @@ namespace AutoBotUtilities
                 {
                     if (fileType != null && fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                     {
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Starting ProcessNextStep sequence for Action {ActionName_Context}. Initial steps: {ProcessNextStepList}",
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Starting ProcessNextStep sequence for Action {ActionName_Context}. Initial steps: {ProcessNextStepList}",
                             operationName, "ProcessNextStepStart", actionInfo.Name, string.Join(",", fileType.ProcessNextStep));
                         bool hitContinueInLoop = false;
 
@@ -137,12 +142,12 @@ namespace AutoBotUtilities
                             {
                                 if (!FileUtils.FileActions.TryGetValue(nextActionName, out var nextActionAsyncFunc))
                                 {
-                                    _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Action '{NextActionName_Context}' not found in FileUtils.FileActions. Skipping. For main action {ActionName_Context}",
+                                    _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Action '{NextActionName_Context}' not found in FileUtils.FileActions. Skipping. For main action {ActionName_Context}",
                                         operationName, "ProcessNextStepActionNotFound", nextActionName, actionInfo.Name);
                                 }
                                 else
                                 {
-                                    _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing ProcessNextStep action '{NextActionName_Context}' for main action {ActionName_Context}",
+                                    _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Executing ProcessNextStep action '{NextActionName_Context}' for main action {ActionName_Context}",
                                         operationName, "ProcessNextStepActionExecute", nextActionName, actionInfo.Name);
                                     var nextStopwatch = Stopwatch.StartNew();
                                     try
@@ -151,23 +156,23 @@ namespace AutoBotUtilities
                                         {
                                             hitContinueInLoop = true;
                                             nextStopwatch.Stop();
-                                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): 'Continue' action encountered in ProcessNextStep for main action {ActionName_Context}. Proceeding to main action. Duration: {DurationMs}ms",
+                                            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): 'Continue' action encountered in ProcessNextStep for main action {ActionName_Context}. Proceeding to main action. Duration: {DurationMs}ms",
                                                 operationName, "ProcessNextStepContinue", actionInfo.Name, nextStopwatch.ElapsedMilliseconds);
                                             fileType.ProcessNextStep.RemoveAt(0); // Remove "Continue"
                                             break; 
                                         }
 
-                                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (ProcessNextStep for {ActionName_Context})", 
+                                        _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (ProcessNextStep for {ActionName_Context})", 
                                             nextActionName, "ASYNC_EXPECTED", actionInfo.Name);
-                                        await nextActionAsyncFunc.Invoke(_log, fileType, files).ConfigureAwait(false);
+                                        await nextActionAsyncFunc.Invoke(_logger, fileType, files).ConfigureAwait(false);
                                         nextStopwatch.Stop();
-                                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (ProcessNextStep for {ActionName_Context})",
+                                        _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (ProcessNextStep for {ActionName_Context})",
                                             nextActionName, nextStopwatch.ElapsedMilliseconds, "Async call completed (await).", actionInfo.Name);
                                     }
                                     catch (Exception nextEx)
                                     {
                                         nextStopwatch.Stop();
-                                        _log.Error(nextEx, "OPERATION_END_FAILURE: {OperationDescription} (ProcessNextStep for {ActionName_Context}). Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                                        _logger.Error(nextEx, "OPERATION_END_FAILURE: {OperationDescription} (ProcessNextStep for {ActionName_Context}). Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                                             nextActionName, actionInfo.Name, nextStopwatch.ElapsedMilliseconds, nextEx.Message);
                                         isContinueProcessingMainAction = false;
                                         if (fileType.ProcessNextStep.Any() && fileType.ProcessNextStep.First() == nextActionName)
@@ -184,7 +189,7 @@ namespace AutoBotUtilities
                                 } 
                                 else if (nextActionName != "Continue" && fileType.ProcessNextStep.Any()) 
                                 { // If it was skipped and not 'Continue', remove the head
-                                     _log.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Removing '{NextActionName_Context}' from ProcessNextStep queue after processing/skipping.", operationName, "ProcessNextStepRemove", nextActionName);
+                                     _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Removing '{NextActionName_Context}' from ProcessNextStep queue after processing/skipping.", operationName, "ProcessNextStepRemove", nextActionName);
                                      fileType.ProcessNextStep.RemoveAt(0);
                                 }
                             }
@@ -193,55 +198,55 @@ namespace AutoBotUtilities
                         if (!hitContinueInLoop && isContinueProcessingMainAction) // isContinueProcessingMainAction could be false due to an error
                         {
                             isContinueProcessingMainAction = false;
-                            _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): ProcessNextStep sequence completed without 'Continue' for main action {ActionName_Context}. Main action will NOT run.",
+                            _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): ProcessNextStep sequence completed without 'Continue' for main action {ActionName_Context}. Main action will NOT run.",
                                 operationName, "ProcessNextStepNoContinue", actionInfo.Name);
                         }
                     }
                     
                     if (isContinueProcessingMainAction)
                     {
-                        _log.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (Main Action)", 
+                        _logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation}) (Main Action)", 
                             actionInfo.Name, "ASYNC_EXPECTED");
                         var mainActionInvokeStopwatch = Stopwatch.StartNew(); // Stopwatch for the main action invoke itself
-                        await actionInfo.Delegate.Invoke(_log, fileType, files).ConfigureAwait(false);
+                        await actionInfo.Delegate.Invoke(_logger, fileType, files).ConfigureAwait(false);
                         mainActionInvokeStopwatch.Stop();
-                        _log.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (Main Action)",
+                        _logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) (Main Action)",
                             actionInfo.Name, mainActionInvokeStopwatch.ElapsedMilliseconds, "Async call completed (await).");
                         
                         stopwatch.Stop(); // This is the overall stopwatch for ExecuteActions
-                        _log.Information("ACTION_END_SUCCESS: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
+                        _logger.Information("ACTION_END_SUCCESS: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
                             actionInfo.Name, stopwatch.ElapsedMilliseconds, contextProperties);
                     }
                     else
                     {
                         stopwatch.Stop();
-                        _log.Warning("ACTION_SKIPPED: {ActionName_Context} (Due to ProcessNextStep logic). Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
+                        _logger.Warning("ACTION_SKIPPED: {ActionName_Context} (Due to ProcessNextStep logic). Duration: {TotalObservedDurationMs}ms. Context: {ActionContextProperties}", 
                             actionInfo.Name, stopwatch.ElapsedMilliseconds, contextProperties);
                     }
                 }
                 catch (Exception e)
                 {
                     if(stopwatch.IsRunning) stopwatch.Stop();
-                    _log.Error(e, "ACTION_END_FAILURE: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}. Context: {ActionContextProperties}", 
+                    _logger.Error(e, "ACTION_END_FAILURE: {ActionName_Context}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}. Context: {ActionContextProperties}", 
                         actionInfo.Name, stopwatch.ElapsedMilliseconds, e.Message, contextProperties);
                     try
                     {
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to send error email for failed action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Attempting to send error email for failed action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in Action: {actionInfo.Name}",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
-                            Array.Empty<string>(), _log).ConfigureAwait(false);
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully sent error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_logger), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _logger).ConfigureAwait(false);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Successfully sent error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
                     }
                     catch (Exception emailEx)
                     {
-                         _log.Error(emailEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to send error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
+                         _logger.Error(emailEx, "INTERNAL_STEP ({OperationName} - {Stage}): Failed to send error email for action {ActionName_Context}.", operationName, "ErrorEmailing", actionInfo.Name);
                     }
                     throw; // Rethrow to allow higher-level handlers
                 }
             }
         }
 
-        public static async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public async Task ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             string operationName = nameof(ExecuteDataSpecificFileActions);
             string operationInvocationId = Guid.NewGuid().ToString();
@@ -249,7 +254,7 @@ namespace AutoBotUtilities
             using (LogContext.PushProperty("FileTypeId", fileType?.Id))
             {
                 var stopwatch = Stopwatch.StartNew();
-                _log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
+                _logger.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
                     operationName, fileType?.Id, files?.Length ?? 0, appSetting?.ApplicationSettingsId);
                 try
                 {
@@ -260,7 +265,7 @@ namespace AutoBotUtilities
                     if (missingActions.Any())
                     {
                         string missingActionsStr = string.Join(", ", missingActions.Select(x => x.Actions.Name));
-                        _log.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following data-specific actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
+                        _logger.Error("INTERNAL_STEP ({OperationName} - {Stage}): The following data-specific actions were missing: {MissingActionsList}", operationName, "Validation", missingActionsStr);
                         throw new ApplicationException($"The following data-specific actions were missing: {missingActionsStr}");
                     }
 
@@ -281,9 +286,9 @@ namespace AutoBotUtilities
                             .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name]))
                             .ToList();
                         
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} data-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} data-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
                         if (!actionsToExecute.Any() && orderedFileActions.Any()) {
-                            _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
+                            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
                                 operationName, "ActionMismatchWarning", orderedFileActions.Count, actionsToExecute.Count);
                         }
 
@@ -294,25 +299,25 @@ namespace AutoBotUtilities
                         }
                     }
                     stopwatch.Stop();
-                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                    _logger.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception e)
                 {
                     stopwatch.Stop();
-                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                    _logger.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
                         operationName, stopwatch.ElapsedMilliseconds, e.Message);
                     try
                     {
                         await EmailDownloader.EmailDownloader.ForwardMsgAsync(fileType?.EmailId, BaseDataModel.GetClient(), $"Bug Found in {operationName}",
-                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _log),
-                            Array.Empty<string>(), _log).ConfigureAwait(false);
-                    } catch (Exception fex) { _log.Error(fex, "Failed to forward error email during {ActionName} exception handling.", operationName); }
+                            $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer", _logger),
+                            Array.Empty<string>(), _logger).ConfigureAwait(false);
+                    } catch (Exception fex) { _logger.Error(fex, "Failed to forward error email during {ActionName} exception handling.", operationName); }
                     // throw; // Consider re-throwing
                 }
             }
         }
 
-        public static async Task ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        public async Task ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             string operationName = nameof(ExecuteNonSpecificFileActions);
             string operationInvocationId = Guid.NewGuid().ToString();
@@ -320,7 +325,7 @@ namespace AutoBotUtilities
             using (LogContext.PushProperty("FileTypeId", fileType?.Id))
             {
                 var stopwatch = Stopwatch.StartNew();
-                _log.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
+                _logger.Information("ACTION_START: {ActionName}. FileTypeId: {FileTypeId}, FileCount: {FileCount}, AppSettingId: {AppSettingId}", 
                     operationName, fileType?.Id, files?.Length ?? 0, appSetting?.ApplicationSettingsId);
                 try
                 {
@@ -329,7 +334,7 @@ namespace AutoBotUtilities
                        .ToList();
                     if (missingActionsCheck.Any())
                     {
-                        _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Non-specific actions missing implementation: {MissingActionsList}", 
+                        _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Non-specific actions missing implementation: {MissingActionsList}", 
                             operationName, "ValidationWarning", string.Join(", ", missingActionsCheck.Select(x => x.Actions.Name)));
                     }
 
@@ -350,9 +355,9 @@ namespace AutoBotUtilities
                            .Select(fta => (Name: fta.Actions.Name, Action: FileUtils.FileActions[fta.Actions.Name]))
                            .ToList();
                         
-                        _log.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} non-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
+                        _logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): Found {ActionCount} non-specific file actions to execute.", operationName, "ActionEnumeration", actionsToExecute.Count);
                          if (!actionsToExecute.Any() && orderedFileActions.Any()) {
-                            _log.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
+                            _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): Found {OrderedCount} FileTypeActions from DB, but {ExecutableCount} are executable (exist in FileUtils.FileActions). Check action name matching.", 
                                 operationName, "ActionMismatchWarning", orderedFileActions.Count, actionsToExecute.Count);
                         }
 
@@ -362,19 +367,19 @@ namespace AutoBotUtilities
                         }
                     }
                     stopwatch.Stop();
-                    _log.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
+                    _logger.Information("ACTION_END_SUCCESS: {ActionName}. Duration: {TotalObservedDurationMs}ms", operationName, stopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception e)
                 {
                     stopwatch.Stop();
-                    _log.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
+                    _logger.Error(e, "ACTION_END_FAILURE: {ActionName}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}", 
                         operationName, stopwatch.ElapsedMilliseconds, e.Message);
                     try
                     {
                         await EmailDownloader.EmailDownloader.SendEmailAsync(BaseDataModel.GetClient(), null, $"Bug Found in {operationName}",
-                            EmailDownloader.EmailDownloader.GetContacts("Developer",_log), $"{e.Message}\r\n{e.StackTrace}",
-                            Array.Empty<string>(), _log).ConfigureAwait(false);
-                    } catch (Exception fex) { _log.Error(fex, "Failed to send error email during {ActionName} exception handling.", operationName); }
+                            EmailDownloader.EmailDownloader.GetContacts("Developer",_logger), $"{e.Message}\r\n{e.StackTrace}",
+                            Array.Empty<string>(), _logger).ConfigureAwait(false);
+                    } catch (Exception fex) { _logger.Error(fex, "Failed to send error email during {ActionName} exception handling.", operationName); }
                     // throw; // Consider re-throwing
                 }
             }
@@ -388,9 +393,9 @@ namespace AutoBotUtilities
             string operationName = nameof(SavePDF);
             string operationInvocationId = Guid.NewGuid().ToString();
             // If called from a static context, `this` isn't available for Log.ForContext(this.GetType())
-            // Using _log (static logger for the class) or Log.ForContext<ImportUtils>() is fine.
+            // Using _logger (static logger for the class) or Log.ForContext<ImportUtils>() is fine.
             // For instance methods, Log.ForContext(GetType()) is also an option.
-            ILogger instanceLog = _log.ForContext("DroppedFilePath", droppedFilePath)
+            ILogger instanceLog = _logger.ForContext("DroppedFilePath", droppedFilePath)
                                      .ForContext("FileTypeHint", fileTypeHint)
                                      .ForContext("DocSetId", docSetId)
                                      .ForContext("Overwrite", overwrite);
@@ -417,7 +422,7 @@ namespace AutoBotUtilities
                         var importPdfStopwatch = Stopwatch.StartNew();
                         
                         // Assuming InvoiceReader.InvoiceReader.ImportPDF is the correct static call path
-                        await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(droppedFilePath) }, dfileType, _log).ConfigureAwait(false);
+                        await InvoiceReader.InvoiceReader.ImportPDF(new[] { new FileInfo(droppedFilePath) }, dfileType, _logger).ConfigureAwait(false);
                         
                         importPdfStopwatch.Stop();
                         instanceLog.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}) for FileType {MatchedFileTypeId}",

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WaterNut.DataSpace
 {
@@ -41,7 +42,8 @@ namespace WaterNut.DataSpace
         {
             Console.WriteLine("\n1. Testing service instantiation...");
             
-            var service = new OCRCorrectionService();
+            var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            var service = new OCRCorrectionService(logger);
             if (service == null)
                 throw new Exception("Failed to create OCRCorrectionService instance");
                 
@@ -52,7 +54,8 @@ namespace WaterNut.DataSpace
         {
             Console.WriteLine("\n2. Testing JSON parsing methods...");
             
-            var service = new OCRCorrectionService();
+            var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            var service = new OCRCorrectionService(logger);
             
             // Test line info parsing with valid JSON
             var lineInfoJson = @"{""lineNumber"": 5, ""lineText"": ""Total: $123.45""}";
@@ -81,7 +84,8 @@ namespace WaterNut.DataSpace
         {
             Console.WriteLine("\n3. Testing error handling...");
             
-            var service = new OCRCorrectionService();
+            var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            var service = new OCRCorrectionService(logger);
             
             // Test with empty error list
             var emptyErrors = new List<(string Field, string Error, string Value)>();
@@ -163,7 +167,8 @@ namespace WaterNut.DataSpace
             
             try
             {
-                var service = new OCRCorrectionService();
+                var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            var service = new OCRCorrectionService(logger);
                 
                 // Test with sample data (will fail gracefully without database)
                 var sampleErrors = new List<(string Field, string Error, string Value)>
