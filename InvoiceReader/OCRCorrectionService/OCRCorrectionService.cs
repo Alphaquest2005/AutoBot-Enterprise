@@ -58,31 +58,43 @@ namespace WaterNut.DataSpace
 
         public async Task<bool> CorrectInvoiceAsync(ShipmentInvoice invoice, string fileText)
         {
-            if (invoice == null || string.IsNullOrEmpty(fileText)) return false;
+            _logger.Error("🚀 **ORCHESTRATION_START**: Starting CorrectInvoiceAsync for Invoice '{InvoiceNo}'", invoice?.InvoiceNo ?? "NULL");
+            if (invoice == null || string.IsNullOrEmpty(fileText))
+            {
+                _logger.Error("   - ❌ **VALIDATION_FAIL**: Invoice or fileText is null/empty. Aborting.");
+                return false;
+            }
 
             try
             {
+                _logger.Error("   - **STEP 1: METADATA_EXTRACTION**: Extracting OCR metadata from the current invoice state.");
                 var metadata = this.ExtractFullOCRMetadata(invoice, fileText);
-                var allDetectedErrors =
-                    await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
+
+                _logger.Error("   - **STEP 2: ERROR_DETECTION**: Detecting errors and omissions.");
+                var allDetectedErrors = await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
+
                 if (!allDetectedErrors.Any())
                 {
+                    _logger.Error("   - ✅ **NO_ERRORS_FOUND**: No errors detected. Checking final balance.");
                     return OCRCorrectionService.TotalsZero(invoice, _logger);
                 }
+                _logger.Error("   - Found {Count} unique, actionable errors.", allDetectedErrors.Count);
 
-                var appliedCorrections =
-                    await this.ApplyCorrectionsAsync(invoice, allDetectedErrors, fileText, metadata)
+                _logger.Error("   - **STEP 3: APPLY_CORRECTIONS**: Applying corrections to in-memory invoice object.");
+                var appliedCorrections = await this.ApplyCorrectionsAsync(invoice, allDetectedErrors, fileText, metadata)
                         .ConfigureAwait(false);
                 var successfulValueApplications = appliedCorrections.Count(c => c.Success);
+                _logger.Error("   - Successfully applied {Count} corrections.", successfulValueApplications);
 
-                var customsCorrections = this.ApplyCaribbeanCustomsRules(
-                    invoice,
-                    appliedCorrections.Where(c => c.Success).ToList());
+                _logger.Error("   - **STEP 4: CUSTOMS_RULES**: Applying Caribbean-specific business rules.");
+                var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, appliedCorrections.Where(c => c.Success).ToList());
                 if (customsCorrections.Any())
                 {
                     this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
+                    _logger.Error("   - Applied {Count} Caribbean customs corrections.", customsCorrections.Count);
                 }
 
+                _logger.Error("   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
                 var successfulDetectionsForDB = allDetectedErrors.Select(
                     e => new CorrectionResult
                     {
@@ -94,21 +106,31 @@ namespace WaterNut.DataSpace
                         Reasoning = e.Reasoning,
                         LineText = e.LineText,
                         LineNumber = e.LineNumber,
-                        Success = true
+                        Success = true,
+                        // Pass through context for learning
+                        ContextLinesBefore = e.ContextLinesBefore,
+                        ContextLinesAfter = e.ContextLinesAfter,
+                        RequiresMultilineRegex = e.RequiresMultilineRegex,
+                        SuggestedRegex = e.SuggestedRegex
                     }).ToList();
 
                 if (successfulDetectionsForDB.Any())
                 {
+                    _logger.Error("   - **STEP 6: REGEX_UPDATE_REQUEST**: Creating {Count} requests for regex pattern updates in the database.", successfulDetectionsForDB.Count);
                     var regexUpdateRequests = successfulDetectionsForDB
                         .Select(c => this.CreateRegexUpdateRequest(c, fileText, metadata, invoice.Id)).ToList();
                     await this.UpdateRegexPatternsAsync(regexUpdateRequests).ConfigureAwait(false);
                 }
 
-                return successfulValueApplications > 0 || OCRCorrectionService.TotalsZero(invoice, _logger);
+                bool isBalanced = OCRCorrectionService.TotalsZero(invoice, _logger);
+                _logger.Error("🏁 **ORCHESTRATION_COMPLETE**: Finished for Invoice '{InvoiceNo}'. Final balance state: {IsBalanced}. Corrections applied: {CorrectionsApplied}",
+                    invoice.InvoiceNo, isBalanced, successfulValueApplications > 0);
+
+                return successfulValueApplications > 0 || isBalanced;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error during CorrectInvoiceAsync for {InvoiceNo}", invoice?.InvoiceNo);
+                _logger.Error(ex, "🚨 **ORCHESTRATION_EXCEPTION**: Error during CorrectInvoiceAsync for {InvoiceNo}", invoice?.InvoiceNo);
                 return false;
             }
         }
@@ -117,9 +139,7 @@ namespace WaterNut.DataSpace
 
         #region Internal and Public Helpers
 
-        private Dictionary<string, OCRFieldMetadata> ExtractFullOCRMetadata(
-            ShipmentInvoice shipmentInvoice,
-            string fileText)
+        private Dictionary<string, OCRFieldMetadata> ExtractFullOCRMetadata(ShipmentInvoice shipmentInvoice, string fileText)
         {
             var metadataDict = new Dictionary<string, OCRFieldMetadata>();
             if (shipmentInvoice == null) return metadataDict;
@@ -131,8 +151,7 @@ namespace WaterNut.DataSpace
                 if (mappedInfo == null) return;
 
                 int lineNumberInText = this.FindLineNumberInTextByFieldName(mappedInfo.DisplayName, fileText);
-                string lineTextFromDoc =
-                    lineNumberInText > 0 ? this.GetOriginalLineText(fileText, lineNumberInText) : null;
+                string lineTextFromDoc = lineNumberInText > 0 ? this.GetOriginalLineText(fileText, lineNumberInText) : null;
 
                 metadataDict[mappedInfo.DatabaseFieldName] = new OCRFieldMetadata
                 {
