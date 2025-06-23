@@ -86,15 +86,20 @@ namespace WaterNut.DataSpace
                 var successfulValueApplications = appliedCorrections.Count(c => c.Success);
                 _logger.Error("   - Successfully applied {Count} corrections.", successfulValueApplications);
 
-                _logger.Error("   - **STEP 4: CUSTOMS_RULES**: Applying Caribbean-specific business rules.");
-                var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, appliedCorrections.Where(c => c.Success).ToList());
-                if (customsCorrections.Any())
-                {
-                    this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
-                    _logger.Error("   - Applied {Count} Caribbean customs corrections.", customsCorrections.Count);
-                }
+                // =================================== FIX START ===================================
+                // The AI prompt now handles Caribbean-specific value transformations directly.
+                // The C# post-processing step is now redundant and has been disabled to prevent conflicts.
+                _logger.Error("   - **STEP 4: CUSTOMS_RULES (DISABLED)**: Caribbean-specific rules are now handled by the AI prompt. Skipping C# post-processing.");
+                // var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, appliedCorrections.Where(c => c.Success).ToList());
+                // if (customsCorrections.Any())
+                // {
+                //     this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
+                //     _logger.Error("   - Applied {Count} Caribbean customs corrections.", customsCorrections.Count);
+                // }
+                // ==================================== FIX END ====================================
 
                 _logger.Error("   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
+                // Note: We pass ALL detected errors to the learning step, including the 'format_correction' type.
                 var successfulDetectionsForDB = allDetectedErrors.Select(
                     e => new CorrectionResult
                     {
