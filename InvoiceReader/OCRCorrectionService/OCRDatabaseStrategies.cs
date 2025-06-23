@@ -376,7 +376,9 @@ namespace WaterNut.DataSpace
                 await SaveChangesWithAssertiveLogging(context, "CreateNewLineForOmission").ConfigureAwait(false);
 
                 _logger.Information("Successfully created new Line (ID: {LineId}), Field (ID: {FieldId}), and Regex (ID: {RegexId}) for omission.", newLineEntity.Id, newFieldEntity.Id, newRegexEntity.Id);
-                return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line, field, and regex for omission");
+
+                // Return LineId as the primary RecordId and the crucial FieldId as the RelatedRecordId.
+                return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line, field, and regex for omission", newFieldEntity.Id);
             }
 
             private async Task<int?> DeterminePartIdForNewOmissionLineAsync(

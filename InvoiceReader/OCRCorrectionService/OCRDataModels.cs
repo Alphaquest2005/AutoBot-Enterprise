@@ -55,8 +55,19 @@ namespace WaterNut.DataSpace
         /// A regex pattern suggested by the detection phase that can be used for de-duplication and learning.
         /// </summary>
         public string SuggestedRegex { get; set; }
-    }
 
+        // =================================== FIX START ===================================
+        /// <summary>
+        /// For format corrections, this is the regex pattern to FIND the incorrect format.
+        /// </summary>
+        public string Pattern { get; set; }
+
+        /// <summary>
+        /// For format corrections, this is the string to REPLACE the found pattern with.
+        /// </summary>
+        public string Replacement { get; set; }
+        // ==================================== FIX END ====================================
+    }
     #endregion
 
     #region Database Interaction Models
@@ -66,17 +77,19 @@ namespace WaterNut.DataSpace
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
         public int? RecordId { get; set; }
+        public int? RelatedRecordId { get; set; } // ADD THIS LINE
         public string Operation { get; set; }
         public Exception Exception { get; set; }
 
-        public static DatabaseUpdateResult Success(int recordId, string operation) =>
+        public static DatabaseUpdateResult Success(int recordId, string operation, int? relatedRecordId = null) => // MODIFY THIS LINE
             new DatabaseUpdateResult
-            {
-                IsSuccess = true,
-                RecordId = recordId,
-                Operation = operation,
-                Message = $"Successfully {operation} (ID: {recordId})"
-            };
+                {
+                    IsSuccess = true,
+                    RecordId = recordId,
+                    Operation = operation,
+                    Message = $"Successfully {operation} (ID: {recordId})",
+                    RelatedRecordId = relatedRecordId // ADD THIS LINE
+                };
 
         public static DatabaseUpdateResult Failed(string message, Exception ex = null) =>
             new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
