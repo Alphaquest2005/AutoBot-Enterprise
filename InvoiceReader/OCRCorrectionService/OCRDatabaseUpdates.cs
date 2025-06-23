@@ -53,6 +53,10 @@ namespace WaterNut.DataSpace
                 DatabaseUpdateResult dbUpdateResult = null;
                 try
                 {
+                    // =================================== LOGGING ENHANCEMENT ===================================
+                    _logger.Information("  - Processing request for Field: '{FieldName}', Type: '{CorrectionType}'", request.FieldName, request.CorrectionType);
+                    // =================================== END ENHANCEMENT =====================================
+
                     var validationResult = this.ValidateUpdateRequest(request);
                     if (!validationResult.IsValid)
                     {
@@ -78,6 +82,21 @@ namespace WaterNut.DataSpace
                 }
                 finally
                 {
+                    // =================================== LOGGING ENHANCEMENT ===================================
+                    // Added detailed logging of the strategy's outcome.
+                    if (dbUpdateResult != null)
+                    {
+                        var outcome = dbUpdateResult.IsSuccess ? "SUCCESS" : "FAILURE";
+                        var level = dbUpdateResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
+                        _logger.Write(level, "  - 🏁 **STRATEGY_OUTCOME**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
+                            outcome, request.FieldName, dbUpdateResult.Message);
+                    }
+                    else
+                    {
+                        _logger.Error("  - 🏁 **STRATEGY_OUTCOME**: [UNKNOWN_FAILURE] for Field '{FieldName}'. The dbUpdateResult was unexpectedly null.", request.FieldName);
+                    }
+                    // ==================================== END ENHANCEMENT ====================================
+
                     try
                     {
                         await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
@@ -166,10 +185,6 @@ namespace WaterNut.DataSpace
                     Success = dbUpdateResult.IsSuccess,
                     ErrorMessage = dbUpdateResult.IsSuccess ? null : TruncateForLog(dbUpdateResult.Message, 2000),
                     CreatedBy = "OCRCorrectionService",
-                    // ======================================================================================
-                    //                          *** DEFINITIVE FIX IS HERE ***
-                    //        The CreatedOn property is now set to the current system time.
-                    // ======================================================================================
                     CreatedDate = DateTime.Now,
                     RequiresMultilineRegex = request.RequiresMultilineRegex,
                     ContextLinesBefore = request.ContextLinesBefore != null ? string.Join("\n", request.ContextLinesBefore) : null,
