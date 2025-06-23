@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace
 
         public async Task UpdateRegexPatternsAsync(IEnumerable<RegexUpdateRequest> regexUpdateRequests)
         {
-            // --- MANDATE LOG: Serialize the entire input collection to this method ---
+            // --- MANDATE LOG remains the same ---
             if (regexUpdateRequests != null)
             {
                 try
@@ -47,16 +47,20 @@ namespace WaterNut.DataSpace
             _logger?.Information("Starting database pattern updates for {RequestCount} requests.", regexUpdateRequests.Count());
             _strategyFactory ??= new DatabaseUpdateStrategyFactory(_logger);
 
+            var requestsToProcess = regexUpdateRequests.ToList();
+            var processedIndexes = new HashSet<int>();
+
             using var context = new OCRContext();
-            foreach (var request in regexUpdateRequests)
+            for (int i = 0; i < requestsToProcess.Count; i++)
             {
+                if (processedIndexes.Contains(i)) continue;
+
+                var request = requestsToProcess[i];
                 DatabaseUpdateResult dbUpdateResult = null;
+
                 try
                 {
-                    // =================================== LOGGING ENHANCEMENT ===================================
                     _logger.Information("  - Processing request for Field: '{FieldName}', Type: '{CorrectionType}'", request.FieldName, request.CorrectionType);
-                    // =================================== END ENHANCEMENT =====================================
-
                     var validationResult = this.ValidateUpdateRequest(request);
                     if (!validationResult.IsValid)
                     {
@@ -68,6 +72,44 @@ namespace WaterNut.DataSpace
                         if (strategy != null)
                         {
                             dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+
+                            // =================================== FIX START ===================================
+                            // If this was a successful omission, check for a NEW, UNCONTEXTUALIZED, and paired format_correction.
+                            if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RecordId.HasValue)
+                            {
+                                int newFieldId = dbUpdateResult.RecordId.Value;
+
+                                // Find a format_correction request that is explicitly for this omission.
+                                // It must NOT have a LineId already, indicating it's new and needs context.
+                                var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
+                                    r.CorrectionType == "format_correction" &&
+                                    r.FieldName == request.FieldName &&
+                                    r.LineNumber == request.LineNumber &&
+                                    !r.LineId.HasValue); // CRITICAL: Only pair if it doesn't have an ID.
+
+                                if (formatCorrectionRequestIndex != -1)
+                                {
+                                    var formatRequest = requestsToProcess[formatCorrectionRequestIndex];
+                                    processedIndexes.Add(formatCorrectionRequestIndex); // Mark as processed to prevent double-execution.
+
+                                    _logger.Information("  - Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately.", formatRequest.FieldName, newFieldId);
+
+                                    formatRequest.LineId = newFieldId; // LineId is used for Fields.Id by the strategy
+
+                                    var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
+                                    var formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
+
+                                    // Log the outcome of the paired strategy call.
+                                    var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
+                                    var formatLogLevel = formatResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
+                                    _logger.Write(formatLogLevel, "  - 🏁 **STRATEGY_OUTCOME (Paired)**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
+                                        formatOutcome, formatRequest.FieldName, formatResult.Message);
+
+                                    // Log the learning record for the format correction manually since we're inside the main loop's finally block.
+                                    await this.LogCorrectionLearningAsync(context, formatRequest, formatResult).ConfigureAwait(false);
+                                }
+                            }
+                            // ==================================== FIX END ====================================
                         }
                         else
                         {
@@ -82,8 +124,6 @@ namespace WaterNut.DataSpace
                 }
                 finally
                 {
-                    // =================================== LOGGING ENHANCEMENT ===================================
-                    // Added detailed logging of the strategy's outcome.
                     if (dbUpdateResult != null)
                     {
                         var outcome = dbUpdateResult.IsSuccess ? "SUCCESS" : "FAILURE";
@@ -95,7 +135,6 @@ namespace WaterNut.DataSpace
                     {
                         _logger.Error("  - 🏁 **STRATEGY_OUTCOME**: [UNKNOWN_FAILURE] for Field '{FieldName}'. The dbUpdateResult was unexpectedly null.", request.FieldName);
                     }
-                    // ==================================== END ENHANCEMENT ====================================
 
                     try
                     {
