@@ -25,7 +25,7 @@ namespace WaterNut.DataSpace
 
             // Log entry with version marker
             _logger?.Debug("CleanTextForAnalysis | v2.1 | Start: {InitialText}", TruncateForLog(text, 200));
-            
+
             // **CRITICAL CHECK**: Track gift card content through cleaning process
             bool initialHasGiftCard = text.Contains("Gift Card") || text.Contains("-$6.99");
             _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_INITIAL**: Original text contains gift card? Expected=TRUE, Actual={HasGiftCard}", initialHasGiftCard);
@@ -33,7 +33,7 @@ namespace WaterNut.DataSpace
             {
                 var giftLines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
-                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_INITIAL**: Found {Count} gift card lines: {Lines}", 
+                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_INITIAL**: Found {Count} gift card lines: {Lines}",
                     giftLines.Count, string.Join(" | ", giftLines));
             }
             else
@@ -74,11 +74,11 @@ namespace WaterNut.DataSpace
             }
 
             _logger?.Debug("CleanTextForAnalysis | v2.1 | Final Result: {FinalText}", TruncateForLog(cleaned, 200));
-            
+
             // **FINAL CHECK**: Verify gift card content survived cleaning process
             bool finalHasGiftCard = cleaned.Contains("Gift Card") || cleaned.Contains("-$6.99");
             _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_FINAL**: Cleaned text contains gift card? Expected=TRUE, Actual={HasGiftCard}", finalHasGiftCard);
-            
+
             if (initialHasGiftCard && !finalHasGiftCard)
             {
                 _logger?.Error("❌ **TEXT_CLEANING_DATA_LOSS**: Gift card content was LOST during cleaning process - DeepSeek will not detect missing fields");
@@ -91,10 +91,10 @@ namespace WaterNut.DataSpace
             {
                 var finalGiftLines = cleaned.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
-                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_FINAL**: Final {Count} gift card lines: {Lines}", 
+                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_FINAL**: Final {Count} gift card lines: {Lines}",
                     finalGiftLines.Count, string.Join(" | ", finalGiftLines));
             }
-            
+
             return cleaned;
         }
 
@@ -189,16 +189,6 @@ namespace WaterNut.DataSpace
 
             return cleaned.Substring(startIndex, endIndex - startIndex + 1);
         }
-
-        ///// <summary>
-        ///// Truncates a string to a specified maximum length, adding an ellipsis if truncated.
-        ///// Useful for logging or displaying long strings.
-        ///// </summary>
-        //public static string TruncateForLog(string text, int maxLength = 200) // Reduced default for logs
-        //{
-        //    if (string.IsNullOrEmpty(text)) return string.Empty;
-        //    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
-        //}
 
         #endregion
 
@@ -460,11 +450,6 @@ namespace WaterNut.DataSpace
                 }
             }
 
-            // ======================================================================================
-            //                          *** DEFINITIVE FIX IS HERE ***
-            //            Restored the missing data type handlers for non-numeric types.
-            // ======================================================================================
-
             // --- Handle Date/Time Types ---
             if (dataType.Contains("date")) // Catches "date", "datetime", "english date"
             {
@@ -509,18 +494,16 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Retrieves the current value of a field from a ShipmentInvoice object using reflection.
-        /// Handles potential mismatches between fieldName casing and property casing.
         /// </summary>
         public object GetCurrentFieldValue(ShipmentInvoice invoice, string fieldNameFromError)
         {
             if (invoice == null || string.IsNullOrEmpty(fieldNameFromError)) return null;
 
-            var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError); // Use mapping
+            var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError);
             var targetPropertyName = fieldInfo?.DatabaseFieldName ?? fieldNameFromError;
 
             try
             {
-                // Standard properties on ShipmentInvoice
                 var propInfo = typeof(ShipmentInvoice).GetProperty(targetPropertyName,
                     System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
                 if (propInfo != null)
@@ -528,11 +511,10 @@ namespace WaterNut.DataSpace
                     return propInfo.GetValue(invoice);
                 }
 
-                // Handle InvoiceDetail fields (e.g., "InvoiceDetail_Line1_Quantity")
                 if (targetPropertyName.StartsWith("invoicedetail", StringComparison.OrdinalIgnoreCase) ||
                     (fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails"))
                 {
-                    var parts = fieldNameFromError.Split('_'); // Use original error field name for parsing line#
+                    var parts = fieldNameFromError.Split('_');
                     if (parts.Length >= 3 && parts[0].Equals("InvoiceDetail", StringComparison.OrdinalIgnoreCase))
                     {
                         if (int.TryParse(Regex.Match(parts[1], @"\d+").Value, out int lineNum))
@@ -540,7 +522,7 @@ namespace WaterNut.DataSpace
                             var detailItem = invoice.InvoiceDetails?.FirstOrDefault(d => d.LineNumber == lineNum);
                             if (detailItem != null)
                             {
-                                string detailFieldName = parts[2]; // This is the actual property on InvoiceDetails
+                                string detailFieldName = parts[2];
                                 var detailPropInfo = typeof(InvoiceDetails).GetProperty(detailFieldName,
                                     System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
                                 if (detailPropInfo != null)
@@ -563,7 +545,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Determines the invoice type (e.g., "Amazon", "Generic") based on file path heuristics.
         /// </summary>
-        internal string DetermineInvoiceType(string filePath) // Already in this file from previous merge.
+        internal string DetermineInvoiceType(string filePath)
         {
             if (string.IsNullOrEmpty(filePath)) return "Unknown";
             var fileName = Path.GetFileName(filePath).ToLowerInvariant();
@@ -575,15 +557,15 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Maps OCR template field names (from OCR.Business.Entities.Fields.Field) to canonical 
-        /// C# property names on ShipmentInvoice or InvoiceDetails. Used by legacy static methods.
+        /// Maps OCR template field names (from OCR.Business.Entities.Fields.Field) to canonical C# property names.
         /// </summary>
-        public static string MapTemplateFieldToPropertyName(string templateDbFieldName) // Static for legacy support
+        public static string MapTemplateFieldToPropertyName(string templateDbFieldName)
         {
-            // This provides a consistent mapping if template field names differ from C# property names.
-            return templateDbFieldName?.ToLowerInvariant() switch
+            if (string.IsNullOrWhiteSpace(templateDbFieldName)) return templateDbFieldName;
+
+            return templateDbFieldName.ToLowerInvariant() switch
             {
-                "invoicetotal" or "total" or "invoice_total" => "InvoiceTotal",
+                "invoicetotal" or "total" or "invoice_total" or "grandtotal" or "amountdue" => "InvoiceTotal",
                 "subtotal" or "sub_total" => "SubTotal",
                 "totalinternalfreight" or "freight" or "internal_freight" or "shipping" or "shippingandhandling" => "TotalInternalFreight",
                 "totalothercost" or "other_cost" or "othercost" or "tax" or "vat" or "othercharges" => "TotalOtherCost",
@@ -593,22 +575,19 @@ namespace WaterNut.DataSpace
                 "invoicedate" or "invoice_date" or "date" or "issuedate" => "InvoiceDate",
                 "currency" => "Currency",
                 "suppliername" or "supplier_name" or "supplier" or "vendor" or "soldby" or "from" => "SupplierName",
-                "supplieraddress" or "supplier_address" or "address" => "SupplierAddress", // 'Address' is ambiguous
-                // Line item fields (these are base names, often prefixed in practice)
+                "supplieraddress" or "supplier_address" or "address" => "SupplierAddress",
                 "itemdescription" or "description" or "productdescription" or "item" or "productname" => "ItemDescription",
                 "quantity" or "qty" => "Quantity",
                 "cost" or "price" or "unitprice" => "Cost",
-                "totalcost" or "linetotal" or "amount" => "TotalCost", // 'Amount' for line items
+                "totalcost" or "linetotal" or "amount" => "TotalCost",
                 "units" => "Units",
-                // "discount" (line item) is ambiguous with header "TotalDeduction" if not contextually differentiated
-                _ => templateDbFieldName // Fallback to the original name if no specific mapping
+                _ => templateDbFieldName
             };
         }
 
-        public static bool IsMetadataField(string fieldName) // Made static as it's a pure function
+        public static bool IsMetadataField(string fieldName)
         {
-            var metadataFields = new[] { "LineNumber", "FileLineNumber", "Section", "Instance" }; // Case sensitive based on typical usage
-            return metadataFields.Contains(fieldName);
+            return new[] { "LineNumber", "FileLineNumber", "Section", "Instance" }.Contains(fieldName);
         }
 
         #endregion

@@ -13,12 +13,11 @@ namespace WaterNut.DataSpace
 {
     public partial class OCRCorrectionService
     {
-        #region Enhanced Correction Application to In-Memory Objects (v4.4 - Logging Mandate Only)
+        #region Enhanced Correction Application to In-Memory Objects
 
         /// <summary>
         /// Applies all high-confidence corrections directly to the in-memory ShipmentInvoice object.
-        /// THIS VERSION CONTAINS LOGGING ENHANCEMENTS ONLY to meet the Assertive Self-Documenting Logging Mandate v4.4.
-        /// The underlying logic is preserved from the version that produced the logs.
+        /// This version contains the definitive fix for preventing double-counting aggregation errors.
         /// </summary>
         private async Task<List<CorrectionResult>> ApplyCorrectionsAsync(
             ShipmentInvoice invoice,
@@ -32,11 +31,38 @@ namespace WaterNut.DataSpace
             const double CONFIDENCE_THRESHOLD = 0.90;
             var errorsToApplyDirectly = errors.Where(e => e.Confidence >= CONFIDENCE_THRESHOLD).ToList();
 
-            _logger.Error("🚀 **APPLY_CORRECTIONS_START (v4.4)**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
+            _logger.Error("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
                 errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
-            _logger.Error("   - **ARCHITECTURAL_INTENT**: The system will iterate through each detected high-confidence error and apply it to the in-memory invoice object one by one. For numeric fields, this will involve aggregation (summing values).");
+            _logger.Error("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting.");
 
             LogFinancialState("Initial State (Before Corrections)", invoice);
+
+            // ================== DEFINITIVE FIX START ==================
+            // Identify all unique numeric fields that the AI is providing 'omission' corrections for.
+            var numericFieldsToReset = errorsToApplyDirectly
+                .Where(e => e.ErrorType == "omission")
+                .Select(e => this.MapDeepSeekFieldToDatabase(e.Field))
+                .Where(info => info != null && (info.DataType == "Number" || info.DataType.Contains("currency") || info.DataType.Contains("decimal") || info.DataType.Contains("double")))
+                .Select(info => info.DatabaseFieldName)
+                .Distinct()
+                .ToList();
+
+            // Reset these fields to 0 before applying corrections. This prevents adding AI-found omissions
+            // to a potentially flawed or already complete aggregate from the initial OCR read.
+            if (numericFieldsToReset.Any())
+            {
+                _logger.Error("   - **LOGIC_PATH**: Identified numeric fields with AI omissions: [{Fields}]. Resetting them to 0.0 to prevent double-counting.", string.Join(", ", numericFieldsToReset));
+                foreach (var fieldName in numericFieldsToReset)
+                {
+                    var prop = typeof(ShipmentInvoice).GetProperty(fieldName, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                    if (prop != null && prop.CanWrite && (prop.PropertyType == typeof(double?) || prop.PropertyType == typeof(double)))
+                    {
+                        prop.SetValue(invoice, 0.0d);
+                    }
+                }
+                LogFinancialState("State After Numeric Field Reset", invoice);
+            }
+            // =================== DEFINITIVE FIX END ===================
 
             foreach (var error in errorsToApplyDirectly)
             {
@@ -70,10 +96,10 @@ namespace WaterNut.DataSpace
                 NewValue = error.CorrectValue,
                 LineText = error.LineText,
                 LineNumber = error.LineNumber,
-                 ContextLinesBefore = error.ContextLinesBefore,
-                           ContextLinesAfter = error.ContextLinesAfter,
-                              RequiresMultilineRegex = error.RequiresMultilineRegex,
-                               Reasoning = error.Reasoning
+                ContextLinesBefore = error.ContextLinesBefore,
+                ContextLinesAfter = error.ContextLinesAfter,
+                RequiresMultilineRegex = error.RequiresMultilineRegex,
+                Reasoning = error.Reasoning
             };
             _logger.Error("   - ➡️ **APPLYING_SINGLE_CORRECTION**: Field='{Field}', CorrectValue='{NewValue}', Type='{Type}', Line={LineNum}, Text='{LineText}'",
                 error.Field, error.CorrectValue, error.ErrorType, error.LineNumber, TruncateForLog(error.LineText, 70));

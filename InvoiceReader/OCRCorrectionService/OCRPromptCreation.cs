@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EntryDataDS.Business.Entities; // For ShipmentInvoice
@@ -14,77 +15,94 @@ namespace WaterNut.DataSpace
     {
         #region Enhanced Prompt Creation Methods for DeepSeek
 
-        // File: OCRCorrectionService/OCRPromptCreation.cs
-
-        // File: OCRCorrectionService/OCRPromptCreation.cs
-
         /// <summary>
-        /// ENHANCED v4: Creates a prompt that demands granular error reporting AND a suggested C# compliant
-        /// regex for every omission, which is critical for deduplication and learning.
+        /// FINAL, FULL CONTEXT (V10): Creates a prompt that generates both omission AND format corrections
+        /// to ensure values are transformed correctly on subsequent imports.
         /// </summary>
-        private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText)
+        private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
-            _logger.Information("🔍 **PROMPT_CREATION_START**: Creating ENHANCED (v4 - With Regex Suggestion) header error detection prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Error("🚀 **PROMPT_CREATION_START (V10 - Format Correction)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
+            // Build the simple JSON block of extracted values
             var currentValues = new Dictionary<string, object>
             {
                 ["InvoiceNo"] = invoice?.InvoiceNo,
-                ["InvoiceTotal"] = invoice?.InvoiceTotal,
+                ["InvoiceDate"] = invoice?.InvoiceDate,
+                ["SupplierName"] = invoice?.SupplierName,
+                ["Currency"] = invoice?.Currency,
                 ["SubTotal"] = invoice?.SubTotal,
                 ["TotalInternalFreight"] = invoice?.TotalInternalFreight,
                 ["TotalOtherCost"] = invoice?.TotalOtherCost,
                 ["TotalDeduction"] = invoice?.TotalDeduction,
                 ["TotalInsurance"] = invoice?.TotalInsurance,
-                ["InvoiceDate"] = invoice?.InvoiceDate,
-                ["SupplierName"] = invoice?.SupplierName,
-                ["Currency"] = invoice?.Currency
+                ["InvoiceTotal"] = invoice?.InvoiceTotal,
             };
             var currentJson = JsonSerializer.Serialize(currentValues, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            _logger.Error("   - **PROMPT_JSON_DUMP**: Basic extracted values: {JsonContext}", currentJson);
+
+            // Build the human-readable annotated context block
+            var annotatedContextBuilder = new StringBuilder();
+            var fieldsGroupedByCanonicalName = metadata.Values
+                .Where(m => m != null && !string.IsNullOrEmpty(m.Field))
+                .GroupBy(m => m.Field);
+
+            foreach (var group in fieldsGroupedByCanonicalName)
+            {
+                if (group.Count() > 1) // This is an aggregate field
+                {
+                    var finalValue = GetCurrentFieldValue(invoice, group.Key);
+                    annotatedContextBuilder.AppendLine($"\n- The value for `{group.Key}` ({finalValue}) was calculated by summing the following lines I found:");
+                    foreach (var component in group)
+                    {
+                        annotatedContextBuilder.AppendLine($"  - Line {component.LineNumber}: Found value '{component.RawValue}' from rule '{component.LineName}' on text: \"{TruncateForLog(component.LineText, 100)}\"");
+                    }
+                }
+            }
+            string annotatedContext = annotatedContextBuilder.ToString();
+            _logger.Error("   - **PROMPT_ANNOTATION_DUMP**: Annotated context for aggregates: {AnnotatedContext}", string.IsNullOrWhiteSpace(annotatedContext) ? "None" : annotatedContext);
+
+            // Restore and integrate the OCR sections analysis
             var ocrSections = AnalyzeOCRSections(fileText);
+            var ocrSectionsString = string.Join(", ", ocrSections);
+            _logger.Error("   - **PROMPT_STRUCTURE_DUMP**: Detected OCR Sections: {OcrSections}", ocrSectionsString);
 
-            // ======================================================================================
-            //                          *** DEFINITIVE FIX IS HERE ***
-            // The placeholder {field_name} has been corrected to use C# string interpolation
-            // syntax. This was the cause of the CS0103 compiler error. The fix is to use
-            // a standard string format that doesn't rely on in-place variable substitution,
-            // as this part of the prompt is a static example for the AI.
-            // ======================================================================================
-            var prompt = $@"INTELLIGENT OCR ERROR AND OMISSION DETECTION (GRANULAR MODE WITH REGEX GENERATION):
+            var prompt = $@"INTELLIGENT OCR CORRECTION (V10 - DUAL CORRECTION):
 
-CRITICAL INSTRUCTIONS:
-1.  **DO NOT AGGREGATE.** Report each finding separately. If you find two 'Free Shipping' lines, you MUST report two separate 'omission' errors.
-2.  **FOR EVERY OMISSION, YOU MUST PROVIDE A 'suggested_regex'.** This regex must be specific, C# compliant (single backslashes), and include a named capture group matching the 'field' name.
+**CONTEXT:**
+I have extracted data from an OCR document. My goal is to find any values I missed and ensure they are formatted correctly for my system.
 
-CARIBBEAN CUSTOMS FIELD MAPPING (Apply to each individual finding):
-- **SUPPLIER-CAUSED REDUCTIONS → TotalDeduction field (positive values):** Free shipping, discounts, promos.
-- **CUSTOMER-CAUSED REDUCTIONS → TotalInsurance field (negative values):** Gift cards, store credits. ALWAYS report as a negative value.
-
-CURRENTLY EXTRACTED FIELDS:
+**1. EXTRACTED FIELDS:**
 {currentJson}
 
-COMPLETE MULTI-SECTION OCR TEXT:
+**2. CONTEXT & COMPONENTS:** (How totals were calculated)
+{annotatedContext}
+(If this section is empty, no fields were aggregated from multiple sources)
+
+**3. COMPLETE OCR TEXT:**
 {this.CleanTextForAnalysis(fileText)}
 
-TASK:
-1.  Identify EVERY individual field missing from EXTRACTED DATA that exists in the OCR TEXT.
-2.  For each finding, create a separate error object in the JSON array.
-3.  For each 'omission' type error, create a robust, C# compliant `suggested_regex` that includes qualifying text and a named capture group (e.g., `(?<TotalDeduction>...)`).
-4.  For 'correct_value', provide the raw numeric value from the text (e.g., '0.46', '6.53', '-6.99').
+**YOUR TASK:**
+For each individual value-bearing line in the text that is an omission, you MUST generate **TWO** separate error objects for deductions/insurance, and ONE for other fields:
+1.  An `omission` object to add the missing value.
+2.  A `format_correction` object to ensure the value is handled correctly in the future (ONLY for TotalInsurance).
 
-RESPONSE FORMAT - A separate JSON object for EACH finding, including 'suggested_regex' for omissions:
+**CARIBBEAN CUSTOMS FIELD MAPPING & VALUE TRANSFORMATION (Apply to each new finding):**
+- **If a line is a SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
+  - Set `field` to `""TotalDeduction""`.
+  - For `correct_value`, find the number on the line, take its **absolute value**, and return it as a string (e.g., `""6.53""`).
+- **If a line is a CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
+  - **For the `omission` object:**
+    - Set `field` to `""TotalInsurance""`.
+    - For `correct_value`, find the number, take its **absolute value**, multiply by -1, and return it as a string (e.g., `""-6.99""`).
+  - **For the `format_correction` object:**
+    - Set `field` to `""TotalInsurance""`.
+    - Set `extracted_value` to the number's **absolute value** (e.g., `""6.99""`).
+    - Set `correct_value` to the number's **absolute value multiplied by -1** (e.g., `""-6.99""`).
+- **For all other fields**, report the raw value from the text.
+
+**YOUR RESPONSE FORMAT (A separate JSON object for EACH correction):**
 {{
   ""errors"": [
-    {{
-      ""field"": ""TotalDeduction"",
-      ""extracted_value"": ""null"",
-      ""correct_value"": ""0.46"",
-      ""line_text"": ""Free Shipping: -$0.46"",
-      ""line_number"": 71,
-      ""confidence"": 0.95,
-      ""error_type"": ""omission"",
-      ""suggested_regex"": ""Free Shipping:\\s*-?\\$?(?<TotalDeduction>[\\d,]+\\.?\\d*)"",
-      ""reasoning"": ""Found an individual 'Free Shipping' line item for -$0.46. Created a specific regex to capture this supplier reduction as TotalDeduction.""
-    }},
     {{
       ""field"": ""TotalInsurance"",
       ""extracted_value"": ""null"",
@@ -93,18 +111,39 @@ RESPONSE FORMAT - A separate JSON object for EACH finding, including 'suggested_
       ""line_number"": 77,
       ""confidence"": 0.98,
       ""error_type"": ""omission"",
-      ""suggested_regex"": ""Gift Card Amount:\\s*-?\\$?(?<TotalInsurance>[\\d,]+\\.?\\d*)"",
-      ""reasoning"": ""Found a 'Gift Card Amount'. Created a regex to capture this customer reduction as TotalInsurance.""
+      ""suggested_regex"": ""Gift Card Amount:\\\\s*-?\\\\$?(?<TotalInsurance>[\\\\d,]+\\\\.?\\\\d*)"",
+      ""reasoning"": ""The OCR text contains a 'Gift Card Amount' line, which is a missed omission.""
+    }},
+    {{
+      ""field"": ""TotalInsurance"",
+      ""extracted_value"": ""6.99"",
+      ""correct_value"": ""-6.99"",
+      ""line_text"": ""Gift Card Amount: -$6.99"",
+      ""line_number"": 77,
+      ""confidence"": 0.99,
+      ""error_type"": ""format_correction"",
+      ""suggested_regex"": ""(?<capture>.*)"",
+      ""reasoning"": ""Ensures that any value captured for TotalInsurance is made negative as per Caribbean customs rules for customer-owned value.""
+    }},
+    {{
+      ""field"": ""TotalDeduction"",
+      ""extracted_value"": ""null"",
+      ""correct_value"": ""6.53"",
+      ""line_text"": ""Free Shipping: -$6.53"",
+      ""line_number"": 75,
+      ""confidence"": 0.98,
+      ""error_type"": ""omission"",
+      ""suggested_regex"": ""Free Shipping:\\\\s*-?\\\\$?(?<TotalDeduction>[\\\\d,]+\\\\.?\\\\d*)"",
+      ""reasoning"": ""The OCR text contains a 'Free Shipping' line, which is a missed omission.""
     }}
   ]
 }}
 
-If no missing fields found, return: {{""errors"": []}}";
+If you find no new omissions, return: {{""errors"": []}}";
 
-            _logger.Information("🔍 **PROMPT_CREATION_COMPLETE**: GRANULAR (With Regex Suggestion) prompt created with {PromptLength} characters", prompt.Length);
+            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V10)**: Full context prompt with DUAL CORRECTION logic created. Length: {PromptLength} characters.", prompt.Length);
             return prompt;
         }
-
 
         /// <summary>
         /// Analyzes the file text to identify which OCR sections are present.
@@ -266,7 +305,6 @@ RESPONSE FORMAT (Strict JSON array of error objects under ""errors"" key):
 }}
 If no errors or omissions are found, return: {{""errors"": []}}";
         }
-
 
         /// <summary>
         /// Creates a prompt for DeepSeek for direct data correction when regex/pattern fixes are insufficient.

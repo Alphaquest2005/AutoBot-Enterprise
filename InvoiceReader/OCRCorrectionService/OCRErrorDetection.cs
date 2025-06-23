@@ -15,7 +15,7 @@ namespace WaterNut.DataSpace
         #region Enhanced Error Detection Orchestration
 
         /// <summary>
-        /// FINAL VERSION: Orchestrates a dual-pathway error detection strategy and consolidates results
+        /// FINAL VERSION (V9): Orchestrates a dual-pathway error detection strategy and consolidates results
         /// using a robust, regex-based deduplication key to prevent redundant learning.
         /// </summary>
         private async Task<List<InvoiceError>> DetectInvoiceErrorsAsync(
@@ -26,54 +26,54 @@ namespace WaterNut.DataSpace
             var allDetectedErrors = new List<InvoiceError>();
             if (invoice == null) return allDetectedErrors;
 
-            _logger.Information("🚀 **DETECTION_PIPELINE_ENTRY_V2**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
+            _logger.Error("🚀 **DETECTION_PIPELINE_ENTRY (V9)**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
+            _logger.Error("   - **ARCHITECTURAL_INTENT**: Use both AI and hard-coded rules to find all possible errors, then consolidate them into a unique, actionable list.");
 
             try
             {
                 // --- PATHWAY 1: DEEPSEEK AI-BASED DETECTION ---
-                _logger.Information("🤖 **DEEPSEEK_DETECTION_START**: Initiating primary AI-based granular error and omission detection.");
+                _logger.Error("   - **LOGIC_PATH_1**: Initiating primary AI-based granular error and omission detection.");
                 var deepSeekErrors = await DetectHeaderFieldErrorsAndOmissionsAsync(invoice, fileText, metadata).ConfigureAwait(false);
                 allDetectedErrors.AddRange(deepSeekErrors);
+                _logger.Error("     - AI pathway found {Count} potential errors.", deepSeekErrors.Count);
 
                 // --- PATHWAY 2: RULE-BASED DETECTION (RELIABILITY BACKSTOP) ---
-                if (fileText?.IndexOf("Amazon.com", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    _logger.Information("🎯 **RULE_BASED_TRIGGER**: Amazon.com detected. Running secondary rule-based detector.");
-                    var amazonErrors = DetectAmazonSpecificErrors(invoice, fileText);
-                    allDetectedErrors.AddRange(amazonErrors);
-                }
+                // disabled for now, as we are focusing on the AI-based detection.
+                //if (fileText?.IndexOf("Amazon.com", StringComparison.OrdinalIgnoreCase) >= 0)
+                //{
+                //    _logger.Error("   - **LOGIC_PATH_2**: 'Amazon.com' detected. Running secondary rule-based detector as a reliability backstop.");
+                //    var amazonErrors = DetectAmazonSpecificErrors(invoice, fileText);
+                //    allDetectedErrors.AddRange(amazonErrors);
+                //}
 
-                // --- CONSOLIDATION (YOUR CORRECTED LOGIC) ---
-                _logger.Information("  **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using robust regex-based key.", allDetectedErrors.Count);
+                // --- CONSOLIDATION ---
+                _logger.Error("   - **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using a key of (Field, CorrectValue, SuggestedRegex) to find the unique, best-confidence error for each issue.", allDetectedErrors.Count);
 
-                // De-duplicate based on the target Field and the Regex that identifies the error's source pattern.
-                // This correctly groups multiple detections of the same logical error.
                 var uniqueErrors = allDetectedErrors
-                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(),Value = e.CorrectValue, Regex = e.SuggestedRegex })
+                    .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Value = e.CorrectValue, Regex = e.SuggestedRegex })
                     .Select(g => {
-                        // From each group of duplicates, select the one with the highest confidence score.
                         var bestError = g.OrderByDescending(e => e.Confidence).First();
-                        _logger.Debug("    - For Key [Field: '{Field}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2}",
-                            g.Key.Field, g.Key.Regex, bestError.Confidence);
+                        _logger.Error("     - For Key [Field: '{Field}', Value: '{Value}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2} (out of {GroupCount} detections).",
+                            g.Key.Field, g.Key.Value, g.Key.Regex, bestError.Confidence, g.Count());
                         return bestError;
                     })
                     .ToList();
 
                 if (!uniqueErrors.Any())
                 {
-                    _logger.Error("❌ **INTENTION_FAILED**: The detection pipeline found ZERO unique errors. This is the root cause of the correction failure.");
+                    _logger.Error("   - ⚠️ **DETECTION_RESULT**: The detection pipeline found ZERO unique errors. No corrections will be applied.");
                 }
 
                 var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
                 var serializedErrors = JsonSerializer.Serialize(uniqueErrors, options);
-                _logger.Information("✅ **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects: {SerializedErrors}",
+                _logger.Error("📊 **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects to be processed: {SerializedErrors}",
                     uniqueErrors.Count, serializedErrors);
 
                 return uniqueErrors;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 CRITICAL ERROR during DetectInvoiceErrorsAsync for invoice {InvoiceNo}.", invoice.InvoiceNo);
+                _logger.Error(ex, "🚨 **CRITICAL_EXCEPTION** during DetectInvoiceErrorsAsync for invoice {InvoiceNo}.", invoice.InvoiceNo);
                 return new List<InvoiceError>();
             }
         }
@@ -119,34 +119,35 @@ namespace WaterNut.DataSpace
                 });
             }
 
-            _logger.Information("🎯 **RULE_BASED_RESULT**: Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
+            _logger.Error("     - Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
             return amazonErrors;
         }
 
         private async Task<List<InvoiceError>> DetectHeaderFieldErrorsAndOmissionsAsync(
             ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata = null)
         {
-            _logger.Information("🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
+            _logger.Error("     - 🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
             try
             {
-                var prompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText);
+                // This call now passes the rich metadata required for the V9 prompt.
+                var prompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText, metadata);
                 var deepSeekResponseJson = await _deepSeekApi.GetResponseAsync(prompt).ConfigureAwait(false);
 
                 if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
                 {
-                    _logger.Warning("   -> ❌ Received empty or null response from DeepSeek for header error detection on invoice {InvoiceNo}.", invoice.InvoiceNo);
+                    _logger.Warning("       - ❌ Received empty or null response from DeepSeek for header error detection on invoice {InvoiceNo}.", invoice.InvoiceNo);
                     return new List<InvoiceError>();
                 }
 
                 var correctionResults = this.ProcessDeepSeekCorrectionResponse(deepSeekResponseJson, fileText);
                 var detectedErrors = correctionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)).ToList();
 
-                _logger.Information("   -> DeepSeek response processing complete. Found {Count} items.", detectedErrors.Count);
+                _logger.Error("       - DeepSeek response processing complete. Found {Count} potential error items.", detectedErrors.Count);
                 return detectedErrors;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 Error in DetectHeaderFieldErrorsAndOmissionsAsync for invoice {InvoiceNo}.", invoice.InvoiceNo);
+                _logger.Error(ex, "🚨 **EXCEPTION** in DetectHeaderFieldErrorsAndOmissionsAsync for invoice {InvoiceNo}.", invoice.InvoiceNo);
                 return new List<InvoiceError>();
             }
         }
@@ -164,6 +165,9 @@ namespace WaterNut.DataSpace
                 Reasoning = cr.Reasoning,
                 LineNumber = cr.LineNumber,
                 LineText = cr.LineText,
+                ContextLinesBefore = cr.ContextLinesBefore,
+                ContextLinesAfter = cr.ContextLinesAfter,
+                RequiresMultilineRegex = cr.RequiresMultilineRegex,
                 SuggestedRegex = cr.SuggestedRegex
             };
         }
@@ -174,13 +178,15 @@ namespace WaterNut.DataSpace
             int charCount = 0;
             for (int i = 0; i < lines.Length; i++)
             {
-                if (match.Index >= charCount && match.Index < charCount + lines[i].Length + Environment.NewLine.Length)
+                // The character count for a line includes the line itself and its newline characters
+                int lineLengthWithNewline = lines[i].Length + Environment.NewLine.Length;
+                if (match.Index >= charCount && match.Index < charCount + lineLengthWithNewline)
                 {
-                    return i + 1;
+                    return i + 1; // Return 1-based line number
                 }
-                charCount += lines[i].Length + Environment.NewLine.Length;
+                charCount += lineLengthWithNewline;
             }
-            return 0;
+            return 0; // Match not found
         }
 
         #endregion
