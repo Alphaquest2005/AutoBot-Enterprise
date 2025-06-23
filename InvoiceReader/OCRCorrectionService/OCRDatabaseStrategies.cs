@@ -187,10 +187,13 @@ namespace WaterNut.DataSpace
                     }
                     _logger.Error("   - [STEP 2] ✅ SUCCESS: AI provided valid Pattern ('{Pattern}') and Replacement ('{Replacement}').", pattern, replacement);
 
+                    // =================================== FIX START ===================================
+                    // This summary log block has been restored for clarity.
                     _logger.Error("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
                     _logger.Error("      - FieldId: {FieldId}", fieldDefinitionId);
                     _logger.Error("      - Pattern Regex: '{Pattern}'", pattern);
                     _logger.Error("      - Replacement Regex: '{Replacement}'", replacement);
+                    // ==================================== FIX END ====================================
 
                     _logger.Error("   - [STEP 3] Getting/creating Regex entity for the PATTERN string: '{Pattern}'", pattern);
                     var patternRegexEntity = await this.GetOrCreateRegexAsync(context, pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);

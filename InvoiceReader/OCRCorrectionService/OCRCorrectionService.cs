@@ -1,20 +1,21 @@
 ﻿// File: OCRCorrectionService/OCRCorrectionService.cs
+using EntryDataDS.Business.Entities;
+using InvoiceReader.OCRCorrectionService;
+using OCR.Business.Entities;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Data.Entity;
-using EntryDataDS.Business.Entities;
-using OCR.Business.Entities;
 using TrackableEntities;
-using Serilog;
-using InvoiceReader.OCRCorrectionService;
 
 namespace WaterNut.DataSpace
 {
+    using System.Text.Json.Serialization;
     using WaterNut.Business.Services.Utils;
 
     public partial class OCRCorrectionService : IDisposable
@@ -67,6 +68,8 @@ namespace WaterNut.DataSpace
 
             try
             {
+                var jsonOptions = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+
                 _logger.Error("   - **STEP 1: METADATA_EXTRACTION**: Extracting OCR metadata from the current invoice state.");
                 var metadata = this.ExtractFullOCRMetadata(invoice, fileText);
 
@@ -86,20 +89,10 @@ namespace WaterNut.DataSpace
                 var successfulValueApplications = appliedCorrections.Count(c => c.Success);
                 _logger.Error("   - Successfully applied {Count} corrections.", successfulValueApplications);
 
-                // =================================== FIX START ===================================
-                // The AI prompt now handles Caribbean-specific value transformations directly.
-                // The C# post-processing step is now redundant and has been disabled to prevent conflicts.
                 _logger.Error("   - **STEP 4: CUSTOMS_RULES (DISABLED)**: Caribbean-specific rules are now handled by the AI prompt. Skipping C# post-processing.");
-                // var customsCorrections = this.ApplyCaribbeanCustomsRules(invoice, appliedCorrections.Where(c => c.Success).ToList());
-                // if (customsCorrections.Any())
-                // {
-                //     this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
-                //     _logger.Error("   - Applied {Count} Caribbean customs corrections.", customsCorrections.Count);
-                // }
-                // ==================================== FIX END ====================================
 
                 _logger.Error("   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
-                // Note: We pass ALL detected errors to the learning step, including the 'format_correction' type.
+
                 var successfulDetectionsForDB = allDetectedErrors.Select(
                     e => new CorrectionResult
                     {
@@ -112,18 +105,30 @@ namespace WaterNut.DataSpace
                         LineText = e.LineText,
                         LineNumber = e.LineNumber,
                         Success = true,
-                        // Pass through context for learning
                         ContextLinesBefore = e.ContextLinesBefore,
                         ContextLinesAfter = e.ContextLinesAfter,
                         RequiresMultilineRegex = e.RequiresMultilineRegex,
-                        SuggestedRegex = e.SuggestedRegex
+                        SuggestedRegex = e.SuggestedRegex,
+                        Pattern = e.Pattern,
+                        Replacement = e.Replacement
                     }).ToList();
+
+                // =================================== LOGGING ENHANCEMENT ===================================
+                _logger.Error("   - **DATA_DUMP (successfulDetectionsForDB)**: Object state before creating RegexUpdateRequests: {Data}",
+                    JsonSerializer.Serialize(successfulDetectionsForDB, jsonOptions));
+                // =================================== END ENHANCEMENT =====================================
 
                 if (successfulDetectionsForDB.Any())
                 {
                     _logger.Error("   - **STEP 6: REGEX_UPDATE_REQUEST**: Creating {Count} requests for regex pattern updates in the database.", successfulDetectionsForDB.Count);
                     var regexUpdateRequests = successfulDetectionsForDB
                         .Select(c => this.CreateRegexUpdateRequest(c, fileText, metadata, invoice.Id)).ToList();
+
+                    // =================================== LOGGING ENHANCEMENT ===================================
+                    _logger.Error("   - **DATA_DUMP (regexUpdateRequests)**: Object state before sending to UpdateRegexPatternsAsync: {Data}",
+                        JsonSerializer.Serialize(regexUpdateRequests, jsonOptions));
+                    // =================================== END ENHANCEMENT =====================================
+
                     await this.UpdateRegexPatternsAsync(regexUpdateRequests).ConfigureAwait(false);
                 }
 
@@ -199,42 +204,43 @@ namespace WaterNut.DataSpace
             Dictionary<string, OCRFieldMetadata> metadata,
             int? templateId)
         {
+            // =================================== LOGGING ENHANCEMENT ===================================
+            _logger.Error("   - **CreateRegexUpdateRequest_ENTRY**: Creating request from CorrectionResult: {Data}",
+                JsonSerializer.Serialize(correction, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
+            // =================================== END ENHANCEMENT =====================================
+
             var request = new RegexUpdateRequest
-                              {
-                                  FieldName = correction.FieldName,
-                                  OldValue = correction.OldValue,
-                                  NewValue = correction.NewValue,
-                                  CorrectionType = correction.CorrectionType,
-                                  Confidence = correction.Confidence,
-                                  DeepSeekReasoning = correction.Reasoning,
-                                  RequiresMultilineRegex = correction.RequiresMultilineRegex,
-                                  SuggestedRegex = correction.SuggestedRegex,
-                                  ExistingRegex = correction.ExistingRegex,
-                                  LineId = correction.LineId,
-                                  PartId = correction.PartId,
-                                  RegexId = correction.RegexId,
-                                  InvoiceId = templateId,
+            {
+                FieldName = correction.FieldName,
+                OldValue = correction.OldValue,
+                NewValue = correction.NewValue,
+                CorrectionType = correction.CorrectionType,
+                Confidence = correction.Confidence,
+                DeepSeekReasoning = correction.Reasoning,
+                RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                SuggestedRegex = correction.SuggestedRegex,
+                ExistingRegex = correction.ExistingRegex,
+                LineId = correction.LineId,
+                PartId = correction.PartId,
+                RegexId = correction.RegexId,
+                InvoiceId = templateId,
 
-                                  // Directly inherit the accurate line number and text from the correction object.
-                                  LineNumber = correction.LineNumber,
-                                  LineText = correction.LineText,
-                                  WindowText = correction.WindowText,
-                                  ContextLinesBefore = correction.ContextLinesBefore,
-                                  ContextLinesAfter = correction.ContextLinesAfter,
+                // Directly inherit the accurate line number and text from the correction object.
+                LineNumber = correction.LineNumber,
+                LineText = correction.LineText,
+                WindowText = correction.WindowText,
+                ContextLinesBefore = correction.ContextLinesBefore,
+                ContextLinesAfter = correction.ContextLinesAfter,
 
-                                  // =================================== FIX START ===================================
-                                  // Pass through the new format correction properties
-                                  Pattern = correction.Pattern,
-                                  Replacement = correction.Replacement
-                                  // ==================================== FIX END ====================================
-                              };
+                // Pass through the new format correction properties
+                Pattern = correction.Pattern,
+                Replacement = correction.Replacement
+            };
 
             // This block is now a safety fallback. The primary source of LineText should be the correction object.
             if (!string.IsNullOrEmpty(fileText) && string.IsNullOrEmpty(request.LineText) && request.LineNumber > 0)
             {
-                _logger.Warning(
-                    "CreateRegexUpdateRequest: LineText was missing from CorrectionResult for line {LineNum}. Falling back to extracting from full text.",
-                    request.LineNumber);
+                _logger.Warning("CreateRegexUpdateRequest: LineText was missing from CorrectionResult for line {LineNum}. Falling back to extracting from full text.", request.LineNumber);
                 var lines = fileText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 if (request.LineNumber <= lines.Length)
                 {
