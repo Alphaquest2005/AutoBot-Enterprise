@@ -153,7 +153,7 @@ namespace WaterNut.DataSpace
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Error("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, Value: '{OldValue}' -> '{NewValue}'", request.FieldName, request.OldValue, request.NewValue);
+                _logger.Error("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, CorrectionType: '{CorrectionType}'", request.FieldName, request.CorrectionType);
 
                 var requestJson = JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                 _logger.Error("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest entering strategy: {RequestJson}", requestJson);
@@ -162,31 +162,35 @@ namespace WaterNut.DataSpace
                 {
                     if (!request.LineId.HasValue)
                     {
+                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Precondition failed. The request is missing a 'LineId' (which maps to Fields.Id). This strategy requires a specific field definition to attach the format rule to. Aborting strategy.");
                         return DatabaseUpdateResult.Failed($"Field Definition ID (Fields.Id) is required for FieldFormatUpdateStrategy for field '{request.FieldName}'. It should be passed via RegexUpdateRequest.LineId.");
                     }
 
                     int fieldDefinitionId = request.LineId.Value;
                     var fieldDef = await context.Fields.FindAsync(fieldDefinitionId).ConfigureAwait(false);
                     if (fieldDef == null)
-                        return DatabaseUpdateResult.Failed($"Field definition with ID {fieldDefinitionId} not found for field '{request.FieldName}'.");
-
-                    var formatPatterns = serviceInstance.CreateAdvancedFormatCorrectionPatterns(request.OldValue, request.NewValue);
-                    if (!formatPatterns.HasValue || string.IsNullOrEmpty(formatPatterns.Value.Pattern))
                     {
-                        return DatabaseUpdateResult.Failed($"Could not generate format correction regex for '{request.FieldName}': '{request.OldValue}' -> '{request.NewValue}'.");
+                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Could not find a field definition in the database with ID {FieldDefinitionId}. Aborting strategy.", fieldDefinitionId);
+                        return DatabaseUpdateResult.Failed($"Field definition with ID {fieldDefinitionId} not found for field '{request.FieldName}'.");
                     }
 
-                    // ======================================================================================
-                    //                          *** DEFINITIVE FIX IS HERE ***
-                    //       The detailed DB_SAVE_INTENT logging has been restored.
-                    // ======================================================================================
+                    // Use the pattern and replacement directly from the AI's response via the RegexUpdateRequest.
+                    string pattern = request.Pattern;
+                    string replacement = request.Replacement;
+
+                    if (string.IsNullOrEmpty(pattern) || replacement == null)
+                    {
+                        _logger.Error("   - ❌ **STRATEGY_FAIL**: The format_correction request from the AI was missing the required 'pattern' or 'replacement' field. Aborting strategy.");
+                        return DatabaseUpdateResult.Failed($"AI-generated format correction for '{request.FieldName}' was incomplete (missing pattern or replacement).");
+                    }
+
                     _logger.Error("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
                     _logger.Error("      - FieldId: {FieldId}", fieldDefinitionId);
-                    _logger.Error("      - Pattern Regex: '{Pattern}'", formatPatterns.Value.Pattern);
-                    _logger.Error("      - Replacement Regex: '{Replacement}'", formatPatterns.Value.Replacement);
+                    _logger.Error("      - Pattern Regex: '{Pattern}'", pattern);
+                    _logger.Error("      - Replacement Regex: '{Replacement}'", replacement);
 
-                    var patternRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
-                    var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, formatPatterns.Value.Replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
+                    var patternRegexEntity = await this.GetOrCreateRegexAsync(context, pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
+                    var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
 
                     var existingFieldFormat = await context.OCR_FieldFormatRegEx
                         .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id)

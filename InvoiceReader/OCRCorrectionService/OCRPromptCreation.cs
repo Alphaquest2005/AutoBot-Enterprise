@@ -16,12 +16,11 @@ namespace WaterNut.DataSpace
         #region Enhanced Prompt Creation Methods for DeepSeek
 
         /// <summary>
-        /// FINAL, FULL CONTEXT (V10): Creates a prompt that generates both omission AND format corrections
-        /// to ensure values are transformed correctly on subsequent imports.
+        /// FINAL, FULL CONTEXT (V11.1): Creates a prompt that generates both omission AND real, actionable format corrections.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
-            _logger.Error("🚀 **PROMPT_CREATION_START (V10 - Format Correction)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Error("🚀 **PROMPT_CREATION_START (V11.1 - Real Format Correction)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
             // Build the simple JSON block of extracted values
             var currentValues = new Dictionary<string, object>
@@ -66,7 +65,7 @@ namespace WaterNut.DataSpace
             var ocrSectionsString = string.Join(", ", ocrSections);
             _logger.Error("   - **PROMPT_STRUCTURE_DUMP**: Detected OCR Sections: {OcrSections}", ocrSectionsString);
 
-            var prompt = $@"INTELLIGENT OCR CORRECTION (V10 - DUAL CORRECTION):
+            var prompt = $@"INTELLIGENT OCR CORRECTION (V11.1 - REAL FORMAT CORRECTION):
 
 **CONTEXT:**
 I have extracted data from an OCR document. My goal is to find any values I missed and ensure they are formatted correctly for my system.
@@ -82,22 +81,20 @@ I have extracted data from an OCR document. My goal is to find any values I miss
 {this.CleanTextForAnalysis(fileText)}
 
 **YOUR TASK:**
-For each individual value-bearing line in the text that is an omission, you MUST generate **TWO** separate error objects for deductions/insurance, and ONE for other fields:
-1.  An `omission` object to add the missing value.
-2.  A `format_correction` object to ensure the value is handled correctly in the future (ONLY for TotalInsurance).
+For each individual value-bearing line in the text that is an omission, you MUST generate **TWO** separate error objects for deductions/insurance, and ONE for other fields.
+1.  An `omission` object with `suggested_regex` to add the missing value.
+2.  A `format_correction` object with a `pattern` and `replacement` string to ensure the value is handled correctly in the future (ONLY for TotalInsurance).
 
 **CARIBBEAN CUSTOMS FIELD MAPPING & VALUE TRANSFORMATION (Apply to each new finding):**
-- **If a line is a SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
-  - Set `field` to `""TotalDeduction""`.
-  - For `correct_value`, find the number on the line, take its **absolute value**, and return it as a string (e.g., `""6.53""`).
-- **If a line is a CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
-  - **For the `omission` object:**
-    - Set `field` to `""TotalInsurance""`.
-    - For `correct_value`, find the number, take its **absolute value**, multiply by -1, and return it as a string (e.g., `""-6.99""`).
-  - **For the `format_correction` object:**
-    - Set `field` to `""TotalInsurance""`.
-    - Set `extracted_value` to the number's **absolute value** (e.g., `""6.99""`).
-    - Set `correct_value` to the number's **absolute value multiplied by -1** (e.g., `""-6.99""`).
+- **If a line is a SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping'):
+  - Set `field` to ""TotalDeduction"". For `correct_value`, return the **absolute value** as a string (e.g., ""6.53"").
+- **If a line is a CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card'):
+  - **For the `omission` object:** Set `field` to ""TotalInsurance"". For `correct_value`, return the **negative absolute value** (e.g., ""-6.99"").
+  - **For the `format_correction` object:** Set `field` to ""TotalInsurance"".
+    - `extracted_value`: The number's **absolute value** (e.g., ""6.99"").
+    - `correct_value`: The number's **absolute value multiplied by -1** (e.g., ""-6.99"").
+    - `pattern`: A C# regex that captures a positive number (e.g., ""^(\\d+\\.?\\d*)$"").
+    - `replacement`: The captured group with a negative sign prepended (e.g., ""-$1"").
 - **For all other fields**, report the raw value from the text.
 
 **YOUR RESPONSE FORMAT (A separate JSON object for EACH correction):**
@@ -111,19 +108,20 @@ For each individual value-bearing line in the text that is an omission, you MUST
       ""line_number"": 77,
       ""confidence"": 0.98,
       ""error_type"": ""omission"",
-      ""suggested_regex"": ""Gift Card Amount:\\\\s*-?\\\\$?(?<TotalInsurance>[\\\\d,]+\\\\.?\\\\d*)"",
+      ""suggested_regex"": ""Gift Card Amount:\\s*-?\\$?(?<TotalInsurance>[\\d,]+\\.?\\d*)"",
       ""reasoning"": ""The OCR text contains a 'Gift Card Amount' line, which is a missed omission.""
     }},
     {{
       ""field"": ""TotalInsurance"",
+      ""error_type"": ""format_correction"",
       ""extracted_value"": ""6.99"",
       ""correct_value"": ""-6.99"",
       ""line_text"": ""Gift Card Amount: -$6.99"",
       ""line_number"": 77,
       ""confidence"": 0.99,
-      ""error_type"": ""format_correction"",
-      ""suggested_regex"": ""(?<capture>.*)"",
-      ""reasoning"": ""Ensures that any value captured for TotalInsurance is made negative as per Caribbean customs rules for customer-owned value.""
+      ""pattern"": ""^(\\d+\\.?\\d*)$"",
+      ""replacement"": ""-$1"",
+      ""reasoning"": ""This rule ensures any positive number captured for TotalInsurance is made negative, as per customs rules.""
     }},
     {{
       ""field"": ""TotalDeduction"",
@@ -133,7 +131,7 @@ For each individual value-bearing line in the text that is an omission, you MUST
       ""line_number"": 75,
       ""confidence"": 0.98,
       ""error_type"": ""omission"",
-      ""suggested_regex"": ""Free Shipping:\\\\s*-?\\\\$?(?<TotalDeduction>[\\\\d,]+\\\\.?\\\\d*)"",
+      ""suggested_regex"": ""Free Shipping:\\s*-?\\$?(?<TotalDeduction>[\\d,]+\\.?\\d*)"",
       ""reasoning"": ""The OCR text contains a 'Free Shipping' line, which is a missed omission.""
     }}
   ]
@@ -141,7 +139,7 @@ For each individual value-bearing line in the text that is an omission, you MUST
 
 If you find no new omissions, return: {{""errors"": []}}";
 
-            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V10)**: Full context prompt with DUAL CORRECTION logic created. Length: {PromptLength} characters.", prompt.Length);
+            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V11.1)**: Full context prompt with REAL FORMAT CORRECTION logic created. Length: {PromptLength} characters.", prompt.Length);
             return prompt;
         }
 

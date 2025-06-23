@@ -200,36 +200,41 @@ namespace WaterNut.DataSpace
             int? templateId)
         {
             var request = new RegexUpdateRequest
-            {
-                FieldName = correction.FieldName,
-                OldValue = correction.OldValue,
-                NewValue = correction.NewValue,
-                CorrectionType = correction.CorrectionType,
-                Confidence = correction.Confidence,
-                DeepSeekReasoning = correction.Reasoning,
-                RequiresMultilineRegex = correction.RequiresMultilineRegex,
-                SuggestedRegex = correction.SuggestedRegex,
-                ExistingRegex = correction.ExistingRegex,
-                LineId = correction.LineId,
-                PartId = correction.PartId,
-                RegexId = correction.RegexId,
-                InvoiceId = templateId,
+                              {
+                                  FieldName = correction.FieldName,
+                                  OldValue = correction.OldValue,
+                                  NewValue = correction.NewValue,
+                                  CorrectionType = correction.CorrectionType,
+                                  Confidence = correction.Confidence,
+                                  DeepSeekReasoning = correction.Reasoning,
+                                  RequiresMultilineRegex = correction.RequiresMultilineRegex,
+                                  SuggestedRegex = correction.SuggestedRegex,
+                                  ExistingRegex = correction.ExistingRegex,
+                                  LineId = correction.LineId,
+                                  PartId = correction.PartId,
+                                  RegexId = correction.RegexId,
+                                  InvoiceId = templateId,
 
-                // ================== CRITICAL FIX ==================
-                // Directly inherit the accurate line number and text from the correction object.
-                // This was the source of the context-passing bug.
-                LineNumber = correction.LineNumber,
-                LineText = correction.LineText,
-                WindowText = correction.WindowText,
-                ContextLinesBefore = correction.ContextLinesBefore,
-                ContextLinesAfter = correction.ContextLinesAfter
-                // ================================================
-            };
+                                  // Directly inherit the accurate line number and text from the correction object.
+                                  LineNumber = correction.LineNumber,
+                                  LineText = correction.LineText,
+                                  WindowText = correction.WindowText,
+                                  ContextLinesBefore = correction.ContextLinesBefore,
+                                  ContextLinesAfter = correction.ContextLinesAfter,
+
+                                  // =================================== FIX START ===================================
+                                  // Pass through the new format correction properties
+                                  Pattern = correction.Pattern,
+                                  Replacement = correction.Replacement
+                                  // ==================================== FIX END ====================================
+                              };
 
             // This block is now a safety fallback. The primary source of LineText should be the correction object.
             if (!string.IsNullOrEmpty(fileText) && string.IsNullOrEmpty(request.LineText) && request.LineNumber > 0)
             {
-                _logger.Warning("CreateRegexUpdateRequest: LineText was missing from CorrectionResult for line {LineNum}. Falling back to extracting from full text.", request.LineNumber);
+                _logger.Warning(
+                    "CreateRegexUpdateRequest: LineText was missing from CorrectionResult for line {LineNum}. Falling back to extracting from full text.",
+                    request.LineNumber);
                 var lines = fileText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 if (request.LineNumber <= lines.Length)
                 {

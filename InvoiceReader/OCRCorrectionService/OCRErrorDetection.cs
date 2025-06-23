@@ -156,20 +156,24 @@ namespace WaterNut.DataSpace
         {
             if (cr == null) return null;
             return new InvoiceError
-            {
-                Field = cr.FieldName,
-                ExtractedValue = cr.OldValue,
-                CorrectValue = cr.NewValue,
-                Confidence = cr.Confidence,
-                ErrorType = cr.CorrectionType,
-                Reasoning = cr.Reasoning,
-                LineNumber = cr.LineNumber,
-                LineText = cr.LineText,
-                ContextLinesBefore = cr.ContextLinesBefore,
-                ContextLinesAfter = cr.ContextLinesAfter,
-                RequiresMultilineRegex = cr.RequiresMultilineRegex,
-                SuggestedRegex = cr.SuggestedRegex
-            };
+                       {
+                           Field = cr.FieldName,
+                           ExtractedValue = cr.OldValue,
+                           CorrectValue = cr.NewValue,
+                           Confidence = cr.Confidence,
+                           ErrorType = cr.CorrectionType,
+                           Reasoning = cr.Reasoning,
+                           LineNumber = cr.LineNumber,
+                           LineText = cr.LineText,
+                           ContextLinesBefore = cr.ContextLinesBefore,
+                           ContextLinesAfter = cr.ContextLinesAfter,
+                           RequiresMultilineRegex = cr.RequiresMultilineRegex,
+                           SuggestedRegex = cr.SuggestedRegex,
+                           // =================================== FIX START ===================================
+                           Pattern = cr.Pattern,
+                           Replacement = cr.Replacement
+                           // ==================================== FIX END ====================================
+                       };
         }
 
         private int GetLineNumberForMatch(string[] lines, Match match)

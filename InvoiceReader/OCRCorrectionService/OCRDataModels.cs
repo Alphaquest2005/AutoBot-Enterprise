@@ -31,11 +31,24 @@ namespace WaterNut.DataSpace
         public int? RegexId { get; set; }
         public string WindowText { get; set; }
 
+        // =================================== FIX START ===================================
+        /// <summary>
+        /// For format corrections, this is the regex pattern to FIND the incorrect format.
+        /// </summary>
+        public string Pattern { get; set; }
+
+        /// <summary>
+        /// For format corrections, this is the string to REPLACE the found pattern with.
+        /// </summary>
+        public string Replacement { get; set; }
+        // ==================================== FIX END ====================================
+
         public string FullContext =>
             string.Join(
                 "\n",
                 ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));
     }
+
 
     public class InvoiceError
     {
@@ -95,6 +108,7 @@ namespace WaterNut.DataSpace
             new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
     }
 
+
     public class RegexUpdateRequest
     {
         public string FieldName { get; set; }
@@ -118,6 +132,18 @@ namespace WaterNut.DataSpace
         public string ExistingRegex { get; set; }
         public string PartName { get; set; }
         public int? InvoiceId { get; set; }
+
+        // =================================== FIX START ===================================
+        /// <summary>
+        /// For format corrections, this is the regex pattern to FIND the incorrect format.
+        /// </summary>
+        public string Pattern { get; set; }
+
+        /// <summary>
+        /// For format corrections, this is the string to REPLACE the found pattern with.
+        /// </summary>
+        public string Replacement { get; set; }
+        // ==================================== FIX END ====================================
     }
 
     #endregion

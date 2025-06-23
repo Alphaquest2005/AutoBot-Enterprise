@@ -80,29 +80,35 @@ namespace WaterNut.DataSpace
         private CorrectionResult CreateCorrectionFromElement(JsonElement element, string originalText, int itemIndex)
         {
             var fieldName = this.GetStringValueWithLogging(element, "field", itemIndex);
-            var newValue = this.GetStringValueWithLogging(element, "correct_value", itemIndex);
-            if (string.IsNullOrEmpty(fieldName) || newValue == null) return null;
+
+            // For format corrections, newValue might be null, but pattern/replacement are key.
+            var newValue = this.GetStringValueWithLogging(element, "correct_value", itemIndex, isOptional: true);
+            var pattern = this.GetStringValueWithLogging(element, "pattern", itemIndex, isOptional: true);
+
+            if (string.IsNullOrEmpty(fieldName) || (newValue == null && pattern == null)) return null;
 
             return new CorrectionResult
-                       {
-                           FieldName = fieldName,
-                           OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
-                           NewValue = newValue,
-                           LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
-                           LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
-                           Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
-                           Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
-                           CorrectionType = DetermineCorrectionType(
+            {
+                FieldName = fieldName,
+                OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
+                NewValue = newValue,
+                LineText = this.GetStringValueWithLogging(element, "line_text", itemIndex, true),
+                LineNumber = this.GetIntValueWithLogging(element, "line_number", itemIndex, 0, true),
+                Confidence = this.GetDoubleValueWithLogging(element, "confidence", itemIndex, 0.8, true),
+                Reasoning = this.GetStringValueWithLogging(element, "reasoning", itemIndex, true),
+                CorrectionType = DetermineCorrectionType(
                                this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
                                newValue,
                                this.GetStringValueWithLogging(element, "error_type", itemIndex, true)),
-                           // ======================================================================================
-                           //                          *** DEFINITIVE FIX IS HERE ***
-                           //      Explicitly parse the 'suggested_regex' field from the JSON response.
-                           // ======================================================================================
-                           SuggestedRegex = this.GetStringValueWithLogging(element, "suggested_regex", itemIndex, true), // isOptional = true
-                           Success = true
-                       };
+                SuggestedRegex = this.GetStringValueWithLogging(element, "suggested_regex", itemIndex, true),
+
+                // =================================== FIX START ===================================
+                Pattern = pattern,
+                Replacement = this.GetStringValueWithLogging(element, "replacement", itemIndex, true),
+                // ==================================== FIX END ====================================
+
+                Success = true
+            };
         }
 
         #endregion
