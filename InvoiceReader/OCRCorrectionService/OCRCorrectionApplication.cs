@@ -20,20 +20,28 @@ namespace WaterNut.DataSpace
         /// This version contains the definitive fix for preventing double-counting aggregation errors.
         /// </summary>
         private async Task<List<CorrectionResult>> ApplyCorrectionsAsync(
-            ShipmentInvoice invoice,
-            List<InvoiceError> errors,
-            string fileText,
-            Dictionary<string, OCRFieldMetadata> currentInvoiceMetadata)
+     ShipmentInvoice invoice,
+     List<InvoiceError> errors,
+     string fileText,
+     Dictionary<string, OCRFieldMetadata> currentInvoiceMetadata)
         {
             var correctionResults = new List<CorrectionResult>();
             if (invoice == null || errors == null || !errors.Any()) return correctionResults;
 
             const double CONFIDENCE_THRESHOLD = 0.90;
-            var errorsToApplyDirectly = errors.Where(e => e.Confidence >= CONFIDENCE_THRESHOLD).ToList();
+
+            // =================================== FIX START ===================================
+            // Filter out 'format_correction' errors from direct application.
+            // Their sole purpose is for database learning, not for in-memory calculation in this pass,
+            // as the AI already provides transformed values in the 'omission' objects.
+            var errorsToApplyDirectly = errors
+                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD && e.ErrorType != "format_correction")
+                .ToList();
+            // ==================================== FIX END ====================================
 
             _logger.Error("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
                 errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
-            _logger.Error("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting.");
+            _logger.Error("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting. 'format_correction' types are skipped here.");
 
             LogFinancialState("Initial State (Before Corrections)", invoice);
 
