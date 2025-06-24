@@ -125,6 +125,37 @@ namespace WaterNut.DataSpace
                     throw;
                 }
             }
+
+            // =============================== FIX 1: MOVE HELPER METHOD HERE ===============================
+            protected async Task<int?> DeterminePartIdForNewOmissionLineAsync(
+                OCRContext context,
+                DatabaseFieldInfo fieldInfo,
+                RegexUpdateRequest request)
+            {
+                _logger.Error("🎯 [CONTRACT_VALIDATION_ENTRY]: Entering DeterminePartIdForNewOmissionLineAsync for Field '{FieldName}'.", request.FieldName);
+                if (!request.InvoiceId.HasValue)
+                {
+                    _logger.Error("   - [CONTRACT_VIOLATION]: Precondition failed. The RegexUpdateRequest does not have an InvoiceId. Cannot determine the correct Part.");
+                    return null;
+                }
+
+                string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
+                _logger.Error("   - [LOGIC]: Determined Target Part Type is '{PartType}'.", targetPartTypeName);
+
+                var part = await context.Parts.Include(p => p.PartTypes)
+                               .FirstOrDefaultAsync(p => p.TemplateId == request.InvoiceId.Value && p.PartTypes.Name.Equals(targetPartTypeName, StringComparison.OrdinalIgnoreCase))
+                               .ConfigureAwait(false);
+
+                if (part == null)
+                {
+                    _logger.Error("   - [LOOKUP_FAILURE]: Could not find a Part of type '{PartType}' for TemplateId {TemplateId}.", targetPartTypeName, request.InvoiceId.Value);
+                    return null;
+                }
+
+                _logger.Error("   - [LOOKUP_SUCCESS]: Found correct Part. PartId: {PartId}, Name: '{PartName}'.", part.Id, part.PartTypes.Name);
+                return part.Id;
+            }
+            // ===================================== END OF FIX 1 =====================================
         }
 
         #endregion
@@ -242,7 +273,7 @@ namespace WaterNut.DataSpace
 
         #endregion
 
-        // File: OCRCorrectionService/OCRDatabaseStrategies.cs
+        
 
         #region Omission Update Strategy (With Final Fix)
 
@@ -402,35 +433,108 @@ namespace WaterNut.DataSpace
                 return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line, field, and regex for omission", newFieldEntity.Id);
             }
 
-            private async Task<int?> DeterminePartIdForNewOmissionLineAsync(
-                OCRContext context,
-                DatabaseFieldInfo fieldInfo,
-                RegexUpdateRequest request)
+
+        }
+        #endregion
+
+
+        #region Inferred Value Update Strategy
+
+        public class InferredValueUpdateStrategy : DatabaseUpdateStrategyBase
+        {
+            public InferredValueUpdateStrategy(ILogger logger) : base(logger) { }
+            public override string StrategyType => "Inferred";
+            public override bool CanHandle(RegexUpdateRequest request) => request.CorrectionType == "inferred";
+
+            public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Error("🎯 [CONTRACT_VALIDATION_ENTRY]: Entering DeterminePartIdForNewOmissionLineAsync for Field '{FieldName}'.", request.FieldName);
-                if (!request.InvoiceId.HasValue)
+                _logger.Error("🔍 **INFERRED_STRATEGY_START**: Executing for field: {FieldName}", request.FieldName);
+
+                if (string.IsNullOrEmpty(request.FieldName) || string.IsNullOrEmpty(request.NewValue) || string.IsNullOrEmpty(request.SuggestedRegex))
                 {
-                    _logger.Error("   - [CONTRACT_VIOLATION]: Precondition failed. The RegexUpdateRequest does not have an InvoiceId. Cannot determine the correct Part.");
-                    return null;
+                    _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing FieldName, NewValue (static value), or SuggestedRegex (line finder). Aborting strategy.");
+                    return DatabaseUpdateResult.Failed("Request for inferred value is missing critical fields.");
                 }
 
-                string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
-                _logger.Error("   - [LOGIC]: Determined Target Part Type is '{PartType}'.", targetPartTypeName);
-
-                var part = await context.Parts.Include(p => p.PartTypes)
-                    .FirstOrDefaultAsync(p => p.TemplateId == request.InvoiceId.Value && p.PartTypes.Name.Equals(targetPartTypeName, StringComparison.OrdinalIgnoreCase))
-                    .ConfigureAwait(false);
-
-                if (part == null)
+                try
                 {
-                    _logger.Error("   - [LOOKUP_FAILURE]: Could not find a Part of type '{PartType}' for TemplateId {TemplateId}.", targetPartTypeName, request.InvoiceId.Value);
-                    return null;
-                }
+                    var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
+                    if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
 
-                _logger.Error("   - [LOOKUP_SUCCESS]: Found correct Part. PartId: {PartId}, Name: '{PartName}'.", part.Id, part.PartTypes.Name);
-                return part.Id;
+                    // Determine the PartId for the new rule
+                    // This now calls the inherited helper method from the base class.
+                    if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
+                    if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new inferred value rule.");
+
+                    // Create the new Line and Field with the static value
+                    return await CreateNewLineForInferredValueAsync(context, request, fieldMappingInfo).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Failed to execute InferredValueUpdateStrategy for {FieldName}", request.FieldName);
+                    return DatabaseUpdateResult.Failed($"Inferred value strategy database error: {ex.Message}", ex);
+                }
+            }
+
+            private async Task<DatabaseUpdateResult> CreateNewLineForInferredValueAsync(
+                OCRContext context,
+                RegexUpdateRequest request,
+                DatabaseFieldInfo fieldInfo)
+            {
+                _logger.Error("  - [DB_SAVE_INTENT]: Preparing to create new Line and static FieldValue for Inferred Value of '{FieldName}'.", request.FieldName);
+                string lineFinderPattern = request.SuggestedRegex.Replace("\\\\", "\\");
+
+                // Step 1: Get or create the regex for the line finder.
+                var newRegexEntity = await this.GetOrCreateRegexAsync(context, lineFinderPattern, request.RequiresMultilineRegex, 1, $"Line finder for inferred value: {request.FieldName}").ConfigureAwait(false);
+
+                // Step 2: Create the new Line definition.
+                var newLineEntity = new Lines
+                {
+                    PartId = request.PartId.Value,
+                    Name = $"AutoInferred_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}",
+                    IsActive = true,
+                    TrackingState = TrackingState.Added
+                };
+                newLineEntity.RegularExpressions = newRegexEntity;
+                context.Lines.Add(newLineEntity);
+
+                // Step 3: Create the Field definition and its associated STATIC FieldValue entity.
+                var newFieldEntity = new Fields
+                {
+                    // Key is null because we are not capturing from the regex.
+                    Key = null,
+                    Field = fieldInfo.DatabaseFieldName,
+                    EntityType = fieldInfo.EntityType,
+                    DataType = fieldInfo.DataType,
+                    IsRequired = false,
+                    AppendValues = false, // Static values should not append.
+                    TrackingState = TrackingState.Added,
+
+                    // =============================== YOUR CORRECT FIX IS HERE ===============================
+                    // Create a new OCR_FieldValue entity and assign it.
+                    // This assumes 'FieldValue' is the name of the navigation property on the 'Fields' entity.
+                    // If the navigation property is a collection (e.g., 'FieldValues'), you would use .Add().
+                    // Assuming a one-to-one relationship for simplicity here.
+                    FieldValue = new OCR_FieldValue()
+                    {
+                        Value = request.NewValue,
+                        TrackingState = TrackingState.Added
+                    }
+                    // ========================================================================================
+                };
+
+                _logger.Error("  - ✅ **INFERRED_RULE_DETECTED**: This is an inferred value rule. A new OCR_FieldValue entity will be created with the static value '{StaticValue}'.", request.NewValue);
+
+                newLineEntity.Fields.Add(newFieldEntity);
+
+                // Step 4: Save everything in one transaction.
+                await SaveChangesWithAssertiveLogging(context, "CreateNewLineForInferredValue").ConfigureAwait(false);
+
+                _logger.Information("Successfully created new Line (ID: {LineId}) and Field (ID: {FieldId}) with static FieldValue for inferred field.", newLineEntity.Id, newFieldEntity.Id);
+                return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line and static field value for inferred value", newFieldEntity.Id);
             }
         }
+
         #endregion
 
         #region Strategy Factory
@@ -442,13 +546,19 @@ namespace WaterNut.DataSpace
             public IDatabaseUpdateStrategy GetStrategy(RegexUpdateRequest request)
             {
                 if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // =============================== FIX IS HERE ===============================
+                // Add the new strategy to the top of the chain.
+                if (new InferredValueUpdateStrategy(_logger).CanHandle(request)) return new InferredValueUpdateStrategy(_logger);
+                // ===========================================================================
+
                 if (new OmissionUpdateStrategy(_logger).CanHandle(request)) return new OmissionUpdateStrategy(_logger);
                 if (new FieldFormatUpdateStrategy(_logger).CanHandle(request)) return new FieldFormatUpdateStrategy(_logger);
+
                 _logger.Warning("No suitable update strategy found for correction type: {CorrectionType}", request.CorrectionType);
                 throw new InvalidOperationException($"No suitable update strategy found for correction type: {request.CorrectionType}");
             }
         }
-
         #endregion
     }
 }

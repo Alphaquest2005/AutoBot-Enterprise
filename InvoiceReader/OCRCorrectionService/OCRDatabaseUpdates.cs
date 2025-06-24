@@ -19,6 +19,8 @@ namespace WaterNut.DataSpace
     {
         #region Main Database Update Methods
 
+        // File: OCRDatabaseUpdates.cs
+
         public async Task UpdateRegexPatternsAsync(IEnumerable<RegexUpdateRequest> regexUpdateRequests)
         {
             // --- MANDATE LOG: Serialize the entire input collection to this method ---
@@ -56,7 +58,6 @@ namespace WaterNut.DataSpace
 
                 var request = requestsToProcess[i];
 
-                // =================================== FIX START ===================================
                 // Use a new context for each top-level request to guarantee transactional integrity
                 // and prevent entity state conflicts between loop iterations.
                 using (var context = new OCRContext())
@@ -77,16 +78,16 @@ namespace WaterNut.DataSpace
                             {
                                 dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
 
-                                // If this was a successful omission, check for a NEW, UNCONTEXTUALIZED, and paired format_correction.
+                                // If this was a successful omission, check for a paired format_correction that needs the new FieldId.
                                 if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RelatedRecordId.HasValue)
                                 {
-                                    int newFieldId = dbUpdateResult.RelatedRecordId.Value;
+                                    int newFieldId = dbUpdateResult.RelatedRecordId.Value; // This is the ID of the newly created Field.
 
                                     var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
                                         r.CorrectionType == "format_correction" &&
                                         r.FieldName == request.FieldName &&
                                         r.LineNumber == request.LineNumber &&
-                                        !r.LineId.HasValue);
+                                        !r.LineId.HasValue); // Only pair if it's new and lacks context.
 
                                     if (formatCorrectionRequestIndex != -1)
                                     {
@@ -99,7 +100,7 @@ namespace WaterNut.DataSpace
 
                                         var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
                                         // Use the SAME context. The Omission strategy has already called SaveChanges,
-                                        // so the new Field is now tracked by this context instance.
+                                        // so the new Field is tracked within this context instance.
                                         var formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
 
                                         var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
@@ -147,7 +148,6 @@ namespace WaterNut.DataSpace
                         }
                     }
                 } // End of using(context)
-                // ==================================== FIX END ====================================
             }
         }
 

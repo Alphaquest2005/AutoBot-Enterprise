@@ -4,13 +4,23 @@ using System.Linq;
 using System.Collections.Generic;
 using global::EntryDataDS.Business.Entities; // For ShipmentInvoice
 using OCR.Business.Entities; // For DB entities like Invoice, Fields, Lines, etc.
+using Serilog;
 
 namespace WaterNut.DataSpace
 {
+    // Static logger for use within the data models themselves.
+    public static class ModelLogger
+    {
+        public static readonly ILogger Logger = Serilog.Log.ForContext("SourceContext", "DataModels");
+    }
+
     #region Core Correction and Error Models
 
     public class CorrectionResult
     {
+        private string _pattern;
+        private string _replacement;
+
         public string FieldName { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
@@ -31,17 +41,25 @@ namespace WaterNut.DataSpace
         public int? RegexId { get; set; }
         public string WindowText { get; set; }
 
-        // =================================== FIX START ===================================
-        /// <summary>
-        /// For format corrections, this is the regex pattern to FIND the incorrect format.
-        /// </summary>
-        public string Pattern { get; set; }
+        public string Pattern
+        {
+            get => _pattern;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: CorrectionResult.Pattern = '{Value}'", value);
+                _pattern = value;
+            }
+        }
 
-        /// <summary>
-        /// For format corrections, this is the string to REPLACE the found pattern with.
-        /// </summary>
-        public string Replacement { get; set; }
-        // ==================================== FIX END ====================================
+        public string Replacement
+        {
+            get => _replacement;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: CorrectionResult.Replacement = '{Value}'", value);
+                _replacement = value;
+            }
+        }
 
         public string FullContext =>
             string.Join(
@@ -49,9 +67,11 @@ namespace WaterNut.DataSpace
                 ContextLinesBefore.Concat(new[] { $"Line {LineNumber}: {LineText}" }).Concat(ContextLinesAfter));
     }
 
-
     public class InvoiceError
     {
+        private string _pattern;
+        private string _replacement;
+
         public string Field { get; set; }
         public string ExtractedValue { get; set; }
         public string CorrectValue { get; set; }
@@ -63,24 +83,29 @@ namespace WaterNut.DataSpace
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
         public bool RequiresMultilineRegex { get; set; }
-
-        /// <summary>
-        /// A regex pattern suggested by the detection phase that can be used for de-duplication and learning.
-        /// </summary>
         public string SuggestedRegex { get; set; }
 
-        // =================================== FIX START ===================================
-        /// <summary>
-        /// For format corrections, this is the regex pattern to FIND the incorrect format.
-        /// </summary>
-        public string Pattern { get; set; }
+        public string Pattern
+        {
+            get => _pattern;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: InvoiceError.Pattern = '{Value}'", value);
+                _pattern = value;
+            }
+        }
 
-        /// <summary>
-        /// For format corrections, this is the string to REPLACE the found pattern with.
-        /// </summary>
-        public string Replacement { get; set; }
-        // ==================================== FIX END ====================================
+        public string Replacement
+        {
+            get => _replacement;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: InvoiceError.Replacement = '{Value}'", value);
+                _replacement = value;
+            }
+        }
     }
+
     #endregion
 
     #region Database Interaction Models
@@ -90,27 +115,29 @@ namespace WaterNut.DataSpace
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
         public int? RecordId { get; set; }
-        public int? RelatedRecordId { get; set; } // ADD THIS LINE
+        public int? RelatedRecordId { get; set; }
         public string Operation { get; set; }
         public Exception Exception { get; set; }
 
-        public static DatabaseUpdateResult Success(int recordId, string operation, int? relatedRecordId = null) => // MODIFY THIS LINE
+        public static DatabaseUpdateResult Success(int recordId, string operation, int? relatedRecordId = null) =>
             new DatabaseUpdateResult
-                {
-                    IsSuccess = true,
-                    RecordId = recordId,
-                    Operation = operation,
-                    Message = $"Successfully {operation} (ID: {recordId})",
-                    RelatedRecordId = relatedRecordId // ADD THIS LINE
-                };
+            {
+                IsSuccess = true,
+                RecordId = recordId,
+                Operation = operation,
+                Message = $"Successfully {operation} (ID: {recordId})",
+                RelatedRecordId = relatedRecordId
+            };
 
         public static DatabaseUpdateResult Failed(string message, Exception ex = null) =>
             new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
     }
 
-
     public class RegexUpdateRequest
     {
+        private string _pattern;
+        private string _replacement;
+
         public string FieldName { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
@@ -133,17 +160,25 @@ namespace WaterNut.DataSpace
         public string PartName { get; set; }
         public int? InvoiceId { get; set; }
 
-        // =================================== FIX START ===================================
-        /// <summary>
-        /// For format corrections, this is the regex pattern to FIND the incorrect format.
-        /// </summary>
-        public string Pattern { get; set; }
+        public string Pattern
+        {
+            get => _pattern;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: RegexUpdateRequest.Pattern = '{Value}'", value);
+                _pattern = value;
+            }
+        }
 
-        /// <summary>
-        /// For format corrections, this is the string to REPLACE the found pattern with.
-        /// </summary>
-        public string Replacement { get; set; }
-        // ==================================== FIX END ====================================
+        public string Replacement
+        {
+            get => _replacement;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: RegexUpdateRequest.Replacement = '{Value}'", value);
+                _replacement = value;
+            }
+        }
     }
 
     #endregion
@@ -152,6 +187,7 @@ namespace WaterNut.DataSpace
 
     public class OCRFieldMetadata
     {
+        // ... (no changes needed here) ...
         public string FieldName { get; set; }
         public string Value { get; set; }
         public string RawValue { get; set; }
@@ -178,11 +214,32 @@ namespace WaterNut.DataSpace
 
     public class FieldFormatRegexInfo
     {
+        private string _pattern;
+        private string _replacement;
+
         public int? FormatRegexId { get; set; }
         public int? RegexId { get; set; }
         public int? ReplacementRegexId { get; set; }
-        public string Pattern { get; set; }
-        public string Replacement { get; set; }
+
+        public string Pattern
+        {
+            get => _pattern;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '{Value}'", value);
+                _pattern = value;
+            }
+        }
+
+        public string Replacement
+        {
+            get => _replacement;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '{Value}'", value);
+                _replacement = value;
+            }
+        }
     }
 
     public class ShipmentInvoiceWithMetadata
@@ -210,6 +267,7 @@ namespace WaterNut.DataSpace
 
     public class LineContext
     {
+        // ... (no changes needed here) ...
         public int LineNumber { get; set; }
         public string LineText { get; set; }
         public List<string> ContextLinesBefore { get; set; } = new List<string>();
@@ -233,6 +291,7 @@ namespace WaterNut.DataSpace
 
     public class FieldInfo
     {
+        // ... (no changes needed here) ...
         public int FieldId { get; set; }
         public string Key { get; set; }
         public string Field { get; set; }
@@ -243,6 +302,7 @@ namespace WaterNut.DataSpace
 
     public class RegexCreationResponse
     {
+        // ... (no changes needed here) ...
         public string Strategy { get; set; }
         public string RegexPattern { get; set; }
         public string CompleteLineRegex { get; set; }
@@ -256,12 +316,14 @@ namespace WaterNut.DataSpace
 
     public class InvoiceContext
     {
+        // ... (no changes needed here) ...
         public int? InvoiceId { get; set; }
         public string InvoiceName { get; set; }
     }
 
     public class PartContext
     {
+        // ... (no changes needed here) ...
         public int? PartId { get; set; }
         public string PartName { get; set; }
         public int? PartTypeId { get; set; }
@@ -269,15 +331,36 @@ namespace WaterNut.DataSpace
 
     public class RegexPattern
     {
+        private string _pattern;
+        private string _replacement;
+
         public string FieldName { get; set; }
         public string StrategyType { get; set; }
-        public string Pattern { get; set; }
-        public string Replacement { get; set; }
         public double Confidence { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
         public int UpdateCount { get; set; }
         public string CreatedBy { get; set; }
+
+        public string Pattern
+        {
+            get => _pattern;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: RegexPattern.Pattern = '{Value}'", value);
+                _pattern = value;
+            }
+        }
+
+        public string Replacement
+        {
+            get => _replacement;
+            set
+            {
+                ModelLogger.Logger.Error("📝 **PROPERTY_SET**: RegexPattern.Replacement = '{Value}'", value);
+                _replacement = value;
+            }
+        }
     }
 
     #endregion
