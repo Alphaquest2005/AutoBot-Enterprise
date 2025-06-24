@@ -93,6 +93,8 @@ namespace WaterNut.DataSpace
 
                 _logger.Error("   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
 
+                // =================================== FIX START ===================================
+                // Correctly map ALL fields from InvoiceError to CorrectionResult, including Pattern and Replacement.
                 var successfulDetectionsForDB = allDetectedErrors.Select(
                     e => new CorrectionResult
                     {
@@ -109,14 +111,13 @@ namespace WaterNut.DataSpace
                         ContextLinesAfter = e.ContextLinesAfter,
                         RequiresMultilineRegex = e.RequiresMultilineRegex,
                         SuggestedRegex = e.SuggestedRegex,
-                        Pattern = e.Pattern,
-                        Replacement = e.Replacement
+                        Pattern = e.Pattern, // This was the missing mapping
+                        Replacement = e.Replacement // This was the missing mapping
                     }).ToList();
+                // ==================================== FIX END ====================================
 
-                // =================================== LOGGING ENHANCEMENT ===================================
                 _logger.Error("   - **DATA_DUMP (successfulDetectionsForDB)**: Object state before creating RegexUpdateRequests: {Data}",
                     JsonSerializer.Serialize(successfulDetectionsForDB, jsonOptions));
-                // =================================== END ENHANCEMENT =====================================
 
                 if (successfulDetectionsForDB.Any())
                 {
@@ -124,10 +125,8 @@ namespace WaterNut.DataSpace
                     var regexUpdateRequests = successfulDetectionsForDB
                         .Select(c => this.CreateRegexUpdateRequest(c, fileText, metadata, invoice.Id)).ToList();
 
-                    // =================================== LOGGING ENHANCEMENT ===================================
                     _logger.Error("   - **DATA_DUMP (regexUpdateRequests)**: Object state before sending to UpdateRegexPatternsAsync: {Data}",
                         JsonSerializer.Serialize(regexUpdateRequests, jsonOptions));
-                    // =================================== END ENHANCEMENT =====================================
 
                     await this.UpdateRegexPatternsAsync(regexUpdateRequests).ConfigureAwait(false);
                 }

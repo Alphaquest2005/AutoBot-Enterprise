@@ -56,7 +56,9 @@ namespace WaterNut.DataSpace
 
                 var request = requestsToProcess[i];
 
-                // Use a new context for each top-level request to prevent caching/state issues between unrelated operations.
+                // =================================== FIX START ===================================
+                // Use a new context for each top-level request to guarantee transactional integrity
+                // and prevent entity state conflicts between loop iterations.
                 using (var context = new OCRContext())
                 {
                     DatabaseUpdateResult dbUpdateResult = null;
@@ -75,30 +77,29 @@ namespace WaterNut.DataSpace
                             {
                                 dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
 
-                                // If this was a successful omission, check for a paired format_correction that needs the new FieldId.
+                                // If this was a successful omission, check for a NEW, UNCONTEXTUALIZED, and paired format_correction.
                                 if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RelatedRecordId.HasValue)
                                 {
-                                    int newFieldId = dbUpdateResult.RelatedRecordId.Value; // This is the ID of the newly created Field.
+                                    int newFieldId = dbUpdateResult.RelatedRecordId.Value;
 
                                     var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
                                         r.CorrectionType == "format_correction" &&
                                         r.FieldName == request.FieldName &&
                                         r.LineNumber == request.LineNumber &&
-                                        !r.LineId.HasValue); // Only pair if it's new and lacks context.
+                                        !r.LineId.HasValue);
 
                                     if (formatCorrectionRequestIndex != -1)
                                     {
                                         var formatRequest = requestsToProcess[formatCorrectionRequestIndex];
                                         processedIndexes.Add(formatCorrectionRequestIndex);
 
-                                        _logger.Information("  - Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately.", formatRequest.FieldName, newFieldId);
+                                        _logger.Error("  - 🗣️ **PAIRED_EXECUTION**: Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately within the same transaction.", formatRequest.FieldName, newFieldId);
 
-                                        // Inject the FieldId into the request property that the format strategy expects.
                                         formatRequest.LineId = newFieldId;
 
                                         var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
-                                        // IMPORTANT: Use the SAME context here. The Omission strategy has already called SaveChanges,
-                                        // so the new Field is tracked within this context instance. A new context would not see it.
+                                        // Use the SAME context. The Omission strategy has already called SaveChanges,
+                                        // so the new Field is now tracked by this context instance.
                                         var formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
 
                                         var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
@@ -146,6 +147,7 @@ namespace WaterNut.DataSpace
                         }
                     }
                 } // End of using(context)
+                // ==================================== FIX END ====================================
             }
         }
 
