@@ -1,28 +1,30 @@
+using AutoBot; // For PDFUtils if namespace is AutoBot
+using Core.Common.Extensions; // Added for LogFilterState
+using CoreEntities.Business.Entities;
+using EntryDataDS.Business.Entities; // Needed for EntryDataDSContext
+using Microsoft.Extensions.Configuration; // Added for config builder & SetBasePath
+using NUnit.Framework;
+using Serilog; // Added for logging
+using Serilog.Events; // Added for LogEventLevel
+using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Serilog.Events; // Added for LogEventLevel
-using Core.Common.Extensions; // Added for LogFilterState
-using NUnit.Framework;
-using CoreEntities.Business.Entities;
-using EntryDataDS.Business.Entities; // Needed for EntryDataDSContext
 using WaterNut.Business.Services.Utils; // For PDFUtils, FileTypeManager
 using WaterNut.DataSpace; // For FileTypes enum? Check namespace
-using AutoBot; // For PDFUtils if namespace is AutoBot
-using Microsoft.Extensions.Configuration; // Added for config builder & SetBasePath
-using Serilog; // Added for logging
-using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
 
 namespace AutoBotUtilities.Tests
 {
-    using Destructurama.SystemTextJson; // For SystemTextJsonDestructuringPolicy
     using Destructurama; // For .Destructure
+    using Destructurama.SystemTextJson; // For SystemTextJsonDestructuringPolicy
     using Newtonsoft.Json;
+    using NUnit.Framework.Legacy;
     using System.Collections;
     using System.Data.Entity;
+    using System.Reflection;
     using System.Text.Json;
     using System.Text.Json.Serialization;
 
@@ -754,7 +756,99 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
             }
         }
 
-        [Test]
+
+[Test]
+    public async Task CanImportAmazoncomOrder_AI_DetectsAllOmissions_WithFullContext()
+    {
+        // Arrange
+        _logger.Information("🔍 **TEST_SETUP_INTENTION**: LIVE API test for V12.0 prompt with schema enforcement.");
+        _logger.Information("🔍 **TEST_EXPECTATION**: AI must detect ALL omissions AND provide FULL contextual data for each one.");
+
+        var logger = new LoggerConfiguration()
+            .WriteTo.NUnitOutput()
+            .MinimumLevel.Verbose()
+            .CreateLogger();
+
+        var service = new OCRCorrectionService(logger);
+
+        // STEP 1: Load the actual OCR text from the file.
+        var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+        var textFile = testFile + ".txt";
+        Assert.That(File.Exists(textFile), Is.True, $"Test dependency missing: {textFile}");
+        var fullOcrText = File.ReadAllText(textFile);
+
+        // STEP 2: Create a mock invoice object that mirrors the state from the failing run.
+        var invoiceWithOmissions = new ShipmentInvoice
+        {
+            InvoiceNo = "112-9126443-1163432",
+            SubTotal = 161.95,
+            TotalInternalFreight = 6.99,
+            TotalOtherCost = 11.34,
+            InvoiceTotal = 166.30,
+            TotalDeduction = null,
+            TotalInsurance = null
+        };
+
+        // STEP 3: Use reflection to call the private error detection method.
+        MethodInfo methodInfo = typeof(OCRCorrectionService).GetMethod(
+            "DetectInvoiceErrorsAsync",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // Act
+        _logger.Information("🚀 **ACTION**: Calling DetectInvoiceErrorsAsync to trigger live DeepSeek API call...");
+        var detectionTask = (Task<List<InvoiceError>>)methodInfo.Invoke(service, new object[] { invoiceWithOmissions, fullOcrText, new Dictionary<string, OCRFieldMetadata>() });
+        var detectedErrors = await detectionTask;
+        _logger.Information("✅ **ACTION_COMPLETE**: DeepSeek API call finished. Received {Count} unique errors.", detectedErrors.Count);
+
+        // Assert
+        Assert.That(detectedErrors, Is.Not.Null, "The list of detected errors should not be null.");
+
+        var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+        _logger.Information("📜 **DETECTED_ERRORS_DUMP**: Full list of errors returned by AI:\n{ErrorsJson}", System.Text.Json.JsonSerializer.Serialize(detectedErrors, options));
+
+        // =============================== ENHANCED ASSERTIONS START ===============================
+
+        // Find the specific correction for the $0.46 deduction
+        var deduction46Cents = detectedErrors.FirstOrDefault(e => e.Field == "TotalDeduction" && e.CorrectValue == "0.46");
+        Assert.That(deduction46Cents, Is.Not.Null, "Correction for the $0.46 deduction was not found.");
+
+        // Assert that the object is well-formed with all required contextual data
+        _logger.Information("🔍 Verifying structure of the $0.46 deduction correction...");
+        Assert.That(deduction46Cents.LineText, Does.Contain("Free Shipping: -$0.46"), "LineText for $0.46 deduction is incorrect or missing.");
+        Assert.That(deduction46Cents.LineNumber, Is.EqualTo(74), "LineNumber for $0.46 deduction is incorrect or missing.");
+        Assert.That(deduction46Cents.SuggestedRegex, Is.Not.Null.And.Not.Empty, "SuggestedRegex for $0.46 deduction is missing.");
+        StringAssert.Contains("TotalDeduction", deduction46Cents.SuggestedRegex, "SuggestedRegex must contain the capture group name.");
+        Assert.That(deduction46Cents.Reasoning, Is.Not.Null.And.Not.Empty, "Reasoning for $0.46 deduction is missing.");
+        _logger.Information("✅ Structure for $0.46 deduction is correct.");
+
+        // Find the specific correction for the $6.53 deduction
+        var deduction6Dollars = detectedErrors.FirstOrDefault(e => e.Field == "TotalDeduction" && e.CorrectValue == "6.53");
+        Assert.That(deduction6Dollars, Is.Not.Null, "Correction for the $6.53 deduction was not found.");
+
+        // Assert that this object is also well-formed
+        _logger.Information("🔍 Verifying structure of the $6.53 deduction correction...");
+        Assert.That(deduction6Dollars.LineText, Does.Contain("Free Shipping: -$6.53"), "LineText for $6.53 deduction is incorrect or missing.");
+        Assert.That(deduction6Dollars.LineNumber, Is.EqualTo(75), "LineNumber for $6.53 deduction is incorrect or missing.");
+        Assert.That(deduction6Dollars.SuggestedRegex, Is.Not.Null.And.Not.Empty, "SuggestedRegex for $6.53 deduction is missing.");
+        StringAssert.Contains("TotalDeduction", deduction6Dollars.SuggestedRegex, "SuggestedRegex must contain the capture group name.");
+        Assert.That(deduction6Dollars.Reasoning, Is.Not.Null.And.Not.Empty, "Reasoning for $6.53 deduction is missing.");
+        _logger.Information("✅ Structure for $6.53 deduction is correct.");
+
+        // Verify the format_correction for the gift card
+        var formatCorrection = detectedErrors.FirstOrDefault(e => e.ErrorType == "format_correction" && e.Field == "TotalInsurance");
+        Assert.That(formatCorrection, Is.Not.Null, "The format_correction for TotalInsurance was not found.");
+
+        _logger.Information("🔍 Verifying structure of the format_correction...");
+        Assert.That(formatCorrection.Pattern, Is.Not.Null.And.Not.Empty, "Pattern for format_correction is missing.");
+        Assert.That(formatCorrection.Replacement, Is.Not.Null.And.Not.Empty, "Replacement for format_correction is missing.");
+        _logger.Information("✅ Structure for format_correction is correct.");
+
+        // =============================== ENHANCED ASSERTIONS END ===============================
+
+        _logger.Information("✅ **ALL_ASSERTIONS_PASSED**: Live AI call successfully detected all omissions with full, well-formed contextual data.");
+    }
+
+    [Test]
         public async Task CanImportTropicalVendorsInvoiceWithV9V10()
         {
             Console.SetOut(TestContext.Progress);
@@ -2382,6 +2476,22 @@ Return only the regex pattern, no explanation:";
                 }
             }
         }
+
+        // =============================== FIX IS HERE ===============================
+        /// <summary>
+        /// Prepares a regex pattern for safe embedding inside a JSON string value.
+        /// This means replacing every single backslash '\' with a double backslash '\\'.
+        /// </summary>
+        private string EscapeRegexForJson(string regexPattern)
+        {
+            if (string.IsNullOrEmpty(regexPattern))
+            {
+                return "";
+            }
+            // In JSON, a literal backslash must be escaped with another backslash.
+            return regexPattern.Replace(@"\", @"\\");
+        }
+        // ===========================================================================
 
 
     } // End Class

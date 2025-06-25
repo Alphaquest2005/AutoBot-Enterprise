@@ -20,9 +20,8 @@ namespace WaterNut.DataSpace
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
-            _logger.Error("🚀 **PROMPT_CREATION_START (V11.7 - Consistent C# Escaping)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Error("🚀 **PROMPT_CREATION_START (V12.0 - Schema Reinstated)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
-            // Build the simple JSON block of extracted values
             var currentValues = new Dictionary<string, object>
             {
                 ["InvoiceNo"] = invoice?.InvoiceNo,
@@ -39,17 +38,17 @@ namespace WaterNut.DataSpace
             var currentJson = JsonSerializer.Serialize(currentValues, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             _logger.Error("   - **PROMPT_JSON_DUMP**: Basic extracted values: {JsonContext}", currentJson);
 
-            // Build the human-readable annotated context block
-            var annotatedContextBuilder = new StringBuilder();
+            string annotatedContext = "";
             if (metadata != null)
             {
+                var annotatedContextBuilder = new StringBuilder();
                 var fieldsGroupedByCanonicalName = metadata.Values
                     .Where(m => m != null && !string.IsNullOrEmpty(m.Field))
                     .GroupBy(m => m.Field);
 
                 foreach (var group in fieldsGroupedByCanonicalName)
                 {
-                    if (group.Count() > 1) // This is an aggregate field
+                    if (group.Count() > 1)
                     {
                         var finalValue = GetCurrentFieldValue(invoice, group.Key);
                         annotatedContextBuilder.AppendLine($"\n- The value for `{group.Key}` ({finalValue}) was calculated by summing the following lines I found:");
@@ -59,62 +58,114 @@ namespace WaterNut.DataSpace
                         }
                     }
                 }
+                annotatedContext = annotatedContextBuilder.ToString();
             }
-            string annotatedContext = annotatedContextBuilder.ToString();
             _logger.Error("   - **PROMPT_ANNOTATION_DUMP**: Annotated context for aggregates: {AnnotatedContext}", string.IsNullOrWhiteSpace(annotatedContext) ? "None" : annotatedContext);
 
-            // Restore and integrate the OCR sections analysis
             var ocrSections = AnalyzeOCRSections(fileText);
             var ocrSectionsString = string.Join(", ", ocrSections);
             _logger.Error("   - **PROMPT_STRUCTURE_DUMP**: Detected OCR Sections: {OcrSections}", ocrSectionsString);
 
-            var prompt = $@"INTELLIGENT OCR CORRECTION (V11.7 - Consistent C# Escaping):
+            double subTotal = invoice?.SubTotal ?? 0;
+            double freight = invoice?.TotalInternalFreight ?? 0;
+            double otherCost = invoice?.TotalOtherCost ?? 0;
+            double deduction = invoice?.TotalDeduction ?? 0;
+            double insurance = invoice?.TotalInsurance ?? 0;
+            double reportedTotal = invoice?.InvoiceTotal ?? 0;
+            double calculatedTotal = subTotal + freight + otherCost + insurance - deduction;
+            double discrepancy = reportedTotal - calculatedTotal;
+
+            string balanceCheckContext = $@"
+**4. MATHEMATICAL BALANCE CHECK:**
+My system's calculated total is {calculatedTotal:F2}. The reported InvoiceTotal is {reportedTotal:F2}.
+The current discrepancy is: **{discrepancy:F2}**.
+Your primary goal is to find all missing values in the text that account for this discrepancy.";
+
+            // =============================== THE FIX IS HERE ===============================
+            // We are restoring the full, detailed JSON examples to enforce the output schema.
+            string jsonSafeFormatPattern = EscapeRegexForJson(@"^(\d+\.?\d*)$");
+            string jsonSafeInferredRegex = EscapeRegexForJson(@"Order Total:\s*[\$€£][\d.,]+");
+            string jsonSafeOmissionRegex = EscapeRegexForJson(@"Free Shipping:\s*-?[\$€£]?(?<TotalDeduction>[\d,]+\.?\d*)");
+            // ============================ END OF FIX PREPARATION ============================
+
+            var prompt = $@"INTELLIGENT OCR CORRECTION (V12.0 - Schema Reinstated):
 
 **CONTEXT:**
-I have extracted data from an OCR document. My goal is to find any values I missed, correct formatting errors, and infer missing data when there is strong contextual evidence.
+I have extracted data from an OCR document, but the numbers don't add up correctly. Your task is to act as an auditor, find all missing financial entries in the text, and help me balance the invoice.
 
 **1. EXTRACTED FIELDS:**
 {currentJson}
 
-**2. CONTEXT & COMPONENTS:** (How totals were calculated)
+**2. CONTEXT & COMPONENTS (if any):**
 {annotatedContext}
-(If this section is empty, no fields were aggregated from multiple sources)
+
+{balanceCheckContext}
 
 **3. COMPLETE OCR TEXT:**
 {this.CleanTextForAnalysis(fileText)}
 
-**YOUR TASK:**
-Analyze the complete OCR text and generate a JSON object in the `errors` array for every omission, format correction, or inferred value you discover.
-1.  An `omission` object with `suggested_regex` to add the missing value.
-2.  A `format_correction` object with a `pattern` and `replacement` string to ensure the value is handled correctly in the future (ONLY for TotalInsurance).
-3.  An `inferred` object with a `suggested_regex` to infer values that are not explicitly written but can be reliably deduced from context.
+**YOUR TASK & INSTRUCTIONS BY ERROR TYPE:**
+Analyze the OCR text and generate a JSON object in the `errors` array for every issue you discover. You MUST follow the specific rules and output schema for each `error_type`.
 
+---
+**A) For `omission` and `format_correction` types (Values explicitly in the text):**
+   - **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two ""Free Shipping"" lines, you MUST report two separate `omission` objects.
+   - **RULE: IGNORE NOISE.** Some lines may contain multiple pieces of information (e.g., a payment method AND a deduction). If a financial value is present, report it.
 
-**CARIBBEAN CUSTOMS FIELD MAPPING & VALUE TRANSFORMATION (Apply to each new finding):**
-- **If a line is a SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
-  - Set `field` to ""TotalDeduction"". For `correct_value`, return the **absolute value** as a string (e.g., ""6.53"").
-- **If a line is a CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
-  - **For the `omission` object:** Set `field` to ""TotalInsurance"". For `correct_value`, return the **negative absolute value** (e.g., ""-6.99"").
-  - **For the `format_correction` object:** Set `field` to ""TotalInsurance"".
-    - `extracted_value`: The number's **absolute value** (e.g., ""6.99"").
-    - `correct_value`: The number's **absolute value multiplied by -1** (e.g., ""-6.99"").
-    - `pattern`: A C# regex that captures a positive number (e.g., ""^(\\d+\\.?\\d*)$"").
-    - `replacement`: The captured group with a negative sign prepended (e.g., ""-$1"").
-- **For all other fields**, report the raw value from the text.
+---
+**B) For `inferred` type (Values NOT explicitly in the text):**
+   - **RULE: BE CAUTIOUS.** Only infer a value if there is strong, unambiguous contextual evidence (e.g., supplier name + currency symbol).
 
-**SPECIAL CASE: CONTEXT-AWARE INFERRED VALUES**
-If a value is not explicitly written but can be reliably inferred from contextual clues within the document, you must act like a detective and justify your inference.
+---
+**STRICT RESPONSE SCHEMA (Follow these examples precisely):**
 
-**RULES FOR INFERENCE:**
-1.  Generate an error object with `error_type`: `""inferred""`.
-2.  The `suggested_regex` **MUST** match the line containing the primary clue (e.g., the dollar sign).
-3.  The `correct_value` **MUST** be the static, inferred value (e.g., ""USD"").
-4.  **CRITICAL:** The `reasoning` field **MUST** justify the inference by citing evidence from the document, such as the supplier's name or address. A simple symbol is NOT enough evidence on its own.
+**EXAMPLE FOR `omission` (Supplier-caused reduction):**
+```json
+{{
+  ""field"": ""TotalDeduction"",
+  ""extracted_value"": ""null"",
+  ""correct_value"": ""6.53"",
+  ""line_text"": ""Free Shipping: -$6.53"",
+  ""line_number"": 75,
+  ""confidence"": 0.98,
+  ""error_type"": ""omission"",
+  ""suggested_regex"": ""{jsonSafeOmissionRegex}"",
+  ""reasoning"": ""The OCR text contains a 'Free Shipping' line which was missed. This is a supplier-caused reduction.""
+}}
+```
 
-**EXAMPLE 1: VALID INFERENCE (Amazon Invoice)**
-- **Text Shows:** `Sold by: Amazon.com Services, Inc` and `Order Total: $166.30`.
-- **Your Reasoning:** The supplier is ""Amazon.com,"" a known US-based company, and the currency symbol is '$'. Therefore, it is safe to infer the currency is 'USD'.
-- **Your JSON object:**
+**EXAMPLE FOR `omission` and `format_correction` (Customer-caused reduction):**
+```json
+{{
+  ""errors"": [
+    {{
+      ""field"": ""TotalInsurance"",
+      ""extracted_value"": ""null"",
+      ""correct_value"": ""-6.99"",
+      ""line_text"": ""Gift Card Amount: -$6.99"",
+      ""line_number"": 77,
+      ""confidence"": 0.98,
+      ""error_type"": ""omission"",
+      ""suggested_regex"": ""Gift Card Amount:\\s*-?[\\$€£]?(?<TotalInsurance>[\\d,]+\\.?\\d*)"",
+      ""reasoning"": ""The OCR text contains a 'Gift Card Amount' line, which is a customer-owned reduction.""
+    }},
+    {{
+      ""field"": ""TotalInsurance"",
+      ""extracted_value"": ""6.99"",
+      ""correct_value"": ""-6.99"",
+      ""line_text"": ""Gift Card Amount: -$6.99"",
+      ""line_number"": 77,
+      ""confidence"": 0.99,
+      ""error_type"": ""format_correction"",
+      ""pattern"": ""{jsonSafeFormatPattern}"",
+      ""replacement"": ""-$1"",
+      ""reasoning"": ""This rule ensures any positive number captured for TotalInsurance is made negative, as per customs rules.""
+    }}
+  ]
+}}
+```
+
+**EXAMPLE FOR `inferred`:**
 ```json
 {{
   ""field"": ""Currency"",
@@ -124,68 +175,33 @@ If a value is not explicitly written but can be reliably inferred from contextua
   ""line_number"": 7,
   ""confidence"": 0.99,
   ""error_type"": ""inferred"",
-  ""suggested_regex"": ""Order Total:\\s*[\\$€£][\\d.,]+"",
+  ""suggested_regex"": ""{jsonSafeInferredRegex}"",
   ""reasoning"": ""Inferred from document context: The supplier is 'Amazon.com', a US entity, and the total is prefixed with a '$' symbol. This combination strongly implies the currency is USD.""
 }}
 ```
 
-**EXAMPLE 2: INVALID INFERENCE (Ambiguous Supplier)**
-- **Text Shows:** `Sold by: International Goods Ltd.` (a Trinidadian company) and `Total: $500.00`.
-- **Your Reasoning:** The supplier is not explicitly US-based. The '$' symbol could mean TTD (Trinidad and Tobago Dollar) or USD. There is not enough evidence to confidently infer 'USD'.
-- **Your Action:** DO NOT create an ""inferred"" error object for the currency in this case. It is better to leave it blank than to infer incorrectly.
+If you find no new omissions or corrections, return: {{""errors"": []}}";
 
-**YOUR TASK:** Apply this detective-like reasoning. Only infer values when you have strong contextual evidence from the document itself to support your conclusion.
-
-**YOUR RESPONSE FORMAT (A separate JSON object for EACH correction):**
-```json
-{{
-  ""errors"": [
-    {{
-      ""field"": ""TotalDeduction"",
-      ""extracted_value"": ""null"",
-      ""correct_value"": ""6.53"",
-      ""line_text"": ""Free Shipping: -$6.53"",
-      ""line_number"": 75,
-      ""confidence"": 0.98,
-      ""error_type"": ""omission"",
-      ""suggested_regex"": ""Free Shipping:\\s*-?\\$?(?<TotalDeduction>[\\d,]+\\.?\\d*)"",
-      ""reasoning"": ""The OCR text contains a 'Free Shipping' line, which is a missed omission.""
-    }},
-    {{
-      ""field"": ""TotalInsurance"",
-      ""extracted_value"": ""null"",
-      ""correct_value"": ""-6.99"",
-      ""line_text"": ""Gift Card Amount: -$6.99"",
-      ""line_number"": 77,
-      ""confidence"": 0.98,
-      ""error_type"": ""omission"",
-      ""suggested_regex"": ""Gift Card Amount:\\s*-?\\$?(?<TotalInsurance>[\\d,]+\\.?\\d*)"",
-      ""reasoning"": ""The OCR text contains a 'Gift Card Amount' line, which is a missed omission.""
-    }},
-    {{
-      ""field"": ""TotalInsurance"",
-      ""error_type"": ""format_correction"",
-      ""extracted_value"": ""6.99"",
-      ""correct_value"": ""-6.99"",
-      ""line_text"": ""Gift Card Amount: -$6.99"",
-      ""line_number"": 77,
-      ""confidence"": 0.99,
-      ""pattern"": ""^(\\d+\\.?\\d*)$"",
-      ""replacement"": ""-$1"",
-      ""reasoning"": ""This rule ensures any positive number captured for TotalInsurance is made negative, as per customs rules.""
-    }}
-  ]
-}}
-```
-
-If you find no new omissions, return: {{""errors"": []}}";
-
-            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V11.7)**: Full context prompt with REAL FORMAT CORRECTION logic created. Length: {PromptLength} characters.", prompt.Length);
+            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V12.0)**: Full context prompt with REINSTATED SCHEMA logic created. Length: {PromptLength} characters.", prompt.Length);
             return prompt;
         }
 
 
-
+        // =============================== FIX IS HERE ===============================
+        /// <summary>
+        /// Prepares a regex pattern for safe embedding inside a JSON string value.
+        /// This means replacing every single backslash '\' with a double backslash '\\'.
+        /// </summary>
+        private string EscapeRegexForJson(string regexPattern)
+        {
+            if (string.IsNullOrEmpty(regexPattern))
+            {
+                return "";
+            }
+            // In JSON, a literal backslash must be escaped with another backslash.
+            return regexPattern.Replace(@"\", @"\\");
+        }
+        // ===========================================================================
 
         /// <summary>
         /// Analyzes the file text to identify which OCR sections are present.
