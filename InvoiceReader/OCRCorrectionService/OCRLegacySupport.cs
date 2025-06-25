@@ -204,7 +204,12 @@ namespace WaterNut.DataSpace
                             SuggestedRegex = e.SuggestedRegex,
                             InvoiceId = template.OcrInvoices.Id,
                             FilePath = template.FilePath,
-                            //InvoiceNumber = invoiceWrapper.Invoice.InvoiceNo
+                           
+                            // =================== THE FIX ===================
+                            // Add the missing mappings here.
+                            Pattern = e.Pattern,
+                            Replacement = e.Replacement
+                            // ===============================================
                         }).ToList();
 
                         allUpdateRequests.AddRange(updateRequestsForThisInvoice);

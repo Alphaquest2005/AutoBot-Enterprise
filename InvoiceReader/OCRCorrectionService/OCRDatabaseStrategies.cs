@@ -44,14 +44,28 @@ namespace WaterNut.DataSpace
                 int maxLines = 1,
                 string description = null)
             {
+                // First, check the database for an existing entity.
                 var existingRegex = await context.RegularExpressions
+                                        .AsNoTracking() // Use AsNoTracking for read-only queries to improve performance.
                                         .FirstOrDefaultAsync(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines).ConfigureAwait(false);
                 if (existingRegex != null)
                 {
-                    _logger.Debug("Found existing regex pattern (ID: {RegexId}): {Pattern}", existingRegex.Id, pattern);
+                    _logger.Debug("Found existing regex pattern in DB (ID: {RegexId}): {Pattern}", existingRegex.Id, pattern);
                     return existingRegex;
                 }
 
+                // SECOND, check the local DbContext change tracker for an entity that has been added but not yet saved.
+                // This is the critical fix to prevent primary key conflicts in a single transaction.
+                var localRegex = context.RegularExpressions.Local
+                                     .FirstOrDefault(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines);
+                if (localRegex != null)
+                {
+                    _logger.Debug("Found existing regex pattern in LOCAL CACHE (ID: {RegexId}): {Pattern}", localRegex.Id, pattern);
+                    return localRegex;
+                }
+
+
+                // ONLY if it's not in the DB and not in the local cache, create a new one.
                 var newRegex = new RegularExpressions
                 {
                     RegEx = pattern,

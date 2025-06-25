@@ -20,7 +20,7 @@ namespace WaterNut.DataSpace
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
-            _logger.Error("🚀 **PROMPT_CREATION_START (V12.0 - Schema Reinstated)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Error("🚀 **PROMPT_CREATION_START (V12.1 - Cleaned Instructions)**: Creating prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
             var currentValues = new Dictionary<string, object>
             {
@@ -88,7 +88,7 @@ Your primary goal is to find all missing values in the text that account for thi
             string jsonSafeOmissionRegex = EscapeRegexForJson(@"Free Shipping:\s*-?[\$€£]?(?<TotalDeduction>[\d,]+\.?\d*)");
             // ============================ END OF FIX PREPARATION ============================
 
-            var prompt = $@"INTELLIGENT OCR CORRECTION (V12.0 - Schema Reinstated):
+            var prompt = $@"INTELLIGENT OCR CORRECTION (V12.1 - Cleaned Instructions):
 
 **CONTEXT:**
 I have extracted data from an OCR document, but the numbers don't add up correctly. Your task is to act as an auditor, find all missing financial entries in the text, and help me balance the invoice.
@@ -105,21 +105,33 @@ I have extracted data from an OCR document, but the numbers don't add up correct
 {this.CleanTextForAnalysis(fileText)}
 
 **YOUR TASK & INSTRUCTIONS BY ERROR TYPE:**
-Analyze the OCR text and generate a JSON object in the `errors` array for every issue you discover. You MUST follow the specific rules and output schema for each `error_type`.
+Analyze the OCR text and generate a JSON object in the `errors` array for every issue you discover, following the specific rules for each `error_type`.
 
 ---
-**A) For `omission` and `format_correction` types (Values explicitly in the text):**
-   - **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two ""Free Shipping"" lines, you MUST report two separate `omission` objects.
-   - **RULE: IGNORE NOISE.** Some lines may contain multiple pieces of information (e.g., a payment method AND a deduction). If a financial value is present, report it.
+### **Instructions for `omission` and `format_correction` types:**
+*   **Definition:** Use these types when the correct value is **directly visible** in the OCR text but was missed or misformatted by my system.
+*   **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two ""Free Shipping"" lines, you MUST report two separate `omission` objects.
+*   **RULE: IGNORE NOISE.** Some lines may contain multiple pieces of information (e.g., a payment method AND a deduction). If a financial value is present, report it.
+
+#### **Caribbean Customs Field Mapping:**
+*   **SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
+    *   Set `field` to ""TotalDeduction"". For `correct_value`, return the **absolute value** as a string (e.g., ""6.53"").
+*   **CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
+    *   Create an `omission` object: set `field` to ""TotalInsurance"", `correct_value` to the **negative absolute value** (e.g., ""-6.99"").
+    *   Create a `format_correction` object: set `field` to ""TotalInsurance"", `pattern` to `""{jsonSafeFormatPattern}""`, and `replacement` to `""-$1""`.
 
 ---
-**B) For `inferred` type (Values NOT explicitly in the text):**
-   - **RULE: BE CAUTIOUS.** Only infer a value if there is strong, unambiguous contextual evidence (e.g., supplier name + currency symbol).
+### **Instructions for `inferred` type:**
+*   **Definition:** Use this type **ONLY** when the correct value is **NOT directly visible** in the text and must be deduced from other clues.
+    *   **Correct Example:** The text shows a `$` symbol, but not the letters ""USD"". Inferring ""USD"" is an `inferred` error.
+    *   **Incorrect Example:** Finding the text ""April 15, 2025"" for an empty `InvoiceDate` field is an `omission`, not an `inferred` error, because the value is explicitly present.
+*   **RULE: BE CAUTIOUS.** Only infer a value if there is strong, unambiguous contextual evidence.
+*   **RULE: JUSTIFY YOURSELF.** The `reasoning` field **MUST** justify the inference by citing evidence from the document, such as the supplier's name or address.
 
 ---
 **STRICT RESPONSE SCHEMA (Follow these examples precisely):**
 
-**EXAMPLE FOR `omission` (Supplier-caused reduction):**
+**EXAMPLE FOR `omission`:**
 ```json
 {{
   ""field"": ""TotalDeduction"",
@@ -133,7 +145,6 @@ Analyze the OCR text and generate a JSON object in the `errors` array for every 
   ""reasoning"": ""The OCR text contains a 'Free Shipping' line which was missed. This is a supplier-caused reduction.""
 }}
 ```
-
 **EXAMPLE FOR `omission` and `format_correction` (Customer-caused reduction):**
 ```json
 {{
@@ -182,7 +193,7 @@ Analyze the OCR text and generate a JSON object in the `errors` array for every 
 
 If you find no new omissions or corrections, return: {{""errors"": []}}";
 
-            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V12.0)**: Full context prompt with REINSTATED SCHEMA logic created. Length: {PromptLength} characters.", prompt.Length);
+            _logger.Error("🏁 **PROMPT_CREATION_COMPLETE (V12.1)**: Full context prompt with CLEANED INSTRUCTIONS logic created. Length: {PromptLength} characters.", prompt.Length);
             return prompt;
         }
 

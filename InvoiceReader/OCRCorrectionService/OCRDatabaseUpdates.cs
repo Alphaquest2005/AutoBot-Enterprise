@@ -78,11 +78,14 @@ namespace WaterNut.DataSpace
                             {
                                 dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
 
-                                // If this was a successful omission, check for a paired format_correction that needs the new FieldId.
+                                // =============================== THE FIX IS HERE ===============================
+                                // If this was a successful omission, check for a paired format_correction
+                                // that needs the new FieldId. This logic belongs in the orchestrator, not the strategy.
                                 if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RelatedRecordId.HasValue)
                                 {
                                     int newFieldId = dbUpdateResult.RelatedRecordId.Value; // This is the ID of the newly created Field.
 
+                                    // Find the corresponding format_correction request in the main list.
                                     var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
                                         r.CorrectionType == "format_correction" &&
                                         r.FieldName == request.FieldName &&
@@ -92,17 +95,21 @@ namespace WaterNut.DataSpace
                                     if (formatCorrectionRequestIndex != -1)
                                     {
                                         var formatRequest = requestsToProcess[formatCorrectionRequestIndex];
-                                        processedIndexes.Add(formatCorrectionRequestIndex);
+                                        processedIndexes.Add(formatCorrectionRequestIndex); // Mark it as processed so the main loop skips it.
 
                                         _logger.Error("  - 🗣️ **PAIRED_EXECUTION**: Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately within the same transaction.", formatRequest.FieldName, newFieldId);
 
+                                        // Inject the FieldId from the omission's result into the format request.
                                         formatRequest.LineId = newFieldId;
 
                                         var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
+
                                         // Use the SAME context. The Omission strategy has already called SaveChanges,
                                         // so the new Field is tracked within this context instance.
+                                        // This is the one exception to the "new context per request" rule, as it's a single logical transaction.
                                         var formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
 
+                                        // Log the outcome of the paired execution
                                         var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
                                         var formatLogLevel = formatResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
                                         _logger.Write(formatLogLevel, "  - 🏁 **STRATEGY_OUTCOME (Paired)**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
@@ -112,6 +119,7 @@ namespace WaterNut.DataSpace
                                         await this.LogCorrectionLearningAsync(context, formatRequest, formatResult).ConfigureAwait(false);
                                     }
                                 }
+                                // ============================= END OF FIX ===================================
                             }
                             else
                             {
