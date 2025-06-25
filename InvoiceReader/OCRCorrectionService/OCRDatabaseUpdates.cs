@@ -23,6 +23,14 @@ namespace WaterNut.DataSpace
 
         public async Task UpdateRegexPatternsAsync(IEnumerable<RegexUpdateRequest> regexUpdateRequests)
         {
+            using (var context = new OCRContext())
+            {
+                await UpdateRegexPatternsAsync(context, regexUpdateRequests).ConfigureAwait(false);
+            }
+        }
+
+        public async Task UpdateRegexPatternsAsync(OCRContext context, IEnumerable<RegexUpdateRequest> regexUpdateRequests)
+        {
             // --- MANDATE LOG: Serialize the entire input collection to this method ---
             if (regexUpdateRequests != null)
             {
@@ -58,104 +66,112 @@ namespace WaterNut.DataSpace
 
                 var request = requestsToProcess[i];
 
-                // Use a new context for each top-level request to guarantee transactional integrity
-                // and prevent entity state conflicts between loop iterations.
-                using (var context = new OCRContext())
+                DatabaseUpdateResult dbUpdateResult = null;
+                try
                 {
-                    DatabaseUpdateResult dbUpdateResult = null;
+                    _logger.Information("  - Processing request for Field: '{FieldName}', Type: '{CorrectionType}'", request.FieldName, request.CorrectionType);
+                    var validationResult = this.ValidateUpdateRequest(request);
+                    if (!validationResult.IsValid)
+                    {
+                        dbUpdateResult = DatabaseUpdateResult.Failed($"Validation failed: {validationResult.ErrorMessage}");
+                    }
+                    else
+                    {
+                        var strategy = _strategyFactory.GetStrategy(request);
+                        if (strategy != null)
+                        {
+                            dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
+
+                            if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RelatedRecordId.HasValue)
+                            {
+                                int newFieldId = dbUpdateResult.RelatedRecordId.Value;
+
+                                var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
+                                    r.CorrectionType == "format_correction" &&
+                                    r.FieldName == request.FieldName &&
+                                    r.LineNumber == request.LineNumber &&
+                                    !r.LineId.HasValue);
+
+                                if (formatCorrectionRequestIndex != -1)
+                                {
+                                    var formatRequest = requestsToProcess[formatCorrectionRequestIndex];
+                                    processedIndexes.Add(formatCorrectionRequestIndex);
+
+                                    _logger.Error("  - 🗣️ **PAIRED_EXECUTION**: Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately within the same transaction.", formatRequest.FieldName, newFieldId);
+
+                                    formatRequest.LineId = newFieldId;
+
+                                    var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
+
+                                    DatabaseUpdateResult formatResult;
+                                    try
+                                    {
+                                        // Clear any pending Entity Framework changes to avoid relationship conflicts
+                                        context.ChangeTracker.DetectChanges();
+                                        _logger.Information("  - 🔄 **PAIRED_EXECUTION_PREP**: Context state validated before format_correction execution.");
+                                        
+                                        formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
+                                    }
+                                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex) when (ex.InnerException?.Message?.Contains("principal end") == true || ex.InnerException?.Message?.Contains("primary key") == true)
+                                    {
+                                        _logger.Warning("  - ⚠️ **PAIRED_EXECUTION_CONFLICT**: Entity Framework relationship conflict during paired execution. Attempting recovery...");
+                                        
+                                        // Detach any problematic entities from the context
+                                        var addedEntities = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList();
+                                        foreach (var entity in addedEntities)
+                                        {
+                                            _logger.Information("  - 🔄 Detaching entity: {EntityType}", entity.Entity.GetType().Name);
+                                            entity.State = EntityState.Detached;
+                                        }
+                                        
+                                        // Retry the format correction with a clean context state
+                                        formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
+                                        _logger.Information("  - ✅ **PAIRED_EXECUTION_RECOVERY**: Format correction succeeded after recovery.");
+                                    }
+
+                                    var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
+                                    var formatLogLevel = formatResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
+                                    _logger.Write(formatLogLevel, "  - 🏁 **STRATEGY_OUTCOME (Paired)**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
+                                        formatOutcome, formatRequest.FieldName, formatResult.Message);
+
+                                    await this.LogCorrectionLearningAsync(context, formatRequest, formatResult).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            dbUpdateResult = DatabaseUpdateResult.Failed($"No strategy for type '{request.CorrectionType}'");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger?.Error(ex, "Exception during DB update for field {FieldName}.", request.FieldName);
+                    dbUpdateResult = DatabaseUpdateResult.Failed($"Outer exception: {ex.Message}", ex);
+                }
+                finally
+                {
+                    if (dbUpdateResult != null)
+                    {
+                        var outcome = dbUpdateResult.IsSuccess ? "SUCCESS" : "FAILURE";
+                        var level = dbUpdateResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
+                        _logger.Write(level, "  - 🏁 **STRATEGY_OUTCOME**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
+                            outcome, request.FieldName, dbUpdateResult.Message);
+                    }
+                    else
+                    {
+                        _logger.Error("  - 🏁 **STRATEGY_OUTCOME**: [UNKNOWN_FAILURE] for Field '{FieldName}'. The dbUpdateResult was unexpectedly null.", request.FieldName);
+                    }
+
                     try
                     {
-                        _logger.Information("  - Processing request for Field: '{FieldName}', Type: '{CorrectionType}'", request.FieldName, request.CorrectionType);
-                        var validationResult = this.ValidateUpdateRequest(request);
-                        if (!validationResult.IsValid)
-                        {
-                            dbUpdateResult = DatabaseUpdateResult.Failed($"Validation failed: {validationResult.ErrorMessage}");
-                        }
-                        else
-                        {
-                            var strategy = _strategyFactory.GetStrategy(request);
-                            if (strategy != null)
-                            {
-                                dbUpdateResult = await strategy.ExecuteAsync(context, request, this).ConfigureAwait(false);
-
-                                // =============================== THE FIX IS HERE ===============================
-                                // If this was a successful omission, check for a paired format_correction
-                                // that needs the new FieldId. This logic belongs in the orchestrator, not the strategy.
-                                if (request.CorrectionType == "omission" && dbUpdateResult.IsSuccess && dbUpdateResult.RelatedRecordId.HasValue)
-                                {
-                                    int newFieldId = dbUpdateResult.RelatedRecordId.Value; // This is the ID of the newly created Field.
-
-                                    // Find the corresponding format_correction request in the main list.
-                                    var formatCorrectionRequestIndex = requestsToProcess.FindIndex(i + 1, r =>
-                                        r.CorrectionType == "format_correction" &&
-                                        r.FieldName == request.FieldName &&
-                                        r.LineNumber == request.LineNumber &&
-                                        !r.LineId.HasValue); // Only pair if it's new and lacks context.
-
-                                    if (formatCorrectionRequestIndex != -1)
-                                    {
-                                        var formatRequest = requestsToProcess[formatCorrectionRequestIndex];
-                                        processedIndexes.Add(formatCorrectionRequestIndex); // Mark it as processed so the main loop skips it.
-
-                                        _logger.Error("  - 🗣️ **PAIRED_EXECUTION**: Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately within the same transaction.", formatRequest.FieldName, newFieldId);
-
-                                        // Inject the FieldId from the omission's result into the format request.
-                                        formatRequest.LineId = newFieldId;
-
-                                        var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
-
-                                        // Use the SAME context. The Omission strategy has already called SaveChanges,
-                                        // so the new Field is tracked within this context instance.
-                                        // This is the one exception to the "new context per request" rule, as it's a single logical transaction.
-                                        var formatResult = await formatStrategy.ExecuteAsync(context, formatRequest, this).ConfigureAwait(false);
-
-                                        // Log the outcome of the paired execution
-                                        var formatOutcome = formatResult.IsSuccess ? "SUCCESS" : "FAILURE";
-                                        var formatLogLevel = formatResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
-                                        _logger.Write(formatLogLevel, "  - 🏁 **STRATEGY_OUTCOME (Paired)**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
-                                            formatOutcome, formatRequest.FieldName, formatResult.Message);
-
-                                        // Manually log the learning record for the paired request.
-                                        await this.LogCorrectionLearningAsync(context, formatRequest, formatResult).ConfigureAwait(false);
-                                    }
-                                }
-                                // ============================= END OF FIX ===================================
-                            }
-                            else
-                            {
-                                dbUpdateResult = DatabaseUpdateResult.Failed($"No strategy for type '{request.CorrectionType}'");
-                            }
-                        }
+                        await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (Exception logEx)
                     {
-                        _logger?.Error(ex, "Exception during DB update for field {FieldName}.", request.FieldName);
-                        dbUpdateResult = DatabaseUpdateResult.Failed($"Outer exception: {ex.Message}", ex);
+                        _logger.Error(logEx, "CRITICAL: Failed to write to OCRCorrectionLearning audit log for field {FieldName}", request?.FieldName);
                     }
-                    finally
-                    {
-                        if (dbUpdateResult != null)
-                        {
-                            var outcome = dbUpdateResult.IsSuccess ? "SUCCESS" : "FAILURE";
-                            var level = dbUpdateResult.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
-                            _logger.Write(level, "  - 🏁 **STRATEGY_OUTCOME**: [{Outcome}] for Field '{FieldName}'. Message: {Message}",
-                                outcome, request.FieldName, dbUpdateResult.Message);
-                        }
-                        else
-                        {
-                            _logger.Error("  - 🏁 **STRATEGY_OUTCOME**: [UNKNOWN_FAILURE] for Field '{FieldName}'. The dbUpdateResult was unexpectedly null.", request.FieldName);
-                        }
-
-                        try
-                        {
-                            await this.LogCorrectionLearningAsync(context, request, dbUpdateResult).ConfigureAwait(false);
-                        }
-                        catch (Exception logEx)
-                        {
-                            _logger.Error(logEx, "CRITICAL: Failed to write to OCRCorrectionLearning audit log for field {FieldName}", request?.FieldName);
-                        }
-                    }
-                } // End of using(context)
+                }
             }
         }
 

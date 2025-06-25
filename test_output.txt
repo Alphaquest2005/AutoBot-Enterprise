@@ -1,0 +1,769 @@
+VSTest version 17.14.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+C:\Insight Software\AutoBot-Enterprise\./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll
+NUnit Adapter 5.0.0.0: Test execution started
+Running selected tests in C:\Insight Software\AutoBot-Enterprise\./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll
+   NUnit3TestExecutor discovered 1 of 1 NUnit test cases using Current Discovery mode, Non-Explicit run
+[14:53:10 INF] 🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process
+[14:53:10 INF] 🔍 **TEST_EXPECTATION**: We expect OCR correction to detect omissions and create a balanced invoice.
+Importing PDF Unknown
+2025-06-25 14:53:18.048 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: NULL
+[14:53:18 ERR] 📂 **TEMPLATE_STRUCTURE_ANALYSIS_START**: Analyzing template 'Amazon' (ID: 5) before Read().
+[14:53:18 ERR]    - Part: 'Header' (ID: 1028)
+[14:53:18 ERR]      - Line: 'Freight' (ID: 35)
+[14:53:18 ERR]        └── Regex: Shipping & Handling:[\s]+(?<Currency>\w{3})?[\s\$]+(?<Freight>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Freight' -> Maps to DB Field: 'TotalInternalFreight' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'SalesTax' (ID: 36)
+[14:53:18 ERR]        └── Regex: Estimated tax to be collected:(\s+(?<Currency>\w{3}))?\s+\$?(?<SalesTax>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'SalesTax' -> Maps to DB Field: 'TotalOtherCost' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'InvoiceTotal' (ID: 37)
+[14:53:18 ERR]        └── Regex: ((Grand)|(Order)) Total:(\s*(?<Currency>USD))?\s*\$?(?<InvoiceTotal>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'InvoiceTotal' -> Maps to DB Field: 'InvoiceTotal' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Summary' (ID: 39)
+[14:53:18 ERR]        └── Regex: ((?<SupplierCode>Amazon.com)\s- Order (?<InvoiceNo>[\d\-]+) (?<InvoiceDate>[\d/]+),\s)|(Order Placed: (?<InvoiceDate>[\w\,\s]+)[\r\n](?<SupplierCode>Amazon.com) order number\: (?<InvoiceNo>[\d\-]+))
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'SupplierCode' -> Maps to DB Field: 'SupplierCode' (EntityType: Invoice)
+[14:53:18 ERR]            - Key: 'InvoiceNo' -> Maps to DB Field: 'InvoiceNo' (EntityType: Invoice)
+[14:53:18 ERR]            - Key: 'InvoiceDate' -> Maps to DB Field: 'InvoiceDate' (EntityType: Invoice)
+[14:53:18 ERR]            - Key: 'InvoiceNo' -> Maps to DB Field: 'Name' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'SubTotal' (ID: 78)
+[14:53:18 ERR]        └── Regex: Item\(s\) Subtotal[:\r\n\s]+(\s*(?<Currency>USD))?\s*\$?(?<SubTotal>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'SubTotal' -> Maps to DB Field: 'SubTotal' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Gift Card' (ID: 1830)
+[14:53:18 ERR]        └── Regex: Gift Card Amount:\-\$(?<GiftCard>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'GiftCard' -> Maps to DB Field: 'TotalInsurance' (EntityType: ShipmentInvoice)
+[14:53:18 ERR]      - Line: 'FreeShipping' (ID: 1831)
+[14:53:18 ERR]        └── Regex: Free Shipping:[\s\-\$]+(?<Currency>\w{3})[\s\-\$]+(?<FreeShipping>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'FreeShipping' -> Maps to DB Field: 'TotalDeduction' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Shipping & Handling' (ID: 2089)
+[14:53:18 ERR]        └── Regex: Shipping \& Handling[:\s]+(?<Currency>\w{3})[\s\-\$]+(?<Shipping>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Shipping' -> Maps to DB Field: 'TotalInternalFreight' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Coupons' (ID: 2090)
+[14:53:18 ERR]        └── Regex: Your Coupon Savings[:\s\-\$]+(?<Currency>\w{3})[\s\-\$]+(?<Coupon>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Coupon' -> Maps to DB Field: 'TotalInsurance' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Estimated Tax' (ID: 2092)
+[14:53:18 ERR]        └── Regex: Estimated tax.*[:\s\-\$]+(?<Currency>\w{3})[\s\-\$]+(?<Tax>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Tax' -> Maps to DB Field: 'TotalOtherCost' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Subscribe and Save' (ID: 2093)
+[14:53:18 ERR]        └── Regex: Subscribe[\&\s]+Save[:\s\-\$]+(?<Currency>\w{3})[\s\-\$]+(?<Save>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Save' -> Maps to DB Field: 'TotalDeduction' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Lightening Deal' (ID: 2094)
+[14:53:18 ERR]        └── Regex: Lightning[\s]+Deal([:\s\-\$\"]+(?<Currency>\w{3}))?[:\s\-\$\"“]+(?<Save>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Save' -> Maps to DB Field: 'TotalDeduction' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'Buy More Save' (ID: 2095)
+[14:53:18 ERR]        └── Regex: Buy more, save.+([:\s\-\$\"]+(?<Currency>\w{3}))?[:\s\-\$\"“]+(?<Save>[\d,.]+)
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'Save' -> Maps to DB Field: 'TotalDeduction' (EntityType: Invoice)
+[14:53:18 ERR]      - Line: 'AutoOmission_TotalDeduction_145137103' (ID: 3372)
+[14:53:18 ERR]        └── Regex: Free Shipping:\s*-\$?(?<TotalDeduction>[\d,]+\.\d{2})
+[14:53:18 ERR]        └── Field Mappings:
+[14:53:18 ERR]            - Key: 'TotalDeduction' -> Maps to DB Field: 'TotalDeduction' (EntityType: ShipmentInvoice)
+[14:53:18 ERR] 📂 **TEMPLATE_STRUCTURE_ANALYSIS_END**
+2025-06-25 14:53:19.647 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: Verbose
+[14:53:19 ERR] **SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: NULL
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: Part serialized: {"PartId": 1028, "LineCount": 14, "ChildPartCount": 3, "Lines": [{"ValuesCount": 2, "SectionSummary": [{"Section": "Single", "LineNumber": 68, "FieldCount": 1, "Fields": [{"FieldName": "TotalInternalFreight", "Instance": "1-1", "Value": "6.99", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 331, "FieldCount": 1, "Fields": [{"FieldName": "TotalInternalFreight", "Instance": "1-1", "Value": "6.99", "DataType": "Number"}]}]}, {"LineIndex": 1, "ValuesCount": 2, "SectionSummary": [{"Section": "Single", "LineNumber": 74, "FieldCount": 1, "Fields": [{"FieldName": "TotalOtherCost", "Instance": "1-1", "Value": "11.34", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 336, "FieldCount": 1, "Fields": [{"FieldName": "TotalOtherCost", "Instance": "1-1", "Value": "11.34", "DataType": "Number"}]}]}, {"LineIndex": 2, "ValuesCount": 5, "SectionSummary": [{"Section": "Single", "LineNumber": 12, "FieldCount": 1, "Fields": [{"FieldName": "InvoiceTotal", "Instance": "1-1", "Value": "166.30", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 77, "FieldCount": 1, "Fields": [{"FieldName": "InvoiceTotal", "Instance": "1-1", "Value": "166.30", "DataType": "Number"}]}, {"Section": "Sparse", "LineNumber": 119, "FieldCount": 1, "Fields": [{"FieldName": "InvoiceTotal", "Instance": "1-1", "Value": "166.30", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 303, "FieldCount": 1, "Fields": [{"FieldName": "InvoiceTotal", "Instance": "1-1", "Value": "166.30", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 339, "FieldCount": 1, "Fields": [{"FieldName": "InvoiceTotal", "Instance": "1-1", "Value": "166.30", "DataType": "Number"}]}]}, {"LineIndex": 3, "ValuesCount": 26, "SectionSummary": [{"Section": "Single", "LineNumber": 2, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 3, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 4, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 5, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 6, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 7, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 8, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 9, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 10, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 108, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 109, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 110, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 111, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 112, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 113, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 114, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Sparse", "LineNumber": 115, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 293, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 294, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 295, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 296, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 297, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 298, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 299, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 300, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}, {"Section": "Ripped", "LineNumber": 301, "FieldCount": 4, "Fields": [{"FieldName": "SupplierCode", "Instance": "1-1", "Value": "Amazon.com", "DataType": "String"}, {"FieldName": "InvoiceNo", "Instance": "1-1", "Value": "112-9126443-1163432", "DataType": "String"}, {"FieldName": "InvoiceDate", "Instance": "1-1", "Value": "April 15, 2025", "DataType": "English Date"}, {"FieldName": "Name", "Instance": "1-1", "Value": "Amazon", "DataType": "String"}]}]}, {"LineIndex": 4, "ValuesCount": 13, "SectionSummary": [{"Section": "Single", "LineNumber": 63, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 64, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 65, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 66, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 67, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Sparse", "LineNumber": 193, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Sparse", "LineNumber": 194, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Sparse", "LineNumber": 195, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 326, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 327, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 328, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 329, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}, {"Section": "Ripped", "LineNumber": 330, "FieldCount": 1, "Fields": [{"FieldName": "SubTotal", "Instance": "1-1", "Value": "161.95", "DataType": "Number"}]}]}, {"LineIndex": 5}, {"LineIndex": 6}, {"LineIndex": 7}, {"LineIndex": 8}, {"LineIndex": 9}], "ChildParts": [{"LineCount": 1}, {"LineCount": 1}, {"LineCount": 1}]}
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: FilterInstance: NULL
+[14:53:19 ERR] **VERSION_ROUTER**: Using version V5 for testing
+[14:53:19 ERR] **VERSION_LOGIC**: Version routing decision based on environment variable or default to V5
+[14:53:19 ERR] **VERSION_EXECUTION**: About to execute version V5 with part containing 14 lines
+[14:53:19 ERR] **V5_ENTRY**: SetPartLineValues_V5_Current called with PartId: 1028
+[14:53:19 ERR] **V5_INPUT_ANALYSIS**: PartId: 1028, FilterInstance: None (Top Level), LineCount: 14
+[14:53:19 ERR] **V5_FREE_SHIPPING_RAW**: Field: TotalDeduction, Value: 0.46, Instance: 1-1, Section: Single
+[14:53:19 ERR] **V5_FREE_SHIPPING_RAW**: Field: TotalDeduction, Value: 6.53, Instance: 1-1, Section: Single
+[14:53:19 ERR] **V5_FREE_SHIPPING_RAW**: Field: TotalDeduction, Value: 0.46, Instance: 1-1, Section: Ripped
+[14:53:19 ERR] **V5_FREE_SHIPPING_RAW**: Field: TotalDeduction, Value: 6.53, Instance: 1-1, Section: Ripped
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Starting aggregation for field 'TotalInternalFreight' with 2 captures
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalInternalFreight, Value: 6.99, Section: Single, Line: 68
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalInternalFreight, Value: 6.99, Section: Ripped, Line: 331
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Added unique value 6.99 from Single (first occurrence)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Skipped duplicate value 6.99 from Ripped (keeping Single)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Adding unique value 6.99 from Single to sum (running total: 6.99)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Final aggregated sum for 'TotalInternalFreight': 6.99 (from 1 unique values out of 2 captures)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Created aggregated field capture - Field: TotalInternalFreight, AggregatedValue: 6.99, Source: Single
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Starting aggregation for field 'TotalOtherCost' with 2 captures
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalOtherCost, Value: 11.34, Section: Single, Line: 74
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalOtherCost, Value: 11.34, Section: Ripped, Line: 336
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Added unique value 11.34 from Single (first occurrence)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Skipped duplicate value 11.34 from Ripped (keeping Single)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Adding unique value 11.34 from Single to sum (running total: 11.34)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Final aggregated sum for 'TotalOtherCost': 11.34 (from 1 unique values out of 2 captures)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Created aggregated field capture - Field: TotalOtherCost, AggregatedValue: 11.34, Source: Single
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'InvoiceTotal' from Single out of options: [Single(p:3,len:6), Single(p:3,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Sparse(p:1,len:6)]
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'SupplierCode' from Single out of options: [Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Single(p:3,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Ripped(p:2,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10), Sparse(p:1,len:10)]
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'InvoiceNo' from Single out of options: [Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Single(p:3,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Ripped(p:2,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19), Sparse(p:1,len:19)]
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'InvoiceDate' from Single out of options: [Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Single(p:3,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Ripped(p:2,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14), Sparse(p:1,len:14)]
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'Name' from Single out of options: [Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6)]
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'SubTotal' from Single out of options: [Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Single(p:3,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Ripped(p:2,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6), Sparse(p:1,len:6)]
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Starting aggregation for field 'TotalDeduction' with 4 captures
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalDeduction, Value: 0.46, Section: Single, Line: 69
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalDeduction, Value: 6.53, Section: Single, Line: 70
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalDeduction, Value: 0.46, Section: Ripped, Line: 332
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Individual value - Field: TotalDeduction, Value: 6.53, Section: Ripped, Line: 333
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Added unique value 0.46 from Single (first occurrence)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Added unique value 6.53 from Single (first occurrence)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Skipped duplicate value 0.46 from Ripped (keeping Single)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Skipped duplicate value 6.53 from Ripped (keeping Single)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Adding unique value 0.46 from Single to sum (running total: 0.46)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Adding unique value 6.53 from Single to sum (running total: 6.99)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Final aggregated sum for 'TotalDeduction': 6.99 (from 2 unique values out of 4 captures)
+[14:53:19 ERR] **AGGREGATION_FIX_V5**: Created aggregated field capture - Field: TotalDeduction, AggregatedValue: 6.99, Source: Single
+2025-06-25 14:53:19.814 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: Verbose
+[14:53:19 ERR] **SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: 1-1
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: Part serialized: {"PartId": 1030, "LineCount": 1, "Lines": [{"ValuesCount": 2, "SectionSummary": [{"Section": "Single", "LineNumber": 19, "FieldCount": 4, "Fields": [{"FieldName": "Quantity", "Instance": "1-1", "Value": "1", "DataType": "Number"}, {"FieldName": "ItemDescription", "Instance": "1-1", "Value": "NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White", "DataType": "String"}, {"FieldName": "Cost", "Instance": "1-1", "Value": "119.99", "DataType": "String"}, {"FieldName": "ItemNumber", "Instance": "1-1", "Value": "NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White", "DataType": "String"}]}, {"Section": "Single", "LineNumber": 45, "FieldCount": 5, "Fields": [{"FieldName": "Quantity", "Instance": "1-1", "Value": "1", "DataType": "Number"}, {"FieldName": "ItemDescription", "Instance": "1-1", "Value": "Heavy Duty Shower Curtain Rod - 28 to 76\" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for", "DataType": "String"}, {"FieldName": "Cost", "Instance": "1-1", "Value": "41.96", "DataType": "String"}, {"FieldName": "ItemNumber", "Instance": "1-1", "Value": "Heavy Duty Shower Curtain Rod - 28 to 76\" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for", "DataType": "String"}, {"FieldName": "ItemDescription", "Instance": "1-1", "Value": "Bathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack", "DataType": "String"}]}]}]}
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: FilterInstance: 1-1
+[14:53:19 ERR] **VERSION_ROUTER**: Using version V5 for testing
+[14:53:19 ERR] **VERSION_LOGIC**: Version routing decision based on environment variable or default to V5
+[14:53:19 ERR] **VERSION_EXECUTION**: About to execute version V5 with part containing 1 lines
+[14:53:19 ERR] **V5_ENTRY**: SetPartLineValues_V5_Current called with PartId: 1030
+[14:53:19 ERR] **V5_INPUT_ANALYSIS**: PartId: 1030, FilterInstance: 1-1, LineCount: 1
+[14:53:19 ERR] **FIELD_SELECTION_V5**: Instance: 1 - Selected field 'ItemDescription' from Single out of options: [Single(p:3,len:117), Single(p:3,len:58)]
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT**: Method completed successfully, returning 2 items
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_0**: Keys: [Instance, Section, FileLineNumber, Quantity, ItemDescription, Cost, ItemNumber, LineNumber]
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_1**: Keys: [Instance, Section, FileLineNumber, Quantity, ItemDescription, Cost, ItemNumber, LineNumber]
+2025-06-25 14:53:19.847 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: Verbose
+2025-06-25 14:53:19.847 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: Verbose
+[14:53:19 ERR] **SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: 1-1
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: Part serialized: {"PartId": 2245, "LineCount": 1, "Lines": [{}]}
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: FilterInstance: 1-1
+[14:53:19 ERR] **VERSION_ROUTER**: Using version V5 for testing
+[14:53:19 ERR] **VERSION_LOGIC**: Version routing decision based on environment variable or default to V5
+[14:53:19 ERR] **VERSION_EXECUTION**: About to execute version V5 with part containing 1 lines
+[14:53:19 ERR] **V5_ENTRY**: SetPartLineValues_V5_Current called with PartId: 2245
+[14:53:19 ERR] **V5_INPUT_ANALYSIS**: PartId: 2245, FilterInstance: 1-1, LineCount: 1
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT**: Method completed successfully, returning 0 items
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT**: Method returned null or empty result - THIS IS A BUG
+2025-06-25 14:53:19.849 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: Verbose
+2025-06-25 14:53:19.849 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: Verbose
+[14:53:19 ERR] **SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: 1-1
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: Part serialized: {"PartId": 2409, "LineCount": 1, "Lines": [{"ValuesCount": 3, "SectionSummary": [{"Section": "Single", "LineNumber": 19, "FieldCount": 3, "Fields": [{"FieldName": "Quantity", "Instance": "1-1", "Value": "1", "DataType": "Number"}, {"FieldName": "ItemDescription", "Instance": "1-1", "Value": "NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White", "DataType": "String"}, {"FieldName": "Cost", "Instance": "1-1", "Value": "119.99", "DataType": "Number"}]}, {"Section": "Single", "LineNumber": 45, "FieldCount": 3, "Fields": [{"FieldName": "Quantity", "Instance": "1-1", "Value": "1", "DataType": "Number"}, {"FieldName": "ItemDescription", "Instance": "1-1", "Value": "Heavy Duty Shower Curtain Rod - 28 to 76\" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for", "DataType": "String"}, {"FieldName": "Cost", "Instance": "1-1", "Value": "41.96", "DataType": "Number"}]}, {"Section": "Sparse", "LineNumber": 167, "FieldCount": 3, "Fields": [{"FieldName": "Quantity", "Instance": "1-2", "Value": "1", "DataType": "Number"}, {"FieldName": "ItemDescription", "Instance": "1-2", "Value": "Heavy Duty Shower Curtain Rod - 28 to 76\" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for", "DataType": "String"}, {"FieldName": "Cost", "Instance": "1-2", "Value": "41.96", "DataType": "Number"}]}]}]}
+[14:53:19 ERR] **SETPARTLINEVALUES_INPUT**: FilterInstance: 1-1
+[14:53:19 ERR] **VERSION_ROUTER**: Using version V5 for testing
+[14:53:19 ERR] **VERSION_LOGIC**: Version routing decision based on environment variable or default to V5
+[14:53:19 ERR] **VERSION_EXECUTION**: About to execute version V5 with part containing 1 lines
+[14:53:19 ERR] **V5_ENTRY**: SetPartLineValues_V5_Current called with PartId: 2409
+[14:53:19 ERR] **V5_INPUT_ANALYSIS**: PartId: 2409, FilterInstance: 1-1, LineCount: 1
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT**: Method completed successfully, returning 2 items
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_0**: Keys: [Instance, Section, FileLineNumber, Quantity, ItemDescription, Cost, LineNumber]
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_1**: Keys: [Instance, Section, FileLineNumber, Quantity, ItemDescription, Cost, LineNumber]
+2025-06-25 14:53:19.861 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: Verbose
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT**: Method completed successfully, returning 1 items
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_0**: Keys: [Instance, Section, FileLineNumber, TotalInternalFreight, TotalOtherCost, InvoiceTotal, SupplierCode, InvoiceNo, InvoiceDate, Name, SubTotal, TotalDeduction, InvoiceDetails]
+[14:53:19 ERR] **SETPARTLINEVALUES_OUTPUT_ITEM_0**: InvoiceDetails contains 2 items
+[14:53:19 ERR] **MATH_FIELD_ITEM_0**: InvoiceTotal = 166.3 (Type: Double)
+[14:53:19 ERR] **MATH_FIELD_ITEM_0**: SubTotal = 161.95 (Type: Double)
+[14:53:19 ERR] **MATH_FIELD_ITEM_0**: TotalInternalFreight = 6.99 (Type: Double)
+[14:53:19 ERR] **MATH_FIELD_ITEM_0**: TotalOtherCost = 11.34 (Type: Double)
+[14:53:19 ERR] **MATH_FIELD_ITEM_0**: TotalDeduction = 6.99 (Type: Double)
+[14:53:19 ERR] **FREE_SHIPPING_AGGREGATION_ITEM_0**: TotalDeduction final value = 6.99
+[14:53:19 ERR] **AMAZON_MATH_VALIDATION_ITEM_0**: InvoiceTotal(166.3) - (SubTotal(161.95) + Freight(6.99) + OtherCost(11.34) - Deduction(6.99)) = TotalsZero(-6.98999999999998)
+[14:53:19 ERR] **AMAZON_MATH_ERROR_ITEM_0**: TotalsZero = -6.98999999999998 indicates mathematical inconsistency - LIKELY AGGREGATION BUG
+2025-06-25 14:53:19.880 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: Verbose
+[14:53:19 ERR] 🔬 **TYPE_ANALYSIS (INITIAL_READ)**: The 'res' object from template.Read() has Type: 'System.Collections.Generic.List`1[[System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'. The first element has Type: 'System.Collections.Generic.List`1[[System.Collections.Generic.IDictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'.
+[14:53:19 ERR] 📜 **DATA_OUTPUT_DUMP (INITIAL_READ)**: The data produced by the initial read: {
+  "$id": "1",
+  "$values": [
+    {
+      "$id": "2",
+      "$values": [
+        {
+          "$id": "3",
+          "Instance": "1-1",
+          "Section": "Single",
+          "FileLineNumber": 2,
+          "TotalInternalFreight": 6.9900000000000002,
+          "TotalOtherCost": 11.34,
+          "InvoiceTotal": 166.30000000000001,
+          "SupplierCode": "Amazon.com",
+          "InvoiceNo": "112-9126443-1163432",
+          "InvoiceDate": "2025-04-15T00:00:00",
+          "Name": "Amazon",
+          "SubTotal": 161.94999999999999,
+          "TotalDeduction": 6.9900000000000002,
+          "InvoiceDetails": {
+            "$id": "4",
+            "$values": [
+              {
+                "$id": "5",
+                "Instance": "1-1",
+                "Section": "Single",
+                "FileLineNumber": 19,
+                "Quantity": 1,
+                "ItemDescription": "NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White",
+                "Cost": "119.99",
+                "ItemNumber": "NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White",
+                "LineNumber": 1
+              },
+              {
+                "$id": "6",
+                "Instance": "1-1",
+                "Section": "Single",
+                "FileLineNumber": 45,
+                "Quantity": 1,
+                "ItemDescription": "Heavy Duty Shower Curtain Rod - 28 to 76\u0022 Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for",
+                "Cost": "41.96",
+                "ItemNumber": "Heavy Duty Shower Curtain Rod - 28 to 76\u0022 Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for",
+                "LineNumber": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+[14:53:19 ERR] 🏁 **CORRECT_INVOICES_ENTRY**: Starting correction process with native data structure handling.
+[14:53:19 ERR]    - **ARCHITECTURAL_INTENT**: Heal DB -> Read -> Detect -> Apply -> Learn -> Sync -> Re-wrap.
+2025-06-25 14:53:19.928 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: Verbose, Previous: Verbose
+[14:53:19 ERR] --- 🛡️ DATABASE VALIDATION & HEALING START (Verbose Logging Forced) 🛡️ ---
+[14:53:19 ERR] 🔧 **LEGACY_CLEANUP_ENTRY**: Searching for known legacy misconfigurations...
+[14:53:19 ERR]   - ✅ **NO_LEGACY_ERROR**: Did not find incorrect Gift Card mapping.
+[14:53:19 ERR] 🔧 **LEGACY_CLEANUP_EXIT**: Complete. Removed 0 known legacy errors.
+[14:53:19 ERR] 🔍 **REDUNDANCY_DETECTION_ENTRY**: Analyzing for duplicate 'AutoOmission_' lines.
+[14:53:20 ERR] 🔍 **REDUNDANCY_DETECTION_EXIT**: Found 0 groups of redundant omission rules.
+[14:53:20 ERR] --- 🛡️ DATABASE VALIDATION & HEALING COMPLETE (Verbose Logging Forced) 🛡️ ---
+2025-06-25 14:53:20.037 -04:00 [INF] [] 🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: Verbose
+[14:53:21 ERR]      - ❌ **INTENTION_FAILED**: Invoice unbalanced by 6.99. Proceeding to AI learning.
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\,'
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\.'
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '(?<whole>\d+)?(?<dig>(?<!\.)\d{2})\z'
+2025-06-25 14:53:21.121 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '${whole}.${dig}'
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\,'
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\.'
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '(?<whole>\d+)?(?<dig>(?<!\.)\d{2})\z'
+2025-06-25 14:53:21.123 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '${whole}.${dig}'
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\,'
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\.'
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '(?<whole>\d+)?(?<dig>(?<!\.)\d{2})\z'
+2025-06-25 14:53:21.125 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '${whole}.${dig}'
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\,'
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\.'
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '(?<whole>\d+)?(?<dig>(?<!\.)\d{2})\z'
+2025-06-25 14:53:21.130 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '${whole}.${dig}'
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\,'
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '\.'
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = ''
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Pattern = '(?<whole>\d+)?(?<dig>(?<!\.)\d{2})\z'
+2025-06-25 14:53:21.131 -04:00 [ERR] [DataModels] 📝 **PROPERTY_SET**: FieldFormatRegexInfo.Replacement = '${whole}.${dig}'
+[14:53:21 ERR] 🚀 **PROMPT_CREATION_START (V12.1 - Cleaned Instructions)**: Creating prompt for invoice 112-9126443-1163432
+[14:53:21 ERR]    - **PROMPT_JSON_DUMP**: Basic extracted values: {
+  "InvoiceNo": "112-9126443-1163432",
+  "InvoiceDate": null,
+  "SupplierName": null,
+  "Currency": null,
+  "SubTotal": 161.94999999999999,
+  "TotalInternalFreight": 6.9900000000000002,
+  "TotalOtherCost": 11.34,
+  "TotalDeduction": 6.9900000000000002,
+  "TotalInsurance": null,
+  "InvoiceTotal": 166.30000000000001
+}
+[14:53:21 ERR]    - **PROMPT_ANNOTATION_DUMP**: Annotated context for aggregates: None
+[14:53:21 ERR]    - **PROMPT_STRUCTURE_DUMP**: Detected OCR Sections: Single Column, Ripped, SparseText
+[14:53:21 ERR] 🏁 **PROMPT_CREATION_COMPLETE (V12.1)**: Full context prompt with CLEANED INSTRUCTIONS logic created. Length: 12807 characters.
+[14:53:21 ERR] 🔍 **DEEPSEEK_API_ENTRY**: GetResponseAsync called with prompt length=12807
+[14:53:21 ERR] 🔍 **DEEPSEEK_API_CONFIG**: Model=deepseek-chat, Temperature=0.3, MaxTokens=8192
+[14:53:21 ERR] 🔍 **DEEPSEEK_PROMPT_VALIDATION**: Contains gift card? True | Contains amount? True
+[14:53:21 ERR] 🔍 **DEEPSEEK_COMPLETE_PROMPT**: Full prompt content: INTELLIGENT OCR CORRECTION (V12.1 - Cleaned Instructions):
+
+**CONTEXT:**
+I have extracted data from an OCR document, but the numbers don't add up correctly. Your task is to act as an auditor, find all missing financial entries in the text, and help me balance the invoice.
+
+**1. EXTRACTED FIELDS:**
+{
+  "InvoiceNo": "112-9126443-1163432",
+  "InvoiceDate": null,
+  "SupplierName": null,
+  "Currency": null,
+  "SubTotal": 161.94999999999999,
+  "TotalInternalFreight": 6.9900000000000002,
+  "TotalOtherCost": 11.34,
+  "TotalDeduction": 6.9900000000000002,
+  "TotalInsurance": null,
+  "InvoiceTotal": 166.30000000000001
+}
+
+**2. CONTEXT & COMPONENTS (if any):**
+
+
+
+**4. MATHEMATICAL BALANCE CHECK:**
+My system's calculated total is 173.29. The reported InvoiceTotal is 166.30.
+The current discrepancy is: **-6.99**.
+Your primary goal is to find all missing values in the text that account for this discrepancy.
+
+**3. COMPLETE OCR TEXT:**
+------------------------------------------Single Column-------------------------
+5/9/25, 9:09 AM Amazon.com - Order 112-91 26443-1163432
+
+amazoncom
+
+Print this page for your records,
+
+Order Placed: April 15, 2025
+Amazon.com order number: 112-9126443-1163432
+Order Total: $166.30
+
+Shipped on April 17, 2025
+
+Items Ordered Price
+1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White $119.99
+Sold by: Amazon.com Services, Inc
+
+Supplied by: Other
+
+Condition: New
+
+Shipping Address:
+
+Mackess Cox C/o CaribConex
+7500 NW 81ST PL STE 2
+MIAMI, FL 33166-2180
+United States
+
+Shipping Speed:
+FREE Shipping
+
+Shipped on April 21, 2025
+
+Items Ordered Price
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 1/3
+
+5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432
+1 of: Heavy Duty Shower Curtain Rod - 28 to 76" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for $41.96
+Bathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack
+Sold by: forevergreen (seller profile)
+
+Supplied by: forevergreen (seller profile)
+
+Condition: New
+
+Shipping Address:
+
+Mackess Cox C/o CaribConex
+7500 NW 81ST PL STE 2
+MIAMI, FL 33166-2180
+United States
+
+Shipping Speed:
+FREE Shipping
+
+Payment information
+
+Payment Method: Item(s) Subtotal: $161.95
+Amazon gift card balance Shipping & Handling: $6.99
+Mastercard ending in 8019 Free Shipping: -$0.46
+Free Shipping: -$6.53
+
+Billing address nnn
+Mackess Cox Total before tax: $161.95
+4431 NW 74TH AVE GND10128 Estimated tax to be collected: $11.34
+MIAMI, FL 33166-6442 Gift Card Amount: -$6.99
+United States nn
+Grand Total: $166.30
+
+Credit Card transactions MasterCard ending in 8019: April 21, 2025: $44.90
+MasterCard ending in 8019: April 17, 2025: $121.40
+
+To view the status of your order, return to Order Summary.
+
+Have an issue with your gift card? Read about common issues or contact us.
+
+Conditions of Use | Privacy Notice © 1996-2025, Amazon.com, Inc. or its affiliates
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 2/3
+
+5/9/25, 9:09 AM Amazon.com - Order 112-91 26443-1163432
+
+Back to top
+
+English | | United States Help
+
+Conditions of Use Privacy Notice Consumer Health Data Privacy Disclosure Your Ads Privacy Choices
+© 1996-2025, Amazon.com, Inc. or its affiliates
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 3/3
+
+------------------------------------------SparseText-------------------------
+5/9/25, 9:09 AM
+
+Amazon.com - Order 112-9126443-1163432
+
+amazoncom
+
+Print this page for your records,
+
+Order Placed: April 15, 2025
+
+Amazon.com order number: 112-9126443-1163432
+
+Order Total: $166.30
+
+Shipped on April 17, 2025
+
+Items Ordered
+
+Price
+
+$119.99
+
+1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White
+
+Sold by: Amazon.com Services, Inc
+
+Supplied by: Other
+
+Condition: New
+
+Shipping Address:
+
+Mackess Cox C/o CaribConex
+
+7500 NW 81ST PL STE 2
+
+MIAMI, FL 33166-2180
+
+United States
+
+Shipping Speed:
+
+FREE Shipping
+
+Shipped on April 21, 2025
+
+Items Ordered
+
+Price
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos
+
+Ne
+
+1/3
+
+5/9/25, 9:09 AM
+
+Amazon.com - Order 112-9126443-1163432
+
+1 of: Heavy Duty Shower Curtain Rod - 28 to 76" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for $41.96
+
+Bathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack
+
+Sold by: forevergreen (seller profile)
+
+Supplied by: forevergreen (seller profile)
+
+Condition: New
+
+Shipping Address:
+
+Mackess Cox C/o CaribConex
+
+7500 NW 81ST PL STE 2
+
+MIAMI, FL 33166-2180
+
+United States
+
+Shipping Speed:
+
+FREE Shipping
+
+Payment information
+
+Payment Method:
+
+Item(s) Subtotal
+
+$161.95
+
+Amazon gift card balance
+
+Shipping & Handling
+
+$6.99
+
+Mastercard ending in 8019
+
+Free Shipping
+
+-$0.46
+
+-$6.53
+
+Free Shipping
+
+Billing address
+
+-----
+
+Mackess Cox
+
+Total before tax
+
+$161.95
+
+4431 NW 74TH AVE GND10128
+
+Estimated tax to be collected
+
+$11.34
+
+MIAMI, FL 33166-6442
+
+Gift Card Amount
+
+-$6.99
+
+-----
+
+United States
+
+Grand Total
+
+$166.30
+
+Credit Card transactions
+
+MasterCard ending in 8019: April 21, 2025:
+
+$44.90
+
+MasterCard ending in 8019: April 17, 2025:
+
+$121.40
+
+To view the status of your order, return to Order Summary.
+
+Have an issue with your gift card? Read about common issues or contact us.
+
+Conditions of Use | Privacy Notice © 1996-2025, Amazon.com, Inc. or its affiliates
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos
+
+Ne
+
+2/3
+
+5/9/25, 9:09 AM
+
+Amazon.com - Order 112-9126443-1163432
+
+Back to top
+
+English
+
+United States
+
+Help
+
+i
+
+Conditions of Use
+
+Privacy Notice
+
+Consumer Health Data Privacy Disclosure
+
+Your Ads Privacy Choices
+
+© 1996-2025, Amazon.com, Inc. or its affiliates
+
+https:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos
+
+Ne
+
+3/3
+
+------------------------------------------Ripped Text-------------------------
+Final Details for Order #112-9126443-1163432
+Print this page for your records.
+Order Placed: April 15, 2025
+Amazon.com order number: 112-9126443-1163432
+Order Total: $166.30
+Shipped on April 17, 2025
+Items Ordered Price
+1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White
+Sold by: Amazon.com Services, Inc
+Supplied by: Other
+Condition: New
+$119.99
+Shipping Address:
+Mackess Cox C/o CaribConex
+7500 NW 81ST PL STE 2
+MIAMI, FL 33166-2180
+United States
+Shipping Speed:
+FREE Shipping
+Shipped on April 21, 2025
+Items Ordered Price
+5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432
+https://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 1/3
+Amazon gift card balance
+Mastercard ending in 8019
+Payment Method:
+Billing address
+Mackess Cox
+4431 NW 74TH AVE GND10128
+MIAMI, FL 33166-6442
+United States
+Item(s) Subtotal: $161.95
+Shipping & Handling: $6.99
+Free Shipping: -$0.46
+Free Shipping: -$6.53
+-----
+Total before tax: $161.95
+Estimated tax to be collected: $11.34
+Gift Card Amount: -$6.99
+-----
+Grand Total: $166.30
+1 of: Heavy Duty Shower Curtain Rod - 28 to 76" Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for
+Bathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack
+Sold by: forevergreen (seller profile)
+Supplied by: forevergreen (seller profile)
+Condition: New
+$41.96
+Shipping Address:
+Mackess Cox C/o CaribConex
+7500 NW 81ST PL STE 2
+MIAMI, FL 33166-2180
+United States
+Shipping Speed:
+FREE Shipping
+Payment information
+Credit Card transactions MasterCard ending in 8019: April 21, 2025: $44.90
+MasterCard ending in 8019: April 17, 2025: $121.40
+To view the status of your order, return to Order Summary.
+Have an issue with your gift card? Read about common issues or contact us.
+Conditions of Use | Privacy Notice © 1996-2025, Amazon.com, Inc. or its affiliates
+5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432
+https://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 2/3
+Back to top
+English United States Help
+Conditions of Use Privacy Notice Consumer Health Data Privacy Disclosure Your Ads Privacy Choices
+© 1996-2025, Amazon.com, Inc. or its aﬃliates
+5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432
+https://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432&ref=ppx_yo2ov_dt_b_fed_invoice_pos 3/3
+
+**YOUR TASK & INSTRUCTIONS BY ERROR TYPE:**
+Analyze the OCR text and generate a JSON object in the `errors` array for every issue you discover, following the specific rules for each `error_type`.
+
+---
+### **Instructions for `omission` and `format_correction` types:**
+*   **Definition:** Use these types when the correct value is **directly visible** in the OCR text but was missed or misformatted by my system.
+*   **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two "Free Shipping" lines, you MUST report two separate `omission` objects.
+*   **RULE: IGNORE NOISE.** Some lines may contain multiple pieces of information (e.g., a payment method AND a deduction). If a financial value is present, report it.
+
+#### **Caribbean Customs Field Mapping:**
+*   **SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
+    *   Set `field` to "TotalDeduction". For `correct_value`, return the **absolute value** as a string (e.g., "6.53").
+*   **CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
+    *   Create an `omission` object: set `field` to "TotalInsurance", `correct_value` to the **negative absolute value** (e.g., "-6.99").
+    *   Create a `format_correction` object: set `field` to "TotalInsurance", `pattern` to `"^(\\d+\\.?\\d*)$"`, and `replacement` to `"-$1"`.
+
+---
+### **Instructions for `inferred` type:**
+*   **Definition:** Use this type **ONLY** when the correct value is **NOT directly visible** in the text and must be deduced from other clues.
+    *   **Correct Example:** The text shows a `$` symbol, but not the letters "USD". Inferring "USD" is an `inferred` error.
+    *   **Incorrect Example:** Finding the text "April 15, 2025" for an empty `InvoiceDate` field is an `omission`, not an `inferred` error, because the value is explicitly present.
+*   **RULE: BE CAUTIOUS.** Only infer a value if there is strong, unambiguous contextual evidence.
+*   **RULE: JUSTIFY YOURSELF.** The `reasoning` field **MUST** justify the inference by citing evidence from the document, such as the supplier's name or address.
+
+---
+**STRICT RESPONSE SCHEMA (Follow these examples precisely):**
+
+**EXAMPLE FOR `omission`:**
+```json
+{
+  "field": "TotalDeduction",
+  "extracted_value": "null",
+  "correct_value": "6.53",
+  "line_text": "Free Shipping: -$6.53",
+  "line_number": 75,
+  "confidence": 0.98,
+  "error_type": "omission",
+  "suggested_regex": "Free Shipping:\\s*-?[\\$€£]?(?<TotalDeduction>[\\d,]+\\.?\\d*)",
+  "reasoning": "The OCR text contains a 'Free Shipping' line which was missed. This is a supplier-caused reduction."
+}
+```
+**EXAMPLE FOR `omission` and `format_correction` (Customer-caused reduction):**
+```json
+{
+  "errors": [
+    {
+      "field": "TotalInsurance",
+      "extracted_value": "null",
+      "correct_value": "-6.99",
+      "line_text": "Gift Card Amount: -$6.99",
+      "line_number": 77,
+      "confidence": 0.98,
+      "error_type": "omission",
+      "suggested_regex": "Gift Card Amount:\\s*-?[\\$€£]?(?<TotalInsurance>[\\d,]+\\.?\\d*)",
+      "reasoning": "The OCR text contains a 'Gift Card Amount' line, which is a customer-owned reduction."
+    },
+    {
+      "field": "TotalInsurance",
+      "extracted_value": "6.99",
+      "correct_value": "-6.99",
+      "line_text": "Gift Card Amount: -$6.99",
+      "line_number": 77,
+      "confidence": 0.99,
+      "error_type": "format_correction",
+      "pattern": "^(\\d+\\.?\\d*)$",
+      "replacement": "-$1",
+      "reasoning": "This rule ensures any positive number captured for TotalInsurance is made negative, as per customs rules."
+    }
+  ]
+}
+```
+
+**EXAMPLE FOR `inferred`:**
+```json
+{
+  "field": "Currency",
+  "extracted_value": "null",
+  "correct_value": "USD",
+  "line_text": "Order Total: $166.30",
+  "line_number": 7,
+  "confidence": 0.99,
+  "error_type": "inferred",
+  "suggested_regex": "Order Total:\\s*[\\$€£][\\d.,]+",
+  "reasoning": "Inferred from document context: The supplier is 'Amazon.com', a US entity, and the total is prefixed with a '$' symbol. This combination strongly implies the currency is USD."
+}
+```
+
+If you find no new omissions or corrections, return: {"errors": []}
+[14:53:21 ERR] 🔍 **HTTP_CLIENT_VALIDATION**: HttpClient initialized? True, BaseUrl=https://api.deepseek.com/v1
+[14:53:21 ERR] 🔍 **REQUEST_BODY_CONSTRUCTION**: Building DeepSeek API request body
+[14:53:21 ERR] 🔍 **REQUEST_PARAMETERS**: Model=deepseek-chat, Temperature=0.3, MaxTokens=8192, PromptLength=12807
+[14:53:21 ERR] 🔍 **REQUEST_JSON_COMPLETE**: Complete JSON request: {"model":"deepseek-chat","messages":[{"role":"user","content":"INTELLIGENT OCR CORRECTION (V12.1 - Cleaned Instructions):\r\n\r\n**CONTEXT:**\r\nI have extracted data from an OCR document, but the numbers don\u0027t add up correctly. Your task is to act as an auditor, find all missing financial entries in the text, and help me balance the invoice.\r\n\r\n**1. EXTRACTED FIELDS:**\r\n{\r\n  \u0022InvoiceNo\u0022: \u0022112-9126443-1163432\u0022,\r\n  \u0022InvoiceDate\u0022: null,\r\n  \u0022SupplierName\u0022: null,\r\n  \u0022Currency\u0022: null,\r\n  \u0022SubTotal\u0022: 161.94999999999999,\r\n  \u0022TotalInternalFreight\u0022: 6.9900000000000002,\r\n  \u0022TotalOtherCost\u0022: 11.34,\r\n  \u0022TotalDeduction\u0022: 6.9900000000000002,\r\n  \u0022TotalInsurance\u0022: null,\r\n  \u0022InvoiceTotal\u0022: 166.30000000000001\r\n}\r\n\r\n**2. CONTEXT \u0026 COMPONENTS (if any):**\r\n\r\n\r\n\r\n**4. MATHEMATICAL BALANCE CHECK:**\r\nMy system\u0027s calculated total is 173.29. The reported InvoiceTotal is 166.30.\r\nThe current discrepancy is: **-6.99**.\r\nYour primary goal is to find all missing values in the text that account for this discrepancy.\r\n\r\n**3. COMPLETE OCR TEXT:**\r\n------------------------------------------Single Column-------------------------\n5/9/25, 9:09 AM Amazon.com - Order 112-91 26443-1163432\n\namazoncom\n\nPrint this page for your records,\n\nOrder Placed: April 15, 2025\nAmazon.com order number: 112-9126443-1163432\nOrder Total: $166.30\n\nShipped on April 17, 2025\n\nItems Ordered Price\n1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White $119.99\nSold by: Amazon.com Services, Inc\n\nSupplied by: Other\n\nCondition: New\n\nShipping Address:\n\nMackess Cox C/o CaribConex\n7500 NW 81ST PL STE 2\nMIAMI, FL 33166-2180\nUnited States\n\nShipping Speed:\nFREE Shipping\n\nShipped on April 21, 2025\n\nItems Ordered Price\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 1/3\n\n5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432\n1 of: Heavy Duty Shower Curtain Rod - 28 to 76\u0022 Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for $41.96\nBathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack\nSold by: forevergreen (seller profile)\n\nSupplied by: forevergreen (seller profile)\n\nCondition: New\n\nShipping Address:\n\nMackess Cox C/o CaribConex\n7500 NW 81ST PL STE 2\nMIAMI, FL 33166-2180\nUnited States\n\nShipping Speed:\nFREE Shipping\n\nPayment information\n\nPayment Method: Item(s) Subtotal: $161.95\nAmazon gift card balance Shipping \u0026 Handling: $6.99\nMastercard ending in 8019 Free Shipping: -$0.46\nFree Shipping: -$6.53\n\nBilling address nnn\nMackess Cox Total before tax: $161.95\n4431 NW 74TH AVE GND10128 Estimated tax to be collected: $11.34\nMIAMI, FL 33166-6442 Gift Card Amount: -$6.99\nUnited States nn\nGrand Total: $166.30\n\nCredit Card transactions MasterCard ending in 8019: April 21, 2025: $44.90\nMasterCard ending in 8019: April 17, 2025: $121.40\n\nTo view the status of your order, return to Order Summary.\n\nHave an issue with your gift card? Read about common issues or contact us.\n\nConditions of Use | Privacy Notice \u00A9 1996-2025, Amazon.com, Inc. or its affiliates\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 2/3\n\n5/9/25, 9:09 AM Amazon.com - Order 112-91 26443-1163432\n\nBack to top\n\nEnglish | | United States Help\n\nConditions of Use Privacy Notice Consumer Health Data Privacy Disclosure Your Ads Privacy Choices\n\u00A9 1996-2025, Amazon.com, Inc. or its affiliates\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 3/3\n\n------------------------------------------SparseText-------------------------\n5/9/25, 9:09 AM\n\nAmazon.com - Order 112-9126443-1163432\n\namazoncom\n\nPrint this page for your records,\n\nOrder Placed: April 15, 2025\n\nAmazon.com order number: 112-9126443-1163432\n\nOrder Total: $166.30\n\nShipped on April 17, 2025\n\nItems Ordered\n\nPrice\n\n$119.99\n\n1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White\n\nSold by: Amazon.com Services, Inc\n\nSupplied by: Other\n\nCondition: New\n\nShipping Address:\n\nMackess Cox C/o CaribConex\n\n7500 NW 81ST PL STE 2\n\nMIAMI, FL 33166-2180\n\nUnited States\n\nShipping Speed:\n\nFREE Shipping\n\nShipped on April 21, 2025\n\nItems Ordered\n\nPrice\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos\n\nNe\n\n1/3\n\n5/9/25, 9:09 AM\n\nAmazon.com - Order 112-9126443-1163432\n\n1 of: Heavy Duty Shower Curtain Rod - 28 to 76\u0022 Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for $41.96\n\nBathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack\n\nSold by: forevergreen (seller profile)\n\nSupplied by: forevergreen (seller profile)\n\nCondition: New\n\nShipping Address:\n\nMackess Cox C/o CaribConex\n\n7500 NW 81ST PL STE 2\n\nMIAMI, FL 33166-2180\n\nUnited States\n\nShipping Speed:\n\nFREE Shipping\n\nPayment information\n\nPayment Method:\n\nItem(s) Subtotal\n\n$161.95\n\nAmazon gift card balance\n\nShipping \u0026 Handling\n\n$6.99\n\nMastercard ending in 8019\n\nFree Shipping\n\n-$0.46\n\n-$6.53\n\nFree Shipping\n\nBilling address\n\n-----\n\nMackess Cox\n\nTotal before tax\n\n$161.95\n\n4431 NW 74TH AVE GND10128\n\nEstimated tax to be collected\n\n$11.34\n\nMIAMI, FL 33166-6442\n\nGift Card Amount\n\n-$6.99\n\n-----\n\nUnited States\n\nGrand Total\n\n$166.30\n\nCredit Card transactions\n\nMasterCard ending in 8019: April 21, 2025:\n\n$44.90\n\nMasterCard ending in 8019: April 17, 2025:\n\n$121.40\n\nTo view the status of your order, return to Order Summary.\n\nHave an issue with your gift card? Read about common issues or contact us.\n\nConditions of Use | Privacy Notice \u00A9 1996-2025, Amazon.com, Inc. or its affiliates\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos\n\nNe\n\n2/3\n\n5/9/25, 9:09 AM\n\nAmazon.com - Order 112-9126443-1163432\n\nBack to top\n\nEnglish\n\nUnited States\n\nHelp\n\ni\n\nConditions of Use\n\nPrivacy Notice\n\nConsumer Health Data Privacy Disclosure\n\nYour Ads Privacy Choices\n\n\u00A9 1996-2025, Amazon.com, Inc. or its affiliates\n\nhttps:/Awww.amazon.com/gp/css/summary/print.html?orderID=11 2-91 26443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos\n\nNe\n\n3/3\n\n------------------------------------------Ripped Text-------------------------\nFinal Details for Order #112-9126443-1163432\nPrint this page for your records.\nOrder Placed: April 15, 2025\nAmazon.com order number: 112-9126443-1163432\nOrder Total: $166.30\nShipped on April 17, 2025\nItems Ordered Price\n1 of: NapQueen 8 Inch Innerspring Queen Size Medium Firm Memory Foam Mattress, Bed in a Box,White\nSold by: Amazon.com Services, Inc\nSupplied by: Other\nCondition: New\n$119.99\nShipping Address:\nMackess Cox C/o CaribConex\n7500 NW 81ST PL STE 2\nMIAMI, FL 33166-2180\nUnited States\nShipping Speed:\nFREE Shipping\nShipped on April 21, 2025\nItems Ordered Price\n5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432\nhttps://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 1/3\nAmazon gift card balance\nMastercard ending in 8019\nPayment Method:\nBilling address\nMackess Cox\n4431 NW 74TH AVE GND10128\nMIAMI, FL 33166-6442\nUnited States\nItem(s) Subtotal: $161.95\nShipping \u0026 Handling: $6.99\nFree Shipping: -$0.46\nFree Shipping: -$6.53\n-----\nTotal before tax: $161.95\nEstimated tax to be collected: $11.34\nGift Card Amount: -$6.99\n-----\nGrand Total: $166.30\n1 of: Heavy Duty Shower Curtain Rod - 28 to 76\u0022 Fixed Shower Curtain Rod Wall Mounted - Adjustable Extendable Rustproof for\nBathroom,Room Divider,Bedroom,Doorway - Matte Black 2 Pack\nSold by: forevergreen (seller profile)\nSupplied by: forevergreen (seller profile)\nCondition: New\n$41.96\nShipping Address:\nMackess Cox C/o CaribConex\n7500 NW 81ST PL STE 2\nMIAMI, FL 33166-2180\nUnited States\nShipping Speed:\nFREE Shipping\nPayment information\nCredit Card transactions MasterCard ending in 8019: April 21, 2025: $44.90\nMasterCard ending in 8019: April 17, 2025: $121.40\nTo view the status of your order, return to Order Summary.\nHave an issue with your gift card? Read about common issues or contact us.\nConditions of Use | Privacy Notice \u00A9 1996-2025, Amazon.com, Inc. or its affiliates\n5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432\nhttps://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 2/3\nBack to top\nEnglish United States Help\nConditions of Use Privacy Notice Consumer Health Data Privacy Disclosure Your Ads Privacy Choices\n\u00A9 1996-2025, Amazon.com, Inc. or its a\uFB03liates\n5/9/25, 9:09 AM Amazon.com - Order 112-9126443-1163432\nhttps://www.amazon.com/gp/css/summary/print.html?orderID=112-9126443-1163432\u0026ref=ppx_yo2ov_dt_b_fed_invoice_pos 3/3\r\n\r\n**YOUR TASK \u0026 INSTRUCTIONS BY ERROR TYPE:**\r\nAnalyze the OCR text and generate a JSON object in the \u0060errors\u0060 array for every issue you discover, following the specific rules for each \u0060error_type\u0060.\r\n\r\n---\r\n### **Instructions for \u0060omission\u0060 and \u0060format_correction\u0060 types:**\r\n*   **Definition:** Use these types when the correct value is **directly visible** in the OCR text but was missed or misformatted by my system.\r\n*   **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two \u0022Free Shipping\u0022 lines, you MUST report two separate \u0060omission\u0060 objects.\r\n*   **RULE: IGNORE NOISE.** Some lines may contain multiple pieces of information (e.g., a payment method AND a deduction). If a financial value is present, report it.\r\n\r\n#### **Caribbean Customs Field Mapping:**\r\n*   **SUPPLIER-CAUSED REDUCTION** (e.g., \u0027Free Shipping\u0027, \u0027Discount\u0027):\r\n    *   Set \u0060field\u0060 to \u0022TotalDeduction\u0022. For \u0060correct_value\u0060, return the **absolute value** as a string (e.g., \u00226.53\u0022).\r\n*   **CUSTOMER-CAUSED REDUCTION** (e.g., \u0027Gift Card\u0027, \u0027Store Credit\u0027):\r\n    *   Create an \u0060omission\u0060 object: set \u0060field\u0060 to \u0022TotalInsurance\u0022, \u0060correct_value\u0060 to the **negative absolute value** (e.g., \u0022-6.99\u0022).\r\n    *   Create a \u0060format_correction\u0060 object: set \u0060field\u0060 to \u0022TotalInsurance\u0022, \u0060pattern\u0060 to \u0060\u0022^(\\\\d\u002B\\\\.?\\\\d*)$\u0022\u0060, and \u0060replacement\u0060 to \u0060\u0022-$1\u0022\u0060.\r\n\r\n---\r\n### **Instructions for \u0060inferred\u0060 type:**\r\n*   **Definition:** Use this type **ONLY** when the correct value is **NOT directly visible** in the text and must be deduced from other clues.\r\n    *   **Correct Example:** The text shows a \u0060$\u0060 symbol, but not the letters \u0022USD\u0022. Inferring \u0022USD\u0022 is an \u0060inferred\u0060 error.\r\n    *   **Incorrect Example:** Finding the text \u0022April 15, 2025\u0022 for an empty \u0060InvoiceDate\u0060 field is an \u0060omission\u0060, not an \u0060inferred\u0060 error, because the value is explicitly present.\r\n*   **RULE: BE CAUTIOUS.** Only infer a value if there is strong, unambiguous contextual evidence.\r\n*   **RULE: JUSTIFY YOURSELF.** The \u0060reasoning\u0060 field **MUST** justify the inference by citing evidence from the document, such as the supplier\u0027s name or address.\r\n\r\n---\r\n**STRICT RESPONSE SCHEMA (Follow these examples precisely):**\r\n\r\n**EXAMPLE FOR \u0060omission\u0060:**\r\n\u0060\u0060\u0060json\r\n{\r\n  \u0022field\u0022: \u0022TotalDeduction\u0022,\r\n  \u0022extracted_value\u0022: \u0022null\u0022,\r\n  \u0022correct_value\u0022: \u00226.53\u0022,\r\n  \u0022line_text\u0022: \u0022Free Shipping: -$6.53\u0022,\r\n  \u0022line_number\u0022: 75,\r\n  \u0022confidence\u0022: 0.98,\r\n  \u0022error_type\u0022: \u0022omission\u0022,\r\n  \u0022suggested_regex\u0022: \u0022Free Shipping:\\\\s*-?[\\\\$\u20AC\u00A3]?(?\u003CTotalDeduction\u003E[\\\\d,]\u002B\\\\.?\\\\d*)\u0022,\r\n  \u0022reasoning\u0022: \u0022The OCR text contains a \u0027Free Shipping\u0027 line which was missed. This is a supplier-caused reduction.\u0022\r\n}\r\n\u0060\u0060\u0060\r\n**EXAMPLE FOR \u0060omission\u0060 and \u0060format_correction\u0060 (Customer-caused reduction):**\r\n\u0060\u0060\u0060json\r\n{\r\n  \u0022errors\u0022: [\r\n    {\r\n      \u0022field\u0022: \u0022TotalInsurance\u0022,\r\n      \u0022extracted_value\u0022: \u0022null\u0022,\r\n      \u0022correct_value\u0022: \u0022-6.99\u0022,\r\n      \u0022line_text\u0022: \u0022Gift Card Amount: -$6.99\u0022,\r\n      \u0022line_number\u0022: 77,\r\n      \u0022confidence\u0022: 0.98,\r\n      \u0022error_type\u0022: \u0022omission\u0022,\r\n      \u0022suggested_regex\u0022: \u0022Gift Card Amount:\\\\s*-?[\\\\$\u20AC\u00A3]?(?\u003CTotalInsurance\u003E[\\\\d,]\u002B\\\\.?\\\\d*)\u0022,\r\n      \u0022reasoning\u0022: \u0022The OCR text contains a \u0027Gift Card Amount\u0027 line, which is a customer-owned reduction.\u0022\r\n    },\r\n    {\r\n      \u0022field\u0022: \u0022TotalInsurance\u0022,\r\n      \u0022extracted_value\u0022: \u00226.99\u0022,\r\n      \u0022correct_value\u0022: \u0022-6.99\u0022,\r\n      \u0022line_text\u0022: \u0022Gift Card Amount: -$6.99\u0022,\r\n      \u0022line_number\u0022: 77,\r\n      \u0022confidence\u0022: 0.99,\r\n      \u0022error_type\u0022: \u0022format_correction\u0022,\r\n      \u0022pattern\u0022: \u0022^(\\\\d\u002B\\\\.?\\\\d*)$\u0022,\r\n      \u0022replacement\u0022: \u0022-$1\u0022,\r\n      \u0022reasoning\u0022: \u0022This rule ensures any positive number captured for TotalInsurance is made negative, as per customs rules.\u0022\r\n    }\r\n  ]\r\n}\r\n\u0060\u0060\u0060\r\n\r\n**EXAMPLE FOR \u0060inferred\u0060:**\r\n\u0060\u0060\u0060json\r\n{\r\n  \u0022field\u0022: \u0022Currency\u0022,\r\n  \u0022extracted_value\u0022: \u0022null\u0022,\r\n  \u0022correct_value\u0022: \u0022USD\u0022,\r\n  \u0022line_text\u0022: \u0022Order Total: $166.30\u0022,\r\n  \u0022line_number\u0022: 7,\r\n  \u0022confidence\u0022: 0.99,\r\n  \u0022error_type\u0022: \u0022inferred\u0022,\r\n  \u0022suggested_regex\u0022: \u0022Order Total:\\\\s*[\\\\$\u20AC\u00A3][\\\\d.,]\u002B\u0022,\r\n  \u0022reasoning\u0022: \u0022Inferred from document context: The supplier is \u0027Amazon.com\u0027, a US entity, and the total is prefixed with a \u0027$\u0027 symbol. This combination strongly implies the currency is USD.\u0022\r\n}\r\n\u0060\u0060\u0060\r\n\r\nIf you find no new omissions or corrections, return: {\u0022errors\u0022: []}"}],"temperature":0.29999999999999999,"max_tokens":8192,"stream":false}
+[14:53:21 ERR] 🔍 **HTTP_REQUEST_STATE**: About to send POST request to https://api.deepseek.com/v1/chat/completions
+[14:53:21 ERR] 🔍 **HTTP_REQUEST_HEADERS**: ContentType=application/json, Encoding=UTF8, Method=POST
+[14:53:21 ERR] 🔍 **STATE_TRANSITION**: REQUEST_CONSTRUCTION → HTTP_EXECUTION_WITH_RETRY
+[14:53:21 ERR] 🔍 **HTTP_RETRY_ATTEMPT**: Executing HTTP request (with retry policy)
+[14:53:23 ERR] 🔍 **HTTP_RESPONSE_STATUS**: StatusCode=OK, IsSuccess=True
+[14:53:23 ERR] 🔍 **STATE_TRANSITION**: HTTP_EXECUTION → RESPONSE_PROCESSING
+[14:53:23 ERR] 🔍 **RESPONSE_ENTRY_STATE**: HandleApiResponse called with status OK
+[14:53:23 ERR] 🔍 **STATE_TRANSITION**: HTTP_RESPONSE → CONTENT_READING

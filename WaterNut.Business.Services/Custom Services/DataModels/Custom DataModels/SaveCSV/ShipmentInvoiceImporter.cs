@@ -39,62 +39,65 @@ namespace WaterNut.DataSpace
             logger.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
                 nameof(ProcessShipmentInvoice), "Process shipment invoice data from email or file", $"FileType: {fileType?.Description}, EmailId: {emailId}, FilePath: {droppedFilePath}, DocSetCount: {docSet?.Count ?? 0}");
 
-            try
+            using (var context = new EntryDataDSContext())
             {
-                logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
-                    nameof(ProcessShipmentInvoice), $"Processing shipment invoice from File: {droppedFilePath ?? emailId}");
+                try
+                {
+                    logger.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                        nameof(ProcessShipmentInvoice), $"Processing shipment invoice from File: {droppedFilePath ?? emailId}");
 
-                var invoiceData = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
-                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                    nameof(ProcessShipmentInvoice), "DataExtraction", "Extracted invoice data from input list.", $"RawItemCount: {invoiceData.Count}");
+                    var invoiceData = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
+                    logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(ProcessShipmentInvoice), "DataExtraction", "Extracted invoice data from input list.", $"RawItemCount: {invoiceData.Count}");
 
-                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ExtractShipmentInvoices", "ASYNC_EXPECTED");
-                var extractStopwatch = Stopwatch.StartNew();
-                var shipmentInvoices = await ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData, logger).ConfigureAwait(false); // Pass logger
-
-
-
-
-                extractStopwatch.Stop();
-                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                    "ExtractShipmentInvoices", extractStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
-
-                var invoices = ReduceLstByInvoiceNo(shipmentInvoices);
-                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                    nameof(ProcessShipmentInvoice), "DataReduction", "Reduced list by invoice number.", $"UniqueInvoiceCount: {invoices.Count}");
-
-                var goodInvoices = invoices.Where(x => x.InvoiceDetails.All(z => !string.IsNullOrEmpty(z.ItemDescription)))
-                                            .Where(x => x.InvoiceDetails.Any())
-                                            .ToList();
-                logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                    nameof(ProcessShipmentInvoice), "DataFiltering", "Filtered for good invoices.", $"GoodInvoiceCount: {goodInvoices.Count}");
+                    logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "ExtractShipmentInvoices", "ASYNC_EXPECTED");
+                    var extractStopwatch = Stopwatch.StartNew();
+                    var shipmentInvoices = await ExtractShipmentInvoices(fileType, emailId, droppedFilePath, invoiceData, logger).ConfigureAwait(false); // Pass logger
 
 
 
-                logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SaveInvoicePOsAsync", "ASYNC_EXPECTED");
-                var saveStopwatch = Stopwatch.StartNew();
-                await SaveInvoicePOsAsync(invoicePOs, goodInvoices).ConfigureAwait(false);
-                saveStopwatch.Stop();
-                logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                    "SaveInvoicePOsAsync", saveStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
 
-                methodStopwatch.Stop(); // Stop stopwatch on success
-                logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                    nameof(ProcessShipmentInvoice), "Shipment invoice processed successfully", $"ProcessedGoodInvoiceCount: {goodInvoices.Count}", methodStopwatch.ElapsedMilliseconds);
-                logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                    nameof(ProcessShipmentInvoice), $"Successfully processed {goodInvoices.Count} good invoices", methodStopwatch.ElapsedMilliseconds);
+                    extractStopwatch.Stop();
+                    logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "ExtractShipmentInvoices", extractStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
 
-                return true;
-            }
-            catch (Exception e)
-            {
-                methodStopwatch.Stop(); // Stop stopwatch on failure
-                logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ProcessShipmentInvoice), "Process shipment invoice data from email or file", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
-                logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(ProcessShipmentInvoice), "Overall shipment invoice processing", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
-                Console.WriteLine(e); // Keep Console.WriteLine for now
-                return false;
+                    var invoices = ReduceLstByInvoiceNo(shipmentInvoices);
+                    logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(ProcessShipmentInvoice), "DataReduction", "Reduced list by invoice number.", $"UniqueInvoiceCount: {invoices.Count}");
+
+                    var goodInvoices = invoices.Where(x => x.InvoiceDetails.All(z => !string.IsNullOrEmpty(z.ItemDescription)))
+                                                .Where(x => x.InvoiceDetails.Any())
+                                                .ToList();
+                    logger.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(ProcessShipmentInvoice), "DataFiltering", "Filtered for good invoices.", $"GoodInvoiceCount: {goodInvoices.Count}");
+
+
+
+                    logger.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "SaveInvoicePOsAsync", "ASYNC_EXPECTED");
+                    var saveStopwatch = Stopwatch.StartNew();
+                    await SaveInvoicePOsAsync(context, invoicePOs, goodInvoices).ConfigureAwait(false);
+                    saveStopwatch.Stop();
+                    logger.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
+                        "SaveInvoicePOsAsync", saveStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
+
+                    methodStopwatch.Stop(); // Stop stopwatch on success
+                    logger.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(ProcessShipmentInvoice), "Shipment invoice processed successfully", $"ProcessedGoodInvoiceCount: {goodInvoices.Count}", methodStopwatch.ElapsedMilliseconds);
+                    logger.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(ProcessShipmentInvoice), $"Successfully processed {goodInvoices.Count} good invoices", methodStopwatch.ElapsedMilliseconds);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    methodStopwatch.Stop(); // Stop stopwatch on failure
+                    logger.Error(e, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(ProcessShipmentInvoice), "Process shipment invoice data from email or file", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
+                    logger.Error(e, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(ProcessShipmentInvoice), "Overall shipment invoice processing", methodStopwatch.ElapsedMilliseconds, $"Error processing shipment invoice: {e.Message}");
+                    Console.WriteLine(e); // Keep Console.WriteLine for now
+                    return false;
+                }
             }
         }
 
@@ -343,63 +346,60 @@ namespace WaterNut.DataSpace
 
 
 
-        private static async Task SaveInvoicePOsAsync(Dictionary<string, string> invoicePOs, List<ShipmentInvoice> lst)
+        private static async Task SaveInvoicePOsAsync(EntryDataDSContext ctx, Dictionary<string, string> invoicePOs, List<ShipmentInvoice> lst)
         {
-            using (var ctx = new EntryDataDSContext())
+            // 1. Collect all details and ensure categories exist
+            var allDetails = lst.SelectMany(inv => inv.InvoiceDetails).ToList();
+
+            if (allDetails.Any())
             {
-                // 1. Collect all details and ensure categories exist
-                var allDetails = lst.SelectMany(inv => inv.InvoiceDetails).ToList();
-
-                if (allDetails.Any())
-                {
-                    await EnsureCategoriesExistAsync(ctx, allDetails).ConfigureAwait(false);
-                }
-
-                // 2. Process invoices - much simpler now!
-                foreach (var invoice in lst)
-                {
-                    var existingManifest = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
-                    if (existingManifest != null)
-                    {
-                        ctx.ShipmentInvoice.Remove(existingManifest);
-                    }
-
-                    invoice.InvoiceDetails = AutoFixImportErrors(invoice);
-                    invoice.ImportedLines = invoice.InvoiceDetails.Count;
-
-                    if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
-                    {
-                        invoice.SubTotal = invoice.ImportedSubTotal;
-                    }
-
-                    if (!invoice.InvoiceDetails.Any())
-                        continue;
-
-                    if (invoicePOs != null && lst.Count > 1 && invoice != lst.First())
-                    {
-                        invoice.SourceFile = invoice.SourceFile.Replace($"{invoicePOs[lst.First().InvoiceNo]}",
-                            invoicePOs[invoice.InvoiceNo]);
-                    }
-
-                    // 3. Simply normalize the category data - no foreign key complexity!
-                    foreach (var detail in invoice.InvoiceDetails)
-                    {
-                        if (!string.IsNullOrEmpty(detail.Category))
-                        {
-                            detail.Category = detail.Category.ToUpperInvariant().Trim();
-                        }
-                        if (!string.IsNullOrEmpty(detail.CategoryTariffCode))
-                        {
-                            detail.CategoryTariffCode = detail.CategoryTariffCode.ToUpperInvariant().Trim();
-                        }
-                    }
-
-                    ctx.ShipmentInvoice.Add(invoice);
-                }
-
-                // 4. Save everything - fast and simple!
-                await ctx.SaveChangesAsync().ConfigureAwait(false);
+                await EnsureCategoriesExistAsync(ctx, allDetails).ConfigureAwait(false);
             }
+
+            // 2. Process invoices - much simpler now!
+            foreach (var invoice in lst)
+            {
+                var existingManifest = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
+                if (existingManifest != null)
+                {
+                    ctx.ShipmentInvoice.Remove(existingManifest);
+                }
+
+                invoice.InvoiceDetails = AutoFixImportErrors(invoice);
+                invoice.ImportedLines = invoice.InvoiceDetails.Count;
+
+                if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
+                {
+                    invoice.SubTotal = invoice.ImportedSubTotal;
+                }
+
+                if (!invoice.InvoiceDetails.Any())
+                    continue;
+
+                if (invoicePOs != null && lst.Count > 1 && invoice != lst.First())
+                {
+                    invoice.SourceFile = invoice.SourceFile.Replace($"{invoicePOs[lst.First().InvoiceNo]}",
+                        invoicePOs[invoice.InvoiceNo]);
+                }
+
+                // 3. Simply normalize the category data - no foreign key complexity!
+                foreach (var detail in invoice.InvoiceDetails)
+                {
+                    if (!string.IsNullOrEmpty(detail.Category))
+                    {
+                        detail.Category = detail.Category.ToUpperInvariant().Trim();
+                    }
+                    if (!string.IsNullOrEmpty(detail.CategoryTariffCode))
+                    {
+                        detail.CategoryTariffCode = detail.CategoryTariffCode.ToUpperInvariant().Trim();
+                    }
+                }
+
+                ctx.ShipmentInvoice.Add(invoice);
+            }
+
+            // 4. Save everything - fast and simple!
+            await ctx.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private static async Task EnsureCategoriesExistAsync(EntryDataDSContext ctx, ICollection<InvoiceDetails> details)

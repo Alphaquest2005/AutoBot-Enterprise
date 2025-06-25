@@ -79,12 +79,61 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                         // --- OCR CORRECTION SERVICE CALL ---
                         context.Logger?.Information("🚀 **CORRECTION_PIPELINE_START**: Calling OCRCorrectionService to analyze and correct the data structure as-is.");
+                        
+                        // ====== FREE SHIPPING PRE-CORRECTION DIAGNOSTIC ======
+                        if (res != null && res.Any())
+                        {
+                            var preCorrectionFreeShipping = res
+                                .SelectMany(item => item is IEnumerable<IDictionary<string, object>> list ? list : new[] { item as IDictionary<string, object> })
+                                .Where(dict => dict != null && dict.ContainsKey("TotalDeduction") && dict["TotalDeduction"] != null)
+                                .ToList();
+                                
+                            if (preCorrectionFreeShipping.Any())
+                            {
+                                context.Logger?.Information("🚢 **FREE_SHIPPING_PRE_CORRECTION**: Found {Count} items with TotalDeduction before OCR correction", preCorrectionFreeShipping.Count);
+                                foreach (var item in preCorrectionFreeShipping)
+                                {
+                                    var invoiceNo = item.ContainsKey("InvoiceNo") ? item["InvoiceNo"]?.ToString() : "Unknown";
+                                    var totalDeduction = item["TotalDeduction"]?.ToString();
+                                    context.Logger?.Information("   - 📊 Pre-Correction {InvoiceNo}: TotalDeduction={TotalDeduction}", invoiceNo, totalDeduction);
+                                }
+                            }
+                            else
+                            {
+                                context.Logger?.Information("🚢 **FREE_SHIPPING_PRE_CORRECTION**: No items with TotalDeduction found before OCR correction");
+                            }
+                        }
+                        
                         var correctedRes = await OCRCorrectionService.CorrectInvoices(res, template, textLines, context.Logger).ConfigureAwait(false);
+
+                        // ====== FREE SHIPPING POST-CORRECTION DIAGNOSTIC ======
+                        if (correctedRes != null && correctedRes.Any())
+                        {
+                            var postCorrectionFreeShipping = correctedRes
+                                .SelectMany(item => item is IEnumerable<IDictionary<string, object>> list ? list : new[] { item as IDictionary<string, object> })
+                                .Where(dict => dict != null && dict.ContainsKey("TotalDeduction") && dict["TotalDeduction"] != null)
+                                .ToList();
+                                
+                            if (postCorrectionFreeShipping.Any())
+                            {
+                                context.Logger?.Information("🚢 **FREE_SHIPPING_POST_CORRECTION**: Found {Count} items with TotalDeduction after OCR correction", postCorrectionFreeShipping.Count);
+                                foreach (var item in postCorrectionFreeShipping)
+                                {
+                                    var invoiceNo = item.ContainsKey("InvoiceNo") ? item["InvoiceNo"]?.ToString() : "Unknown";
+                                    var totalDeduction = item["TotalDeduction"]?.ToString();
+                                    context.Logger?.Information("   - 📊 Post-Correction {InvoiceNo}: TotalDeduction={TotalDeduction} (corrected by OCR service)", invoiceNo, totalDeduction);
+                                }
+                            }
+                            else
+                            {
+                                context.Logger?.Warning("⚠️ **FREE_SHIPPING_POST_CORRECTION_MISSING**: No items with TotalDeduction found after OCR correction");
+                            }
+                        }
 
                         // --- ASSERTIVE LOGGING: CORRECTED DATA STATE & COMPARISON ---
                         var correctedResType = correctedRes?.GetType().FullName ?? "NULL";
                         var firstCorrectedItemType = (correctedRes != null && correctedRes.Any()) ? correctedRes[0]?.GetType().FullName ?? "NULL" : "N/A";
-                        context.Logger?.Error("🔬 **TYPE_ANALYSIS (AFTER_CORRECTION)**: The 'correctedRes' object returned from service has Type: '{correctedResType}'. First element Type: '{firstCorrectedItemType}'.", correctedResType, firstCorrectedItemType);
+                        context.Logger?.Information("🔬 **TYPE_ANALYSIS (AFTER_CORRECTION)**: The 'correctedRes' object returned from service has Type: '{correctedResType}'. First element Type: '{firstCorrectedItemType}'.", correctedResType, firstCorrectedItemType);
 
                         string correctedResJson = "[]";
                         try

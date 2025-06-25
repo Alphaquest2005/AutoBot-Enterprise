@@ -68,120 +68,119 @@ namespace WaterNut.DataSpace
                 return false;
             }
 
-            try
+            // =====================================================================================
+            //                                  SINGLE DB CONTEXT FIX
+            // =====================================================================================
+            // A single DbContext is created here and passed throughout the entire operation.
+            // This ensures all strategies (Omission, Format, etc.) share the same change tracker,
+            // preventing duplicate key exceptions when creating related entities in one transaction.
+            using (var dbContext = new OCRContext())
             {
-                var jsonOptions = new JsonSerializerOptions
-                                      {
-                                          WriteIndented = true,
-                                          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                                      };
-
-                _logger.Error(
-                    "   - **STEP 1: METADATA_EXTRACTION**: Extracting OCR metadata from the current invoice state.");
-                var metadata = this.ExtractFullOCRMetadata(invoice, fileText);
-
-                _logger.Error("   - **STEP 2: ERROR_DETECTION**: Detecting errors and omissions.");
-                var allDetectedErrors =
-                    await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
-
-                if (!allDetectedErrors.Any())
+                try
                 {
-                    _logger.Error("   - ✅ **NO_ERRORS_FOUND**: No errors detected. Checking final balance.");
-                    return OCRCorrectionService.TotalsZero(invoice, _logger);
+                    var jsonOptions = new JsonSerializerOptions
+                                          {
+                                              WriteIndented = true,
+                                              DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                                          };
+
+                    _logger.Error(
+                        "   - **STEP 1: METADATA_EXTRACTION**: Extracting OCR metadata from the current invoice state.");
+                    var metadata = this.ExtractFullOCRMetadata(invoice, fileText);
+
+                    _logger.Error("   - **STEP 2: ERROR_DETECTION**: Detecting errors and omissions.");
+                    var allDetectedErrors =
+                        await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
+
+                    if (!allDetectedErrors.Any())
+                    {
+                        _logger.Error("   - ✅ **NO_ERRORS_FOUND**: No errors detected. Checking final balance.");
+                        return OCRCorrectionService.TotalsZero(invoice, _logger);
+                    }
+
+                    _logger.Error("   - Found {Count} unique, actionable errors.", allDetectedErrors.Count);
+
+                    _logger.Error("   - **STEP 3: APPLY_CORRECTIONS**: Applying corrections to in-memory invoice object.");
+                    var appliedCorrections =
+                        await this.ApplyCorrectionsAsync(invoice, allDetectedErrors, fileText, metadata)
+                            .ConfigureAwait(false);
+                    var successfulValueApplications = appliedCorrections.Count(c => c.Success);
+                    _logger.Error("   - Successfully applied {Count} corrections.", successfulValueApplications);
+
+                    _logger.Error("   - **STEP 4: CUSTOMS_RULES**: Applying Caribbean-specific rules post-correction.");
+                    var customsCorrections = this.ApplyCaribbeanCustomsRules(
+                        invoice,
+                        appliedCorrections.Where(c => c.Success).ToList());
+                    if (customsCorrections.Any())
+                    {
+                        this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
+                        _logger.Information(
+                            "   - Applied {CustomsCount} Caribbean customs rules to invoice.",
+                            customsCorrections.Count);
+                    }
+
+
+                    _logger.Error(
+                        "   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
+
+                    var successfulDetectionsForDB = allDetectedErrors.Select(
+                        e => new CorrectionResult
+                                 {
+                                     FieldName = e.Field,
+                                     OldValue = e.ExtractedValue,
+                                     NewValue = e.CorrectValue,
+                                     CorrectionType = e.ErrorType,
+                                     Confidence = e.Confidence,
+                                     Reasoning = e.Reasoning,
+                                     LineText = e.LineText,
+                                     LineNumber = e.LineNumber,
+                                     Success = true, // We are only processing successful detections
+                                     ContextLinesBefore = e.ContextLinesBefore,
+                                     ContextLinesAfter = e.ContextLinesAfter,
+                                     RequiresMultilineRegex = e.RequiresMultilineRegex,
+                                     SuggestedRegex = e.SuggestedRegex,
+                                     Pattern = e.Pattern,
+                                     Replacement = e.Replacement
+                                 }).ToList();
+
+                    _logger.Error(
+                        "   - **DATA_DUMP (successfulDetectionsForDB)**: Object state before creating RegexUpdateRequests: {Data}",
+                        JsonSerializer.Serialize(successfulDetectionsForDB, jsonOptions));
+
+                    if (successfulDetectionsForDB.Any())
+                    {
+                        _logger.Error(
+                            "   - **STEP 6: REGEX_UPDATE_REQUEST**: Creating {Count} requests for regex pattern updates in the database.",
+                            successfulDetectionsForDB.Count);
+
+                        var regexUpdateRequests = successfulDetectionsForDB
+                            .Select(c => this.CreateRegexUpdateRequest(c, fileText, metadata, invoice.Id)).ToList();
+
+                        _logger.Error(
+                            "   - **DATA_DUMP (regexUpdateRequests)**: Object state before sending to UpdateRegexPatternsAsync: {Data}",
+                            JsonSerializer.Serialize(regexUpdateRequests, jsonOptions));
+
+                        // Pass the single DbContext instance to the update method.
+                        await this.UpdateRegexPatternsAsync(dbContext, regexUpdateRequests).ConfigureAwait(false);
+                    }
+
+                    bool isBalanced = OCRCorrectionService.TotalsZero(invoice, _logger);
+                    _logger.Error(
+                        "🏁 **ORCHESTRATION_COMPLETE**: Finished for Invoice '{InvoiceNo}'. Final balance state: {IsBalanced}. Corrections applied: {CorrectionsApplied}",
+                        invoice.InvoiceNo,
+                        isBalanced ? "BALANCED" : "UNBALANCED",
+                        successfulValueApplications > 0);
+
+                    return successfulValueApplications > 0 || isBalanced;
                 }
-
-                _logger.Error("   - Found {Count} unique, actionable errors.", allDetectedErrors.Count);
-
-                _logger.Error("   - **STEP 3: APPLY_CORRECTIONS**: Applying corrections to in-memory invoice object.");
-                var appliedCorrections =
-                    await this.ApplyCorrectionsAsync(invoice, allDetectedErrors, fileText, metadata)
-                        .ConfigureAwait(false);
-                var successfulValueApplications = appliedCorrections.Count(c => c.Success);
-                _logger.Error("   - Successfully applied {Count} corrections.", successfulValueApplications);
-
-                _logger.Error("   - **STEP 4: CUSTOMS_RULES**: Applying Caribbean-specific rules post-correction.");
-                var customsCorrections = this.ApplyCaribbeanCustomsRules(
-                    invoice,
-                    appliedCorrections.Where(c => c.Success).ToList());
-                if (customsCorrections.Any())
-                {
-                    this.ApplyCaribbeanCustomsCorrectionsToInvoice(invoice, customsCorrections);
-                    _logger.Information(
-                        "   - Applied {CustomsCount} Caribbean customs rules to invoice.",
-                        customsCorrections.Count);
-                }
-
-
-                _logger.Error(
-                    "   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
-
-                // ============================ FIX PART 1: COMPLETE THE MAPPING ============================
-                // This is the first critical transformation. We must ensure `Pattern` and `Replacement`
-                // are correctly mapped from the `InvoiceError` object (`e`) to the `CorrectionResult` object.
-                var successfulDetectionsForDB = allDetectedErrors.Select(
-                    e => new CorrectionResult
-                             {
-                                 FieldName = e.Field,
-                                 OldValue = e.ExtractedValue,
-                                 NewValue = e.CorrectValue,
-                                 CorrectionType = e.ErrorType,
-                                 Confidence = e.Confidence,
-                                 Reasoning = e.Reasoning,
-                                 LineText = e.LineText,
-                                 LineNumber = e.LineNumber,
-                                 Success = true, // We are only processing successful detections
-                                 ContextLinesBefore = e.ContextLinesBefore,
-                                 ContextLinesAfter = e.ContextLinesAfter,
-                                 RequiresMultilineRegex = e.RequiresMultilineRegex,
-                                 SuggestedRegex = e.SuggestedRegex,
-                                 Pattern = e.Pattern, // Ensure Pattern is mapped
-                                 Replacement = e.Replacement // Ensure Replacement is mapped
-                             }).ToList();
-
-                // ============================ FIX PART 2: ADD DATA_DUMP LOGGING (TRACE 1) ============================
-                // This log proves whether the Pattern/Replacement fields exist after the first transformation.
-                _logger.Error(
-                    "   - **DATA_DUMP (successfulDetectionsForDB)**: Object state before creating RegexUpdateRequests: {Data}",
-                    JsonSerializer.Serialize(successfulDetectionsForDB, jsonOptions));
-                // ===================================== END OF LOGGING FIX =====================================
-
-                if (successfulDetectionsForDB.Any())
+                catch (Exception ex)
                 {
                     _logger.Error(
-                        "   - **STEP 6: REGEX_UPDATE_REQUEST**: Creating {Count} requests for regex pattern updates in the database.",
-                        successfulDetectionsForDB.Count);
-
-                    // The second critical transformation happens inside `CreateRegexUpdateRequest`.
-                    var regexUpdateRequests = successfulDetectionsForDB
-                        .Select(c => this.CreateRegexUpdateRequest(c, fileText, metadata, invoice.Id)).ToList();
-
-                    // ============================ FIX PART 3: ADD DATA_DUMP LOGGING (TRACE 2) ============================
-                    // This log proves whether the Pattern/Replacement fields exist in the *final* request object.
-                    // If data was in TRACE 1 but is missing here, the bug is inside `CreateRegexUpdateRequest`.
-                    _logger.Error(
-                        "   - **DATA_DUMP (regexUpdateRequests)**: Object state before sending to UpdateRegexPatternsAsync: {Data}",
-                        JsonSerializer.Serialize(regexUpdateRequests, jsonOptions));
-                    // ===================================== END OF LOGGING FIX =====================================
-
-                    await this.UpdateRegexPatternsAsync(regexUpdateRequests).ConfigureAwait(false);
+                        ex,
+                        "🚨 **ORCHESTRATION_EXCEPTION**: Error during CorrectInvoiceAsync for {InvoiceNo}",
+                        invoice?.InvoiceNo);
+                    return false;
                 }
-
-                bool isBalanced = OCRCorrectionService.TotalsZero(invoice, _logger);
-                _logger.Error(
-                    "🏁 **ORCHESTRATION_COMPLETE**: Finished for Invoice '{InvoiceNo}'. Final balance state: {IsBalanced}. Corrections applied: {CorrectionsApplied}",
-                    invoice.InvoiceNo,
-                    isBalanced ? "BALANCED" : "UNBALANCED",
-                    successfulValueApplications > 0);
-
-                return successfulValueApplications > 0 || isBalanced;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(
-                    ex,
-                    "🚨 **ORCHESTRATION_EXCEPTION**: Error during CorrectInvoiceAsync for {InvoiceNo}",
-                    invoice?.InvoiceNo);
-                return false;
             }
         }
 

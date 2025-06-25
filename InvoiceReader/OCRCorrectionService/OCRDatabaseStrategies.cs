@@ -198,10 +198,10 @@ namespace WaterNut.DataSpace
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Error("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, CorrectionType: '{CorrectionType}'", request.FieldName, request.CorrectionType);
+                _logger.Information("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, CorrectionType: '{CorrectionType}'", request.FieldName, request.CorrectionType);
 
                 var requestJson = JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                _logger.Error("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest entering strategy: {RequestJson}", requestJson);
+                _logger.Debug("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest entering strategy: {RequestJson}", requestJson);
 
                 try
                 {
@@ -212,7 +212,7 @@ namespace WaterNut.DataSpace
                     }
 
                     int fieldDefinitionId = request.LineId.Value;
-                    _logger.Error("   - [STEP 1] Looking for Field definition with ID: {FieldId}", fieldDefinitionId);
+                    _logger.Information("   - [STEP 1] Looking for Field definition with ID: {FieldId}", fieldDefinitionId);
 
                     var fieldDef = await context.Fields.FindAsync(fieldDefinitionId).ConfigureAwait(false);
                     if (fieldDef == null)
@@ -220,7 +220,7 @@ namespace WaterNut.DataSpace
                         _logger.Error("   - ❌ **STRATEGY_FAIL**: Database lookup failed. Could not find a field definition with ID {FieldDefinitionId}. Aborting strategy.", fieldDefinitionId);
                         return DatabaseUpdateResult.Failed($"Field definition with ID {fieldDefinitionId} not found for field '{request.FieldName}'.");
                     }
-                    _logger.Error("   - [STEP 1] ✅ SUCCESS: Found Field definition {FieldId}.", fieldDefinitionId);
+                    _logger.Information("   - [STEP 1] ✅ SUCCESS: Found Field definition {FieldId}.", fieldDefinitionId);
 
                     string pattern = request.Pattern;
                     string replacement = request.Replacement;
@@ -230,26 +230,26 @@ namespace WaterNut.DataSpace
                         _logger.Error("   - ❌ **STRATEGY_FAIL**: The format_correction request from the AI was missing the required 'pattern' or 'replacement' field. Aborting strategy.");
                         return DatabaseUpdateResult.Failed($"AI-generated format correction for '{request.FieldName}' was incomplete (missing pattern or replacement).");
                     }
-                    _logger.Error("   - [STEP 2] ✅ SUCCESS: AI provided valid Pattern ('{Pattern}') and Replacement ('{Replacement}').", pattern, replacement);
+                    _logger.Information("   - [STEP 2] ✅ SUCCESS: AI provided valid Pattern ('{Pattern}') and Replacement ('{Replacement}').", pattern, replacement);
 
                     // =================================== FIX START ===================================
                     // This summary log block has been restored for clarity.
-                    _logger.Error("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
-                    _logger.Error("      - FieldId: {FieldId}", fieldDefinitionId);
-                    _logger.Error("      - Pattern Regex: '{Pattern}'", pattern);
-                    _logger.Error("      - Replacement Regex: '{Replacement}'", replacement);
+                    _logger.Information("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
+                    _logger.Information("      - FieldId: {FieldId}", fieldDefinitionId);
+                    _logger.Information("      - Pattern Regex: '{Pattern}'", pattern);
+                    _logger.Information("      - Replacement Regex: '{Replacement}'", replacement);
                     // ==================================== FIX END ====================================
 
-                    _logger.Error("   - [STEP 3] Getting/creating Regex entity for the PATTERN string: '{Pattern}'", pattern);
+                    _logger.Information("   - [STEP 3] Getting/creating Regex entity for the PATTERN string: '{Pattern}'", pattern);
                     var patternRegexEntity = await this.GetOrCreateRegexAsync(context, pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
-                    _logger.Error("   - [STEP 3] ✅ SUCCESS: Got/created pattern Regex entity with ID: {RegexId}", patternRegexEntity.Id);
+                    _logger.Information("   - [STEP 3] ✅ SUCCESS: Got/created pattern Regex entity with ID: {RegexId}", patternRegexEntity.Id);
 
-                    _logger.Error("   - [STEP 4] Getting/creating Regex entity for the REPLACEMENT string: '{Replacement}'", replacement);
+                    _logger.Information("   - [STEP 4] Getting/creating Regex entity for the REPLACEMENT string: '{Replacement}'", replacement);
                     var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
-                    _logger.Error("   - [STEP 4] ✅ SUCCESS: Got/created replacement Regex entity with ID: {RegexId}", replacementRegexEntity.Id);
+                    _logger.Information("   - [STEP 4] ✅ SUCCESS: Got/created replacement Regex entity with ID: {RegexId}", replacementRegexEntity.Id);
 
 
-                    _logger.Error("   - [STEP 5] Checking for existing FieldFormatRegEx rule with FieldId={FieldId}, PatternRegexId={PatternId}, ReplacementRegexId={ReplacementId}", fieldDefinitionId, patternRegexEntity.Id, replacementRegexEntity.Id);
+                    _logger.Information("   - [STEP 5] Checking for existing FieldFormatRegEx rule with FieldId={FieldId}, PatternRegexId={PatternId}, ReplacementRegexId={ReplacementId}", fieldDefinitionId, patternRegexEntity.Id, replacementRegexEntity.Id);
                     var existingFieldFormat = await context.OCR_FieldFormatRegEx
                         .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id)
                         .ConfigureAwait(false);
@@ -259,7 +259,7 @@ namespace WaterNut.DataSpace
                         _logger.Information("   - [STEP 5] ✅ SUCCESS: Found existing FieldFormatRegEx rule (ID: {RuleId}). No changes needed.", existingFieldFormat.Id);
                         return DatabaseUpdateResult.Success(existingFieldFormat.Id, "Existing FieldFormatRegEx");
                     }
-                    _logger.Error("   - [STEP 5] No existing rule found. Preparing to create a new one.");
+                    _logger.Information("   - [STEP 5] No existing rule found. Preparing to create a new one.");
 
 
                     var newFieldFormatRegex = new FieldFormatRegEx
@@ -270,12 +270,36 @@ namespace WaterNut.DataSpace
                         TrackingState = TrackingState.Added
                     };
                     context.OCR_FieldFormatRegEx.Add(newFieldFormatRegex);
-                    _logger.Error("   - [STEP 6] Added new FieldFormatRegEx to context. Awaiting save.");
+                    _logger.Information("   - [STEP 6] Added new FieldFormatRegEx to context. Awaiting save.");
 
-                    await SaveChangesWithAssertiveLogging(context, "CreateFieldFormatRule").ConfigureAwait(false);
-                    _logger.Error("   - [STEP 7] ✅ SUCCESS: SaveChanges completed successfully.");
-
-                    return DatabaseUpdateResult.Success(newFieldFormatRegex.Id, "Created FieldFormatRegEx");
+                    try
+                    {
+                        await SaveChangesWithAssertiveLogging(context, "CreateFieldFormatRule").ConfigureAwait(false);
+                        _logger.Information("   - [STEP 7] ✅ SUCCESS: SaveChanges completed successfully.");
+                        return DatabaseUpdateResult.Success(newFieldFormatRegex.Id, "Created FieldFormatRegEx");
+                    }
+                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex) when (ex.InnerException?.Message?.Contains("primary key") == true)
+                    {
+                        _logger.Warning("   - [STEP 7] ⚠️ PRIMARY_KEY_CONFLICT: Entity Framework relationship collision detected. Refreshing context and retrying lookup.");
+                        
+                        // Refresh the context and check if the rule was actually created by a concurrent operation
+                        context.ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList().ForEach(e => e.State = EntityState.Detached);
+                        
+                        var refreshedFieldFormat = await context.OCR_FieldFormatRegEx
+                            .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && 
+                                                      ffr.RegEx.RegEx == pattern && 
+                                                      ffr.ReplacementRegEx.RegEx == replacement)
+                            .ConfigureAwait(false);
+                            
+                        if (refreshedFieldFormat != null)
+                        {
+                            _logger.Information("   - [STEP 7] ✅ RECOVERY: Found existing FieldFormatRegEx rule after conflict (ID: {RuleId}).", refreshedFieldFormat.Id);
+                            return DatabaseUpdateResult.Success(refreshedFieldFormat.Id, "Found existing FieldFormatRegEx after conflict");
+                        }
+                        
+                        _logger.Error("   - [STEP 7] ❌ RECOVERY_FAILED: Could not find or create FieldFormatRegEx rule after primary key conflict.");
+                        return DatabaseUpdateResult.Failed($"Primary key conflict and recovery failed for field '{request.FieldName}': {ex.Message}");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -556,18 +580,27 @@ namespace WaterNut.DataSpace
         public class DatabaseUpdateStrategyFactory
         {
             private readonly ILogger _logger;
-            public DatabaseUpdateStrategyFactory(ILogger logger) { _logger = logger; }
+            private readonly List<IDatabaseUpdateStrategy> _strategies;
+
+            public DatabaseUpdateStrategyFactory(ILogger logger)
+            {
+                _logger = logger;
+                _strategies = new List<IDatabaseUpdateStrategy>
+                {
+                    new InferredValueUpdateStrategy(_logger),
+                    new OmissionUpdateStrategy(_logger),
+                    new FieldFormatUpdateStrategy(_logger)
+                };
+            }
+
             public IDatabaseUpdateStrategy GetStrategy(RegexUpdateRequest request)
             {
                 if (request == null) throw new ArgumentNullException(nameof(request));
 
-                // =============================== FIX IS HERE ===============================
-                // Add the new strategy to the top of the chain.
-                if (new InferredValueUpdateStrategy(_logger).CanHandle(request)) return new InferredValueUpdateStrategy(_logger);
-                // ===========================================================================
-
-                if (new OmissionUpdateStrategy(_logger).CanHandle(request)) return new OmissionUpdateStrategy(_logger);
-                if (new FieldFormatUpdateStrategy(_logger).CanHandle(request)) return new FieldFormatUpdateStrategy(_logger);
+                foreach (var strategy in _strategies)
+                {
+                    if (strategy.CanHandle(request)) return strategy;
+                }
 
                 _logger.Warning("No suitable update strategy found for correction type: {CorrectionType}", request.CorrectionType);
                 throw new InvalidOperationException($"No suitable update strategy found for correction type: {request.CorrectionType}");

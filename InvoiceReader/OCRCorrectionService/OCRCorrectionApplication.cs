@@ -39,9 +39,44 @@ namespace WaterNut.DataSpace
                 .ToList();
             // ==================================== FIX END ====================================
 
-            _logger.Error("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
+            _logger.Information("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
                 errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
-            _logger.Error("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting. 'format_correction' types are skipped here.");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting. 'format_correction' types are skipped here.");
+
+            // ====== COMPREHENSIVE FREE SHIPPING DIAGNOSTIC LOGGING ======
+            var freeShippingErrors = errorsToApplyDirectly.Where(e => e.Field == "TotalDeduction").ToList();
+            if (freeShippingErrors.Any())
+            {
+                _logger.Information("🚢 **FREE_SHIPPING_DIAGNOSTIC_START**: Found {Count} TotalDeduction corrections (likely Free Shipping)", freeShippingErrors.Count);
+                foreach (var error in freeShippingErrors)
+                {
+                    _logger.Information("   - 📝 Free Shipping Error: Field='{Field}', OldValue='{OldValue}', NewValue='{NewValue}', LineText='{LineText}', Confidence={Confidence:P2}",
+                        error.Field, error.ExtractedValue ?? "null", error.CorrectValue, error.LineText, error.Confidence);
+                }
+                _logger.Information("   - 📊 Current Invoice TotalDeduction BEFORE applying corrections: {CurrentValue}", invoice.TotalDeduction);
+            }
+
+            // ====== COMPREHENSIVE GIFT CARD / TOTAL INSURANCE DIAGNOSTIC LOGGING ======
+            var giftCardErrors = errorsToApplyDirectly.Where(e => e.Field == "TotalInsurance").ToList();
+            if (giftCardErrors.Any())
+            {
+                _logger.Information("💳 **GIFT_CARD_DIAGNOSTIC_START**: Found {Count} TotalInsurance corrections (likely Gift Card)", giftCardErrors.Count);
+                foreach (var error in giftCardErrors)
+                {
+                    _logger.Information("   - 📝 Gift Card Error: Field='{Field}', OldValue='{OldValue}', NewValue='{NewValue}', LineText='{LineText}', Confidence={Confidence:P2}",
+                        error.Field, error.ExtractedValue ?? "null", error.CorrectValue, error.LineText, error.Confidence);
+                }
+                _logger.Information("   - 📊 Current Invoice TotalInsurance BEFORE applying corrections: {CurrentValue}", invoice.TotalInsurance);
+            }
+            else
+            {
+                _logger.Warning("💳 **GIFT_CARD_DIAGNOSTIC_MISSING**: NO TotalInsurance corrections found in error list");
+                _logger.Information("   - 📊 Current Invoice TotalInsurance (will remain unchanged): {CurrentValue}", invoice.TotalInsurance);
+                
+                // Log all error fields to help debug why TotalInsurance is missing
+                var allErrorFields = errorsToApplyDirectly.Select(e => e.Field).Distinct().ToList();
+                _logger.Information("   - 🔍 All error fields found: {AllFields}", string.Join(", ", allErrorFields));
+            }
 
             LogFinancialState("Initial State (Before Corrections)", invoice);
 
@@ -59,7 +94,13 @@ namespace WaterNut.DataSpace
             // to a potentially flawed or already complete aggregate from the initial OCR read.
             if (numericFieldsToReset.Any())
             {
-                _logger.Error("   - **LOGIC_PATH**: Identified numeric fields with AI omissions: [{Fields}]. Resetting them to 0.0 to prevent double-counting.", string.Join(", ", numericFieldsToReset));
+                _logger.Information("   - **LOGIC_PATH**: Identified numeric fields with AI omissions: [{Fields}]. Resetting them to 0.0 to prevent double-counting.", string.Join(", ", numericFieldsToReset));
+
+                // ====== FREE SHIPPING RESET DIAGNOSTIC ======
+                if (numericFieldsToReset.Contains("TotalDeduction"))
+                {
+                    _logger.Information("🚢 **FREE_SHIPPING_RESET**: TotalDeduction field will be reset from {OldValue} to 0.0 before applying Free Shipping corrections", invoice.TotalDeduction);
+                }
                 foreach (var fieldName in numericFieldsToReset)
                 {
                     var prop = typeof(ShipmentInvoice).GetProperty(fieldName, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
@@ -74,9 +115,42 @@ namespace WaterNut.DataSpace
 
             foreach (var error in errorsToApplyDirectly)
             {
+                // ====== FREE SHIPPING INDIVIDUAL CORRECTION LOGGING ======
+                if (error.Field == "TotalDeduction")
+                {
+                    _logger.Information("🚢 **FREE_SHIPPING_APPLY_INDIVIDUAL**: About to apply TotalDeduction correction. Value='{NewValue}', LineText='{LineText}'", 
+                        error.CorrectValue, error.LineText);
+                    _logger.Information("   - 📊 TotalDeduction BEFORE this individual correction: {CurrentValue}", invoice.TotalDeduction);
+                }
+
+                // ====== GIFT CARD INDIVIDUAL CORRECTION LOGGING ======
+                if (error.Field == "TotalInsurance")
+                {
+                    _logger.Information("💳 **GIFT_CARD_APPLY_INDIVIDUAL**: About to apply TotalInsurance correction. Value='{NewValue}', LineText='{LineText}'", 
+                        error.CorrectValue, error.LineText);
+                    _logger.Information("   - 📊 TotalInsurance BEFORE this individual correction: {CurrentValue}", invoice.TotalInsurance);
+                }
+
                 var result = await this.ApplySingleValueOrFormatCorrectionToInvoiceAsync(invoice, error)
                                  .ConfigureAwait(false);
                 correctionResults.Add(result);
+
+                // ====== FREE SHIPPING POST-APPLICATION LOGGING ======
+                if (error.Field == "TotalDeduction")
+                {
+                    _logger.Information("🚢 **FREE_SHIPPING_APPLY_RESULT**: TotalDeduction correction applied. Result: {Success}, ErrorMessage: '{ErrorMessage}'", 
+                        result.Success, result.ErrorMessage ?? "None");
+                    _logger.Information("   - 📊 TotalDeduction AFTER this individual correction: {CurrentValue}", invoice.TotalDeduction);
+                }
+
+                // ====== GIFT CARD POST-APPLICATION LOGGING ======
+                if (error.Field == "TotalInsurance")
+                {
+                    _logger.Information("💳 **GIFT_CARD_APPLY_RESULT**: TotalInsurance correction applied. Result: {Success}, ErrorMessage: '{ErrorMessage}'", 
+                        result.Success, result.ErrorMessage ?? "None");
+                    _logger.Information("   - 📊 TotalInsurance AFTER this individual correction: {CurrentValue}", invoice.TotalInsurance);
+                }
+
                 LogCorrectionResult(result, "DIRECT_FIX_APPLIED");
             }
 
@@ -86,7 +160,64 @@ namespace WaterNut.DataSpace
             }
 
             LogFinancialState("Final State (After All Corrections)", invoice);
-            _logger.Error("🏁 **APPLY_CORRECTIONS_COMPLETE** for invoice {InvoiceNo}.", invoice.InvoiceNo);
+            
+            // ====== COMPREHENSIVE FREE SHIPPING FINAL DIAGNOSTIC ======
+            var appliedFreeShippingCorrections = correctionResults.Where(r => r.FieldName == "TotalDeduction" && r.Success).ToList();
+            if (appliedFreeShippingCorrections.Any())
+            {
+                _logger.Information("🚢 **FREE_SHIPPING_FINAL_SUMMARY**: Applied {Count} successful TotalDeduction corrections", appliedFreeShippingCorrections.Count);
+                foreach (var correction in appliedFreeShippingCorrections)
+                {
+                    _logger.Information("   - ✅ Free Shipping Correction: OldValue='{OldValue}' → NewValue='{NewValue}', Success={Success}",
+                        correction.OldValue, correction.NewValue, correction.Success);
+                }
+                _logger.Information("   - 📊 Final invoice.TotalDeduction after all Free Shipping corrections: {FinalValue}", invoice.TotalDeduction);
+            }
+            else
+            {
+                _logger.Information("🚢 **FREE_SHIPPING_FINAL_SUMMARY**: No TotalDeduction corrections were applied successfully");
+            }
+
+            // ====== COMPREHENSIVE GIFT CARD FINAL DIAGNOSTIC ======
+            var appliedGiftCardCorrections = correctionResults.Where(r => r.FieldName == "TotalInsurance" && r.Success).ToList();
+            if (appliedGiftCardCorrections.Any())
+            {
+                _logger.Information("💳 **GIFT_CARD_FINAL_SUMMARY**: Applied {Count} successful TotalInsurance corrections", appliedGiftCardCorrections.Count);
+                foreach (var correction in appliedGiftCardCorrections)
+                {
+                    _logger.Information("   - ✅ Gift Card Correction: OldValue='{OldValue}' → NewValue='{NewValue}', Success={Success}",
+                        correction.OldValue, correction.NewValue, correction.Success);
+                }
+                _logger.Information("   - 📊 Final invoice.TotalInsurance after all Gift Card corrections: {FinalValue}", invoice.TotalInsurance);
+            }
+            else
+            {
+                _logger.Warning("💳 **GIFT_CARD_FINAL_SUMMARY**: NO TotalInsurance corrections were applied successfully");
+                _logger.Warning("   - ⚠️ This means TotalInsurance will remain: {CurrentValue}", invoice.TotalInsurance);
+                _logger.Warning("   - 🔍 This could be the source of the 6.99 imbalance if Gift Card should be -6.99");
+            }
+
+            // ====== CRITICAL TOTALS CALCULATION DIAGNOSTIC ======
+            var expectedTotal = (invoice.SubTotal ?? 0) + (invoice.TotalInternalFreight ?? 0) + (invoice.TotalOtherCost ?? 0) + (invoice.TotalInsurance ?? 0) - (invoice.TotalDeduction ?? 0);
+            var actualTotal = invoice.InvoiceTotal ?? 0;
+            var calculatedDifference = actualTotal - expectedTotal;
+            
+            _logger.Information("🧮 **CRITICAL_TOTALS_CALCULATION_TRACE**: " +
+                "SubTotal={SubTotal} + Freight={Freight} + OtherCost={OtherCost} + Insurance={Insurance} - Deduction={Deduction} = Expected({Expected}), " +
+                "Actual={Actual}, Difference={Difference}",
+                invoice.SubTotal ?? 0, invoice.TotalInternalFreight ?? 0, invoice.TotalOtherCost ?? 0, 
+                invoice.TotalInsurance ?? 0, invoice.TotalDeduction ?? 0, expectedTotal, actualTotal, calculatedDifference);
+                
+            if (Math.Abs(calculatedDifference) > 0.01)
+            {
+                _logger.Warning("⚠️ **IMBALANCE_DETECTED**: Invoice calculation shows {Difference} imbalance. This may explain the 0.46 TotalsZero issue.", calculatedDifference);
+            }
+            else
+            {
+                _logger.Information("✅ **BALANCE_ACHIEVED**: Invoice calculation is balanced within tolerance.");
+            }
+            
+            _logger.Information("🏁 **APPLY_CORRECTIONS_COMPLETE** for invoice {InvoiceNo}.", invoice.InvoiceNo);
 
             return correctionResults;
         }
@@ -109,8 +240,14 @@ namespace WaterNut.DataSpace
                 RequiresMultilineRegex = error.RequiresMultilineRegex,
                 Reasoning = error.Reasoning
             };
-            _logger.Error("   - ➡️ **APPLYING_SINGLE_CORRECTION**: Field='{Field}', CorrectValue='{NewValue}', Type='{Type}', Line={LineNum}, Text='{LineText}'",
+            _logger.Information("   - ➡️ **APPLYING_SINGLE_CORRECTION**: Field='{Field}', CorrectValue='{NewValue}', Type='{Type}', Line={LineNum}, Text='{LineText}'",
                 error.Field, error.CorrectValue, error.ErrorType, error.LineNumber, TruncateForLog(error.LineText, 70));
+
+            // ====== FREE SHIPPING VALUE PARSING DIAGNOSTIC ======
+            if (error.Field == "TotalDeduction")
+            {
+                _logger.Information("🚢 **FREE_SHIPPING_PARSE_START**: About to parse Free Shipping value '{Value}' for TotalDeduction field", error.CorrectValue);
+            }
 
             try
             {
@@ -123,15 +260,36 @@ namespace WaterNut.DataSpace
                     _logger.Warning("     - ⚠️ **PARSE_FAILURE**: {ErrorMessage}", result.ErrorMessage);
                     return result;
                 }
-                _logger.Error("     - **PARSE_SUCCESS**: Parsed CorrectValue '{Original}' into system value '{Parsed}' of type {Type}.",
+                _logger.Information("     - **PARSE_SUCCESS**: Parsed CorrectValue '{Original}' into system value '{Parsed}' of type {Type}.",
                     error.CorrectValue, parsedCorrectedValue ?? "null", parsedCorrectedValue?.GetType().Name ?? "null");
+
+                // ====== FREE SHIPPING PARSE RESULT DIAGNOSTIC ======
+                if (error.Field == "TotalDeduction")
+                {
+                    _logger.Information("🚢 **FREE_SHIPPING_PARSE_SUCCESS**: Free Shipping value '{Original}' parsed to {Parsed} ({Type})", 
+                        error.CorrectValue, parsedCorrectedValue, parsedCorrectedValue?.GetType().Name ?? "null");
+                }
+
+                // ====== FREE SHIPPING FIELD APPLICATION DIAGNOSTIC ======
+                if (error.Field == "TotalDeduction")
+                {
+                    _logger.Information("🚢 **FREE_SHIPPING_APPLY_FIELD_START**: About to apply parsed value {ParsedValue} to invoice TotalDeduction field (current: {CurrentValue})",
+                        parsedCorrectedValue, invoice.TotalDeduction);
+                }
 
                 if (this.ApplyFieldCorrection(invoice, error.Field, parsedCorrectedValue))
                 {
                     result.NewValue = this.GetCurrentFieldValue(invoice, error.Field)?.ToString();
                     result.Success = true;
-                    _logger.Error("     - ✅ **APPLY_SUCCESS**: Correction for {Field} applied. Invoice's final value for this field is now '{NewVal}'.",
+                    _logger.Information("     - ✅ **APPLY_SUCCESS**: Correction for {Field} applied. Invoice's final value for this field is now '{NewVal}'.",
                         error.Field, result.NewValue);
+
+                    // ====== FREE SHIPPING FIELD APPLICATION SUCCESS DIAGNOSTIC ======
+                    if (error.Field == "TotalDeduction")
+                    {
+                        _logger.Information("🚢 **FREE_SHIPPING_APPLY_FIELD_SUCCESS**: TotalDeduction successfully updated to {NewValue} (was: {OldValue})",
+                            result.NewValue, result.OldValue);
+                    }
                 }
                 else
                 {
@@ -155,8 +313,15 @@ namespace WaterNut.DataSpace
             var fieldInfo = this.MapDeepSeekFieldToDatabase(fieldNameFromError);
             var targetPropertyName = fieldInfo?.DatabaseFieldName ?? fieldNameFromError;
 
-            _logger.Error("       - ▶️ **Enter ApplyFieldCorrection**: Target Property='{TargetProp}', Incoming Value='{Value}' (Type: {Type})",
+            _logger.Information("       - ▶️ **Enter ApplyFieldCorrection**: Target Property='{TargetProp}', Incoming Value='{Value}' (Type: {Type})",
                 targetPropertyName, correctedValue ?? "null", correctedValue?.GetType().Name ?? "null");
+
+            // ====== FREE SHIPPING FIELD CORRECTION ENTRY DIAGNOSTIC ======
+            if (targetPropertyName == "TotalDeduction")
+            {
+                _logger.Information("🚢 **FREE_SHIPPING_FIELD_CORRECTION_ENTRY**: Applying correction to TotalDeduction. Current invoice.TotalDeduction={Current}, Incoming value={Incoming}",
+                    invoice.TotalDeduction, correctedValue);
+            }
 
             try
             {
@@ -167,7 +332,7 @@ namespace WaterNut.DataSpace
                 if (invoiceProp != null)
                 {
                     object existingValue = invoiceProp.GetValue(invoice);
-                    _logger.Error("         - **STATE_CHECK**: Current value of '{TargetProp}' is '{ExistingValue}' (Type: {Type}).",
+                    _logger.Information("         - **STATE_CHECK**: Current value of '{TargetProp}' is '{ExistingValue}' (Type: {Type}).",
                         targetPropertyName, existingValue ?? "null", existingValue?.GetType().Name ?? "null");
 
                     var propertyType = Nullable.GetUnderlyingType(invoiceProp.PropertyType) ?? invoiceProp.PropertyType;
@@ -175,26 +340,33 @@ namespace WaterNut.DataSpace
 
                     if (existingValue != null)
                     {
-                        _logger.Error("         - **AGGREGATION_CHECK**: Existing value is not null. Applying aggregation logic.");
+                        _logger.Information("         - **AGGREGATION_CHECK**: Existing value is not null. Applying aggregation logic.");
 
                         if (propertyType == typeof(double) || propertyType == typeof(decimal) || propertyType == typeof(int))
                         {
-                            _logger.Error("           - **LOGIC_PATH**: Matched Numeric Aggregation Path.");
+                            _logger.Information("           - **LOGIC_PATH**: Matched Numeric Aggregation Path.");
                             var existingNumeric = Convert.ToDouble(existingValue, System.Globalization.CultureInfo.InvariantCulture);
                             var newNumeric = Convert.ToDouble(correctedValue, System.Globalization.CultureInfo.InvariantCulture);
                             finalValueToSet = existingNumeric + newNumeric;
-                            _logger.Error("           - **NUMERIC_AGGREGATION**: Calculation: {Existing} + {New} = {Final}",
+                            _logger.Information("           - **NUMERIC_AGGREGATION**: Calculation: {Existing} + {New} = {Final}",
                                 existingNumeric, newNumeric, finalValueToSet);
+
+                            // ====== FREE SHIPPING AGGREGATION DIAGNOSTIC ======
+                            if (targetPropertyName == "TotalDeduction")
+                            {
+                                _logger.Information("🚢 **FREE_SHIPPING_AGGREGATION**: TotalDeduction aggregation: {Existing} + {New} = {Final}",
+                                    existingNumeric, newNumeric, finalValueToSet);
+                            }
                         }
                         else if (propertyType == typeof(string))
                         {
-                            _logger.Error("           - **LOGIC_PATH**: Matched String Aggregation Path.");
+                            _logger.Information("           - **LOGIC_PATH**: Matched String Aggregation Path.");
                             var existingString = existingValue.ToString();
                             var newString = correctedValue?.ToString() ?? "";
                             if (!string.IsNullOrWhiteSpace(existingString) && !string.IsNullOrWhiteSpace(newString))
                             {
                                 finalValueToSet = $"{existingString}{Environment.NewLine}{newString}";
-                                _logger.Error("           - **STRING_AGGREGATION**: Concatenating values.");
+                                _logger.Information("           - **STRING_AGGREGATION**: Concatenating values.");
                             }
                             else
                             {
@@ -204,18 +376,38 @@ namespace WaterNut.DataSpace
                     }
                     else
                     {
-                        _logger.Error("         - **NO_AGGREGATION**: Existing value is null. Will set value directly.");
+                        _logger.Information("         - **NO_AGGREGATION**: Existing value is null. Will set value directly.");
+                        
+                        // ====== FREE SHIPPING DIRECT SET DIAGNOSTIC ======
+                        if (targetPropertyName == "TotalDeduction")
+                        {
+                            _logger.Information("🚢 **FREE_SHIPPING_DIRECT_SET**: TotalDeduction was null, setting directly to {Value}", correctedValue);
+                        }
                     }
 
-                    _logger.Error("         - **TYPE_CONVERSION**: Preparing to set final value '{FinalValue}' (Type: {Type}) to property of type {PropType}.",
+                    _logger.Information("         - **TYPE_CONVERSION**: Preparing to set final value '{FinalValue}' (Type: {Type}) to property of type {PropType}.",
                         finalValueToSet ?? "null", finalValueToSet?.GetType().Name ?? "null", propertyType.Name);
 
                     var convertedValue = finalValueToSet != null
                                              ? Convert.ChangeType(finalValueToSet, propertyType, System.Globalization.CultureInfo.InvariantCulture)
                                              : null;
+
+                    // ====== FREE SHIPPING FINAL SET DIAGNOSTIC ======
+                    if (targetPropertyName == "TotalDeduction")
+                    {
+                        _logger.Information("🚢 **FREE_SHIPPING_FINAL_SET**: About to set invoice.TotalDeduction property to {ConvertedValue} (was: {OldValue})",
+                            convertedValue, invoice.TotalDeduction);
+                    }
+
                     invoiceProp.SetValue(invoice, convertedValue);
 
-                    _logger.Error("       - ✅ **Leave ApplyFieldCorrection**: Successfully set '{TargetProp}' to '{Value}'.", targetPropertyName, convertedValue ?? "null");
+                    // ====== FREE SHIPPING AFTER SET DIAGNOSTIC ======
+                    if (targetPropertyName == "TotalDeduction")
+                    {
+                        _logger.Information("🚢 **FREE_SHIPPING_AFTER_SET**: invoice.TotalDeduction property now contains: {NewValue}", invoice.TotalDeduction);
+                    }
+
+                    _logger.Information("       - ✅ **Leave ApplyFieldCorrection**: Successfully set '{TargetProp}' to '{Value}'.", targetPropertyName, convertedValue ?? "null");
                     return true;
                 }
 

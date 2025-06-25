@@ -26,16 +26,16 @@ namespace WaterNut.DataSpace
             var allDetectedErrors = new List<InvoiceError>();
             if (invoice == null) return allDetectedErrors;
 
-            _logger.Error("🚀 **DETECTION_PIPELINE_ENTRY (V9)**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
-            _logger.Error("   - **ARCHITECTURAL_INTENT**: Use both AI and hard-coded rules to find all possible errors, then consolidate them into a unique, actionable list.");
+            _logger.Information("🚀 **DETECTION_PIPELINE_ENTRY (V9)**: Starting DUAL-PATHWAY error detection for invoice {InvoiceNo}", invoice.InvoiceNo);
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Use both AI and hard-coded rules to find all possible errors, then consolidate them into a unique, actionable list.");
 
             try
             {
                 // --- PATHWAY 1: DEEPSEEK AI-BASED DETECTION ---
-                _logger.Error("   - **LOGIC_PATH_1**: Initiating primary AI-based granular error and omission detection.");
+                _logger.Information("   - **LOGIC_PATH_1**: Initiating primary AI-based granular error and omission detection.");
                 var deepSeekErrors = await DetectHeaderFieldErrorsAndOmissionsAsync(invoice, fileText, metadata).ConfigureAwait(false);
                 allDetectedErrors.AddRange(deepSeekErrors);
-                _logger.Error("     - AI pathway found {Count} potential errors.", deepSeekErrors.Count);
+                _logger.Information("     - AI pathway found {Count} potential errors.", deepSeekErrors.Count);
 
                 // --- PATHWAY 2: RULE-BASED DETECTION (RELIABILITY BACKSTOP) ---
                 // disabled for now, as we are focusing on the AI-based detection.
@@ -47,13 +47,13 @@ namespace WaterNut.DataSpace
                 //}
 
                 // --- CONSOLIDATION ---
-                _logger.Error("   - **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using a key of (Field, CorrectValue, SuggestedRegex) to find the unique, best-confidence error for each issue.", allDetectedErrors.Count);
+                _logger.Information("   - **CONSOLIDATION_START**: Consolidating {TotalCount} raw errors using a key of (Field, CorrectValue, SuggestedRegex) to find the unique, best-confidence error for each issue.", allDetectedErrors.Count);
 
                 var uniqueErrors = allDetectedErrors
                     .GroupBy(e => new { Field = e.Field?.ToLowerInvariant(), Value = e.CorrectValue, Regex = e.SuggestedRegex })
                     .Select(g => {
                         var bestError = g.OrderByDescending(e => e.Confidence).First();
-                        _logger.Error("     - For Key [Field: '{Field}', Value: '{Value}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2} (out of {GroupCount} detections).",
+                        _logger.Information("     - For Key [Field: '{Field}', Value: '{Value}', Regex: '{Regex}'], selected best error with confidence {Confidence:P2} (out of {GroupCount} detections).",
                             g.Key.Field, g.Key.Value, g.Key.Regex, bestError.Confidence, g.Count());
                         return bestError;
                     })
@@ -61,12 +61,12 @@ namespace WaterNut.DataSpace
 
                 if (!uniqueErrors.Any())
                 {
-                    _logger.Error("   - ⚠️ **DETECTION_RESULT**: The detection pipeline found ZERO unique errors. No corrections will be applied.");
+                    _logger.Warning("   - ⚠️ **DETECTION_RESULT**: The detection pipeline found ZERO unique errors. No corrections will be applied.");
                 }
 
                 var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
                 var serializedErrors = JsonSerializer.Serialize(uniqueErrors, options);
-                _logger.Error("📊 **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects to be processed: {SerializedErrors}",
+                _logger.Information("📊 **DETECTION_PIPELINE_OUTPUT_DUMP**: Final list of {Count} unique InvoiceError objects to be processed: {SerializedErrors}",
                     uniqueErrors.Count, serializedErrors);
 
                 return uniqueErrors;
@@ -86,21 +86,46 @@ namespace WaterNut.DataSpace
             var amazonErrors = new List<InvoiceError>();
             var lines = fileText.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
 
+            // ====== GIFT CARD / TOTAL INSURANCE DIAGNOSTIC ENTRY ======
+            _logger.Information("💳 **GIFT_CARD_DIAGNOSTIC_START**: Analyzing Amazon invoice for Gift Card patterns");
+            _logger.Information("   - 📊 Current Invoice TotalInsurance: {TotalInsurance}", invoice.TotalInsurance?.ToString() ?? "null");
+            
             var giftCardRegex = new Regex(@"(Gift Card Amount:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
             var giftCardMatch = giftCardRegex.Match(fileText);
             if (giftCardMatch.Success)
             {
+                var giftCardValue = giftCardMatch.Groups[2].Value.Trim();
+                var correctedValue = $"-{giftCardValue}";
+                var lineNumber = GetLineNumberForMatch(lines, giftCardMatch);
+                
+                _logger.Information("💳 **GIFT_CARD_PATTERN_DETECTED**: Found Gift Card pattern in OCR text");
+                _logger.Information("   - 📝 Raw Pattern Match: '{RawMatch}'", giftCardMatch.Value.Trim());
+                _logger.Information("   - 🔢 Extracted Value: '{ExtractedValue}'", giftCardValue);
+                _logger.Information("   - ✅ Corrected Value: '{CorrectedValue}' (negated for TotalInsurance)", correctedValue);
+                _logger.Information("   - 📍 Line Number: {LineNumber}", lineNumber);
+                _logger.Information("   - 📄 Line Text: '{LineText}'", giftCardMatch.Value.Trim());
+                
                 amazonErrors.Add(new InvoiceError
                 {
                     Field = "TotalInsurance",
                     ErrorType = "omission",
-                    CorrectValue = $"-{giftCardMatch.Groups[2].Value.Trim()}",
+                    CorrectValue = correctedValue,
                     Confidence = 0.98,
                     Reasoning = "Rule-based: Amazon Gift Card Amount detected.",
                     LineText = giftCardMatch.Value.Trim(),
-                    LineNumber = GetLineNumberForMatch(lines, giftCardMatch),
+                    LineNumber = lineNumber,
                     SuggestedRegex = @"Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)"
                 });
+                
+                _logger.Information("💳 **GIFT_CARD_ERROR_CREATED**: InvoiceError object created for TotalInsurance field");
+            }
+            else
+            {
+                _logger.Warning("💳 **GIFT_CARD_PATTERN_NOT_FOUND**: No Gift Card Amount pattern found in OCR text");
+                _logger.Information("   - 🔍 Searched Pattern: 'Gift Card Amount:\\s*-?\\$?[\\d,]+\\.?\\d*'");
+                // Log first few lines to help debug
+                var sampleLines = lines.Take(10).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+                _logger.Information("   - 📝 Sample OCR Lines: {SampleLines}", string.Join(" | ", sampleLines));
             }
 
             var freeShippingRegex = new Regex(@"(Free Shipping:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
@@ -119,14 +144,35 @@ namespace WaterNut.DataSpace
                 });
             }
 
-            _logger.Error("     - Rule-based Amazon detector found {Count} potential errors.", amazonErrors.Count);
+            // ====== AMAZON DETECTION SUMMARY ======
+            var giftCardErrors = amazonErrors.Where(e => e.Field == "TotalInsurance").ToList();
+            var freeShippingErrors = amazonErrors.Where(e => e.Field == "TotalDeduction").ToList();
+            
+            _logger.Information("🏁 **AMAZON_DETECTION_SUMMARY**: Rule-based Amazon detector completed");
+            _logger.Information("   - 💳 Gift Card (TotalInsurance) errors found: {GiftCardCount}", giftCardErrors.Count);
+            _logger.Information("   - 🚢 Free Shipping (TotalDeduction) errors found: {FreeShippingCount}", freeShippingErrors.Count);
+            _logger.Information("   - 📊 Total errors detected: {TotalCount}", amazonErrors.Count);
+            
+            if (giftCardErrors.Any())
+            {
+                foreach (var error in giftCardErrors)
+                {
+                    _logger.Information("   - 💳 Gift Card Error: Field={Field}, CorrectValue='{CorrectValue}', LineText='{LineText}'", 
+                        error.Field, error.CorrectValue, error.LineText);
+                }
+            }
+            else
+            {
+                _logger.Warning("   - ⚠️ NO GIFT CARD ERRORS DETECTED - TotalInsurance will remain null");
+            }
+            
             return amazonErrors;
         }
 
         private async Task<List<InvoiceError>> DetectHeaderFieldErrorsAndOmissionsAsync(
             ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata = null)
         {
-            _logger.Error("     - 🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
+            _logger.Information("     - 🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
             try
             {
                 // This call now passes the rich metadata required for the V9 prompt.
@@ -142,7 +188,7 @@ namespace WaterNut.DataSpace
                 var correctionResults = this.ProcessDeepSeekCorrectionResponse(deepSeekResponseJson, fileText);
                 var detectedErrors = correctionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)).ToList();
 
-                _logger.Error("       - DeepSeek response processing complete. Found {Count} potential error items.", detectedErrors.Count);
+                _logger.Information("       - DeepSeek response processing complete. Found {Count} potential error items.", detectedErrors.Count);
                 return detectedErrors;
             }
             catch (Exception ex)

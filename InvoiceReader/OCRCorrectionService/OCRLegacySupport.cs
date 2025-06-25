@@ -165,6 +165,21 @@ namespace WaterNut.DataSpace
                     {
                         log.Information("   - 🔎 Processing corrections for InvoiceNo: {InvoiceNo}", invoiceWrapper.Invoice.InvoiceNo);
 
+                        // ====== INVOICE PRE-CORRECTION TOTALS VERIFICATION ======
+                        if (TotalsZero(invoiceWrapper.Invoice, out double preCorrectionsImbalance, log))
+                        {
+                            log.Information("🧮 **PRE_CORRECTIONS_TOTALS**: Invoice {InvoiceNo} is balanced before corrections. TotalsZero=0, Imbalance={Imbalance}", 
+                                invoiceWrapper.Invoice.InvoiceNo, preCorrectionsImbalance);
+                        }
+                        else
+                        {
+                            log.Information("🧮 **PRE_CORRECTIONS_TOTALS**: Invoice {InvoiceNo} is UNBALANCED before corrections. TotalsZero≠0, Imbalance={Imbalance}", 
+                                invoiceWrapper.Invoice.InvoiceNo, preCorrectionsImbalance);
+                            log.Information("   - 📊 Pre-Correction Financial State: SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}, Deduction={Deduction}, InvoiceTotal={InvoiceTotal}",
+                                invoiceWrapper.Invoice.SubTotal ?? 0, invoiceWrapper.Invoice.TotalInternalFreight ?? 0, invoiceWrapper.Invoice.TotalOtherCost ?? 0,
+                                invoiceWrapper.Invoice.TotalInsurance ?? 0, invoiceWrapper.Invoice.TotalDeduction ?? 0, invoiceWrapper.Invoice.InvoiceTotal ?? 0);
+                        }
+
                         var allDetectedErrors = await correctionService.DetectInvoiceErrorsAsync(invoiceWrapper.Invoice, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
 
                         if (!allDetectedErrors.Any())
@@ -176,6 +191,26 @@ namespace WaterNut.DataSpace
 
                         var appliedCorrections = await correctionService.ApplyCorrectionsAsync(invoiceWrapper.Invoice, allDetectedErrors, fullDocumentText, invoiceWrapper.FieldMetadata).ConfigureAwait(false);
                         log.Information("     - ✅ Applied {AppliedCount} corrections directly to Invoice {InvoiceNo}.", appliedCorrections.Count(c => c.Success), invoiceWrapper.Invoice.InvoiceNo);
+
+                        // ====== INVOICE POST-CORRECTION TOTALS VERIFICATION ======
+                        if (TotalsZero(invoiceWrapper.Invoice, out double postCorrectionsImbalance, log))
+                        {
+                            log.Information("🧮 **POST_CORRECTIONS_TOTALS**: Invoice {InvoiceNo} is NOW BALANCED after corrections. TotalsZero=0, Imbalance={Imbalance}", 
+                                invoiceWrapper.Invoice.InvoiceNo, postCorrectionsImbalance);
+                        }
+                        else
+                        {
+                            log.Warning("🧮 **POST_CORRECTIONS_TOTALS**: Invoice {InvoiceNo} is STILL UNBALANCED after corrections. TotalsZero≠0, Imbalance={Imbalance}", 
+                                invoiceWrapper.Invoice.InvoiceNo, postCorrectionsImbalance);
+                            log.Information("   - 📊 Post-Correction Financial State: SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}, Deduction={Deduction}, InvoiceTotal={InvoiceTotal}",
+                                invoiceWrapper.Invoice.SubTotal ?? 0, invoiceWrapper.Invoice.TotalInternalFreight ?? 0, invoiceWrapper.Invoice.TotalOtherCost ?? 0,
+                                invoiceWrapper.Invoice.TotalInsurance ?? 0, invoiceWrapper.Invoice.TotalDeduction ?? 0, invoiceWrapper.Invoice.InvoiceTotal ?? 0);
+                            
+                            var expectedTotal = (invoiceWrapper.Invoice.SubTotal ?? 0) + (invoiceWrapper.Invoice.TotalInternalFreight ?? 0) + (invoiceWrapper.Invoice.TotalOtherCost ?? 0) + (invoiceWrapper.Invoice.TotalInsurance ?? 0) - (invoiceWrapper.Invoice.TotalDeduction ?? 0);
+                            log.Warning("   - 🧮 Expected Calculation: {SubTotal} + {Freight} + {OtherCost} + {Insurance} - {Deduction} = {Expected} (vs Actual: {Actual})",
+                                invoiceWrapper.Invoice.SubTotal ?? 0, invoiceWrapper.Invoice.TotalInternalFreight ?? 0, invoiceWrapper.Invoice.TotalOtherCost ?? 0,
+                                invoiceWrapper.Invoice.TotalInsurance ?? 0, invoiceWrapper.Invoice.TotalDeduction ?? 0, expectedTotal, invoiceWrapper.Invoice.InvoiceTotal ?? 0);
+                        }
 
                         // Apply Caribbean customs rules for each invoice
                         var customsCorrections = correctionService.ApplyCaribbeanCustomsRules(
@@ -220,13 +255,109 @@ namespace WaterNut.DataSpace
 
                     // Sync all corrected invoices back to the original dynamic data structure
                     var correctedInvoices = shipmentInvoicesWithMeta.Select(siwm => siwm.Invoice).ToList();
+                    
+                    // ====== FREE SHIPPING PRE-SYNC DIAGNOSTIC ======
+                    var freeShippingInvoicesForSync = correctedInvoices.Where(inv => inv.TotalDeduction.HasValue && inv.TotalDeduction.Value > 0).ToList();
+                    if (freeShippingInvoicesForSync.Any())
+                    {
+                        log.Information("🚢 **FREE_SHIPPING_PRE_SYNC**: About to sync {Count} corrected invoices with Free Shipping data back to dynamic items", freeShippingInvoicesForSync.Count);
+                        foreach (var inv in freeShippingInvoicesForSync)
+                        {
+                            log.Information("   - 📊 Pre-Sync Invoice {InvoiceNo}: TotalDeduction={TotalDeduction}", inv.InvoiceNo, inv.TotalDeduction);
+                        }
+                    }
+                    
                     UpdateDynamicResultsWithCorrections(actualInvoiceData, correctedInvoices, log);
+
+                    // ====== CORRECTED INVOICES FINAL TOTALS VERIFICATION ======
+                    foreach (var correctedInvoice in correctedInvoices)
+                    {
+                        if (TotalsZero(correctedInvoice, out double finalImbalance, log))
+                        {
+                            log.Information("🧮 **CORRECTED_INVOICE_FINAL_TOTALS**: Invoice {InvoiceNo} is BALANCED after full correction pipeline. TotalsZero=0, Imbalance={Imbalance}", 
+                                correctedInvoice.InvoiceNo, finalImbalance);
+                        }
+                        else
+                        {
+                            log.Error("🧮 **CORRECTED_INVOICE_FINAL_TOTALS**: Invoice {InvoiceNo} is STILL UNBALANCED after full correction pipeline. TotalsZero≠0, Imbalance={Imbalance}", 
+                                correctedInvoice.InvoiceNo, finalImbalance);
+                            log.Error("   - ❌ CRITICAL: This means the correction pipeline failed to balance the invoice!");
+                        }
+                    }
+                }
+
+                // ====== DYNAMIC DATA SERIALIZATION AND VERIFICATION ======
+                try
+                {
+                    var actualInvoiceDataJson = System.Text.Json.JsonSerializer.Serialize(actualInvoiceData, new System.Text.Json.JsonSerializerOptions 
+                    { 
+                        WriteIndented = true, 
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull 
+                    });
+                    log.Information("📄 **ACTUAL_INVOICE_DATA_SERIALIZED**: Complete dynamic data structure after corrections: {ActualInvoiceDataJson}", actualInvoiceDataJson);
+                }
+                catch (Exception jsonEx)
+                {
+                    log.Warning("📄 **ACTUAL_INVOICE_DATA_SERIALIZATION_FAILED**: Could not serialize actualInvoiceData: {Error}", jsonEx.Message);
+                }
+
+                // ====== DYNAMIC DATA TOTALS VERIFICATION ======
+                foreach (var dynamicItem in actualInvoiceData)
+                {
+                    if (dynamicItem.ContainsKey("InvoiceNo"))
+                    {
+                        var invoiceNo = dynamicItem["InvoiceNo"]?.ToString() ?? "Unknown";
+                        var subTotal = dynamicItem.ContainsKey("SubTotal") ? Convert.ToDouble(dynamicItem["SubTotal"] ?? 0) : 0;
+                        var freight = dynamicItem.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(dynamicItem["TotalInternalFreight"] ?? 0) : 0;
+                        var otherCost = dynamicItem.ContainsKey("TotalOtherCost") ? Convert.ToDouble(dynamicItem["TotalOtherCost"] ?? 0) : 0;
+                        var insurance = dynamicItem.ContainsKey("TotalInsurance") ? Convert.ToDouble(dynamicItem["TotalInsurance"] ?? 0) : 0;
+                        var deduction = dynamicItem.ContainsKey("TotalDeduction") ? Convert.ToDouble(dynamicItem["TotalDeduction"] ?? 0) : 0;
+                        var invoiceTotal = dynamicItem.ContainsKey("InvoiceTotal") ? Convert.ToDouble(dynamicItem["InvoiceTotal"] ?? 0) : 0;
+                        
+                        var expectedTotal = subTotal + freight + otherCost + insurance - deduction;
+                        var difference = invoiceTotal - expectedTotal;
+                        
+                        if (Math.Abs(difference) < 0.01)
+                        {
+                            log.Information("🧮 **DYNAMIC_DATA_TOTALS**: Dynamic item {InvoiceNo} is BALANCED. Expected={Expected}, Actual={Actual}, Difference={Difference}", 
+                                invoiceNo, expectedTotal, invoiceTotal, difference);
+                        }
+                        else
+                        {
+                            log.Error("🧮 **DYNAMIC_DATA_TOTALS**: Dynamic item {InvoiceNo} is UNBALANCED. Expected={Expected}, Actual={Actual}, Difference={Difference}", 
+                                invoiceNo, expectedTotal, invoiceTotal, difference);
+                            log.Error("   - 📊 Dynamic Item Financial State: SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}, Deduction={Deduction}, InvoiceTotal={InvoiceTotal}",
+                                subTotal, freight, otherCost, insurance, deduction, invoiceTotal);
+                        }
+                    }
+                }
+
+                // ====== FREE SHIPPING FINAL VERIFICATION BEFORE RETURN ======
+                var finalFreeShippingVerification = actualInvoiceData
+                    .Where(item => item.ContainsKey("TotalDeduction") && 
+                                   item["TotalDeduction"] != null && 
+                                   double.TryParse(item["TotalDeduction"].ToString(), out double val) && val > 0)
+                    .ToList();
+                    
+                if (finalFreeShippingVerification.Any())
+                {
+                    log.Information("🚢 **FREE_SHIPPING_FINAL_VERIFICATION**: {Count} dynamic items have TotalDeduction values before returning to ReadPDFTextMethod", finalFreeShippingVerification.Count);
+                    foreach (var item in finalFreeShippingVerification)
+                    {
+                        var invoiceNo = item.ContainsKey("InvoiceNo") ? item["InvoiceNo"]?.ToString() : "Unknown";
+                        var totalDeduction = item["TotalDeduction"]?.ToString();
+                        log.Information("   - 📊 Final Invoice {InvoiceNo}: TotalDeduction={TotalDeduction} (ready for ReadPDFTextMethod)", invoiceNo, totalDeduction);
+                    }
+                }
+                else
+                {
+                    log.Warning("⚠️ **FREE_SHIPPING_FINAL_VERIFICATION_MISSING**: No dynamic items with TotalDeduction values found before returning to ReadPDFTextMethod");
                 }
 
                 var finalResult = new List<dynamic> { actualInvoiceData };
-                log.Error("   - **STEP 6: RE-WRAP_DATA**: Correction process complete. Re-wrapping corrected data into nested list structure before returning.");
+                log.Information("   - **STEP 6: RE-WRAP_DATA**: Correction process complete. Re-wrapping corrected data into nested list structure before returning.");
 
-                log.Error("🏁 **CORRECT_INVOICES_EXIT**: OCR correction pipeline complete.");
+                log.Information("🏁 **CORRECT_INVOICES_EXIT**: OCR correction pipeline complete.");
 
                 return finalResult;
 
@@ -243,10 +374,45 @@ namespace WaterNut.DataSpace
             List<ShipmentInvoice> correctedInvoices,
             ILogger logger)
         {
-            if (dynamicItems == null || !correctedInvoices.Any()) return;
+            if (dynamicItems == null || !correctedInvoices.Any()) 
+            {
+                logger.Warning("🔄 **SYNC_DATA_SKIP**: UpdateDynamicResultsWithCorrections called with null or empty data. DynamicItems={DynamicItems}, CorrectedInvoices={CorrectedInvoices}", 
+                    dynamicItems?.Count ?? 0, correctedInvoices?.Count ?? 0);
+                return;
+            }
             var correctedInvoiceMap = correctedInvoices.ToDictionary(inv => inv.InvoiceNo, inv => inv);
 
             logger.Information("🔄 **SYNC_DATA_START**: Synchronizing {CorrectedCount} corrected ShipmentInvoice objects back into a list of {DynamicCount} dynamic data items.", correctedInvoices.Count, dynamicItems.Count);
+
+            // ====== FREE SHIPPING SYNC DIAGNOSTIC ENTRY ======
+            var freeShippingInvoices = correctedInvoices.Where(inv => inv.TotalDeduction.HasValue && inv.TotalDeduction.Value > 0).ToList();
+            if (freeShippingInvoices.Any())
+            {
+                logger.Information("🚢 **FREE_SHIPPING_SYNC_START**: Found {Count} corrected invoices with TotalDeduction values to sync", freeShippingInvoices.Count);
+                foreach (var inv in freeShippingInvoices)
+                {
+                    logger.Information("   - 📊 Invoice {InvoiceNo}: TotalDeduction={TotalDeduction} (corrected value to sync)", 
+                        inv.InvoiceNo, inv.TotalDeduction);
+                }
+            }
+
+            // ====== GIFT CARD SYNC DIAGNOSTIC ENTRY ======
+            var giftCardInvoices = correctedInvoices.Where(inv => inv.TotalInsurance.HasValue && inv.TotalInsurance.Value != 0).ToList();
+            if (giftCardInvoices.Any())
+            {
+                logger.Information("💳 **GIFT_CARD_SYNC_START**: Found {Count} corrected invoices with TotalInsurance values to sync", giftCardInvoices.Count);
+                foreach (var inv in giftCardInvoices)
+                {
+                    logger.Information("   - 📊 Invoice {InvoiceNo}: TotalInsurance={TotalInsurance} (corrected value to sync)", 
+                        inv.InvoiceNo, inv.TotalInsurance);
+                }
+            }
+            else
+            {
+                logger.Warning("💳 **GIFT_CARD_SYNC_MISSING**: NO corrected invoices with TotalInsurance values found");
+                logger.Information("   - 🔍 All corrected invoice TotalInsurance values: {Values}", 
+                    string.Join(", ", correctedInvoices.Select(inv => $"{inv.InvoiceNo}={inv.TotalInsurance?.ToString() ?? "null"}")));
+            }
 
             foreach (var dynamicItem in dynamicItems)
             {
@@ -255,6 +421,27 @@ namespace WaterNut.DataSpace
                     if (correctedInvoiceMap.TryGetValue(invNoObj.ToString(), out var correctedInv))
                     {
                         logger.Information("   -  syncing InvoiceNo: {InvoiceNo}", correctedInv.InvoiceNo);
+
+                        // ====== FREE SHIPPING DYNAMIC SYNC DIAGNOSTIC ======
+                        if (correctedInv.TotalDeduction.HasValue && correctedInv.TotalDeduction.Value > 0)
+                        {
+                            var currentDynamicDeduction = dynamicItem.ContainsKey("TotalDeduction") ? dynamicItem["TotalDeduction"] : null;
+                            logger.Information("🚢 **FREE_SHIPPING_DYNAMIC_SYNC**: About to sync TotalDeduction. DynamicItem current='{Current}', CorrectedInvoice value='{Corrected}'",
+                                currentDynamicDeduction?.ToString() ?? "null", correctedInv.TotalDeduction);
+                        }
+
+                        // ====== GIFT CARD DYNAMIC SYNC DIAGNOSTIC ======
+                        if (correctedInv.TotalInsurance.HasValue && correctedInv.TotalInsurance.Value != 0)
+                        {
+                            var currentDynamicInsurance = dynamicItem.ContainsKey("TotalInsurance") ? dynamicItem["TotalInsurance"] : null;
+                            logger.Information("💳 **GIFT_CARD_DYNAMIC_SYNC**: About to sync TotalInsurance. DynamicItem current='{Current}', CorrectedInvoice value='{Corrected}'",
+                                currentDynamicInsurance?.ToString() ?? "null", correctedInv.TotalInsurance);
+                        }
+                        else
+                        {
+                            logger.Warning("💳 **GIFT_CARD_DYNAMIC_SYNC_MISSING**: CorrectedInvoice has no TotalInsurance value to sync. Value={Value}",
+                                correctedInv.TotalInsurance?.ToString() ?? "null");
+                        }
 
                         Action<string, object> logChange = (field, newVal) =>
                         {
@@ -266,6 +453,28 @@ namespace WaterNut.DataSpace
                                     field,
                                     oldVal?.ToString() ?? "null",
                                     newVal?.ToString() ?? "null");
+
+                                // ====== FREE SHIPPING FIELD SYNC SPECIFIC LOGGING ======
+                                if (field == "TotalDeduction")
+                                {
+                                    logger.Information("🚢 **FREE_SHIPPING_FIELD_SYNC**: TotalDeduction field updated in dynamic item. OLD='{Old}' -> NEW='{New}'",
+                                        oldVal?.ToString() ?? "null", newVal?.ToString() ?? "null");
+                                }
+
+                                // ====== GIFT CARD FIELD SYNC SPECIFIC LOGGING ======
+                                if (field == "TotalInsurance")
+                                {
+                                    logger.Information("💳 **GIFT_CARD_FIELD_SYNC**: TotalInsurance field updated in dynamic item. OLD='{Old}' -> NEW='{New}'",
+                                        oldVal?.ToString() ?? "null", newVal?.ToString() ?? "null");
+                                }
+                            }
+                            else if (field == "TotalDeduction")
+                            {
+                                logger.Information("🚢 **FREE_SHIPPING_FIELD_SYNC_UNCHANGED**: TotalDeduction field already matches. Value='{Value}'", newVal?.ToString() ?? "null");
+                            }
+                            else if (field == "TotalInsurance")
+                            {
+                                logger.Information("💳 **GIFT_CARD_FIELD_SYNC_UNCHANGED**: TotalInsurance field already matches. Value='{Value}'", newVal?.ToString() ?? "null");
                             }
                         };
 
@@ -281,10 +490,58 @@ namespace WaterNut.DataSpace
                         dynamicItem["TotalInsurance"] = correctedInv.TotalInsurance;
                         logChange("TotalDeduction", correctedInv.TotalDeduction);
                         dynamicItem["TotalDeduction"] = correctedInv.TotalDeduction;
+
+                        // ====== FREE SHIPPING POST-SYNC VERIFICATION ======
+                        if (correctedInv.TotalDeduction.HasValue && correctedInv.TotalDeduction.Value > 0)
+                        {
+                            var finalDynamicDeduction = dynamicItem.ContainsKey("TotalDeduction") ? dynamicItem["TotalDeduction"] : null;
+                            logger.Information("🚢 **FREE_SHIPPING_POST_SYNC**: TotalDeduction sync complete. Final dynamic item value='{Final}'", 
+                                finalDynamicDeduction?.ToString() ?? "null");
+                        }
+
+                        // ====== GIFT CARD POST-SYNC VERIFICATION ======
+                        if (correctedInv.TotalInsurance.HasValue && correctedInv.TotalInsurance.Value != 0)
+                        {
+                            var finalDynamicInsurance = dynamicItem.ContainsKey("TotalInsurance") ? dynamicItem["TotalInsurance"] : null;
+                            logger.Information("💳 **GIFT_CARD_POST_SYNC**: TotalInsurance sync complete. Final dynamic item value='{Final}'", 
+                                finalDynamicInsurance?.ToString() ?? "null");
+                        }
+                        else
+                        {
+                            var finalDynamicInsurance = dynamicItem.ContainsKey("TotalInsurance") ? dynamicItem["TotalInsurance"] : null;
+                            logger.Warning("💳 **GIFT_CARD_POST_SYNC_MISSING**: No TotalInsurance value to sync. CorrectedInvoice={Corrected}, FinalDynamic='{Final}'",
+                                correctedInv.TotalInsurance?.ToString() ?? "null", finalDynamicInsurance?.ToString() ?? "null");
+                        }
                     }
                 }
             }
+
+            // ====== FREE SHIPPING SYNC COMPLETION SUMMARY ======
+            var syncedFreeShippingCount = dynamicItems.Count(item => 
+                item.ContainsKey("TotalDeduction") && 
+                item["TotalDeduction"] != null && 
+                double.TryParse(item["TotalDeduction"].ToString(), out double val) && val > 0);
+
+            // ====== GIFT CARD SYNC COMPLETION SUMMARY ======
+            var syncedGiftCardCount = dynamicItems.Count(item => 
+                item.ContainsKey("TotalInsurance") && 
+                item["TotalInsurance"] != null && 
+                double.TryParse(item["TotalInsurance"].ToString(), out double val) && val != 0);
+                
             logger.Information("✅ **SYNC_DATA_COMPLETE**: Finished synchronizing corrected data. The dynamic data list is now updated.");
+            if (syncedFreeShippingCount > 0)
+            {
+                logger.Information("🚢 **FREE_SHIPPING_SYNC_SUMMARY**: {Count} dynamic items now have TotalDeduction values > 0", syncedFreeShippingCount);
+            }
+            if (syncedGiftCardCount > 0)
+            {
+                logger.Information("💳 **GIFT_CARD_SYNC_SUMMARY**: {Count} dynamic items now have TotalInsurance values ≠ 0", syncedGiftCardCount);
+            }
+            else
+            {
+                logger.Warning("💳 **GIFT_CARD_SYNC_SUMMARY**: NO dynamic items have TotalInsurance values ≠ 0");
+                logger.Information("   - 🔍 This may be the source of the 6.99 imbalance - Gift Card not synced to dynamic data");
+            }
         }
 
         public static string GetOriginalTextFromFile(string templateFilePath, ILogger logger)
