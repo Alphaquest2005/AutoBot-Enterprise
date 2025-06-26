@@ -99,7 +99,8 @@ namespace WaterNut.DataSpace
 
                                     _logger.Error("  - 🗣️ **PAIRED_EXECUTION**: Found paired 'format_correction' for '{FieldName}'. Injecting new FieldId: {FieldId} and processing immediately within the same transaction.", formatRequest.FieldName, newFieldId);
 
-                                    formatRequest.LineId = newFieldId;
+                                    //formatRequest.LineId = newFieldId; // <-- OLD, CONFUSING WAY
+                                    formatRequest.FieldId = newFieldId; // <-- NEW, EXPLICIT WAY
 
                                     var formatStrategy = _strategyFactory.GetStrategy(formatRequest);
 

@@ -205,13 +205,13 @@ namespace WaterNut.DataSpace
 
                 try
                 {
-                    if (!request.LineId.HasValue)
+                    if (!request.FieldId.HasValue)
                     {
-                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Precondition failed. The request is missing a 'LineId' (which maps to Fields.Id). This strategy requires a specific field definition to attach the format rule to. Aborting strategy.");
-                        return DatabaseUpdateResult.Failed($"Field Definition ID (Fields.Id) is required for FieldFormatUpdateStrategy for field '{request.FieldName}'. It should be passed via RegexUpdateRequest.LineId.");
+                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Precondition failed. The request is missing a 'FieldId'. This strategy requires a specific field definition to attach the format rule to. Aborting strategy.");
+                        return DatabaseUpdateResult.Failed($"Field Definition ID (Fields.Id) is required for FieldFormatUpdateStrategy for field '{request.FieldName}'. It should be passed via RegexUpdateRequest.FieldId.");
                     }
 
-                    int fieldDefinitionId = request.LineId.Value;
+                    int fieldDefinitionId = request.FieldId.Value;
                     _logger.Information("   - [STEP 1] Looking for Field definition with ID: {FieldId}", fieldDefinitionId);
 
                     var fieldDef = await context.Fields.FindAsync(fieldDefinitionId).ConfigureAwait(false);
@@ -262,13 +262,18 @@ namespace WaterNut.DataSpace
                     _logger.Information("   - [STEP 5] No existing rule found. Preparing to create a new one.");
 
 
+                    // =============================== FIX 2 START ===============================
+                    // Assign the navigation properties directly instead of the foreign key IDs.
+                    // This is the correct way to build relationships with new, unsaved entities in EF.
                     var newFieldFormatRegex = new FieldFormatRegEx
-                    {
-                        FieldId = fieldDefinitionId,
-                        RegExId = patternRegexEntity.Id,
-                        ReplacementRegExId = replacementRegexEntity.Id,
-                        TrackingState = TrackingState.Added
-                    };
+                                                  {
+                                                      FieldId = fieldDefinitionId,
+                                                      RegEx = patternRegexEntity,             // Use the navigation property
+                                                      ReplacementRegEx = replacementRegexEntity,  // Use the navigation property
+                                                      TrackingState = TrackingState.Added
+                                                  };
+                    // ================================ FIX 2 END ================================
+
                     context.OCR_FieldFormatRegEx.Add(newFieldFormatRegex);
                     _logger.Information("   - [STEP 6] Added new FieldFormatRegEx to context. Awaiting save.");
 
@@ -539,8 +544,10 @@ namespace WaterNut.DataSpace
                 // Step 3: Create the Field definition and its associated STATIC FieldValue entity.
                 var newFieldEntity = new Fields
                 {
-                    // Key is null because we are not capturing from the regex.
-                    Key = null,
+                    // =============================== FIX 1 START ===============================
+                    // Key cannot be null. For static values, using the field name is a robust convention.
+                    Key = request.FieldName,
+                    // ================================ FIX 1 END ================================
                     Field = fieldInfo.DatabaseFieldName,
                     EntityType = fieldInfo.EntityType,
                     DataType = fieldInfo.DataType,

@@ -155,6 +155,7 @@ namespace WaterNut.DataSpace
         public string InvoiceType { get; set; }
         public int? LineId { get; set; }
         public int? PartId { get; set; }
+        public int? FieldId { get; set; } // << NEW PROPERTY
         public int? RegexId { get; set; }
         public string ExistingRegex { get; set; }
         public string PartName { get; set; }
