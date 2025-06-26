@@ -38,15 +38,11 @@ namespace WaterNut.DataSpace
             public abstract bool CanHandle(RegexUpdateRequest request);
 
             protected async Task<RegularExpressions> GetOrCreateRegexAsync(
-                OCRContext context,
-                string pattern,
-                bool multiLine = false,
-                int maxLines = 1,
-                string description = null)
+    OCRContext context, string pattern, bool multiLine = false, int maxLines = 1, string description = null)
             {
-                // First, check the database for an existing entity.
+                // Checks DB first, then local cache, then creates. THIS IS THE CORRECT, FIXED VERSION.
                 var existingRegex = await context.RegularExpressions
-                                        .AsNoTracking() // Use AsNoTracking for read-only queries to improve performance.
+                                        .AsNoTracking()
                                         .FirstOrDefaultAsync(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines).ConfigureAwait(false);
                 if (existingRegex != null)
                 {
@@ -54,8 +50,6 @@ namespace WaterNut.DataSpace
                     return existingRegex;
                 }
 
-                // SECOND, check the local DbContext change tracker for an entity that has been added but not yet saved.
-                // This is the critical fix to prevent primary key conflicts in a single transaction.
                 var localRegex = context.RegularExpressions.Local
                                      .FirstOrDefault(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines);
                 if (localRegex != null)
@@ -64,58 +58,58 @@ namespace WaterNut.DataSpace
                     return localRegex;
                 }
 
-
                 // ONLY if it's not in the DB and not in the local cache, create a new one.
                 var newRegex = new RegularExpressions
-                {
-                    RegEx = pattern,
-                    MultiLine = multiLine,
-                    MaxLines = maxLines,
-                    Description = description ?? $"Auto-generated: {DateTime.UtcNow}",
-                    CreatedDate = DateTime.UtcNow,
-                    LastUpdated = DateTime.UtcNow,
-                    TrackingState = TrackingState.Added
-                };
+                                   {
+                                       RegEx = pattern,
+                                       MultiLine = multiLine,
+                                       MaxLines = maxLines,
+                                       Description = description ?? $"Auto-generated: {DateTime.UtcNow}",
+                                       CreatedDate = DateTime.UtcNow,
+                                       LastUpdated = DateTime.UtcNow,
+                                       TrackingState = TrackingState.Added
+                                   };
                 context.RegularExpressions.Add(newRegex);
-                _logger.Information("Prepared new regex pattern for creation: {Pattern} with MultiLine={IsMultiLine}", pattern, multiLine);
                 return newRegex;
             }
 
-            protected async Task<Fields> GetOrCreateFieldAsync(
-                OCRContext context,
-                string fieldKey,
-                string dbFieldName,
-                string entityType,
-                string dataType,
-                int lineId,
-                bool isRequired = false,
-                bool appendValues = true)
-            {
-                var existingField = await context.Fields.FirstOrDefaultAsync(
-                                            f => f.LineId == lineId && ((!string.IsNullOrEmpty(fieldKey) && f.Key == fieldKey) || (string.IsNullOrEmpty(fieldKey) && f.Field == dbFieldName)))
-                                        .ConfigureAwait(false);
+        
 
-                if (existingField != null)
-                {
-                    _logger.Debug("Found existing field definition (ID: {FieldId}) for LineId {LineId}, Key '{Key}', DBField '{DbField}'", existingField.Id, lineId, fieldKey, dbFieldName);
-                    return existingField;
-                }
+            //protected async Task<Fields> GetOrCreateFieldAsync(
+            //    OCRContext context,
+            //    string fieldKey,
+            //    string dbFieldName,
+            //    string entityType,
+            //    string dataType,
+            //    int lineId,
+            //    bool isRequired = false,
+            //    bool appendValues = true)
+            //{
+            //    var existingField = await context.Fields.FirstOrDefaultAsync(
+            //                                f => f.LineId == lineId && ((!string.IsNullOrEmpty(fieldKey) && f.Key == fieldKey) || (string.IsNullOrEmpty(fieldKey) && f.Field == dbFieldName)))
+            //                            .ConfigureAwait(false);
 
-                var newField = new Fields
-                {
-                    LineId = lineId,
-                    Key = fieldKey,
-                    Field = dbFieldName,
-                    EntityType = entityType,
-                    DataType = dataType,
-                    IsRequired = isRequired,
-                    AppendValues = appendValues,
-                    TrackingState = TrackingState.Added
-                };
-                context.Fields.Add(newField);
-                _logger.Information("Prepared new field definition for LineId {LineId}, Key '{Key}', DBField '{DbField}'", lineId, fieldKey, dbFieldName);
-                return newField;
-            }
+            //    if (existingField != null)
+            //    {
+            //        _logger.Debug("Found existing field definition (ID: {FieldId}) for LineId {LineId}, Key '{Key}', DBField '{DbField}'", existingField.Id, lineId, fieldKey, dbFieldName);
+            //        return existingField;
+            //    }
+
+            //    var newField = new Fields
+            //    {
+            //        LineId = lineId,
+            //        Key = fieldKey,
+            //        Field = dbFieldName,
+            //        EntityType = entityType,
+            //        DataType = dataType,
+            //        IsRequired = isRequired,
+            //        AppendValues = appendValues,
+            //        TrackingState = TrackingState.Added
+            //    };
+            //    context.Fields.Add(newField);
+            //    _logger.Information("Prepared new field definition for LineId {LineId}, Key '{Key}', DBField '{DbField}'", lineId, fieldKey, dbFieldName);
+            //    return newField;
+            //}
 
             internal async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
             {
@@ -185,130 +179,124 @@ namespace WaterNut.DataSpace
             public override bool CanHandle(RegexUpdateRequest request)
             {
                 if (string.IsNullOrEmpty(request.OldValue) && !string.IsNullOrEmpty(request.NewValue)) return false;
-                return request.CorrectionType == "FieldFormat" || request.CorrectionType == "FORMAT_FIX" || request.CorrectionType == "format_correction" || request.CorrectionType == "decimal_separator" || request.CorrectionType == "DecimalSeparator" || request.CorrectionType == "character_confusion" || IsPotentialFormatCorrection(request.OldValue, request.NewValue);
+
+                bool isExplicitFormatCorrection =
+                    request.CorrectionType == "FieldFormat" ||
+                    request.CorrectionType == "FORMAT_FIX" ||
+                    request.CorrectionType == "format_correction" ||
+                    request.CorrectionType == "decimal_separator" ||
+                    request.CorrectionType == "DecimalSeparator" ||
+                    request.CorrectionType == "character_confusion";
+
+                if (isExplicitFormatCorrection)
+                {
+                    return true;
+                }
+
+                return IsPotentialFormatCorrection(request.OldValue, request.NewValue);
             }
 
             private bool IsPotentialFormatCorrection(string oldValue, string newValue)
             {
                 if (string.IsNullOrEmpty(oldValue) || string.IsNullOrEmpty(newValue) || oldValue == newValue) return false;
-                var oldNormalized = Regex.Replace(oldValue, @"[\s\$,€£\-()]", "");
-                var newNormalized = Regex.Replace(newValue, @"[\s\$,€£\-()]", "");
+
+                var oldNormalized = System.Text.RegularExpressions.Regex.Replace(oldValue, @"[\s\$,€£\-()]", "");
+                var newNormalized = System.Text.RegularExpressions.Regex.Replace(newValue, @"[\s\$,€£\-()]", "");
+
                 return string.Equals(oldNormalized, newNormalized, StringComparison.OrdinalIgnoreCase);
             }
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Information("🔍 **FieldFormatUpdateStrategy_START**: Executing for field: {FieldName}, CorrectionType: '{CorrectionType}'", request.FieldName, request.CorrectionType);
-
-                var requestJson = JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                _logger.Debug("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest entering strategy: {RequestJson}", requestJson);
-
+                _logger.Information("         - **STRATEGY_INTENT (FieldFormat)**: To create a formatting rule (pattern/replacement) and attach it to an EXISTING Field definition to transform captured data.");
                 try
                 {
+                    // =============================== STEP 1: VALIDATE PRECONDITIONS ===============================
+                    _logger.Information("           - [STEP 1] Validating preconditions for the format rule.");
                     if (!request.FieldId.HasValue)
                     {
-                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Precondition failed. The request is missing a 'FieldId'. This strategy requires a specific field definition to attach the format rule to. Aborting strategy.");
-                        return DatabaseUpdateResult.Failed($"Field Definition ID (Fields.Id) is required for FieldFormatUpdateStrategy for field '{request.FieldName}'. It should be passed via RegexUpdateRequest.FieldId.");
+                        var reason = $"Precondition Failed: The format_correction request for '{request.FieldName}' is missing the FieldId it needs to attach to. This usually happens if its paired 'omission' rule failed to save first.";
+                        _logger.Warning("           - ❌ {Reason}", reason);
+                        return DatabaseUpdateResult.Failed(reason);
                     }
-
                     int fieldDefinitionId = request.FieldId.Value;
-                    _logger.Information("   - [STEP 1] Looking for Field definition with ID: {FieldId}", fieldDefinitionId);
+                    _logger.Information("           - ✅ Precondition met: FieldId is present ({FieldId}).", fieldDefinitionId);
 
-                    var fieldDef = await context.Fields.FindAsync(fieldDefinitionId).ConfigureAwait(false);
-                    if (fieldDef == null)
+                    if (string.IsNullOrEmpty(request.Pattern) || request.Replacement == null)
                     {
-                        _logger.Error("   - ❌ **STRATEGY_FAIL**: Database lookup failed. Could not find a field definition with ID {FieldDefinitionId}. Aborting strategy.", fieldDefinitionId);
-                        return DatabaseUpdateResult.Failed($"Field definition with ID {fieldDefinitionId} not found for field '{request.FieldName}'.");
+                        var reason = $"Precondition Failed: AI-generated format correction for '{request.FieldName}' was incomplete (missing pattern or replacement).";
+                        _logger.Warning("           - ❌ {Reason}", reason);
+                        return DatabaseUpdateResult.Failed(reason);
                     }
-                    _logger.Information("   - [STEP 1] ✅ SUCCESS: Found Field definition {FieldId}.", fieldDefinitionId);
-
-                    string pattern = request.Pattern;
-                    string replacement = request.Replacement;
-
-                    if (string.IsNullOrEmpty(pattern) || replacement == null)
-                    {
-                        _logger.Error("   - ❌ **STRATEGY_FAIL**: The format_correction request from the AI was missing the required 'pattern' or 'replacement' field. Aborting strategy.");
-                        return DatabaseUpdateResult.Failed($"AI-generated format correction for '{request.FieldName}' was incomplete (missing pattern or replacement).");
-                    }
-                    _logger.Information("   - [STEP 2] ✅ SUCCESS: AI provided valid Pattern ('{Pattern}') and Replacement ('{Replacement}').", pattern, replacement);
+                    _logger.Information("           - ✅ Precondition met: Pattern ('{Pattern}') and Replacement ('{Replacement}') are present.", request.Pattern, request.Replacement);
 
                     // =================================== FIX START ===================================
                     // This summary log block has been restored for clarity.
                     _logger.Information("   -> [DB_SAVE_INTENT]: Preparing to create OCR_FieldFormatRegEx entry.");
                     _logger.Information("      - FieldId: {FieldId}", fieldDefinitionId);
-                    _logger.Information("      - Pattern Regex: '{Pattern}'", pattern);
-                    _logger.Information("      - Replacement Regex: '{Replacement}'", replacement);
+                    _logger.Information("      - Pattern Regex: '{Pattern}'", request.Pattern);
+                    _logger.Information("      - Replacement Regex: '{Replacement}'", request.Replacement);
                     // ==================================== FIX END ====================================
 
-                    _logger.Information("   - [STEP 3] Getting/creating Regex entity for the PATTERN string: '{Pattern}'", pattern);
-                    var patternRegexEntity = await this.GetOrCreateRegexAsync(context, pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
-                    _logger.Information("   - [STEP 3] ✅ SUCCESS: Got/created pattern Regex entity with ID: {RegexId}", patternRegexEntity.Id);
+                    // =============================== STEP 2: GET OR CREATE REGEX ENTITIES ===============================
+                    _logger.Information("           - [STEP 2] Getting/creating Regex entity for the PATTERN string: '{Pattern}'", request.Pattern);
+                    var patternRegexEntity = await this.GetOrCreateRegexAsync(context, request.Pattern, description: $"Pattern for format fix: {request.FieldName}").ConfigureAwait(false);
+                    _logger.Information("           - ✅ Got/created pattern Regex entity with ID: {RegexId}", patternRegexEntity.Id);
 
-                    _logger.Information("   - [STEP 4] Getting/creating Regex entity for the REPLACEMENT string: '{Replacement}'", replacement);
-                    var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
-                    _logger.Information("   - [STEP 4] ✅ SUCCESS: Got/created replacement Regex entity with ID: {RegexId}", replacementRegexEntity.Id);
+                    _logger.Information("           - [STEP 2] Getting/creating Regex entity for the REPLACEMENT string: '{Replacement}'", request.Replacement);
+                    var replacementRegexEntity = await this.GetOrCreateRegexAsync(context, request.Replacement, description: $"Replacement for format fix: {request.FieldName}").ConfigureAwait(false);
+                    _logger.Information("           - ✅ Got/created replacement Regex entity with ID: {RegexId}", replacementRegexEntity.Id);
 
+                    // =============================== STEP 3: PREPARE AND SAVE THE FORMAT RULE ===============================
+                    _logger.Information("           - [STEP 3] Preparing to create the final FieldFormatRegEx link.");
+                    _logger.Information("             - **EXPECTED_BEHAVIOR**: Creating new FieldFormatRegEx to link Field ID {FieldId} with Pattern Regex ID {PatternId} and Replacement Regex ID {ReplacementId}.", fieldDefinitionId, patternRegexEntity.Id, replacementRegexEntity.Id);
 
-                    _logger.Information("   - [STEP 5] Checking for existing FieldFormatRegEx rule with FieldId={FieldId}, PatternRegexId={PatternId}, ReplacementRegexId={ReplacementId}", fieldDefinitionId, patternRegexEntity.Id, replacementRegexEntity.Id);
-                    var existingFieldFormat = await context.OCR_FieldFormatRegEx
-                        .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && ffr.RegExId == patternRegexEntity.Id && ffr.ReplacementRegExId == replacementRegexEntity.Id)
-                        .ConfigureAwait(false);
-
-                    if (existingFieldFormat != null)
-                    {
-                        _logger.Information("   - [STEP 5] ✅ SUCCESS: Found existing FieldFormatRegEx rule (ID: {RuleId}). No changes needed.", existingFieldFormat.Id);
-                        return DatabaseUpdateResult.Success(existingFieldFormat.Id, "Existing FieldFormatRegEx");
-                    }
-                    _logger.Information("   - [STEP 5] No existing rule found. Preparing to create a new one.");
-
-
-                    // =============================== FIX 2 START ===============================
-                    // Assign the navigation properties directly instead of the foreign key IDs.
-                    // This is the correct way to build relationships with new, unsaved entities in EF.
                     var newFieldFormatRegex = new FieldFormatRegEx
-                                                  {
-                                                      FieldId = fieldDefinitionId,
-                                                      RegEx = patternRegexEntity,             // Use the navigation property
-                                                      ReplacementRegEx = replacementRegexEntity,  // Use the navigation property
-                                                      TrackingState = TrackingState.Added
-                                                  };
-                    // ================================ FIX 2 END ================================
-
+                    {
+                        FieldId = fieldDefinitionId,
+                        RegEx = patternRegexEntity,
+                        ReplacementRegEx = replacementRegexEntity,
+                        TrackingState = TrackingState.Added
+                    };
                     context.OCR_FieldFormatRegEx.Add(newFieldFormatRegex);
-                    _logger.Information("   - [STEP 6] Added new FieldFormatRegEx to context. Awaiting save.");
 
                     try
                     {
+                        // This is the atomic commit for this specific strategy.
                         await SaveChangesWithAssertiveLogging(context, "CreateFieldFormatRule").ConfigureAwait(false);
-                        _logger.Information("   - [STEP 7] ✅ SUCCESS: SaveChanges completed successfully.");
+                        _logger.Information("           - ✅ [STEP 3] SaveChanges completed successfully.");
                         return DatabaseUpdateResult.Success(newFieldFormatRegex.Id, "Created FieldFormatRegEx");
                     }
-                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex) when (ex.InnerException?.Message?.Contains("primary key") == true)
+                    // =============================== FIX START: RESTORED ERROR HANDLING ===============================
+                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex) when (ex.InnerException?.Message?.Contains("primary key") == true || ex.InnerException?.Message?.Contains("UNIQUE constraint") == true)
                     {
-                        _logger.Warning("   - [STEP 7] ⚠️ PRIMARY_KEY_CONFLICT: Entity Framework relationship collision detected. Refreshing context and retrying lookup.");
-                        
-                        // Refresh the context and check if the rule was actually created by a concurrent operation
+                        _logger.Warning(ex, "           - ⚠️ **DEVIATION_FROM_EXPECTED (DB Conflict)**: A primary key or unique constraint violation occurred. This can happen in high-concurrency scenarios where another process created the same rule between our read and write. Attempting to recover by finding the existing rule.");
+
+                        // Detach the failed entities from the context to clear the error state.
                         context.ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList().ForEach(e => e.State = EntityState.Detached);
-                        
-                        var refreshedFieldFormat = await context.OCR_FieldFormatRegEx
-                            .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId && 
-                                                      ffr.RegEx.RegEx == pattern && 
-                                                      ffr.ReplacementRegEx.RegEx == replacement)
+
+                        // Now, query the database to find the rule that must now exist.
+                        var existingRule = await context.OCR_FieldFormatRegEx
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(ffr => ffr.FieldId == fieldDefinitionId &&
+                                                      ffr.RegEx.RegEx == request.Pattern &&
+                                                      ffr.ReplacementRegEx.RegEx == request.Replacement)
                             .ConfigureAwait(false);
-                            
-                        if (refreshedFieldFormat != null)
+
+                        if (existingRule != null)
                         {
-                            _logger.Information("   - [STEP 7] ✅ RECOVERY: Found existing FieldFormatRegEx rule after conflict (ID: {RuleId}).", refreshedFieldFormat.Id);
-                            return DatabaseUpdateResult.Success(refreshedFieldFormat.Id, "Found existing FieldFormatRegEx after conflict");
+                            _logger.Information("           - ✅ **RECOVERY_SUCCESS**: Found existing FieldFormatRegEx rule after conflict (ID: {RuleId}). The operation is considered a success.", existingRule.Id);
+                            return DatabaseUpdateResult.Success(existingRule.Id, "Found existing FieldFormatRegEx after conflict");
                         }
-                        
-                        _logger.Error("   - [STEP 7] ❌ RECOVERY_FAILED: Could not find or create FieldFormatRegEx rule after primary key conflict.");
-                        return DatabaseUpdateResult.Failed($"Primary key conflict and recovery failed for field '{request.FieldName}': {ex.Message}");
+
+                        _logger.Error("           - ❌ **RECOVERY_FAILED**: Could not find or create FieldFormatRegEx rule after primary key conflict. This indicates a more serious issue.");
+                        return DatabaseUpdateResult.Failed($"Primary key conflict occurred, but recovery failed for field '{request.FieldName}': {ex.Message}");
                     }
+                    // ================================ FIX END: RESTORED ERROR HANDLING ================================
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Failed to execute FieldFormatUpdateStrategy for {FieldName}", request.FieldName);
+                    _logger.Error(ex, "         - Strategy execution failed for {FieldName}", request.FieldName);
                     return DatabaseUpdateResult.Failed($"Database error in FieldFormatUpdateStrategy: {ex.Message}", ex);
                 }
             }
@@ -316,7 +304,7 @@ namespace WaterNut.DataSpace
 
         #endregion
 
-        
+
 
         #region Omission Update Strategy (With Final Fix)
 
