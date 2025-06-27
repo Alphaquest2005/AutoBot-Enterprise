@@ -88,6 +88,12 @@ vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"CompleteDetecti
 
 # Run diagnostic tests  
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~DeepSeekDiagnosticTests" "/Logger:console;verbosity=detailed"
+
+# Run Generic PDF Test Suite (comprehensive with strategic logging)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~GenericPDFImportTest" "/Logger:console;verbosity=detailed"
+
+# Run Batch OCR Comparison Test
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~BatchOCRCorrectionComparison" "/Logger:console;verbosity=detailed"
 ```
 
 ### Key Paths
@@ -111,39 +117,142 @@ vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"CompleteDetecti
 # OCR service files
 /mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/
 
+# Test Infrastructure with Strategic Logging
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/GenericPDFTestSuite.cs     # Comprehensive PDF tests with logging lens
+
 # Logging Infrastructure
 /mnt/c/Insight Software/AutoBot-Enterprise/Core.Common/Core.Common/Extensions/LogLevelOverride.cs
 /mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md
+```
+
+## 🔍 Strategic Logging System for LLM Diagnosis
+
+### **Critical for LLM Error Diagnosis and Fixes**
+Logging is **essential** for LLMs to understand, diagnose, and fix errors in this extensive codebase. The strategic logging lens system provides surgical debugging capabilities while managing log volume.
+
+### 📜 **The Assertive Self-Documenting Logging Mandate v4.1**
+
+**Directive Name**: `ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE`  
+**Status**: ✅ **ACTIVE**  
+
+**Core Principle**: All diagnostic logging must form a complete, self-contained narrative of the system's operation, including architectural intent, historical context, and explicit assertions about expected state. The logs must actively guide the debugging process by confirming when intentions are met and explicitly stating when and why they are violated, directing the investigator away from incorrect assumptions.
+
+**Mandatory Logging Requirements (The "What, How, Why, Who, and What-If")**:
+
+1. **Log the "What" (Context)**:
+   - **Configuration State**: Log the complete template structure (Parts, Lines, Regex, Field Mappings)
+   - **Input Data**: Log raw input data via Type Analysis and JSON Serialization
+
+2. **Log the "How" (Process)**:
+   - **Internal State**: Log critical internal data structures (Lines.Values)
+   - **Method Flow**: Log entry/exit of key methods
+   - **Decision Points**: Use an "Intention/Expectation vs. Reality" pattern
+
+3. **Log the "Why" (Rationale & History)**:
+   - **Architectural Intent**: Explain the design philosophy (e.g., `**ARCHITECTURAL_INTENT**: System uses a dual-pathway detection strategy...`)
+   - **Design Backstory**: Explain the historical reason for specific code (e.g., `**DESIGN_BACKSTORY**: The 'FreeShipping' regex is intentionally strict for a different invoice variation...`)
+   - **Business Rule Rationale**: State the business rule being applied (e.g., `**BUSINESS_RULE**: Applying Caribbean Customs rule...`)
+
+4. **Log the "Who" (Outcome)**:
+   - Function return values, state changes, and error generation details
+
+5. **Log the "What-If" (Assertive Guidance)**:
+   - **Intention Assertion**: State the expected outcome before an operation
+   - **Success Confirmation**: Log when the expectation is met (`✅ **INTENTION_MET**`)
+   - **Failure Diagnosis**: If an expectation is violated, log an explicit diagnosis explaining the implication (`❌ **INTENTION_FAILED**: ... **GUIDANCE**: If you are looking for why X failed, this is the root cause...`)
+
+**Purpose**: This mandate ensures the system is self-documenting and that its logs can be understood by any developer or LLM without prior context.
+
+### **Strategic Logging Architecture**
+
+#### **🎯 Logging Lens System (Optimized for LLM Diagnosis)**:
+```csharp
+// High global level filters extensive logs from "log and test first" mandate
+LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+
+// Strategic lens focuses on suspected code areas for detailed diagnosis
+LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+// Dynamic lens control during test execution
+FocusLoggingLens(LoggingContexts.PDFImporter);   // Focus on PDF import phase
+FocusLoggingLens(LoggingContexts.OCRCorrection); // Focus on OCR correction phase  
+FocusLoggingLens(LoggingContexts.LlmApi);        // Focus on DeepSeek/LLM API calls
+```
+
+#### **🔧 Predefined Logging Contexts for PDF/OCR Pipeline**:
+```csharp
+private static class LoggingContexts
+{
+    public const string OCRCorrection = "WaterNut.DataSpace.OCRCorrectionService";
+    public const string PDFImporter = "WaterNut.DataSpace.PDFShipmentInvoiceImporter";
+    public const string LlmApi = "WaterNut.Business.Services.Utils.LlmApi";
+    public const string PDFUtils = "AutoBot.PDFUtils";
+    public const string InvoiceReader = "InvoiceReader";
+}
+```
+
+### **Benefits for LLM Error Diagnosis**:
+1. **🎯 Surgical Debugging** - Lens provides verbose details only where needed
+2. **🧹 Minimal Log Noise** - Global Error level keeps logs focused and readable
+3. **🔄 Reusable Design** - All PDF tests share the same lens infrastructure  
+4. **📋 Complete Context** - Captures full execution pipeline when lens is focused
+5. **⚡ Dynamic Focus** - Can change lens target during test execution for different stages
+
+### **Implementation in Generic PDF Test Suite**:
+```csharp
+// Test method with strategic lens focusing
+using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+{
+    // Focus lens on PDF import phase
+    FocusLoggingLens(LoggingContexts.PDFImporter);
+    var importResults = await ExecutePDFImport(testCase);
+    
+    // Shift lens focus to OCR correction phase
+    FocusLoggingLens(LoggingContexts.OCRCorrection);
+    await ValidateOCRCorrection(testCase, testStartTime);
+    
+    // Focus lens on LLM API interactions
+    FocusLoggingLens(LoggingContexts.LlmApi);
+    await ValidateDeepSeekDetection(testCase);
+}
 ```
 
 ## Logging Unification Status
 
 ### Current Implementation Status:
 - ✅ **AutoBot1**: Fully implemented with LevelOverridableLogger and category-based filtering
+- ✅ **PDF Test Suite**: Strategic logging lens system implemented for comprehensive LLM diagnosis
 - ❌ **AutoWaterNut**: WPF application with no logging configuration
 - ⚠️ **AutoWaterNutServer**: Basic Serilog implementation, needs upgrade to LevelOverridableLogger
 - 📋 **67 Rogue Static Loggers**: Identified across solution requiring refactoring
 
-### Logging Strategy:
+### Enhanced Logging Strategy:
+- **🎯 Strategic Logging Lens**: Combines high global minimum level with focused detailed logging
 - **LogLevelOverride System**: Advanced logging with selective exposure for focused debugging
 - **Global Minimum Level**: Set to Error to minimize log noise from extensive "log and test first" mandate
+- **Dynamic Lens Focus**: Runtime-changeable target contexts for surgical debugging
 - **Category-Based Filtering**: LogCategory enum with runtime filtering capabilities
 - **Centralized Entry Point**: Single logger creation at application entry points
 - **Constructor Injection**: Logger propagated through call chains via dependency injection
 - **Context Preservation**: InvocationId and structured logging maintained
 
-#### **LogLevelOverride Usage Pattern**:
+#### **Enhanced LogLevelOverride with Lens Pattern**:
 ```csharp
-// Global logger set to Error level minimizes vast log output
+// Strategic setup: Global high level + focused lens
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Error()  // Only errors shown by default
+    .MinimumLevel.Error()  // Filters vast log output by default
     .CreateLogger();
 
-// Use LogLevelOverride to expose specific code sections for debugging
-using (LogLevelOverride.Begin(LogEventLevel.Information))
+// Configure lens for specific diagnostics
+LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+// Use LogLevelOverride for comprehensive diagnosis within scope
+using (LogLevelOverride.Begin(LogEventLevel.Verbose))
 {
-    // Only logs within this scope are visible at Information level
-    ProcessSpecificCodeSection();
+    // Lens exposes detailed logs only for targeted context
+    ProcessSuspectedCodeSection(); // Only OCRCorrectionService logs are verbose
 }
 ```
 

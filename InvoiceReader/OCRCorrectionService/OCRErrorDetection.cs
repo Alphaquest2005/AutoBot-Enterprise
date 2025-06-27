@@ -78,96 +78,15 @@ namespace WaterNut.DataSpace
             }
         }
 
-        /// <summary>
-        /// Rule-based detector that now generates a consistent, pre-defined regex for each finding.
-        /// </summary>
-        private List<InvoiceError> DetectAmazonSpecificErrors(ShipmentInvoice invoice, string fileText)
-        {
-            var amazonErrors = new List<InvoiceError>();
-            var lines = fileText.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
-
-            // ====== GIFT CARD / TOTAL INSURANCE DIAGNOSTIC ENTRY ======
-            _logger.Information("💳 **GIFT_CARD_DIAGNOSTIC_START**: Analyzing Amazon invoice for Gift Card patterns");
-            _logger.Information("   - 📊 Current Invoice TotalInsurance: {TotalInsurance}", invoice.TotalInsurance?.ToString() ?? "null");
-            
-            var giftCardRegex = new Regex(@"(Gift Card Amount:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
-            var giftCardMatch = giftCardRegex.Match(fileText);
-            if (giftCardMatch.Success)
-            {
-                var giftCardValue = giftCardMatch.Groups[2].Value.Trim();
-                var correctedValue = $"-{giftCardValue}";
-                var lineNumber = GetLineNumberForMatch(lines, giftCardMatch);
-                
-                _logger.Information("💳 **GIFT_CARD_PATTERN_DETECTED**: Found Gift Card pattern in OCR text");
-                _logger.Information("   - 📝 Raw Pattern Match: '{RawMatch}'", giftCardMatch.Value.Trim());
-                _logger.Information("   - 🔢 Extracted Value: '{ExtractedValue}'", giftCardValue);
-                _logger.Information("   - ✅ Corrected Value: '{CorrectedValue}' (negated for TotalInsurance)", correctedValue);
-                _logger.Information("   - 📍 Line Number: {LineNumber}", lineNumber);
-                _logger.Information("   - 📄 Line Text: '{LineText}'", giftCardMatch.Value.Trim());
-                
-                amazonErrors.Add(new InvoiceError
-                {
-                    Field = "TotalInsurance",
-                    ErrorType = "omission",
-                    CorrectValue = correctedValue,
-                    Confidence = 0.98,
-                    Reasoning = "Rule-based: Amazon Gift Card Amount detected.",
-                    LineText = giftCardMatch.Value.Trim(),
-                    LineNumber = lineNumber,
-                    SuggestedRegex = @"Gift Card Amount:\s*-?\$?(?<TotalInsurance>[\d,]+\.?\d*)"
-                });
-                
-                _logger.Information("💳 **GIFT_CARD_ERROR_CREATED**: InvoiceError object created for TotalInsurance field");
-            }
-            else
-            {
-                _logger.Warning("💳 **GIFT_CARD_PATTERN_NOT_FOUND**: No Gift Card Amount pattern found in OCR text");
-                _logger.Information("   - 🔍 Searched Pattern: 'Gift Card Amount:\\s*-?\\$?[\\d,]+\\.?\\d*'");
-                // Log first few lines to help debug
-                var sampleLines = lines.Take(10).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
-                _logger.Information("   - 📝 Sample OCR Lines: {SampleLines}", string.Join(" | ", sampleLines));
-            }
-
-            var freeShippingRegex = new Regex(@"(Free Shipping:\s*-?\$?)([\d,]+\.?\d*)", RegexOptions.IgnoreCase);
-            foreach (Match match in freeShippingRegex.Matches(fileText))
-            {
-                amazonErrors.Add(new InvoiceError
-                {
-                    Field = "TotalDeduction",
-                    ErrorType = "omission",
-                    CorrectValue = match.Groups[2].Value.Trim(),
-                    Confidence = 0.95,
-                    Reasoning = "Rule-based: Individual Free Shipping amount detected.",
-                    LineText = match.Value.Trim(),
-                    LineNumber = GetLineNumberForMatch(lines, match),
-                    SuggestedRegex = @"Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.?\d*)"
-                });
-            }
-
-            // ====== AMAZON DETECTION SUMMARY ======
-            var giftCardErrors = amazonErrors.Where(e => e.Field == "TotalInsurance").ToList();
-            var freeShippingErrors = amazonErrors.Where(e => e.Field == "TotalDeduction").ToList();
-            
-            _logger.Information("🏁 **AMAZON_DETECTION_SUMMARY**: Rule-based Amazon detector completed");
-            _logger.Information("   - 💳 Gift Card (TotalInsurance) errors found: {GiftCardCount}", giftCardErrors.Count);
-            _logger.Information("   - 🚢 Free Shipping (TotalDeduction) errors found: {FreeShippingCount}", freeShippingErrors.Count);
-            _logger.Information("   - 📊 Total errors detected: {TotalCount}", amazonErrors.Count);
-            
-            if (giftCardErrors.Any())
-            {
-                foreach (var error in giftCardErrors)
-                {
-                    _logger.Information("   - 💳 Gift Card Error: Field={Field}, CorrectValue='{CorrectValue}', LineText='{LineText}'", 
-                        error.Field, error.CorrectValue, error.LineText);
-                }
-            }
-            else
-            {
-                _logger.Warning("   - ⚠️ NO GIFT CARD ERRORS DETECTED - TotalInsurance will remain null");
-            }
-            
-            return amazonErrors;
-        }
+        // 🗑️ **DEPRECATED_METHOD_REMOVED**: DetectAmazonSpecificErrors() method removed
+        // **ARCHITECTURAL_DECISION**: This Amazon-specific rule-based detector was disabled in production
+        // (lines 40-47) in favor of the generalized AI-based detection pathway.
+        // **BUSINESS_JUSTIFICATION**: OCR correction service needs to work across diverse invoice types,
+        // not just Amazon invoices. The AI-based approach provides better generalization.
+        // **EVIDENCE**: Method was commented out in DetectInvoiceErrorsAsync() and not being called.
+        // **IMPACT**: No production impact - method was already disabled.
+        // **GENERALIZATION_BENEFIT**: Removing Amazon-specific logic helps ensure the service
+        // works equally well for TEMU, Tropical Vendors, Purchase Orders, BOLs, and other invoice types.
 
         private async Task<List<InvoiceError>> DetectHeaderFieldErrorsAndOmissionsAsync(
             ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata = null)
