@@ -1,0 +1,277 @@
+------------------------------------------Single Column-------------------------
+coined BrncHll
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+wv
+Invoice
+Supplter name ZBLED Rars Store Customer Name BH shopper
+10813 NW 30TH ST STE 115 GRE 1132 Doral
+Marketplace Facilitatur Alibaba.com Singepore E-Commerce Private Limited Dellvery Address
+Florida
+Invoice Date Invoice No.
+2024-08-04 -0400 WIOMZFL20240205299717
+Transaction Quantity) Price} Sales Tax Rate Sales Tax Amount Total inclusive of Sates Tax)
+(USD) (USD) (USD)
+LED Backlight Strip For Samsung UEASAU8070U UN4S3AUS000
+UEA3 AUSHW UES3AU7100 UES3AU800SK LM41-01040A 1 12.30) 7.0AX) % 0.86 13.16)
+43AU8K BN9G-52587A
+Total amount in USD O86 13.16)
+
+ 
+
+*As required by the relevant State Sales Tax Laws, the marketplace facilitator is required to collect Sales Tax and remit to the relevant
+tax authorities.
+
+ 
+
+Grenada
+Simplified Declaration Form
+
+ 
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+ 
+
+ 
+
+ 
+
+Consignee: REGINALD ANDALL (FREIGHT 3.00 US )
+Customs Office GDWBS
+Man Reg Number: 2024/31
+WayBill Number: HAWB9702398
+No and Type of package: 1 Package
+Gross Mass: 1.0 Freight 0.0
+Insuranc 0.0
+Particulars of declaration by Importer
+Description of Goods Customs Value $EC Tariff No. Weight (kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+|, the undersigned, REGINALD ANDALL ( FREIGHT 3.00 US ) do hereby declare that the above particulars are true and correct.
+
+ 
+
+ 
+
+ 
+
+ 
+
+Dated this day of 20
+; Examination Required: YES / NO
+Signed:
+Importer/Exporter or declarant For Comptroller of Customs
+For Official Use Only
+Description of Goods Customs Value $EC Tariff No. Weight (Kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Examination Officer
+
+ 
+
+For Comptroller of Customs
+
+ 
+
+
+------------------------------------------SparseText-------------------------
+ee
+
+coinatd rrcall
+
+wv
+
+Invoice
+
+ZBLED Rars Store
+
+Supplter name
+
+Customer Name
+
+BH shopper
+
+10813 NW 30TH ST STE 115 GRE 1132 Doral
+
+Marketplace Facilitatur
+
+Alibaba.com Singepore E-Commerce Private Limited
+
+Delivery Address
+
+Florida
+
+Invoice Date
+
+Invoice No.
+
+2024-08-04 -0400
+
+WIOMZFL20240205299717
+
+Transaction
+
+Quantity)
+
+Price]
+
+Sales Tax Rate!
+
+Sales Tax Amount|
+
+Total inclusive of Sates Tax)
+
+(USD)
+
+(USD)
+
+(usb)
+
+LED Backlight Strip For Samsung UEASAU8070U UN4S3AUS000
+
+UEA3 AUSHW UES3AU7100 UES3AU800SK LM41-01040A
+
+12.30)
+
+7.0) %)
+
+0.86)
+
+13.16)
+
+43AU8K BN9G-525874
+
+Total amount in USD
+
+0.86
+
+13.16)
+
+*As required by the relevant State Sales Tax Laws, the marketplace facilitator is required to collect Sales Tax and remit to the relevant
+
+tax authorities.
+
+Grenada
+
+Simplified Declaration Form
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+Consignee:
+
+REGINALD ANDALL ( FREIGHT 3.00 US )
+
+GDWBS
+
+Customs Office
+
+Man Reg Number:
+
+2024/31
+
+WayBill Number:
+
+HAWB9702398
+
+4
+
+No and Type of package
+
+Package
+
+Gross Mass:
+
+1.0
+
+Freight
+
+0.0
+
+Insuranc
+
+Particulars of declaration by Importer
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (kg)
+
+Supplementary
+
+|, the undersigned, REGINALD ANDALL ( FREIGHT 3.00 US ) do hereby declare that the above particulars are true and correct.
+
+Dated this
+
+day of
+
+20
+
+Examination Required: YES / NO
+
+Signed:
+
+Importer/Exporter or declarant
+
+For Comptroller of Customs
+
+For Official Use Only
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (Kg)
+
+Supplementary
+
+Examination Officer
+
+For Comptroller of Customs
+
+
+------------------------------------------Ripped Text-------------------------
+
+
+

@@ -532,7 +532,7 @@ namespace AutoBotUtilities.Tests
                 LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
                 LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 
-                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com_-_Order_112-9126443-1163432.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
                 if (!File.Exists(testFile))
@@ -618,6 +618,326 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
+        public async Task CanImportAmazon03142025Order_AfterLearning()
+        {
+            // Record the start time of the test to query for new DB entries later.
+            var testStartTime = DateTime.Now.AddSeconds(-5); // Give a 5-second buffer
+
+            Console.SetOut(TestContext.Progress);
+
+            try
+            {
+                // STRATEGY: Configure logging to show OCR correction dataflow and logic flow
+                _logger.Information("🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process");
+                _logger.Information("🔍 **TEST_EXPECTATION**: We expect OCR correction to detect omissions and create a balanced invoice.");
+                _logger.Information("🎯 **PRODUCTION_TEST**: Testing DeepSeek prompts in production environment with multi-field line corrections");
+
+                // Configure logging to show our OCR correction logs  
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon_03142025_Order.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+
+                var fileLst = await FileTypeManager
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .ConfigureAwait(false);
+
+                var fileTypes = fileLst
+                     .OfType<CoreEntities.Business.Entities.FileTypes>()
+                     .Where(x => x.Description == "Unknown")
+                     .ToList();
+
+                if (!fileTypes.Any())
+                {
+                    Assert.Warn($"No suitable 'Unknown' PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+
+                    // This is an async call that kicks off the entire pipeline.
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
+
+                    _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
+
+                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    bool invoiceExists = false;
+                    ShipmentInvoice finalInvoice = null;
+
+                    _logger.Information("🔍 **VERIFICATION_START**: Checking for persisted ShipmentInvoice with retry logic...");
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        // Retry for up to 5 seconds to give the async pipeline time to commit the final save.
+                        for (int i = 0; i < 10; i++)
+                        {
+                            finalInvoice = await ctx.ShipmentInvoice
+                                               .Include(x => x.InvoiceDetails)
+                                .FirstOrDefaultAsync(inv => inv.InvoiceNo == "111-8019845-2302666")
+                                .ConfigureAwait(false);
+
+                            if (finalInvoice != null)
+                            {
+                                invoiceExists = true;
+                                _logger.Information("✅ **VERIFICATION_SUCCESS**: Found ShipmentInvoice '111-8019845-2302666' in the database on attempt {Attempt}.", i + 1);
+                                break;
+                            }
+
+                            _logger.Warning("  - Verification attempt {Attempt}/10 failed. Waiting 500ms before retry...", i + 1);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+
+                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice '111-8019845-2302666' not created after waiting for async persistence.");
+                    // ================== END OF ROBUST VERIFICATION ==================
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "111-8019845-2302666");
+                        _logger.Information("📊 **DETAIL_COUNT_CHECK**: Found {DetailCount} invoice details for invoice 111-8019845-2302666", detailCount);
+                        Assert.That(detailCount, Is.GreaterThan(0), $"Expected at least 1 ShipmentInvoiceDetails, but found {detailCount}.");
+                    }
+
+                    _logger.Information("✅ **DATABASE_ASSERTIONS_PASSED**: ShipmentInvoice and correct number of Details exist.");
+
+                    // ================== MULTI-FIELD LINE CORRECTIONS DATABASE VERIFICATION ==================
+                    _logger.Error("🔍 **MULTI_FIELD_DATABASE_VERIFICATION**: Checking for multi-field line corrections in database");
+
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var recentCorrections = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .OrderByDescending(x => x.Id)
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **PRODUCTION_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
+
+                        Assert.That(recentCorrections.Count, Is.GreaterThan(0),
+                            $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
+
+                        // Verify multi-field corrections specifically
+                        var multiFieldCorrections = recentCorrections
+                            .Where(x => x.CorrectionType == "multi_field_omission")
+                            .ToList();
+
+                        _logger.Error("🔍 **MULTI_FIELD_CORRECTIONS**: Found {Count} multi-field omission corrections", multiFieldCorrections.Count);
+
+                        // Verify format corrections (field-level corrections within multi-field lines)
+                        var formatCorrections = recentCorrections
+                            .Where(x => x.CorrectionType == "format_correction")
+                            .ToList();
+
+                        _logger.Error("🔍 **FORMAT_CORRECTIONS**: Found {Count} format correction entries", formatCorrections.Count);
+
+                        // Check for new Lines created (omission corrections create new Lines)
+                        var allAutoOmissionLines = await ocrCtx.Lines
+                            .Where(l => l.Name.StartsWith("AutoOmission_"))
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **NEW_LINES**: Found {Count} total AutoOmission lines", allAutoOmissionLines.Count);
+
+                        // Check for new FieldFormat rules (format corrections create FieldFormat rules)
+                        var allFieldFormats = await ocrCtx.OCR_FieldFormatRegEx
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **NEW_FIELD_FORMATS**: Found {Count} total FieldFormat rules", allFieldFormats.Count);
+
+                        // Comprehensive assertion: We should have at least one type of correction
+                        var totalCorrectionTypes = (multiFieldCorrections.Count > 0 ? 1 : 0) +
+                                                  (formatCorrections.Count > 0 ? 1 : 0) +
+                                                  (allAutoOmissionLines.Count > 0 ? 1 : 0) +
+                                                  (allFieldFormats.Count > 0 ? 1 : 0);
+
+                        Assert.That(totalCorrectionTypes, Is.GreaterThan(0),
+                            $"FAILING: Expected at least one type of correction (multi-field, format, lines, or field formats). " +
+                            $"Found: {multiFieldCorrections.Count} multi-field, {formatCorrections.Count} format, " +
+                            $"{allAutoOmissionLines.Count} lines, {allFieldFormats.Count} field formats.");
+
+                        _logger.Error("✅ **MULTI_FIELD_DATABASE_VERIFICATION_PASSED**: All database learning criteria met.");
+                    }
+
+                    // Final check on the persisted object's balance.
+                    Assert.That(finalInvoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected final persisted invoice to be balanced. Instead, TotalsZero was {finalInvoice.TotalsZero}.");
+                    _logger.Error("✅ **TOTALS_ZERO_PASSED**: Persisted invoice is mathematically balanced (TotalsZero = {TotalsZero}).", finalInvoice.TotalsZero);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in CanImportAmazon03142025Order_AfterLearning");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+        [Test]
+        public async Task CanImportMango03152025TotalAmount_AfterLearning()
+        {
+            // Record the start time of the test to query for new DB entries later.
+            var testStartTime = DateTime.Now.AddSeconds(-5); // Give a 5-second buffer
+
+            Console.SetOut(TestContext.Progress);
+
+            try
+            {
+                // STRATEGY: Configure logging to show OCR correction dataflow and logic flow
+                _logger.Information("🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process");
+                _logger.Information("🔍 **TEST_EXPECTATION**: We expect OCR correction to detect omissions and create a balanced invoice.");
+                _logger.Information("🎯 **MANGO_CHALLENGE_TEST**: Testing new supplier with bad scan, inverted pages, and mixed documents");
+
+                // Configure logging to show our OCR correction logs  
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\03152025_TOTAL AMOUNT.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+
+                var fileLst = await FileTypeManager
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .ConfigureAwait(false);
+
+                var fileTypes = fileLst
+                     .OfType<CoreEntities.Business.Entities.FileTypes>()
+                     .Where(x => x.Description == "Unknown")
+                     .ToList();
+
+                if (!fileTypes.Any())
+                {
+                    Assert.Warn($"No suitable 'Unknown' PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+
+                    // This is an async call that kicks off the entire pipeline.
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
+
+                    _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
+
+                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    bool invoiceExists = false;
+                    ShipmentInvoice finalInvoice = null;
+
+                    _logger.Information("🔍 **VERIFICATION_START**: Checking for persisted ShipmentInvoice with retry logic...");
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        // Retry for up to 5 seconds to give the async pipeline time to commit the final save.
+                        for (int i = 0; i < 10; i++)
+                        {
+                            finalInvoice = await ctx.ShipmentInvoice
+                                               .Include(x => x.InvoiceDetails)
+                                .FirstOrDefaultAsync(inv => inv.InvoiceNo == "UCSJB6" || inv.InvoiceNo == "UCSJIB6")
+                                .ConfigureAwait(false);
+
+                            if (finalInvoice != null)
+                            {
+                                invoiceExists = true;
+                                _logger.Information("✅ **VERIFICATION_SUCCESS**: Found ShipmentInvoice '{InvoiceNo}' in the database on attempt {Attempt}.", finalInvoice.InvoiceNo, i + 1);
+                                break;
+                            }
+
+                            _logger.Warning("  - Verification attempt {Attempt}/10 failed. Waiting 500ms before retry...", i + 1);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+
+                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence.");
+                    // ================== END OF ROBUST VERIFICATION ==================
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == finalInvoice.InvoiceNo);
+                        _logger.Information("📊 **DETAIL_COUNT_CHECK**: Found {DetailCount} invoice details for invoice {InvoiceNo}", detailCount, finalInvoice.InvoiceNo);
+                        Assert.That(detailCount, Is.GreaterThan(0), $"Expected at least 1 ShipmentInvoiceDetails, but found {detailCount}.");
+                    }
+
+                    _logger.Information("✅ **DATABASE_ASSERTIONS_PASSED**: ShipmentInvoice and correct number of Details exist.");
+
+                    // ================== MANGO MULTI-FIELD LINE CORRECTIONS DATABASE VERIFICATION ==================
+                    _logger.Error("🔍 **MANGO_MULTI_FIELD_DATABASE_VERIFICATION**: Checking for multi-field line corrections in database for MANGO invoice");
+
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var recentCorrections = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .OrderByDescending(x => x.Id)
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **MANGO_PRODUCTION_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
+
+                        Assert.That(recentCorrections.Count, Is.GreaterThan(0),
+                            $"FAILING: OCR correction system must create at least 1 database entry for MANGO challenge. Found {recentCorrections.Count} corrections.");
+
+                        // Verify multi-field corrections specifically
+                        var multiFieldCorrections = recentCorrections
+                            .Where(x => x.CorrectionType == "multi_field_omission")
+                            .ToList();
+
+                        _logger.Error("🔍 **MANGO_MULTI_FIELD_CORRECTIONS**: Found {Count} multi-field omission corrections", multiFieldCorrections.Count);
+
+                        // Verify format corrections (field-level corrections within multi-field lines)
+                        var formatCorrections = recentCorrections
+                            .Where(x => x.CorrectionType == "format_correction")
+                            .ToList();
+
+                        _logger.Error("🔍 **MANGO_FORMAT_CORRECTIONS**: Found {Count} format correction entries", formatCorrections.Count);
+
+                        // Check for new Lines created (omission corrections create new Lines)
+                        var allAutoOmissionLines = await ocrCtx.Lines
+                            .Where(l => l.Name.StartsWith("AutoOmission_"))
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **MANGO_NEW_LINES**: Found {Count} total AutoOmission lines", allAutoOmissionLines.Count);
+
+                        // Check for new FieldFormat rules (format corrections create FieldFormat rules)
+                        var allFieldFormats = await ocrCtx.OCR_FieldFormatRegEx
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **MANGO_NEW_FIELD_FORMATS**: Found {Count} total FieldFormat rules", allFieldFormats.Count);
+
+                        // Comprehensive assertion: We should have at least one type of correction
+                        var totalCorrectionTypes = (multiFieldCorrections.Count > 0 ? 1 : 0) +
+                                                  (formatCorrections.Count > 0 ? 1 : 0) +
+                                                  (allAutoOmissionLines.Count > 0 ? 1 : 0) +
+                                                  (allFieldFormats.Count > 0 ? 1 : 0);
+
+                        Assert.That(totalCorrectionTypes, Is.GreaterThan(0),
+                            $"FAILING: Expected at least one type of correction for MANGO challenge (multi-field, format, lines, or field formats). " +
+                            $"Found: {multiFieldCorrections.Count} multi-field, {formatCorrections.Count} format, " +
+                            $"{allAutoOmissionLines.Count} lines, {allFieldFormats.Count} field formats.");
+
+                        _logger.Error("✅ **MANGO_MULTI_FIELD_DATABASE_VERIFICATION_PASSED**: All database learning criteria met for MANGO challenge.");
+                    }
+
+                    // Final check on the persisted object's balance.
+                    Assert.That(finalInvoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected final persisted invoice to be balanced. Instead, TotalsZero was {finalInvoice.TotalsZero}.");
+                    _logger.Error("✅ **TOTALS_ZERO_PASSED**: Persisted MANGO invoice is mathematically balanced (TotalsZero = {TotalsZero}).", finalInvoice.TotalsZero);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in CanImportMango03152025TotalAmount_AfterLearning");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+        [Test]
         public async Task CanImportAmazoncomOrder11291264431163432_BeforeLearning()
         {
             // Record the start time of the test to query for new DB entries later.
@@ -636,7 +956,7 @@ namespace AutoBotUtilities.Tests
                 LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
                 LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 
-                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com_-_Order_112-9126443-1163432.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
                 if (!File.Exists(testFile))
@@ -756,8 +1076,138 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
             }
         }
 
+        [Test]
+        public async Task CanImportInternational8251357168()
+        {
+            // Record the start time of the test to query for new DB entries later.
+            var testStartTime = DateTime.Now.AddSeconds(-5); // Give a 5-second buffer
 
-[Test]
+            Console.SetOut(TestContext.Progress);
+
+            try
+            {
+                // STRATEGY: Configure logging to show OCR correction dataflow and logic flow
+                _logger.Information("🔍 **TEST_SETUP_INTENTION**: Test configured to show Error level logs and track OCR correction process");
+                _logger.Information("🔍 **TEST_EXPECTATION**: We expect OCR correction to detect omissions and create a balanced invoice.");
+
+                // Configure logging to show our OCR correction logs  
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Error;
+                LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\01987.pdf";
+                _logger.Information("Test File: {FilePath}", testFile);
+
+                if (!File.Exists(testFile))
+                {
+                    Assert.Warn($"Test file not found: {testFile}");
+                    return;
+                }
+
+
+                var fileLst = await FileTypeManager
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .ConfigureAwait(false);
+
+                var fileTypes = fileLst
+                     .OfType<CoreEntities.Business.Entities.FileTypes>()
+                     .Where(x => x.Description == "Unknown")
+                     .ToList();
+
+                if (!fileTypes.Any())
+                {
+                    Assert.Warn($"No suitable 'Unknown' PDF FileType found for: {testFile}");
+                    return;
+                }
+
+                foreach (var fileType in fileTypes)
+                {
+                    _logger.Information("Testing with FileType: {FileTypeDescription} (ID: {FileTypeId})", fileType.Description, fileType.Id);
+
+                    // This is an async call that kicks off the entire pipeline.
+                    await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testFile) }, fileType, _logger).ConfigureAwait(false);
+
+                    _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
+
+                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    bool invoiceExists = false;
+                    ShipmentInvoice finalInvoice = null;
+
+                    _logger.Information("🔍 **VERIFICATION_START**: Checking for persisted ShipmentInvoice with retry logic...");
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        // Retry for up to 5 seconds to give the async pipeline time to commit the final save.
+                        for (int i = 0; i < 10; i++)
+                        {
+                            finalInvoice = await ctx.ShipmentInvoice
+                                               .Include(x => x.InvoiceDetails)
+                                .FirstOrDefaultAsync(inv => inv.InvoiceNo == "8251357168")
+                                .ConfigureAwait(false);
+
+                            if (finalInvoice != null)
+                            {
+                                invoiceExists = true;
+                                _logger.Information("✅ **VERIFICATION_SUCCESS**: Found ShipmentInvoice '8251357168' in the database on attempt {Attempt}.", i + 1);
+                                break;
+                            }
+
+                            _logger.Warning("  - Verification attempt {Attempt}/10 failed. Waiting 500ms before retry...", i + 1);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+
+                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice '8251357168' not created after waiting for async persistence.");
+                    // ================== END OF ROBUST VERIFICATION ==================
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "8251357168");
+                        Assert.That(detailCount, Is.EqualTo(8), $"Expected = 8 ShipmentInvoiceDetails, but found {detailCount}.");
+                    }
+
+                    _logger.Information("✅ **DATABASE_ASSERTIONS_PASSED**: ShipmentInvoice and correct number of Details exist.");
+
+                    // Now that we've confirmed the invoice exists, we can check the learning database and totals.
+                    _logger.Error("🔍 **AMAZON_TEST_DATABASE_VERIFICATION**: Checking OCR correction database entries");
+
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        var recentCorrections = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .OrderByDescending(x => x.Id)
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **AMAZON_TEST_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
+
+                        Assert.That(recentCorrections.Count, Is.GreaterThan(0),
+                            $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
+
+                        var newRegexPatterns = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .ToListAsync();
+
+                        _logger.Error("🔍 **Corrections**: Found {Count} new regex patterns", newRegexPatterns.Count);
+
+                        Assert.That(newRegexPatterns.Count, Is.GreaterThan(0),
+                            "FAILING: OCR correction should create at least 1 new regex pattern in database");
+                    }
+
+                    _logger.Error("✅ **AMAZON_DATABASE_VERIFICATION_PASSED**: All database learning criteria met.");
+
+                    // Final check on the persisted object's balance.
+                    Assert.That(finalInvoice.TotalsZero, Is.EqualTo(0).Within(0.01), $"Expected final persisted invoice to be balanced. Instead, TotalsZero was {finalInvoice.TotalsZero}.");
+                    _logger.Error("✅ **TOTALS_ZERO_PASSED**: Persisted invoice is mathematically balanced (TotalsZero = {TotalsZero}).", finalInvoice.TotalsZero);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "ERROR in CanImportAmazoncomOrder11291264431163432");
+                Assert.Fail($"Test failed with exception: {e.Message}");
+            }
+        }
+
+
+        [Test]
     public async Task CanImportAmazoncomOrder_AI_DetectsAllOmissions_WithFullContext()
     {
         // Arrange
@@ -1802,7 +2252,7 @@ Return only the regex pattern, no explanation:";
 
                 _logger.Information("🔍 **TEST_SETUP**: Verifying OCR correction database updates for Amazon invoice");
 
-                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com - Order 112-9126443-1163432.pdf";
+                var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\Amazon.com_-_Order_112-9126443-1163432.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
                 if (!File.Exists(testFile))

@@ -1,0 +1,57 @@
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/01987.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03142025_7_24_24, 3_53 PM am^on.coiti‘.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03142025_USD 170.88 XCD 467.72.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025110414.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_$0.00.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_$140.56 $0.00 $0.00 -$7.40 $140.56 USD you saved $7.40.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_$25.58.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_$74.70.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_,7_29_24,^_35 PM ai^zoncom.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_8.43 CNY to USD -Convert Chinese Yuan Renminbi to  US D.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_ABOUT.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_COJAY.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_FASHIOMiOVA.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_FASHIOMWVA.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Free returns within 90 days.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_innrrmiTtrri.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Invoice.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Jul 16, 2024 order _Order# 2000120-11892676.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_OMonpOon.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Order information.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Order totai.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Order total.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_RECEIPT.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Sales Invoice.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Sign Out.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_Solid Notch Neck Blouse, Casual Short Sleeve ... Golden.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_TOTAL AMOUNT.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/03152025_^ASHIONNOVA.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/05282024_SHEIN US Services. LLC..pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/05292024_SHEIN US Services, LLC..pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/06252024_SHEIN US Services, LLC..pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07112024_Invoice.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07192024_WorldStar.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07222024_SALES RECEIPT.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07252024_TEMU.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07262024_INVOICE COPY.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/07292024_Order total.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/08042024_Invoice.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/09142024_five BEI_V«^.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/112-9126443-1163432 - totalzero not 0.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/12072024_Margaret Fletcher MC Leish 10813 NW 30TH ST BLDG 115 GR.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/172086-Manifest.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/2000129-50710193.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/HAWB9580723-Manifest.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/HAWB9595443/111-8019845-2302666.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/HAWB9595443/HAWB9595459-Manifest.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/HAWB9897473-Manifest.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/HBL172086-BL.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/MACKESS COX BOL.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Mackess Cox Waybill.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/one amazon with muliple invoice details sections.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/PO-211-17318585790070596.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/sample shipment/03142025_7_24_24, 3_53 PM am^on.coiti‘.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Test Shipment files/111-8019845-2302666.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Test Shipment files/HAWB9595459-Manifest.pdf
+/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/TestInvoice.pdf

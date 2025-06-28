@@ -1,0 +1,631 @@
+------------------------------------------Single Column-------------------------
+wi
+
+A M RECEIPT
+
+ 
+
+YOUR DETAILS RECEIPT DATE 21 July 2024
+RECEIPT NUMBER 1804495444
+NAME Rosalie la Grenade
+P|
+EMAIL RLAGZ11@YAHOO.COM ORDER NUMBER 49669470203
+HOME ADDRESS easter) ORDER DATE 19 July 2024
+Sap
+PAYMENT METHOD Paypal $67.98
+DELIVERY METHOD HOME DELIVERY STANDARD
+ORDER SUMMARY
+ART.NO DESC. SIZE COLOUR ary. UNIT PRICE DISCOUNT TAXABLE TOTAL PRICE
+1206305006007 Flared Twill Pants 12 Dark gray 1 $20.99 +S13.00 $7.99
+fe Straw Hat M56 Beige 1 $19.99 *$11,00 $6.99
+1206305005007 Flared Twill Pants 12 Light gray 1 $20.99 -$13.00 $7.99
+7731002004 Straw Hat uss Light beige 1 $17.99 +$8.00 $9.99
+1229647001004 —_-Frayed-edge Straw Hat () Light beige 1 $1299 -$7.00 $5.99
+87610004005 —Twist-detail Shirt Dress L Yellownie-dye 1 $29.99 -$17.00 $1299
+ff ee Pendant Necklace NOSIZE Gold- 1 $5.99 -$2.00 $3.99
+colored/rhinestones
+MERCHANDISE TOTAL: $128.93
+DISCOUNT: -$71.00
+SUBTOTAL: $57.93
+SHIPPING & HANDLING: $5.99
+SALES TAX: $4.06
+TOTAL: $67.98
+
+QA-code for retum in store
+
+offer an
+
+ 
+
+ 
+
+OP er eas
+
+Note, you Cannot reply to thea emai If you have any queshons abou! why you receive ths email of want lo Contact ut, please Cal US toe Ire af BSE 486 7487
+For more information abo,’ your order, tog in to My HAM
+You aheays have 36 days to decode whether the tem 1s nght for you. To learn moxe sbout returns, ploase read our seturn and retund policy For more mlormation, please read our privacy notice and tema of use.
+
+ 
+
+°
+
+ 
+
+Grenada
+Simplified Declaration Form
+
+ 
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+ 
+
+Consignee: ROSALIE LA GRENADE (FREIGHT 9.00 US)
+
+Customs Office GDWBS
+
+Man Reg Number: 2024/28
+
+WayBill Number: HAWB9603312
+
+No and Type of package: 1 Package
+
+Gross Mass: 4.0 Freight 0.0
+Insuranc 9.0
+
+ 
+
+Particulars of declaration by Importer
+
+ 
+
+Description of Goods Customs Value $EC Tariff No. Weight (kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+|, the undersigned, ROSALIE LA GRENADE (FREIGHT 9.00 US) do hereby declare that the above particulars are true and correct.
+Dated this day of 20
+
+. Examination Required: YES / NO
+Signed:
+
+ 
+
+ 
+
+Importer/Exporter or declarant For Comptrofler of Customs
+
+ 
+
+For Official Use Only
+
+ 
+
+Description of Goods Customs Value $EC Tariff No. Weight (Kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Examination Offi
+am n Officer For Comptroller of Customs
+
+ 
+
+ 
+
+Grenada
+Simplified Declaration Form
+
+ 
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+ 
+
+Consignee: ROSALIE LA GRENADE (FREIGHT 5.00 US)
+
+Customs Office GDWBS
+
+Man Reg Number: 2024/28
+
+WayBill Number: HAWB9600998
+
+No and Type of package: 1 Package
+
+Gross Mass: 2.0 Freight 0.0
+Insuranc 0.0
+
+ 
+
+Particulars of declaration by Importer
+
+ 
+
+Description of Goods Customs Value $EC Tariff No. Weight (kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+I, the undersigned, ROSALIE LA GRENADE (FREIGHT 5.00 US) do hereby declare that the above particulars are true and correct.
+
+ 
+
+ 
+
+ 
+
+ 
+
+Dated this day of 20
+. Examination Required: YES / NO
+Signed:
+Importer/Exporter or declarant For Comptroller of Customs
+For Official Use Only
+Description of Goods Customs Value $EC Tariff No. Weight (Kg) Supplementary
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Examination Officer
+For Comptroller of Customs
+
+ 
+
+
+------------------------------------------SparseText-------------------------
+~
+
+wi
+
+RECEIPT
+
+fil
+
+YOUR DETAILS
+
+RECEIPT DATE
+
+21 July 2024
+
+RECEIPT NUMBER
+
+1504495444
+
+NAME
+
+Rosalie la Grenade
+
+EMAIL
+
+ORDER NUMBER
+
+49669470203
+
+RLAGZ11@YAHOO.COM
+
+HOME ADDRESS
+
+eich)
+
+ORDER DATE
+
+19 July 2024
+
+is ij te
+
+ELISE
+
+Sap
+
+PAYMENT METHOD
+
+Paypal $67.98
+
+DELIVERY METHOD
+
+HOME DELIVERY STANDARD
+
+=
+
+ORDER SUMMARY
+
+ART.NO
+
+DESC.
+
+SIZE
+
+COLOUR
+
+ary.
+
+UNIT PRICE
+
+DISCOUNT
+
+TAXABLE
+
+TOTAL PRICE
+
+120630:
+
+5006007
+
+Flared Twill Pants
+
+12
+
+Oark gray
+
+$20.99
+
++$13.00
+
+$7.99
+
+205001003
+
+Straw Hat
+
+M56
+
+Beige
+
+$19.99
+
+$11.00
+
+$6.99
+
+1206305005007
+
+Flared Twill Pants
+
+12
+
+Light gray
+
+$20.99
+
+$13.00
+
+$7.99
+
+17731002004
+
+Straw Hat
+
+U58
+
+Light beige
+
+$17.99
+
+$8.00
+
+$9.99
+
+1229647001004
+
+Frayed-edge Straw Hat (©)
+
+Light beige
+
+$1299
+
+-$7.00
+
+$5.99
+
+87810004005
+
+Twist-detail Shirt Dress
+
+L
+
+Yellowhie-dye
+
+$29.99
+
+$17.00
+
+$1299
+
+Pendant Necklace
+
+NOSIZE
+
+Gold
+
+$5.99
+
+-$2.00
+
+$3.99
+
+ri 073337004001
+
+colored/rhinestones
+
+MERCHANDISE TOTAL:
+
+$128.93
+
+DISCOUNT:
+
+-$71.00
+
+SUBTOTAL:
+
+$57.93
+
+SHIPPING & HANDLING:
+
+$5.99
+
+SALES TAX:
+
+$4.06
+
+TOTAL:
+
+$67.98
+
+QA-code for retum in store
+
+ag er.
+
+J
+
+[a]
+
+LJ
+
+[a]
+
+a
+
+s
+
+Oe eae
+
+Note, you Cannot reply to thea emai If you have any queshons abou! why you receive ths email of want lo Contact ut, please Cal US toe Ire af BSE 486 7487
+
+For more information abo,’ your order, tog in to My HAM
+
+You aheays have 36 days to decode whether the tem 1s nght for you. To learn moxe sbout returns, ploase read our seturn and retund policy For more mlormation, please read our privacy notice and tema of use.
+
+~
+
+°
+
+Grenada
+
+Simplified Declaration Form
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+Consignee:
+
+ROSALIE LA GRENADE (FREIGHT 9.00 US)
+
+GDWBS
+
+Customs Office
+
+Man Reg Number:
+
+2024/28
+
+WayBill Number:
+
+HAWB9603312
+
+No and Type of package
+
+1
+
+Package
+
+Gross Mass:
+
+4.0
+
+Freight
+
+0.0
+
+Insuranc
+
+0.0
+
+Particulars of declaration by Importer
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (kg)
+
+Supplementary
+
+|, the undersigned, ROSALIE LA GRENADE (FREIGHT 9.00 US) do hereby declare that the above particulars are true and correct.
+
+Dated this
+
+day of
+
+20
+
+Signed:
+
+Examination Required: YES / NO
+
+Importer/Exporter or declarant
+
+For Comptroller of Customs
+
+For Official Use Only
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (Kg)
+
+Supplementary
+
+Examination Officer
+
+For Comptroller of Customs
+
+z
+
+~
+
+Grenada
+
+Simplified Declaration Form
+
+To be Used Only For a Maximum of Five (5) Personal Effects and Non Commercial Items
+
+WARNING: You can be prosecuted for a false declaration and your goods may be liable to forfeiture
+
+ROSALIE LA GRENADE (FREIGHT 5.00 US)
+
+Consignee:
+
+Customs Office
+
+GDWBS
+
+Man Reg Number:
+
+2024/28
+
+WayBill Number:
+
+HAWB9600998
+
+No and Type of package:
+
+1
+
+Package
+
+0.0
+
+Gross Mass:
+
+2.0
+
+Freight
+
+Insuranc
+
+0.0
+
+Particulars of declaration by Importer
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (kg)
+
+Supplementary
+
+I, the undersigned, ROSALIE LA GRENADE (FREIGHT 5.00 US) do hereby declare that the above particulars are true and correct.
+
+Dated this
+
+day of
+
+20
+
+Examination Required: YES / NO
+
+Signed:
+
+Importer/Exporter or declarant
+
+For Comptroller of Customs
+
+For Official Use Only
+
+Description of Goods
+
+Customs Value $EC
+
+Tariff No.
+
+Weight (Kg)
+
+Supplementary
+
+Examination Officer
+
+For Comptroller of Customs
+
+
+------------------------------------------Ripped Text-------------------------
+
+
+
+

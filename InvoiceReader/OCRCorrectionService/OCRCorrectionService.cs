@@ -121,27 +121,72 @@ namespace WaterNut.DataSpace
 
 
                     _logger.Error(
-                        "   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning.");
+                        "   - **STEP 5: DB_LEARNING_PREP**: Preparing successful detections for database learning with multi-field expansion.");
 
-                    var successfulDetectionsForDB = allDetectedErrors.Select(
-                        e => new CorrectionResult
-                                 {
-                                     FieldName = e.Field,
-                                     OldValue = e.ExtractedValue,
-                                     NewValue = e.CorrectValue,
-                                     CorrectionType = e.ErrorType,
-                                     Confidence = e.Confidence,
-                                     Reasoning = e.Reasoning,
-                                     LineText = e.LineText,
-                                     LineNumber = e.LineNumber,
-                                     Success = true, // We are only processing successful detections
-                                     ContextLinesBefore = e.ContextLinesBefore,
-                                     ContextLinesAfter = e.ContextLinesAfter,
-                                     RequiresMultilineRegex = e.RequiresMultilineRegex,
-                                     SuggestedRegex = e.SuggestedRegex,
-                                     Pattern = e.Pattern,
-                                     Replacement = e.Replacement
-                                 }).ToList();
+                    var successfulDetectionsForDB = new List<CorrectionResult>();
+
+                    foreach (var error in allDetectedErrors)
+                    {
+                        // Create main correction request (omission/multi_field_omission)
+                        var mainRequest = new CorrectionResult
+                        {
+                            FieldName = error.Field,
+                            OldValue = error.ExtractedValue,
+                            NewValue = error.CorrectValue,
+                            CorrectionType = error.ErrorType,
+                            Confidence = error.Confidence,
+                            Reasoning = error.Reasoning,
+                            LineText = error.LineText,
+                            LineNumber = error.LineNumber,
+                            Success = true,
+                            ContextLinesBefore = error.ContextLinesBefore,
+                            ContextLinesAfter = error.ContextLinesAfter,
+                            RequiresMultilineRegex = error.RequiresMultilineRegex,
+                            SuggestedRegex = error.SuggestedRegex,
+                            Pattern = error.Pattern,
+                            Replacement = error.Replacement,
+                            // Transfer multi-field data for the main request
+                            WindowText = string.Join(",", error.CapturedFields),
+                            ExistingRegex = error.FieldCorrections.Any() ? 
+                                string.Join("|", error.FieldCorrections.Select(fc => $"{fc.FieldName}:{fc.Pattern}→{fc.Replacement}")) : null
+                        };
+                        successfulDetectionsForDB.Add(mainRequest);
+                        
+                        _logger.Information("   - **MAIN_REQUEST_CREATED**: Field '{FieldName}', Type '{CorrectionType}'", 
+                            mainRequest.FieldName, mainRequest.CorrectionType);
+
+                        // 🚀 **CRITICAL_MULTI_FIELD_EXPANSION**: Create additional format correction requests
+                        if (error.FieldCorrections != null && error.FieldCorrections.Any())
+                        {
+                            _logger.Information("   - **MULTI_FIELD_EXPANSION**: Creating {Count} additional format correction requests", 
+                                error.FieldCorrections.Count);
+                                
+                            foreach (var fieldCorrection in error.FieldCorrections)
+                            {
+                                var formatRequest = new CorrectionResult
+                                {
+                                    FieldName = fieldCorrection.FieldName,
+                                    OldValue = null, // Format corrections don't have old values
+                                    NewValue = null, // Format corrections apply patterns, not direct values
+                                    CorrectionType = "format_correction",
+                                    Confidence = error.Confidence, // Inherit confidence from main error
+                                    Reasoning = $"Format correction for field '{fieldCorrection.FieldName}' within multi-field line",
+                                    LineText = error.LineText,
+                                    LineNumber = error.LineNumber,
+                                    Success = true,
+                                    ContextLinesBefore = error.ContextLinesBefore,
+                                    ContextLinesAfter = error.ContextLinesAfter,
+                                    RequiresMultilineRegex = error.RequiresMultilineRegex,
+                                    Pattern = fieldCorrection.Pattern,
+                                    Replacement = fieldCorrection.Replacement
+                                };
+                                successfulDetectionsForDB.Add(formatRequest);
+                                
+                                _logger.Information("     - **FORMAT_REQUEST_CREATED**: Field '{FieldName}', Pattern '{Pattern}' → '{Replacement}'", 
+                                    formatRequest.FieldName, formatRequest.Pattern, formatRequest.Replacement);
+                            }
+                        }
+                    }
 
                     _logger.Error(
                         "   - **DATA_DUMP (successfulDetectionsForDB)**: Object state before creating RegexUpdateRequests: {Data}",
@@ -246,6 +291,9 @@ namespace WaterNut.DataSpace
             _logger.Error("   - **CreateRegexUpdateRequest_ENTRY**: Creating request from CorrectionResult: {Data}",
                 JsonSerializer.Serialize(correction, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
+            // 🔍 **ENHANCED_LOGGING**: Log SuggestedRegex field transfer from CorrectionResult to RegexUpdateRequest
+            _logger.Error("🔍 **REGEX_TRANSFER_CHECK**: SuggestedRegex from CorrectionResult: '{SuggestedRegex}'", correction.SuggestedRegex ?? "NULL");
+            
             var request = new RegexUpdateRequest
             {
                 FieldName = correction.FieldName,

@@ -1,0 +1,246 @@
+{
+  "PromptVersion": "v1.0",
+  "StartTime": "2025-06-27T16:13:22.6884499-04:00",
+  "CompleteTime": "0001-01-01T00:00:00",
+  "BatchResults": [
+    {
+      "BatchNumber": 1,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\01987.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03142025_7_24_24, 3_53 PM am^on.coiti‘.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03142025_USD 170.88 XCD 467.72.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_$0.00.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_$140.56 $0.00 $0.00 -$7.40 $140.56 USD you saved $7.40.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 2,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_$25.58.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_$74.70.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_,7_29_24,^_35 PM ai^zoncom.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_^ASHIONNOVA.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_8.43 CNY to USD -Convert Chinese Yuan Renminbi to  US D.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 3,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_ABOUT.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Free returns within 90 days.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_innrrmiTtrri.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Invoice.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Jul 16, 2024 order _Order# 2000120-11892676.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 4,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_OMonpOon.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Order information.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Order totai.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Order total.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_RECEIPT.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 5,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Sales Invoice.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Sign Out.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_Solid Notch Neck Blouse, Casual Short Sleeve ... Golden.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_TOTAL AMOUNT.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025110414.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 6,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\06FLIP-SO-0016205IN-20250514-000.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07112024_Invoice.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07192024_WorldStar.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07222024_SALES RECEIPT.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07262024_INVOICE COPY.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 7,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07292024_Order total.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\08042024_Invoice.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\09142024_five BEI_V«^.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\112-9126443-1163432 - totalzero not 0.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\12072024_Margaret Fletcher MC Leish 10813 NW 30TH ST BLDG 115 GR.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 8,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\172086-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\2000129-50710193.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HBL172086-BL.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\MACKESS COX BOL.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\Mackess Cox Waybill.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 9,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\PO-211-17318585790070596.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\TestInvoice.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_COJAY.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_FASHIOMiOVA.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\03152025_FASHIOMWVA.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 10,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\05282024_SHEIN US Services. LLC..txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\05292024_SHEIN US Services, LLC..txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\06252024_SHEIN US Services, LLC..txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\07252024_TEMU.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\Amazon.com - Order 112-9126443-1163432.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 11,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\one amazon with muliple invoice details sections.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB3662041-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB3670577-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB69748223-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9389257-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 12,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB95380375-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9579495-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9580165-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9580492-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9580723-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 13,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9591043-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9591220-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9591350-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9592028-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9597290-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 14,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9600432-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9600998-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9601811-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9603312-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9671284-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 15,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9687189-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9728292-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9767848-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9767872-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9897473-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    },
+    {
+      "BatchNumber": 16,
+      "PromptVersion": "v1.0",
+      "Files": [
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWB9916267-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWBS580524-Manifest.txt",
+        "C:\\Insight Software\\AutoBot-Enterprise\\AutoBotUtilities.Tests\\Extracted Text\\HAWBS676008-Manifest.txt"
+      ],
+      "Results": [],
+      "AverageF1Score": 0.67,
+      "BalancePassRate": 0.85,
+      "ProcessingTime": "00:05:00"
+    }
+  ],
+  "OverallMetrics": null
+}

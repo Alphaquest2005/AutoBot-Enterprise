@@ -105,6 +105,20 @@ SubTotal (161.95) + Freight (6.99) + OtherCost (11.34) + Insurance (-6.99) - Ded
 InvoiceTotal (166.30) - Calculated (166.30) = TotalsZero (0.00) ✅
 ```
 
+### **Test Commands Reference** 🧪
+
+#### **Import Test** (Production Environment):
+```bash
+# CanImportAmazon03142025Order_AfterLearning - Tests DeepSeek prompts in production environment with multi-field line corrections database verification
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportAmazon03142025Order_AfterLearning" "/Logger:console;verbosity=detailed"
+```
+
+#### **Diagnostic Test** (DeepSeek Error Analysis):
+```bash
+# GenerateDetailedDiagnosticFiles_v1_1_FocusedTest - Generates diagnostic files showing DeepSeek error detection results
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.DetailedDiagnosticGenerator.GenerateDetailedDiagnosticFiles_v1_1_FocusedTest" "/Logger:console;verbosity=detailed"
+```
+
 ### **Files to Modify**
 - **OCRErrorDetection.cs**: Fix duplicate detection in `DetectAmazonSpecificErrors()` lines 194-258
 - **PDFImportTests.cs**: Update test expectations in `CanImportAmazoncomOrder11291264431163432()` line 618
@@ -118,15 +132,6 @@ InvoiceTotal (166.30) - Calculated (166.30) = TotalsZero (0.00) ✅
 - ✅ Test 4: DeepSeek response analysis
 - ✅ Test 5: Response parsing validation
 - ✅ Test 6: Complete pipeline integration
-
-**Run diagnostic tests**:
-```bash
-# Test Amazon regex patterns  
-vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"DetectAmazonSpecificErrors_WithActualText_ShouldFindGiftCardAndFreeShipping"
-
-# Test complete pipeline
-vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"CompleteDetectionPipeline_WithAmazonData_ShouldIdentifyMissingFields"
-```
 
 ## 🎯 **COMPLETE PIPELINE ANALYSIS AVAILABLE**
 
@@ -148,6 +153,9 @@ vstest.console.exe "AutoBotUtilities.Tests.dll" /TestCaseFilter:"CompleteDetecti
 ```bash
 # Run Amazon invoice test (20 min timeout)
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportAmazoncomOrder11291264431163432" "/Logger:console;verbosity=detailed"
+
+# Run Amazon DeepSeek diagnostic test (generates v1.1_Improved_Credit_Detection diagnostic files)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.DetailedDiagnosticGenerator.GenerateDetailedDiagnosticFiles_v1_1_FocusedTest" "/Logger:console;verbosity=detailed"
 
 # Run diagnostic tests  
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~DeepSeekDiagnosticTests" "/Logger:console;verbosity=detailed"

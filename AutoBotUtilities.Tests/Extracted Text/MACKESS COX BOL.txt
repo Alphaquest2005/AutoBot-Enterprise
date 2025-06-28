@@ -1,0 +1,455 @@
+------------------------------------------Single Column-------------------------
+Ccaniscomex ruc# ozsg92nrF BILL OF LADING
+
+ 
+
+ 
+
+ 
+
+ 
+
+2. EXPORTER (Principal or seller Jicensee and address including ZIP Coc) 5. DOCUMENT NUMBER Sa. BIL NUMBER
+AMAZON 11220089 HBL172086
+104 WILLIAMSON STREET 6. EXPORT REFERENCES
+FORT MILL, SC 29715. UNITED STATES OF AMERICA _| MBL: GND-17323
+
+ZIP CODE INV:112-5743600-45 73047, 112-9126448-1163432,
+112-9322387-6289820, 113-3108782-0300269,
+3. CONSIGNED TO 7.FORWARDINGAGENT (Name and address - references )
+MACKESS COX CARIBCONEX. LLC
+MARIAN, Tel: 1-473-429-0525, 7500 NW 81ST PLACE
+ST. GEORGES. GRENADA SUITE: 2, MIAMI, FL 33166. U.S.A.
+
+ 
+
+8. POINT (STATE) OF ORIGIN OR FTZ NUMBER
+
+ 
+
+4, NOTIFY PARTY /INTERMEDIATE CONSIGNEE (Name and actress ) 9. DOMESTIC ROUTING/EXPORT INSTRUCTIONS
+SAME AS ABOVE CARIBCONEX GRENADA LTD
+THE CARENAGE
+GRENADA
+
+1-473--435-2244
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+12. PRE-CARRIAGE BY 13. PLACE OF RECEIPT BY PRE -CARRIER
+KING OCEAN SERVICES MIAMI, FL
+14. EXPORTING CARRIER 15. PORT OF LOADING /EXPORT 10. LOADING PIER /TERMINAL
+FOUMA / 347S PORT EVERGLADES
+16. FOREIGN PORT OF UNLOADING (Vessel and air only ) 17. PLACE OF DELIVERY BYON -CARRIER |11. TYPEOF MOVE 11a. CONTAINERIZED (Vesse/ only )
+ST. GEORGES GRENADA CFS/CY Yes) No
+MARKS AND NUMBERS NUMBER DESCRIPTION OF COMMODITIES GROSS WEIGHT MEASUREMENT
+OF PACKAGES (Kilos)
+(18) (19) (20) (21) (22)
+CNT:KOSU 494262-1 CARGO N.O.S. NON-HAZARDOUS. 269.00 Ib 20.29 ft?
+SEAL#:002223 BED FRAME, MATTRESS, CURTAIN ROD, 122.02 kg
+MICROWAVE, TV, SOAP DISPENSER,
+WR#540161 1 BOX RUG MAT
+WR#540657 1 BOX NO EEI30.37(a)
+WR#539983 1 BOX
+WR#540656 1 BOX
+WR#540713 1 BAG
+WR#539868 1 BOX
+6 TOTAL
+
+[THESE COMMODITIES, TECHNOLOGY OR SOFTWARE WERE EXPORTED FROM THE USA IN ACCORDANCE WITH THE EXPORT ADMINISTRATION REGULATIONS. DIVERSION GONTRARY TO U.S. LAW F
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Carrier has a policy against payment, solicitation, or receipt of any rebate , directly or indirectly , which would be unlawful under the United States Shipping Act , 1984 as amended .
+DECLARED VALUE READ CLAUSE|26|HEREOF CONCERNING EXTRA FREIGHT AND CARRIER 'S LIMITATION OF LIABILITY .
+FREIGHT RATES, CHARGES, WEIGHTS AND/OR MEASUREMENTS
+SUBJECT TO CORRECTION PREPAID COLLECT Received by the Carrier for shipment by ocean vessel between port of loading and port of
+
+discharge , and for arrangement or procurement ofpre -carriage from place of receipt andon -
+
+OCEAN FREIGHT 52.75 carriage to place of delivery , where stated above , the goods as specified above in apparent
+
+BILL OF LADING 40.00 good order and condition unless otherwise stated  . The goods to be delivered at the above
+mentioned port of discharge or place of delivery —_, whichever is applicable , subject always tothe
+
+BUNKER SURCHARGE 7.50 exceptions , limitations , conditions and liberties set out on the reverse side hereof , to which the
+
+LANDING 15.83 Shipper and /or Consignee agree to accepting this Bill of Lading
+
+SP HANDLING FEE 12.00 IN WITNESS WHEREOF three (3) original Bills of Lading have been signed __, not ctherwise
+
+stated above , one of which being accom plished the others shall be void
+
+DATED AT MIAMI | | \
+
+ 
+
+ 
+
+ 
+
+ 
+
+T ANY
+i YA ar WS) 5
+SENT F THIAAC. IER
+May 01, 2025
+MO. DAY YEAR
+
+ 
+
+B/LNo.
+
+ 
+
+ 
+
+musi. USD 128.08 (canteconex HBL172086
+
+Magaya Cargo System . www.magaya.com
+
+
+------------------------------------------SparseText-------------------------
+C canipconex
+
+euc# o2s992ne BILL OF LADING
+
+2.EXPORTER (Principal or seller ticensee and address including ZIP Code)
+
+5. DOCUMENT NUMBER
+
+5a. B/LNUMBER
+
+AMAZON
+
+11220089
+
+6. EXPORT REFERENCES
+
+HBL172086
+
+104 WILLIAMSON STREET
+
+FORT MILL, SC 29715. UNITED STATES OF AMERICA
+
+MBL: GND-17323
+
+ZIP CODE
+
+INV:112-5743600-4573047, 112-9126443-1163432,
+
+112-9322387-6289820, 113-3108782-0300269,
+
+3. CONSIGNED TO
+
+7. FORWARDING AGENT
+
+(Name and address - references )
+
+MACKESS COX
+
+CARIBCONEX. LLC
+
+7500 NW 81ST PLACE
+
+MARIAN, Tel: 1-473-429-0525,
+
+ST. GEORGES. GRENADA
+
+SUITE: 2, MIAMI, FL 33166. U.S.A.
+
+8. POINT (STATE) OF ORIGIN OR FTZ NUMBER
+
+4. NOTIFY PARTY /INTERMEDIATE CONSIGNEE (Name and address )
+
+9. DOMESTIC ROUTING/EXPORT INSTRUCTIONS
+
+SAME AS ABOVE
+
+CARIBCONEX GRENADA LTD
+
+THE CARENAGE
+
+GRENADA
+
+1-473--435-2244
+
+12. PRE-CARRIAGE BY
+
+13. PLACE OF RECEIPT BY PRE -CARRIER
+
+KING OCEAN SERVICES
+
+MIAMI, FL
+
+14. EXPORTING CARRIER
+
+15. PORT OF LOADING /EXPORT
+
+10. LOADING PIER /TERMINAL
+
+PORT EVERGLADES
+
+FOUMA / 3478S
+
+16. FOREIGN PORT OF UNLOADING (Vessel and air only )
+
+17. PLACE OF DELIVERY BYON -CARRIER |11. TYPE OF MOVE
+
+11a. CONTAINERIZED (Vessef only )
+
+ST. GEORGES
+
+GRENADA
+
+CFS/CY
+
+Yes|<|
+
+No| |
+
+MARKS AND NUMBERS
+
+NUMBER
+
+DESCRIPTION OF COMMODITIES
+
+GROSS WEIGHT
+
+MEASUREMENT
+
+OF PACKAGES
+
+(Kilos)
+
+(18)
+
+(19)
+
+(20)
+
+(21)
+
+(22)
+
+CNT:KOSU 494262-1
+
+CARGO N.O.S. NON-HAZARDOUS.
+
+269.00 Ib
+
+20.29 ft8
+
+SEAL#:002223
+
+BED FRAME, MATTRESS, CURTAIN ROD,
+
+122.02 kg
+
+MICROWAVE, TV, SOAP DISPENSER,
+
+WR#540161
+
+1 BOX
+
+RUG MAT
+
+WR#540657
+
+1 BOX
+
+NO EEI30.37(a)
+
+WR#539983
+
+1 BOX
+
+WR#540656
+
+1 BOX
+
+WR#540713
+
+1 BAG
+
+WR#539868
+
+1 BOX
+
+6 TOTAL
+
+[THESE COMMODITIES, TECHNOLOGY OR SOFTWARE WERE EXPORTED FROM THE USA IN ACCORDANCE WITH THE EXPORT ADMINISTRATION REGULATIONS. DIVERSION GONTRARY TO U.S. LAW F
+
+Carrier has a policy against payment
+
+, solicitation, or receipt of any rebate, directly or indirectly , which would be unlawful under the United States Shipping Act
+
+, 1984 as amended .
+
+DECLARED VALUE
+
+READ CLAUSE|26|HEREOF CONCERNING EXTRA FREIGHT AND CARRIER 'S LIMITATION OF LIABILITY .
+
+FREIGHT RATES, CHARGES, WEIGHTS AND/OR MEASUREMENTS
+
+Received by the Carrier for shipment by ocean vessel between port of loading and port of
+
+SUBJECT TO CORRECTION
+
+PREPAID
+
+COLLECT
+
+discharge , and for arrangement or procurem ent of pre
+
+-carriage from place of receipt and on
+
+OCEAN FREIGHT
+
+52.75
+
+carriage to place of delivery , where stated above , the goods as specified above in apparent
+
+BILL OF LADING
+
+40.00
+
+good order and condition unless otherwise stated
+
+. The goods to be delivered at the above
+
+BUNKER SURCHARGE
+
+7.50
+
+mentioned port of discharge or place of delivery
+
+, whichever is applicable , subject always tothe
+
+exceptions , limitations , conditions and liberties set out on the reverse side hereof
+
+, to which the
+
+LANDING
+
+15.83
+
+Shipper and /or Consignee agree to accepting this Bill of Lading
+
+SP HANDLING FEE
+
+12.00
+
+IN WITNESS WHEREOF three (3) original Bills of Lading have been signed
+
+, Not otherwise
+
+stated above , one of which being accom plished the others shall be void
+
+\
+
+DATED AT
+
+MIAMI
+
+}
+
+By
+
+I
+
+\
+
+)
+
+RRIER
+
+Gent FOR TARGA
+
+2025
+
+May
+
+01,
+
+MO.
+
+DAY
+
+YEAR
+
+B/LNo.
+
+GRAND TOTAL:
+
+USD
+
+128.08
+
+( caninconex
+
+HBL172086
+
+Magaya Cargo System . www.magaya.com
+
+
+------------------------------------------Ripped Text-------------------------
+FMC# 025992NF
+26
+THESE COMMODITIES, TECHNOLOGY OR SOFTWARE WERE EXPORTED FROM THE USA IN ACCORDANCE WITH THE EXPORT ADMINISTRATION REGULATIONS. DIVERSION CONTRARY TO U.S. LAW P
+AMAZON
+104 WILLIAMSON STREET
+FORT MILL, SC 29715. UNITED STATES OF AMERICA
+11220089 HBL172086
+MBL: GND-17323
+INV:112-5743600-4573047, 112-9126443-1163432,
+112-9322387-6289820, 113-3108782-0300269,
+MACKESS COX
+MARIAN, Tel: 1-473-429-0525,
+ST. GEORGES. GRENADA
+CARIBCONEX. LLC
+7500 NW 81ST PLACE
+SUITE: 2, MIAMI, FL 33166. U.S.A.
+SAME AS ABOVE CARIBCONEX GRENADA LTD
+THE CARENAGE
+GRENADA
+1-473--435-2244
+KING OCEAN SERVICES MIAMI, FL
+FOUMA / 347S PORT EVERGLADES
+ST. GEORGES GRENADA CFS/CY
+OCEAN FREIGHT 52.75
+BILL OF LADING 40.00
+BUNKER SURCHARGE 7.50
+LANDING 15.83
+SP HANDLING FEE 12.00
+USD 128.08
+MIAMI
+May 01 , 2025
+HBL172086
+CNT:KOSU 494262-1 CARGO N.O.S. NON-HAZARDOUS. 269.00 lb 20.29 ft³
+SEAL#:002223 BED FRAME,  MATTRESS, CURTAIN ROD, 122.02 kg
+MICROWAVE, TV, SOAP DISPENSER,
+WR#540161 1 BOX RUG MAT
+WR#540657 1 BOX NO EEI30.37(a)
+WR#539983 1 BOX
+WR#540656 1 BOX
+WR#540713 1 BAG
+WR#539868 1 BOX
+6 TOTAL
+

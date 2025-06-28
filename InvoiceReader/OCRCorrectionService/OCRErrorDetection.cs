@@ -15,6 +15,17 @@ namespace WaterNut.DataSpace
         #region Enhanced Error Detection Orchestration
 
         /// <summary>
+        /// PUBLIC DIAGNOSTIC WRAPPER: Exposes error detection for diagnostic testing purposes
+        /// </summary>
+        public async Task<List<InvoiceError>> DetectInvoiceErrorsForDiagnosticsAsync(
+            ShipmentInvoice invoice,
+            string fileText,
+            Dictionary<string, OCRFieldMetadata> metadata = null)
+        {
+            return await DetectInvoiceErrorsAsync(invoice, fileText, metadata);
+        }
+
+        /// <summary>
         /// FINAL VERSION (V9): Orchestrates a dual-pathway error detection strategy and consolidates results
         /// using a robust, regex-based deduplication key to prevent redundant learning.
         /// </summary>
@@ -91,24 +102,51 @@ namespace WaterNut.DataSpace
         private async Task<List<InvoiceError>> DetectHeaderFieldErrorsAndOmissionsAsync(
             ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata = null)
         {
-            _logger.Information("     - 🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
+            _logger.Information("     - 🤖 **DEEPSEEK_SUB_PROCESS**: Detecting header field errors/omissions AND line items for invoice {InvoiceNo} using DeepSeek.", invoice.InvoiceNo);
+            var allDetectedErrors = new List<InvoiceError>();
+            
             try
             {
-                // This call now passes the rich metadata required for the V9 prompt.
-                var prompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText, metadata);
-                var deepSeekResponseJson = await _deepSeekApi.GetResponseAsync(prompt).ConfigureAwait(false);
+                // STEP 1: Header Field Detection (existing functionality)
+                _logger.Information("       - 📋 **HEADER_DETECTION**: Processing header fields and financial totals");
+                var headerPrompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText, metadata);
+                var headerResponseJson = await _deepSeekApi.GetResponseAsync(headerPrompt).ConfigureAwait(false);
 
-                if (string.IsNullOrWhiteSpace(deepSeekResponseJson))
+                if (!string.IsNullOrWhiteSpace(headerResponseJson))
                 {
-                    _logger.Warning("       - ❌ Received empty or null response from DeepSeek for header error detection on invoice {InvoiceNo}.", invoice.InvoiceNo);
-                    return new List<InvoiceError>();
+                    var headerCorrectionResults = this.ProcessDeepSeekCorrectionResponse(headerResponseJson, fileText);
+                    var headerErrors = headerCorrectionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)).ToList();
+                    allDetectedErrors.AddRange(headerErrors);
+                    _logger.Information("       - Found {Count} header field errors", headerErrors.Count);
+                }
+                else
+                {
+                    _logger.Warning("       - ❌ Received empty header response from DeepSeek for invoice {InvoiceNo}.", invoice.InvoiceNo);
                 }
 
-                var correctionResults = this.ProcessDeepSeekCorrectionResponse(deepSeekResponseJson, fileText);
-                var detectedErrors = correctionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)).ToList();
+                // STEP 2: Line Item Detection (new functionality) 
+                _logger.Information("       - 📦 **LINE_ITEM_DETECTION**: Processing invoice line items and product details");
+                var lineItemPrompt = this.CreateProductErrorDetectionPrompt(invoice, fileText);
+                var lineItemResponseJson = await _deepSeekApi.GetResponseAsync(lineItemPrompt).ConfigureAwait(false);
 
-                _logger.Information("       - DeepSeek response processing complete. Found {Count} potential error items.", detectedErrors.Count);
-                return detectedErrors;
+                if (!string.IsNullOrWhiteSpace(lineItemResponseJson))
+                {
+                    var lineItemCorrectionResults = this.ProcessDeepSeekCorrectionResponse(lineItemResponseJson, fileText);
+                    var lineItemErrors = lineItemCorrectionResults.Select(cr => ConvertCorrectionResultToInvoiceError(cr)).ToList();
+                    allDetectedErrors.AddRange(lineItemErrors);
+                    _logger.Information("       - Found {Count} line item errors", lineItemErrors.Count);
+                }
+                else
+                {
+                    _logger.Warning("       - ❌ Received empty line item response from DeepSeek for invoice {InvoiceNo}.", invoice.InvoiceNo);
+                }
+
+                _logger.Information("       - ✅ **COMBINED_DETECTION_COMPLETE**: Total errors found: {HeaderCount} header + {LineItemCount} line items = {TotalCount} total", 
+                    allDetectedErrors.Count(e => !e.Field?.Contains("InvoiceDetail") == true),
+                    allDetectedErrors.Count(e => e.Field?.Contains("InvoiceDetail") == true), 
+                    allDetectedErrors.Count);
+
+                return allDetectedErrors;
             }
             catch (Exception ex)
             {
@@ -120,25 +158,67 @@ namespace WaterNut.DataSpace
         private InvoiceError ConvertCorrectionResultToInvoiceError(CorrectionResult cr)
         {
             if (cr == null) return null;
-            return new InvoiceError
-                       {
-                           Field = cr.FieldName,
-                           ExtractedValue = cr.OldValue,
-                           CorrectValue = cr.NewValue,
-                           Confidence = cr.Confidence,
-                           ErrorType = cr.CorrectionType,
-                           Reasoning = cr.Reasoning,
-                           LineNumber = cr.LineNumber,
-                           LineText = cr.LineText,
-                           ContextLinesBefore = cr.ContextLinesBefore,
-                           ContextLinesAfter = cr.ContextLinesAfter,
-                           RequiresMultilineRegex = cr.RequiresMultilineRegex,
-                           SuggestedRegex = cr.SuggestedRegex,
-                           // =================================== FIX START ===================================
-                           Pattern = cr.Pattern,
-                           Replacement = cr.Replacement
-                           // ==================================== FIX END ====================================
-                       };
+            
+            var invoiceError = new InvoiceError
+            {
+                Field = cr.FieldName,
+                ExtractedValue = cr.OldValue,
+                CorrectValue = cr.NewValue,
+                Confidence = cr.Confidence,
+                ErrorType = cr.CorrectionType,
+                Reasoning = cr.Reasoning,
+                LineNumber = cr.LineNumber,
+                LineText = cr.LineText,
+                ContextLinesBefore = cr.ContextLinesBefore,
+                ContextLinesAfter = cr.ContextLinesAfter,
+                RequiresMultilineRegex = cr.RequiresMultilineRegex,
+                SuggestedRegex = cr.SuggestedRegex,
+                // =================================== FIX START ===================================
+                Pattern = cr.Pattern,
+                Replacement = cr.Replacement
+                // ==================================== FIX END ====================================
+            };
+
+            // 🚀 **PHASE_2_ENHANCEMENT**: Transfer multi-field extraction data from CorrectionResult
+            _logger.Information("🔄 **TRANSFER_MULTI_FIELD_DATA**: Converting CorrectionResult to InvoiceError for field {FieldName}", cr.FieldName);
+            
+            // Transfer captured fields from WindowText (temporary storage)
+            if (!string.IsNullOrEmpty(cr.WindowText))
+            {
+                var capturedFields = cr.WindowText.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                invoiceError.CapturedFields.AddRange(capturedFields);
+                _logger.Information("   - **CAPTURED_FIELDS_TRANSFERRED**: {Count} fields: {Fields}", 
+                    capturedFields.Length, string.Join(", ", capturedFields));
+            }
+            
+            // Transfer field corrections from ExistingRegex (temporary storage)
+            if (!string.IsNullOrEmpty(cr.ExistingRegex))
+            {
+                var fieldCorrectionStrings = cr.ExistingRegex.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var correctionString in fieldCorrectionStrings)
+                {
+                    var parts = correctionString.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2)
+                    {
+                        var fieldName = parts[0];
+                        var patternReplacement = parts[1].Split(new char[] { '→' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (patternReplacement.Length == 2)
+                        {
+                            var fieldCorrection = new FieldCorrection
+                            {
+                                FieldName = fieldName,
+                                Pattern = patternReplacement[0],
+                                Replacement = patternReplacement[1]
+                            };
+                            invoiceError.FieldCorrections.Add(fieldCorrection);
+                        }
+                    }
+                }
+                _logger.Information("   - **FIELD_CORRECTIONS_TRANSFERRED**: {Count} corrections parsed", 
+                    invoiceError.FieldCorrections.Count);
+            }
+
+            return invoiceError;
         }
 
         private int GetLineNumberForMatch(string[] lines, Match match)

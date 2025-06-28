@@ -84,6 +84,10 @@ namespace WaterNut.DataSpace
         public List<string> ContextLinesAfter { get; set; } = new List<string>();
         public bool RequiresMultilineRegex { get; set; }
         public string SuggestedRegex { get; set; }
+        
+        // Multi-field extraction support
+        public List<string> CapturedFields { get; set; } = new List<string>();
+        public List<FieldCorrection> FieldCorrections { get; set; } = new List<FieldCorrection>();
 
         public string Pattern
         {
@@ -104,6 +108,16 @@ namespace WaterNut.DataSpace
                 _replacement = value;
             }
         }
+    }
+
+    /// <summary>
+    /// Represents a format correction to be applied to a specific field within a multi-field extraction
+    /// </summary>
+    public class FieldCorrection
+    {
+        public string FieldName { get; set; }
+        public string Pattern { get; set; }
+        public string Replacement { get; set; }
     }
 
     #endregion

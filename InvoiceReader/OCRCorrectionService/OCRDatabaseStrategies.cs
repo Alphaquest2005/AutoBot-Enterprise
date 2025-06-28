@@ -111,6 +111,53 @@ namespace WaterNut.DataSpace
             //    return newField;
             //}
 
+            /// <summary>
+            /// Calculates the maximum lines needed for a regex pattern based on context lines.
+            /// </summary>
+            protected int CalculateMaxLinesFromContext(RegexUpdateRequest request)
+            {
+                int contextLines = 0;
+                if (request.ContextLinesBefore?.Count > 0) contextLines += request.ContextLinesBefore.Count;
+                if (request.ContextLinesAfter?.Count > 0) contextLines += request.ContextLinesAfter.Count;
+                
+                // Default to 1 for single line, or context + 2 for multiline patterns
+                return request.RequiresMultilineRegex ? Math.Max(contextLines + 2, 3) : 1;
+            }
+
+            /// <summary>
+            /// Extracts all named group names from a regex pattern for multi-field support.
+            /// </summary>
+            protected List<string> ExtractNamedGroupsFromRegex(string regexPattern)
+            {
+                var namedGroups = new List<string>();
+                if (string.IsNullOrEmpty(regexPattern)) return namedGroups;
+
+                try
+                {
+                    // Use regex to find named groups: ?<name>
+                    var groupPattern = @"\(\?<([^>]+)>";
+                    var matches = System.Text.RegularExpressions.Regex.Matches(regexPattern, groupPattern);
+                    
+                    foreach (System.Text.RegularExpressions.Match match in matches)
+                    {
+                        if (match.Groups.Count > 1)
+                        {
+                            var groupName = match.Groups[1].Value;
+                            if (!namedGroups.Contains(groupName))
+                            {
+                                namedGroups.Add(groupName);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning(ex, "Failed to extract named groups from regex pattern: {Pattern}", regexPattern);
+                }
+
+                return namedGroups;
+            }
+
             internal async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
             {
                 try
@@ -312,7 +359,9 @@ namespace WaterNut.DataSpace
         {
             public OmissionUpdateStrategy(ILogger logger) : base(logger) { }
             public override string StrategyType => "Omission";
-            public override bool CanHandle(RegexUpdateRequest request) => request.CorrectionType.StartsWith("omission");
+            public override bool CanHandle(RegexUpdateRequest request) => 
+                request.CorrectionType.StartsWith("omission") || 
+                request.CorrectionType.Equals("multi_field_omission", StringComparison.OrdinalIgnoreCase);
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
@@ -408,7 +457,7 @@ namespace WaterNut.DataSpace
                             if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
                             if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new line.");
 
-                            return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo).ConfigureAwait(false);
+                            return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
                         }
 
                         failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text '{correctionForPrompt.LineText}'.";
@@ -428,40 +477,78 @@ namespace WaterNut.DataSpace
                 OCRContext context,
                 RegexUpdateRequest request,
                 RegexCreationResponse regexResp,
-                DatabaseFieldInfo fieldInfo)
+                DatabaseFieldInfo fieldInfo,
+                OCRCorrectionService serviceInstance)
             {
                 _logger.Error("  - [DB_SAVE_INTENT]: Preparing to create new Line, Field, and Regex for Omission of '{FieldName}'.", request.FieldName);
                 string normalizedPattern = regexResp.RegexPattern.Replace("\\\\", "\\");
 
                 // Step 1: Prepare all entities in memory without saving.
-                var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, regexResp.IsMultiline, regexResp.MaxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
+                // Enhanced with multiline support from DeepSeek RequiresMultilineRegex flag
+                bool isMultiline = regexResp.IsMultiline || request.RequiresMultilineRegex;
+                int maxLines = regexResp.MaxLines > 0 ? regexResp.MaxLines : CalculateMaxLinesFromContext(request);
+                var newRegexEntity = await this.GetOrCreateRegexAsync(context, normalizedPattern, isMultiline, maxLines, $"For omitted field: {request.FieldName}").ConfigureAwait(false);
 
                 var newLineEntity = new Lines { PartId = request.PartId.Value, Name = $"AutoOmission_{request.FieldName.Replace(" ", "_").Substring(0, Math.Min(request.FieldName.Length, 40))}_{DateTime.Now:HHmmssfff}", IsActive = true, TrackingState = TrackingState.Added };
                 // Associate the regex with the line. EF will handle the foreign key relationship.
                 newLineEntity.RegularExpressions = newRegexEntity;
                 context.Lines.Add(newLineEntity);
 
-                bool shouldAppend = fieldInfo.DatabaseFieldName == "TotalDeduction" || fieldInfo.DatabaseFieldName == "TotalOtherCost" || fieldInfo.DatabaseFieldName == "TotalInsurance" || fieldInfo.DatabaseFieldName == "TotalInternalFreight";
-                var newFieldEntity = new Fields
+                // Enhanced: Multi-field regex support - extract all named groups from regex
+                var namedGroups = ExtractNamedGroupsFromRegex(normalizedPattern);
+                _logger.Information("  - Multi-field support: Found {GroupCount} named groups in regex: {Groups}", 
+                    namedGroups.Count, string.Join(", ", namedGroups));
+
+                // Create Field entries for each named group
+                var createdFields = new List<Fields>();
+                foreach (var groupName in namedGroups)
                 {
-                    Key = request.FieldName,
-                    Field = fieldInfo.DatabaseFieldName,
-                    EntityType = fieldInfo.EntityType,
-                    DataType = fieldInfo.DataType,
-                    IsRequired = false,
-                    AppendValues = shouldAppend,
-                    TrackingState = TrackingState.Added
-                };
-                // Associate the field with the line. EF will set the LineId upon saving.
-                newLineEntity.Fields.Add(newFieldEntity);
+                    // Map the group name to database field info
+                    var groupFieldInfo = serviceInstance.MapDeepSeekFieldToDatabase(groupName);
+                    if (groupFieldInfo == null)
+                    {
+                        _logger.Warning("  - Skipping named group '{GroupName}': No database field mapping found", groupName);
+                        continue;
+                    }
+
+                    bool shouldAppend = groupFieldInfo.DatabaseFieldName == "TotalDeduction" || 
+                                      groupFieldInfo.DatabaseFieldName == "TotalOtherCost" || 
+                                      groupFieldInfo.DatabaseFieldName == "TotalInsurance" || 
+                                      groupFieldInfo.DatabaseFieldName == "TotalInternalFreight";
+                    
+                    var fieldEntity = new Fields
+                    {
+                        Key = groupName,
+                        Field = groupFieldInfo.DatabaseFieldName,
+                        EntityType = groupFieldInfo.EntityType,
+                        DataType = groupFieldInfo.DataType,
+                        IsRequired = false,
+                        AppendValues = shouldAppend,
+                        TrackingState = TrackingState.Added
+                    };
+                    
+                    newLineEntity.Fields.Add(fieldEntity);
+                    createdFields.Add(fieldEntity);
+                    _logger.Information("  - Created field mapping: '{GroupName}' → '{DatabaseField}' (EntityType: {EntityType})", 
+                        groupName, groupFieldInfo.DatabaseFieldName, groupFieldInfo.EntityType);
+                }
+
+                if (createdFields.Count == 0)
+                {
+                    _logger.Error("  - ❌ No valid field mappings created from regex named groups. Cannot proceed.");
+                    return DatabaseUpdateResult.Failed($"No valid database field mappings found for regex groups in pattern: {normalizedPattern}");
+                }
 
                 // Step 2: Commit all prepared entities in a single transaction.
                 await SaveChangesWithAssertiveLogging(context, "CreateNewLineForOmission").ConfigureAwait(false);
 
-                _logger.Information("Successfully created new Line (ID: {LineId}), Field (ID: {FieldId}), and Regex (ID: {RegexId}) for omission.", newLineEntity.Id, newFieldEntity.Id, newRegexEntity.Id);
+                var fieldIds = string.Join(", ", createdFields.Select(f => f.Id.ToString()));
+                var fieldNames = string.Join(", ", createdFields.Select(f => f.Field));
+                _logger.Information("Successfully created new Line (ID: {LineId}), {FieldCount} Fields (IDs: {FieldIds} - {FieldNames}), and Regex (ID: {RegexId}) for omission.", 
+                    newLineEntity.Id, createdFields.Count, fieldIds, fieldNames, newRegexEntity.Id);
 
-                // Return LineId as the primary RecordId and the crucial FieldId as the RelatedRecordId.
-                return DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line, field, and regex for omission", newFieldEntity.Id);
+                // Return LineId as the primary RecordId and the first field ID as the RelatedRecordId.
+                return DatabaseUpdateResult.Success(newLineEntity.Id, $"Created new line with {createdFields.Count} fields and regex for omission", createdFields.First().Id);
             }
 
 

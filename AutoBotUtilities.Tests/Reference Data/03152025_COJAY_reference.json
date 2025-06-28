@@ -1,0 +1,37 @@
+{
+  "invoiceHeader": {
+    "InvoiceNo": "PO-211-08132515666552999",
+    "InvoiceDate": "2024-07-29",
+    "SupplierName": "COJAY",
+    "SupplierCode": "",
+    "Currency": "USD",
+    "EmailId": "03152025_COJAY.txt"
+  },
+  "financialFields": {
+    "InvoiceTotal": 16.85,
+    "SubTotal": 16.16,
+    "TotalInternalFreight": 0.00,
+    "TotalOtherCost": 0.69,
+    "TotalInsurance": null,
+    "TotalDeduction": null
+  },
+  "calculatedValidation": {
+    "CalculatedTotal": 16.85,
+    "BalanceCheck": 0.00,
+    "ValidationPassed": true,
+    "Formula": "SubTotal + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeduction"
+  },
+  "extractionMetadata": {
+    "SourceText": "------------------------------------------Single Column----------------------...",
+    "ExtractedFieldCount": 6,
+    "TotalFieldCount": 11,
+    "ConfidenceLevel": "high",
+    "ProcessingNotes": [
+      "Caribbean Customs rules applied",
+      "FREE shipping detected but no explicit discount amount",
+      "No customer reductions (gift cards/credits) found",
+      "Multiple orders detected in document - extracted first order",
+      "Financial balance validation passed"
+    ]
+  }
+}

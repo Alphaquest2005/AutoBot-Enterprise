@@ -1,0 +1,3075 @@
+------------------------------------------Single Column-------------------------
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+11016-001-M11 CROCBAND BLACK 1 27.5000 27.50
+883503475001 IOAN
+11016-001-M12 CROCBAND BLACK 1 27.5000 27.50
+883503476004 IOAN
+11033-001-M13 CROCBAND FLIP BLK 3 15.0000 45.00
+883503541290 TL
+11033-001-M6W8 CROCBAND FLIP BLK 3 15.0000 45.00
+883503476608 IOAN
+11033-001-M7W9 CROCBAND FLIP BLK 3 15.0000 45.00
+883503476615 IOAN
+11033-001-M8W10 CROCBAND FLIP BLK 3 15.0000 45.00
+883503476622 IOAIOMIT A
+11033-001-M9W11 CROCBAND FLIP BLK 3 15.0000 45.00
+883503476639 HUAI
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+2
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+11033-001-M11 CROCBAND FLIP BLK 3 15.0000 45.00
+883503476653 HOMIE A
+11033-001-M12 CROCBAND FLIP BLK 1 15.0000 15.00
+883503476660 IOAN
+11033-100-M10W12 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476738 IOAN
+11033-100-M11 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476745 IOAN
+11033-100-M12 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476752 TL
+11033-100-M13 CROCBAND FLIP WHI 3 15.0000 45.00
+883503541906 IOMIONC AOA
+11033-100-M7W9 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476707 IAI
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+3
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+11033-100-M8W10 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476714 MOM
+11033-100-M9W 11 CROCBAND FLIP WHI 3 15.0000 45.00
+883503476721 OMNI
+11033-2Y2-M10W12 Crocband Flip 3 15.0000 45.00
+196265143009 NAIA
+11033-2Y2-M11 Crocband Flip 2 15.0000 30.00
+196265149016 NAIITAU A
+11033-2Y2-M12 Crocband Flip 3 15.0000 45.00
+196265143023 NAIA
+11033-2Y2-M13 Crocband Flip 3 15.0000 45.00
+196265143030 NAIA
+11033-2Y2-M4W6 Crocband Flip 1 15.0000 15.00
+196265143047 NAIA
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+4
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+11033-2Y2-M7W9 Crocband Flip 1 15.0000 15.00
+196265143078 ET
+11033-2Y2-M8W10 Crocband Flip 2 15.0000 30.00
+196265149085 NAIA
+11033-2Y2-M9W 11 Crocband Flip 3 15.0000 45.00
+196265143092 NAIA
+11033-37P-M10W12 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448284470 MONK
+11033-37P-M11 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448284487 MONK
+11033-37P-M12 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448284404 MONK
+11033-37P-M13 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448284500 MONK
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+5
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+11033-37P-M4W6 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209818 MOOT
+11033-37P-MS5W7 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209825 MOOV
+11033-37P-M6W8 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209832 MOOOMTTI
+11033-37P-M7W9 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209849 MOONKIN
+11033-37P-M8W10 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209856 MOOK
+11033-37P-MOW 11 Crocband Flip Agr/Whi 3 15.0000 45.00
+191448209863 MOOK
+206340-001-M12 CLASSIC ALL TERRAIN CLOG BLK 2 30.0000 60.00
+191448492721 MONK
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+6
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+206340-007-M13 Classic All Terrain Clog Lgr 2 30.0000 60.00
+196265206049 MMIII A
+206340-OWV-M10W12 All Terrain Clog Chk 1 27.5000 27.50
+196265644707 NIT
+206340-OWV-M11 All Terrain Clog Chk 1 27.5000 27.50
+196265644714 NAIM
+206340-OWV-M12 All Terrain Clog Chk 1 27.5000 27.50
+196265644721 NAIM
+206340-OWV-M8W10 All Terrain Clog Chk 1 27.5000 27.50
+196265544806 MMIC
+206340-OWV-M9W 11 All Terrain Clog Chk 1 27.5000 27.50
+196265644813 NAIM
+206340-4F K-M8W10 Classic All-Terrain Clog 2 30.0000 60.00
+19626503275 NAIA
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+7
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+206340-4F K-M9OW 11 Classic All-Terrain Clog 2 30.0000 60.00
+196265903262 HAI
+206340-4FK-M10W12 Classic All-Terrain Clog 2 30.0000 60.00
+196265909152 NAITO
+206340-4FK-M11 Classic All-Terrain Clog 2 30.0000 60.00
+19626503169 NAIA
+206340-4FK-M12 Classic All-Terrain Clog 1 30.0000 30.00
+196265903176 NAIM
+206340-4LH-M13 Classic All Terrain Clog DpNv 2 30.0000 60.00
+196265247202 NAIA
+206453-060-W6 BROOKLYN LOW WEDGE BLK/BLK 2 27.5000 55.00
+191448544932 MONK
+206453-060-W7 BROOKLYN LOW WEDGE BLK/BLK 2 27.5000 55.00
+191448544049 MOMMA
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+8
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+206453-060-W8 BROOKLYN LOW WEDGE BLK/BLK 2 27.5000 55.00
+191448544956 MONK
+206453-060-W9 BROOKLYN LOW WEDGE BLK/BLK 2 27.5000 55.00
+191448544963 MONK
+206453-060-W10 BROOKLYN LOW WEDGE BLK/BLK 2 27.5000 55.00
+191448544895 IL
+206454-4HQ-M11 CLASSIC PRINTED CAMO CLOG NAVY 2 27.5000 55.00
+191448891791 MONK TAMTA
+206454-4HQ-M13 CLASSIC PRINTED CAMO CLOG NAVY 2 27.5000 55.00
+t9144seote14 MOONMITAATT
+206708-060-M9W 11 LiteRide 360 Clog BIk/BIk 1 32.5000 32.50
+191448673465 MONK
+206708-060-M10W12 LiteRide 360 Clog BIk/BIk 1 32.5000 32.50
+191448673373 MONK
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+xs P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+www.tropicalvendors.com Invoice Date:
+5/14/2025
+Page:
+9
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+206708-060-M11 LiteRide 360 Clog BIk/BIk 1 32.5000 32.50
+191448673380 MONK
+206708-060-M12 LiteRide 360 Clog BIk/BIk 1 32.5000 32.50
+191448673397 MOON
+206708-060-M13 LiteRide 360 Clog BIk/BIk 1 32.5000 32.50
+191448673403 MOOK
+206708-4CC-M6W8 LiteRide 360 Clog Nvy/Ppr 2 32.5000 65.00
+196265254668 HAITI
+206708-4CC-M7W9 LiteRide 360 Clog Nvy/Ppr 2 32.5000 65.00
+196265254675 NAIC
+206708-4CC-M9W 11 LiteRide 360 Clog Nvy/Ppr 2 32.5000 65.00
+196265254699 NAIM
+206750-100-W6 CLASSIC PLATFORM CLOG W WHI 2 30.0000 60.00
+191448678453 MONK
+Continued
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+Invoice Order No:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+0016205
+Tropical Vendors, Inc. Invoice Number:
+P.O BOX 13670 San Juan, PR 00908-3670 0016205-IN
+Phone: 787-788-1207 Fax: 787-788-1153 . .
+; Invoice Date:
+www.tropicalvendors.com
+5/14/2025
+Page:
+10
+Sold To: Ship To:
+FLIP FLOP FLIP FLOP
+PO BOX 2402 PO BOX 2402
+109 B ESPLANADE MALL 109 B ESPLANADE MALL
+ST GEORGES, GRENADA, ST GEORGES, GRENADA,
+Phone: 473-231-0973 / Fax: Inv Batch No: 05479
+Customer Number Customer P.O. Payment Terms
+06-FLIP Net 30 Days
+Salesperson Shipping Method Ship Date Due Date
+SAL 5/5/2025 6/13/2025
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Item Code Description Shipped Price Amount
+UPC BCAliasltemNo
+206750-100-W7 CLASSIC PLATFORM CLOG W WHI 2 30.0000 60.00
+191448678460 PIA
+206750-100-W8 CLASSIC PLATFORM CLOG W WHI 2 30.0000 60.00
+191448678477 MINT
+206750-100-W9 CLASSIC PLATFORM CLOG W WHI 2 30.0000 60.00
+19144ge7e4e4 PIO
+Delivered by / Entregado por: Net Invoice: 2,945.00
+Less Discount: 589.00
+Received by / Recibido por: Freight: 0.00
+City Tax: 0.00
+*Note: All claims must be made within 5 days from the date of this invoice. State Tax: 0.00
+Displays and fixtures provided by Tropical Vendors are the property of Tropical Total Tax: 0.00
+Vendors and for the exclusive use of our products. Invoice Total: 2,356.00
+
+ 
+
+Invoice Balance: 2,356.00
+
+ 
+
+
+------------------------------------------SparseText-------------------------
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+1
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+11016-001-M11
+
+UPC
+
+CROCBAND BLACK
+
+BCAliasltemNo
+
+27.5000
+
+27.50
+
+883503475991
+
+MAA
+
+11016-001-M12
+
+CROCBAND BLACK
+
+27.5000
+
+27.50
+
+883503476004
+
+MATA
+
+11033-001-M13
+
+CROCBAND FLIP BLK
+
+15.0000
+
+45.00
+
+883503541290
+
+INA
+
+11033-001-M6W8
+
+CROCBAND FLIP BLK
+
+15.0000
+
+45.00
+
+883503476608
+
+MMA
+
+11033-001-M7W9
+
+CROCBAND FLIP BLK
+
+15.0000
+
+45.00
+
+883503476615
+
+TL
+
+11033-001-M8W10
+
+CROCBAND FLIP BLK
+
+15.0000
+
+45.00
+
+883503476622
+
+UL
+
+11033-001-M9W 111
+
+CROCBAND FLIP BLK
+
+15.0000
+
+45.00
+
+883503476639
+
+MMT
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+2
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+11033-001-M11
+
+UPC
+
+CROCBAND FLIP BLK
+
+BCAliasltemNo
+
+3
+
+15.0000
+
+45.00
+
+883503476653
+
+MAA
+
+11033-001-M12
+
+CROCBAND FLIP BLK
+
+1
+
+15.0000
+
+15.00
+
+883503476660
+
+IMAI
+
+11033-100-M10W12
+
+CROCBAND FLIP WHI
+
+15.0000
+
+45.00
+
+883503476738
+
+MMA
+
+11033-100-M11
+
+CROCBAND FLIP WHI
+
+15.0000
+
+45.00
+
+883503476745
+
+MMA
+
+11033-100-M12
+
+CROCBAND FLIP WHI
+
+15.0000
+
+45.00
+
+883503476752
+
+MAA
+
+11033-100-M13
+
+CROCBAND FLIP WHI
+
+15.0000
+
+45.00
+
+883503541306
+
+MMA
+
+11033-100-M7W9
+
+CROCBAND FLIP WHI
+
+15.0000
+
+45.00
+
+883503476707
+
+MIA
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+3
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+11033-100-M8W10
+
+UPC
+
+CROCBAND FLIP WHI
+
+BCAliasltemNo
+
+3
+
+15.0000
+
+45.00
+
+883503476714
+
+IIA
+
+11033-100-M9W111
+
+CROCBAND FLIP WHI
+
+3
+
+15.0000
+
+45.00
+
+883503476721
+
+IIA
+
+11033-2Y2-M10W12
+
+Crocband Flip
+
+15.0000
+
+45.00
+
+196265143009
+
+NAM CT
+
+11033-2Y2-M11
+
+Crocband Flip
+
+15.0000
+
+30.00
+
+196265143016
+
+IMO CT
+
+11033-2Y2-M12
+
+Crocband Flip
+
+15.0000
+
+45.00
+
+196265143023
+
+NAM CT
+
+11033-2Y2-M13
+
+Crocband Flip
+
+15.0000
+
+45.00
+
+196265143030
+
+NAM
+
+11033-2Y2-M4W6
+
+Crocband Flip
+
+15.0000
+
+15.00
+
+196265143047
+
+NMC
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+4
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+11033-2Y2-M7W9
+
+UPC
+
+BCAliasltemNo
+
+15.0000
+
+15.00
+
+Crocband Flip
+
+196265143078
+
+IMM CT
+
+11033-2Y2-M8W10
+
+Crocband Flip
+
+15.0000
+
+30.00
+
+196265143085
+
+IMM CC
+
+11033-2Y2-M9W 11
+
+Crocband Flip
+
+15.0000
+
+45.00
+
+196265143092
+
+NAM CT
+
+11033-37P-M10W12
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448284470
+
+NAAT
+
+11033-37P-M11
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448284487
+
+NANA
+
+11033-37P-M12
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448284494
+
+NANA
+
+11033-37P-M13
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448284500
+
+NANA
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+5
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+11033-37P-M4W6
+
+UPC
+
+BCAliasltemNo
+
+3
+
+15.0000
+
+45.00
+
+Crocband Flip Agr/Whi
+
+191448299818
+
+NANA
+
+11033-37P-MSW7
+
+Crocband Flip Agr/Whi
+
+3
+
+15.0000
+
+45.00
+
+191448299825
+
+NANT
+
+11033-37P-M6W8
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448299832
+
+NAAT
+
+11033-37P-M7W9
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448299849
+
+NANA
+
+11033-37P-M8W10
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448299856
+
+UAT
+
+11033-37P-M9W 111
+
+Crocband Flip Agr/Whi
+
+15.0000
+
+45.00
+
+191448299863
+
+NANA
+
+206340-001-M12
+
+CLASSIC ALL TERRAIN CLOG BLK
+
+30.0000
+
+60.00
+
+191448492721
+
+NAAT
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+6
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+206340-007-M13
+
+UPC
+
+BCAliasltemNo
+
+2
+
+30.0000
+
+60.00
+
+Classic All Terrain Clog Lgr
+
+196265206049
+
+NAIM
+
+206340-OWV-M10W12
+
+All Terrain Clog Chk
+
+1
+
+27.5000
+
+27.50
+
+196265544707
+
+ET)
+
+206340-OWV-M11
+
+All Terrain Clog Chk
+
+27.5000
+
+27.50
+
+196265544714
+
+NAMM
+
+206340-OWV-M12
+
+All Terrain Clog Chk
+
+27.5000
+
+27.50
+
+196265544721
+
+NAM
+
+206340-OWV-M8W10
+
+All Terrain Clog Chk
+
+27.5000
+
+27.50
+
+196265544806
+
+NAM
+
+206340-OWV-MOW 11
+
+All Terrain Clog Chk
+
+27.5000
+
+27.50
+
+196265544813
+
+NAM
+
+206340-4FK-M8W 10
+
+Classic All-Terrain Clog
+
+30.0000
+
+60.00
+
+196265393275
+
+NAOT
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+7
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+206340-4FK-M9OW 11
+
+UPC
+
+BCAliasltemNo
+
+2
+
+30.0000
+
+60.00
+
+Classic All-Terrain Clog
+
+196265393282
+
+HMMM
+
+206340-4FK-M10W12
+
+Classic All-Terrain Clog
+
+2
+
+30.0000
+
+60.00
+
+196265393152
+
+NAOT
+
+206340-4FK-M11
+
+Classic All-Terrain Clog
+
+30.0000
+
+60.00
+
+196265393169
+
+HMM
+
+206340-4FK-M12
+
+Classic All-Terrain Clog
+
+30.0000
+
+30.00
+
+196265393176
+
+TELL
+
+206340-4LH-M13
+
+Classic All Terrain Clog DpNv
+
+30.0000
+
+60.00
+
+196265247202
+
+IMMUN
+
+206453-060-W6
+
+BROOKLYN LOW WEDGE BLK/BLK
+
+27.5000
+
+55.00
+
+191448544932
+
+NAN
+
+206453-060-W7
+
+BROOKLYN LOW WEDGE BLK/BLK
+
+27.5000
+
+55.00
+
+191448544949
+
+NANA
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+8
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+206453-060-W8
+
+UPC
+
+BROOKLYN LOW WEDGE BLK/BLK
+
+BCAliasltemNo
+
+2
+
+27.5000
+
+55.00
+
+191448544956
+
+NAMA
+
+206453-060-W9
+
+BROOKLYN LOW WEDGE BLK/BLK
+
+2
+
+27.5000
+
+55.00
+
+191448544963
+
+UU)
+
+206453-060-W10
+
+BROOKLYN LOW WEDGE BLK/BLK
+
+27.5000
+
+55.00
+
+191448544895
+
+CAMA
+
+206454-4HQ-M11
+
+CLASSIC PRINTED CAMO CLOG NAVY
+
+27.5000
+
+55.00
+
+191448891791
+
+LL
+
+206454-4HQ-M13
+
+CLASSIC PRINTED CAMO CLOG NAVY
+
+27.5000
+
+55.00
+
+191448891814
+
+NANA
+
+206708-060-M9OW 11
+
+LiteRide 360 Clog BIk/Blk
+
+32.5000
+
+32.50
+
+191448673465
+
+NANA
+
+206708-060-M10W12
+
+LiteRide 360 Clog BIk/Blk
+
+32.5000
+
+32.50
+
+191448673373
+
+NANA
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+F gy
+
+0016205
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Ql Tropical
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Nyy
+
+www.tropicalvendors.com
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+Invoice Date:
+
+a
+
+5/14/2025
+
+Page:
+
+9
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+Due Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+206708-060-M11
+
+UPC
+
+BCAliasltemNo
+
+32.5000
+
+32.50
+
+LiteRide 360 Clog BIk/Blk
+
+191448673380
+
+NANA
+
+206708-060-M12
+
+LiteRide 360 Clog BIk/Blk
+
+32.5000
+
+32.50
+
+191448673397
+
+NANA
+
+206708-060-M13
+
+LiteRide 360 Clog BIk/Blk
+
+32.5000
+
+32.50
+
+191448673403
+
+NANA
+
+206708-4CC-M6W8
+
+LiteRide 360 Clog Nvy/Ppr
+
+32.5000
+
+65.00
+
+196265254668
+
+HAIMA
+
+206708-4CC-M7W9
+
+LiteRide 360 Clog Nvy/Ppr
+
+32.5000
+
+65.00
+
+196265254675
+
+EL)
+
+206708-4CC-MOW 11
+
+LiteRide 360 Clog Nvy/Ppr
+
+32.5000
+
+65.00
+
+196265254699
+
+HMMM
+
+206750-100-W6
+
+CLASSIC PLATFORM CLOG W WHI
+
+30.0000
+
+60.00
+
+191448678453
+
+NAAT
+
+Continued
+
+Invoice Balance:
+
+2,356.00
+
+Invoice
+
+Order No:
+
+Os 2)
+
+Ss
+
+0016205
+
+ESS
+
+aN
+
+q
+
+Tropical Vendors, Inc.
+
+Invoice Number:
+
+Tropical
+
+VENDORS
+
+P.O BOX 13670 San Juan, PR 00908-3670
+
+0016205-IN
+
+Phone: 787-788-1207 Fax: 787-788-1153
+
+So
+
+ws
+
+Invoice Date:
+
+www.tropicalvendors.com
+
+5/14/2025
+
+a
+
+Page:
+
+10
+
+Sold To:
+
+Ship To:
+
+FLIP FLOP
+
+FLIP FLOP
+
+PO BOX 2402
+
+PO BOX 2402
+
+109 B ESPLANADE MALL
+
+109 B ESPLANADE MALL
+
+ST GEORGES, GRENADA,
+
+ST GEORGES, GRENADA,
+
+Phone: 473-231-0973 / Fax:
+
+Inv Batch No: 05479
+
+Customer Number
+
+Customer P.O.
+
+Payment Terms
+
+06-FLIP
+
+Net 30 Days
+
+Due Date
+
+Salesperson
+
+Shipping Method
+
+Ship Date
+
+SAL
+
+5/5/2025
+
+6/13/2025
+
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+
+Item Code
+
+Description
+
+Shipped
+
+Price
+
+Amount
+
+UPC
+
+BCAliasltemNo
+
+206750-100-W7
+
+CLASSIC PLATFORM CLOG W WHI
+
+30.0000
+
+60.00
+
+191448678460
+
+CT)
+
+206750-100-W8
+
+CLASSIC PLATFORM CLOG W WHI
+
+30.0000
+
+60.00
+
+191448678477
+
+NAMA
+
+206750-100-W9
+
+CLASSIC PLATFORM CLOG W WHI
+
+30.0000
+
+60.00
+
+191448678484
+
+NANA
+
+Net Invoice
+
+2,945.00
+
+Delivered by / Entregado por:
+
+Less Discount
+
+589.00
+
+Received by / Recibido por:
+
+Freight
+
+0.00
+
+0.00
+
+City Tax
+
+*Note: All claims must be made within 5 days from the date of this invoice.
+
+State Tax
+
+0.00
+
+Displays and fixtures provided by Tropical Vendors are the property of Tropical
+
+Total Tax:
+
+0.00
+
+Vendors and for the exclusive use of our products.
+
+Invoice Total
+
+2,356.00
+
+Invoice Balance
+
+2,356.00
+
+
+------------------------------------------Ripped Text-------------------------
+Invoice
+Sold To: Ship To:
+Page:
+1
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+11016-001-M11 27.5027.50001CROCBAND BLACK
+883503475991
+¶883503475991"Ä11016-001-M12 27.5027.50001CROCBAND BLACK
+883503476004
+¶883503476004`Ä11033-001-M13 45.0015.00003CROCBAND FLIP BLK
+883503541290
+¶883503541290iÄ11033-001-M6W8 45.0015.00003CROCBAND FLIP BLK
+883503476608
+¶883503476608eÄ11033-001-M7W9 45.0015.00003CROCBAND FLIP BLK
+883503476615
+¶883503476615LÄ11033-001-M8W10 45.0015.00003CROCBAND FLIP BLK
+883503476622
+¶8835034766223Ä11033-001-M9W11 45.0015.00003CROCBAND FLIP BLK
+883503476639
+¶883503476639+Ä
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+2
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+11033-001-M11 45.0015.00003CROCBAND FLIP BLK
+883503476653
+¶883503476653`Ä11033-001-M12 15.0015.00001CROCBAND FLIP BLK
+883503476660
+¶883503476660GÄ11033-100-M10W12 45.0015.00003CROCBAND FLIP WHI
+883503476738
+¶883503476738)Ä11033-100-M11 45.0015.00003CROCBAND FLIP WHI
+883503476745
+¶883503476745wÄ11033-100-M12 45.0015.00003CROCBAND FLIP WHI
+883503476752
+¶883503476752^Ä11033-100-M13 45.0015.00003CROCBAND FLIP WHI
+883503541306
+¶883503541306XÄ11033-100-M7W9 45.0015.00003CROCBAND FLIP WHI
+883503476707
+¶883503476707cÄ
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+3
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+11033-100-M8W10 45.0015.00003CROCBAND FLIP WHI
+883503476714
+¶883503476714JÄ11033-100-M9W11 45.0015.00003CROCBAND FLIP WHI
+883503476721
+¶8835034767211Ä11033-2Y2-M10W12 45.0015.00003Crocband Flip
+196265143009
+¶196265143009vÄ11033-2Y2-M11 30.0015.00002Crocband Flip
+196265143016
+¶196265143016]Ä11033-2Y2-M12 45.0015.00003Crocband Flip
+196265143023
+¶196265143023DÄ11033-2Y2-M13 45.0015.00003Crocband Flip
+196265143030
+¶196265143030+Ä11033-2Y2-M4W6 15.0015.00001Crocband Flip
+196265143047
+¶196265143047#Ä
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+4
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+11033-2Y2-M7W9 15.0015.00001Crocband Flip
+196265143078
+¶196265143078PÄ11033-2Y2-M8W10 30.0015.00002Crocband Flip
+196265143085
+¶1962651430857Ä11033-2Y2-M9W11 45.0015.00003Crocband Flip
+196265143092
+¶196265143092ÌÄ11033-37P-M10W12 45.0015.00003Crocband Flip Agr/Whi
+191448284470
+¶191448284470IÄ11033-37P-M11 45.0015.00003Crocband Flip Agr/Whi
+191448284487
+¶191448284487AÄ11033-37P-M12 45.0015.00003Crocband Flip Agr/Whi
+191448284494
+¶191448284494(Ä11033-37P-M13 45.0015.00003Crocband Flip Agr/Whi
+191448284500
+¶191448284500mÄ
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+5
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+11033-37P-M4W6 45.0015.00003Crocband Flip Agr/Whi
+191448299818
+¶191448299818]Ä11033-37P-M5W7 45.0015.00003Crocband Flip Agr/Whi
+191448299825
+¶191448299825DÄ11033-37P-M6W8 45.0015.00003Crocband Flip Agr/Whi
+191448299832
+¶191448299832+Ä11033-37P-M7W9 45.0015.00003Crocband Flip Agr/Whi
+191448299849
+¶191448299849#Ä11033-37P-M8W10 45.0015.00003Crocband Flip Agr/Whi
+191448299856
+¶191448299856qÄ11033-37P-M9W11 45.0015.00003Crocband Flip Agr/Whi
+191448299863
+¶191448299863XÄ206340-001-M12 60.0030.00002CLASSIC ALL TERRAIN CLOG BLK
+191448492721
+¶191448492721@Ä
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+6
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+206340-007-M13 60.0030.00002Classic All Terrain Clog Lgr
+196265206049
+¶196265206049=Ä206340-0WV-M10W12 27.5027.50001All Terrain Clog Chk
+196265544707
+¶196265544707bÄ206340-0WV-M11 27.5027.50001All Terrain Clog Chk
+196265544714
+¶196265544714IÄ206340-0WV-M12 27.5027.50001All Terrain Clog Chk
+196265544721
+¶1962655447210Ä206340-0WV-M8W10 27.5027.50001All Terrain Clog Chk
+196265544806
+¶196265544806`Ä206340-0WV-M9W11 27.5027.50001All Terrain Clog Chk
+196265544813
+¶196265544813GÄ206340-4FK-M8W10 60.0030.00002Classic All-Terrain Clog
+196265393275
+¶196265393275vÄ
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+7
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+206340-4FK-M9W11 60.0030.00002Classic All-Terrain Clog
+196265393282
+¶196265393282]Ä206340-4FK-M10W12 60.0030.00002Classic All-Terrain Clog
+196265393152
+¶1962653931522Ä206340-4FK-M11 60.0030.00002Classic All-Terrain Clog
+196265393169
+¶196265393169*Ä206340-4FK-M12 30.0030.00001Classic All-Terrain Clog
+196265393176
+¶196265393176xÄ206340-4LH-M13 60.0030.00002Classic All Terrain Clog DpNv
+196265247202
+¶196265247202aÄ206453-060-W6 55.0027.50002BROOKLYN LOW WEDGE BLK/BLK
+191448544932
+¶191448544932\Ä206453-060-W7 55.0027.50002BROOKLYN LOW WEDGE BLK/BLK
+191448544949
+¶191448544949TÄ
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+8
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+206453-060-W8 55.0027.50002BROOKLYN LOW WEDGE BLK/BLK
+191448544956
+¶191448544956;Ä206453-060-W9 55.0027.50002BROOKLYN LOW WEDGE BLK/BLK
+191448544963
+¶191448544963"Ä206453-060-W10 55.0027.50002BROOKLYN LOW WEDGE BLK/BLK
+191448544895
+¶191448544895QÄ206454-4HQ-M11 55.0027.50002CLASSIC PRINTED CAMO CLOG NAVY
+191448891791
+¶1914488917919Ä206454-4HQ-M13 55.0027.50002CLASSIC PRINTED CAMO CLOG NAVY
+191448891814
+¶191448891814vÄ206708-060-M9W11 32.5032.50001LiteRide 360 Clog Blk/Blk
+191448673465
+¶191448673465ÌÄ206708-060-M10W12 32.5032.50001LiteRide 360 Clog Blk/Blk
+191448673373
+¶191448673373nÄ
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+9
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+206708-060-M11 32.5032.50001LiteRide 360 Clog Blk/Blk
+191448673380
+¶191448673380UÄ206708-060-M12 32.5032.50001LiteRide 360 Clog Blk/Blk
+191448673397
+¶191448673397MÄ206708-060-M13 32.5032.50001LiteRide 360 Clog Blk/Blk
+191448673403
+¶191448673403+Ä206708-4CC-M6W8 65.0032.50002LiteRide 360 Clog Nvy/Ppr
+196265254668
+¶1962652546682Ä206708-4CC-M7W9 65.0032.50002LiteRide 360 Clog Nvy/Ppr
+196265254675
+¶196265254675ÇÄ206708-4CC-M9W11 65.0032.50002LiteRide 360 Clog Nvy/Ppr
+196265254699
+¶196265254699_Ä206750-100-W6 60.0030.00002CLASSIC PLATFORM CLOG W WHI
+191448678453
+¶191448678453(Ä
+Continued
+Invoice Balance: 2,356.00
+Invoice
+Sold To: Ship To:
+Page:
+10
+Tropical Vendors, Inc.
+P.O BOX 13670 San Juan, PR 00908-3670
+Phone: 787-788-1207  Fax: 787-788-1153
+www.tropicalvendors.com
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+FLIP FLOP
+PO BOX 2402
+109 B ESPLANADE MALL
+ST GEORGES,  GRENADA,
+Order No:
+Invoice Number:
+Invoice Date:
+0016205-IN
+5/14/2025
+0016205
+Net 30 Days
+Payment Terms
+Shipping Method
+Customer P.O.
+06-FLIP
+SAL
+Salesperson
+Customer Number
+5/5/2025 6/13/2025
+Ship Date Due Date
+Phone: 473-231-0973 / Fax:
+*A 1.5% PER MONTH LATE CHARGE WILL BE ASSESSED ON ALL PAST DUE ACCOUNTS
+Inv Batch No: 05479
+Item Code Price AmountShippedDescription
+UPC BCAliasItemNo
+206750-100-W7 60.0030.00002CLASSIC PLATFORM CLOG W WHI
+191448678460
+¶191448678460vÄ206750-100-W8 60.0030.00002CLASSIC PLATFORM CLOG W WHI
+191448678477
+¶191448678477nÄ206750-100-W9 60.0030.00002CLASSIC PLATFORM CLOG W WHI
+191448678484
+¶191448678484UÄ
+Net Invoice: 2,945.00
+Less Discount: 589.00
+Freight: 0.00
+Total Tax: 0.00
+Delivered by / Entregado por:
+Received by / Recibido por:
+*Note: All claims must be made within 5 days from the date of this invoice.
+Displays and fixtures provided by Tropical Vendors are the property of Tropical
+Vendors and for the exclusive use of our products.
+City Tax: 0.00
+0.00State Tax:
+2,356.00Invoice Total:
+Invoice Balance: 2,356.00
+

@@ -87,7 +87,7 @@ namespace WaterNut.DataSpace
 
             if (string.IsNullOrEmpty(fieldName) || (newValue == null && pattern == null)) return null;
 
-            return new CorrectionResult
+            var correctionResult = new CorrectionResult
             {
                 FieldName = fieldName,
                 OldValue = this.GetStringValueWithLogging(element, "extracted_value", itemIndex, true),
@@ -109,6 +109,59 @@ namespace WaterNut.DataSpace
 
                 Success = true
             };
+
+            // 🚀 **PHASE_2_ENHANCEMENT**: Handle multi-field extraction support
+            _logger.Information("🔍 **MULTI_FIELD_PROCESSING**: Checking for multi-field extraction data in element for field {FieldName}", fieldName);
+            
+            // Check for captured_fields array (multi-field line extraction)
+            if (element.TryGetProperty("captured_fields", out var capturedFieldsElement) && 
+                capturedFieldsElement.ValueKind == JsonValueKind.Array)
+            {
+                var capturedFields = new List<string>();
+                foreach (var fieldElement in capturedFieldsElement.EnumerateArray())
+                {
+                    if (fieldElement.ValueKind == JsonValueKind.String)
+                    {
+                        capturedFields.Add(fieldElement.GetString());
+                    }
+                }
+                
+                // Store captured fields as comma-separated string in WindowText for now
+                // This preserves the data until we have full multi-field support in CorrectionResult
+                correctionResult.WindowText = string.Join(",", capturedFields);
+                _logger.Information("   - **CAPTURED_FIELDS**: Found {Count} captured fields: {Fields}", 
+                    capturedFields.Count, string.Join(", ", capturedFields));
+            }
+            
+            // Check for field_corrections array (format corrections within multi-field lines)
+            if (element.TryGetProperty("field_corrections", out var fieldCorrectionsElement) && 
+                fieldCorrectionsElement.ValueKind == JsonValueKind.Array)
+            {
+                var fieldCorrections = new List<string>();
+                foreach (var correctionElement in fieldCorrectionsElement.EnumerateArray())
+                {
+                    if (correctionElement.TryGetProperty("field_name", out var fieldNameEl) &&
+                        correctionElement.TryGetProperty("pattern", out var patternEl) &&
+                        correctionElement.TryGetProperty("replacement", out var replacementEl))
+                    {
+                        var correctionFieldName = fieldNameEl.GetString();
+                        var correctionPattern = patternEl.GetString();
+                        var correctionReplacement = replacementEl.GetString();
+                        fieldCorrections.Add($"{correctionFieldName}:{correctionPattern}→{correctionReplacement}");
+                    }
+                }
+                
+                if (fieldCorrections.Any())
+                {
+                    // Store field corrections in ExistingRegex field for now
+                    // This preserves the data until we have full multi-field support
+                    correctionResult.ExistingRegex = string.Join("|", fieldCorrections);
+                    _logger.Information("   - **FIELD_CORRECTIONS**: Found {Count} field corrections: {Corrections}", 
+                        fieldCorrections.Count, string.Join("; ", fieldCorrections));
+                }
+            }
+
+            return correctionResult;
         }
 
         #endregion

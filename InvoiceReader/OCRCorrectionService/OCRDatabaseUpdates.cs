@@ -212,6 +212,13 @@ namespace WaterNut.DataSpace
                 );
 
                
+                // 🔍 **ENHANCED_LOGGING**: Log the SuggestedRegex field before attempting to save
+                _logger.Error("🔍 **LEARNING_RECORD_PREP**: Preparing OCRCorrectionLearning record for Field '{FieldName}'", request.FieldName);
+                _logger.Error("   - **SuggestedRegex**: '{SuggestedRegex}'", request.SuggestedRegex ?? "NULL");
+                _logger.Error("   - **Pattern**: '{Pattern}'", request.Pattern ?? "NULL");
+                _logger.Error("   - **Replacement**: '{Replacement}'", request.Replacement ?? "NULL");
+                _logger.Error("   - **CorrectionType**: '{CorrectionType}'", request.CorrectionType);
+                
                 var learning = new OCRCorrectionLearning
                                    {
                                        FieldName = request.FieldName,
@@ -235,7 +242,11 @@ namespace WaterNut.DataSpace
                                        LineId = request.LineId,
                                        PartId = request.PartId,
                                        RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId,
+                                       // 🚨 **CRITICAL_MISSING_FIELD**: SuggestedRegex not being saved - will be lost!
+                                       // TODO: Add SuggestedRegex = request.SuggestedRegex when database schema is updated
                                    };
+                
+                _logger.Error("🚨 **CRITICAL_ISSUE**: SuggestedRegex field '{SuggestedRegex}' will be LOST - not saved to database", request.SuggestedRegex ?? "NULL");
 
                 context.OCRCorrectionLearning.Add(learning);
                 await context.SaveChangesAsync().ConfigureAwait(false);

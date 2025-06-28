@@ -124,6 +124,34 @@ Return ONLY the JSON object, no additional text.";
         }
 
         /// <summary>
+        /// Generate diagnostic for new challenging MANGO invoice with bad scan, inverted pages, and mixed documents
+        /// </summary>
+        [Test]
+        public async Task GenerateDetailedDiagnosticFiles_v1_1_MangoChallenge()
+        {
+            using (LogLevelOverride.Begin(Serilog.Events.LogEventLevel.Information))
+            {
+                _logger.Information("🔍 **v1.1_MANGO_CHALLENGE**: Testing new supplier with bad scan, inverted pages, and mixed documents");
+                
+                // MANGO CHALLENGE TEST: Test complex multi-document invoice with poor OCR quality
+                var challengeTestFiles = new[]
+                {
+                    "03152025_TOTAL AMOUNT" // MANGO OUTLET - bad scan, inverted pages, simplified declaration mixed in
+                };
+                
+                // Use production file paths - PDFs are extracted to ExtractedTextPath as .txt files  
+                var allTextFiles = challengeTestFiles
+                    .Select(f => Path.Combine(ExtractedTextPath, f + ".txt"))
+                    .Where(File.Exists)
+                    .ToArray();
+
+                _logger.Information("📋 **MANGO_CHALLENGE_SCOPE**: Processing {FileCount} challenging invoices", allTextFiles.Length);
+
+                await ProcessDiagnosticFiles(allTextFiles);
+            }
+        }
+
+        /// <summary>
         /// Generate comprehensive diagnostic files for ALL PDF files using v1.1 enhanced protocol
         /// Scales the perfect v1.1 logic to complete file set with regression prevention
         /// </summary>
@@ -617,8 +645,10 @@ Return ONLY the JSON object, no additional text.";
             sb.AppendLine("```json");
             sb.AppendLine(JsonConvert.SerializeObject(new
             {
-                detectedErrors = diagnostic.DeepSeekResults?.Take(3), // Show first 3 for readability
-                detectionCount = diagnostic.DeepSeekResults?.Count ?? 0
+                detectedErrors = diagnostic.DeepSeekResults, // Show ALL errors for complete analysis
+                detectionCount = diagnostic.DeepSeekResults?.Count ?? 0,
+                errorTypes = diagnostic.DeepSeekResults?.GroupBy(e => e.ErrorType).ToDictionary(g => g.Key, g => g.Count()),
+                confidenceDistribution = diagnostic.DeepSeekResults?.GroupBy(e => e.Confidence >= 0.9 ? "high" : e.Confidence >= 0.7 ? "medium" : "low").ToDictionary(g => g.Key, g => g.Count())
             }, Formatting.Indented));
             sb.AppendLine("```");
             sb.AppendLine();
@@ -1077,6 +1107,12 @@ Return ONLY the JSON object, no additional text.";
    - Discounts → TotalDeduction = +amount  
    - Promotional reductions → TotalDeduction = +amount
 
+**LINE ITEM VALIDATION RULES:**
+- Extract ALL line items with complete details
+- Verify quantity × unitPrice = lineTotal for each line
+- Ensure sum of all lineTotal values = SubTotal
+- Include item codes, SKUs, or product numbers when present
+
 **OUTPUT FORMAT (STRICT JSON):**
 {{
   ""invoiceHeader"": {{
@@ -1093,13 +1129,36 @@ Return ONLY the JSON object, no additional text.";
     ""TotalInsurance"": 0.00,
     ""TotalDeduction"": 0.00
   }},
+  ""lineItems"": [
+    {{
+      ""description"": ""string"",
+      ""quantity"": 0,
+      ""unitPrice"": 0.00,
+      ""lineTotal"": 0.00,
+      ""itemCode"": ""string or null"",
+      ""sku"": ""string or null""
+    }}
+  ],
   ""calculatedValidation"": {{
     ""calculatedTotal"": 0.00,
+    ""lineItemsTotal"": 0.00,
+    ""lineItemsMatch"": false,
     ""balanceCheck"": 0.00,
-    ""validationPassed"": false
+    ""validationPassed"": false,
+    ""lineItemValidation"": {{
+      ""allLineItemsValid"": false,
+      ""invalidLines"": []
+    }}
   }},
   ""confidence"": ""high/medium/low""
 }}
+
+**VALIDATION REQUIREMENTS:**
+1. Calculate lineItemsTotal = sum of all lineTotal values
+2. Set lineItemsMatch = (lineItemsTotal == SubTotal)
+3. For each line item: verify quantity × unitPrice = lineTotal
+4. Set allLineItemsValid = true only if all line calculations are correct
+5. List any invalid line numbers in invalidLines array
 
 Return ONLY the JSON object, no additional text.";
 
@@ -1203,16 +1262,19 @@ Return ONLY the JSON object, no additional text.";
         {
             try 
             {
-                _logger.Information("🤖 **DEEPSEEK_DETECTION_START**: Running DeepSeek error detection");
+                _logger.Information("🤖 **DEEPSEEK_DETECTION_START**: Running DeepSeek error detection on blank invoice");
                 
-                // OCRCorrectionService doesn't expose error detection directly
-                // For now, run the correction and log results
-                var correctionResult = await service.CorrectInvoiceAsync(invoice, ocrText);
+                // Create empty metadata dictionary to simulate starting with blank invoice
+                var metadata = new Dictionary<string, OCRFieldMetadata>();
                 
-                _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: Correction result: {CorrectionResult}", correctionResult);
+                // Call the actual error detection method that DeepSeek uses
+                var detectedErrors = await service.DetectInvoiceErrorsForDiagnosticsAsync(invoice, ocrText, metadata);
                 
-                // Return empty list for now - in a real scenario, we'd need access to the internal detection results
-                return new List<InvoiceError>();
+                _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: Found {ErrorCount} errors", detectedErrors.Count);
+                _logger.Information("📊 **DEEPSEEK_DETECTION_DETAILS**: Errors by type: {ErrorBreakdown}", 
+                    string.Join(", ", detectedErrors.GroupBy(e => e.ErrorType).Select(g => $"{g.Key}: {g.Count()}")));
+                
+                return detectedErrors;
             }
             catch (Exception ex)
             {

@@ -1,0 +1,86 @@
+# PDF Text Extraction Inventory
+# Generated: 2025-06-26 13:06:22
+# Total Files: 78
+# Successful: 78
+# Failed: 0
+
+# Format: STATUS | PDF_FILE | TEXT_FILE | ERROR
+
+SUCCESS | 01987.pdf | 01987.txt | Already exists
+SUCCESS | 03142025_7_24_24, 3_53 PM am^on.coiti‘.pdf | 03142025_7_24_24, 3_53 PM am^on.coiti‘.txt | Already exists
+SUCCESS | 03142025_USD 170.88 XCD 467.72.pdf | 03142025_USD 170.88 XCD 467.72.txt | Already exists
+SUCCESS | 03152025_$0.00.pdf | 03152025_$0.00.txt | Already exists
+SUCCESS | 03152025_$140.56 $0.00 $0.00 -$7.40 $140.56 USD you saved $7.40.pdf | 03152025_$140.56 $0.00 $0.00 -$7.40 $140.56 USD you saved $7.40.txt | Already exists
+SUCCESS | 03152025_$25.58.pdf | 03152025_$25.58.txt | Already exists
+SUCCESS | 03152025_$74.70.pdf | 03152025_$74.70.txt | Already exists
+SUCCESS | 03152025_,7_29_24,^_35 PM ai^zoncom.pdf | 03152025_,7_29_24,^_35 PM ai^zoncom.txt | Already exists
+SUCCESS | 03152025_^ASHIONNOVA.pdf | 03152025_^ASHIONNOVA.txt | Already exists
+SUCCESS | 03152025_8.43 CNY to USD -Convert Chinese Yuan Renminbi to  US D.pdf | 03152025_8.43 CNY to USD -Convert Chinese Yuan Renminbi to  US D.txt | Already exists
+SUCCESS | 03152025_ABOUT.pdf | 03152025_ABOUT.txt | Already exists
+SUCCESS | 03152025_COJAY.pdf | 03152025_COJAY.txt | Already exists
+SUCCESS | 03152025_FASHIOMiOVA.pdf | 03152025_FASHIOMiOVA.txt | Already exists
+SUCCESS | 03152025_FASHIOMWVA.pdf | 03152025_FASHIOMWVA.txt | Already exists
+SUCCESS | 03152025_Free returns within 90 days.pdf | 03152025_Free returns within 90 days.txt | Already exists
+SUCCESS | 03152025_innrrmiTtrri.pdf | 03152025_innrrmiTtrri.txt | Already exists
+SUCCESS | 03152025_Invoice.pdf | 03152025_Invoice.txt | Already exists
+SUCCESS | 03152025_Jul 16, 2024 order _Order# 2000120-11892676.pdf | 03152025_Jul 16, 2024 order _Order# 2000120-11892676.txt | Already exists
+SUCCESS | 03152025_OMonpOon.pdf | 03152025_OMonpOon.txt | Already exists
+SUCCESS | 03152025_Order information.pdf | 03152025_Order information.txt | Already exists
+SUCCESS | 03152025_Order totai.pdf | 03152025_Order totai.txt | Already exists
+SUCCESS | 03152025_Order total.pdf | 03152025_Order total.txt | Already exists
+SUCCESS | 03152025_RECEIPT.pdf | 03152025_RECEIPT.txt | Already exists
+SUCCESS | 03152025_Sales Invoice.pdf | 03152025_Sales Invoice.txt | Already exists
+SUCCESS | 03152025_Sign Out.pdf | 03152025_Sign Out.txt | Already exists
+SUCCESS | 03152025_Solid Notch Neck Blouse, Casual Short Sleeve ... Golden.pdf | 03152025_Solid Notch Neck Blouse, Casual Short Sleeve ... Golden.txt | Already exists
+SUCCESS | 03152025_TOTAL AMOUNT.pdf | 03152025_TOTAL AMOUNT.txt | Already exists
+SUCCESS | 03152025110414.pdf | 03152025110414.txt | Already exists
+SUCCESS | 05282024_SHEIN US Services. LLC..pdf | 05282024_SHEIN US Services. LLC..txt | OK
+SUCCESS | 05292024_SHEIN US Services, LLC..pdf | 05292024_SHEIN US Services, LLC..txt | OK
+SUCCESS | 06252024_SHEIN US Services, LLC..pdf | 06252024_SHEIN US Services, LLC..txt | OK
+SUCCESS | 06FLIP-SO-0016205IN-20250514-000.PDF | 06FLIP-SO-0016205IN-20250514-000.txt | OK
+SUCCESS | 07112024_Invoice.pdf | 07112024_Invoice.txt | OK
+SUCCESS | 07192024_WorldStar.pdf | 07192024_WorldStar.txt | OK
+SUCCESS | 07222024_SALES RECEIPT.pdf | 07222024_SALES RECEIPT.txt | OK
+SUCCESS | 07252024_TEMU.pdf | 07252024_TEMU.txt | OK
+SUCCESS | 07262024_INVOICE COPY.pdf | 07262024_INVOICE COPY.txt | OK
+SUCCESS | 07292024_Order total.pdf | 07292024_Order total.txt | OK
+SUCCESS | 08042024_Invoice.pdf | 08042024_Invoice.txt | OK
+SUCCESS | 09142024_five BEI_V«^.pdf | 09142024_five BEI_V«^.txt | OK
+SUCCESS | 112-9126443-1163432 - totalzero not 0.pdf | 112-9126443-1163432 - totalzero not 0.txt | OK
+SUCCESS | 12072024_Margaret Fletcher MC Leish 10813 NW 30TH ST BLDG 115 GR.pdf | 12072024_Margaret Fletcher MC Leish 10813 NW 30TH ST BLDG 115 GR.txt | OK
+SUCCESS | 172086-Manifest.pdf | 172086-Manifest.txt | OK
+SUCCESS | 2000129-50710193.pdf | 2000129-50710193.txt | OK
+SUCCESS | Amazon.com - Order 112-9126443-1163432.pdf | Amazon.com - Order 112-9126443-1163432.txt | OK
+SUCCESS | HAWB3662041-Manifest.pdf | HAWB3662041-Manifest.txt | OK
+SUCCESS | HAWB3670577-Manifest.pdf | HAWB3670577-Manifest.txt | OK
+SUCCESS | HAWB69748223-Manifest.pdf | HAWB69748223-Manifest.txt | OK
+SUCCESS | HAWB9389257-Manifest.pdf | HAWB9389257-Manifest.txt | OK
+SUCCESS | HAWB95380375-Manifest.pdf | HAWB95380375-Manifest.txt | OK
+SUCCESS | HAWB9579495-Manifest.pdf | HAWB9579495-Manifest.txt | OK
+SUCCESS | HAWB9580165-Manifest.pdf | HAWB9580165-Manifest.txt | OK
+SUCCESS | HAWB9580492-Manifest.pdf | HAWB9580492-Manifest.txt | OK
+SUCCESS | HAWB9580723-Manifest.pdf | HAWB9580723-Manifest.txt | OK
+SUCCESS | HAWB9591043-Manifest.pdf | HAWB9591043-Manifest.txt | OK
+SUCCESS | HAWB9591220-Manifest.pdf | HAWB9591220-Manifest.txt | OK
+SUCCESS | HAWB9591350-Manifest.pdf | HAWB9591350-Manifest.txt | OK
+SUCCESS | HAWB9592028-Manifest.pdf | HAWB9592028-Manifest.txt | OK
+SUCCESS | HAWB9597290-Manifest.pdf | HAWB9597290-Manifest.txt | OK
+SUCCESS | HAWB9600432-Manifest.pdf | HAWB9600432-Manifest.txt | OK
+SUCCESS | HAWB9600998-Manifest.pdf | HAWB9600998-Manifest.txt | OK
+SUCCESS | HAWB9601811-Manifest.pdf | HAWB9601811-Manifest.txt | OK
+SUCCESS | HAWB9603312-Manifest.pdf | HAWB9603312-Manifest.txt | OK
+SUCCESS | HAWB9671284-Manifest.pdf | HAWB9671284-Manifest.txt | OK
+SUCCESS | HAWB9687189-Manifest.pdf | HAWB9687189-Manifest.txt | OK
+SUCCESS | HAWB9728292-Manifest.pdf | HAWB9728292-Manifest.txt | OK
+SUCCESS | HAWB9767848-Manifest.pdf | HAWB9767848-Manifest.txt | OK
+SUCCESS | HAWB9767872-Manifest.pdf | HAWB9767872-Manifest.txt | OK
+SUCCESS | HAWB9897473-Manifest.pdf | HAWB9897473-Manifest.txt | OK
+SUCCESS | HAWB9916267-Manifest.pdf | HAWB9916267-Manifest.txt | OK
+SUCCESS | HAWBS580524-Manifest.pdf | HAWBS580524-Manifest.txt | OK
+SUCCESS | HAWBS676008-Manifest.pdf | HAWBS676008-Manifest.txt | OK
+SUCCESS | HBL172086-BL.pdf | HBL172086-BL.txt | OK
+SUCCESS | MACKESS COX BOL.pdf | MACKESS COX BOL.txt | OK
+SUCCESS | Mackess Cox Waybill.pdf | Mackess Cox Waybill.txt | OK
+SUCCESS | one amazon with muliple invoice details sections.pdf | one amazon with muliple invoice details sections.txt | OK
+SUCCESS | PO-211-17318585790070596.pdf | PO-211-17318585790070596.txt | OK
+SUCCESS | TestInvoice.pdf | TestInvoice.txt | OK

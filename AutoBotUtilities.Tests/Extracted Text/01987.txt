@@ -1,0 +1,720 @@
+------------------------------------------Single Column-------------------------
+Page 1
+
+ 
+
+ 
+
+ 
+
+Page 1/2
+International Paint LLC 6001 Antoine Dr, T 844-220-9332
+Houston, TX 77091 www.akzonobel.com
+USA www. internationalpaint.com Al N Ib | Z
+Invoice
+F i 1357168
+Bill-to party 3111828 Sold-to party 3111828 Invoice Number 825
+BUDGET GRENADA BUDGET GRENADA Print Date 01/29/2022
+PO Box 3618 PO Box 3618 Invoice Date 01/28/2022
+00200 ST.GEORGE'S 00200 ST.GEORGE'S Terms of Payment — within 60 days Due net
+GREN ADA GRENADA Due Date Payment 03/29/2022
+Total Excl. Tax 1,490.90
+Tax 0.00
+Total Invoice Value 1,490.90
+Currency USD
+Sales Group Y10 / Yacht
+Incoterms DAP .
+Item Prod. Code Description Invoice Pack Size Despatch Unit Price Net Amount Tax %
+No. EAN / Cust Mat Quantity Quantity in USD
+Ship to Address Company PORTAGE GRENADA C/O BUDGET MARINE GRENADA 10205 NW 108TH AVE., STE 1 MEDLEY FL 33178 USA
+Delivery Number 9076537523; Despatch date 01/28/2022
+Order Number 1031822942; Customer Order Ref. PO/GD/01987; Order Date 01/26/2022
+1 5607416 AWLCARE 073240/1PTUS 2 PC 0.13 GAL 0.25 GAL 12.54 /PC 25.08 0.00%
+Net Weight: 2.500
+Gross Weight 2.500
+2 5503610 545 EPOXY PRIMER GRY BASE 2 PC 1.00 GAL 2.00 GAL 79.96 /PC 159.92 0.00%
+0D1001/1GLUS
+Net Weight: 24.701
+Gross Weight 26.301
+3 5504472 AWLGRIP TOPCOAT SNOW WHITE 2 PC 1.00 GAL 2.00 GAL 147.32 /PC 294.64 0.00%
+0G8044/1GLUS
+Net Weight: 20.358
+Gross Weight 24.480
+4 5608001 REDUCER STANDARD OT0003/1QTUS 6 PC 0.25 GAL 1.50 GAL 13.63 /PC 81.78 0.00%
+Net Weight: 11.574
+Gross Weight 13.386
+5 5606773 NAUTICAL Email WHITE NAU120/1 1 PC 1.00 GAL 1.00 GAL 29.66 /PC 29.66 0.00%
+Net Weight: 10.181
+Gross Weight 10.979
+
+ 
+
+ 
+
+AkzoNobel terms and conditions apply which contain a Retention of Title clause r i
+fe INternauonal.
+
+Page 2
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Page 2/2
+International Paint LLC 6001 Antoine Dr, T 844-220-9332
+Houston, TX 77091 www.akzonobel.com
+USA www.internationalpaint.com Al N Ib | . Z
+Invoice
+Invoice Number 8251357168
+Item Prod. Code Description Invoice Pack Size Despatch Unit Price Net Amount Tax %
+No. EAN / Cust Mat Quantity Quantity in USD
+6 5606773 NAUTICAL Email WHITE NAU120/1 3 PC 1.00 GAL 3.00 GAL 29.66 /PC 88.98 0.00%
+Net Weight: 30.543
+Gross Weight 32.937
+7 5608669 FIBERGLASS BOTTOMK NT RED 10 PC 1.00 GAL 10.00 GAL 67.57 /PC 675.70 0.00%
+YBB349/1
+Net Weight: 170.704
+Gross Weight 178.707
+8 5608673 FIBERGLASS BOTTOMK NT BLUE 2 PC 1.00 GAL 2.00 GAL 67.57 /PC 135.14 0.00%
+YBB369/1
+Net Weight: 30.777
+Gross Weight 32.377
+Total Volume 21.75GAL Total Gross Value 1,490.90
+Total Net Weight 301.34 LB
+Total Net Value 1,490.90
+A/R Sales Tax, exempt Tax Jur Code Level 1 0% 0.00
+A/R Sales Tax, exempt Tax Jur Code Level 2 0% 0.00
+A/R Sales Tax, exempt Tax Jur Code Level 3 0% 0.00
+Total Invoice Value 1,490.90
+
+Sales invoices for pesticides first sold into or within this state by a registrant, pesticide broker, pest control dealer, or other
+
+person subject to this article shall show that the assessment specified in Sections 12841 and 12841.1 will be paid by the registrant
+
+, broker, dealer, or person, respectively. All other sales invoices for pesticides sold into or within this state, except retail sa
+
+les of those nonagricultural pesticides labeled only for home, industrial, or institutional use shall show an amount or rate that re
+
+presents the assessment. However, only the person who actually will pay the assessment may show the amount or rate of the assessmen
+t as a line item on the sales invoice.
+
+Payment in: USD
+
+Name: International Paint LLC
+
+PO Box 847202
+
+Dallas, TX 75284-7202
+
+Bank Name: Bank of America
+
+Bank Address: 100 West 33rd Street
+New York, NY 10001
+United States
+
+Account No: 4427092215
+
+Swift Code: BOFAUS3N
+
+ABA: 026009593
+
+AkzoNobel terms and conditions apply which contain a Retention of Title clause r i
+fe INternauonal.
+
+
+------------------------------------------SparseText-------------------------
+Page 1
+
+Page
+
+1/2
+
+International Paint LLC
+
+T 844-220-9332
+
+6001 Antoine Dr,
+
+Houston, TX 77091
+
+www.akzonobel.com
+
+USA
+
+www. internationalpaint.com
+
+.
+
+AkzoNobel
+
+Invoice
+
+Bill-to party 3111828
+
+Sold-to party 3111828
+
+Invoice Number
+
+8251357168
+
+BUDGET GRENADA
+
+BUDGET GRENADA
+
+Print Date
+
+01/29/2022
+
+PO Box 3618
+
+Invoice Date
+
+01/28/2022
+
+PO Box 3618
+
+00200 ST.GEORGE'S
+
+Terms of Payment
+
+within 60 days Due net
+
+00200 ST.GEORGE'S
+
+03/29/2022
+
+GRENADA
+
+GRENADA
+
+Due Date Payment
+
+Total Excl. Tax
+
+1,490.90
+
+Tax
+
+0.00
+
+Total Invoice Value
+
+1,490.90
+
+Currency
+
+USD
+
+Y10/ Yacht
+
+Sales Group
+
+Incoterms
+
+DAP .
+
+Item Prod. Code
+
+Description
+
+Invoice Pack Size
+
+Despatch
+
+Unit Price
+
+Net Amount
+
+Tax %
+
+No.
+
+EAN / Cust Mat
+
+Quantity
+
+Quantity
+
+in USD
+
+Ship to Address Company PORTAGE GRENADA C/O BUDGET MARINE GRENADA 10205 NW 108TH AVE., STE 1 MEDLEY FL 33178 USA
+
+Delivery Number 9076537523; Despatch date 01/28/2022
+
+Order Number 1031822942; Customer Order Ref. PO/GD/01987; Order Date 01/26/2022
+
+1
+
+5607416
+
+AWLCARE 073240/1PTUS
+
+2 PC 0.13 GAL
+
+0.25 GAL
+
+12.54 /PC
+
+25.08
+
+0.00%
+
+2.500
+
+Net Weight:
+
+Gross Weight
+
+2.500
+
+5503610
+
+545 EPOXY PRIMER GRY BASE
+
+2 PC
+
+1.00 GAL
+
+2.00 GAL
+
+79.96 /PC
+
+159.92
+
+0.00%
+
+0D1001/1GLUS
+
+Net Weight:
+
+24.701
+
+Gross Weight
+
+26.301
+
+5504472
+
+AWLGRIP TOPCOAT SNOW WHITE
+
+2 PC
+
+1.00 GAL
+
+2.00 GAL
+
+147.32 /PC
+
+294.64
+
+0.00%
+
+0G8044/1GLUS
+
+Net Weight:
+
+20.358
+
+24.480
+
+Gross Weight
+
+5608001
+
+REDUCER STANDARD OT0003/1QTUS
+
+6 PC
+
+0.25 GAL
+
+1.50 GAL
+
+13.63 /PC
+
+81.78
+
+0.00%
+
+11.574
+
+Net Weight:
+
+Gross Weight
+
+13.386
+
+5606773
+
+NAUTICAL Email WHITE NAU120/1
+
+1 PC
+
+1.00 GAL
+
+1.00 GAL
+
+29.66 /PC
+
+29.66
+
+0.00%
+
+Net Weight:
+
+10.181
+
+Gross Weight
+
+10.979
+
+AkzoNobel terms and conditions apply which contain a Retention of Title clause
+
+*.International.
+
+Page 2
+
+Page
+
+2/2
+
+International Paint LLC
+
+T 844-220-9332
+
+6001 Antoine Dr,
+
+Houston, TX 77091
+
+www.akzonobel.com
+
+USA
+
+www. internationalpaint.com
+
+.
+
+AkzoNobel
+
+Invoice
+
+Invoice Number
+
+8251357168
+
+Item
+
+Prod. Code
+
+Invoice
+
+Pack Size
+
+Unit Price
+
+Net Amount
+
+Tax %
+
+Description
+
+Despatch
+
+No
+
+EAN / Cust Mat
+
+Quantity
+
+Quantity
+
+in USD
+
+5606773
+
+NAUTICAL Email WHITE NAU120/1
+
+3 PC
+
+1.00 GAL
+
+3.00 GAL
+
+29.66 /PC
+
+88.98
+
+0.00%
+
+Net Weight:
+
+30.543
+
+Gross Weight
+
+32.937
+
+5608669
+
+FIBERGLASS BOTTOMK NT RED
+
+10 PC
+
+1.00 GAL
+
+10.00 GAL
+
+67.57 /PC
+
+675.70
+
+0.00%
+
+YBB349/1
+
+Net Weight:
+
+170.704
+
+Gross Weight
+
+178.707
+
+5608673
+
+FIBERGLASS BOTTOMK NT BLUE
+
+2 PC
+
+1.00 GAL
+
+2.00 GAL
+
+67.57 /PC
+
+135.14
+
+0.00%
+
+YBB369/1
+
+30.777
+
+Net Weight:
+
+Gross Weight
+
+32.377
+
+Total Volume
+
+21.75 GAL
+
+Total Gross Value
+
+1,490.90
+
+Total Net Weight
+
+301.34 LB
+
+Total Net Value
+
+1,490.90
+
+Tax Jur Code Level 1 0%
+
+0.00
+
+A/R Sales Tax, exempt
+
+A/R Sales Tax, exempt
+
+Tax Jur Code Level 2 0%
+
+0.00
+
+A/R Sales Tax, exempt
+
+Tax Jur Code Level 3 0%
+
+0.00
+
+Total Invoice Value
+
+1,490.90
+
+Sales invoices for pesticides first sold into or within this state by a registrant, pesticide broker, pest control dealer, or other
+
+person subject to this article shall show that the assessment specified in Sections 12841 and 12841.1 will be paid by the registrant
+
+, broker, dealer, or person, respectively. All other sales invoices for pesticides sold into or within this state, except retail sa
+
+les of those nonagricultural pesticides labeled only for home, industrial, or institutional use shall show an amount or rate that re
+
+presents the assessment. However, only the person who actually will pay the assessment may show the amount or rate of the assessmen
+
+t as a line item on the sales invoice.
+
+Payment in: USD
+
+Name: International Paint LLC
+
+PO Box 847202
+
+Dallas, TX 75284-7202
+
+Bank Name: Bank of America
+
+Bank Address: 100 West 33rd Street
+
+New York, NY 10001
+
+United States
+
+Account No: 4427092215
+
+Swift Code: BOFAUS3N
+
+ABA: 026009593
+
+AkzoNobel terms and conditions apply which contain a Retention of Title clause
+
+*.International.
+
+
+------------------------------------------Ripped Text-------------------------
+Page 1
+Page 1/2
+International Paint LLC 6001 Antoine Dr,
+Houston, TX 77091
+USA
+T 844-220-9332
+www.akzonobel.com
+www.internationalpaint.com
+Bill-to party 3111828
+BUDGET GRENADA
+PO Box 3618
+00200 ST.GEORGE'S
+GRENADA
+Sold-to party 3111828
+BUDGET GRENADA
+PO Box 3618
+00200 ST.GEORGE'S
+GRENADA
+Invoice
+Invoice Number 8251357168
+Print Date 01/29/2022
+Invoice Date 01/28/2022
+Terms of Payment within 60 days Due net
+Due Date Payment 03/29/2022
+Total Excl. Tax 1,490.90
+Tax 0.00
+Total Invoice Value 1,490.90
+Currency USD
+Sales Group Y10 / Yacht
+Incoterms DAP .
+AkzoNobel terms and conditions apply which contain a Retention of Title clause
+Item
+No.
+Prod. Code
+EAN / Cust Mat
+Description Invoice
+Quantity
+Pack Size Despatch
+Quantity
+Unit Price Net Amount
+in USD
+Tax %
+Ship to Address Company PORTAGE GRENADA C/O BUDGET MARINE GRENADA 10205 NW 108TH AVE., STE 1 MEDLEY FL  33178 USA
+Delivery Number 9076537523; Despatch date 01/28/2022
+Order Number 1031822942; Customer Order Ref. PO/GD/01987; Order Date 01/26/2022
+1 5607416 AWLCARE O73240/1PTUS 2  PC 0.13 GAL 0.25 GAL 12.54  /PC 25.08 0.00%
+Net Weight: 2.500
+Gross Weight 2.500
+2 5503610 545 EPOXY PRIMER GRY BASE
+OD1001/1GLUS
+2  PC 1.00 GAL 2.00 GAL 79.96  /PC 159.92 0.00%
+Net Weight: 24.701
+Gross Weight 26.301
+3 5504472 AWLGRIP TOPCOAT SNOW WHITE
+OG8044/1GLUS
+2  PC 1.00 GAL 2.00 GAL 147.32  /PC 294.64 0.00%
+Net Weight: 20.358
+Gross Weight 24.480
+4 5608001 REDUCER STANDARD OT0003/1QTUS 6  PC 0.25 GAL 1.50 GAL 13.63  /PC 81.78 0.00%
+Net Weight: 11.574
+Gross Weight 13.386
+5 5606773 NAUTICAL Email WHITE NAU120/1 1  PC 1.00 GAL 1.00 GAL 29.66  /PC 29.66 0.00%
+Net Weight: 10.181
+Gross Weight 10.979 
+Page 2
+Page 2/2
+International Paint LLC 6001 Antoine Dr,
+Houston, TX 77091
+USA
+T 844-220-9332
+www.akzonobel.com
+www.internationalpaint.com
+Invoice
+Invoice Number 8251357168
+AkzoNobel terms and conditions apply which contain a Retention of Title clause
+Item
+No.
+Prod. Code
+EAN / Cust Mat
+Description Invoice
+Quantity
+Pack Size Despatch
+Quantity
+Unit Price Net Amount
+in USD
+Tax %
+6 5606773 NAUTICAL Email WHITE NAU120/1 3  PC 1.00 GAL 3.00 GAL 29.66  /PC 88.98 0.00%
+Net Weight: 30.543
+Gross Weight 32.937
+7 5608669 FIBERGLASS BOTTOMK NT RED
+YBB349/1
+10  PC 1.00 GAL 10.00 GAL 67.57  /PC 675.70 0.00%
+Net Weight: 170.704
+Gross Weight 178.707
+8 5608673 FIBERGLASS BOTTOMK NT BLUE
+YBB369/1
+2  PC 1.00 GAL 2.00 GAL 67.57  /PC 135.14 0.00%
+Net Weight: 30.777
+Gross Weight 32.377
+Total Volume
+Total Net Weight
+21.75 GAL
+301.34 LB
+Total Gross Value 1,490.90
+Total Net Value 1,490.90 
+A/R Sales Tax, exempt Tax Jur Code Level 1 0% 0.00
+A/R Sales Tax, exempt Tax Jur Code Level 2 0% 0.00
+A/R Sales Tax, exempt Tax Jur Code Level 3 0% 0.00
+Total Invoice Value 1,490.90
+Sales invoices for pesticides first sold into or within this state by a registrant, pesticide broker, pest control dealer, or other
+person subject to this article shall show that the assessment specified in Sections 12841 and 12841.1 will be paid by the registrant
+, broker, dealer, or person, respectively.  All other sales invoices for pesticides sold into or within this state, except retail sa
+les of those nonagricultural pesticides labeled only for home, industrial, or institutional use shall show an amount or rate that re
+presents the assessment.  However, only the person who actually will pay the assessment may show the amount or rate of the assessmen
+t as a line item on the sales invoice.
+Payment in: USD
+Name: International Paint LLC
+PO Box 847202
+Dallas, TX 75284-7202
+Bank Name: Bank of America
+Bank Address: 100 West 33rd Street
+New York, NY 10001
+United States
+Account No: 4427092215
+Swift Code: BOFAUS3N
+ABA: 026009593
+

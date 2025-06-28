@@ -1,0 +1,229 @@
+------------------------------------------Single Column-------------------------
+ 
+
+Grenada
+
+ 
+
+ 
+
+ 
+
+ASYCUDA World Waypbill
+
+Customs Office: st GEORGES Man Reg Number: 2025 457
+Voyage FOUMA347 Man Reg Date: 06/05/2025
+Date of 01/05/2025 Port of Loading: MIAMI
+Date of Arrival: 202
+
+08/05/2025 Mode of Sea Transport
+Name of
+
+FOUMA Type: Bill of lading (House)
+WayBill 172086
+Line Number: 25
+Cargo Reporter: KOSL Exporter: AMAZON
+
+KING OCEAN
+
+104 WILLIAMSON STREET
+
+USA FORT MILL, SC 29715. UNITED
+Consignee: Notify:
+
+MACKESS COX
+
+MARIAN,
+
+ST. GEORGES. GRENADA
+
+ 
+
+ 
+
+ 
+
+ 
+
+No and Type of 6 Package
+
+package:
+
+Gross 122.02
+
+Cubic Mea: 0.6
+
+Freight 0.00 Goods ST. GEORGE'S PORT SHED ONE
+Goods HOUSEHOLD EFFECTS
+
+Marks AS ADDR
+
+ 
+
+No of Containers: 0
+
+ 
+
+
+------------------------------------------SparseText-------------------------
+Grenada
+
+ASYCUDA World Waybill
+
+Customs Office:
+
+ST GEORGES
+
+Man Reg Number
+
+2025 457
+
+Voyage
+
+FOUMA347
+
+Man Reg Date:
+
+06/05/2025
+
+Date of
+
+01/05/2025
+
+Port of Loading:
+
+MIAMI
+
+Date of Arrival:
+
+08/05/2025
+
+Mode of
+
+Sea Transport
+
+Name of
+
+FOUMA
+
+Type:
+
+Bill of lading (House)
+
+WayBill
+
+172086
+
+25
+
+Line Number:
+
+Cargo Reporter
+
+KOSL
+
+AMAZON
+
+Exporter:
+
+KING OCEAN
+
+104 WILLIAMSON STREET
+
+USA
+
+FORT MILL, SC 29715. UNITED
+
+Consignee:
+
+Notify
+
+MACKESS COX
+
+MARIAN,
+
+ST. GEORGES. GRENADA
+
+No and Type of
+
+Package
+
+package:
+
+Gross
+
+122.02
+
+Cubic Mea:
+
+0.6
+
+Freight
+
+0.00
+
+Goods
+
+ST. GEORGE'S PORT SHED ONE
+
+Goods
+
+HOUSEHOLD EFFECTS
+
+AS ADDR
+
+Marks
+
+No of Containers: 0
+
+
+------------------------------------------Ripped Text-------------------------
+Grenada
+ASYCUDA World Waybill
+FOUMA347
+01/05/2025
+08/05/2025
+FOUMA
+KING OCEAN
+06/05/2025
+2025 457ST GEORGES
+MIAMI
+25
+172086
+AMAZON
+MACKESS COX
+AS ADDR
+Customs Office:
+Voyage
+Date of
+Date of Arrival:
+Name of
+WayBill
+Man Reg Number:
+Man Reg Date:
+Port of Loading:
+USA
+KOSLCargo Reporter:
+MARIAN,
+ST. GEORGES. GRENADA
+Consignee:
+Exporter:
+104 WILLIAMSON STREET
+FORT MILL, SC 29715. UNITED
+Notify:
+Goods
+Marks
+No and Type of
+package:
+Gross
+Cubic Mea: 0.6
+0.00Freight
+Line  Number:
+Mode of Sea Transport
+Goods ST. GEORGE'S PORT SHED ONE
+Type: Bill of lading (House)
+No of Containers: 0
+6 Package
+122.02
+HOUSEHOLD EFFECTS
+

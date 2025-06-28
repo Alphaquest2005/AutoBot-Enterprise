@@ -1,5 +1,9 @@
 # Claude OCR Correction Knowledge
 
+## 🎯 **COMPLETE PIPELINE ANALYSIS AVAILABLE** 
+
+**CRITICAL REFERENCE**: See **COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md** for ultra-detailed end-to-end pipeline documentation with ZERO assumptions. This analysis provides complete field mappings, entity types, validation requirements, and database integration details derived from actual OCR database schema.
+
 ## 🎯 LATEST UPDATE: COMPREHENSIVE v1.1 PROCESSING COMPLETE - 79 FILES PERFECT STATUS (June 26-27, 2025)
 
 ### 🏆 BREAKTHROUGH: v1.1 COMPREHENSIVE PROCESSING - 79/87 FILES WITH 100% SUCCESS RATE

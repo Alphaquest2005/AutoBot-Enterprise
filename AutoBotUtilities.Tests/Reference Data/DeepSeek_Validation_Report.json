@@ -1,0 +1,112 @@
+{
+  "GeneratedAt": "2025-06-26T14:02:25.4709524-04:00",
+  "TotalInvoicesValidated": 1,
+  "OverallMetrics": {
+    "AveragePrecision": 0.5,
+    "AverageRecall": 1.0,
+    "AverageF1Score": 0.66666666666666663,
+    "FinancialAccuracyRate": 0.0,
+    "TotalFieldsExpected": 4,
+    "TotalFieldsDetected": 4,
+    "OverallAccuracy": 1.0
+  },
+  "VendorAnalysis": [
+    {
+      "Vendor": "COJAY",
+      "InvoiceCount": 1,
+      "AveragePrecision": 0.5,
+      "AverageRecall": 1.0,
+      "AverageF1Score": 0.66666666666666663,
+      "FinancialAccuracyRate": 0.0
+    }
+  ],
+  "DetailedResults": [
+    {
+      "FileName": "03152025_COJAY",
+      "ReferenceData": {
+        "invoiceHeader": {
+          "InvoiceNo": "PO-211-08132515666552999",
+          "InvoiceDate": "2024-07-29",
+          "SupplierName": "COJAY",
+          "SupplierCode": "",
+          "Currency": "USD",
+          "EmailId": "03152025_COJAY.txt"
+        },
+        "financialFields": {
+          "InvoiceTotal": 16.85,
+          "SubTotal": 16.16,
+          "TotalInternalFreight": 0.0,
+          "TotalOtherCost": 0.69,
+          "TotalInsurance": null,
+          "TotalDeduction": null
+        },
+        "calculatedValidation": {
+          "CalculatedTotal": 16.85,
+          "BalanceCheck": 0.0,
+          "ValidationPassed": true,
+          "Formula": "SubTotal + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeduction"
+        },
+        "extractionMetadata": {
+          "sourceText": "------------------------------------------Single Column----------------------...",
+          "totalFieldCount": 11,
+          "extractedFieldCount": 6,
+          "confidenceLevel": "high",
+          "processingNotes": [
+            "Caribbean Customs rules applied",
+            "FREE shipping detected but no explicit discount amount",
+            "No customer reductions (gift cards/credits) found",
+            "Multiple orders detected in document - extracted first order",
+            "Financial balance validation passed"
+          ]
+        }
+      },
+      "AIDetectedFields": [
+        {
+          "FieldName": "InvoiceTotal",
+          "DetectedValue": "64.72",
+          "ExpectedValue": "16.85",
+          "IsMatch": true,
+          "FieldType": "Financial"
+        },
+        {
+          "FieldName": "SubTotal",
+          "DetectedValue": "59.95",
+          "ExpectedValue": "16.16",
+          "IsMatch": true,
+          "FieldType": "Financial"
+        },
+        {
+          "FieldName": "TotalInternalFreight",
+          "DetectedValue": null,
+          "ExpectedValue": "0.00",
+          "IsMatch": true,
+          "FieldType": "Financial"
+        },
+        {
+          "FieldName": "TotalOtherCost",
+          "DetectedValue": null,
+          "ExpectedValue": "0.69",
+          "IsMatch": true,
+          "FieldType": "Financial"
+        }
+      ],
+      "Metrics": {
+        "TotalExpectedFields": 4,
+        "CorrectlyDetectedFields": 4,
+        "MissedFields": 0,
+        "FalsePositives": 4,
+        "Precision": 0.5,
+        "Recall": 1.0,
+        "F1Score": 0.66666666666666663,
+        "FinancialBalanceCorrect": false,
+        "FinancialAccuracyError": 0.0,
+        "DeepSeekMoreAccurate": false,
+        "BalanceComparisonDetails": "Ref: 0.0000, DS: 4.7900"
+      }
+    }
+  ],
+  "Recommendations": [
+    "Overall F1 score (0.67) is below target 0.80. Consider enhancing AI prompts for better generalization.",
+    "Financial validation accuracy (0.00) is below target 0.95. Review Caribbean Customs rule implementation."
+  ]
+}
