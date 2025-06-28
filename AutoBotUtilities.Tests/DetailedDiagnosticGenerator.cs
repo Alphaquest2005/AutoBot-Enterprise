@@ -204,9 +204,12 @@ Return ONLY the JSON object, no additional text.";
                     // Generate comprehensive diagnostic
                     var diagnostic = await GenerateComprehensiveDiagnostic(fileName, ocrText, service);
                     
-                    // Save diagnostic file
-                    var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_diagnostic.md");
+                    // Save diagnostic file with timestamp
+                    var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_{timestamp}_diagnostic.md");
                     SaveDiagnosticFile(diagnostic, diagnosticPath);
+                    
+                    _logger.Information("📄 **DIAGNOSTIC_FILE_CREATED**: {DiagnosticPath}", diagnosticPath);
                     
                     // Add to summary
                     issueSummary.Add(new FileDiagnosticSummary
@@ -226,8 +229,11 @@ Return ONLY the JSON object, no additional text.";
                     _logger.Error(ex, "❌ **FILE_ERROR**: Failed to process {FileName}", fileName);
                     
                     var errorDiagnostic = CreateErrorDiagnostic(fileName, ex);
-                    var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_diagnostic.md");
+                    var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_{timestamp}_diagnostic.md");
                     SaveDiagnosticFile(errorDiagnostic, diagnosticPath);
+                    
+                    _logger.Error("📄 **ERROR_DIAGNOSTIC_FILE_CREATED**: {DiagnosticPath}", diagnosticPath);
                     
                     issueSummary.Add(new FileDiagnosticSummary
                     {
@@ -285,9 +291,12 @@ Return ONLY the JSON object, no additional text.";
                         // Generate comprehensive diagnostic
                         var diagnostic = await GenerateComprehensiveDiagnostic(fileName, ocrText, service);
                         
-                        // Save diagnostic file
-                        var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_diagnostic.md");
+                        // Save diagnostic file with timestamp
+                        var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                        var diagnosticPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Improved_Credit_Detection", $"{fileName}_{timestamp}_diagnostic.md");
                         SaveDiagnosticFile(diagnostic, diagnosticPath);
+                        
+                        _logger.Information("📄 **DIAGNOSTIC_FILE_CREATED**: {DiagnosticPath}", diagnosticPath);
                         
                         // Add to summary
                         issueSummary.Add(new FileDiagnosticSummary
@@ -306,10 +315,13 @@ Return ONLY the JSON object, no additional text.";
                     {
                         _logger.Error(ex, "❌ **FILE_ERROR**: {FileName} - Exception during diagnostic generation", fileName);
                         
-                        // Create error diagnostic
+                        // Create error diagnostic with timestamp
                         var errorDiagnostic = CreateErrorDiagnostic(fileName, ex);
-                        var errorPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Initial_Baseline", $"{fileName}_diagnostic.md");
+                        var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                        var errorPath = Path.Combine(DiagnosticsPath, _currentVersion + "_Initial_Baseline", $"{fileName}_{timestamp}_diagnostic.md");
                         SaveDiagnosticFile(errorDiagnostic, errorPath);
+                        
+                        _logger.Error("📄 **ERROR_DIAGNOSTIC_FILE_CREATED**: {ErrorPath}", errorPath);
                     }
                 }
                 

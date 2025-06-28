@@ -642,12 +642,233 @@ STRICT JSON RESPONSE FORMAT (Same as before):
                 "Individual field: Use field name like InvoiceDetail_Line15_Quantity" + Environment.NewLine +
                 "Multi-field line: Use field name like InvoiceDetail_MultiField_Line8 with captured_fields array" + Environment.NewLine + Environment.NewLine +
                 "**CRITICAL**: Every error MUST include suggested_regex. For multi-field lines, regex MUST capture ALL fields in captured_fields." + Environment.NewLine + Environment.NewLine +
+                
+                "🎯🎯🎯 PHASE 2 v2.1: SECTION-BASED ANALYSIS STRATEGY 🎯🎯🎯" + Environment.NewLine +
+                "CRITICAL INSIGHT: GENERATE ONE REGEX PER OCR SECTION, NOT PER ITEM!" + Environment.NewLine + Environment.NewLine +
+                
+                "**📋 OCR SECTION EXPLANATION:**" + Environment.NewLine +
+                "The invoice text contains 3 OCR sections with IDENTICAL information captured differently:" + Environment.NewLine +
+                "1. **Single Column**: Clean, well-formatted OCR capture" + Environment.NewLine +
+                "2. **Ripped Text**: Alternative OCR technique with different spacing/formatting" + Environment.NewLine +
+                "3. **SparseText**: Third OCR technique, often catches data missed by others" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔧 WHY SECTIONS DIFFER:**" + Environment.NewLine +
+                "- Different OCR algorithms capture text with different spacing, line breaks, formatting" + Environment.NewLine +
+                "- Same invoice items appear in all sections but with varied OCR interpretations" + Environment.NewLine +
+                "- System combines data from all sections to get complete information" + Environment.NewLine +
+                "- Each section may have consistent internal formatting patterns" + Environment.NewLine + Environment.NewLine +
+                
+                "**🚨 MANDATORY SECTION-BASED APPROACH:**" + Environment.NewLine +
+                "❌ **WRONG**: Create separate regex for each individual item line" + Environment.NewLine +
+                "   Example: Line1_ItemA, Line2_ItemB, Line3_ItemC (creates dozens of regexes)" + Environment.NewLine + Environment.NewLine +
+                
+                "✅ **CORRECT**: Analyze ALL items within each section collectively" + Environment.NewLine +
+                "   1. Look at ALL invoice items in Single Column section together" + Environment.NewLine +
+                "   2. Create ONE flexible regex that handles ALL items in that section" + Environment.NewLine +
+                "   3. Repeat for Ripped Text section (may need different pattern due to OCR differences)" + Environment.NewLine +
+                "   4. Repeat for SparseText section (may need different pattern due to OCR differences)" + Environment.NewLine + Environment.NewLine +
+                
+                "**🎯 SECTION ANALYSIS METHODOLOGY:**" + Environment.NewLine +
+                "For each OCR section:" + Environment.NewLine +
+                "1. **Identify all invoice items in that section**" + Environment.NewLine +
+                "2. **Analyze their common formatting pattern** (spacing, delimiters, structure)" + Environment.NewLine +
+                "3. **Create ONE regex that accommodates slight variations** in spacing/formatting" + Environment.NewLine +
+                "4. **Only create separate regex if items have SIGNIFICANTLY different structure**" + Environment.NewLine + Environment.NewLine +
+                
+                "**💡 FLEXIBILITY PRINCIPLE:**" + Environment.NewLine +
+                "If items have slightly different spacing (\"Item A  $5.99\" vs \"Item B $6.99\"):" + Environment.NewLine +
+                "- Use flexible spacing patterns: \\\\s+ instead of \\\\s" + Environment.NewLine +
+                "- Use optional patterns: (?:@|\\\\$)? for optional symbols" + Environment.NewLine +
+                "- DON'T create separate regexes for minor spacing differences!" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔍 SECTION IDENTIFICATION MARKERS:**" + Environment.NewLine +
+                "Look for these markers to identify sections:" + Environment.NewLine +
+                "- \"--Single Column--\" or similar formatting" + Environment.NewLine +
+                "- \"--Ripped Text--\" or similar formatting" + Environment.NewLine +
+                "- \"--SparseText--\" or similar formatting" + Environment.NewLine + Environment.NewLine +
+                
+                "**🎯 NAMING CONVENTION FOR SECTION-BASED REGEXES:**" + Environment.NewLine +
+                "- Single Column: \"InvoiceDetail_SingleColumn_MultiField_Lines{Start}_{End}\"" + Environment.NewLine +
+                "- Ripped Text: \"InvoiceDetail_RippedText_MultiField_Lines{Start}_{End}\"" + Environment.NewLine +
+                "- SparseText: \"InvoiceDetail_SparseText_MultiField_Lines{Start}_{End}\"" + Environment.NewLine + Environment.NewLine +
+                
+                "**🚨 FINAL REQUIREMENT**: Before creating multiple regexes, ask yourself:" + Environment.NewLine +
+                "\"Can I make ONE regex flexible enough to handle these minor differences?\"" + Environment.NewLine +
+                "Only create separate regexes if the answer is definitively NO due to structural differences." + Environment.NewLine + Environment.NewLine +
+                
+                "🎯🎯🎯 PHASE 2 v2.3: MULTI-FIELD OPTIMIZATION & OCR ERROR HANDLING 🎯🎯🎯" + Environment.NewLine +
+                "CRITICAL ENHANCEMENT: REDUCE REGEX SPECIFICITY WITH SMART CORRECTION STRATEGY!" + Environment.NewLine + Environment.NewLine +
+                
+                "**💡 MULTI-FIELD IDENTIFICATION PRINCIPLE:**" + Environment.NewLine +
+                "Multi-field regexes don't need delimiters for identification because:" + Environment.NewLine +
+                "- **Field order provides identification** (ItemDescription → UnitPrice → ItemCode)" + Environment.NewLine +
+                "- **Data patterns provide context** (text → number → alphanumeric)" + Environment.NewLine +
+                "- **Position-based capture is sufficient** for multi-field scenarios" + Environment.NewLine + Environment.NewLine +
+                
+                "**❌ REMOVE UNNECESSARY IDENTIFIERS:**" + Environment.NewLine +
+                "- DON'T use: [\\\"@]\\\\s* delimiters in multi-field patterns" + Environment.NewLine +
+                "- DON'T create separate regexes for @ vs \" variations" + Environment.NewLine +
+                "- DO use: Simple spacing patterns \\\\s* between fields" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔧 OCR ERROR vs FORMAT CORRECTION STRATEGY:**" + Environment.NewLine +
+                "Distinguish between real format differences and OCR artifacts:" + Environment.NewLine + Environment.NewLine +
+                
+                "**OCR Artifacts (use flexible capture + correction):**" + Environment.NewLine +
+                "- \"10,99\" on US invoice = OCR misread of \"10.99\"" + Environment.NewLine +
+                "- \"O\" instead of \"0\" = OCR character confusion" + Environment.NewLine +
+                "- \"l\" instead of \"1\" = OCR character confusion" + Environment.NewLine +
+                "- **Solution**: Flexible regex + field_corrections array" + Environment.NewLine + Environment.NewLine +
+                
+                "**Real Format Differences (may need separate patterns):**" + Environment.NewLine +
+                "- Completely different layouts (table vs list)" + Environment.NewLine +
+                "- Different field orders (price-first vs description-first)" + Environment.NewLine +
+                "- Missing fields entirely in some sections" + Environment.NewLine + Environment.NewLine +
+                
+                "**✅ OPTIMAL PATTERN EXAMPLE:**" + Environment.NewLine +
+                "Instead of 3 specific regexes:" + Environment.NewLine +
+                "- ❌ \"[\\\"@]\\\\s*(?<UnitPrice>\\\\d+\\\\.\\\\d{2})\" (too specific)" + Environment.NewLine +
+                "- ❌ \"@\\\\s*(?<UnitPrice>\\\\d+\\\\.\\\\d{2})\" (too specific)" + Environment.NewLine +
+                "- ❌ \"(?<UnitPrice>\\\\d+,\\\\d{2})\" (OCR artifact)" + Environment.NewLine + Environment.NewLine +
+                
+                "Use 1 flexible regex + corrections:" + Environment.NewLine +
+                "- ✅ \"(?<UnitPrice>\\\\d+[\\\\.,]\\\\d{2})\" (flexible capture)" + Environment.NewLine +
+                "- ✅ Plus field_corrections: [{\"field_name\": \"UnitPrice\", \"pattern\": \"(\\\\d+),(\\\\d{2})\", \"replacement\": \"$1.$2\"}]" + Environment.NewLine + Environment.NewLine +
+                
+                "**🎯 CONSOLIDATION MANDATE:**" + Environment.NewLine +
+                "If you're creating multiple regexes that differ only by:" + Environment.NewLine +
+                "- Optional delimiters (@ vs \" vs none)" + Environment.NewLine +
+                "- Decimal separators (, vs .)" + Environment.NewLine +
+                "- Character substitutions (O vs 0, l vs 1)" + Environment.NewLine +
+                "Then you MUST consolidate into ONE flexible regex with appropriate field_corrections!" + Environment.NewLine + Environment.NewLine +
+                
+                "**📋 FIELD CORRECTIONS ARRAY USAGE:**" + Environment.NewLine +
+                "Use field_corrections for OCR artifacts like:" + Environment.NewLine +
+                "```json" + Environment.NewLine +
+                "\"field_corrections\": [" + Environment.NewLine +
+                "  {\"field_name\": \"UnitPrice\", \"pattern\": \"(\\\\d+),(\\\\d{2})\", \"replacement\": \"$1.$2\"}," + Environment.NewLine +
+                "  {\"field_name\": \"ItemCode\", \"pattern\": \"O\", \"replacement\": \"0\"}," + Environment.NewLine +
+                "  {\"field_name\": \"Quantity\", \"pattern\": \"l\", \"replacement\": \"1\"}" + Environment.NewLine +
+                "]" + Environment.NewLine +
+                "```" + Environment.NewLine + Environment.NewLine +
+                
+                "🎯🎯🎯 PHASE 2 v2.4: CONSOLIDATED ITEM INTEGRATION STRATEGY 🎯🎯🎯" + Environment.NewLine +
+                "CRITICAL CHANGE: CREATE ONE REGEX PER SECTION, NOT PER ITEM!" + Environment.NewLine + Environment.NewLine +
+                
+                "**🚨 CURRENT PROBLEM:**" + Environment.NewLine +
+                "DeepSeek creates multiple regexes for the same section:" + Environment.NewLine +
+                "- InvoiceDetail_SingleColumn_MultiField_Line3_5" + Environment.NewLine +
+                "- InvoiceDetail_SingleColumn_MultiField_Line6_8" + Environment.NewLine +
+                "- InvoiceDetail_SingleColumn_MultiField_Line9_11" + Environment.NewLine +
+                "This forces multiple corrections for the same section!" + Environment.NewLine + Environment.NewLine +
+                
+                "**✅ MANDATORY SOLUTION - SINGLE CORRECTION PER SECTION:**" + Environment.NewLine +
+                "🚨 **CRITICAL REQUIREMENT**: You MUST create EXACTLY ONE correction entry per OCR section, NOT multiple entries!" + Environment.NewLine + Environment.NewLine +
+                "**STEP-BY-STEP CONSOLIDATION PROCESS:**" + Environment.NewLine +
+                "1. **Identify ALL invoice items in the OCR section** (e.g., SingleColumn has items on lines 3, 12, 15)" + Environment.NewLine +
+                "2. **Step through EVERY item systematically**:" + Environment.NewLine +
+                "   - Item 1: Analyze pattern structure" + Environment.NewLine +
+                "   - Item 2: Identify variations from Item 1" + Environment.NewLine +
+                "   - Item 3: Identify additional variations" + Environment.NewLine +
+                "   - Continue for ALL items in section" + Environment.NewLine +
+                "3. **Create ONE flexible regex that captures ALL items**:" + Environment.NewLine +
+                "   - Use flexible patterns: [\\\\\"@]? for optional delimiters" + Environment.NewLine +
+                "   - Use flexible decimals: [\\\\.,] for comma/period variations" + Environment.NewLine +
+                "   - Use character classes: [A-Za-z\\\\s]+ instead of specific product names" + Environment.NewLine +
+                "4. **MANDATORY VALIDATION**: Test regex against EVERY item in section before submitting" + Environment.NewLine +
+                "5. **Return ONLY the LAST item's line text** as the line_text example" + Environment.NewLine +
+                "6. **Create SINGLE field name**: InvoiceDetail_[Section]_MultiField_Lines[First]_[Last]" + Environment.NewLine + Environment.NewLine +
+                "**🚫 ABSOLUTELY FORBIDDEN - WILL BE REJECTED:**" + Environment.NewLine +
+                "- Creating separate corrections for items in the same section" + Environment.NewLine +
+                "- Multiple InvoiceDetail_SingleColumn_MultiField entries" + Environment.NewLine +
+                "- Multiple InvoiceDetail_SparseText_MultiField entries" + Environment.NewLine +
+                "- Any response with more than ONE correction per OCR section" + Environment.NewLine + Environment.NewLine +
+                "**✅ CORRECT APPROACH EXAMPLE:**" + Environment.NewLine +
+                "Section: SingleColumn with items on lines 3, 12, 15" + Environment.NewLine +
+                "❌ WRONG: Create 3 separate corrections (InvoiceDetail_SingleColumn_MultiField_Lines3_9, Lines12_14, Lines15_17)" + Environment.NewLine +
+                "✅ RIGHT: Create 1 consolidated correction (InvoiceDetail_SingleColumn_MultiField_Lines3_15)" + Environment.NewLine +
+                "   - Regex works on ALL items (3, 12, 15)" + Environment.NewLine +
+                "   - LineText shows ONLY the last item (line 15)" + Environment.NewLine +
+                "   - CorrectValue can be JSON array of all items or just the last item" + Environment.NewLine + Environment.NewLine +
+                
+                "**📋 CONSOLIDATION METHODOLOGY:**" + Environment.NewLine +
+                "For Single Column section with items on lines 3, 6, 9:" + Environment.NewLine +
+                "1. **Examine Item 1 (Line 3)**: \"High-waist shorts \\\" 3.3\\nref. 570003742302\"" + Environment.NewLine +
+                "2. **Examine Item 2 (Line 6)**: \"Long jumpsuit @ 18.99\\nref. 570502122243\"" + Environment.NewLine +
+                "3. **Examine Item 3 (Line 9)**: \"Mixed necklace 10,99\\nref. 57077738990R\"" + Environment.NewLine +
+                "4. **Integrate patterns**: (?<ItemDescription>[A-Za-z\\\\s]+)\\\\s*[\\\\\"@]?\\\\s*(?<UnitPrice>\\\\d+[\\\\.,]\\\\d{2})" + Environment.NewLine +
+                "5. **Return ONLY Line 9 text** as line_text example" + Environment.NewLine +
+                "6. **Field name**: \"InvoiceDetail_SingleColumn_MultiField_Lines3_9\"" + Environment.NewLine + Environment.NewLine +
+                
+                "**🎯 EXPECTED OUTPUT FORMAT:**" + Environment.NewLine +
+                "Instead of 3 separate errors, create 1 consolidated error:" + Environment.NewLine +
+                "```json" + Environment.NewLine +
+                "{" + Environment.NewLine +
+                "  \"Field\": \"InvoiceDetail_SingleColumn_MultiField_Lines3_9\"," + Environment.NewLine +
+                "  \"LineText\": \"Mixed spike necklace 10,99\\\\nref. 57077738990R\"," + Environment.NewLine +
+                "  \"SuggestedRegex\": \"(?<ItemDescription>[A-Za-z\\\\\\\\s]+)\\\\\\\\s*[\\\\\\\\\\\"@]?\\\\\\\\s*(?<UnitPrice>\\\\\\\\d+[\\\\\\\\.,]\\\\\\\\d{2})\\\\\\\\s*\\\\\\\\n\\\\\\\\s*ref\\\\\\\\.\\\\\\\\s*(?<ItemCode>\\\\\\\\d+\\\\\\\\w*)\"," + Environment.NewLine +
+                "  \"CapturedFields\": [\"ItemDescription\", \"UnitPrice\", \"ItemCode\"]," + Environment.NewLine +
+                "  \"FieldCorrections\": [{\"field_name\": \"UnitPrice\", \"pattern\": \"(\\\\\\\\d+),(\\\\\\\\d{2})\", \"replacement\": \"$1.$2\"}]" + Environment.NewLine +
+                "}" + Environment.NewLine +
+                "```" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔧 INTEGRATION PROCESS:**" + Environment.NewLine +
+                "1. **Identify all items in section** (don't stop at first item)" + Environment.NewLine +
+                "2. **Note pattern variations**: @ vs \\\" vs none, comma vs period, etc." + Environment.NewLine +
+                "3. **Create flexible patterns**: [\\\\\"@]? for optional delimiters, [\\\\.,] for decimals" + Environment.NewLine +
+                "4. **Add field_corrections**: For OCR artifacts like comma decimal separators" + Environment.NewLine +
+                "5. **Use last item as line_text example**: Shows regex works on final item" + Environment.NewLine +
+                "6. **Single field name**: Covers entire range (Lines3_9, not Line3_5 + Line6_8 + Line9_11)" + Environment.NewLine + Environment.NewLine +
+                
+                "**❌ FORBIDDEN: Multiple regexes for same section**" + Environment.NewLine +
+                "**✅ REQUIRED: One consolidated regex per section**" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔍 MANDATORY REGEX VALIDATION AGAINST ALL SECTION ITEMS:**" + Environment.NewLine +
+                "After creating your consolidated regex, you MUST verify it works on ALL items in that section:" + Environment.NewLine +
+                "1. **Test Item 1**: Apply regex to first item's text → should extract correctly" + Environment.NewLine +
+                "2. **Test Item 2**: Apply regex to second item's text → should extract correctly" + Environment.NewLine +
+                "3. **Test Item 3**: Apply regex to third item's text → should extract correctly" + Environment.NewLine +
+                "4. **Continue for ALL items**: Every item in the section must pass the regex test" + Environment.NewLine + Environment.NewLine +
+                
+                "**🚨 VALIDATION FAILURE ACTION:**" + Environment.NewLine +
+                "If your regex fails on ANY item in the section:" + Environment.NewLine +
+                "- ❌ **DO NOT SUBMIT** that regex" + Environment.NewLine +
+                "- 🔧 **REFINE PATTERN** to accommodate the failing item" + Environment.NewLine +
+                "- 🔄 **RE-TEST** against all items until 100% pass rate achieved" + Environment.NewLine +
+                "- ✅ **ONLY SUBMIT** when regex passes all items in the section" + Environment.NewLine + Environment.NewLine +
+                
+                "**💡 VALIDATION EXAMPLE:**" + Environment.NewLine +
+                "Section has 3 items. Your regex must successfully extract from:" + Environment.NewLine +
+                "- Item 1: \"High-waist shorts \\\" 3.3\\nref. 570003742302\" → ✅ PASS" + Environment.NewLine +
+                "- Item 2: \"Long jumpsuit @ 18.99\\nref. 570502122243\" → ✅ PASS" + Environment.NewLine +
+                "- Item 3: \"Mixed necklace 10,99\\nref. 57077738990R\" → ✅ PASS" + Environment.NewLine +
+                "If ANY item fails, revise the regex pattern for better flexibility." + Environment.NewLine + Environment.NewLine +
+                
                 "**🚨 FINAL PRODUCTION VALIDATION**: Before submitting response, verify EVERY suggested_regex:" + Environment.NewLine +
                 "1. ✅ Pattern matches line_text completely" + Environment.NewLine +
                 "2. ✅ Extracts correct_value accurately" + Environment.NewLine +
                 "3. ✅ **CRITICAL**: If line_text contains newlines, MUST use sequential named groups (ItemDescription, ItemDescription2, etc.)" + Environment.NewLine +
                 "4. ✅ **MANDATORY**: ALL patterns MUST use named capture groups (?<FieldName>pattern) - never numbered (pattern)" + Environment.NewLine +
-                "5. ✅ Include ALL named groups in captured_fields array" + Environment.NewLine + Environment.NewLine +
+                "5. ✅ Include ALL named groups in captured_fields array" + Environment.NewLine +
+                "6. ✅ **NEW REQUIREMENT**: Regex validated against ALL items in the section with 100% success rate" + Environment.NewLine +
+                "7. ✅ **CONSOLIDATION REQUIREMENT**: Maximum ONE multi_field_omission error per OCR section" + Environment.NewLine + Environment.NewLine +
+                
+                "🚨🚨🚨 FINAL QUALITY CHECK - MANDATORY BEFORE SUBMISSION 🚨🚨🚨" + Environment.NewLine +
+                "Count your multi_field_omission errors by section:" + Environment.NewLine +
+                "- SingleColumn section: Should have EXACTLY 1 error (not 2, 3, or more)" + Environment.NewLine +
+                "- SparseText section: Should have EXACTLY 1 error (not 2, 3, or more)" + Environment.NewLine +
+                "- RippedText section: Should have EXACTLY 1 error (not 2, 3, or more)" + Environment.NewLine + Environment.NewLine +
+                
+                "**❌ IMMEDIATE REJECTION**: If you have multiple multi_field_omission errors for the same section:" + Environment.NewLine +
+                "- ❌ InvoiceDetail_SingleColumn_MultiField_Lines3_9 AND InvoiceDetail_SingleColumn_MultiField_Lines12_14" + Environment.NewLine +
+                "- ❌ InvoiceDetail_SparseText_MultiField_Lines6_8 AND InvoiceDetail_SparseText_MultiField_Lines9_11" + Environment.NewLine +
+                "**✅ REQUIRED**: Consolidate into single comprehensive correction per section" + Environment.NewLine + Environment.NewLine +
+                
+                "**🎯 SUCCESS CRITERIA FOR CONSOLIDATION:**" + Environment.NewLine +
+                "- ONE InvoiceDetail_SingleColumn_MultiField_Lines[First]_[Last] covering ALL SingleColumn items" + Environment.NewLine +
+                "- ONE InvoiceDetail_SparseText_MultiField_Lines[First]_[Last] covering ALL SparseText items" + Environment.NewLine +
+                "- Regex for each section validated against EVERY item in that section" + Environment.NewLine +
+                "- LineText shows ONLY the last item from the section as demonstration" + Environment.NewLine + Environment.NewLine +
+                
                 "Return format: errors array with suggested_regex field required for all responses.";
 
             _logger.Information("🏁 **PROMPT_CREATION_COMPLETE (PRODUCT_DETECTION_V14.0)**: Object-oriented InvoiceDetail entity detection prompt created with complete business object architecture. Length: {PromptLength} characters.", prompt.Length);
