@@ -70,6 +70,26 @@ namespace WaterNut.DataSpace
                     var cr = CreateCorrectionFromElement(element, originalDocumentText, 0);
                     if (cr != null) corrections.Add(cr);
                 }
+                
+                // **NEW**: Check for explanation when no errors are found
+                if (corrections.Count == 0 && responseDataRoot.TryGetProperty("explanation", out var explanationElement))
+                {
+                    var explanation = explanationElement.GetString();
+                    if (!string.IsNullOrEmpty(explanation))
+                    {
+                        _logger.Information("🔍 **DEEPSEEK_EXPLANATION**: DeepSeek provided explanation for empty errors array: {Explanation}", explanation);
+                        // Store explanation for diagnostic capture
+                        _lastDeepSeekExplanation = explanation;
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **MISSING_EXPLANATION**: DeepSeek returned empty errors array without required explanation");
+                    }
+                }
+                else if (corrections.Count == 0)
+                {
+                    _logger.Warning("⚠️ **NO_EXPLANATION_PROVIDED**: DeepSeek returned empty errors array without explanation field (prompt compliance issue)");
+                }
             }
 
             return ValidateAndEnrichParsedCorrections(corrections, originalDocumentText);

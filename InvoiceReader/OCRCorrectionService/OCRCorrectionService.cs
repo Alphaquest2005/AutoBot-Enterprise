@@ -29,6 +29,9 @@ namespace WaterNut.DataSpace
         private bool _disposed = false;
 
         private DatabaseUpdateStrategyFactory _strategyFactory;
+        
+        // Diagnostic support for capturing DeepSeek explanations
+        private string _lastDeepSeekExplanation;
 
         public double DefaultTemperature { get; set; } = 0.1;
 

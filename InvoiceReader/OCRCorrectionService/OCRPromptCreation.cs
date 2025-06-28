@@ -274,7 +274,28 @@ Analyze the OCR text and generate JSON objects in the `errors` array, applying o
 *   **CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
     *   Create an `omission` object: set `field` to ""TotalInsurance"", `correct_value` to the **negative absolute value** (e.g., ""-6.99"").
 
-If you find no new omissions or corrections, return an empty errors array.";
+If you find no new omissions or corrections, return an empty errors array.
+
+**🚨 CRITICAL EMPTY RESPONSE REQUIREMENT:**
+If you return an empty errors array (no errors detected), you MUST include an ""explanation"" field in your JSON response explaining WHY no errors were found.
+
+**MANDATORY RESPONSE FORMAT:**
+- **If errors found**: {{ ""errors"": [error objects] }}
+- **If NO errors found**: {{ ""errors"": [], ""explanation"": ""Detailed explanation of why no corrections are needed"" }}
+
+**EXPLANATION REQUIREMENTS when returning empty errors array:**
+1. ✅ **Document Recognition**: Confirm you recognize this as a valid invoice/business document
+2. ✅ **Field Analysis**: State which financial fields you found in the OCR text 
+3. ✅ **Balance Assessment**: Explain if the invoice appears mathematically balanced
+4. ✅ **Missing Field Check**: Confirm whether all expected invoice fields are present
+5. ✅ **Document Quality**: Assess if OCR quality allows accurate extraction
+
+**EXAMPLE EXPLANATIONS:**
+- ✅ ""This appears to be a well-structured MANGO invoice. I found SubTotal ($196.33), Tax ($13.74), and Total ($210.08) clearly visible in the OCR text. The invoice appears mathematically balanced and all major financial fields are extractable. No corrections needed.""
+- ✅ ""This document contains mixed content (invoice + customs form) but the invoice portion is clearly structured. All financial fields (SubTotal, Tax, Total) are properly formatted and mathematically consistent. The extraction appears accurate.""
+- ❌ ""No errors found."" (insufficient - does not explain document recognition or field analysis)
+
+**CRITICAL**: Never return empty errors array without detailed explanation!";
 
             _logger.Information("🏁 **PROMPT_CREATION_COMPLETE (V14.0)**: Object-oriented business entity analysis prompt created with V14.0 mandatory completion requirements. Length: {PromptLength} characters.", prompt.Length);
             return prompt;
@@ -596,6 +617,27 @@ STRICT JSON RESPONSE FORMAT (Same as before):
                 "**ADDITIONAL FIELDS FOR MULTI-FIELD ERRORS**:" + Environment.NewLine +
                 "- captured_fields: Array of field names captured by the regex" + Environment.NewLine +
                 "- field_corrections: Array of pattern/replacement corrections (optional)" + Environment.NewLine + Environment.NewLine +
+                "🚨🚨🚨 CRITICAL REQUIREMENT - READ FIRST 🚨🚨🚨" + Environment.NewLine +
+                "FOR MULTI_FIELD_OMISSION ERRORS: PATTERNS MUST BE 100% GENERALIZABLE!" + Environment.NewLine + Environment.NewLine +
+                "❌ IMMEDIATE REJECTION CRITERIA - DO NOT SUBMIT IF YOUR PATTERN CONTAINS:" + Environment.NewLine +
+                "- ANY specific product names in ItemDescription patterns" + Environment.NewLine +
+                "- ANY hardcoded text like \"Circle design\", \"Beaded thread\", \"High-waist\", etc." + Environment.NewLine +
+                "- ANY patterns that only work for ONE specific product" + Environment.NewLine +
+                "- ANY literal product words instead of character classes" + Environment.NewLine + Environment.NewLine +
+                "✅ MANDATORY PATTERN STYLE FOR MULTI-FIELD ERRORS:" + Environment.NewLine +
+                "- ItemDescription: [A-Za-z\\\\s]+ (character classes ONLY, NO product names)" + Environment.NewLine +
+                "- ItemCode: \\\\d+\\\\w+ (generic alphanumeric pattern)" + Environment.NewLine +
+                "- UnitPrice: \\\\d+\\\\.\\\\d{2} (generic decimal pattern)" + Environment.NewLine +
+                "- Quantity: \\\\d+ (generic number pattern)" + Environment.NewLine + Environment.NewLine +
+                "🔥 MANDATORY TEST: Ask yourself \"Will this work for 10,000 different products?\"" + Environment.NewLine +
+                "If the answer is NO, you MUST generalize it further!" + Environment.NewLine + Environment.NewLine +
+                "❌ **FORBIDDEN EXAMPLES (WILL BE REJECTED)**:" + Environment.NewLine +
+                "- \"(?<ItemDescription>Circle design ma[\\\\s\\\\S]*?xi earrings)\"" + Environment.NewLine +
+                "- \"(?<ItemDescription>Beaded thread earrings)\"" + Environment.NewLine +
+                "- \"(?<ItemDescription>High-waist straight shorts)\"" + Environment.NewLine + Environment.NewLine +
+                "✅ **REQUIRED EXAMPLES (USE THIS STYLE)**:" + Environment.NewLine +
+                "- \"(?<ItemDescription>[A-Za-z\\\\s]+(?:\\\\n[A-Za-z\\\\s]+)*)\"" + Environment.NewLine +
+                "- \"(?<ItemDescription>[A-Za-z0-9\\\\s\\\\-,\\\\.]+)\"" + Environment.NewLine + Environment.NewLine +
                 "**EXAMPLES**:" + Environment.NewLine +
                 "Individual field: Use field name like InvoiceDetail_Line15_Quantity" + Environment.NewLine +
                 "Multi-field line: Use field name like InvoiceDetail_MultiField_Line8 with captured_fields array" + Environment.NewLine + Environment.NewLine +

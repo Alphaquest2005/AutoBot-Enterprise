@@ -119,7 +119,7 @@ namespace WaterNut.Business.Services.Utils
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("X-DeepSeek-Version", "2023-07-01");
-            _httpClient.Timeout = TimeSpan.FromMinutes(2);
+            _httpClient.Timeout = TimeSpan.FromMinutes(10);
         }
 
         private void SetDefaultPrompts()

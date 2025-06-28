@@ -335,9 +335,10 @@ Return ONLY the JSON object, no additional text.";
             // 2. Generate JSON reference
             var jsonReference = await GenerateJsonReference(ocrText, fileName);
             
-            // 3. Run DeepSeek detection
+            // 3. Run DeepSeek detection with explanation capture
             var blankInvoice = CreateBlankInvoice(fileName);
-            var deepSeekResults = await RunDeepSeekDetection(service, blankInvoice, ocrText);
+            var deepSeekDiagnostic = await RunDeepSeekDetectionWithExplanation(service, blankInvoice, ocrText);
+            var deepSeekResults = deepSeekDiagnostic.Errors;
             
             // 4. Perform detailed comparison
             var comparison = PerformDetailedComparison(jsonReference, deepSeekResults);
@@ -371,6 +372,7 @@ Return ONLY the JSON object, no additional text.";
                 OCRAnalysis = ocrAnalysis,
                 JsonResults = jsonReference,
                 DeepSeekResults = deepSeekResults,
+                DeepSeekExplanation = deepSeekDiagnostic.Explanation, // NEW: Capture explanation
                 Comparison = comparison,
                 
                 // Detailed analysis
@@ -643,13 +645,28 @@ Return ONLY the JSON object, no additional text.";
             
             sb.AppendLine("### **DeepSeek AI Detection Results**:");
             sb.AppendLine("```json");
-            sb.AppendLine(JsonConvert.SerializeObject(new
+            var deepSeekOutput = new
             {
                 detectedErrors = diagnostic.DeepSeekResults, // Show ALL errors for complete analysis
                 detectionCount = diagnostic.DeepSeekResults?.Count ?? 0,
                 errorTypes = diagnostic.DeepSeekResults?.GroupBy(e => e.ErrorType).ToDictionary(g => g.Key, g => g.Count()),
                 confidenceDistribution = diagnostic.DeepSeekResults?.GroupBy(e => e.Confidence >= 0.9 ? "high" : e.Confidence >= 0.7 ? "medium" : "low").ToDictionary(g => g.Key, g => g.Count())
-            }, Formatting.Indented));
+            };
+            
+            // Add explanation if no errors detected
+            if ((diagnostic.DeepSeekResults?.Count ?? 0) == 0 && !string.IsNullOrEmpty(diagnostic.DeepSeekExplanation))
+            {
+                sb.AppendLine(JsonConvert.SerializeObject(new
+                {
+                    detectedErrors = diagnostic.DeepSeekResults,
+                    detectionCount = diagnostic.DeepSeekResults?.Count ?? 0,
+                    explanation = diagnostic.DeepSeekExplanation
+                }, Formatting.Indented));
+            }
+            else
+            {
+                sb.AppendLine(JsonConvert.SerializeObject(deepSeekOutput, Formatting.Indented));
+            }
             sb.AppendLine("```");
             sb.AppendLine();
             
@@ -1260,6 +1277,12 @@ Return ONLY the JSON object, no additional text.";
         
         private async Task<List<InvoiceError>> RunDeepSeekDetection(OCRCorrectionService service, ShipmentInvoice invoice, string ocrText) 
         {
+            var result = await RunDeepSeekDetectionWithExplanation(service, invoice, ocrText);
+            return result.Errors;
+        }
+        
+        private async Task<DiagnosticResult> RunDeepSeekDetectionWithExplanation(OCRCorrectionService service, ShipmentInvoice invoice, string ocrText) 
+        {
             try 
             {
                 _logger.Information("🤖 **DEEPSEEK_DETECTION_START**: Running DeepSeek error detection on blank invoice");
@@ -1267,19 +1290,24 @@ Return ONLY the JSON object, no additional text.";
                 // Create empty metadata dictionary to simulate starting with blank invoice
                 var metadata = new Dictionary<string, OCRFieldMetadata>();
                 
-                // Call the actual error detection method that DeepSeek uses
-                var detectedErrors = await service.DetectInvoiceErrorsForDiagnosticsAsync(invoice, ocrText, metadata);
+                // Call the enhanced method that returns both errors and explanation
+                var diagnosticResult = await service.DetectInvoiceErrorsWithExplanationAsync(invoice, ocrText, metadata);
                 
-                _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: Found {ErrorCount} errors", detectedErrors.Count);
+                _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: Found {ErrorCount} errors", diagnosticResult.Errors.Count);
                 _logger.Information("📊 **DEEPSEEK_DETECTION_DETAILS**: Errors by type: {ErrorBreakdown}", 
-                    string.Join(", ", detectedErrors.GroupBy(e => e.ErrorType).Select(g => $"{g.Key}: {g.Count()}")));
+                    string.Join(", ", diagnosticResult.Errors.GroupBy(e => e.ErrorType).Select(g => $"{g.Key}: {g.Count()}")));
                 
-                return detectedErrors;
+                if (!string.IsNullOrEmpty(diagnosticResult.Explanation))
+                {
+                    _logger.Information("🔍 **DEEPSEEK_EXPLANATION_CAPTURED**: {Explanation}", diagnosticResult.Explanation);
+                }
+
+                return diagnosticResult;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "❌ **DEEPSEEK_DETECTION_ERROR**: Failed to run DeepSeek detection");
-                return new List<InvoiceError>();
+                return new DiagnosticResult { Errors = new List<InvoiceError>() };
             }
         }
         
@@ -1379,6 +1407,7 @@ Return ONLY the JSON object, no additional text.";
         public OCRStructureAnalysis OCRAnalysis { get; set; }
         public InvoiceReferenceData JsonResults { get; set; }
         public List<InvoiceError> DeepSeekResults { get; set; }
+        public string DeepSeekExplanation { get; set; } // NEW: Capture explanation when no errors found
         public DetailedComparison Comparison { get; set; }
         
         // Detailed analysis

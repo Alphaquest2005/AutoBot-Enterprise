@@ -26,6 +26,29 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// ENHANCED DIAGNOSTIC WRAPPER: Returns both errors and explanation for comprehensive diagnostics
+        /// </summary>
+        public async Task<DiagnosticResult> DetectInvoiceErrorsWithExplanationAsync(
+            ShipmentInvoice invoice,
+            string fileText,
+            Dictionary<string, OCRFieldMetadata> metadata = null)
+        {
+            var errors = await DetectInvoiceErrorsAsync(invoice, fileText, metadata);
+            
+            // Capture the last explanation logged (if any)
+            // This is a simple approach - in production we might want a more sophisticated method
+            var explanation = _lastDeepSeekExplanation;
+            _lastDeepSeekExplanation = null; // Clear after capturing
+            
+            return new DiagnosticResult
+            {
+                Errors = errors,
+                Explanation = explanation
+            };
+        }
+
+
+        /// <summary>
         /// FINAL VERSION (V9): Orchestrates a dual-pathway error detection strategy and consolidates results
         /// using a robust, regex-based deduplication key to prevent redundant learning.
         /// </summary>
@@ -239,5 +262,14 @@ namespace WaterNut.DataSpace
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Result wrapper that includes both detected errors and explanation for diagnostic purposes
+    /// </summary>
+    public class DiagnosticResult
+    {
+        public List<InvoiceError> Errors { get; set; } = new List<InvoiceError>();
+        public string Explanation { get; set; }
     }
 }
