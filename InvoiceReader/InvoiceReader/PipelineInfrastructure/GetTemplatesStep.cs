@@ -94,7 +94,7 @@ namespace InvoiceReader.PipelineInfrastructure
             return await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
         }
 
-        private static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
+        public static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
         {
             context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetContextTemplates), "DocSetRetrieval", "Getting DocSets for templates.", $"FileTypeId: {context.FileType?.Id}, ContextDocSetIsNull: {context.DocSet == null}", "");
@@ -115,13 +115,59 @@ namespace InvoiceReader.PipelineInfrastructure
 
             return templates.Select(x =>
                 {
-                    x.FileType = context.FileType;
+                    // **BUG_FIX**: Don't overwrite template's original FileType with context.FileType
+                    // Each template should preserve its own FileType from the database
+                    // Only assign context-specific properties that don't affect template identity
+                    
+                    var originalFileTypeId = x.OcrInvoices?.FileTypeId ?? 0;
+                    var originalFileTypeName = x.FileType?.Description ?? "NULL";
+                    var contextFileTypeId = context.FileType?.Id ?? 0;
+                    var contextFileTypeName = context.FileType?.Description ?? "NULL";
+                    
+                    context.Logger?.Error("🔍 **FILETYPE_PRESERVATION_DEBUG**: Template '{TemplateName}' (ID: {TemplateId})", 
+                        x.OcrInvoices?.Name ?? "NULL", x.OcrInvoices?.Id ?? 0);
+                    context.Logger?.Error("   - **TEMPLATE_FILETYPE_ID**: {TemplateFileTypeId} (preserving from database)", originalFileTypeId);
+                    context.Logger?.Error("   - **CONTEXT_FILETYPE_ID**: {ContextFileTypeId} (NOT overwriting template)", contextFileTypeId);
+                    context.Logger?.Error("   - **PRESERVATION_STRATEGY**: Keep template's original FileType, assign only context properties");
+
+                    // **FIXED**: Do NOT overwrite template's FileType with context.FileType
+                    // x.FileType = context.FileType; // <-- REMOVED: This was the bug
+                    
+                    // Only assign context-specific properties that don't affect template identity:
                     x.DocSet = docSet;
                     x.FilePath = context.FilePath;
                     x.EmailId = context.EmailId;
+                    
+                    // If template doesn't have a FileType loaded, we need to load it from the database
+                    if (x.FileType == null && originalFileTypeId > 0)
+                    {
+                        context.Logger?.Error("   - **LOADING_TEMPLATE_FILETYPE**: Template FileType is null, loading from database with ID {FileTypeId}", originalFileTypeId);
+                        
+                        // Load the correct FileType for this template from the database
+                        using (var fileTypeCtx = new CoreEntities.Business.Entities.CoreEntitiesContext())
+                        {
+                            var templateFileType = fileTypeCtx.FileTypes
+                                .Include(ft => ft.FileImporterInfos)
+                                .FirstOrDefault(ft => ft.Id == originalFileTypeId);
+                            
+                            if (templateFileType != null)
+                            {
+                                x.FileType = templateFileType;
+                                context.Logger?.Error("   - **LOADED_FILETYPE**: ID={FileTypeId}, Description='{Description}', EntryType='{EntryType}'", 
+                                    templateFileType.Id, templateFileType.Description, templateFileType.FileImporterInfos?.EntryType ?? "NULL");
+                            }
+                            else
+                            {
+                                context.Logger?.Error("   - **FILETYPE_NOT_FOUND**: Could not load FileType with ID {FileTypeId} from database", originalFileTypeId);
+                            }
+                        }
+                    }
+
+                    context.Logger?.Error("   - **FINAL_TEMPLATE_FILETYPE**: ID={FinalFileTypeId}, Description='{FinalDescription}', EntryType='{FinalEntryType}'", 
+                        x.FileType?.Id ?? 0, x.FileType?.Description ?? "NULL", x.FileType?.FileImporterInfos?.EntryType ?? "NULL");
 
                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                        nameof(GetContextTemplates), "TemplateSetup", "Template configured.", $"TemplateId: {x.OcrInvoices?.Id}, DocSetAssigned: {x.DocSet != null}, DocSetCount: {x.DocSet?.Count ?? 0}", "");
+                        nameof(GetContextTemplates), "TemplateSetup", "Template configured with preserved FileType.", $"TemplateId: {x.OcrInvoices?.Id}, DocSetAssigned: {x.DocSet != null}, DocSetCount: {x.DocSet?.Count ?? 0}", "");
 
                     return x;
                 }).ToList();
@@ -284,6 +330,24 @@ namespace InvoiceReader.PipelineInfrastructure
 
             var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
             var templates = activeTemplatesQuery.Select(x => new Invoice(x, context.Logger)).ToList(); // activeTemplatesQuery is already a List
+
+            // **DEBUG_LOGGING**: Log original templates from database before any context assignment
+            context.Logger?.Error("🔍 **TEMPLATES_FROM_DATABASE**: {TemplateCount} templates loaded from database", templates.Count);
+            foreach (var template in templates)
+            {
+                context.Logger?.Error("   - **DB_TEMPLATE**: '{TemplateName}' (ID: {TemplateId})", 
+                    template.OcrInvoices?.Name ?? "NULL", template.OcrInvoices?.Id ?? 0);
+                context.Logger?.Error("     └── **DB_FILETYPE_ID**: {FileTypeId}", template.OcrInvoices?.FileTypeId ?? 0);
+                context.Logger?.Error("     └── **DB_FILETYPE_FROM_WRAPPER**: '{FileTypeDescription}'", template.FileType?.Description ?? "NULL");
+                if (template.FileType?.FileImporterInfos != null)
+                {
+                    context.Logger?.Error("     └── **DB_ENTRYTYPE**: '{EntryType}'", template.FileType.FileImporterInfos.EntryType ?? "NULL");
+                }
+                else
+                {
+                    context.Logger?.Error("     └── **DB_ENTRYTYPE**: NULL (FileImporterInfos is null)");
+                }
+            }
 
 
 
