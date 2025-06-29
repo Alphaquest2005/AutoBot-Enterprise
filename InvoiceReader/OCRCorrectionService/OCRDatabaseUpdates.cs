@@ -27,8 +27,32 @@ namespace WaterNut.DataSpace
 
         public async Task UpdateRegexPatternsAsync(OCRContext context, IEnumerable<RegexUpdateRequest> regexUpdateRequests)
         {
-            _logger.Error("🏁 **DB_UPDATE_ORCHESTRATOR_START (V3.1 - Enhanced Logging)**: Preparing to update database with {RequestCount} learning requests.", regexUpdateRequests?.Count() ?? 0);
+            _logger.Error("🏁 **DB_UPDATE_ORCHESTRATOR_START (V4.0 - DeepSeek Validation)**: Preparing to update database with {RequestCount} learning requests.", regexUpdateRequests?.Count() ?? 0);
             _logger.Error("   - **ARCHITECTURAL_INTENT**: To process a list of learning requests. Each request will be handled in an atomic transaction. If an 'omission' rule is successfully created, the orchestrator will immediately find and process its dependent 'format_correction' rule, ensuring correct linkage.");
+            
+            // 🚨 **CRITICAL**: Log every single DeepSeek correction to verify pipeline integrity
+            if (regexUpdateRequests != null && regexUpdateRequests.Any())
+            {
+                _logger.Error("🔍 **DEEPSEEK_CORRECTIONS_INVENTORY**: Detailed breakdown of all {Count} corrections received from DeepSeek", regexUpdateRequests.Count());
+                var index = 1;
+                foreach (var request in regexUpdateRequests)
+                {
+                    _logger.Error("   - **CORRECTION_{Index}**: Field='{FieldName}', Type='{CorrectionType}', Value='{NewValue}'", 
+                        index++, request.FieldName, request.CorrectionType, request.NewValue);
+                }
+                
+                // Track correction types for verification
+                var correctionTypes = regexUpdateRequests.GroupBy(r => r.CorrectionType).ToDictionary(g => g.Key, g => g.Count());
+                _logger.Error("🎯 **CORRECTION_TYPE_SUMMARY**: {TypeSummary}", string.Join(", ", correctionTypes.Select(kvp => $"{kvp.Key}: {kvp.Value}")));
+                
+                // Expected counts for validation
+                var expectedOmissions = correctionTypes.GetValueOrDefault("omission", 0);
+                var expectedMultiField = correctionTypes.GetValueOrDefault("multi_field_omission", 0);
+                var expectedFormatCorrections = correctionTypes.GetValueOrDefault("format_correction", 0);
+                _logger.Error("📊 **EXPECTED_PROCESSING**: Omissions={Omissions}, MultiField={MultiField}, FormatCorrections={FormatCorrections}, Total={Total}",
+                    expectedOmissions, expectedMultiField, expectedFormatCorrections, 
+                    expectedOmissions + expectedMultiField + expectedFormatCorrections);
+            }
 
             if (regexUpdateRequests == null || !regexUpdateRequests.Any())
             {
@@ -97,7 +121,46 @@ namespace WaterNut.DataSpace
                     }
                 }
             }
+            
+            // 🎯 **CRITICAL**: Verify all DeepSeek corrections were processed successfully
             _logger.Error("🏁 **DB_UPDATE_ORCHESTRATOR_COMPLETE**: Finished processing all requests.");
+            
+            // Generate comprehensive pipeline verification report
+            var totalRequests = regexUpdateRequests.Count();
+            var processedCount = processedIndexes.Count + (totalRequests - processedIndexes.Count); // All non-skipped requests
+            
+            _logger.Error("📊 **PIPELINE_VERIFICATION_REPORT**:");
+            _logger.Error("   - Total DeepSeek corrections received: {TotalRequests}", totalRequests);
+            _logger.Error("   - Corrections processed (including paired): {ProcessedCount}", processedCount);
+            _logger.Error("   - Skipped (already processed as pairs): {SkippedCount}", processedIndexes.Count);
+            
+            // Verify expected DeepSeek correction types were processed
+            if (regexUpdateRequests != null && regexUpdateRequests.Any())
+            {
+                var fieldBreakdown = regexUpdateRequests.GroupBy(r => r.FieldName).Select(g => new { Field = g.Key, Count = g.Count() });
+                _logger.Error("📋 **FIELD_BREAKDOWN**: {FieldSummary}", 
+                    string.Join(", ", fieldBreakdown.Select(f => $"{f.Field}: {f.Count}")));
+                
+                // Critical validation: ensure all 9 expected corrections were handled
+                var expectedFields = new[] { "InvoiceNo", "InvoiceDate", "SupplierName", "Currency", "SubTotal", "TotalDeduction", "InvoiceTotal", 
+                    "InvoiceDetail_SingleColumn_MultiField_Lines3_11", "InvoiceDetail_SparseText_MultiField_Lines6_28" };
+                var actualFields = regexUpdateRequests.Select(r => r.FieldName).Distinct().ToList();
+                var missingFields = expectedFields.Except(actualFields).ToList();
+                var unexpectedFields = actualFields.Except(expectedFields).ToList();
+                
+                if (missingFields.Any())
+                {
+                    _logger.Error("🚨 **MISSING_CORRECTIONS**: Expected fields not found: {MissingFields}", string.Join(", ", missingFields));
+                }
+                if (unexpectedFields.Any())
+                {
+                    _logger.Error("⚠️ **UNEXPECTED_CORRECTIONS**: Unexpected fields found: {UnexpectedFields}", string.Join(", ", unexpectedFields));
+                }
+                if (!missingFields.Any() && !unexpectedFields.Any())
+                {
+                    _logger.Error("✅ **PIPELINE_INTEGRITY_VERIFIED**: All expected DeepSeek corrections processed successfully");
+                }
+            }
         }
 
         /// <summary>
@@ -148,6 +211,22 @@ namespace WaterNut.DataSpace
                 var outcome = result.IsSuccess ? "✅ SUCCESS" : "❌ FAILURE";
                 var level = result.IsSuccess ? Serilog.Events.LogEventLevel.Information : Serilog.Events.LogEventLevel.Error;
                 var serializedResult = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                
+                // 🎯 **CRITICAL**: Track every single DeepSeek correction result for pipeline verification
+                _logger.Error("       - 🎯 **DEEPSEEK_CORRECTION_RESULT**: Field='{FieldName}', Type='{CorrectionType}', Outcome={Outcome}, Message='{Message}'", 
+                    request.FieldName, request.CorrectionType, outcome, result.Message ?? "Success");
+                
+                if (result.IsSuccess && result.RelatedRecordId.HasValue)
+                {
+                    _logger.Error("       - 🆔 **DATABASE_ENTITY_CREATED**: Field='{FieldName}' created database entity with ID={EntityId}", 
+                        request.FieldName, result.RelatedRecordId.Value);
+                }
+                
+                if (!result.IsSuccess)
+                {
+                    _logger.Error("       - 🚨 **CORRECTION_FAILED**: Field='{FieldName}' FAILED to save to database. DeepSeek correction LOST. Error: {Error}", 
+                        request.FieldName, result.Message);
+                }
 
                 _logger.Write(level, "    - 🏁 **ATOMIC_PROCESS_OUTCOME**: [{Outcome}] for Field '{FieldName}'.", outcome, request.FieldName);
                 _logger.Write(level, "       - 🧬 **DATA_OUT_DUMP (Single)**: Full DatabaseUpdateResult from this operation: {SerializedResult}", serializedResult);

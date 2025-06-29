@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace
             var calculatedFinalTotal = baseTotal - deductionAmount;
             differenceAmount = Math.Abs(calculatedFinalTotal - reportedInvoiceTotal);
 
-            bool isZero = differenceAmount < 0.015; // Relaxed tolerance
+            bool isZero = differenceAmount < 0.001; // Disabled tolerance check for debugging
 
             _totalsZeroAmounts.Remove(invoice);
             _totalsZeroAmounts.Add(invoice, new System.Runtime.CompilerServices.StrongBox<double>(differenceAmount));

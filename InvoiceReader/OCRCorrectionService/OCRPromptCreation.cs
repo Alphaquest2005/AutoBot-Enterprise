@@ -652,6 +652,25 @@ STRICT JSON RESPONSE FORMAT (Same as before):
                 "2. **Ripped Text**: Alternative OCR technique with different spacing/formatting" + Environment.NewLine +
                 "3. **SparseText**: Third OCR technique, often catches data missed by others" + Environment.NewLine + Environment.NewLine +
                 
+                "🚨🚨🚨 CRITICAL: SECTION CONTENT VALIDATION REQUIRED 🚨🚨🚨" + Environment.NewLine +
+                "**MANDATORY PRE-PROCESSING STEP**: Before creating ANY correction for a section:" + Environment.NewLine +
+                "1. **Verify the section contains actual invoice items** (not just headers)" + Environment.NewLine +
+                "2. **Count actual invoice detail lines** in that section" + Environment.NewLine +
+                "3. **Skip completely empty sections** - DO NOT create corrections for them" + Environment.NewLine +
+                "4. **Use correct line numbering** relative to each section's actual content" + Environment.NewLine + Environment.NewLine +
+                
+                "**❌ FORBIDDEN - IMMEDIATE REJECTION**:" + Environment.NewLine +
+                "- Creating corrections for sections that contain only headers + blank lines" + Environment.NewLine +
+                "- Using line numbers from other sections (e.g., SingleColumn line 11 as RippedText line 11)" + Environment.NewLine +
+                "- Referencing non-existent content in empty sections" + Environment.NewLine +
+                "- Generating regexes for sections with zero invoice items" + Environment.NewLine + Environment.NewLine +
+                
+                "**✅ REQUIRED VALIDATION EXAMPLE**:" + Environment.NewLine +
+                "Section: ------------------------------------------Ripped Text-------------------------" + Environment.NewLine +
+                "Content: [4 blank lines]" + Environment.NewLine +
+                "Action: ❌ **SKIP THIS SECTION** - No invoice items found" + Environment.NewLine +
+                "Result: Create ZERO corrections for this section" + Environment.NewLine + Environment.NewLine +
+                
                 "**🔧 WHY SECTIONS DIFFER:**" + Environment.NewLine +
                 "- Different OCR algorithms capture text with different spacing, line breaks, formatting" + Environment.NewLine +
                 "- Same invoice items appear in all sections but with varied OCR interpretations" + Environment.NewLine +
@@ -864,10 +883,20 @@ STRICT JSON RESPONSE FORMAT (Same as before):
                 "**✅ REQUIRED**: Consolidate into single comprehensive correction per section" + Environment.NewLine + Environment.NewLine +
                 
                 "**🎯 SUCCESS CRITERIA FOR CONSOLIDATION:**" + Environment.NewLine +
-                "- ONE InvoiceDetail_SingleColumn_MultiField_Lines[First]_[Last] covering ALL SingleColumn items" + Environment.NewLine +
-                "- ONE InvoiceDetail_SparseText_MultiField_Lines[First]_[Last] covering ALL SparseText items" + Environment.NewLine +
+                "- ONE InvoiceDetail_SingleColumn_MultiField_Lines[First]_[Last] covering ALL SingleColumn items (if section has content)" + Environment.NewLine +
+                "- ONE InvoiceDetail_SparseText_MultiField_Lines[First]_[Last] covering ALL SparseText items (if section has content)" + Environment.NewLine +
+                "- ONE InvoiceDetail_RippedText_MultiField_Lines[First]_[Last] covering ALL RippedText items (if section has content)" + Environment.NewLine +
+                "- **ZERO corrections for empty sections** (sections with only headers + blank lines)" + Environment.NewLine +
                 "- Regex for each section validated against EVERY item in that section" + Environment.NewLine +
                 "- LineText shows ONLY the last item from the section as demonstration" + Environment.NewLine + Environment.NewLine +
+                
+                "**🔍 FINAL SECTION VALIDATION CHECKLIST**:" + Environment.NewLine +
+                "Before submitting your response, verify:" + Environment.NewLine +
+                "1. ✅ Each section referenced actually contains invoice items (not just blank lines)" + Environment.NewLine +
+                "2. ✅ Line numbers are correct within each section's boundaries" + Environment.NewLine +
+                "3. ✅ No corrections created for empty sections" + Environment.NewLine +
+                "4. ✅ LineText content actually exists at the specified line number in that section" + Environment.NewLine +
+                "5. ✅ Maximum one multi_field_omission correction per non-empty section" + Environment.NewLine + Environment.NewLine +
                 
                 "Return format: errors array with suggested_regex field required for all responses.";
 
