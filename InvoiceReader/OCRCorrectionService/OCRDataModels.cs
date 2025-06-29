@@ -124,7 +124,7 @@ namespace WaterNut.DataSpace
 
     #region Database Interaction Models
 
-    public class DatabaseUpdateResult
+    public partial class DatabaseUpdateResult
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
@@ -132,6 +132,14 @@ namespace WaterNut.DataSpace
         public int? RelatedRecordId { get; set; }
         public string Operation { get; set; }
         public Exception Exception { get; set; }
+        
+        // Template creation tracking properties
+        public bool TemplateCreated { get; set; }
+        public int PartsCreated { get; set; }
+        public int LinesCreated { get; set; }
+        public int FieldsCreated { get; set; }
+        public int FormatCorrectionsCreated { get; set; }
+        public int? RegexId { get; set; }
 
         public static DatabaseUpdateResult Success(int recordId, string operation, int? relatedRecordId = null) =>
             new DatabaseUpdateResult
@@ -147,7 +155,7 @@ namespace WaterNut.DataSpace
             new DatabaseUpdateResult { IsSuccess = false, Message = message, Exception = ex };
     }
 
-    public class RegexUpdateRequest
+    public partial class RegexUpdateRequest
     {
         private string _pattern;
         private string _replacement;
@@ -174,6 +182,13 @@ namespace WaterNut.DataSpace
         public string ExistingRegex { get; set; }
         public string PartName { get; set; }
         public int? InvoiceId { get; set; }
+        
+        // Template creation properties
+        public string TemplateName { get; set; }
+        public bool CreateNewTemplate { get; set; }
+        public string ErrorType { get; set; }
+        public string ReasoningContext { get; set; }
+        public List<InvoiceError> AllDeepSeekErrors { get; set; } = new List<InvoiceError>();
 
         public string Pattern
         {

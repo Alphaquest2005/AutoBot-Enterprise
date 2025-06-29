@@ -1,4 +1,5 @@
 ﻿// File: OCRCorrectionService/OCRCorrectionService.cs
+using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using InvoiceReader.OCRCorrectionService;
 using OCR.Business.Entities;
@@ -12,6 +13,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TrackableEntities;
+using WaterNut.DataSpace;
 
 namespace WaterNut.DataSpace
 {
@@ -54,6 +56,145 @@ namespace WaterNut.DataSpace
                 throw;
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
+        }
+
+        #endregion
+
+        #region Template Creation Methods
+
+        /// <summary>
+        /// Creates a complete OCR template from DeepSeek error detection results.
+        /// This method takes any unknown supplier and creates all necessary database entities.
+        /// </summary>
+        /// <param name="templateName">Name for the new template (e.g., "MANGO")</param>
+        /// <param name="fileText">Sample OCR text for the supplier</param>
+        /// <param name="sampleInvoice">Optional sample invoice data for context</param>
+        /// <returns>Template creation result with detailed logging for LLM diagnosis</returns>
+        public async Task<TemplateCreationResult> CreateTemplateFromDeepSeekAsync(string templateName, string fileText, ShipmentInvoice sampleInvoice = null)
+        {
+            _logger.Information("🏗️ **TEMPLATE_CREATION_ORCHESTRATION_START**: Creating template '{TemplateName}' from DeepSeek analysis", templateName);
+            
+            if (string.IsNullOrEmpty(templateName) || string.IsNullOrEmpty(fileText))
+            {
+                var error = "Template name and file text are required for template creation";
+                _logger.Error("❌ **TEMPLATE_CREATION_VALIDATION_ERROR**: {Error}", error);
+                return new TemplateCreationResult { Success = false, Message = error };
+            }
+
+            try
+            {
+                using (var dbContext = new OCRContext())
+                {
+                    // **STEP 1**: Create blank invoice for error detection if none provided
+                    var blankInvoice = sampleInvoice ?? new ShipmentInvoice 
+                    { 
+                        InvoiceNo = $"{templateName}_SAMPLE",
+                        SupplierName = templateName
+                    };
+                    _logger.Information("📋 **BLANK_INVOICE_CREATED**: Using invoice with InvoiceNo='{InvoiceNo}' for error detection", blankInvoice.InvoiceNo);
+
+                    // **STEP 2**: Extract metadata for context
+                    var metadata = ExtractFullOCRMetadata(blankInvoice, fileText);
+                    _logger.Information("📊 **METADATA_EXTRACTED**: Found {MetadataCount} metadata entries", metadata?.Count ?? 0);
+
+                    // **STEP 3**: Run DeepSeek error detection to identify all patterns
+                    _logger.Information("🤖 **DEEPSEEK_ANALYSIS_START**: Running DeepSeek error detection for template creation");
+                    var detectedErrors = await DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, fileText, metadata);
+                    _logger.Information("🔍 **DEEPSEEK_ANALYSIS_COMPLETE**: Detected {ErrorCount} errors for template creation", detectedErrors?.Count ?? 0);
+
+                    if (!detectedErrors?.Any() == true)
+                    {
+                        var message = "DeepSeek detected no errors - cannot create template without field patterns";
+                        _logger.Warning("⚠️ **NO_ERRORS_DETECTED**: {Message}", message);
+                        return new TemplateCreationResult { Success = false, Message = message };
+                    }
+
+                    // **STEP 4**: Log detected errors for LLM analysis
+                    LogDetectedErrorsForDiagnosis(detectedErrors, templateName);
+
+                    // **STEP 5**: Create template creation request
+                    var templateRequest = new RegexUpdateRequest
+                    {
+                        TemplateName = templateName,
+                        CreateNewTemplate = true,
+                        ErrorType = "template_creation",
+                        AllDeepSeekErrors = detectedErrors,
+                        ReasoningContext = $"Template creation for new supplier: {templateName}"
+                    };
+
+                    // **STEP 6**: Execute template creation strategy
+                    _logger.Information("🚀 **TEMPLATE_STRATEGY_EXECUTION**: Executing template creation strategy");
+                    var strategy = new OCRCorrectionService.TemplateCreationStrategy(_logger);
+                    var result = await strategy.ExecuteAsync(dbContext, templateRequest, this);
+
+                    // **STEP 7**: Convert to template creation result
+                    var templateResult = new TemplateCreationResult
+                    {
+                        Success = result.IsSuccess,
+                        Message = result.Message,
+                        TemplateId = result.RegexId,
+                        PartsCreated = result.PartsCreated,
+                        LinesCreated = result.LinesCreated,
+                        FieldsCreated = result.FieldsCreated,
+                        FormatCorrectionsCreated = result.FormatCorrectionsCreated,
+                        ErrorsProcessed = detectedErrors.Count,
+                        TemplateName = templateName
+                    };
+
+                    if (result.IsSuccess)
+                    {
+                        _logger.Information("🎯 **TEMPLATE_CREATION_SUCCESS**: Template '{TemplateName}' created successfully - {Message}", templateName, result.Message);
+                    }
+                    else
+                    {
+                        _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: Template '{TemplateName}' creation failed - {Message}", templateName, result.Message);
+                    }
+
+                    return templateResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "💥 **TEMPLATE_CREATION_EXCEPTION**: Unhandled exception during template creation for '{TemplateName}'", templateName);
+                return new TemplateCreationResult 
+                { 
+                    Success = false, 
+                    Message = $"Template creation failed with exception: {ex.Message}",
+                    Exception = ex
+                };
+            }
+        }
+
+        /// <summary>
+        /// Logs detected errors in detail for LLM diagnosis and troubleshooting.
+        /// </summary>
+        private void LogDetectedErrorsForDiagnosis(List<InvoiceError> errors, string templateName)
+        {
+            _logger.Information("📋 **DETECTED_ERRORS_ANALYSIS**: Analyzing {ErrorCount} errors for template '{TemplateName}'", errors.Count, templateName);
+
+            var errorsByType = errors.GroupBy(e => e.ErrorType).ToList();
+            foreach (var errorGroup in errorsByType)
+            {
+                _logger.Information("📊 **ERROR_TYPE_SUMMARY**: {ErrorType} = {Count} errors", errorGroup.Key, errorGroup.Count());
+                
+                foreach (var error in errorGroup)
+                {
+                    _logger.Information("🔍 **ERROR_DETAIL**: Field='{Field}', CorrectValue='{CorrectValue}', Regex='{Regex}', CapturedFields=[{CapturedFields}]", 
+                        error.Field, 
+                        error.CorrectValue, 
+                        error.SuggestedRegex,
+                        error.CapturedFields != null ? string.Join(", ", error.CapturedFields) : "None");
+
+                    if (error.FieldCorrections?.Any() == true)
+                    {
+                        foreach (var correction in error.FieldCorrections)
+                        {
+                            _logger.Information("🔧 **FIELD_CORRECTION**: {FieldName} - Pattern='{Pattern}' -> Replacement='{Replacement}'", 
+                                correction.FieldName, correction.Pattern, correction.Replacement);
+                        }
+                    }
+                }
+            }
         }
 
         #endregion
@@ -232,6 +373,146 @@ namespace WaterNut.DataSpace
             }
         }
 
+        /// <summary>
+        /// **HYBRID_DOCUMENT_TEMPLATE_CREATION**: Creates an Invoice template structure using DeepSeek analysis for hybrid documents.
+        /// **ARCHITECTURAL_INTENT**: This method creates a complete Invoice template that can be processed by the normal pipeline.
+        /// **BUSINESS_RULE**: Used when PDFs contain both invoice content and other document types requiring separate template processing.
+        /// **CRITICAL_CONTEXT**: OCR correction service was designed to UPDATE existing templates, not CREATE new templates from scratch.
+        /// **RETURNS**: Complete Invoice template with Parts, Lines, Fields, and Regexes populated by DeepSeek analysis.
+        /// </summary>
+        public async Task<Invoice> CreateInvoiceTemplateAsync(string pdfText, string filePath)
+        {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            _logger.Information("🚀 **TEMPLATE_CREATION_START**: Starting CreateInvoiceTemplateAsync for file '{FilePath}'", filePath);
+            _logger.Information("   - **METHOD_PURPOSE**: Create complete Invoice template structure from PDF text analysis");
+            _logger.Information("   - **INPUT_TEXT_LENGTH**: {TextLength} characters of PDF content", pdfText?.Length ?? 0);
+            _logger.Information("   - **CRITICAL_CONTEXT**: OCR service was designed to UPDATE existing templates, now attempting to CREATE new template");
+            _logger.Information("   - **EXPECTED_OUTPUT**: Invoice object with OcrInvoices, Parts, Lines, Fields, and RegularExpressions");
+            _logger.Information("   - **POTENTIAL_ISSUES**: Service may not have capability to create Parts, Lines, Fields from scratch");
+
+            if (string.IsNullOrEmpty(pdfText))
+            {
+                _logger.Error("❌ **TEMPLATE_CREATION_EMPTY_INPUT**: PDF text is null or empty");
+                _logger.Information("   - **INPUT_STATE**: pdfText = {PdfTextState}", pdfText == null ? "NULL" : "EMPTY_STRING");
+                _logger.Information("   - **IMPACT**: Cannot analyze content without source text");
+                _logger.Information("   - **RETURN_VALUE**: NULL (template creation impossible)");
+                return null;
+            }
+
+            try
+            {
+                _logger.Information("📊 **TEMPLATE_CREATION_STEP_1**: Creating minimal Invoice template structure for hybrid document processing");
+
+                // **OPTION B IMPLEMENTATION**: Create minimal Invoice template that pipeline can process
+                _logger.Information("   - **IMPLEMENTATION_APPROACH**: Option B - Create minimal template with FormattedPdfText and FileType");
+                _logger.Information("   - **TEMPLATE_PURPOSE**: Enable pipeline to process invoice content alongside existing templates");
+
+                // Step 1: Create basic OcrInvoices structure
+                _logger.Information("🏗️ **CREATING_OCR_INVOICES**: About to call CreateBasicOcrInvoices");
+                var ocrInvoices = CreateBasicOcrInvoices("OCR_Generated_Invoice", filePath);
+                _logger.Information("   - **OCR_INVOICES_RESULT**: {OcrInvoicesData}", 
+                    ocrInvoices != null ? JsonSerializer.Serialize(new { 
+                        Name = ocrInvoices.Name, 
+                        Id = ocrInvoices.Id, 
+                        ApplicationSettingsId = ocrInvoices.ApplicationSettingsId 
+                    }, jsonOptions) : "NULL");
+
+                if (ocrInvoices == null)
+                {
+                    _logger.Error("❌ **OCR_INVOICES_CREATION_FAILED**: CreateBasicOcrInvoices returned null");
+                    return null;
+                }
+
+                // Step 2: Create Invoice template with required parameters
+                _logger.Information("🏗️ **CREATING_INVOICE_TEMPLATE**: About to create Invoice object with OcrInvoices");
+                var template = new Invoice(ocrInvoices, _logger);
+                _logger.Information("   - **INVOICE_TEMPLATE_CREATED**: Invoice template object created successfully");
+                _logger.Information("   - **TEMPLATE_INITIAL_STATE**: {TemplateData}", JsonSerializer.Serialize(new {
+                    OcrInvoicesName = template.OcrInvoices?.Name,
+                    OcrInvoicesId = template.OcrInvoices?.Id,
+                    FileType = template.FileType?.Description,
+                    PartsCount = template.Parts?.Count ?? 0,
+                    LinesCount = template.Lines?.Count ?? 0,
+                    CsvLinesCount = template.CsvLines?.Count ?? 0
+                }, jsonOptions));
+
+                // Step 3: Set FormattedPdfText for template processing
+                template.FormattedPdfText = pdfText;
+                _logger.Information("   - **PDF_TEXT_ASSIGNED**: FormattedPdfText assigned, {TextLength} characters", pdfText?.Length ?? 0);
+
+                // Step 4: Set FileType for ShipmentInvoice processing
+                _logger.Information("🏗️ **GETTING_FILE_TYPE**: About to call GetShipmentInvoiceFileType");
+                template.FileType = GetShipmentInvoiceFileType();
+                _logger.Information("   - **FILE_TYPE_ASSIGNED**: FileType set to '{FileTypeName}' for ShipmentInvoice processing", 
+                    template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                _logger.Information("   - **FILE_TYPE_DETAILS**: {FileTypeData}", 
+                    template.FileType != null ? JsonSerializer.Serialize(new {
+                        Id = template.FileType.Id,
+                        Description = template.FileType.Description,
+                        EntryType = template.FileType.FileImporterInfos?.EntryType,
+                        Format = template.FileType.FileImporterInfos?.Format,
+                        FilePattern = template.FileType.FilePattern
+                    }, jsonOptions) : "NULL");
+
+                // Step 5: Validate template structure and log complete state
+                _logger.Information("🔍 **TEMPLATE_FINAL_VALIDATION**: Checking complete template structure");
+                _logger.Information("   - **COMPLETE_TEMPLATE_STATE**: {CompleteTemplateData}", JsonSerializer.Serialize(new {
+                    OcrInvoices = template.OcrInvoices != null ? new {
+                        Name = template.OcrInvoices.Name,
+                        Id = template.OcrInvoices.Id,
+                        ApplicationSettingsId = template.OcrInvoices.ApplicationSettingsId
+                    } : null,
+                    FileType = template.FileType != null ? new {
+                        Id = template.FileType.Id,
+                        Description = template.FileType.Description,
+                        EntryType = template.FileType.FileImporterInfos?.EntryType,
+                        Format = template.FileType.FileImporterInfos?.Format
+                    } : null,
+                    FormattedPdfTextLength = template.FormattedPdfText?.Length ?? 0,
+                    PartsCount = template.Parts?.Count ?? 0,
+                    LinesCount = template.Lines?.Count ?? 0,
+                    CsvLinesCount = template.CsvLines?.Count ?? 0,
+                    DocSetCount = template.DocSet?.Count ?? 0
+                }, jsonOptions));
+
+                if (template.OcrInvoices != null && template.FileType != null)
+                {
+                    _logger.Information("✅ **TEMPLATE_CREATION_SUCCESS**: Minimal Invoice template created successfully");
+                    _logger.Information("   - **TEMPLATE_NAME**: {TemplateName}", template.OcrInvoices?.Name ?? "NULL");
+                    _logger.Information("   - **TEMPLATE_ID**: {TemplateId}", template.OcrInvoices?.Id ?? 0);
+                    _logger.Information("   - **FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                    _logger.Information("   - **PDF_TEXT_LENGTH**: {PdfTextLength} characters", template.FormattedPdfText?.Length ?? 0);
+                    _logger.Information("   - **PIPELINE_READY**: Template can now be processed by ReadFormattedTextStep alongside existing templates");
+                    _logger.Information("   - **NEXT_STEP**: Template will be processed by GetContextTemplates and then ReadFormattedTextStep");
+                    
+                    return template;
+                }
+                else
+                {
+                    _logger.Error("❌ **TEMPLATE_VALIDATION_FAILED**: Template structure validation failed");
+                    _logger.Information("   - **OCR_INVOICES_STATE**: {OcrInvoicesState}", template.OcrInvoices == null ? "NULL" : "VALID");
+                    _logger.Information("   - **FILE_TYPE_STATE**: {FileTypeState}", template.FileType == null ? "NULL" : "VALID");
+                    _logger.Information("   - **POSSIBLE_CAUSES**: Helper method failures or missing FileType configuration");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **TEMPLATE_CREATION_EXCEPTION**: Critical exception during template creation");
+                _logger.Information("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Information("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                _logger.Information("   - **FILE_PATH**: {FilePath}", filePath);
+                _logger.Information("   - **PDF_TEXT_LENGTH**: {TextLength}", pdfText?.Length ?? 0);
+                _logger.Information("   - **STACK_TRACE**: {StackTrace}", ex.StackTrace);
+                return null;
+            }
+        }
+
         #endregion
 
             #region Internal and Public Helpers
@@ -334,6 +615,232 @@ namespace WaterNut.DataSpace
             }
 
             return request;
+        }
+
+        /// <summary>
+        /// **TEMPLATE_ANALYSIS_PROMPT_CREATION**: Creates specialized DeepSeek prompt for analyzing PDF content and generating Invoice template structure.
+        /// **ARCHITECTURAL_INTENT**: This prompt instructs DeepSeek to identify invoice fields and create complete template structure with regexes.
+        /// **BUSINESS_RULE**: Template must include Parts, Lines, Fields, and RegularExpressions for pipeline processing.
+        /// </summary>
+        private string CreateTemplateAnalysisPrompt(string pdfText)
+        {
+            _logger.Error("📝 **PROMPT_CREATION_START**: Creating template analysis prompt for DeepSeek");
+            _logger.Error("   - **INPUT_LENGTH**: {TextLength} characters of PDF content", pdfText?.Length ?? 0);
+            _logger.Error("   - **PROMPT_PURPOSE**: Generate complete Invoice template structure from PDF analysis");
+
+            var prompt = $@"
+**TASK**: Analyze the following PDF text and create a complete Invoice template structure that can process this content.
+
+**REQUIREMENTS**:
+1. Identify all invoice-related fields (InvoiceNo, InvoiceDate, InvoiceTotal, SubTotal, etc.)
+2. Create regex patterns that can extract these fields from the text
+3. Generate a complete template structure with Parts, Lines, Fields, and RegularExpressions
+4. Focus on the invoice content, ignore any customs/declaration portions
+
+**PDF TEXT TO ANALYZE**:
+{pdfText}
+
+**EXPECTED JSON OUTPUT FORMAT**:
+{{
+  ""template_name"": ""MANGO_Invoice_Template"",
+  ""parts"": [
+    {{
+      ""part_name"": ""Invoice_Header"",
+      ""lines"": [
+        {{
+          ""line_name"": ""InvoiceNumber"",
+          ""regex_pattern"": ""Order number:\\s*(?<InvoiceNo>\\w+)"",
+          ""fields"": [
+            {{
+              ""field_name"": ""InvoiceNo"",
+              ""entity_type"": ""ShipmentInvoice"",
+              ""capture_group"": ""InvoiceNo""
+            }}
+          ]
+        }},
+        {{
+          ""line_name"": ""InvoiceTotal"",
+          ""regex_pattern"": ""TOTAL AMOUNT\\s+US\\$\\s*(?<InvoiceTotal>[\\d\\.]+)"",
+          ""fields"": [
+            {{
+              ""field_name"": ""InvoiceTotal"",
+              ""entity_type"": ""ShipmentInvoice"",
+              ""capture_group"": ""InvoiceTotal""
+            }}
+          ]
+        }}
+      ]
+    }}
+  ]
+}}
+
+**CRITICAL**: Return ONLY valid JSON, no explanations or markdown.
+";
+
+            _logger.Error("   - **PROMPT_LENGTH**: {PromptLength} characters generated", prompt?.Length ?? 0);
+            _logger.Error("   - **PROMPT_STRUCTURE**: Contains task description, requirements, PDF content, and JSON format specification");
+            
+            return prompt;
+        }
+
+        /// <summary>
+        /// **DEEPSEEK_TEMPLATE_RESPONSE_PARSER**: Parses DeepSeek JSON response into complete Invoice template object.
+        /// **ARCHITECTURAL_INTENT**: Creates Invoice object with all required components for pipeline processing.
+        /// **BUSINESS_RULE**: Template must be compatible with existing pipeline infrastructure and database schema.
+        /// </summary>
+        private Invoice ParseDeepSeekTemplateResponse(string deepSeekResponse, string filePath)
+        {
+            _logger.Error("🔍 **RESPONSE_PARSING_START**: Parsing DeepSeek response into Invoice template");
+            _logger.Error("   - **RESPONSE_LENGTH**: {ResponseLength} characters", deepSeekResponse?.Length ?? 0);
+            _logger.Error("   - **FILE_PATH**: {FilePath}", filePath);
+            _logger.Error("   - **PARSING_GOAL**: Create complete Invoice object with OcrInvoices, Parts, Lines, Fields");
+
+            try
+            {
+                // Extract JSON from response (in case there's extra text)
+                var jsonStart = deepSeekResponse.IndexOf('{');
+                var jsonEnd = deepSeekResponse.LastIndexOf('}');
+                
+                if (jsonStart == -1 || jsonEnd == -1 || jsonStart >= jsonEnd)
+                {
+                    _logger.Error("❌ **JSON_EXTRACTION_FAILED**: No valid JSON found in DeepSeek response");
+                    _logger.Error("   - **JSON_START_INDEX**: {JsonStart}", jsonStart);
+                    _logger.Error("   - **JSON_END_INDEX**: {JsonEnd}", jsonEnd);
+                    _logger.Error("   - **FULL_RESPONSE**: {FullResponse}", deepSeekResponse);
+                    _logger.Error("   - **EXPECTED_FORMAT**: Response should contain valid JSON object with template structure");
+                    return null;
+                }
+
+                var jsonContent = deepSeekResponse.Substring(jsonStart, jsonEnd - jsonStart + 1);
+                _logger.Error("   - **EXTRACTED_JSON_LENGTH**: {JsonLength} characters", jsonContent.Length);
+
+                var templateData = JsonSerializer.Deserialize<JsonElement>(jsonContent);
+                _logger.Error("   - **JSON_PARSING_SUCCESS**: DeepSeek response successfully parsed as JSON");
+
+                // Create Invoice template structure - this is placeholder, full implementation needed
+                // For now, return null since complete implementation is required
+                _logger.Error("⚠️ **PARSER_NOT_IMPLEMENTED**: DeepSeek template parsing not implemented yet");
+                return null;
+                
+                // TODO: When implementing, use: var invoice = new Invoice(parsedOcrInvoices, _logger);
+                // TODO: Implement the complete template creation logic here
+                // This is a placeholder - the actual implementation would create:
+                // 1. OcrInvoices object with proper ID and Name
+                // 2. Parts collection with PartTypes
+                // 3. Lines collection with RegularExpressions
+                // 4. Fields collection with proper mappings
+                // 5. Set FormattedPdfText and FileType properties
+
+                _logger.Error("⚠️ **PARSER_NOT_IMPLEMENTED**: Template parsing logic is placeholder - needs full implementation");
+                _logger.Error("   - **REQUIRED_IMPLEMENTATION**: Create OcrInvoices, Parts, Lines, Fields, and RegularExpressions");
+                _logger.Error("   - **JSON_DATA_AVAILABLE**: {JsonData}", jsonContent);
+                _logger.Error("   - **RETURN_VALUE**: NULL (implementation needed)");
+
+                return null; // Placeholder - needs full implementation
+            }
+            catch (JsonException jsonEx)
+            {
+                _logger.Error(jsonEx, "❌ **JSON_PARSING_EXCEPTION**: Failed to parse DeepSeek response as JSON");
+                _logger.Error("   - **JSON_ERROR**: {JsonError}", jsonEx.Message);
+                _logger.Error("   - **RESPONSE_CONTENT**: {ResponseContent}", deepSeekResponse);
+                _logger.Error("   - **PATH_INFO**: {Path} at line {LineNumber} position {BytePosition}", 
+                    jsonEx.Path, jsonEx.LineNumber, jsonEx.BytePositionInLine);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **PARSING_GENERAL_EXCEPTION**: Unexpected error during template parsing");
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Error("   - **ERROR_MESSAGE**: {ErrorMessage}", ex.Message);
+                _logger.Error("   - **RESPONSE_LENGTH**: {ResponseLength}", deepSeekResponse?.Length ?? 0);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// **BASIC_OCR_INVOICES_CREATION**: Creates minimal OcrInvoices object for template creation.
+        /// **ARCHITECTURAL_INTENT**: Provide minimum required structure for Invoice template instantiation.
+        /// **BUSINESS_RULE**: Template must have valid OcrInvoices object to be processed by pipeline.
+        /// </summary>
+        private OCR.Business.Entities.Invoices CreateBasicOcrInvoices(string templateName, string filePath)
+        {
+            _logger.Error("🏗️ **CREATE_BASIC_OCR_INVOICES_START**: Creating minimal OcrInvoices structure");
+            _logger.Error("   - **TEMPLATE_NAME**: {TemplateName}", templateName);
+            _logger.Error("   - **FILE_PATH**: {FilePath}", filePath);
+
+            try
+            {
+                var ocrInvoices = new OCR.Business.Entities.Invoices
+                {
+                    Name = templateName,
+                    Id = 0, // Temporary ID for runtime template
+                    ApplicationSettingsId = 1 // Default application settings
+                };
+
+                _logger.Error("   - **OCR_INVOICES_CREATED**: Name='{Name}', Id={Id}, ApplicationSettingsId={AppId}", 
+                    ocrInvoices.Name, ocrInvoices.Id, ocrInvoices.ApplicationSettingsId);
+
+                return ocrInvoices;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **CREATE_BASIC_OCR_INVOICES_FAILED**: Exception creating OcrInvoices structure");
+                _logger.Error("   - **TEMPLATE_NAME**: {TemplateName}", templateName);
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// **SHIPMENT_INVOICE_FILE_TYPE_RETRIEVAL**: Gets FileType configuration for ShipmentInvoice processing using FileTypeManager.
+        /// **ARCHITECTURAL_INTENT**: Use FileTypeManager to lookup proper FileType for ShipmentInvoice entity creation.
+        /// **BUSINESS_RULE**: FileType determines which entity type (ShipmentInvoice vs SimplifiedDeclaration) gets created.
+        /// </summary>
+        private CoreEntities.Business.Entities.FileTypes GetShipmentInvoiceFileType()
+        {
+            _logger.Error("🔍 **GET_SHIPMENT_INVOICE_FILE_TYPE_START**: Using FileTypeManager to lookup ShipmentInvoice FileType");
+
+            try
+            {
+                _logger.Error("   - **LOOKUP_METHOD**: Using FileTypeManager.GetFileType() for EntryType='{EntryType}', Format='{Format}'", 
+                    FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+
+                // Use FileTypeManager to get FileType by EntryType and Format
+                // Note: Using a generic filename pattern since we need any ShipmentInvoice PDF FileType
+                var shipmentInvoiceFileTypes = FileTypeManager.GetFileType(
+                    FileTypeManager.EntryTypes.ShipmentInvoice,
+                    FileTypeManager.FileFormats.PDF,
+                    "*.pdf"  // Generic PDF pattern to match any ShipmentInvoice FileType
+                ).Result;
+
+                if (shipmentInvoiceFileTypes != null && shipmentInvoiceFileTypes.Any())
+                {
+                    var fileType = shipmentInvoiceFileTypes.First();
+                    _logger.Error("✅ **FILETYPE_FOUND**: Found ShipmentInvoice PDF FileType via FileTypeManager");
+                    _logger.Error("   - **FILE_TYPE_ID**: {FileTypeId}", fileType.Id);
+                    _logger.Error("   - **DESCRIPTION**: '{Description}'", fileType.Description);
+                    _logger.Error("   - **ENTRY_TYPE**: '{EntryType}'", fileType.FileImporterInfos?.EntryType);
+                    _logger.Error("   - **FORMAT**: '{Format}'", fileType.FileImporterInfos?.Format);
+                    _logger.Error("   - **FILE_PATTERN**: '{FilePattern}'", fileType.FilePattern);
+                    return fileType;
+                }
+                else
+                {
+                    _logger.Error("❌ **NO_FILETYPE_FOUND**: FileTypeManager returned no ShipmentInvoice PDF FileTypes");
+                    _logger.Error("   - **LOOKUP_CRITERIA**: EntryType='{EntryType}', Format='{Format}', Pattern='*.pdf'", 
+                        FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+                    _logger.Error("   - **POSSIBLE_CAUSES**: Missing FileType in database or incorrect ApplicationSettingsId");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **GET_SHIPMENT_INVOICE_FILE_TYPE_FAILED**: Exception using FileTypeManager");
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Error("   - **LOOKUP_CRITERIA**: EntryType='{EntryType}', Format='{Format}'", 
+                    FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+                return null;
+            }
         }
 
 

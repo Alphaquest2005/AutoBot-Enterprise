@@ -194,6 +194,12 @@ InvoiceTotal (166.30) - Calculated (166.30) = TotalsZero (0.00) ✅
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.DetailedDiagnosticGenerator.GenerateDetailedDiagnosticFiles_v1_1_FocusedTest" "/Logger:console;verbosity=detailed"
 ```
 
+#### **MANGO Diagnostic Test** (Specific MANGO Invoice Analysis):
+```bash
+# GenerateDetailedDiagnosticFiles_v1_1_MangoChallenge - Generates diagnostic file specifically for MANGO invoice (03152025_TOTAL AMOUNT.pdf)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.DetailedDiagnosticGenerator.GenerateDetailedDiagnosticFiles_v1_1_MangoChallenge" "/Logger:console;verbosity=detailed"
+```
+
 ### **Files to Modify**
 - **OCRErrorDetection.cs**: Fix duplicate detection in `DetectAmazonSpecificErrors()` lines 194-258
 - **PDFImportTests.cs**: Update test expectations in `CanImportAmazoncomOrder11291264431163432()` line 618
@@ -228,6 +234,9 @@ InvoiceTotal (166.30) - Calculated (166.30) = TotalsZero (0.00) ✅
 ```bash
 # Run Amazon invoice test (20 min timeout)
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportAmazoncomOrder11291264431163432" "/Logger:console;verbosity=detailed"
+
+# Run MANGO import test (mango import test - template creation from unknown supplier)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning" "/Logger:console;verbosity=detailed"
 
 # Run Amazon DeepSeek diagnostic test (generates v1.1_Improved_Credit_Detection diagnostic files)
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.DetailedDiagnosticGenerator.GenerateDetailedDiagnosticFiles_v1_1_FocusedTest" "/Logger:console;verbosity=detailed"
@@ -338,6 +347,44 @@ Logging is **essential** for LLMs to understand, diagnose, and fix errors in thi
 
 **Purpose**: This mandate ensures the system is completely self-documenting, that its logs provide full operational context for any LLM, and that code integrity is never compromised for quick fixes.
 
+## 🏗️ **The Established Codebase Respect Mandate v1.0**
+
+**Directive Name**: `ESTABLISHED_CODEBASE_RESPECT_MANDATE`  
+**Status**: ✅ **ACTIVE**  
+
+**Core Principle**: When working with an established, production codebase that has been developed over years, always respect existing patterns, architectures, and conventions. Never assume or generate solutions without first understanding how the current system operates.
+
+**Mandatory Research & Respect Requirements**:
+
+1. **Ask Questions First**: 
+   - Before implementing any solution, ask questions about existing patterns
+   - Verify assumptions about how the system works
+   - Request guidance on the proper approach for the specific codebase
+
+2. **Look for Existing Patterns**: 
+   - Search the codebase for similar functionality before creating new code
+   - Follow established conventions for naming, structure, and architecture
+   - Use existing utilities, managers, and services rather than reinventing
+
+3. **Avoid Generating New Code Without Understanding**:
+   - Never create new methods/classes without understanding current patterns
+   - Research how similar problems are solved in the existing codebase
+   - Understand the architectural decisions that led to current implementations
+
+4. **Research Current Functionality**:
+   - Use search tools to understand how similar features work
+   - Study existing database interactions, API patterns, and service usage
+   - Learn from working examples before attempting modifications
+
+5. **Verify Assumptions**:
+   - Test understanding of system behavior before implementing changes
+   - Confirm architectural decisions with knowledgeable stakeholders
+   - Validate that proposed solutions align with existing system design
+
+**Purpose**: This mandate ensures that modifications respect the investment in existing architecture, maintain system consistency, and leverage proven patterns rather than introducing potentially incompatible approaches.
+
+**Critical Reminder**: Established codebases represent years of business logic, architectural decisions, and proven solutions. Respect this investment by working within the established framework rather than against it.
+
 ### **Strategic Logging Architecture**
 
 #### **🎯 Logging Lens System (Optimized for LLM Diagnosis)**:
@@ -441,91 +488,100 @@ using (LogLevelOverride.Begin(LogEventLevel.Verbose))
 
 ---
 
-## 🔄 Current Development Session: v1.3 Multi-Field Expansion System
+## 🔄 Current Development Session: v2.0 Hybrid Document Processing System
 
-### **Session Context** (2025-06-27)
-- **Primary Goal**: ✅ **COMPLETED** - Implement multi-field expansion system for format corrections within comprehensive line extractions
-- **Session Type**: Continuation from previous conversation (context limit reached)
-- **Focus Area**: Multi-field line extraction with individual field-level format corrections
+### **Session Context** (2025-06-28)
+- **Primary Goal**: 🔄 **IN PROGRESS** - Implement hybrid document processing for PDFs containing both invoice and customs declaration content
+- **Session Type**: Continuation from previous conversation (context limit reached)  
+- **Focus Area**: Template creation for missing ShipmentInvoice types when invoice content is detected
 
-### **Key Accomplishments This Session**:
-1. ✅ **Multi-Field Expansion Logic**: Implemented critical missing piece that expands single multi-field InvoiceError into multiple RegexUpdateRequests
-2. ✅ **Pattern/Replacement Field Transfer**: Verified complete data flow from DeepSeek JSON → CorrectionResult → RegexUpdateRequest → Database Strategies
-3. ✅ **Production Pipeline Integration**: Enhanced main orchestration to create separate format_correction requests for each field correction
-4. ✅ **Database Strategy Support**: Confirmed OmissionUpdateStrategy handles multi_field_omission type and FieldFormatUpdateStrategy processes individual corrections
-5. ✅ **Strategic Logging Preservation**: Maintained comprehensive diagnostic logging throughout the enhancement
+### **CRITICAL ARCHITECTURAL DISCOVERY**:
+**Problem**: MANGO PDF contains BOTH invoice content (UCSJB6/UCSJIB6 orders, totals) AND SimplifiedDeclaration content, but pipeline only processes SimplifiedDeclaration, missing the invoice data.
 
-### **Technical Changes Implemented**:
-- **OCRCorrectionService.cs** (lines 123-189): Replaced simple 1:1 conversion with sophisticated expansion logic that creates:
-  - **Main Request**: Primary omission/multi_field_omission for comprehensive line regex
-  - **Additional Requests**: Individual format_correction requests for each FieldCorrection with Pattern/Replacement
-- **Data Flow Verification**: Confirmed complete pipeline from DeepSeek response → multi-field expansion → database strategies
+**Root Cause**: `GetPossibleInvoicesStep` finds SimplifiedDeclaration template but no ShipmentInvoice template exists for the invoice portion.
 
-### **Critical Architecture Enhancement**:
-The implementation solves the core multi-field challenge where DeepSeek generates:
-```json
+### **HYBRID DOCUMENT PROCESSING SOLUTION**:
+
+#### **✅ Trigger Condition (FINALIZED)**:
+```csharp
+// In GetPossibleInvoicesStep, after normal template matching:
+var hasShipmentInvoiceTemplate = context.MatchedTemplates.Any(t => 
+    t.FileType?.FileImporterInfos?.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice);
+
+if (!hasShipmentInvoiceTemplate && ContainsInvoiceKeywords(pdfText))
 {
-  "error_type": "multi_field_omission",
-  "suggested_regex": "(?<ItemCode>\\\\d+)\\\\s+(?<ItemDescription>NAUTICAL BOTTOMK NT [A-Za-z\\\\s\\\\/\\\\d]+)\\\\s+(?<Quantity>\\\\d+)\\\\s+PC...",
-  "captured_fields": ["ItemCode", "ItemDescription", "Quantity", "UnitPrice", "LineTotal"],
-  "field_corrections": [
+    // Create ShipmentInvoice template via OCR correction service
+    var ocrTemplate = await ocrService.CreateInvoiceTemplateAsync(pdfText, filePath);
+    if (ocrTemplate != null)
     {
-      "field_name": "ItemDescription", 
-      "pattern": "BOTTOMK NT", 
-      "replacement": "BOTTOM PAINT"
+        // Add to existing templates
+        var updatedTemplates = context.MatchedTemplates.ToList();
+        updatedTemplates.Add(ocrTemplate);
+        context.MatchedTemplates = updatedTemplates;
     }
-  ]
 }
 ```
 
-This now correctly creates:
-1. **Line Creation Request**: Creates comprehensive regex capturing all fields
-2. **Format Correction Request**: Creates field-level format rule for ItemDescription pattern replacement
+#### **🎯 Implementation Strategy (Option B - APPROVED)**:
+1. **Location**: `GetPossibleInvoicesStep` (NOT ReadFormattedTextStep)
+2. **Trigger**: Templates found BUT no ShipmentInvoice type AND invoice content exists  
+3. **Action**: Create minimal Invoice template via `OCRCorrectionService.CreateInvoiceTemplateAsync()`
+4. **Result**: Both SimplifiedDeclaration and ShipmentInvoice templates processed in same pipeline run
 
-### **Database Verification Commands** 🗄️:
-```bash
-# Database Connection (from App.config)
-sqlcmd -S "MINIJOE\\SQLDEVELOPER2022" -U sa -P "pa\$\$word" -d "WebSource-AutoBot"
-
-# Verify Multi-Field Line Creation
-SELECT TOP 10 l.Id, l.Name, l.PartId, r.RegEx, r.Description 
-FROM Lines l 
-INNER JOIN RegularExpressions r ON l.RegularExpressionsId = r.Id 
-WHERE l.Name LIKE 'AutoOmission_%' 
-ORDER BY l.Id DESC;
-
-# Verify Field Corrections
-SELECT TOP 10 ff.Id, f.Field, f.Key, pr.RegEx as Pattern, rr.RegEx as Replacement
-FROM OCR_FieldFormatRegEx ff
-INNER JOIN Fields f ON ff.FieldId = f.Id
-INNER JOIN RegularExpressions pr ON ff.RegularExpressionsId = pr.Id  
-INNER JOIN RegularExpressions rr ON ff.ReplacementRegularExpressionsId = rr.Id
-ORDER BY ff.Id DESC;
-
-# Verify Learning Records
-SELECT TOP 10 FieldName, CorrectionType, OriginalError, CorrectValue, Success, CreatedDate
-FROM OCRCorrectionLearning 
-WHERE CorrectionType IN ('multi_field_omission', 'format_correction')
-ORDER BY Id DESC;
+#### **📋 Implementation Plan (READY FOR IMPLEMENTATION)**:
+```csharp
+public async Task<Invoice> CreateInvoiceTemplateAsync(string pdfText, string filePath)
+{
+    // Create minimal Invoice template structure
+    var ocrInvoices = CreateBasicOcrInvoices("OCR_Generated_Invoice", filePath);
+    var template = new Invoice(ocrInvoices, _logger);
+    template.FormattedPdfText = pdfText;
+    template.FileType = GetShipmentInvoiceFileType();
+    
+    return template;
+}
 ```
 
-### **Critical Success States to Preserve**:
-- **Multi-Field Pipeline**: Complete flow from DeepSeek → expansion → database integration
-- **Format Correction Linkage**: Proper FieldId linkage between omission and format_correction requests
-- **Strategic Logging**: Comprehensive diagnostic logging for LLM troubleshooting
-- **Perfect Balance Accuracy**: All files maintain 0.0000 balance error while supporting complex multi-field scenarios
+### **MANGO PDF Expected Results**:
+- **SimplifiedDeclaration**: Creates customs data (consignee, manifest info)  
+- **ShipmentInvoice**: Creates invoice data with UCSJB6/UCSJIB6 order numbers and totals
+- **Database Learning**: OCR corrections create templates for future MANGO invoices
+
+### **IMPLEMENTATION STATUS**:
+- ❓ **GetPossibleInvoicesStep**: Location and structure need investigation
+- ❓ **Invoice Constructor**: Parameter requirements need clarification  
+- ❓ **OcrInvoices Creation**: Helper methods need implementation
+- ❓ **FileType Integration**: ShipmentInvoice FileType setup needed
+- ❌ **Wrong Implementation**: Removed incorrect ReadFormattedTextStep approach
+
+### **OUTSTANDING QUESTIONS FOR CONTINUATION**:
+1. **GetPossibleInvoicesStep Location**: Where is this class and what's its structure?
+2. **Invoice Constructor**: Exact parameters for `new Invoice(ocrInvoices, logger)`?
+3. **OcrInvoices Type**: What type/class and minimum required properties?
+4. **FileType Setup**: How to get ShipmentInvoice FileType correctly?
+5. **Template Properties**: What other properties needed for valid template?
+
+### **CRITICAL SUCCESS STATES TO PRESERVE**:
+- **v1.3 Multi-Field System**: Must not break existing multi-field expansion logic
+- **Database Learning**: OCR corrections must create proper learning entries  
+- **Pipeline Compatibility**: New templates must work with existing ReadFormattedTextStep
+- **Perfect Balance Accuracy**: All financial calculations must remain accurate
+
+### **LOGGING MANDATE ENHANCEMENT v2.0**:
+**🚨 CRITICAL FOR LLM DIAGNOSIS**: All logging must provide complete context, data state, and diagnostic information. Logging is **TOP PRIORITY** for LLM code understanding and refactoring. Every log entry must enable complete reconstruction of program state and data flow. Never use `.Error()` for normal processing - use appropriate log levels with LogLevelOverride for visibility.
+
+### **Test Commands for MANGO Verification**:
+```bash
+# Test MANGO hybrid document processing  
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning" "/Logger:console;verbosity=detailed"
+```
 
 ### **Next Session Handoff**:
-- **v1.3 Multi-Field System**: Fully functional with expansion logic and database integration
-- **Database Verification**: sqlcmd commands available for real-time validation
-- **Regression Prevention**: Any future changes must preserve the expansion architecture
-- **Testing Ready**: Integration tests can validate complete multi-field pipeline end-to-end
-
-### **Session Commands Applied**:
-- Session continuation from previous context
-- Critical gap identification and resolution
-- Multi-field expansion implementation
-- Database verification command setup
+- **Architecture Clarified**: Hybrid document processing approach finalized
+- **Implementation Location**: GetPossibleInvoicesStep (not ReadFormattedTextStep)  
+- **Questions Outstanding**: Need answers to architecture questions to continue implementation
+- **Option B Approved**: Create minimal template approach confirmed
+- **v1.3 Preserved**: Multi-field expansion system remains intact
 
 ---
 

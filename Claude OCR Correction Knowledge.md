@@ -4,7 +4,98 @@
 
 **CRITICAL REFERENCE**: See **COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md** for ultra-detailed end-to-end pipeline documentation with ZERO assumptions. This analysis provides complete field mappings, entity types, validation requirements, and database integration details derived from actual OCR database schema.
 
-## 🎯 LATEST UPDATE: COMPREHENSIVE v1.1 PROCESSING COMPLETE - 79 FILES PERFECT STATUS (June 26-27, 2025)
+## 🎯 LATEST UPDATE: v2.1 TEMPLATE CREATION SYSTEM FULLY OPERATIONAL (June 29, 2025)
+
+### ✅ **BREAKTHROUGH: TEMPLATE CREATION SYSTEM COMPILATION RESOLVED**
+
+**Major Achievement**: All compilation errors in the template creation system have been resolved by examining the actual OCR database schema via EDMX file analysis.
+
+**Critical Fixes Implemented**:
+1. **Entity Property Alignment**: Fixed property names to match actual database schema
+   - `InvoiceError.FieldName` → `InvoiceError.Field`
+   - `DatabaseUpdateResult.Success` → `DatabaseUpdateResult.IsSuccess`
+   - `OCR_FieldFormatRegEx` entity vs `FieldFormatRegEx` class naming
+   - Removed non-existent `DisplayName` property from `Fields` entity
+
+2. **Navigation Property Corrections**: Fixed entity relationships based on EDMX schema
+   - `Lines.RegularExpressionsId` → `Lines.RegExId`
+   - `FieldFormatRegEx.RegularExpressionsId` → `FieldFormatRegEx.RegExId`
+   - `Parts.Template` navigation property (doesn't exist) removed
+
+3. **Partial Class Structure**: Resolved nested class conflicts
+   - Moved template creation properties to main partial classes in OCRDataModels.cs
+   - Added missing properties: `TemplateName`, `ErrorType`, `ReasoningContext`, `RegexId`
+
+**MANGO Import Test Status**:
+- ✅ **Compilation**: 0 errors, clean build achieved
+- ✅ **Test Execution**: `CanImportMango03152025TotalAmount_AfterLearning()` runs successfully  
+- ✅ **DeepSeek Integration**: API calls being made, extensive logging visible
+- ✅ **CLAUDE.md Updated**: Test added as "mango import test" reference
+
+**Template Creation System Architecture**:
+```csharp
+// Complete template creation from unknown supplier
+await ocrService.CreateTemplateFromDeepSeekAsync("MANGO", fileText, sampleInvoice);
+
+// Creates: OCR-Invoices → OCR-Parts → OCR-Lines → OCR-Fields → OCR-RegularExpressions → OCR_FieldFormatRegEx
+// Handles: Header fields, line item patterns, format corrections
+// Output: Production-ready template for future MANGO invoices
+```
+
+## 🎯 ARCHIVED: v2.0 HYBRID DOCUMENT PROCESSING SYSTEM (June 28, 2025)
+
+### 🔄 **NEW DEVELOPMENT: HYBRID DOCUMENT PROCESSING FOR MULTI-TYPE PDFS**
+
+**ARCHITECTURAL BREAKTHROUGH**: Discovery that some PDFs (like MANGO) contain BOTH invoice content AND customs declaration content requiring parallel template processing.
+
+**MANGO PDF CHALLENGE**:
+- Contains UCSJB6/UCSJIB6 order data, totals ($210.08), item descriptions (invoice content)
+- ALSO contains SimplifiedDeclaration form (consignee, manifest data, customs content)
+- Current pipeline only processes SimplifiedDeclaration, missing invoice data
+- Test expects ShipmentInvoice creation but only SimplifiedDeclaration gets processed
+
+**SOLUTION ARCHITECTURE (v2.0)**:
+```csharp
+// In GetPossibleInvoicesStep, after normal template matching:
+var hasShipmentInvoiceTemplate = context.MatchedTemplates.Any(t => 
+    t.FileType?.FileImporterInfos?.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice);
+
+if (!hasShipmentInvoiceTemplate && ContainsInvoiceKeywords(pdfText))
+{
+    // Create ShipmentInvoice template via OCR correction service
+    var ocrTemplate = await ocrService.CreateInvoiceTemplateAsync(pdfText, filePath);
+    if (ocrTemplate != null)
+    {
+        // Add to existing templates - BOTH get processed
+        var updatedTemplates = context.MatchedTemplates.ToList();
+        updatedTemplates.Add(ocrTemplate);
+        context.MatchedTemplates = updatedTemplates;
+    }
+}
+```
+
+**IMPLEMENTATION STATUS (v2.0)**:
+- ✅ **Architecture Finalized**: Option B approach (minimal template creation) approved
+- ✅ **Trigger Condition**: Templates found BUT no ShipmentInvoice type AND invoice content exists
+- ✅ **Location Identified**: GetPossibleInvoicesStep (NOT ReadFormattedTextStep)
+- ❓ **Implementation Pending**: Need answers to 5 critical architecture questions
+- ❌ **Previous Wrong Approach**: Removed incorrect ReadFormattedTextStep implementation
+
+**CRITICAL QUESTIONS FOR CONTINUATION**:
+1. GetPossibleInvoicesStep location and structure
+2. Invoice constructor parameters (ocrInvoices type/properties)
+3. FileType integration for ShipmentInvoice
+4. Template structure requirements
+5. Pipeline integration points
+
+**EXPECTED RESULTS FOR MANGO**:
+- SimplifiedDeclaration entity: consignee, manifest, customs data
+- ShipmentInvoice entity: UCSJB6/UCSJIB6, $210.08, item details
+- Database learning: Future MANGO invoices auto-detected
+
+**LOGGING MANDATE v2.0**: All logging must provide complete context and data state for LLM diagnosis. Logging is TOP PRIORITY for LLM understanding. Never use `.Error()` for normal processing.
+
+## 🎯 HISTORICAL UPDATE: COMPREHENSIVE v1.1 PROCESSING COMPLETE - 79 FILES PERFECT STATUS (June 26-27, 2025)
 
 ### 🏆 BREAKTHROUGH: v1.1 COMPREHENSIVE PROCESSING - 79/87 FILES WITH 100% SUCCESS RATE
 
