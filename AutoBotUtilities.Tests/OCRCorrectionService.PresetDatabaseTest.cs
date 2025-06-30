@@ -46,7 +46,7 @@ namespace AutoBotUtilities.Tests.Production
                 {
                     _logger.Information("Removing {Count} existing preset test corrections", existingCorrections.Count);
                     ctx.OCRCorrectionLearning.RemoveRange(existingCorrections);
-                    await ctx.SaveChangesAsync();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
 
                 // CRITICAL: From template_context_amazon.json, we need to create a NEW line for TotalInsurance
@@ -113,7 +113,7 @@ namespace AutoBotUtilities.Tests.Production
                 _logger.Error("🔍 **PRESET_CORRECTIONS_ADDED**: Adding 2 preset corrections to database");
 
                 // Save changes
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesAsync().ConfigureAwait(false);
 
                 _logger.Error("🔍 **PRESET_CORRECTIONS_SAVED**: Gift Card ID={GiftCardId}, Free Shipping ID={FreeShippingId}", 
                     giftCardCorrection.Id, freeShippingCorrection.Id);
@@ -184,7 +184,7 @@ namespace AutoBotUtilities.Tests.Production
                 {
                     _logger.Information("Cleaning up {Count} test corrections", testCorrections.Count);
                     ctx.OCRCorrectionLearning.RemoveRange(testCorrections);
-                    await ctx.SaveChangesAsync();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
         }

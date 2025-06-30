@@ -243,8 +243,8 @@ namespace AutoBotUtilities.Tests.Production
                 _logger.Information("🔍 **DEEPSEEK_PIPELINE_TEST**: Starting complete DeepSeek detection test");
                 
                 // Act - Call the private DetectHeaderFieldErrorsAndOmissionsAsync method
-                var headerErrors = await InvokePrivateMethodAsync<List<InvoiceError>>(_service, 
-                    "DetectHeaderFieldErrorsAndOmissionsAsync", invoice, _actualAmazonInvoiceText, null);
+                var headerErrors = await this.InvokePrivateMethodAsync<List<InvoiceError>>(this._service, 
+                                       "DetectHeaderFieldErrorsAndOmissionsAsync", invoice, this._actualAmazonInvoiceText, null).ConfigureAwait(false);
                 
                 // Log DeepSeek results
                 _logger.Information("🔍 **DEEPSEEK_HEADER_ERRORS**: Detected {Count} header errors", headerErrors?.Count ?? 0);
@@ -270,8 +270,8 @@ namespace AutoBotUtilities.Tests.Production
                 
                 // Test the complete detection orchestration
                 _logger.Information("🔍 **ORCHESTRATION_TEST**: Testing complete DetectInvoiceErrorsAsync");
-                var allErrors = await InvokePrivateMethodAsync<List<InvoiceError>>(_service, 
-                    "DetectInvoiceErrorsAsync", invoice, _actualAmazonInvoiceText, null);
+                var allErrors = await this.InvokePrivateMethodAsync<List<InvoiceError>>(this._service, 
+                                    "DetectInvoiceErrorsAsync", invoice, this._actualAmazonInvoiceText, null).ConfigureAwait(false);
                 
                 _logger.Information("🔍 **ALL_ERRORS_COUNT**: Total detected errors: {Count}", allErrors?.Count ?? 0);
                 
@@ -390,12 +390,12 @@ namespace AutoBotUtilities.Tests.Production
                     "DetectAmazonSpecificErrors", invoice, _actualAmazonInvoiceText);
                 
                 // Step 2: Test DeepSeek header detection
-                var deepSeekErrors = await InvokePrivateMethodAsync<List<InvoiceError>>(_service, 
-                    "DetectHeaderFieldErrorsAndOmissionsAsync", invoice, _actualAmazonInvoiceText, null);
+                var deepSeekErrors = await this.InvokePrivateMethodAsync<List<InvoiceError>>(this._service, 
+                                         "DetectHeaderFieldErrorsAndOmissionsAsync", invoice, this._actualAmazonInvoiceText, null).ConfigureAwait(false);
                 
                 // Step 3: Test complete orchestration
-                var allErrors = await InvokePrivateMethodAsync<List<InvoiceError>>(_service, 
-                    "DetectInvoiceErrorsAsync", invoice, _actualAmazonInvoiceText, null);
+                var allErrors = await this.InvokePrivateMethodAsync<List<InvoiceError>>(this._service, 
+                                    "DetectInvoiceErrorsAsync", invoice, this._actualAmazonInvoiceText, null).ConfigureAwait(false);
                 
                 // Analysis and logging
                 _logger.Information("🔍 **PIPELINE_RESULTS**: Amazon={Amazon}, DeepSeek={DeepSeek}, Total={Total}", 
@@ -459,12 +459,12 @@ namespace AutoBotUtilities.Tests.Production
             
             if (result is Task<T> taskResult)
             {
-                return await taskResult;
+                return await taskResult.ConfigureAwait(false);
             }
             
             if (result is Task task)
             {
-                await task;
+                await task.ConfigureAwait(false);
                 return default(T);
             }
             

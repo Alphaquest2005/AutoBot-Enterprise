@@ -55,6 +55,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 string stepName = GetStepName(step, stepCounter);
                 LogStepProcessing(stepCounter, stepName); // Moved logging here
 
+                // **CRITICAL_DEBUG**: Special logging for GetPossibleInvoicesStep
+                if (stepName.Contains("GetPossibleInvoicesStep"))
+                {
+                    _logger.Error("🎯 **CRITICAL_DEBUG_GETPOSSIBLEINVOICESSTEP**: About to execute GetPossibleInvoicesStep");
+                    _logger.Error("   - **STEP_COUNTER**: {StepCounter}", stepCounter);
+                    _logger.Error("   - **STEP_NAME**: {StepName}", stepName);
+                    _logger.Error("   - **STEP_TYPE**: {StepType}", step?.GetType()?.FullName ?? "NULL");
+                    _logger.Error("   - **CONTEXT_TYPE**: {ContextType}", context?.GetType()?.FullName ?? "NULL");
+                }
+
                 if (step == null)
                 {
                     LogNullStepWarning(stepCounter);
@@ -63,6 +73,22 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                 // Execute step asynchronously and check result
                 bool stepSuccess = await ExecuteStepAsync(step, context, invoiceContext, stepName, stepCounter).ConfigureAwait(false);
+
+                // **CRITICAL_DEBUG**: Special logging for GetPossibleInvoicesStep result
+                if (stepName.Contains("GetPossibleInvoicesStep"))
+                {
+                    _logger.Error("🔍 **CRITICAL_DEBUG_GETPOSSIBLEINVOICESSTEP_RESULT**: GetPossibleInvoicesStep execution completed");
+                    _logger.Error("   - **STEP_SUCCESS**: {StepSuccess}", stepSuccess);
+                    _logger.Error("   - **STEP_COUNTER**: {StepCounter}", stepCounter);
+                    
+                    var invoiceCtx = context as InvoiceProcessingContext;
+                    if (invoiceCtx != null)
+                    {
+                        _logger.Error("   - **MATCHED_TEMPLATES_COUNT**: {Count}", invoiceCtx.MatchedTemplates?.Count() ?? 0);
+                        _logger.Error("   - **MATCHED_TEMPLATES**: {Templates}", 
+                            string.Join(", ", invoiceCtx.MatchedTemplates?.Select(t => $"{t.OcrInvoices?.Name}({t.FileType?.FileImporterInfos?.EntryType})") ?? new string[0]));
+                    }
+                }
 
                 if (!stepSuccess)
                 {

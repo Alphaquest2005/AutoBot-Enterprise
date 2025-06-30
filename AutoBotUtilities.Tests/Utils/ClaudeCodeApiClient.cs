@@ -56,8 +56,8 @@ namespace AutoBotUtilities.Tests.Utils
                 {
                     process.Start();
                     
-                    var output = await process.StandardOutput.ReadToEndAsync();
-                    var error = await process.StandardError.ReadToEndAsync();
+                    var output = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                    var error = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
                     
                     process.WaitForExit();
 

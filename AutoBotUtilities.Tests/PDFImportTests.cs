@@ -598,7 +598,7 @@ namespace AutoBotUtilities.Tests
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "112-9126443-1163432");
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "112-9126443-1163432").ConfigureAwait(false);
                         Assert.That(detailCount, Is.EqualTo(2), $"Expected = 2 ShipmentInvoiceDetails, but found {detailCount}.");
                     }
 
@@ -702,7 +702,7 @@ namespace AutoBotUtilities.Tests
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "111-8019845-2302666");
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "111-8019845-2302666").ConfigureAwait(false);
                         _logger.Information("📊 **DETAIL_COUNT_CHECK**: Found {DetailCount} invoice details for invoice 111-8019845-2302666", detailCount);
                         Assert.That(detailCount, Is.GreaterThan(0), $"Expected at least 1 ShipmentInvoiceDetails, but found {detailCount}.");
                     }
@@ -715,9 +715,9 @@ namespace AutoBotUtilities.Tests
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         var recentCorrections = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .OrderByDescending(x => x.Id)
-                            .ToListAsync();
+                                                    .Where(x => x.CreatedDate > testStartTime)
+                                                    .OrderByDescending(x => x.Id)
+                                                    .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **PRODUCTION_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
 
@@ -740,14 +740,14 @@ namespace AutoBotUtilities.Tests
 
                         // Check for new Lines created (omission corrections create new Lines)
                         var allAutoOmissionLines = await ocrCtx.Lines
-                            .Where(l => l.Name.StartsWith("AutoOmission_"))
-                            .ToListAsync();
+                                                       .Where(l => l.Name.StartsWith("AutoOmission_"))
+                                                       .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **NEW_LINES**: Found {Count} total AutoOmission lines", allAutoOmissionLines.Count);
 
                         // Check for new FieldFormat rules (format corrections create FieldFormat rules)
                         var allFieldFormats = await ocrCtx.OCR_FieldFormatRegEx
-                            .ToListAsync();
+                                                  .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **NEW_FIELD_FORMATS**: Found {Count} total FieldFormat rules", allFieldFormats.Count);
 
@@ -797,6 +797,26 @@ namespace AutoBotUtilities.Tests
                 LogFilterState.TargetSourceContextForDetails = "WaterNut.DataSpace.OCRCorrectionService";
                 LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 
+                // Clear existing MANGO templates to force OCR template creation for new supplier
+                _logger.Information("🧹 **CLEARING_EXISTING_TEMPLATES**: Removing existing MANGO templates to simulate new supplier scenario");
+                using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                {
+                    // CRITICAL FIX: Only target MANGO templates specifically, not all templates with ApplicationSettingsId = 3
+                    var existingTemplates = ocrCtx.Invoices.Where(x => x.Name == "MANGO").ToList();
+                    _logger.Information("   - **TEMPLATES_TO_REMOVE**: {Count} MANGO templates found", existingTemplates.Count);
+                    
+                    if (existingTemplates.Any())
+                    {
+                        ocrCtx.Invoices.RemoveRange(existingTemplates);
+                        await ocrCtx.SaveChangesAsync().ConfigureAwait(false);
+                        _logger.Information("   - **TEMPLATES_CLEARED**: All existing MANGO templates removed for new supplier test");
+                    }
+                    else
+                    {
+                        _logger.Information("   - **NO_MANGO_TEMPLATES**: No existing MANGO templates found to remove");
+                    }
+                }
+
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\03152025_TOTAL AMOUNT.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
 
@@ -807,17 +827,17 @@ namespace AutoBotUtilities.Tests
                 }
 
                 var fileLst = await FileTypeManager
-                                  .GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testFile)
+                                  .GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile)
                                   .ConfigureAwait(false);
 
                 var fileTypes = fileLst
                      .OfType<CoreEntities.Business.Entities.FileTypes>()
-                     .Where(x => x.Description == "Unknown")
+                     .Where(x => x.Description == "Shipment Invoice")
                      .ToList();
 
                 if (!fileTypes.Any())
                 {
-                    Assert.Warn($"No suitable 'Unknown' PDF FileType found for: {testFile}");
+                    Assert.Warn($"No suitable 'Shipment Invoice' PDF FileType found for: {testFile}");
                     return;
                 }
 
@@ -862,7 +882,7 @@ namespace AutoBotUtilities.Tests
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == finalInvoice.InvoiceNo);
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == finalInvoice.InvoiceNo).ConfigureAwait(false);
                         _logger.Information("📊 **DETAIL_COUNT_CHECK**: Found {DetailCount} invoice details for invoice {InvoiceNo}", detailCount, finalInvoice.InvoiceNo);
                         Assert.That(detailCount, Is.GreaterThan(0), $"Expected at least 1 ShipmentInvoiceDetails, but found {detailCount}.");
                     }
@@ -875,9 +895,9 @@ namespace AutoBotUtilities.Tests
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         var recentCorrections = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .OrderByDescending(x => x.Id)
-                            .ToListAsync();
+                                                    .Where(x => x.CreatedDate > testStartTime)
+                                                    .OrderByDescending(x => x.Id)
+                                                    .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **MANGO_PRODUCTION_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
 
@@ -900,14 +920,14 @@ namespace AutoBotUtilities.Tests
 
                         // Check for new Lines created (omission corrections create new Lines)
                         var allAutoOmissionLines = await ocrCtx.Lines
-                            .Where(l => l.Name.StartsWith("AutoOmission_"))
-                            .ToListAsync();
+                                                       .Where(l => l.Name.StartsWith("AutoOmission_"))
+                                                       .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **MANGO_NEW_LINES**: Found {Count} total AutoOmission lines", allAutoOmissionLines.Count);
 
                         // Check for new FieldFormat rules (format corrections create FieldFormat rules)
                         var allFieldFormats = await ocrCtx.OCR_FieldFormatRegEx
-                            .ToListAsync();
+                                                  .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **MANGO_NEW_FIELD_FORMATS**: Found {Count} total FieldFormat rules", allFieldFormats.Count);
 
@@ -1031,7 +1051,7 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "112-9126443-1163432");
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "112-9126443-1163432").ConfigureAwait(false);
                         Assert.That(detailCount, Is.EqualTo(2), $"Expected = 2 ShipmentInvoiceDetails, but found {detailCount}.");
                     }
 
@@ -1043,9 +1063,9 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         var recentCorrections = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .OrderByDescending(x => x.Id)
-                            .ToListAsync();
+                                                    .Where(x => x.CreatedDate > testStartTime)
+                                                    .OrderByDescending(x => x.Id)
+                                                    .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **AMAZON_TEST_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
 
@@ -1053,8 +1073,8 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
                             $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
 
                         var newRegexPatterns = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .ToListAsync();
+                                                   .Where(x => x.CreatedDate > testStartTime)
+                                                   .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **Corrections**: Found {Count} new regex patterns", newRegexPatterns.Count);
 
@@ -1161,7 +1181,7 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
 
                     using (var ctx = new EntryDataDSContext())
                     {
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "8251357168");
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == "8251357168").ConfigureAwait(false);
                         Assert.That(detailCount, Is.EqualTo(8), $"Expected = 8 ShipmentInvoiceDetails, but found {detailCount}.");
                     }
 
@@ -1173,9 +1193,9 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         var recentCorrections = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .OrderByDescending(x => x.Id)
-                            .ToListAsync();
+                                                    .Where(x => x.CreatedDate > testStartTime)
+                                                    .OrderByDescending(x => x.Id)
+                                                    .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **AMAZON_TEST_CORRECTIONS**: Found {Count} recent OCR corrections", recentCorrections.Count);
 
@@ -1183,8 +1203,8 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
                             $"FAILING: OCR correction system must create at least 1 database entry. Found {recentCorrections.Count} corrections.");
 
                         var newRegexPatterns = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate > testStartTime)
-                            .ToListAsync();
+                                                   .Where(x => x.CreatedDate > testStartTime)
+                                                   .ToListAsync().ConfigureAwait(false);
 
                         _logger.Error("🔍 **Corrections**: Found {Count} new regex patterns", newRegexPatterns.Count);
 
@@ -1247,7 +1267,7 @@ delete from OCRCorrectionLearning where PartId = 1028 and LineText in ('Free Shi
         // Act
         _logger.Information("🚀 **ACTION**: Calling DetectInvoiceErrorsAsync to trigger live DeepSeek API call...");
         var detectionTask = (Task<List<InvoiceError>>)methodInfo.Invoke(service, new object[] { invoiceWithOmissions, fullOcrText, new Dictionary<string, OCRFieldMetadata>() });
-        var detectedErrors = await detectionTask;
+        var detectedErrors = await detectionTask.ConfigureAwait(false);
         _logger.Information("✅ **ACTION_COMPLETE**: DeepSeek API call finished. Received {Count} unique errors.", detectedErrors.Count);
 
         // Assert
@@ -2503,7 +2523,7 @@ Return only the regex pattern, no explanation:";
                         _logger.Warning("Test file not found: {FilePath}. Creating mock test data instead.", testFile);
                         
                         // Create a mock test scenario that simulates the Tropical Vendors data structure
-                        await CreateMockTropicalVendorsTestData();
+                        await this.CreateMockTropicalVendorsTestData().ConfigureAwait(false);
                         return;
                     }
                     
@@ -2760,7 +2780,7 @@ Return only the regex pattern, no explanation:";
                             lineToModify.RegularExpressions.RegEx = testRegexPattern;
                             lineToModify.RegularExpressions.LastUpdated = DateTime.UtcNow;
                             
-                            await ocrCtx.SaveChangesAsync();
+                            await ocrCtx.SaveChangesAsync().ConfigureAwait(false);
                             
                             _logger.Error("✅ **TEST_STEP_3_SUCCESS**: Modified Line ID {LineId} regex from '{OriginalPattern}' to '{NewPattern}'", 
                                 modifiedLineId, 
@@ -2904,7 +2924,7 @@ Return only the regex pattern, no explanation:";
                             {
                                 lineToRestore.RegularExpressions.RegEx = originalRegexPattern;
                                 lineToRestore.RegularExpressions.LastUpdated = DateTime.UtcNow;
-                                await ocrCtx.SaveChangesAsync();
+                                await ocrCtx.SaveChangesAsync().ConfigureAwait(false);
                                 _logger.Error("✅ **TEST_CLEANUP**: Restored original regex pattern for Line ID {LineId}", modifiedLineId);
                             }
                         }

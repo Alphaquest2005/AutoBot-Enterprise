@@ -30,7 +30,7 @@ namespace AutoBotUtilities.Tests.Production
             var metadata = InvokePrivateMethod<Dictionary<string, OCRFieldMetadata>>(_service, "ExtractFullOCRMetadata", invoice, fileText);
 
             // Act - Call the correct private method using reflection and provide all required arguments.
-            var omissions = await InvokePrivateMethod<Task<List<InvoiceError>>>(_service, "DetectDedicatedFieldOmissionsAsync", invoice, fileText, metadata);
+            var omissions = await this.InvokePrivateMethod<Task<List<InvoiceError>>>(this._service, "DetectDedicatedFieldOmissionsAsync", invoice, fileText, metadata).ConfigureAwait(false);
 
             // Assert
             Assert.That(omissions, Is.Not.Null);

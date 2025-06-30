@@ -196,7 +196,7 @@ namespace AutoBotUtilities.Tests.Production
 
                 // Step 3: Update regex patterns - Note: Without metadata, database updates will be skipped
                 // but file-based pattern learning should still work
-                await _service.UpdateRegexPatternsAsync(corrections.Select(c => CreateRegexUpdateRequest(c, fileText, null, null)));
+                await this._service.UpdateRegexPatternsAsync(corrections.Select(c => this.CreateRegexUpdateRequest(c, fileText, null, null))).ConfigureAwait(false);
 
                 // Step 4: Verify that the method completed without errors (database updates skipped due to null metadata)
                 _logger.Information("UpdateRegexPatternsAsync completed - database updates were skipped due to null metadata");

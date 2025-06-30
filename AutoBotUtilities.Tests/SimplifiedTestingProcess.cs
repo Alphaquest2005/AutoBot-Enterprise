@@ -77,11 +77,11 @@ namespace AutoBotUtilities.Tests
                         var ocrText = File.ReadAllText(textFile);
                         
                         // Generate JSON reference
-                        var jsonReference = await GenerateJsonReference(ocrText, fileName);
+                        var jsonReference = await this.GenerateJsonReference(ocrText, fileName).ConfigureAwait(false);
                         
                         // Run DeepSeek detection
                         var blankInvoice = CreateBlankInvoice(fileName);
-                        var deepSeekResults = await RunDeepSeekDetection(service, blankInvoice, ocrText);
+                        var deepSeekResults = await this.RunDeepSeekDetection(service, blankInvoice, ocrText).ConfigureAwait(false);
                         
                         // Compare and identify issues
                         var fileIssues = IdentifyIssues(fileName, jsonReference, deepSeekResults, ocrText);
@@ -194,11 +194,11 @@ namespace AutoBotUtilities.Tests
                         var ocrText = File.ReadAllText(textFile);
                         
                         // Generate updated JSON reference (with improved prompt)
-                        var newJsonReference = await GenerateJsonReference(ocrText, fileName);
+                        var newJsonReference = await this.GenerateJsonReference(ocrText, fileName).ConfigureAwait(false);
                         
                         // Run DeepSeek detection (with improved prompt)
                         var blankInvoice = CreateBlankInvoice(fileName);
-                        var newDeepSeekResults = await RunDeepSeekDetection(service, blankInvoice, ocrText);
+                        var newDeepSeekResults = await this.RunDeepSeekDetection(service, blankInvoice, ocrText).ConfigureAwait(false);
                         
                         // Check if the specific issue is resolved
                         var isIssueResolved = CheckIfIssueResolved(fileName, targetIssue.IssueType, newJsonReference, newDeepSeekResults);
@@ -260,7 +260,7 @@ namespace AutoBotUtilities.Tests
                 
                 // Call DeepSeek API with JSON extraction prompt
                 var apiClient = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi(_logger);
-                var jsonResponse = await apiClient.GetResponseAsync(jsonPrompt);
+                var jsonResponse = await apiClient.GetResponseAsync(jsonPrompt).ConfigureAwait(false);
                 
                 _logger.Information("📊 **JSON_API_RESPONSE**: Received JSON extraction response for {FileName}", fileName);
                 
@@ -439,7 +439,7 @@ Return ONLY the JSON object, no additional text.";
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             
             var detectionTask = (Task<List<InvoiceError>>)methodInfo.Invoke(service, new object[] { invoice, ocrText, new Dictionary<string, OCRFieldMetadata>() });
-            return await detectionTask;
+            return await detectionTask.ConfigureAwait(false);
         }
 
         private List<DetectedIssue> IdentifyIssues(string fileName, InvoiceReferenceData jsonReference, List<InvoiceError> deepSeekResults, string ocrText)

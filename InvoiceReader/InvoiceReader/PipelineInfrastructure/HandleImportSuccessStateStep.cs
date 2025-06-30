@@ -171,30 +171,143 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
         private static bool IsRequiredDataMissing(ILogger logger, Invoice Invoice) // Add logger parameter
         {
-             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                 nameof(IsRequiredDataMissing), "Validation", "Checking for missing required data in Template for success state.", "", "");
+             logger?.Error("🔍 **VALIDATION_START**: Starting comprehensive validation check for OCR template");
+             logger?.Error("   - **TEMPLATE_ID**: {TemplateId}", Invoice?.OcrInvoices?.Id ?? 0);
+             logger?.Error("   - **TEMPLATE_NAME**: {TemplateName}", Invoice?.OcrInvoices?.Name ?? "NULL");
+             logger?.Error("   - **VALIDATION_PURPOSE**: Ensure all required data is present for HandleImportSuccessStateStep processing");
+
              // Check each property and log which one is missing if any
              // Context null check happens in Execute
-             if (Invoice?.FileType == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: FileType is null.", "", ""); return true; }
 
-             // DEBUG: Add detailed logging for DocSet
-             if (Invoice?.DocSet == null) {
-                 logger?.Error("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                     nameof(IsRequiredDataMissing), "Validation", "CRITICAL: DocSet is null - this should have been populated by GetDocSets call!", $"TemplateId: {Invoice?.OcrInvoices?.Id}, FileType: {Invoice?.FileType?.Id}", "");
-                 return true; // This is a real error - DocSet should not be null
+             // **VALIDATION 1: FileType Check**
+             logger?.Error("🔎 **VALIDATION_1_FILE_TYPE**: Checking FileType presence and configuration");
+             if (Invoice?.FileType == null) 
+             { 
+                 logger?.Error("❌ **VALIDATION_FAILED**: FileType is null");
+                 logger?.Error("   - **FAILURE_IMPACT**: Cannot determine entity type (ShipmentInvoice vs SimplifiedDeclaration)");
+                 logger?.Error("   - **EXPECTED_STATE**: FileType should be assigned in GetPossibleInvoicesStep via GetContextTemplates");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check GetContextTemplates execution and FileType assignment");
+                 return true; 
+             }
+             logger?.Error("✅ **VALIDATION_1_PASSED**: FileType is present");
+             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", Invoice.FileType.Id);
+             logger?.Error("   - **FILE_TYPE_DESCRIPTION**: {FileTypeDescription}", Invoice.FileType.Description ?? "NULL");
+             logger?.Error("   - **ENTRY_TYPE**: {EntryType}", Invoice.FileType.FileImporterInfos?.EntryType ?? "NULL");
+
+             // **VALIDATION 2: DocSet Check**
+             logger?.Error("🔎 **VALIDATION_2_DOCSET**: Checking DocSet presence and population");
+             if (Invoice?.DocSet == null) 
+             {
+                 logger?.Error("❌ **VALIDATION_FAILED**: DocSet is null - CRITICAL ERROR");
+                 logger?.Error("   - **FAILURE_IMPACT**: Cannot create DataFile object without DocSet");
+                 logger?.Error("   - **EXPECTED_STATE**: DocSet should be populated by GetContextTemplates via GetDocSets call");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check GetContextTemplates logs for GetDocSets execution");
+                 logger?.Error("   - **ROOT_CAUSE**: OCR template may not be getting proper context property assignment");
+                 return true;
+             }
+             logger?.Error("✅ **VALIDATION_2_PASSED**: DocSet is present");
+             logger?.Error("   - **DOCSET_COUNT**: {DocSetCount}", Invoice.DocSet.Count);
+             logger?.Error("   - **DOCSET_ITEMS**: {DocSetItems}", string.Join(", ", Invoice.DocSet.Select((d, i) => $"[{i}]: {d.GetType().Name}")));
+
+             // **VALIDATION 3: OcrInvoices Check**
+             logger?.Error("🔎 **VALIDATION_3_OCR_INVOICES**: Checking OcrInvoices structure");
+             if (Invoice?.OcrInvoices == null) 
+             { 
+                 logger?.Error("❌ **VALIDATION_FAILED**: Template.OcrInvoices is null");
+                 logger?.Error("   - **FAILURE_IMPACT**: Cannot resolve FileType in downstream processing");
+                 logger?.Error("   - **EXPECTED_STATE**: OcrInvoices should be created in CreateBasicOcrInvoices method");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check CreateInvoiceTemplateAsync execution and OcrInvoices creation");
+                 return true; 
+             }
+             logger?.Error("✅ **VALIDATION_3_PASSED**: OcrInvoices is present");
+             logger?.Error("   - **OCR_INVOICES_ID**: {OcrInvoicesId}", Invoice.OcrInvoices.Id);
+             logger?.Error("   - **OCR_INVOICES_NAME**: {OcrInvoicesName}", Invoice.OcrInvoices.Name ?? "NULL");
+             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", Invoice.OcrInvoices.FileTypeId);
+
+             // **VALIDATION 4: CsvLines Check**
+             logger?.Error("🔎 **VALIDATION_4_CSV_LINES**: Checking CsvLines data structure");
+             if (Invoice?.CsvLines == null) 
+             {
+                 logger?.Error("❌ **VALIDATION_FAILED**: CsvLines is null");
+                 logger?.Error("   - **FAILURE_IMPACT**: No data to process in DataFileProcessor");
+                 logger?.Error("   - **EXPECTED_STATE**: CsvLines should be populated by ReadFormattedTextStep via template.Read()");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check ReadFormattedTextStep execution and OCR correction service");
+                 return true;
              }
 
-             logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                 nameof(IsRequiredDataMissing), "Validation", "DocSet is present.", $"DocSetCount: {Invoice.DocSet.Count}, TemplateId: {Invoice?.OcrInvoices?.Id}", "");
+             // Enhanced CsvLines validation with detailed analysis
+             var csvLinesCount = Invoice.CsvLines.Count;
+             logger?.Error("   - **CSV_LINES_COUNT**: {CsvLinesCount}", csvLinesCount);
+             
+             if (csvLinesCount == 0)
+             {
+                 logger?.Error("❌ **VALIDATION_FAILED**: CsvLines is empty (Count = 0)");
+                 logger?.Error("   - **FAILURE_IMPACT**: No invoice data extracted for processing");
+                 logger?.Error("   - **EXPECTED_STATE**: CsvLines should contain at least one invoice record");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check template.Read() execution and PDF text processing");
+                 return true;
+             }
 
-             // Check Template.OcrInvoices as it's used in ResolveFileType
-             if (Invoice?.OcrInvoices == null) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: Template.OcrInvoices is null.", "", ""); return true; }
-             if (Invoice?.CsvLines == null || !Invoice.CsvLines.SelectMany<dynamic, IDictionary<string, object>>(x => x).Where(x => x != null).Any()) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: CsvLines is null.", "", ""); return true; }
-             if (string.IsNullOrEmpty(Invoice?.FilePath)) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: FilePath is null or empty.", "", ""); return true; }
-             if (string.IsNullOrEmpty(Invoice?.EmailId)) { logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}", nameof(IsRequiredDataMissing), "Validation", "Missing required data: EmailId is null or empty.", "", ""); return true; }
+             // Check if CsvLines contains valid dictionaries
+             try
+             {
+                 var validDictionaries = Invoice.CsvLines.SelectMany<dynamic, IDictionary<string, object>>(x => x).Where(x => x != null).ToList();
+                 logger?.Error("   - **VALID_DICTIONARIES_COUNT**: {ValidDictionariesCount}", validDictionaries.Count);
+                 
+                 if (!validDictionaries.Any())
+                 {
+                     logger?.Error("❌ **VALIDATION_FAILED**: CsvLines contains no valid dictionary objects");
+                     logger?.Error("   - **FAILURE_IMPACT**: No processable invoice data found");
+                     logger?.Error("   - **CSV_LINES_STRUCTURE**: {CsvLinesStructure}", string.Join(", ", Invoice.CsvLines.Select((item, index) => $"[{index}]: {item?.GetType().Name ?? "NULL"}")));
+                     logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check OCR correction service data structure output");
+                     return true;
+                 }
+                 
+                 // Log the first dictionary for diagnostics
+                 var firstDict = validDictionaries.First();
+                 logger?.Error("   - **FIRST_DICTIONARY_KEYS**: {FirstDictKeys}", string.Join(", ", firstDict.Keys));
+                 logger?.Error("   - **SAMPLE_VALUES**: InvoiceNo={InvoiceNo}, InvoiceTotal={InvoiceTotal}", 
+                     firstDict.ContainsKey("InvoiceNo") ? firstDict["InvoiceNo"]?.ToString() : "MISSING",
+                     firstDict.ContainsKey("InvoiceTotal") ? firstDict["InvoiceTotal"]?.ToString() : "MISSING");
+             }
+             catch (Exception ex)
+             {
+                 logger?.Error("❌ **VALIDATION_FAILED**: Exception analyzing CsvLines structure");
+                 logger?.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                 logger?.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: CsvLines data structure is malformed");
+                 return true;
+             }
 
-             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                 nameof(IsRequiredDataMissing), "Validation", "All required data is present.", "", "");
+             logger?.Error("✅ **VALIDATION_4_PASSED**: CsvLines contains valid processable data");
+
+             // **VALIDATION 5: FilePath Check**
+             logger?.Error("🔎 **VALIDATION_5_FILE_PATH**: Checking FilePath assignment");
+             if (string.IsNullOrEmpty(Invoice?.FilePath)) 
+             { 
+                 logger?.Error("❌ **VALIDATION_FAILED**: FilePath is null or empty");
+                 logger?.Error("   - **FAILURE_IMPACT**: Cannot identify source file for processing");
+                 logger?.Error("   - **EXPECTED_STATE**: FilePath should be assigned in GetContextTemplates");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check context property assignment in GetPossibleInvoicesStep");
+                 return true; 
+             }
+             logger?.Error("✅ **VALIDATION_5_PASSED**: FilePath is present");
+             logger?.Error("   - **FILE_PATH**: {FilePath}", Invoice.FilePath);
+
+             // **VALIDATION 6: EmailId Check**
+             logger?.Error("🔎 **VALIDATION_6_EMAIL_ID**: Checking EmailId assignment");
+             if (string.IsNullOrEmpty(Invoice?.EmailId)) 
+             { 
+                 logger?.Error("❌ **VALIDATION_FAILED**: EmailId is null or empty");
+                 logger?.Error("   - **FAILURE_IMPACT**: Cannot associate invoice with email context");
+                 logger?.Error("   - **EXPECTED_STATE**: EmailId should be assigned in GetContextTemplates");
+                 logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check context property assignment in GetPossibleInvoicesStep");
+                 return true; 
+             }
+             logger?.Error("✅ **VALIDATION_6_PASSED**: EmailId is present");
+             logger?.Error("   - **EMAIL_ID**: {EmailId}", Invoice.EmailId);
+
+             logger?.Error("🎯 **VALIDATION_COMPLETE**: All validations passed - template ready for HandleImportSuccessStateStep processing");
              return false; // All required data is present
         }
 

@@ -53,13 +53,13 @@ namespace AutoBotUtilities.Tests
                 {
                     // Load active ApplicationSettings with all email-related includes
                     var testAppSettingFromDb = await ctx.ApplicationSettings
-                        .Include(x => x.FileTypes).Include(x => x.Declarants)
-                        .Include("FileTypes.FileTypeReplaceRegex").Include("FileTypes.FileImporterInfos")
-                        .Include(x => x.EmailMapping)
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
-                        .Include("EmailMapping.EmailMappingRexExs").Include("EmailMapping.EmailMappingActions.Actions")
-                        .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
-                        .FirstOrDefaultAsync(s => s.IsActive);
+                                                   .Include(x => x.FileTypes).Include(x => x.Declarants)
+                                                   .Include("FileTypes.FileTypeReplaceRegex").Include("FileTypes.FileImporterInfos")
+                                                   .Include(x => x.EmailMapping)
+                                                   .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
+                                                   .Include("EmailMapping.EmailMappingRexExs").Include("EmailMapping.EmailMappingActions.Actions")
+                                                   .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
+                                                   .FirstOrDefaultAsync(s => s.IsActive).ConfigureAwait(false);
 
                     if (testAppSettingFromDb != null)
                     {
@@ -118,15 +118,15 @@ namespace AutoBotUtilities.Tests
                 _log.LogDebugCategorized(LogCategory.DiagnosticDetail, "Connecting IMAP: {ImapServer}:{ImapPort} ({ImapOptions})", 
                     _invocationId, propertyValues: new object[] { _resolvedImapServer, _resolvedImapPort, _resolvedImapOptions });
                 
-                await imapClient.ConnectAsync(_resolvedImapServer, _resolvedImapPort, _resolvedImapOptions, cancellationToken);
+                await imapClient.ConnectAsync(this._resolvedImapServer, this._resolvedImapPort, this._resolvedImapOptions, cancellationToken).ConfigureAwait(false);
                 
                 _log.LogDebugCategorized(LogCategory.DiagnosticDetail, "Authenticating IMAP: {EmailAddress}", 
                     _invocationId, propertyValues: new object[] { _dbConfiguredEmailAddress });
                 
-                await imapClient.AuthenticateAsync(_dbConfiguredEmailAddress, _dbConfiguredEmailPassword, cancellationToken);
+                await imapClient.AuthenticateAsync(this._dbConfiguredEmailAddress, this._dbConfiguredEmailPassword, cancellationToken).ConfigureAwait(false);
                 
                 _log.LogDebugCategorized(LogCategory.DiagnosticDetail, "Opening IMAP Inbox (ReadOnly)", _invocationId);
-                await imapClient.Inbox.OpenAsync(FolderAccess.ReadOnly, cancellationToken);
+                await imapClient.Inbox.OpenAsync(FolderAccess.ReadOnly, cancellationToken).ConfigureAwait(false);
                 
                 _log.LogInfoCategorized(LogCategory.InternalStep, "IMAP client connected & Inbox opened: {EmailAddress}", 
                     _invocationId, propertyValues: new object[] { _dbConfiguredEmailAddress });
@@ -153,7 +153,7 @@ namespace AutoBotUtilities.Tests
             
             try
             {
-                imapClient = await GetTestImapClientAsync();
+                imapClient = await this.GetTestImapClientAsync().ConfigureAwait(false);
                 
                 // Get basic mailbox statistics
                 report.TotalMessages = imapClient.Inbox.Count;
@@ -163,11 +163,11 @@ namespace AutoBotUtilities.Tests
                     _invocationId, propertyValues: new object[] { report.TotalMessages, report.UnreadMessages });
 
                 // Get recent emails
-                var recentUids = await imapClient.Inbox.SearchAsync(SearchQuery.Recent);
+                var recentUids = await imapClient.Inbox.SearchAsync(SearchQuery.Recent).ConfigureAwait(false);
                 report.RecentMessages = recentUids.Count;
                 
                 // Get last 20 emails for analysis
-                var allUids = await imapClient.Inbox.SearchAsync(SearchQuery.All);
+                var allUids = await imapClient.Inbox.SearchAsync(SearchQuery.All).ConfigureAwait(false);
                 var last20 = allUids.Skip(Math.Max(0, allUids.Count - 20)).ToList();
 
                 _log.LogInfoCategorized(LogCategory.InternalStep, "Analyzing last {EmailCount} emails",
@@ -177,7 +177,7 @@ namespace AutoBotUtilities.Tests
                 {
                     try
                     {
-                        var message = await imapClient.Inbox.GetMessageAsync(uid);
+                        var message = await imapClient.Inbox.GetMessageAsync(uid).ConfigureAwait(false);
                         var emailInfo = new EmailInfo
                         {
                             Uid = uid.ToString(),
@@ -228,7 +228,7 @@ namespace AutoBotUtilities.Tests
                 }
 
                 // Search for specific email patterns
-                await SearchForSpecificPatternsAsync(imapClient, report);
+                await this.SearchForSpecificPatternsAsync(imapClient, report).ConfigureAwait(false);
                 
                 _log.LogInfoCategorized(LogCategory.InternalStep, "Email structure examination complete: TotalEmails={TotalEmails}, PDFEmails={PDFEmails}, InvoiceTemplateEmails={InvoiceTemplateEmails}", 
                     _invocationId, propertyValues: new object[] { report.Emails.Count, report.EmailsWithPdfAttachments, report.InvoiceTemplateEmails });
@@ -242,7 +242,7 @@ namespace AutoBotUtilities.Tests
             {
                 if (imapClient?.IsConnected == true)
                 {
-                    await imapClient.DisconnectAsync(true);
+                    await imapClient.DisconnectAsync(true).ConfigureAwait(false);
                 }
                 imapClient?.Dispose();
             }
@@ -253,24 +253,24 @@ namespace AutoBotUtilities.Tests
         private async Task SearchForSpecificPatternsAsync(ImapClient imapClient, EmailStructureReport report)
         {
             // Search for "Invoice Template" emails
-            var invoiceTemplateUids = await imapClient.Inbox.SearchAsync(SearchQuery.SubjectContains("Invoice Template"));
+            var invoiceTemplateUids = await imapClient.Inbox.SearchAsync(SearchQuery.SubjectContains("Invoice Template")).ConfigureAwait(false);
             _log.LogInfoCategorized(LogCategory.InternalStep, "Found {Count} emails with 'Invoice Template' in subject", 
                 _invocationId, propertyValues: new object[] { invoiceTemplateUids.Count });
 
             // Search for "Shipment" emails  
-            var shipmentUids = await imapClient.Inbox.SearchAsync(SearchQuery.SubjectContains("Shipment"));
+            var shipmentUids = await imapClient.Inbox.SearchAsync(SearchQuery.SubjectContains("Shipment")).ConfigureAwait(false);
             _log.LogInfoCategorized(LogCategory.InternalStep, "Found {Count} emails with 'Shipment' in subject", 
                 _invocationId, propertyValues: new object[] { shipmentUids.Count });
 
             // Search for emails with PDF attachments (by examining recent emails)
             var pdfEmailCount = 0;
-            var recentUids = await imapClient.Inbox.SearchAsync(SearchQuery.Recent);
+            var recentUids = await imapClient.Inbox.SearchAsync(SearchQuery.Recent).ConfigureAwait(false);
             
             foreach (var uid in recentUids.Take(10)) // Check last 10 recent emails
             {
                 try
                 {
-                    var message = await imapClient.Inbox.GetMessageAsync(uid);
+                    var message = await imapClient.Inbox.GetMessageAsync(uid).ConfigureAwait(false);
                     var hasPdf = message.Attachments.OfType<MimePart>()
                         .Any(part => part.FileName?.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) == true);
                     

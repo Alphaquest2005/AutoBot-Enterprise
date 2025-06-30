@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading; // For AsyncLocal
+using System.Threading; // For lock and singleton
 using Serilog;
 using Serilog.Core;        // For ILogEventSink, Logger, LoggingLevelSwitch, ILogEventEnricher
 using Serilog.Events;      // For LogEventLevel, LogEvent, LogEventProperty, ScalarValue
@@ -9,49 +9,143 @@ using Serilog.Parsing;     // For MessageTemplate
 
 namespace Core.Common.Extensions
 {
-    // Original LogLevelOverride class - uses Serilog.Events.LogEventLevel
+    /// <summary>
+    /// **SINGLETON TERMINATION LOG OVERRIDE**: 
+    /// Forces surgical debugging by allowing only ONE active override at a time.
+    /// When the override disposes, the entire application/test TERMINATES.
+    /// This creates a powerful "lens effect" that forces very targeted investigation
+    /// and prevents massive log files by forced termination.
+    /// 
+    /// **Usage Pattern**:
+    /// using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+    /// {
+    ///     // Surgical debugging code here
+    ///     // When this scope ends, APPLICATION TERMINATES
+    /// }
+    /// </summary>
     public static class LogLevelOverride
     {
-        // Use Serilog's LogEventLevel
-        static readonly AsyncLocal<Serilog.Events.LogEventLevel?> _currentLevelOverride = new AsyncLocal<Serilog.Events.LogEventLevel?>();
-
-        sealed class LevelOverrideReset : IDisposable
+        private static readonly object _lock = new object();
+        private static volatile TerminatingLevelOverride _activeOverride = null;
+        
+        /// <summary>
+        /// Singleton IDisposable that terminates the application on disposal
+        /// </summary>
+        sealed class TerminatingLevelOverride : IDisposable
         {
-            readonly Serilog.Events.LogEventLevel? _previousLevelOverride;
+            private readonly Serilog.Events.LogEventLevel _level;
+            private readonly string _creationContext;
+            private readonly DateTime _creationTime;
+            private volatile bool _disposed = false;
 
-            public LevelOverrideReset(Serilog.Events.LogEventLevel? previousLevelOverride)
+            public TerminatingLevelOverride(Serilog.Events.LogEventLevel level)
             {
-                _previousLevelOverride = previousLevelOverride;
+                _level = level;
+                _creationTime = DateTime.UtcNow;
                 
-                // **ENTRY LOG**: This will always appear when LogLevelOverride.Begin() is called
-                Log.Logger.Information("🔍 **LOGLEVELOVERRIDE_ENTRY**: LogLevelOverride using statement ENTERED - Level set to: {NewLevel}, Previous: {PreviousLevel}", 
-                    _currentLevelOverride.Value?.ToString() ?? "NULL", 
-                    _previousLevelOverride?.ToString() ?? "NULL");
+                // Capture creation context for diagnostics
+                var stackTrace = new System.Diagnostics.StackTrace(skipFrames: 2, fNeedFileInfo: true);
+                var frame = stackTrace.GetFrame(0);
+                _creationContext = frame != null 
+                    ? $"{frame.GetMethod()?.DeclaringType?.Name}.{frame.GetMethod()?.Name} at {frame.GetFileName()}:{frame.GetFileLineNumber()}"
+                    : "Unknown";
+
+                // **SINGLETON_ENTRY**: This will always appear when LogLevelOverride.Begin() is called
+                Log.Logger.Fatal("🚨 **SINGLETON_LOGLEVELOVERRIDE_ENTRY**: SURGICAL DEBUGGING MODE ACTIVATED");
+                Log.Logger.Fatal("   - **OVERRIDE_LEVEL**: {Level}", _level);
+                Log.Logger.Fatal("   - **CREATION_TIME**: {CreationTime:yyyy-MM-dd HH:mm:ss.fff} UTC", _creationTime);
+                Log.Logger.Fatal("   - **CREATION_CONTEXT**: {CreationContext}", _creationContext);
+                Log.Logger.Fatal("   - **TERMINATION_WARNING**: Application will TERMINATE when this override disposes");
+                Log.Logger.Fatal("   - **LENS_EFFECT**: Only code within this scope will execute - forced surgical debugging");
+                Log.Logger.Fatal("🎯 **SURGICAL_DEBUGGING_START**: Entering focused investigation mode...");
             }
+
+            public Serilog.Events.LogEventLevel Level => _level;
 
             public void Dispose()
             {
-                // **EXIT LOG**: This will always appear when LogLevelOverride using statement exits
-                Log.Logger.Information("🔍 **LOGLEVELOVERRIDE_EXIT**: LogLevelOverride using statement EXITING - Restoring level to: {RestoredLevel}", 
-                    _previousLevelOverride?.ToString() ?? "NULL");
+                if (_disposed) return;
+                
+                lock (_lock)
+                {
+                    if (_disposed) return;
+                    _disposed = true;
                     
-                _currentLevelOverride.Value = _previousLevelOverride;
+                    var executionDuration = DateTime.UtcNow - _creationTime;
+                    
+                    // **TERMINATION_LOG**: Final logs before termination
+                    Log.Logger.Fatal("🚨 **SINGLETON_LOGLEVELOVERRIDE_TERMINATION**: SURGICAL DEBUGGING MODE ENDING");
+                    Log.Logger.Fatal("   - **EXECUTION_DURATION**: {Duration:hh\\:mm\\:ss\\.fff}", executionDuration);
+                    Log.Logger.Fatal("   - **CREATION_CONTEXT**: {CreationContext}", _creationContext);
+                    Log.Logger.Fatal("   - **TERMINATION_REASON**: LogLevelOverride scope ended - implementing forced termination");
+                    Log.Logger.Fatal("🔚 **LENS_EFFECT_COMPLETE**: Surgical debugging finished, terminating application...");
+                    
+                    // Clear the active override
+                    _activeOverride = null;
+                    
+                    // Flush logs before termination
+                    Log.CloseAndFlush();
+                    
+                    // **FORCED TERMINATION**: Terminate the entire process
+                    Environment.Exit(0);
+                }
             }
         }
 
+        /// <summary>
+        /// Creates a singleton LogLevelOverride that will terminate the application on disposal.
+        /// Only one override can exist at a time - subsequent calls will throw an exception.
+        /// </summary>
+        /// <param name="level">The log level to override to</param>
+        /// <returns>IDisposable that terminates the application when disposed</returns>
+        /// <exception cref="InvalidOperationException">Thrown if another override is already active</exception>
         public static IDisposable Begin(Serilog.Events.LogEventLevel level)
         {
-            var resetValue = _currentLevelOverride.Value;
-            _currentLevelOverride.Value = level;
-            return new LevelOverrideReset(resetValue);
+            lock (_lock)
+            {
+                if (_activeOverride != null)
+                {
+                    var error = "🚨 **SINGLETON_VIOLATION**: Another LogLevelOverride is already active. " +
+                               "Only ONE override can exist at a time to maintain the lens effect. " +
+                               "Wait for the current override to dispose (which will terminate the application) " +
+                               "before creating a new one.";
+                    Log.Logger.Fatal(error);
+                    throw new InvalidOperationException(error);
+                }
+                
+                _activeOverride = new TerminatingLevelOverride(level);
+                return _activeOverride;
+            }
         }
 
-        public static Serilog.Events.LogEventLevel? CurrentLevelOverride => _currentLevelOverride.Value;
+        /// <summary>
+        /// Gets the current active override level, or null if no override is active.
+        /// Since the override terminates the application on disposal, this will only
+        /// return non-null while within the override scope.
+        /// </summary>
+        public static Serilog.Events.LogEventLevel? CurrentLevelOverride => _activeOverride?.Level;
+        
+        /// <summary>
+        /// Checks if a LogLevelOverride is currently active.
+        /// This is primarily for diagnostic purposes.
+        /// </summary>
+        public static bool IsActive => _activeOverride != null;
 
-        // Optional: For easier cleanup in test TearDown if something goes wrong
-        public static void ResetForTesting()
+        /// <summary>
+        /// **EMERGENCY USE ONLY**: Clears the active override without termination.
+        /// This is only for emergency situations where the singleton state needs to be reset
+        /// without triggering application termination. Use with extreme caution.
+        /// </summary>
+        public static void EmergencyReset()
         {
-            _currentLevelOverride.Value = null;
+            lock (_lock)
+            {
+                if (_activeOverride != null)
+                {
+                    Log.Logger.Warning("⚠️ **EMERGENCY_RESET**: Clearing active LogLevelOverride without termination - USE WITH CAUTION");
+                    _activeOverride = null;
+                }
+            }
         }
     }
 

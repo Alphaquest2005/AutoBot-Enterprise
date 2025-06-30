@@ -113,7 +113,7 @@ namespace WaterNut.DataSpace
                         _logger.Error("  - 🗣️ **PAIRED_EXECUTION_START**: Found paired 'format_correction' for '{FieldName}' at index {Index}. Injecting new FieldId: {FieldId} and processing immediately.", formatRequest.FieldName, formatRequestIndex, newFieldId);
 
                         formatRequest.FieldId = newFieldId;
-                        await ProcessSingleRequestAsync(context, formatRequest);
+                        await this.ProcessSingleRequestAsync(context, formatRequest).ConfigureAwait(false);
                     }
                     else
                     {

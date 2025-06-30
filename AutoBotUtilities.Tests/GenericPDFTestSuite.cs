@@ -251,23 +251,23 @@ namespace AutoBotUtilities.Tests
 
                     // Clean database before test if needed
                     _logger.Information("🧹 **DATABASE_CLEAN_START**: Cleaning database for test");
-                    await CleanDatabaseForTest(testCase);
+                    await this.CleanDatabaseForTest(testCase).ConfigureAwait(false);
 
                     // Execute PDF import with focused logging
                     _logger.Information("📋 **PDF_IMPORT_START**: Beginning PDF import process");
                     FocusLoggingLens(LoggingContexts.PDFImporter); // Focus lens on PDF import
-                    var importResults = await ExecutePDFImport(testCase);
+                    var importResults = await this.ExecutePDFImport(testCase).ConfigureAwait(false);
 
                     // Validate import results with detailed logging
                     _logger.Information("✓ **VALIDATION_START**: Validating import results");
-                    await ValidateImportResults(testCase, importResults);
+                    await this.ValidateImportResults(testCase, importResults).ConfigureAwait(false);
 
                     // Test OCR correction if enabled
                     if (testCase.TestOCRCorrection)
                     {
                         _logger.Information("🔍 **OCR_VALIDATION_START**: Testing OCR correction functionality");
                         FocusLoggingLens(LoggingContexts.OCRCorrection); // Focus lens on OCR correction
-                        await ValidateOCRCorrection(testCase, testStartTime);
+                        await this.ValidateOCRCorrection(testCase, testStartTime).ConfigureAwait(false);
                     }
 
                     // Test DeepSeek detection if enabled
@@ -275,7 +275,7 @@ namespace AutoBotUtilities.Tests
                     {
                         _logger.Information("🤖 **DEEPSEEK_VALIDATION_START**: Testing DeepSeek detection functionality");
                         FocusLoggingLens(LoggingContexts.LlmApi); // Focus lens on LLM API
-                        await ValidateDeepSeekDetection(testCase);
+                        await this.ValidateDeepSeekDetection(testCase).ConfigureAwait(false);
                     }
 
                     _logger.Information("✅ **GENERIC_TEST_PASSED**: {TestName}", testCase.TestName);
@@ -307,12 +307,12 @@ namespace AutoBotUtilities.Tests
                         continue;
                     }
 
-                    await CleanDatabaseForTest(testCase);
-                    var importResults = await ExecutePDFImport(testCase);
+                    await this.CleanDatabaseForTest(testCase).ConfigureAwait(false);
+                    var importResults = await this.ExecutePDFImport(testCase).ConfigureAwait(false);
                     
                     // Count OCR corrections made
-                    int correctionsFound = await CountOCRCorrections(testCase);
-                    double totalsZero = await GetTotalsZero(testCase);
+                    int correctionsFound = await this.CountOCRCorrections(testCase).ConfigureAwait(false);
+                    double totalsZero = await this.GetTotalsZero(testCase).ConfigureAwait(false);
                     
                     bool success = Math.Abs(totalsZero - testCase.ExpectedTotalsZero) <= 0.01;
                     results.Add((testCase.TestName, success, correctionsFound, totalsZero));
@@ -360,21 +360,21 @@ namespace AutoBotUtilities.Tests
                     if (testCase.ExpectedShipmentType == "Invoice" && !string.IsNullOrEmpty(testCase.ExpectedInvoiceNumber))
                     {
                         var existingInvoices = await ctx.ShipmentInvoice
-                            .Where(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber)
-                            .ToListAsync();
+                                                   .Where(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber)
+                                                   .ToListAsync().ConfigureAwait(false);
                         
                         ctx.ShipmentInvoice.RemoveRange(existingInvoices);
                     }
                     else if (testCase.ExpectedShipmentType == "BOL" && !string.IsNullOrEmpty(testCase.ExpectedBLNumber))
                     {
                         var existingBLs = await ctx.ShipmentBL
-                            .Where(x => x.BLNumber == testCase.ExpectedBLNumber)
-                            .ToListAsync();
+                                              .Where(x => x.BLNumber == testCase.ExpectedBLNumber)
+                                              .ToListAsync().ConfigureAwait(false);
                         
                         ctx.ShipmentBL.RemoveRange(existingBLs);
                     }
 
-                    await ctx.SaveChangesAsync();
+                    await ctx.SaveChangesAsync().ConfigureAwait(false);
                 }
 
                 _logger.Information("🧹 **DATABASE_CLEANED**: {TestName}", testCase.TestName);
@@ -391,7 +391,7 @@ namespace AutoBotUtilities.Tests
         private async Task<object> ExecutePDFImport(PDFTestCase testCase)
         {
             _logger.Information("🔧 **FILE_TYPE_RESOLUTION_START**: Resolving file types for PDF import");
-            var fileLst = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testCase.PdfFilePath);
+            var fileLst = await FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.PDF, testCase.PdfFilePath).ConfigureAwait(false);
             var fileTypes = fileLst.OfType<CoreEntities.Business.Entities.FileTypes>().ToList();
             
             _logger.Information("📋 **FILE_TYPES_FOUND**: {FileTypeCount} file types available", fileTypes.Count);
@@ -408,7 +408,7 @@ namespace AutoBotUtilities.Tests
             _logger.Information("🔄 **PDF_IMPORT_START**: {TestName} using FileType: {FileTypeDescription}", 
                 testCase.TestName, fileTypes.First().Description);
 
-            var importResult = await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testCase.PdfFilePath) }, fileTypes.First(), _logger);
+            var importResult = await PDFUtils.ImportPDF(new FileInfo[] { new FileInfo(testCase.PdfFilePath) }, fileTypes.First(), _logger).ConfigureAwait(false);
             
             _logger.Information("✅ **PDF_IMPORT_COMPLETE**: {TestName} - Result: {ResultType}", testCase.TestName, importResult?.GetType().Name ?? "null");
             
@@ -424,11 +424,11 @@ namespace AutoBotUtilities.Tests
             {
                 if (testCase.ExpectedShipmentType == "Invoice")
                 {
-                    await ValidateInvoiceResults(testCase, ctx);
+                    await this.ValidateInvoiceResults(testCase, ctx).ConfigureAwait(false);
                 }
                 else if (testCase.ExpectedShipmentType == "BOL")
                 {
-                    await ValidateBOLResults(testCase, ctx);
+                    await this.ValidateBOLResults(testCase, ctx).ConfigureAwait(false);
                 }
                 
                 _logger.Information("✅ **IMPORT_VALIDATION_PASSED**: {TestName}", testCase.TestName);
@@ -443,7 +443,7 @@ namespace AutoBotUtilities.Tests
             _logger.Information("🔍 **INVOICE_VALIDATION_START**: Searching for invoice {InvoiceNumber}", testCase.ExpectedInvoiceNumber);
             
             var invoice = await ctx.ShipmentInvoice
-                .FirstOrDefaultAsync(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber);
+                              .FirstOrDefaultAsync(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber).ConfigureAwait(false);
 
             if (invoice != null)
             {
@@ -459,7 +459,7 @@ namespace AutoBotUtilities.Tests
             Assert.That(invoice, Is.Not.Null, $"Expected invoice {testCase.ExpectedInvoiceNumber} not found");
 
             var detailCount = await ctx.ShipmentInvoiceDetails
-                .CountAsync(x => x.Invoice.InvoiceNo == testCase.ExpectedInvoiceNumber);
+                                  .CountAsync(x => x.Invoice.InvoiceNo == testCase.ExpectedInvoiceNumber).ConfigureAwait(false);
 
             _logger.Information("📋 **DETAIL_COUNT_CHECK**: Expected {ExpectedCount}, Found {ActualCount}", 
                 testCase.ExpectedDetailsCount, detailCount);
@@ -499,12 +499,12 @@ namespace AutoBotUtilities.Tests
         private async Task ValidateBOLResults(PDFTestCase testCase, EntryDataDSContext ctx)
         {
             var bol = await ctx.ShipmentBL
-                .FirstOrDefaultAsync(x => x.BLNumber == testCase.ExpectedBLNumber);
+                          .FirstOrDefaultAsync(x => x.BLNumber == testCase.ExpectedBLNumber).ConfigureAwait(false);
 
             Assert.That(bol, Is.Not.Null, $"Expected BOL {testCase.ExpectedBLNumber} not found");
 
             var detailCount = await ctx.ShipmentBLDetails
-                .CountAsync(x => x.ShipmentBL.BLNumber == testCase.ExpectedBLNumber);
+                                  .CountAsync(x => x.ShipmentBL.BLNumber == testCase.ExpectedBLNumber).ConfigureAwait(false);
 
             Assert.That(detailCount, Is.EqualTo(testCase.ExpectedDetailsCount),
                 $"Expected {testCase.ExpectedDetailsCount} BOL details, found {detailCount}");
@@ -519,8 +519,8 @@ namespace AutoBotUtilities.Tests
             {
                 // Check for OCR corrections made during this test
                 var corrections = await ctx.OCRCorrectionLearning
-                    .Where(x => x.CreatedDate >= testStartTime)
-                    .ToListAsync();
+                                      .Where(x => x.CreatedDate >= testStartTime)
+                                      .ToListAsync().ConfigureAwait(false);
 
                 if (testCase.ExpectedOCRCorrections.Any())
                 {
@@ -569,7 +569,7 @@ namespace AutoBotUtilities.Tests
             using (var ctx = new OCRContext())
             {
                 var correctionCount = await ctx.OCRCorrectionLearning
-                    .CountAsync(x => x.FilePath.Contains(testCase.ExpectedInvoiceNumber));
+                                          .CountAsync(x => x.FilePath.Contains(testCase.ExpectedInvoiceNumber)).ConfigureAwait(false);
                 
                 return correctionCount;
             }
@@ -583,7 +583,7 @@ namespace AutoBotUtilities.Tests
             using (var ctx = new EntryDataDSContext())
             {
                 var invoice = await ctx.ShipmentInvoice
-                    .FirstOrDefaultAsync(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber);
+                                  .FirstOrDefaultAsync(x => x.InvoiceNo == testCase.ExpectedInvoiceNumber).ConfigureAwait(false);
                 
                 return invoice?.TotalsZero ?? double.NaN;
             }

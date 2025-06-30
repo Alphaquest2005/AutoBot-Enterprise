@@ -37,8 +37,9 @@ namespace WaterNut.DataSpace
             
             try
             {
-                // **STEP 1**: Create or get template (OCR-Invoices)
-                var template = await GetOrCreateTemplateAsync(context, request.TemplateName);
+                // **STEP 1**: Create or get template (OCR-Invoices) and save it first to get ID
+                var template = await this.GetOrCreateTemplateAsync(context, request.TemplateName).ConfigureAwait(false);
+                await context.SaveChangesAsync().ConfigureAwait(false); // Save template first to get ID
                 _logger.Information("✅ **TEMPLATE_ENTITY_CREATED**: Template ID={TemplateId}, Name='{TemplateName}'", template.Id, template.Name);
 
                 // **STEP 2**: Group DeepSeek errors by entity type
@@ -47,32 +48,88 @@ namespace WaterNut.DataSpace
                     groupedErrors.HeaderFields.Count, groupedErrors.LineItemPatterns.Count);
 
                 // **STEP 3**: Create header part and fields
-                var headerPart = await CreateHeaderPartAsync(context, template, groupedErrors.HeaderFields);
+                var headerPart = await this.CreateHeaderPartAsync(context, template, groupedErrors.HeaderFields).ConfigureAwait(false);
+                await context.SaveChangesAsync().ConfigureAwait(false); // Save part to get ID
                 _logger.Information("✅ **HEADER_PART_CREATED**: Part ID={PartId} with {FieldCount} fields", headerPart.Id, groupedErrors.HeaderFields.Count);
 
                 // **STEP 4**: Create line item parts for each multi-field pattern
                 var lineItemParts = new List<Parts>();
                 foreach (var linePattern in groupedErrors.LineItemPatterns)
                 {
-                    var lineItemPart = await CreateLineItemPartAsync(context, template, linePattern);
+                    var lineItemPart = await this.CreateLineItemPartAsync(context, template, linePattern).ConfigureAwait(false);
+                    await context.SaveChangesAsync().ConfigureAwait(false); // Save each part to get ID
                     lineItemParts.Add(lineItemPart);
                     _logger.Information("✅ **LINE_ITEM_PART_CREATED**: Part ID={PartId} for pattern '{PatternName}' with {FieldCount} fields", 
                         lineItemPart.Id, linePattern.Field, linePattern.CapturedFields?.Count ?? 0);
                 }
 
                 // **STEP 5**: Create format corrections (FieldFormatRegEx entries)
-                await CreateFormatCorrectionsAsync(context, groupedErrors.FormatCorrections);
+                await this.CreateFormatCorrectionsAsync(context, groupedErrors.FormatCorrections).ConfigureAwait(false);
                 _logger.Information("✅ **FORMAT_CORRECTIONS_CREATED**: Created {CorrectionCount} format correction rules", groupedErrors.FormatCorrections.Count);
 
-                // **STEP 6**: Save all changes
-                await context.SaveChangesAsync();
-                _logger.Information("💾 **DATABASE_COMMIT_SUCCESS**: All template entities saved to database");
+                // **STEP 6**: Final save for any remaining changes
+                _logger.Information("💾 **DATABASE_SAVE_START**: Attempting final save of remaining entities to database");
+                try 
+                {
+                    await context.SaveChangesAsync().ConfigureAwait(false);
+                    _logger.Information("💾 **DATABASE_COMMIT_SUCCESS**: All template entities saved to database");
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException validationEx)
+                {
+                    _logger.Error("❌ **DATABASE_VALIDATION_ERROR**: Entity validation failed during template creation");
+                    _logger.Error("   - **VALIDATION_EXCEPTION_TYPE**: {ExceptionType}", validationEx.GetType().FullName);
+                    _logger.Error("   - **VALIDATION_EXCEPTION_MESSAGE**: {ExceptionMessage}", validationEx.Message);
+                    
+                    foreach (var validationErrors in validationEx.EntityValidationErrors)
+                    {
+                        var entityName = validationErrors.Entry.Entity.GetType().Name;
+                        _logger.Error("🔍 **ENTITY_VALIDATION_ERRORS**: Entity '{EntityName}' has {ErrorCount} validation errors", 
+                            entityName, validationErrors.ValidationErrors.Count());
+                        
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            _logger.Error("   - **FIELD_ERROR**: Property '{PropertyName}' - {ErrorMessage}", 
+                                validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                        
+                        // Log entity state and values for debugging
+                        var entityEntry = validationErrors.Entry;
+                        _logger.Error("🔍 **ENTITY_STATE_DEBUG**: Entity '{EntityName}' state = {EntityState}", 
+                            entityName, entityEntry.State);
+                        
+                        var entityObject = entityEntry.Entity;
+                        if (entityObject != null)
+                        {
+                            var properties = entityObject.GetType().GetProperties()
+                                .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+                                .Take(10); // Limit to first 10 properties to avoid log spam
+                            
+                            foreach (var prop in properties)
+                            {
+                                try 
+                                {
+                                    var value = prop.GetValue(entityObject);
+                                    _logger.Error("     • **{PropertyName}**: {PropertyValue}", 
+                                        prop.Name, value?.ToString() ?? "NULL");
+                                }
+                                catch (Exception propEx)
+                                {
+                                    _logger.Error("     • **{PropertyName}**: ERROR_READING_PROPERTY - {Error}", 
+                                        prop.Name, propEx.Message);
+                                }
+                            }
+                        }
+                    }
+                    
+                    throw; // Re-throw to maintain existing error handling flow
+                }
 
                 var result = new DatabaseUpdateResult
                 {
                     IsSuccess = true,
                     Message = $"Successfully created template '{request.TemplateName}' with {groupedErrors.HeaderFields.Count} header fields, {lineItemParts.Count} line item patterns, and {groupedErrors.FormatCorrections.Count} format corrections",
                     RecordId = template.Id,
+                    RegexId = template.Id, // CRITICAL FIX: Set RegexId to template ID for CreateInvoiceTemplateAsync compatibility
                     FieldsCreated = groupedErrors.HeaderFields.Count + groupedErrors.LineItemPatterns.Sum(p => p.CapturedFields?.Count ?? 0),
                     LinesCreated = 1 + lineItemParts.Count, // Header + line items
                     PartsCreated = 1 + lineItemParts.Count,
@@ -129,58 +186,25 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Groups DeepSeek errors by their target entity type for structured processing.
+        /// Includes database schema validation to ensure only valid fields are included.
         /// </summary>
         private GroupedDeepSeekErrors GroupErrorsByEntityType(List<InvoiceError> allErrors)
         {
-            _logger.Information("📋 **ERROR_ANALYSIS_START**: Analyzing {ErrorCount} DeepSeek errors", allErrors?.Count ?? 0);
-
-            var grouped = new GroupedDeepSeekErrors();
+            _logger.Information("📋 **ERROR_ANALYSIS_START**: Analyzing {ErrorCount} DeepSeek errors with database schema validation", allErrors?.Count ?? 0);
 
             if (allErrors == null || !allErrors.Any())
             {
                 _logger.Warning("⚠️ **NO_ERRORS_PROVIDED**: No DeepSeek errors to process");
-                return grouped;
+                return new GroupedDeepSeekErrors();
             }
 
-            foreach (var error in allErrors)
-            {
-                _logger.Verbose("🔍 **ERROR_ANALYSIS**: Processing error - Field='{Field}', Type='{Type}', HasCapturedFields={HasFields}", 
-                    error.Field, error.ErrorType, error.CapturedFields?.Any() == true);
+            // **CRITICAL**: Validate all errors against actual database schema before processing
+            var validatedGrouped = ValidateAndFilterAgainstSchema(allErrors);
 
-                switch (error.ErrorType?.ToLower())
-                {
-                    case "omission":
-                    case "format_correction":
-                        // Single field errors go to header (unless they're line item specific)
-                        if (!IsLineItemField(error.Field))
-                        {
-                            grouped.HeaderFields.Add(error);
-                            _logger.Verbose("📝 **HEADER_FIELD_ADDED**: {Field}", error.Field);
-                        }
-                        else
-                        {
-                            grouped.FormatCorrections.Add(error);
-                            _logger.Verbose("🔧 **FORMAT_CORRECTION_ADDED**: {Field}", error.Field);
-                        }
-                        break;
+            _logger.Information("📊 **ERROR_GROUPING_SUMMARY**: {HeaderCount} header fields, {LineItemCount} line patterns, {FormatCount} format corrections (post-validation)",
+                validatedGrouped.HeaderFields.Count, validatedGrouped.LineItemPatterns.Count, validatedGrouped.FormatCorrections.Count);
 
-                    case "multi_field_omission":
-                        // Multi-field patterns become line item parts
-                        grouped.LineItemPatterns.Add(error);
-                        _logger.Verbose("📦 **LINE_ITEM_PATTERN_ADDED**: {Field} with {FieldCount} captured fields", 
-                            error.Field, error.CapturedFields?.Count ?? 0);
-                        break;
-
-                    default:
-                        _logger.Warning("⚠️ **UNKNOWN_ERROR_TYPE**: Unhandled error type '{Type}' for field '{Field}'", error.ErrorType, error.Field);
-                        break;
-                }
-            }
-
-            _logger.Information("📊 **ERROR_GROUPING_SUMMARY**: {HeaderCount} header fields, {LineItemCount} line patterns, {FormatCount} format corrections",
-                grouped.HeaderFields.Count, grouped.LineItemPatterns.Count, grouped.FormatCorrections.Count);
-
-            return grouped;
+            return validatedGrouped;
         }
 
         /// <summary>
@@ -201,7 +225,7 @@ namespace WaterNut.DataSpace
             // Create lines and fields for each header field
             foreach (var headerField in headerFields)
             {
-                await CreateHeaderLineAndFieldAsync(context, headerPart, headerField);
+                await this.CreateHeaderLineAndFieldAsync(context, headerPart, headerField).ConfigureAwait(false);
                 _logger.Verbose("✅ **HEADER_FIELD_PROCESSED**: {Field}", headerField.Field);
             }
 
@@ -217,26 +241,39 @@ namespace WaterNut.DataSpace
             _logger.Verbose("🔧 **HEADER_LINE_CREATION**: Creating line for field '{Field}'", error.Field);
 
             // Create regex pattern
-            var regex = await GetOrCreateRegexAsync(context, error.SuggestedRegex, 
-                error.RequiresMultilineRegex, CalculateMaxLinesFromContext(error), 
-                $"Header {error.Field} - DeepSeek suggested");
+            var regex = await this.GetOrCreateRegexAsync(context, error.SuggestedRegex, 
+                            error.RequiresMultilineRegex, this.CalculateMaxLinesFromContext(error), 
+                            $"Header {error.Field} - DeepSeek suggested").ConfigureAwait(false);
 
-            // Create line
+            // Regex now guaranteed to have database ID from GetOrCreateRegexAsync
+
+            // Create line with globally unique name (truncated to fit 50-char database limit)
+            var truncatedField = error.Field.Length > 20 ? error.Field.Substring(0, 20) : error.Field;
+            var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
             var line = new Lines
             {
-                Name = error.Field,
+                Name = $"H_{truncatedField}_{uniqueId}",
                 PartId = headerPart.Id,
                 RegExId = regex.Id,
                 TrackingState = TrackingState.Added
             };
             context.Lines.Add(line);
 
-            // Create field
+            // CRITICAL FIX: Save line to database to get ID before creating Field
+            if (line.Id == 0)
+            {
+                await context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.Verbose("🔧 **LINE_SAVED**: Saved line to database, got ID={LineId}", line.Id);
+            }
+
+            // Create field with unique key to prevent conflicts
+            var uniqueFieldId = Guid.NewGuid().ToString("N").Substring(0, 8);
             var field = new Fields
             {
                 Field = error.Field,
-                Key = error.Field,
+                Key = $"{error.Field}_{uniqueFieldId}",
                 LineId = line.Id,
+                EntityType = "ShipmentInvoice", // Header fields target ShipmentInvoice entity
                 // DisplayName = ConvertToDisplayName(error.Field), // Not in schema
                 DataType = InferDataTypeFromField(error.Field, error.CorrectValue),
                 IsRequired = IsRequiredField(error.Field),
@@ -264,36 +301,51 @@ namespace WaterNut.DataSpace
             context.Parts.Add(lineItemPart);
 
             // Create the multi-field line
-            var regex = await GetOrCreateRegexAsync(context, multiFieldError.SuggestedRegex,
-                multiFieldError.RequiresMultilineRegex, CalculateMaxLinesFromContext(multiFieldError),
-                $"{template.Name} {multiFieldError.Field} - DeepSeek multi-field");
+            var regex = await this.GetOrCreateRegexAsync(context, multiFieldError.SuggestedRegex,
+                            multiFieldError.RequiresMultilineRegex, this.CalculateMaxLinesFromContext(multiFieldError),
+                            $"{template.Name} {multiFieldError.Field} - DeepSeek multi-field").ConfigureAwait(false);
 
+            // Regex now guaranteed to have database ID from GetOrCreateRegexAsync
+
+            // Create line with globally unique name (truncated to fit 50-char database limit)
+            var truncatedField = multiFieldError.Field.Length > 15 ? multiFieldError.Field.Substring(0, 15) : multiFieldError.Field;
+            var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
             var line = new Lines
             {
-                Name = multiFieldError.Field,
+                Name = $"LI_{truncatedField}_{uniqueId}",
                 PartId = lineItemPart.Id,
                 RegExId = regex.Id,
                 TrackingState = TrackingState.Added
             };
             context.Lines.Add(line);
 
+            // CRITICAL FIX: Save line to database to get ID before creating Fields
+            if (line.Id == 0)
+            {
+                await context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.Verbose("🔧 **LINE_SAVED**: Saved line to database, got ID={LineId}", line.Id);
+            }
+
             // Create fields for each captured field
             if (multiFieldError.CapturedFields?.Any() == true)
             {
                 foreach (var capturedField in multiFieldError.CapturedFields)
                 {
+                    // Create unique field key with GUID to prevent conflicts like we do for Lines
+                    var uniqueFieldId = Guid.NewGuid().ToString("N").Substring(0, 8);
                     var field = new Fields
                     {
                         Field = capturedField,
-                        Key = $"InvoiceDetail_{capturedField}",
+                        Key = $"InvoiceDetail_{capturedField}_{uniqueFieldId}",
                         LineId = line.Id,
+                        EntityType = "InvoiceDetails", // Line item fields target InvoiceDetails entity
                         // DisplayName = ConvertToDisplayName(capturedField), // Not in schema
                         DataType = InferDataTypeFromField(capturedField, null),
                         IsRequired = IsRequiredLineItemField(capturedField),
                         TrackingState = TrackingState.Added
                     };
                     context.Fields.Add(field);
-                    _logger.Verbose("✅ **LINE_ITEM_FIELD_CREATED**: {FieldName} -> {Key}", capturedField, field.Key);
+                    _logger.Verbose("✅ **LINE_ITEM_FIELD_CREATED**: {FieldName} -> {Key} for LineId={LineId}", capturedField, field.Key, line.Id);
                 }
             }
 
@@ -315,13 +367,13 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var fieldCorrection in correction.FieldCorrections)
                     {
-                        await CreateSingleFormatCorrectionAsync(context, correction.Field, fieldCorrection);
+                        await this.CreateSingleFormatCorrectionAsync(context, correction.Field, fieldCorrection).ConfigureAwait(false);
                     }
                 }
                 else if (correction.ErrorType == "format_correction")
                 {
                     // Direct format correction from error
-                    await CreateDirectFormatCorrectionAsync(context, correction);
+                    await this.CreateDirectFormatCorrectionAsync(context, correction).ConfigureAwait(false);
                 }
             }
 
@@ -348,10 +400,12 @@ namespace WaterNut.DataSpace
             }
 
             // Create pattern and replacement regexes
-            var patternRegex = await GetOrCreateRegexAsync(context, fieldCorrection.Pattern, false, 1, 
-                $"Format correction pattern for {fieldCorrection.FieldName}");
-            var replacementRegex = await GetOrCreateRegexAsync(context, fieldCorrection.Replacement, false, 1, 
-                $"Format correction replacement for {fieldCorrection.FieldName}");
+            var patternRegex = await this.GetOrCreateRegexAsync(context, fieldCorrection.Pattern, false, 1, 
+                                   $"Format correction pattern for {fieldCorrection.FieldName}").ConfigureAwait(false);
+            var replacementRegex = await this.GetOrCreateRegexAsync(context, fieldCorrection.Replacement, false, 1, 
+                                       $"Format correction replacement for {fieldCorrection.FieldName}").ConfigureAwait(false);
+
+            // Regexes now guaranteed to have database IDs from GetOrCreateRegexAsync
 
             // Create the format correction
             var formatCorrection = new FieldFormatRegEx
@@ -407,8 +461,10 @@ namespace WaterNut.DataSpace
                     return;
             }
 
-            var patternRegex = await GetOrCreateRegexAsync(context, pattern, false, 1, $"{description} - pattern");
-            var replacementRegex = await GetOrCreateRegexAsync(context, replacement, false, 1, $"{description} - replacement");
+            var patternRegex = await this.GetOrCreateRegexAsync(context, pattern, false, 1, $"{description} - pattern").ConfigureAwait(false);
+            var replacementRegex = await this.GetOrCreateRegexAsync(context, replacement, false, 1, $"{description} - replacement").ConfigureAwait(false);
+
+            // Regexes now guaranteed to have database IDs from GetOrCreateRegexAsync
 
             var formatCorrection = new FieldFormatRegEx
             {
@@ -428,47 +484,375 @@ namespace WaterNut.DataSpace
         #region Helper Methods
 
         /// <summary>
-        /// Determines if a field belongs to line items vs header.
+        /// Database schema validation for ShipmentInvoice and InvoiceDetails entities.
+        /// Based on actual Entity Framework models from EntryDataDS.Business.Entities.
         /// </summary>
-        private bool IsLineItemField(string fieldName)
+        private static class DatabaseSchema
         {
-            var lineItemFields = new[] { "ItemDescription", "ItemCode", "UnitPrice", "Quantity", "LineTotal", "Size", "Color", "SKU" };
-            return lineItemFields.Any(f => fieldName.Contains(f));
+            /// <summary>
+            /// Valid ShipmentInvoice entity fields with their OCR template constraints.
+            /// Uses pseudo-datatypes that match the OCR template system ("String", "Number", "English Date").
+            /// </summary>
+            public static readonly Dictionary<string, SchemaField> ShipmentInvoiceFields = new Dictionary<string, SchemaField>
+            {
+                // Required fields for invoice processing
+                { "InvoiceNo", new SchemaField { Type = "String", IsRequired = true } },
+                
+                // Important financial fields (not required but commonly expected)
+                { "InvoiceDate", new SchemaField { Type = "English Date", IsRequired = false } },
+                { "InvoiceTotal", new SchemaField { Type = "Number", IsRequired = false } },
+                { "SubTotal", new SchemaField { Type = "Number", IsRequired = false } },
+                { "TotalInternalFreight", new SchemaField { Type = "Number", IsRequired = false } },
+                { "TotalOtherCost", new SchemaField { Type = "Number", IsRequired = false } },
+                { "TotalInsurance", new SchemaField { Type = "Number", IsRequired = false } },
+                { "TotalDeduction", new SchemaField { Type = "Number", IsRequired = false } },
+                
+                // Supplier information fields
+                { "SupplierCode", new SchemaField { Type = "String", IsRequired = false } },
+                { "SupplierName", new SchemaField { Type = "String", IsRequired = false } },
+                { "SupplierAddress", new SchemaField { Type = "String", IsRequired = false } },
+                { "SupplierCountry", new SchemaField { Type = "String", IsRequired = false } },
+                { "ConsigneeName", new SchemaField { Type = "String", IsRequired = false } },
+                { "ConsigneeAddress", new SchemaField { Type = "String", IsRequired = false } },
+                { "ConsigneeCountry", new SchemaField { Type = "String", IsRequired = false } },
+                { "Currency", new SchemaField { Type = "String", IsRequired = false } },
+                { "EmailId", new SchemaField { Type = "String", IsRequired = false } },
+                
+                // System fields (usually set automatically)
+                { "ImportedLines", new SchemaField { Type = "Number", IsRequired = false } },
+                { "FileLineNumber", new SchemaField { Type = "Number", IsRequired = false } }
+            };
+
+            /// <summary>
+            /// Valid InvoiceDetails entity fields with their OCR template constraints.
+            /// Maps to ShipmentInvoiceDetails table with pseudo-datatypes for OCR templates.
+            /// </summary>
+            public static readonly Dictionary<string, SchemaField> InvoiceDetailsFields = new Dictionary<string, SchemaField>
+            {
+                // Required fields for line items (critical for invoice processing)
+                { "ItemDescription", new SchemaField { Type = "String", IsRequired = true } },
+                { "Quantity", new SchemaField { Type = "Number", IsRequired = true } },
+                { "Cost", new SchemaField { Type = "Number", IsRequired = true } }, // Maps to UnitPrice from DeepSeek
+                
+                // Important optional line item fields  
+                { "LineNumber", new SchemaField { Type = "Number", IsRequired = false } },
+                { "ItemNumber", new SchemaField { Type = "String", IsRequired = false } }, // Maps to ItemCode from DeepSeek
+                { "Units", new SchemaField { Type = "String", IsRequired = false } },
+                { "TotalCost", new SchemaField { Type = "Number", IsRequired = false } }, // Maps to LineTotal from DeepSeek
+                { "Discount", new SchemaField { Type = "Number", IsRequired = false } },
+                { "TariffCode", new SchemaField { Type = "String", IsRequired = false } },
+                { "Category", new SchemaField { Type = "String", IsRequired = false } },
+                { "CategoryTariffCode", new SchemaField { Type = "String", IsRequired = false } },
+                
+                // System fields (usually set automatically)
+                { "FileLineNumber", new SchemaField { Type = "Number", IsRequired = false } },
+                { "InventoryItemId", new SchemaField { Type = "Number", IsRequired = false } },
+                { "SalesFactor", new SchemaField { Type = "Number", IsRequired = false } } // Set automatically to 1.0
+            };
+
+            /// <summary>
+            /// Field mapping from DeepSeek/OCR names to actual database field names.
+            /// </summary>
+            public static readonly Dictionary<string, string> FieldNameMapping = new Dictionary<string, string>
+            {
+                // Header field mappings (exact matches mostly)
+                { "InvoiceNo", "InvoiceNo" },
+                { "InvoiceDate", "InvoiceDate" },
+                { "InvoiceTotal", "InvoiceTotal" },
+                { "SubTotal", "SubTotal" },
+                { "SupplierName", "SupplierName" },
+                { "SupplierCode", "SupplierCode" },
+                { "Currency", "Currency" },
+                { "TotalInternalFreight", "TotalInternalFreight" },
+                { "TotalOtherCost", "TotalOtherCost" },
+                { "TotalInsurance", "TotalInsurance" },
+                { "TotalDeduction", "TotalDeduction" },
+                
+                // Line item field mappings (DeepSeek → Database)
+                { "ItemDescription", "ItemDescription" }, // Direct match
+                { "UnitPrice", "Cost" }, // DeepSeek UnitPrice → Database Cost
+                { "ItemCode", "ItemNumber" }, // DeepSeek ItemCode → Database ItemNumber
+                { "Quantity", "Quantity" }, // Direct match
+                { "LineTotal", "TotalCost" }, // DeepSeek LineTotal → Database TotalCost
+                
+                // Fields to ignore (not in database schema)
+                { "Size", null }, // Size field doesn't exist in database
+                { "Color", null }, // Color field doesn't exist in database
+                { "SKU", null } // SKU field doesn't exist in database
+            };
+        }
+
+        /// <summary>
+        /// Schema field definition with OCR template constraints.
+        /// </summary>
+        public class SchemaField
+        {
+            public string Type { get; set; }
+            public bool IsRequired { get; set; }
+        }
+
+        /// <summary>
+        /// Validates and filters DeepSeek errors against actual database schema.
+        /// Ensures only valid database fields are included in templates.
+        /// </summary>
+        private GroupedDeepSeekErrors ValidateAndFilterAgainstSchema(List<InvoiceError> allErrors)
+        {
+            _logger.Information("🔍 **SCHEMA_VALIDATION_START**: Validating {ErrorCount} DeepSeek errors against database schema", allErrors?.Count ?? 0);
+            
+            var grouped = new GroupedDeepSeekErrors();
+            var invalidFields = new List<string>();
+            var missingRequiredFields = new List<string>();
+            
+            if (allErrors == null || !allErrors.Any())
+            {
+                _logger.Warning("⚠️ **NO_ERRORS_FOR_VALIDATION**: No DeepSeek errors provided for schema validation");
+                return grouped;
+            }
+
+            foreach (var error in allErrors)
+            {
+                _logger.Verbose("🔍 **VALIDATING_ERROR**: Field='{Field}', Type='{Type}'", error.Field, error.ErrorType);
+                
+                var isLineItemError = IsLineItemFieldBySchema(error.Field);
+                var validatedError = ValidateErrorAgainstSchema(error, isLineItemError);
+                
+                if (validatedError != null)
+                {
+                    // Categorize the validated error
+                    switch (error.ErrorType?.ToLower())
+                    {
+                        case "omission":
+                        case "format_correction":
+                            if (isLineItemError)
+                                grouped.FormatCorrections.Add(validatedError);
+                            else
+                                grouped.HeaderFields.Add(validatedError);
+                            break;
+                        case "multi_field_omission":
+                            grouped.LineItemPatterns.Add(validatedError);
+                            break;
+                    }
+                    
+                    _logger.Verbose("✅ **FIELD_VALIDATED**: {Field} → Accepted for template", validatedError.Field);
+                }
+                else
+                {
+                    invalidFields.Add(error.Field);
+                    _logger.Warning("❌ **FIELD_REJECTED**: {Field} → Not valid database field", error.Field);
+                }
+            }
+
+            // Check for missing required fields
+            CheckForMissingRequiredFields(grouped, missingRequiredFields);
+
+            // Log validation summary
+            _logger.Information("📊 **SCHEMA_VALIDATION_SUMMARY**: {ValidCount} valid fields, {InvalidCount} invalid fields, {MissingCount} missing required fields",
+                grouped.HeaderFields.Count + grouped.LineItemPatterns.Count + grouped.FormatCorrections.Count,
+                invalidFields.Count, missingRequiredFields.Count);
+
+            if (invalidFields.Any())
+            {
+                _logger.Warning("⚠️ **INVALID_FIELDS_FOUND**: {InvalidFields}", string.Join(", ", invalidFields));
+            }
+
+            if (missingRequiredFields.Any())
+            {
+                _logger.Error("❌ **MISSING_REQUIRED_FIELDS**: {MissingFields}", string.Join(", ", missingRequiredFields));
+            }
+
+            return grouped;
+        }
+
+        /// <summary>
+        /// Validates a single DeepSeek error against database schema.
+        /// </summary>
+        private InvoiceError ValidateErrorAgainstSchema(InvoiceError error, bool isLineItem)
+        {
+            var schemaFields = isLineItem ? DatabaseSchema.InvoiceDetailsFields : DatabaseSchema.ShipmentInvoiceFields;
+            var fieldName = GetMappedFieldName(error.Field);
+            
+            // Check if field should be ignored (mapped to null)
+            if (fieldName == null)
+            {
+                _logger.Verbose("🚫 **FIELD_IGNORED**: {Field} → Mapped to null, skipping", error.Field);
+                return null;
+            }
+            
+            // Check if mapped field exists in schema
+            if (!schemaFields.ContainsKey(fieldName))
+            {
+                _logger.Warning("❌ **FIELD_NOT_IN_SCHEMA**: {Field} → {MappedField} not found in {Entity} schema", 
+                    error.Field, fieldName, isLineItem ? "InvoiceDetails" : "ShipmentInvoice");
+                return null;
+            }
+
+            var schemaField = schemaFields[fieldName];
+            
+            // Validate captured fields for multi-field errors
+            if (error.CapturedFields?.Any() == true)
+            {
+                var validCapturedFields = new List<string>();
+                foreach (var capturedField in error.CapturedFields)
+                {
+                    var mappedCapturedField = GetMappedFieldName(capturedField);
+                    if (mappedCapturedField != null && schemaFields.ContainsKey(mappedCapturedField))
+                    {
+                        validCapturedFields.Add(capturedField); // Keep original name for DeepSeek compatibility
+                        _logger.Verbose("✅ **CAPTURED_FIELD_VALID**: {Field} → {MappedField}", capturedField, mappedCapturedField);
+                    }
+                    else
+                    {
+                        _logger.Warning("❌ **CAPTURED_FIELD_INVALID**: {Field} → {MappedField} not in schema", capturedField, mappedCapturedField ?? "null");
+                    }
+                }
+                
+                if (!validCapturedFields.Any())
+                {
+                    _logger.Warning("❌ **NO_VALID_CAPTURED_FIELDS**: Error {Field} has no valid captured fields", error.Field);
+                    return null;
+                }
+                
+                // Update error with only valid captured fields
+                error.CapturedFields = validCapturedFields;
+            }
+
+            // Create a new validated error with database-compatible field name
+            var validatedError = new InvoiceError
+            {
+                Field = fieldName, // Use database field name
+                ErrorType = error.ErrorType,
+                ExtractedValue = error.ExtractedValue,
+                CorrectValue = error.CorrectValue,
+                LineText = error.LineText,
+                LineNumber = error.LineNumber,
+                Confidence = error.Confidence,
+                SuggestedRegex = error.SuggestedRegex,
+                CapturedFields = error.CapturedFields, // Already validated above
+                FieldCorrections = error.FieldCorrections,
+                Reasoning = error.Reasoning,
+                RequiresMultilineRegex = error.RequiresMultilineRegex,
+                ContextLinesBefore = error.ContextLinesBefore,
+                ContextLinesAfter = error.ContextLinesAfter
+            };
+            
+            _logger.Verbose("✅ **ERROR_VALIDATED**: {OriginalField} → {DatabaseField} ({EntityType})", 
+                error.Field, fieldName, isLineItem ? "InvoiceDetails" : "ShipmentInvoice");
+                
+            return validatedError;
+        }
+
+        /// <summary>
+        /// Maps DeepSeek/OCR field names to actual database field names.
+        /// </summary>
+        private string GetMappedFieldName(string originalField)
+        {
+            if (DatabaseSchema.FieldNameMapping.TryGetValue(originalField, out var mappedField))
+            {
+                return mappedField; // May be null for ignored fields
+            }
+            
+            // If no explicit mapping, check if field exists directly in either schema
+            if (DatabaseSchema.ShipmentInvoiceFields.ContainsKey(originalField) || 
+                DatabaseSchema.InvoiceDetailsFields.ContainsKey(originalField))
+            {
+                return originalField; // Direct match
+            }
+            
+            return null; // Invalid field
+        }
+
+        /// <summary>
+        /// Determines if a field belongs to line items vs header based on database schema.
+        /// </summary>
+        private bool IsLineItemFieldBySchema(string fieldName)
+        {
+            var mappedField = GetMappedFieldName(fieldName);
+            if (mappedField == null) return false;
+            
+            return DatabaseSchema.InvoiceDetailsFields.ContainsKey(mappedField);
+        }
+
+        /// <summary>
+        /// Checks for missing required fields and logs warnings.
+        /// </summary>
+        private void CheckForMissingRequiredFields(GroupedDeepSeekErrors grouped, List<string> missingRequiredFields)
+        {
+            // Check required header fields
+            var requiredHeaderFields = DatabaseSchema.ShipmentInvoiceFields
+                .Where(kvp => kvp.Value.IsRequired)
+                .Select(kvp => kvp.Key)
+                .ToList();
+                
+            var presentHeaderFields = grouped.HeaderFields.Select(e => e.Field).ToHashSet();
+            
+            foreach (var requiredField in requiredHeaderFields)
+            {
+                if (!presentHeaderFields.Contains(requiredField))
+                {
+                    missingRequiredFields.Add($"ShipmentInvoice.{requiredField}");
+                    _logger.Warning("⚠️ **MISSING_REQUIRED_HEADER_FIELD**: {Field}", requiredField);
+                }
+            }
+
+            // Check required line item fields
+            var requiredLineFields = DatabaseSchema.InvoiceDetailsFields
+                .Where(kvp => kvp.Value.IsRequired)
+                .Select(kvp => kvp.Key)
+                .ToList();
+                
+            var hasLineItemPattern = grouped.LineItemPatterns.Any();
+            
+            if (hasLineItemPattern)
+            {
+                var allCapturedFields = grouped.LineItemPatterns
+                    .SelectMany(e => e.CapturedFields ?? new List<string>())
+                    .Select(f => GetMappedFieldName(f))
+                    .Where(f => f != null)
+                    .ToHashSet();
+                    
+                foreach (var requiredField in requiredLineFields)
+                {
+                    if (!allCapturedFields.Contains(requiredField))
+                    {
+                        missingRequiredFields.Add($"InvoiceDetails.{requiredField}");
+                        _logger.Warning("⚠️ **MISSING_REQUIRED_LINE_FIELD**: {Field}", requiredField);
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// Infers appropriate data type from field name and sample value.
+        /// Uses production-compatible DataType values that match ImportByDataType.cs processing.
         /// </summary>
         private string InferDataTypeFromField(string fieldName, string sampleValue)
         {
             var lowerField = fieldName.ToLower();
 
             if (lowerField.Contains("date"))
-                return "shortdateformat";
-            if (lowerField.Contains("price") || lowerField.Contains("total") || lowerField.Contains("amount"))
-                return "decimal";
-            if (lowerField.Contains("quantity"))
-                return "int";
+                return "English Date"; // Matches production code in ImportByDataType.cs line 73
+            if (lowerField.Contains("price") || lowerField.Contains("total") || lowerField.Contains("amount") || 
+                lowerField.Contains("quantity") || lowerField.Contains("cost") || lowerField.Contains("freight") ||
+                lowerField.Contains("insurance") || lowerField.Contains("deduction"))
+                return "Number"; // Matches production code in ImportByDataType.cs line 68
             
-            return "string";
+            return "String"; // Matches production code in ImportByDataType.cs line 65 (capital S)
         }
 
         /// <summary>
-        /// Determines if a header field is required.
+        /// Determines if a header field is required based on database schema.
         /// </summary>
         private bool IsRequiredField(string fieldName)
         {
-            var requiredFields = new[] { "InvoiceNo", "InvoiceTotal", "SubTotal", "SupplierName" };
-            return requiredFields.Contains(fieldName);
+            return DatabaseSchema.ShipmentInvoiceFields.TryGetValue(fieldName, out var field) && field.IsRequired;
         }
 
         /// <summary>
-        /// Determines if a line item field is required.
+        /// Determines if a line item field is required based on database schema.
         /// </summary>
         private bool IsRequiredLineItemField(string fieldName)
         {
-            var requiredFields = new[] { "ItemDescription", "UnitPrice" };
-            return requiredFields.Contains(fieldName);
+            return DatabaseSchema.InvoiceDetailsFields.TryGetValue(fieldName, out var field) && field.IsRequired;
         }
 
         /// <summary>

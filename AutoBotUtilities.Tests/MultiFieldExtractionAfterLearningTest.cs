@@ -99,7 +99,7 @@ Currency USD
                     // STEP 2: Run OCR Error Detection (this should find multi-field issues)
                     _logger.Information("🔍 **STEP_2**: Running OCR error detection to find multi-field correction opportunities");
                     
-                    var detectedErrors = await ocrService.DetectInvoiceErrorsForDiagnosticsAsync(testInvoice, testInvoiceText);
+                    var detectedErrors = await ocrService.DetectInvoiceErrorsForDiagnosticsAsync(testInvoice, testInvoiceText).ConfigureAwait(false);
                     
                     _logger.Information("📊 **DETECTION_RESULTS**: Found {Count} errors for correction", detectedErrors.Count);
                     

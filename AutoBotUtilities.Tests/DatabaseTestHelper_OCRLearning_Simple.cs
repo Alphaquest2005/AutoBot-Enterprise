@@ -45,7 +45,7 @@ namespace AutoBotUtilities.Tests
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 
                 using (var command = new SqlCommand(script, connection))
                 {
@@ -109,7 +109,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY TABLE_NAME;
             ";
 
-            await ExecuteSqlScript(tableScript, "Regex-related tables");
+            await this.ExecuteSqlScript(tableScript, "Regex-related tables").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Id DESC;
             ";
 
-            await ExecuteSqlScript(recentScript, "Recent OCR corrections");
+            await this.ExecuteSqlScript(recentScript, "Recent OCR corrections").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY CreatedOn DESC;
             ";
 
-            await ExecuteSqlScript(amazonScript, "Amazon invoice corrections");
+            await this.ExecuteSqlScript(amazonScript, "Amazon invoice corrections").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY CorrectionCount DESC;
             ";
 
-            await ExecuteSqlScript(statsScript, "Correction statistics by field");
+            await this.ExecuteSqlScript(statsScript, "Correction statistics by field").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY CreatedOn DESC;
             ";
 
-            await ExecuteSqlScript(giftCardScript, "Gift Card and Free Shipping corrections");
+            await this.ExecuteSqlScript(giftCardScript, "Gift Card and Free Shipping corrections").ConfigureAwait(false);
         }
     }
 }

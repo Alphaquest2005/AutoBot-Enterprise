@@ -33,8 +33,8 @@ namespace AutoBotUtilities.Tests
             {
                 // Check for any remaining overly broad TotalDeduction patterns
                 var broadPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
-                    .ToListAsync();
+                                        .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
+                                        .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📊 **BROAD_PATTERNS**: Found {Count} overly broad TotalDeduction patterns", broadPatterns.Count);
 
@@ -50,8 +50,8 @@ namespace AutoBotUtilities.Tests
 
                 // Check remaining TotalDeduction patterns (should be more specific ones)
                 var remainingPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx.Contains("TotalDeduction"))
-                    .ToListAsync();
+                                            .Where(r => r.RegEx.Contains("TotalDeduction"))
+                                            .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📋 **REMAINING_TOTALDEDUCTION_PATTERNS**: Found {Count} specific TotalDeduction patterns", remainingPatterns.Count);
 
@@ -77,17 +77,17 @@ namespace AutoBotUtilities.Tests
             {
                 // Get Amazon template (InvoiceId 5)
                 var amazonTemplate = await context.Invoices
-                    .Where(i => i.Id == 5)
-                    .FirstOrDefaultAsync();
+                                         .Where(i => i.Id == 5)
+                                         .FirstOrDefaultAsync().ConfigureAwait(false);
 
                 Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist");
                 _logger.Information("✅ **AMAZON_TEMPLATE**: Found template '{Name}' (ID={Id})", amazonTemplate.Name, amazonTemplate.Id);
 
                 // Get all patterns associated with Amazon template
                 var amazonPatterns = await context.RegularExpressions
-                    .Include(r => r.Lines)
-                    .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5))
-                    .ToListAsync();
+                                         .Include(r => r.Lines)
+                                         .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5))
+                                         .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📊 **AMAZON_PATTERNS**: Found {Count} regex patterns in Amazon template", amazonPatterns.Count);
 
@@ -143,29 +143,29 @@ namespace AutoBotUtilities.Tests
             using (var context = new OCRContext())
             {
                 // Total regex patterns
-                var totalPatterns = await context.RegularExpressions.CountAsync();
+                var totalPatterns = await context.RegularExpressions.CountAsync().ConfigureAwait(false);
                 _logger.Information("📈 **TOTAL_PATTERNS**: {Count} regex patterns in database", totalPatterns);
 
                 // Patterns by type
                 var totalDeductionCount = await context.RegularExpressions
-                    .CountAsync(r => r.RegEx.Contains("TotalDeduction"));
+                                              .CountAsync(r => r.RegEx.Contains("TotalDeduction")).ConfigureAwait(false);
                 _logger.Information("💰 **TOTALDEDUCTION_PATTERNS**: {Count} TotalDeduction patterns", totalDeductionCount);
 
                 var invoiceTotalCount = await context.RegularExpressions
-                    .CountAsync(r => r.RegEx.Contains("InvoiceTotal"));
+                                            .CountAsync(r => r.RegEx.Contains("InvoiceTotal")).ConfigureAwait(false);
                 _logger.Information("🧾 **INVOICETOTAL_PATTERNS**: {Count} InvoiceTotal patterns", invoiceTotalCount);
 
                 var giftCardCount = await context.RegularExpressions
-                    .CountAsync(r => r.RegEx.Contains("Gift Card") || r.RegEx.Contains("TotalInsurance"));
+                                        .CountAsync(r => r.RegEx.Contains("Gift Card") || r.RegEx.Contains("TotalInsurance")).ConfigureAwait(false);
                 _logger.Information("🎁 **GIFT_CARD_PATTERNS**: {Count} Gift Card/TotalInsurance patterns", giftCardCount);
 
                 // Templates
-                var templateCount = await context.Invoices.CountAsync();
+                var templateCount = await context.Invoices.CountAsync().ConfigureAwait(false);
                 _logger.Information("📋 **TEMPLATES**: {Count} invoice templates", templateCount);
 
                 // Lines and Parts
-                var lineCount = await context.Lines.CountAsync();
-                var partCount = await context.Parts.CountAsync();
+                var lineCount = await context.Lines.CountAsync().ConfigureAwait(false);
+                var partCount = await context.Parts.CountAsync().ConfigureAwait(false);
                 _logger.Information("🧩 **STRUCTURE**: {LineCount} lines, {PartCount} parts", lineCount, partCount);
 
                 _logger.Information("✅ **STATS_COMPLETE**: Database statistics collected");
@@ -185,8 +185,8 @@ namespace AutoBotUtilities.Tests
             {
                 // Find any remaining problematic patterns
                 var problematicPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
-                    .ToListAsync();
+                                              .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
+                                              .ToListAsync().ConfigureAwait(false);
 
                 if (problematicPatterns.Any())
                 {
@@ -198,7 +198,7 @@ namespace AutoBotUtilities.Tests
                         context.RegularExpressions.Remove(pattern);
                     }
 
-                    var deletedCount = await context.SaveChangesAsync();
+                    var deletedCount = await context.SaveChangesAsync().ConfigureAwait(false);
                     _logger.Information("✅ **CLEANUP_COMPLETE**: Deleted {Count} additional problematic patterns", deletedCount);
                 }
                 else
@@ -220,9 +220,9 @@ namespace AutoBotUtilities.Tests
             {
                 // Find very short, potentially overly broad patterns
                 var shortPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx.Length < 30 && r.RegEx.Contains("(?<"))
-                    .OrderBy(r => r.RegEx.Length)
-                    .ToListAsync();
+                                        .Where(r => r.RegEx.Length < 30 && r.RegEx.Contains("(?<"))
+                                        .OrderBy(r => r.RegEx.Length)
+                                        .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📏 **SHORT_PATTERNS**: Found {Count} potentially overly broad patterns (< 30 chars)", shortPatterns.Count);
 
@@ -235,8 +235,8 @@ namespace AutoBotUtilities.Tests
 
                 // Find patterns that capture just numbers (could conflict with InvoiceTotal)
                 var numberOnlyPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx.Contains("\\d+\\.\\d") && r.RegEx.Length < 40)
-                    .ToListAsync();
+                                             .Where(r => r.RegEx.Contains("\\d+\\.\\d") && r.RegEx.Length < 40)
+                                             .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("🔢 **NUMBER_PATTERNS**: Found {Count} patterns that capture numeric values", numberOnlyPatterns.Count);
 

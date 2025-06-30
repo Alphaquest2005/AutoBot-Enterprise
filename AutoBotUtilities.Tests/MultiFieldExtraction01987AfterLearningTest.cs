@@ -63,14 +63,14 @@ namespace AutoBotUtilities.Tests
                 using (var ctx = new EntryDataDSContext())
                 {
                     var existingInvoices = await ctx.ShipmentInvoice
-                        .Where(x => x.InvoiceNo == expectedInvoiceNo)
-                        .ToListAsync();
+                                               .Where(x => x.InvoiceNo == expectedInvoiceNo)
+                                               .ToListAsync().ConfigureAwait(false);
                     
                     if (existingInvoices.Any())
                     {
                         _logger.Information("🧹 **DATABASE_CLEANUP**: Removing {Count} existing invoices with InvoiceNo = '{InvoiceNo}'", existingInvoices.Count, expectedInvoiceNo);
                         ctx.ShipmentInvoice.RemoveRange(existingInvoices);
-                        await ctx.SaveChangesAsync();
+                        await ctx.SaveChangesAsync().ConfigureAwait(false);
                     }
                 }
 
@@ -246,13 +246,13 @@ namespace AutoBotUtilities.Tests
                         _logger.Information("   - TotalsZero: {TotalsZero}", finalInvoice.TotalsZero);
 
                         // Check for detail count
-                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == expectedInvoiceNo);
+                        int detailCount = await ctx.ShipmentInvoiceDetails.CountAsync(x => x.Invoice.InvoiceNo == expectedInvoiceNo).ConfigureAwait(false);
                         _logger.Information("   - Details Count: {DetailCount}", detailCount);
                         
                         // Log details for multi-field extraction validation
                         var details = await ctx.ShipmentInvoiceDetails
-                            .Where(x => x.Invoice.InvoiceNo == expectedInvoiceNo)
-                            .ToListAsync();
+                                          .Where(x => x.Invoice.InvoiceNo == expectedInvoiceNo)
+                                          .ToListAsync().ConfigureAwait(false);
                         
                         foreach (var detail in details)
                         {
@@ -273,8 +273,8 @@ namespace AutoBotUtilities.Tests
                     using (var ocrCtx = new OCRContext())
                     {
                         var corrections = await ocrCtx.OCRCorrectionLearning
-                            .Where(x => x.CreatedDate >= testStartTime)
-                            .ToListAsync();
+                                              .Where(x => x.CreatedDate >= testStartTime)
+                                              .ToListAsync().ConfigureAwait(false);
 
                         _logger.Information("📋 **OCR_CORRECTIONS_FOUND**: {Count} OCR corrections made during test", corrections.Count);
                         

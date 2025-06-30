@@ -45,7 +45,7 @@ namespace AutoBotUtilities.Tests
                 blankInvoice.InvoiceNo, blankInvoice.InvoiceTotal, blankInvoice.SubTotal);
             
             // Call DeepSeek error detection
-            var detectedErrors = await _service.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, ocrText, metadata);
+            var detectedErrors = await this._service.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, ocrText, metadata).ConfigureAwait(false);
             
             _logger.Information("✅ **DEBUG_RESULTS**: DeepSeek detected {ErrorCount} errors", detectedErrors.Count);
             

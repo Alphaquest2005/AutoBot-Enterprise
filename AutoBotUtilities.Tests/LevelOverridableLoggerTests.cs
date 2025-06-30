@@ -45,7 +45,7 @@ namespace MyLoggingUtils.Tests // Or your test project's namespace
         public void TearDown()
         {
             _innerSerilogLogger.Dispose();
-            LogLevelOverride.ResetForTesting(); // Ensure override is cleared
+            LogLevelOverride.EmergencyReset(); // Ensure override is cleared
         }
 
         private static IEnumerable<LogEvent> GetLoggedEvents()

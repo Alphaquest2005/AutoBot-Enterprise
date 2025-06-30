@@ -89,7 +89,7 @@ namespace AutoBotUtilities.Tests
                         }
                         
                         // Extract text using InvoiceReader pipeline
-                        var extractedText = await ExtractTextFromPDF(pdfPath);
+                        var extractedText = await this.ExtractTextFromPDF(pdfPath).ConfigureAwait(false);
                         
                         if (!string.IsNullOrEmpty(extractedText))
                         {
@@ -133,7 +133,7 @@ namespace AutoBotUtilities.Tests
                 }
                 
                 // Generate inventory file
-                await GenerateExtractionInventory(results);
+                await this.GenerateExtractionInventory(results).ConfigureAwait(false);
                 
                 Assert.That(successCount, Is.GreaterThan(0), $"At least one PDF should be successfully extracted. Got {successCount} successes out of {results.Count}");
             }
@@ -154,9 +154,9 @@ namespace AutoBotUtilities.Tests
                 
                 // Get importable file types (production step 1)
                 var fileLst = await FileTypeManager.GetImportableFileType(
-                    FileTypeManager.EntryTypes.Unknown, 
-                    FileTypeManager.FileFormats.PDF, 
-                    pdfPath);
+                                  FileTypeManager.EntryTypes.Unknown, 
+                                  FileTypeManager.FileFormats.PDF, 
+                                  pdfPath).ConfigureAwait(false);
                 
                 var fileTypes = fileLst.OfType<CoreEntities.Business.Entities.FileTypes>().ToList();
                 
@@ -172,9 +172,9 @@ namespace AutoBotUtilities.Tests
                 
                 // Use production ImportPDF method (production step 2)
                 var importResult = await PDFUtils.ImportPDF(
-                    new FileInfo[] { new FileInfo(pdfPath) }, 
-                    fileType, 
-                    _logger);
+                                       new FileInfo[] { new FileInfo(pdfPath) }, 
+                                       fileType, 
+                                       _logger).ConfigureAwait(false);
                 
                 _logger.Information("📊 **IMPORT_RESULT**: Production import completed, result count: {ResultCount}", 
                     importResult?.Count ?? 0);

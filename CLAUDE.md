@@ -1,6 +1,70 @@
 # CLAUDE.md
 
+## 🚨 CRITICAL LOGGING MANDATE: ALWAYS USE LOG FILES FOR COMPLETE ANALYSIS
+
+### **❌ CATASTROPHIC MISTAKE TO AVOID: Console Log Truncation**
+
+**NEVER rely on console output for test analysis - it truncates and hides critical failures!**
+
+#### **🎯 MANDATORY LOG FILE ANALYSIS PROTOCOL:**
+
+1. **ALWAYS use log files, NEVER console output** for test result analysis
+2. **Read from END of log file** to see final test results and failures  
+3. **Search for specific completion markers** (TEST_RESULT, FINAL_STATUS, etc.)
+4. **Verify database operation outcomes** - not just attempts
+5. **Check OCRCorrectionLearning table** for Success=0 indicating failures
+
+#### **✅ CORRECT Approach:**
+```bash
+# Read the COMPLETE log file, especially the END
+tail -100 "./AutoBotUtilities.Tests/bin/x64/Debug/net48/Logs/AutoBotTests-YYYYMMDD.log"
+
+# Search for completion markers
+grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
+
+# Verify database results
+sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-06-29'"
+```
+
+#### **❌ FATAL ERROR Pattern:**
+```bash
+# This FAILS because console output truncates long logs
+vstest.console.exe ... | tail -50  # ❌ WRONG - misses failures
+```
+
+#### **🚨 Key Lesson from MANGO Test:**
+- Console showed: "✅ DeepSeek API calls successful"  
+- **REALITY**: Database strategies ALL failed (Success=0 in OCRCorrectionLearning)
+- **ROOT CAUSE**: Console logs truncated, hid the actual failure messages
+- **CONSEQUENCE**: Incorrectly concluded test success when it actually failed
+
+#### **🎯 MANDATORY SUCCESS VERIFICATION:**
+For ANY test analysis, you MUST verify:
+1. **Template created**: Check database for template record
+2. **Parts created**: Check [OCR-Parts] table for associated records  
+3. **Lines created**: Check [OCR-Lines] table for regex patterns
+4. **Fields created**: Check [OCR-Fields] table for field mappings
+5. **Learning Success**: Check OCRCorrectionLearning.Success = 1 (not 0)
+
+**Remember: Logs tell stories, but only COMPLETE logs tell the TRUTH.**
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## 🎯 CRITICAL TEST REFERENCE
+
+### **MANGO Import Test** (Template Creation from Unknown Supplier)
+```bash
+# Run MANGO import test (mango import test - template creation from unknown supplier)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning" "/Logger:console;verbosity=detailed"
+```
+
+**Test Name**: `CanImportMango03152025TotalAmount_AfterLearning()`  
+**Purpose**: Tests OCR template creation for unknown suppliers using MANGO invoice data  
+**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/PDFImportTests.cs`  
+**Test Data**: `03152025_TOTAL AMOUNT.txt` and related MANGO files  
+**Current Issue**: OCR service CreateInvoiceTemplateAsync returns NULL, preventing template creation
 
 ## 📋 Session Management & Continuity Protocol
 
@@ -57,7 +121,120 @@ The session management system ensures Claude Code maintains awareness of:
 - **Regression Prevention**: What changes would break working features
 - **Cross-Session Learning**: Insights that apply to future development work
 
-## 🚨 LATEST: DeepSeek Generalization Enhancement (June 28, 2025)
+## 🚨 LATEST: MANGO Hybrid Document Analysis & Logger Architecture Fix (June 29, 2025)
+
+### **🎯 CRITICAL DISCOVERY: ContainsInvoiceKeywords Failure in Hybrid Document Processing**
+
+**Root Cause Identified**: The MANGO test failure is due to `ContainsInvoiceKeywords` returning FALSE despite the PDF containing clear invoice keywords, preventing OCR ShipmentInvoice template creation in hybrid documents.
+
+**Key Findings**:
+- ✅ **Hybrid Document Architecture Works**: GetPossibleInvoicesStep correctly detects SimplifiedDeclaration AND attempts OCR template creation
+- ✅ **Template Creation Condition Logic**: All conditions evaluate TRUE (no ShipmentInvoice found + PDF text available)  
+- ✅ **Rogue Logger Elimination**: Fixed all `Log.ForContext<>()` instances, enforced single context logger propagation
+- ✅ **LogLevelOverride Surgical Debugging**: Successfully captures complete call chain with forced termination
+- ❌ **Keyword Detection Failure**: `ContainsInvoiceKeywords` returns FALSE for MANGO content containing "Subtotal", "TOTAL AMOUNT", "Shipping & Handling", "Estimated Tax"
+- ❌ **Missing ShipmentInvoice Creation**: Test expects 'UCSJB6'/'UCSJIB6' ShipmentInvoice but creation fails at keyword detection stage
+
+### **MANGO Template Creation Test Status**
+
+**CRITICAL TEST**: `CanImportMango03152025TotalAmount_AfterLearning()` - Validates OCR template creation for unknown suppliers in hybrid documents.
+
+**Test Status**: 🔍 **ROOT CAUSE IDENTIFIED** - Keyword detection preventing OCR template creation despite valid invoice content
+
+**Next Steps**: Fix ContainsInvoiceKeywords method to properly detect MANGO invoice keywords
+
+### **LogLevelOverride Singleton Termination System** 🔧
+
+**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/Core.Common/Core.Common/Extensions/LogLevelOverride.cs`
+
+**Architecture**: Complete refactor from AsyncLocal pattern to singleton termination pattern:
+
+```csharp
+/// <summary>
+/// **SINGLETON TERMINATION LOG OVERRIDE**: 
+/// Forces surgical debugging by allowing only ONE active override at a time.
+/// When the override disposes, the entire application/test TERMINATES.
+/// </summary>
+public static class LogLevelOverride
+{
+    private static readonly object _lock = new object();
+    private static volatile TerminatingLevelOverride _activeOverride = null;
+    
+    sealed class TerminatingLevelOverride : IDisposable
+    {
+        public void Dispose()
+        {
+            // **FORCED TERMINATION**: Terminate the entire process
+            Log.CloseAndFlush();
+            Environment.Exit(0);
+        }
+    }
+    
+    public static IDisposable Begin(Serilog.Events.LogEventLevel level)
+    {
+        lock (_lock)
+        {
+            if (_activeOverride != null)
+                throw new InvalidOperationException("Only ONE override can exist at a time");
+            _activeOverride = new TerminatingLevelOverride(level);
+            return _activeOverride;
+        }
+    }
+}
+```
+
+**Benefits**:
+- 🎯 **Surgical Debugging**: Forces focus on specific code sections with automatic termination
+- 🧹 **Prevents Log Bloat**: Eliminates rogue logging from extensive "log and test first" mandate
+- ⚡ **Immediate Diagnosis**: Captures exactly what's needed then terminates for analysis
+- 🔒 **Singleton Enforcement**: Only ONE override can exist at a time, preventing conflicts
+
+### **Template FileType Preservation Fix** ✅
+
+**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/GetTemplatesStep.cs`
+
+**CRITICAL BUG FIXED**: GetContextTemplates was overwriting ALL templates' FileType with context.FileType, causing SimplifiedDeclaration (1185) to appear as ShipmentInvoice (1147).
+
+**Fix Applied**:
+```csharp
+// **FIXED**: Do NOT overwrite template's FileType with context.FileType
+// x.FileType = context.FileType; // <-- REMOVED: This was the bug
+
+// Only assign context-specific properties that don't affect template identity:
+x.DocSet = docSet;
+x.FilePath = context.FilePath;
+x.EmailId = context.EmailId;
+
+// If template doesn't have a FileType loaded, load it from database
+if (x.FileType == null && originalFileTypeId > 0)
+{
+    using (var fileTypeCtx = new CoreEntities.Business.Entities.CoreEntitiesContext())
+    {
+        var templateFileType = fileTypeCtx.FileTypes
+            .Include(ft => ft.FileImporterInfos)
+            .FirstOrDefault(ft => ft.Id == originalFileTypeId);
+        if (templateFileType != null)
+            x.FileType = templateFileType;
+    }
+}
+```
+
+**Result**: SimplifiedDeclaration template now correctly processes as 'Simplified Declaration' instead of being misidentified as 'Shipment Invoice'.
+
+### **LogLevelOverride Violations Fixed** 🔧
+
+**Files Modified**:
+1. **OCRCorrectionService.cs**: Removed LogLevelOverride.Begin() from CreateInvoiceTemplateAsync method
+2. **OCRPatternCreation.cs**: Removed LogLevelOverride from ValidatePatternInternal method  
+3. **GetPossibleInvoicesStep.cs**: Removed surgical debugging LogLevelOverride wrapper
+
+**Remaining Issues**: 
+- ⚠️ **Syntax Errors**: GetPossibleInvoicesStep.cs has compilation errors from edits
+- ⚠️ **Additional Violations**: Still finding singleton violations suggesting more LogLevelOverride.Begin() calls exist
+
+---
+
+## 🚨 PREVIOUS: DeepSeek Generalization Enhancement (June 28, 2025)
 
 ### **✅ SUCCESS: Phase 2 v2.0 Enhanced Emphasis Strategy IMPLEMENTED**
 
@@ -388,6 +565,20 @@ Logging is **essential** for LLMs to understand, diagnose, and fix errors in thi
 
 ### **Strategic Logging Architecture**
 
+#### **🚨 CRITICAL LOGGING MANDATE: NO ROGUE LOGGERS**
+**ABSOLUTE RULE**: There must be ONLY ONE logger in the entire call chain - the logger from the test context. 
+
+**FORBIDDEN PATTERNS**:
+- ❌ `Log.ForContext<ClassName>()`
+- ❌ `var logger = Log.Logger`  
+- ❌ `private static readonly ILogger _logger`
+- ❌ Any logger creation outside of test setup
+
+**REQUIRED PATTERN**: 
+- ✅ Logger MUST be passed through method parameters: `methodName(param1, param2, ILogger logger)`
+- ✅ Logger MUST be propagated through entire call chain without exception
+- ✅ All logging MUST use the passed context logger
+
 #### **🎯 Logging Lens System (Optimized for LLM Diagnosis)**:
 ```csharp
 // High global level filters extensive logs from "log and test first" mandate
@@ -615,12 +806,68 @@ INNER JOIN FileTypes ft ON i.FileTypeId = ft.Id
 WHERE i.Name LIKE '%SimplifiedDeclaration%' OR ft.Description LIKE '%Simplified%';
 ```
 
-### **NEXT TASK**: LogLevelOverride Singleton Termination Refactoring
-User wants to refactor LogLevelOverride to:
-- **Singleton Pattern**: Only one LogLevelOverride can exist at a time
-- **Termination on Dispose**: When LogLevelOverride disposes, terminate entire application/test
-- **Lens Effect**: Forces surgical debugging by ending execution when override scope ends
-- **Memory Management**: Prevents 3.3MB+ log files by forced termination
+### **✅ COMPLETED**: LogLevelOverride Singleton Termination Refactoring
+
+#### **🚨 SINGLETON TERMINATION LOG OVERRIDE** - Revolutionary Debugging Tool:
+
+The LogLevelOverride has been completely refactored to implement a **singleton termination pattern** that forces surgical debugging and prevents massive log files.
+
+#### **Key Features**:
+1. **Singleton Pattern**: Only **ONE** LogLevelOverride can exist at a time
+2. **Forced Termination**: When override disposes, `Environment.Exit(0)` terminates entire application/test
+3. **Lens Effect**: Forces very focused investigation by ending execution when scope ends
+4. **Memory Management**: Prevents 3.3MB+ log files by forced termination
+5. **Thread Safety**: Proper locking prevents race conditions
+6. **Comprehensive Diagnostics**: Captures creation context, execution duration, stack trace
+
+#### **Usage Pattern** (CRITICAL - READ CAREFULLY):
+```csharp
+// ⚠️ WARNING: This will TERMINATE the application when the scope ends
+using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+{
+    // 🎯 SURGICAL DEBUGGING CODE ONLY
+    // Focus on ONE specific issue or investigation
+    // Application will TERMINATE when this scope ends
+    ProcessSpecificIssue();
+} // <-- 🔚 PROCESS TERMINATES HERE with Environment.Exit(0)
+```
+
+#### **Important Constraints**:
+- **ONE OVERRIDE ONLY**: Subsequent calls to `Begin()` throw `InvalidOperationException`
+- **NO NESTED OVERRIDES**: Cannot create multiple overrides in same execution
+- **FORCED TERMINATION**: Process always terminates when override disposes
+- **EMERGENCY RESET**: `LogLevelOverride.EmergencyReset()` available for emergencies only
+
+#### **Log Output Example**:
+```
+🚨 **SINGLETON_LOGLEVELOVERRIDE_ENTRY**: SURGICAL DEBUGGING MODE ACTIVATED
+   - **OVERRIDE_LEVEL**: Verbose
+   - **CREATION_TIME**: 2025-06-29 18:45:32.123 UTC
+   - **CREATION_CONTEXT**: GetPossibleInvoicesStep.Execute at GetPossibleInvoicesStep.cs:27
+   - **TERMINATION_WARNING**: Application will TERMINATE when this override disposes
+   - **LENS_EFFECT**: Only code within this scope will execute - forced surgical debugging
+🎯 **SURGICAL_DEBUGGING_START**: Entering focused investigation mode...
+
+[... focused debugging logs here ...]
+
+🚨 **SINGLETON_LOGLEVELOVERRIDE_TERMINATION**: SURGICAL DEBUGGING MODE ENDING
+   - **EXECUTION_DURATION**: 00:00:05.234
+   - **TERMINATION_REASON**: LogLevelOverride scope ended - implementing forced termination
+🔚 **LENS_EFFECT_COMPLETE**: Surgical debugging finished, terminating application...
+```
+
+#### **When to Use**:
+- **OCR Service Investigation**: Focus on why `CreateInvoiceTemplateAsync` returns NULL
+- **Template Processing Issues**: Investigate specific template creation problems
+- **Pipeline Step Debugging**: Focus on one specific pipeline step execution
+- **Performance Investigation**: Time-bound investigation of specific operations
+
+#### **Benefits**:
+- **🎯 Surgical Focus**: Forces investigation of ONE specific issue
+- **🧹 No Log Bloat**: Prevents 3.3MB+ log files through forced termination
+- **💾 Memory Efficient**: Process ends immediately after investigation
+- **📋 Complete Context**: Captures full execution context and timing
+- **🔒 Singleton Safety**: Prevents multiple concurrent investigations
 
 ---
 

@@ -55,7 +55,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY l.Name;
             ";
 
-            await ExecuteSqlScript(script, "Find TotalDeduction patterns");
+            await this.ExecuteSqlScript(script, "Find TotalDeduction patterns").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace AutoBotUtilities.Tests
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 
                 using (var command = new SqlCommand(script, connection))
                 {
@@ -139,7 +139,7 @@ namespace AutoBotUtilities.Tests
                 GROUP BY i.Id, i.Name, i.Description;
             ";
 
-            await ExecuteSqlScript(templateScript, "Amazon template overview");
+            await this.ExecuteSqlScript(templateScript, "Amazon template overview").ConfigureAwait(false);
 
             // Get all lines and patterns
             var patternsScript = @"
@@ -164,7 +164,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY p.Name, l.Name, f.Field;
             ";
 
-            await ExecuteSqlScript(patternsScript, "Amazon template patterns and fields");
+            await this.ExecuteSqlScript(patternsScript, "Amazon template patterns and fields").ConfigureAwait(false);
 
             // Check for Gift Card and Free Shipping patterns specifically
             var specificPatternsScript = @"
@@ -199,7 +199,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY PatternType, LineId;
             ";
 
-            await ExecuteSqlScript(specificPatternsScript, "Amazon Gift Card and Free Shipping patterns");
+            await this.ExecuteSqlScript(specificPatternsScript, "Amazon Gift Card and Free Shipping patterns").ConfigureAwait(false);
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY EntityType;
             ";
 
-            await ExecuteSqlScript(statsScript, "Overall database statistics");
+            await this.ExecuteSqlScript(statsScript, "Overall database statistics").ConfigureAwait(false);
 
             // Pattern analysis
             var patternStatsScript = @"
@@ -265,7 +265,7 @@ namespace AutoBotUtilities.Tests
                 WHERE RegEx LIKE '%InvoiceTotal%';
             ";
 
-            await ExecuteSqlScript(patternStatsScript, "Pattern analysis statistics");
+            await this.ExecuteSqlScript(patternStatsScript, "Pattern analysis statistics").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY IssueType, PatternLength;
             ";
 
-            await ExecuteSqlScript(problematicScript, "Potentially problematic patterns");
+            await this.ExecuteSqlScript(problematicScript, "Potentially problematic patterns").ConfigureAwait(false);
         }
 
         #endregion
@@ -356,7 +356,7 @@ namespace AutoBotUtilities.Tests
                 END
             ";
 
-            await ExecuteSqlScript(learningScript, "OCR correction learning analysis");
+            await this.ExecuteSqlScript(learningScript, "OCR correction learning analysis").ConfigureAwait(false);
         }
 
         #endregion
@@ -409,7 +409,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY MappingType, FieldId;
             ";
 
-            await ExecuteSqlScript(mappingScript, "Caribbean customs field mappings");
+            await this.ExecuteSqlScript(mappingScript, "Caribbean customs field mappings").ConfigureAwait(false);
 
             // Check for potential mapping conflicts
             var conflictScript = @"
@@ -429,7 +429,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY FieldCount DESC;
             ";
 
-            await ExecuteSqlScript(conflictScript, "Potential field mapping conflicts");
+            await this.ExecuteSqlScript(conflictScript, "Potential field mapping conflicts").ConfigureAwait(false);
         }
 
         #endregion
@@ -513,7 +513,7 @@ namespace AutoBotUtilities.Tests
             ";
 
             var parameters = new Dictionary<string, object> { { "templateId", templateId } };
-            await ExecuteSqlScript(exportScript, $"Complete template context export for template {templateId}", parameters);
+            await this.ExecuteSqlScript(exportScript, $"Complete template context export for template {templateId}", parameters).ConfigureAwait(false);
         }
 
         #endregion
@@ -570,7 +570,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY OrphanType, Id;
             ";
 
-            await ExecuteSqlScript(orphanScript, "Orphaned records check");
+            await this.ExecuteSqlScript(orphanScript, "Orphaned records check").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace AutoBotUtilities.Tests
                 SELECT 'Backup completed with timestamp: ' + @timestamp AS BackupResult;
             ";
 
-            await ExecuteSqlScript(backupScript, "Backup critical entities");
+            await this.ExecuteSqlScript(backupScript, "Backup critical entities").ConfigureAwait(false);
         }
 
         #endregion
@@ -639,7 +639,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY f.Field, l.Name;
             ";
 
-            await ExecuteSqlScript(currentStateScript, "Current Amazon template state for Caribbean customs");
+            await this.ExecuteSqlScript(currentStateScript, "Current Amazon template state for Caribbean customs").ConfigureAwait(false);
         }
 
         #endregion

@@ -274,6 +274,40 @@ Analyze the OCR text and generate JSON objects in the `errors` array, applying o
 *   **CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
     *   Create an `omission` object: set `field` to ""TotalInsurance"", `correct_value` to the **negative absolute value** (e.g., ""-6.99"").
 
+#### **🚨 PRODUCTION DATA STANDARDS - MANDATORY FORMAT CORRECTIONS:**
+**CRITICAL**: When you detect fields that need format conversion for production compatibility, create `format_correction` errors:
+
+**1. Currency Field Standards:**
+*   **Production Standard**: 3-letter ISO currency codes (USD, EUR, CNY, XCD)
+*   **Common Issues**: ""US$"", ""USS"", ""$"", ""€"", ""£"" → Must convert to ""USD"", ""EUR"", ""GBP""
+*   **Action**: Create `format_correction` with `field` = ""Currency"", `correct_value` = ""USD"" (3-letter code)
+*   **Example**: If OCR shows ""US$"" or ""USS"", create format_correction to convert to ""USD""
+
+**2. Date Field Standards:**
+*   **Production Standard**: Short date format MM/dd/yyyy (e.g., ""07/23/2024"")
+*   **Common Issues**: ""Tuesday, July 23, 2024 at 03:42 PM EDT"" → Must convert to ""07/23/2024""
+*   **Action**: Create `format_correction` with `field` = ""InvoiceDate"", `correct_value` = ""07/23/2024""
+*   **Rule**: Strip time, day names, time zones - keep only MM/dd/yyyy format
+
+**3. Numeric Field Standards:**
+*   **Production Standard**: Clean decimal numbers without currency symbols
+*   **Common Issues**: ""$123.45"", ""US$456.78"" → Must convert to ""123.45"", ""456.78""
+*   **Action**: Create `format_correction` to remove currency symbols from numeric fields
+
+**4. Text Field Standards:**
+*   **Production Standard**: Clean text without OCR artifacts
+*   **Common Issues**: ""BOTTOMK NT"" → ""BOTTOM PAINT"", ""USS"" → ""US""
+*   **Action**: Create `format_correction` for obvious OCR text corrections
+
+**🎯 FORMAT CORRECTION DETECTION RULES:**
+1. **Scan ALL extracted values** for production standard violations
+2. **Currency violations**: Any currency not in 3-letter ISO format (USD, EUR, CNY, XCD, GBP)
+3. **Date violations**: Any date with time, day names, or timezone information
+4. **Numeric violations**: Financial amounts with embedded currency symbols
+5. **Text violations**: Obvious OCR character substitution errors
+
+**📝 MANDATORY: Generate format_correction errors for EVERY field that violates production standards**
+
 If you find no new omissions or corrections, return an empty errors array.
 
 **🚨 CRITICAL EMPTY RESPONSE REQUIREMENT:**

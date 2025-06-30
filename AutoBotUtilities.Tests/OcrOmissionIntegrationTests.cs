@@ -110,7 +110,7 @@ namespace AutoBotUtilities.Tests.Production // Changed namespace to match others
 
             // Act: Process this single error through the ApplyCorrectionsAsync path,
             // which will lead to UpdateRegexPatternsAsync
-            var correctionResults = await (Task<List<CorrectionResult>>)InvokePrivateMethod<Task<List<CorrectionResult>>>(_service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata);
+            var correctionResults = await ((Task<List<CorrectionResult>>)InvokePrivateMethod<Task<List<CorrectionResult>>>(this._service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata)).ConfigureAwait(false);
 
             // This part would then call UpdateRegexPatternsAsync internally.
             // For this conceptual test, we check if a CorrectionResult for DB update was generated.

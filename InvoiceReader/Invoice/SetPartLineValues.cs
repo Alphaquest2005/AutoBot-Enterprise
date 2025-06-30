@@ -45,10 +45,9 @@ namespace WaterNut.DataSpace
 
         private List<IDictionary<string, object>> SetPartLineValues(Part part, string filterInstance = null)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
-                // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
-                _logger.Error("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
+            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
+            // **CRITICAL ENTRY POINT DEBUG**: This log should ALWAYS appear if method is called
+            _logger.Debug("**SETPARTLINEVALUES_ENTRY**: SetPartLineValues method called - filterInstance: {FilterInstance}", filterInstance ?? "NULL");
                 
                 // **INPUT SERIALIZATION**: Serialize input parameters for LLM analysis
                 var partSerialized = SerializePartForDebugging(part);
@@ -124,7 +123,6 @@ namespace WaterNut.DataSpace
                     _logger.Error(ex, "**SETPARTLINEVALUES_ERROR**: Exception occurred during version {Version} execution", versionToTest);
                     throw;
                 }
-            }
         }
         
         /// <summary>

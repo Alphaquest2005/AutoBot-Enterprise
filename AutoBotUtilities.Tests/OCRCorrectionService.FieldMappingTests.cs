@@ -203,7 +203,7 @@ namespace AutoBotUtilities.Tests.Production
             }
 
             // Act
-            var resultFields = await InvokePrivateMethod<Task<List<Fields>>>(_service, "GetFieldsByRegexNamedGroupsAsync", regexPattern, testLine.Id);
+            var resultFields = await InvokePrivateMethod<Task<List<Fields>>>(this._service, "GetFieldsByRegexNamedGroupsAsync", regexPattern, testLine.Id).ConfigureAwait(false);
 
             // Assert
             Assert.That(resultFields.Count, Is.EqualTo(2));

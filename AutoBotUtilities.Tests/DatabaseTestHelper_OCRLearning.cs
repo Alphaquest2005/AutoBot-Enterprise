@@ -45,7 +45,7 @@ namespace AutoBotUtilities.Tests
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 
                 using (var command = new SqlCommand(script, connection))
                 {
@@ -109,7 +109,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY TABLE_NAME;
             ";
 
-            await ExecuteSqlScript(tableScript, "OCR learning-related tables");
+            await this.ExecuteSqlScript(tableScript, "OCR learning-related tables").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace AutoBotUtilities.Tests
                 END
             ";
 
-            await ExecuteSqlScript(structureScript, "OCRCorrectionLearning table structure");
+            await this.ExecuteSqlScript(structureScript, "OCRCorrectionLearning table structure").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace AutoBotUtilities.Tests
                 END
             ";
 
-            await ExecuteSqlScript(contentsScript, "OCRCorrectionLearning table contents");
+            await this.ExecuteSqlScript(contentsScript, "OCRCorrectionLearning table contents").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Created DESC;
             ";
 
-            await ExecuteSqlScript(activityScript, "Recent Amazon template activity");
+            await this.ExecuteSqlScript(activityScript, "Recent Amazon template activity").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY PatternType, Created DESC;
             ";
 
-            await ExecuteSqlScript(patternScript, "Amazon Gift Card and Free Shipping patterns");
+            await this.ExecuteSqlScript(patternScript, "Amazon Gift Card and Free Shipping patterns").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY f.Field, l.Name;
             ";
 
-            await ExecuteSqlScript(mappingScript, "Amazon field mappings for Caribbean customs compliance");
+            await this.ExecuteSqlScript(mappingScript, "Amazon field mappings for Caribbean customs compliance").ConfigureAwait(false);
         }
     }
 }

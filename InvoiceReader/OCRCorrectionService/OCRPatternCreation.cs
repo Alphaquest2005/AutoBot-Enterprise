@@ -102,67 +102,65 @@ namespace WaterNut.DataSpace
         /// </summary>
         public CorrectionResult ValidatePatternInternal(CorrectionResult correction)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
-                _logger.Error("🔍 **INTERNAL_VALIDATION**: Starting internal validation for Field '{FieldName}'", correction?.FieldName);
+            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
+            _logger.Debug("🔍 **INTERNAL_VALIDATION**: Starting internal validation for Field '{FieldName}'", correction?.FieldName);
 
-                if (correction == null)
+            if (correction == null)
+            {
+                _logger.Debug("❌ **INTERNAL_VALIDATION_FAIL**: Correction object is null.");
+                return null;
+            }
+
+            try
+            {
+                // Step 1: Check if the field is supported for database learning
+                if (!this.IsFieldSupported(correction.FieldName))
                 {
-                    _logger.Error("❌ **INTERNAL_VALIDATION_FAIL**: Correction object is null.");
-                    return null;
+                    correction.Success = false;
+                    correction.Reasoning = $"Field '{correction.FieldName}' is not supported for database updates.";
+                    _logger.Debug("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
+                    return correction;
                 }
 
-                try
+                // Step 2: Validate the format of the new value against the field's expected data type
+                if (!string.IsNullOrEmpty(correction.NewValue))
                 {
-                    // Step 1: Check if the field is supported for database learning
-                    if (!this.IsFieldSupported(correction.FieldName))
+                    var fieldInfo = this.GetFieldValidationInfo(correction.FieldName);
+                    if (fieldInfo.IsValid && !string.IsNullOrEmpty(fieldInfo.ValidationPattern) && !Regex.IsMatch(
+                            correction.NewValue, fieldInfo.ValidationPattern))
                     {
                         correction.Success = false;
-                        correction.Reasoning = $"Field '{correction.FieldName}' is not supported for database updates.";
-                        _logger.Error("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
+                        correction.Reasoning = $"New value '{correction.NewValue}' does not match the expected pattern '{fieldInfo.ValidationPattern}' for data type '{fieldInfo.DataType}'.";
+                        _logger.Debug("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
                         return correction;
                     }
-
-                    // Step 2: Validate the format of the new value against the field's expected data type
-                    if (!string.IsNullOrEmpty(correction.NewValue))
-                    {
-                        var fieldInfo = this.GetFieldValidationInfo(correction.FieldName);
-                        if (fieldInfo.IsValid && !string.IsNullOrEmpty(fieldInfo.ValidationPattern) && !Regex.IsMatch(
-                                correction.NewValue, fieldInfo.ValidationPattern))
-                        {
-                            correction.Success = false;
-                            correction.Reasoning = $"New value '{correction.NewValue}' does not match the expected pattern '{fieldInfo.ValidationPattern}' for data type '{fieldInfo.DataType}'.";
-                            _logger.Error("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
-                            return correction;
-                        }
-                    }
-
-                    // Step 3: Check the syntax of any suggested regex
-                    if (!string.IsNullOrEmpty(correction.SuggestedRegex))
-                    {
-                        try
-                        {
-                            _ = new Regex(correction.SuggestedRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            correction.Success = false;
-                            correction.Reasoning = $"Invalid regex pattern syntax: {ex.Message}";
-                            _logger.Error("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
-                            return correction;
-                        }
-                    }
-
-                    _logger.Error("✅ **INTERNAL_VALIDATION_PASS**: Field '{FieldName}' passed internal checks.", correction.FieldName);
-                    return correction;
                 }
-                catch (Exception ex)
+
+                // Step 3: Check the syntax of any suggested regex
+                if (!string.IsNullOrEmpty(correction.SuggestedRegex))
                 {
-                    _logger.Error(ex, "🚨 **INTERNAL_VALIDATION_EXCEPTION**: Exception during pattern validation for {FieldName}", correction.FieldName);
-                    correction.Success = false;
-                    correction.Reasoning = $"Exception during validation: {ex.Message}";
-                    return correction;
+                    try
+                    {
+                        _ = new Regex(correction.SuggestedRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        correction.Success = false;
+                        correction.Reasoning = $"Invalid regex pattern syntax: {ex.Message}";
+                        _logger.Debug("❌ **INTERNAL_VALIDATION_FAIL**: {Reasoning}", correction.Reasoning);
+                        return correction;
+                    }
                 }
+
+                _logger.Debug("✅ **INTERNAL_VALIDATION_PASS**: Field '{FieldName}' passed internal checks.", correction.FieldName);
+                return correction;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **INTERNAL_VALIDATION_EXCEPTION**: Exception during pattern validation for {FieldName}", correction.FieldName);
+                correction.Success = false;
+                correction.Reasoning = $"Exception during validation: {ex.Message}";
+                return correction;
             }
         }
 
@@ -174,80 +172,78 @@ namespace WaterNut.DataSpace
         /// </summary>
         public bool ValidateRegexPattern(RegexCreationResponse regexResponse, CorrectionResult correction)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
+            _logger.Debug("🔬 **REGEX_VALIDATION_START**: Validating new regex pattern for Field '{FieldName}'.", correction.FieldName);
+
+            if (regexResponse == null || string.IsNullOrWhiteSpace(regexResponse.RegexPattern))
             {
-                _logger.Error("🔬 **REGEX_VALIDATION_START**: Validating new regex pattern for Field '{FieldName}'.", correction.FieldName);
+                _logger.Debug("    - ❌ **VALIDATION_FAIL**: Regex response or pattern is null or empty.");
+                return false;
+            }
 
-                if (regexResponse == null || string.IsNullOrWhiteSpace(regexResponse.RegexPattern))
+            _logger.Debug("    - [Input Data Dump]");
+            _logger.Debug("      - Correction Field: '{FieldName}', Expected Value: '{NewValue}'", correction.FieldName, correction.NewValue);
+            _logger.Debug("      - Regex Pattern: '{RegexPattern}'", regexResponse.RegexPattern);
+            _logger.Debug("      - Test Match Text: '{TestMatch}'", regexResponse.TestMatch ?? correction.LineText);
+
+            try
+            {
+                var regex = new Regex(regexResponse.RegexPattern, RegexOptions.IgnoreCase | (regexResponse.IsMultiline ? RegexOptions.Multiline : RegexOptions.None));
+                _logger.Debug("    - ✅ **SYNTAX_CHECK_PASS**: Regex compiled successfully.");
+
+                string textToTest = !string.IsNullOrEmpty(regexResponse.TestMatch) ? regexResponse.TestMatch : correction.LineText;
+                if (string.IsNullOrEmpty(textToTest))
                 {
-                    _logger.Error("    - ❌ **VALIDATION_FAIL**: Regex response or pattern is null or empty.");
+                    _logger.Debug("    - ❌ **VALIDATION_FAIL**: No text available (neither TestMatch nor LineText) to test the regex against.");
                     return false;
                 }
 
-                _logger.Error("    - [Input Data Dump]");
-                _logger.Error("      - Correction Field: '{FieldName}', Expected Value: '{NewValue}'", correction.FieldName, correction.NewValue);
-                _logger.Error("      - Regex Pattern: '{RegexPattern}'", regexResponse.RegexPattern);
-                _logger.Error("      - Test Match Text: '{TestMatch}'", regexResponse.TestMatch ?? correction.LineText);
-
-                try
+                var match = regex.Match(textToTest);
+                if (!match.Success)
                 {
-                    var regex = new Regex(regexResponse.RegexPattern, RegexOptions.IgnoreCase | (regexResponse.IsMultiline ? RegexOptions.Multiline : RegexOptions.None));
-                    _logger.Error("    - ✅ **SYNTAX_CHECK_PASS**: Regex compiled successfully.");
-
-                    string textToTest = !string.IsNullOrEmpty(regexResponse.TestMatch) ? regexResponse.TestMatch : correction.LineText;
-                    if (string.IsNullOrEmpty(textToTest))
-                    {
-                        _logger.Error("    - ❌ **VALIDATION_FAIL**: No text available (neither TestMatch nor LineText) to test the regex against.");
-                        return false;
-                    }
-
-                    var match = regex.Match(textToTest);
-                    if (!match.Success)
-                    {
-                        _logger.Error("    - ❌ **VALIDATION_FAIL**: The regex pattern did not find any match in the test text: '{TextToTest}'", textToTest);
-                        return false;
-                    }
-                    _logger.Error("    - ✅ **MATCH_SUCCESS**: Regex found a match in the test text: '{MatchValue}'", match.Value);
-
-                    // CRITICAL FIX: Check for the NAMED group, not just any group.
-                    var namedGroup = match.Groups[correction.FieldName];
-                    if (!namedGroup.Success)
-                    {
-                        _logger.Error("    - ❌ **VALIDATION_FAIL**: A group named '{FieldName}' was NOT found or did not capture a value. Available groups: {Groups}",
-                            correction.FieldName, string.Join(", ", regex.GetGroupNames()));
-                        return false;
-                    }
-
-                    // Clean the extracted value for comparison (remove currency, whitespace, and negative signs for absolute comparison).
-                    string extractedValueClean = Regex.Replace(namedGroup.Value, @"[\s\$,-]", "");
-                    _logger.Error("    - [EXTRACTION_RESULT]: Extracted raw value '{Raw}' from named group '{FieldName}', cleaned to '{Cleaned}'", namedGroup.Value, correction.FieldName, extractedValueClean);
-
-                    string expectedValueClean = Regex.Replace(correction.NewValue, @"[\s\$,-]", "");
-                    _logger.Error("    - [COMPARISON]: Comparing Cleaned Extracted='{ExtractedValue}' vs Cleaned Expected='{ExpectedValue}'", extractedValueClean, expectedValueClean);
-
-                    // Use a robust numeric comparison on the absolute values
-                    if (decimal.TryParse(extractedValueClean, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var extractedDecimal) &&
-                        decimal.TryParse(expectedValueClean, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var expectedDecimal))
-                    {
-                        bool isMatch = Math.Abs(extractedDecimal - expectedDecimal) < 0.01m;
-                        if (isMatch) _logger.Error("    - ✅ **VALIDATION_PASS**: Numeric values match."); else _logger.Error("    - ❌ **VALIDATION_FAIL**: Numeric values do not match.");
-                        return isMatch;
-                    }
-
-                    // Fallback to string comparison
-                    bool stringMatch = string.Equals(extractedValueClean, expectedValueClean, StringComparison.OrdinalIgnoreCase);
-                    if (stringMatch) _logger.Error("    - ✅ **VALIDATION_PASS**: String values match."); else _logger.Error("    - ❌ **VALIDATION_FAIL**: String values do not match.");
-                    return stringMatch;
-                }
-                catch (ArgumentException ex)
-                {
-                    _logger.Error(ex, "    - ❌ **VALIDATION_FAIL**: The regex pattern is syntactically invalid.");
+                    _logger.Debug("    - ❌ **VALIDATION_FAIL**: The regex pattern did not find any match in the test text: '{TextToTest}'", textToTest);
                     return false;
                 }
-                finally
+                _logger.Debug("    - ✅ **MATCH_SUCCESS**: Regex found a match in the test text: '{MatchValue}'", match.Value);
+
+                // CRITICAL FIX: Check for the NAMED group, not just any group.
+                var namedGroup = match.Groups[correction.FieldName];
+                if (!namedGroup.Success)
                 {
-                    _logger.Error("🔬 **REGEX_VALIDATION_END**");
+                    _logger.Debug("    - ❌ **VALIDATION_FAIL**: A group named '{FieldName}' was NOT found or did not capture a value. Available groups: {Groups}",
+                        correction.FieldName, string.Join(", ", regex.GetGroupNames()));
+                    return false;
                 }
+
+                // Clean the extracted value for comparison (remove currency, whitespace, and negative signs for absolute comparison).
+                string extractedValueClean = Regex.Replace(namedGroup.Value, @"[\s\$,-]", "");
+                _logger.Debug("    - [EXTRACTION_RESULT]: Extracted raw value '{Raw}' from named group '{FieldName}', cleaned to '{Cleaned}'", namedGroup.Value, correction.FieldName, extractedValueClean);
+
+                string expectedValueClean = Regex.Replace(correction.NewValue, @"[\s\$,-]", "");
+                _logger.Debug("    - [COMPARISON]: Comparing Cleaned Extracted='{ExtractedValue}' vs Cleaned Expected='{ExpectedValue}'", extractedValueClean, expectedValueClean);
+
+                // Use a robust numeric comparison on the absolute values
+                if (decimal.TryParse(extractedValueClean, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var extractedDecimal) &&
+                    decimal.TryParse(expectedValueClean, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var expectedDecimal))
+                {
+                    bool isMatch = Math.Abs(extractedDecimal - expectedDecimal) < 0.01m;
+                    if (isMatch) _logger.Debug("    - ✅ **VALIDATION_PASS**: Numeric values match."); else _logger.Debug("    - ❌ **VALIDATION_FAIL**: Numeric values do not match.");
+                    return isMatch;
+                }
+
+                // Fallback to string comparison
+                bool stringMatch = string.Equals(extractedValueClean, expectedValueClean, StringComparison.OrdinalIgnoreCase);
+                if (stringMatch) _logger.Debug("    - ✅ **VALIDATION_PASS**: String values match."); else _logger.Debug("    - ❌ **VALIDATION_FAIL**: String values do not match.");
+                return stringMatch;
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.Error(ex, "    - ❌ **VALIDATION_FAIL**: The regex pattern is syntactically invalid.");
+                return false;
+            }
+            finally
+            {
+                _logger.Debug("🔬 **REGEX_VALIDATION_END**");
             }
         }
 

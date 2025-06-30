@@ -4,9 +4,12 @@ using System.Collections.Generic; // Added
 using System.Linq; // Added
 using System.Threading.Tasks; // Added
 using Serilog; // Added
+using Serilog.Events; // Added for LogLevelOverride
 using System;
 using InvoiceReader.PipelineInfrastructure;
 using WaterNut.Business.Services.Utils; // Added
+using Core.Common.Extensions; // Added for LogLevelOverride
+using System.Data.Entity; // Added for FirstOrDefaultAsync
 
 namespace WaterNut.DataSpace.PipelineInfrastructure
 {
@@ -20,60 +23,462 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
-            string filePath = context?.FilePath ?? "Unknown";
-            context.Logger?.Information("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
-                nameof(Execute), "Identify possible invoice templates based on PDF text", $"FilePath: {filePath}");
-
-            context.Logger?.Information("ACTION_START: {ActionName}. Context: [{ActionContext}]",
-                nameof(GetPossibleInvoicesStep), $"Identifying possible invoices for file: {filePath}");
-
-            if (!ValidateContext(context, filePath))
+            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
             {
-                methodStopwatch.Stop();
-                context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Identify possible invoice templates based on PDF text", methodStopwatch.ElapsedMilliseconds, "Context validation failed.");
-                context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(GetPossibleInvoicesStep), "Context validation", methodStopwatch.ElapsedMilliseconds, "Context validation failed.");
-                return false;
-            }
+                var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
+                string filePath = context?.FilePath ?? "Unknown";
+                context.Logger?.Information(
+                    "METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
+                    nameof(Execute),
+                    "Identify possible invoice templates based on PDF text",
+                    $"FilePath: {filePath}");
 
-            try
-            {
-                string pdfTextString = context.PdfText.ToString();
-                int totalTemplateCount = context.Templates?.Count() ?? 0;
-                context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                    nameof(Execute), "Processing", "Processing templates to find possible invoices.", $"TotalTemplateCount: {totalTemplateCount}, FilePath: {filePath}");
+                context.Logger?.Information(
+                    "ACTION_START: {ActionName}. Context: [{ActionContext}]",
+                    nameof(GetPossibleInvoicesStep),
+                    $"Identifying possible invoices for file: {filePath}");
 
-                var possibleInvoices = await GetPossibleInvoices(context, pdfTextString, filePath).ConfigureAwait(false);
+                if (!ValidateContext(context, filePath))
+                {
+                    methodStopwatch.Stop();
+                    context.Logger?.Error(
+                        "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(Execute),
+                        "Identify possible invoice templates based on PDF text",
+                        methodStopwatch.ElapsedMilliseconds,
+                        "Context validation failed.");
+                    context.Logger?.Error(
+                        "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(GetPossibleInvoicesStep),
+                        "Context validation",
+                        methodStopwatch.ElapsedMilliseconds,
+                        "Context validation failed.");
+                    return false;
+                }
 
-                //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Template"))
-                //    throw new ApplicationException("No Shipment Template Templates found");
+                try
+                {
+                    string pdfTextString = context.PdfText.ToString();
+                    int totalTemplateCount = context.Templates?.Count() ?? 0;
+                    context.Logger?.Information(
+                        "INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
+                        nameof(Execute),
+                        "Processing",
+                        "Processing templates to find possible invoices.",
+                        $"TotalTemplateCount: {totalTemplateCount}, FilePath: {filePath}");
 
-                // Assign the identified possible invoices to the new MatchedTemplates property
-                context.MatchedTemplates = possibleInvoices;
-                // Log the identified possible invoices
-                LogPossibleInvoices(context, possibleInvoices, totalTemplateCount, filePath);
+                    var possibleInvoices =
+                        await GetPossibleInvoices(context, pdfTextString, filePath).ConfigureAwait(false);
 
-                methodStopwatch.Stop();
-                context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                    nameof(Execute), "Successfully identified possible invoice templates", $"PossibleInvoiceCount: {context.MatchedTemplates?.Count() ?? 0}", methodStopwatch.ElapsedMilliseconds);
-                context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                    nameof(GetPossibleInvoicesStep), $"Successfully identified {context.MatchedTemplates?.Count() ?? 0} possible invoices for file: {filePath}", methodStopwatch.ElapsedMilliseconds);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                methodStopwatch.Stop();
-                string errorMessage = $"Error during GetPossibleInvoicesStep processing templates for File: {filePath}: {ex.Message}";
-                context.Logger?.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(Execute), "Identify possible invoice templates based on PDF text", methodStopwatch.ElapsedMilliseconds, errorMessage);
-                context.Logger?.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                    nameof(GetPossibleInvoicesStep), "Processing templates", methodStopwatch.ElapsedMilliseconds, errorMessage);
-                context.AddError(errorMessage);
-                context.MatchedTemplates = new List<Invoice>();
-                return false;
-            }
+                    //if (possibleInvoices.All(x => FileTypeManager.GetFileType(x.OcrInvoices.FileTypeId).FileImporterInfos.EntryType != "Shipment Template"))
+                    //    throw new ApplicationException("No Shipment Template Templates found");
+
+                    // Assign the identified possible invoices to the new MatchedTemplates property
+                    context.MatchedTemplates = possibleInvoices;
+
+                    // 🔍 **HYBRID_DOCUMENT_DETECTION**: Check if templates found but missing ShipmentInvoice when invoice content exists
+                    context.Logger?.Information(
+                        "🔍 **HYBRID_DOCUMENT_DETECTION_START**: Checking for missing ShipmentInvoice templates when invoice content present");
+                    context.Logger?.Information(
+                        "   - **MATCHED_TEMPLATES_COUNT**: {TemplateCount} templates found",
+                        context.MatchedTemplates?.Count() ?? 0);
+                    context.Logger?.Information(
+                        "   - **TEMPLATE_TYPES**: {TemplateTypes}",
+                        string.Join(
+                            ", ",
+                            context.MatchedTemplates?.Select(
+                                t =>
+                                    $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL_ENTRYTYPE"})")
+                            ?? new string[0]));
+
+                    // **VERIFICATION_LOGGING**: Add detailed logging to verify FileType and EntryType mappings
+                    context.Logger?.Information(
+                        "🔍 **TEMPLATE_VERIFICATION_START**: Detailed analysis of each matched template");
+                    foreach (var template in context.MatchedTemplates ?? Enumerable.Empty<Invoice>())
+                    {
+                        context.Logger?.Information(
+                            "   - **TEMPLATE_DETAIL**: '{TemplateName}' (ID: {TemplateId})",
+                            template.OcrInvoices?.Name ?? "NULL",
+                            template.OcrInvoices?.Id ?? 0);
+                        context.Logger?.Information(
+                            "     └── **FILETYPE_ID**: {FileTypeId}",
+                            template.FileType?.Id ?? 0);
+                        context.Logger?.Information(
+                            "     └── **FILETYPE_DESCRIPTION**: '{FileTypeDescription}'",
+                            template.FileType?.Description ?? "NULL");
+                        context.Logger?.Information(
+                            "     └── **FILETYPE_PATTERN**: '{FilePattern}'",
+                            template.FileType?.FilePattern ?? "NULL");
+                        context.Logger?.Information(
+                            "     └── **FILEIMPORTERINFOS_NULL**: {IsNull}",
+                            template.FileType?.FileImporterInfos == null);
+
+                        if (template.FileType?.FileImporterInfos != null)
+                        {
+                            context.Logger?.Information(
+                                "     └── **FILEIMPORTERINFOS_ENTRYTYPE**: '{EntryType}'",
+                                template.FileType.FileImporterInfos.EntryType ?? "NULL");
+                            context.Logger?.Information(
+                                "     └── **FILEIMPORTERINFOS_ID**: {FileImporterInfoId}",
+                                template.FileType.FileImporterInfos.Id);
+                            context.Logger?.Information(
+                                "     └── **ENTRYTYPE_COMPARISON**: '{ActualEntryType}' == '{ExpectedEntryType}' = {IsMatch}",
+                                template.FileType.FileImporterInfos.EntryType ?? "NULL",
+                                FileTypeManager.EntryTypes.ShipmentInvoice,
+                                template.FileType.FileImporterInfos.EntryType
+                                == FileTypeManager.EntryTypes.ShipmentInvoice);
+                        }
+                        else
+                        {
+                            context.Logger?.Information(
+                                "     └── **FILEIMPORTERINFOS**: NULL - Cannot determine EntryType");
+                        }
+                    }
+
+                    context.Logger?.Information("🔍 **TEMPLATE_VERIFICATION_END**: Analysis complete");
+
+                    // **CONSTANT_VERIFICATION**: Log the actual constant value being compared
+                    context.Logger?.Information(
+                        "🔍 **CONSTANT_CHECK**: FileTypeManager.EntryTypes.ShipmentInvoice = '{ShipmentInvoiceConstant}'",
+                        FileTypeManager.EntryTypes.ShipmentInvoice);
+
+                    var hasShipmentInvoiceTemplate = context.MatchedTemplates.Any(
+                        t => t.FileType?.FileImporterInfos?.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice);
+
+                    context.Logger?.Information(
+                        "🎯 **CRITICAL_DECISION_POINT**: Evaluating template creation condition");
+                    context.Logger?.Information(
+                        "   - **SHIPMENT_INVOICE_CHECK**: HasShipmentInvoiceTemplate = {HasShipmentInvoice}",
+                        hasShipmentInvoiceTemplate);
+                    context.Logger?.Information(
+                        "   - **PDF_TEXT_LENGTH**: {PdfTextLength} characters available for analysis",
+                        pdfTextString?.Length ?? 0);
+                    context.Logger?.Information(
+                        "   - **PDF_TEXT_IS_NULL_OR_EMPTY**: {IsNullOrEmpty}",
+                        string.IsNullOrEmpty(pdfTextString));
+                    context.Logger?.Information(
+                        "   - **PDF_TEXT_SAMPLE**: '{TextSample}...'",
+                        pdfTextString?.Substring(0, Math.Min(200, pdfTextString?.Length ?? 0)) ?? "NULL");
+
+                    // Debug the condition logic
+                    context.Logger?.Information(
+                        "🔍 **CONDITION_ANALYSIS**: Checking hybrid template creation condition");
+                    context.Logger?.Information(
+                        "   - **CONDITION_1**: !hasShipmentInvoiceTemplate = {Condition1}",
+                        !hasShipmentInvoiceTemplate);
+                    context.Logger?.Information(
+                        "   - **CONDITION_2**: !string.IsNullOrEmpty(pdfTextString) = {Condition2}",
+                        !string.IsNullOrEmpty(pdfTextString));
+                    context.Logger?.Information(
+                        "   - **COMBINED_CONDITION**: ({Condition1} && {Condition2}) = {CombinedResult}",
+                        !hasShipmentInvoiceTemplate,
+                        !string.IsNullOrEmpty(pdfTextString),
+                        !hasShipmentInvoiceTemplate && !string.IsNullOrEmpty(pdfTextString));
+
+                    context.Logger?.Information(
+                        "🎯 **DECISION_OUTCOME**: Will template creation be triggered? {WillCreate}",
+                        !hasShipmentInvoiceTemplate && !string.IsNullOrEmpty(pdfTextString));
+
+                    if (!hasShipmentInvoiceTemplate && !string.IsNullOrEmpty(pdfTextString))
+                    {
+                        context.Logger?.Information(
+                            "🎯 **CONDITION_SATISFIED**: Template creation condition is TRUE, entering OCR template creation pathway");
+
+                        // **SURGICAL_DEBUGGING**: Use LogLevelOverride to capture ALL details of template creation process
+
+                        context.Logger?.Information(
+                            "🚀 **LOGLEVELOVERRIDE_ACTIVATED**: Surgical debugging enabled - capturing complete OCR call chain");
+                        context.Logger?.Information(
+                            "   - **OVERRIDE_LEVEL**: Verbose - all logs within this scope will be captured");
+                        context.Logger?.Information(
+                            "   - **EXPECTED_TERMINATION**: Application will terminate when this scope closes");
+                        context.Logger?.Information(
+                            "   - **SCOPE_PURPOSE**: Capture complete CreateInvoiceTemplateAsync call chain with all internal logging");
+
+                        context.Logger?.Information("✅ **CONDITION_MET**: Proceeding with template creation logic");
+                        context.Logger?.Information(
+                            "🔍 **INVOICE_KEYWORD_ANALYSIS**: No ShipmentInvoice template found, analyzing PDF content for invoice keywords");
+                        context.Logger?.Information(
+                            "   - **CURRENT_MATCHED_TEMPLATES**: {TemplateList}",
+                            string.Join(
+                                ", ",
+                                context.MatchedTemplates?.Select(
+                                    t => $"{t.OcrInvoices?.Name}({t.FileType?.FileImporterInfos?.EntryType})")
+                                ?? new string[0]));
+
+                        var containsInvoiceKeywords = ContainsInvoiceKeywords(pdfTextString, context.Logger);
+                        context.Logger?.Information(
+                            "🔍 **KEYWORD_DETECTION_RESULT**: ContainsInvoiceKeywords = {ContainsKeywords}",
+                            containsInvoiceKeywords);
+
+                        if (containsInvoiceKeywords)
+                        {
+                            context.Logger?.Information(
+                                "🚀 **HYBRID_TEMPLATE_CREATION**: Invoice content detected, creating ShipmentInvoice template via OCR correction service");
+                            context.Logger?.Information(
+                                "   - **CREATION_INTENT**: Create minimal Invoice template that pipeline can process alongside existing templates");
+                            context.Logger?.Information(
+                                "   - **EXPECTED_RESULT**: Both existing templates AND new ShipmentInvoice template will be processed");
+                            context.Logger?.Information(
+                                "   - **PIPELINE_INTEGRATION**: New template will be added to context.MatchedTemplates for downstream processing");
+
+                            // **PRE-CALL STATE CAPTURE**: Log everything before the OCR service call
+                            context.Logger?.Information(
+                                "📊 **PRE_CALL_STATE_CAPTURE**: Capturing complete state before CreateInvoiceTemplateAsync call");
+                            context.Logger?.Information(
+                                "   - **PDF_TEXT_LENGTH**: {Length} characters",
+                                pdfTextString?.Length ?? 0);
+                            context.Logger?.Information("   - **FILE_PATH**: '{FilePath}'", filePath);
+                            context.Logger?.Information(
+                                "   - **CURRENT_TEMPLATE_COUNT**: {Count}",
+                                context.MatchedTemplates?.Count() ?? 0);
+                            context.Logger?.Information(
+                                "   - **CONTEXT_DOCSET_COUNT**: {DocSetCount}",
+                                context.DocSet?.Count ?? 0);
+                            context.Logger?.Information(
+                                "   - **CONTEXT_EMAIL_ID**: '{EmailId}'",
+                                context.EmailId ?? "NULL");
+                            context.Logger?.Information(
+                                "   - **CONTEXT_FILE_PATH**: '{ContextFilePath}'",
+                                context.FilePath ?? "NULL");
+
+                            context.Logger?.Information(
+                                "🔍 **OCR_SERVICE_CALL_START**: Calling CreateInvoiceTemplateAsync - COMPLETE CALL CHAIN SHOULD FOLLOW");
+                            context.Logger?.Information(
+                                "   - **METHOD_SIGNATURE**: CreateInvoiceTemplateAsync(string pdfText, string filePath)");
+                            context.Logger?.Information(
+                                "   - **EXPECTED_LOGS**: Template creation orchestration, DeepSeek analysis, database operations, template retrieval");
+                            context.Logger?.Information(
+                                "   - **CRITICAL_EXPECTATION**: All internal OCR service logs should appear due to LogLevelOverride scope");
+
+                            try
+                            {
+                                context.Logger?.Information(
+                                    "🏗️ **CREATING_OCR_SERVICE**: Instantiating OCRCorrectionService with context logger");
+                                using (var ocrService = new WaterNut.DataSpace.OCRCorrectionService(context.Logger))
+                                {
+                                    context.Logger?.Information(
+                                        "✅ **OCR_SERVICE_CREATED**: Service instantiated successfully, calling CreateInvoiceTemplateAsync");
+
+                                    var ocrTemplate =
+                                        await ocrService.CreateInvoiceTemplateAsync(pdfTextString, filePath)
+                                            .ConfigureAwait(false);
+
+                                    // **POST-CALL STATE CAPTURE**: Log everything after the OCR service call
+                                    context.Logger?.Information(
+                                        "📊 **POST_CALL_STATE_CAPTURE**: CreateInvoiceTemplateAsync returned, analyzing result");
+                                    context.Logger?.Information(
+                                        "🔍 **OCR_SERVICE_RESULT**: OCR template result = {Result}",
+                                        ocrTemplate != null ? $"SUCCESS: {ocrTemplate.GetType().Name}" : "NULL");
+
+                                    if (ocrTemplate != null)
+                                    {
+                                        context.Logger?.Information(
+                                            "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice template successfully");
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_TEMPLATE_NAME**: '{TemplateName}'",
+                                            ocrTemplate.OcrInvoices?.Name ?? "NULL");
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_TEMPLATE_ID**: {TemplateId}",
+                                            ocrTemplate.OcrInvoices?.Id.ToString() ?? "NULL");
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_FILE_TYPE**: {FileType}",
+                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_FILE_TYPE_ID**: {FileTypeId}",
+                                            ocrTemplate.FileType?.Id ?? 0);
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_PARTS_COUNT**: {PartsCount}",
+                                            ocrTemplate.Parts?.Count ?? 0);
+                                        context.Logger?.Information(
+                                            "   - **RETURNED_LINES_COUNT**: {LinesCount}",
+                                            ocrTemplate.Lines?.Count ?? 0);
+                                        context.Logger?.Information(
+                                            "   - **PDF_TEXT_ASSIGNED**: {HasPdfText} ({Length} chars)",
+                                            !string.IsNullOrEmpty(ocrTemplate.FormattedPdfText),
+                                            ocrTemplate.FormattedPdfText?.Length ?? 0);
+
+                                        // **CRITICAL**: Use GetContextTemplates method to properly assign context properties
+                                        context.Logger?.Information(
+                                            "🔧 **CONTEXT_PROPERTY_ASSIGNMENT**: Using GetContextTemplates pattern for OCR template");
+
+                                        // Apply the same context property assignment pattern as GetContextTemplates
+                                        ocrTemplate.DocSet = context.DocSet;
+                                        ocrTemplate.FilePath = context.FilePath;
+                                        ocrTemplate.EmailId = context.EmailId;
+
+                                        context.Logger?.Information(
+                                            "   - **DOCSET_ASSIGNED**: {DocSetCount} document sets",
+                                            ocrTemplate.DocSet?.Count ?? 0);
+                                        context.Logger?.Information(
+                                            "   - **FILEPATH_ASSIGNED**: '{FilePath}'",
+                                            ocrTemplate.FilePath ?? "NULL");
+                                        context.Logger?.Information(
+                                            "   - **EMAILID_ASSIGNED**: '{EmailId}'",
+                                            ocrTemplate.EmailId ?? "NULL");
+
+                                        // **INTEGRATION**: Add to MatchedTemplates for pipeline processing
+                                        context.Logger?.Information(
+                                            "🔗 **TEMPLATE_INTEGRATION_START**: Adding OCR template to MatchedTemplates for pipeline processing");
+                                        context.Logger?.Information(
+                                            "   - **BEFORE_INTEGRATION_COUNT**: {Count}",
+                                            context.MatchedTemplates?.Count() ?? 0);
+
+                                        var templateList = context.MatchedTemplates?.ToList() ?? new List<Invoice>();
+                                        templateList.Add(ocrTemplate);
+                                        context.MatchedTemplates = templateList;
+
+                                        context.Logger?.Information(
+                                            "✅ **TEMPLATE_INTEGRATION_COMPLETE**: OCR template successfully added to MatchedTemplates");
+                                        context.Logger?.Information(
+                                            "   - **AFTER_INTEGRATION_COUNT**: {Count} templates will be processed",
+                                            context.MatchedTemplates.Count());
+                                        context.Logger?.Information(
+                                            "   - **COMPLETE_TEMPLATE_LIST**: [{TemplateNames}]",
+                                            string.Join(
+                                                ", ",
+                                                context.MatchedTemplates.Select(
+                                                    t =>
+                                                        $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL"})")));
+
+                                        context.Logger?.Information(
+                                            "🎯 **TEMPLATE_CREATION_SUCCESS_SUMMARY**: OCR template creation and integration completed successfully");
+                                        context.Logger?.Information(
+                                            "   - **NEW_TEMPLATE_NAME**: '{Name}'",
+                                            ocrTemplate.OcrInvoices?.Name);
+                                        context.Logger?.Information(
+                                            "   - **NEW_TEMPLATE_TYPE**: '{Type}'",
+                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType);
+                                        context.Logger?.Information(
+                                            "   - **PIPELINE_READY**: Template is now part of MatchedTemplates and ready for downstream processing");
+                                    }
+                                    else
+                                    {
+                                        context.Logger?.Error(
+                                            "❌ **OCR_TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned NULL");
+                                        context.Logger?.Error(
+                                            "   - **FAILURE_IMPACT**: No new template will be added to MatchedTemplates");
+                                        context.Logger?.Error(
+                                            "   - **PIPELINE_CONTINUATION**: Will proceed with existing {Count} templates",
+                                            context.MatchedTemplates?.Count() ?? 0);
+                                    }
+                                }
+
+                                context.Logger?.Information(
+                                    "🔍 **OCR_SERVICE_CALL_COMPLETE**: CreateInvoiceTemplateAsync call completed, OCR service disposed");
+                            }
+                            catch (Exception ocrEx)
+                            {
+                                context.Logger?.Error(
+                                    ocrEx,
+                                    "🚨 **OCR_INVESTIGATION_EXCEPTION**: Exception during OCR service investigation");
+                                context.Logger?.Error(
+                                    "   - **EXCEPTION_TYPE**: {ExceptionType}",
+                                    ocrEx.GetType().FullName);
+                                context.Logger?.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ocrEx.Message);
+                                context.Logger?.Error("   - **STACK_TRACE**: {StackTrace}", ocrEx.StackTrace);
+                                context.Logger?.Error(
+                                    "   - **FAILURE_IMPACT**: Template creation failed, proceeding with existing templates only");
+                            }
+                        }
+                        else
+                        {
+                            context.Logger?.Information(
+                                "ℹ️ **NO_INVOICE_CONTENT**: No invoice keywords detected in PDF content");
+                            context.Logger?.Information(
+                                "   - **ANALYSIS_RESULT**: PDF contains templates but no invoice-specific content requiring ShipmentInvoice creation");
+                            context.Logger?.Information(
+                                "   - **PIPELINE_CONTINUATION**: Processing existing {TemplateCount} templates normally",
+                                context.MatchedTemplates.Count());
+                        }
+
+                        context.Logger?.Information(
+                            "🔚 **LOGLEVELOVERRIDE_SCOPE_END**: Surgical debugging scope ending - application will terminate");
+
+                    }
+                    else if (hasShipmentInvoiceTemplate)
+                    {
+                        context.Logger?.Information(
+                            "ℹ️ **CONDITION_NOT_MET_SHIPMENT_EXISTS**: ShipmentInvoice template already exists");
+                        context.Logger?.Information(
+                            "   - **EXISTING_SHIPMENT_TEMPLATES**: {ShipmentTemplates}",
+                            string.Join(
+                                ", ",
+                                context.MatchedTemplates
+                                    .Where(
+                                        t => t.FileType?.FileImporterInfos?.EntryType
+                                             == FileTypeManager.EntryTypes.ShipmentInvoice)
+                                    .Select(t => t.OcrInvoices?.Name)));
+                        context.Logger?.Information(
+                            "   - **REASON**: No template creation needed - ShipmentInvoice already present");
+                    }
+                    else if (string.IsNullOrEmpty(pdfTextString))
+                    {
+                        context.Logger?.Information("⚠️ **CONDITION_NOT_MET_NO_PDF_TEXT**: PDF text is null or empty");
+                        context.Logger?.Information(
+                            "   - **PDF_TEXT_STATE**: {PdfTextState}",
+                            pdfTextString == null ? "NULL" : "EMPTY");
+                        context.Logger?.Information(
+                            "   - **REASON**: Cannot perform hybrid document analysis without PDF text");
+                    }
+                    else
+                    {
+                        context.Logger?.Information(
+                            "⚠️ **CONDITION_NOT_MET_UNKNOWN**: Unknown reason why template creation condition failed");
+                        context.Logger?.Information(
+                            "   - **hasShipmentInvoiceTemplate**: {HasShipment}",
+                            hasShipmentInvoiceTemplate);
+                        context.Logger?.Information(
+                            "   - **pdfTextString null or empty**: {IsEmpty}",
+                            string.IsNullOrEmpty(pdfTextString));
+                    }
+
+                    context.Logger?.Information(
+                        "🔍 **HYBRID_DOCUMENT_DETECTION_COMPLETE**: Analysis finished, proceeding with {FinalTemplateCount} templates",
+                        context.MatchedTemplates?.Count() ?? 0);
+
+                    // Log the identified possible invoices
+                    LogPossibleInvoices(context, possibleInvoices, totalTemplateCount, filePath);
+
+                    methodStopwatch.Stop();
+                    context.Logger?.Information(
+                        "METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                        nameof(Execute),
+                        "Successfully identified possible invoice templates",
+                        $"PossibleInvoiceCount: {context.MatchedTemplates?.Count() ?? 0}",
+                        methodStopwatch.ElapsedMilliseconds);
+                    context.Logger?.Information(
+                        "ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                        nameof(GetPossibleInvoicesStep),
+                        $"Successfully identified {context.MatchedTemplates?.Count() ?? 0} possible invoices for file: {filePath}",
+                        methodStopwatch.ElapsedMilliseconds);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    methodStopwatch.Stop();
+                    string errorMessage =
+                        $"Error during GetPossibleInvoicesStep processing templates for File: {filePath}: {ex.Message}";
+                    context.Logger?.Error(
+                        ex,
+                        "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(Execute),
+                        "Identify possible invoice templates based on PDF text",
+                        methodStopwatch.ElapsedMilliseconds,
+                        errorMessage);
+                    context.Logger?.Error(
+                        ex,
+                        "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
+                        nameof(GetPossibleInvoicesStep),
+                        "Processing templates",
+                        methodStopwatch.ElapsedMilliseconds,
+                        errorMessage);
+                    context.AddError(errorMessage);
+                    context.MatchedTemplates = new List<Invoice>();
+                    return false;
+                }
+
+            } // Close LogLevelOverride for template creation - APPLICATION TERMINATES HERE
         }
 
         private bool ValidateContext(InvoiceProcessingContext context, string filePath)
@@ -206,5 +611,61 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     nameof(GetPossibleInvoicesStep), "Summary", "No possible invoices found.", $"FilePath: {filePath}");
             }
         }
+
+        /// <summary>
+        /// **INVOICE_KEYWORD_DETECTION**: Detects if PDF text contains invoice-related keywords that indicate ShipmentInvoice content.
+        /// **BUSINESS_RULE**: Used to identify hybrid documents that contain both invoice and customs declaration content.
+        /// **ARCHITECTURAL_INTENT**: Supports hybrid document processing by identifying when OCR template creation is needed.
+        /// </summary>
+        private bool ContainsInvoiceKeywords(string pdfText, ILogger logger = null)
+        {
+            if (string.IsNullOrEmpty(pdfText)) 
+            {
+                return false;
+            }
+            
+            var invoiceKeywords = new[]
+            {
+                "TOTAL AMOUNT", "Subtotal", "Invoice", "Order number:", "Order Number", 
+                "Invoice No", "Invoice Number", "Invoice Date", "Bill To", "Ship To",
+                "Item Description", "Quantity", "Unit Price", "Line Total", "Tax",
+                "Shipping", "Handling", "Grand Total", "Amount Due", "Payment",
+                "Order:", "Receipt", "Purchase"
+            };
+
+            var textUpper = pdfText.ToUpperInvariant();
+            var foundKeywords = new List<string>();
+            
+            foreach (var keyword in invoiceKeywords)
+            {
+                if (textUpper.Contains(keyword.ToUpperInvariant()))
+                {
+                    foundKeywords.Add(keyword);
+                }
+            }
+            
+            // Require at least 2 invoice keywords to reduce false positives
+            var hasInvoiceKeywords = foundKeywords.Count >= 2;
+            
+            // Add comprehensive logging for diagnosis using passed context logger
+            logger?.Information("🔍 **INVOICE_KEYWORD_DETECTION_DEBUG**: Analyzing PDF text for invoice keywords");
+            logger?.Information("   - **PDF_TEXT_LENGTH**: {Length} characters", pdfText.Length);
+            logger?.Information("   - **KEYWORDS_FOUND**: {Count} out of {Total}", foundKeywords.Count, invoiceKeywords.Length);
+            logger?.Information("   - **FOUND_KEYWORDS**: [{Keywords}]", string.Join(", ", foundKeywords));
+            logger?.Information("   - **DETECTION_THRESHOLD**: Requires >= 2 keywords");
+            logger?.Information("   - **DETECTION_RESULT**: {HasKeywords}", hasInvoiceKeywords);
+            
+            if (hasInvoiceKeywords)
+            {
+                logger?.Information("✅ **INVOICE_CONTENT_DETECTED**: PDF contains sufficient invoice keywords");
+            }
+            else
+            {
+                logger?.Information("❌ **INVOICE_CONTENT_NOT_DETECTED**: PDF does not contain sufficient invoice keywords");
+                logger?.Information("   - **TEXT_SAMPLE**: '{Sample}...'", pdfText.Substring(0, Math.Min(500, pdfText.Length)));
+            }
+            
+            return hasInvoiceKeywords;
+        }
     }
- }
+}

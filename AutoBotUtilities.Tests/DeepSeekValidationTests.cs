@@ -102,7 +102,7 @@ namespace AutoBotUtilities.Tests
                         var ocrText = File.ReadAllText(textFile);
                         
                         // Generate reference data using JSON extraction prompt
-                        var referenceData = await GenerateReferenceDataFromText(ocrText, fileName);
+                        var referenceData = await this.GenerateReferenceDataFromText(ocrText, fileName).ConfigureAwait(false);
                         
                         if (referenceData != null)
                         {
@@ -187,7 +187,7 @@ namespace AutoBotUtilities.Tests
                         var blankInvoice = CreateBlankShipmentInvoice(fileName);
                         
                         // Run DeepSeek AI detection
-                        var detectedErrors = await RunDeepSeekDetection(service, blankInvoice, ocrText);
+                        var detectedErrors = await this.RunDeepSeekDetection(service, blankInvoice, ocrText).ConfigureAwait(false);
                         
                         // Compare detection results with reference data
                         var validationResult = CompareDetectionWithReference(fileName, referenceData, detectedErrors);
@@ -204,7 +204,7 @@ namespace AutoBotUtilities.Tests
                 }
                 
                 // Generate comprehensive validation report
-                await GenerateValidationReport(validationResults);
+                await this.GenerateValidationReport(validationResults).ConfigureAwait(false);
                 
                 var totalTime = DateTime.Now - validationStartTime;
                 _logger.Information("🏁 **DEEPSEEK_VALIDATION_COMPLETE**: Validation completed in {TotalMinutes:F1} minutes", totalTime.TotalMinutes);
@@ -400,7 +400,7 @@ namespace AutoBotUtilities.Tests
                 BindingFlags.NonPublic | BindingFlags.Instance);
             
             var detectionTask = (Task<List<InvoiceError>>)methodInfo.Invoke(service, new object[] { invoice, ocrText, new Dictionary<string, OCRFieldMetadata>() });
-            var detectedErrors = await detectionTask;
+            var detectedErrors = await detectionTask.ConfigureAwait(false);
             
             _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: {InvoiceNo} - Detected {ErrorCount} errors", invoice.InvoiceNo, detectedErrors.Count);
             

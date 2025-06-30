@@ -31,6 +31,34 @@ namespace WaterNut.DataSpace
 
                _logger.Debug("INTERNAL_STEP: {MethodName} - Invoking Action. Intention: Look up and invoke action based on file format and entry type. CurrentState: {{FileFormat}}, {{EntryType}}",
                    nameof(Process), dataFile.FileType.FileImporterInfos.Format, dataFile.FileType.FileImporterInfos.EntryType);
+
+               // **CRITICAL_DEBUG**: Add comprehensive dictionary lookup logging for OCR template debugging
+               _logger.Error("🔍 **DATAFILE_PROCESSOR_DEBUG**: About to perform dictionary lookup");
+               _logger.Error("   - **FORMAT_KEY**: '{FormatKey}'", dataFile.FileType.FileImporterInfos.Format);
+               _logger.Error("   - **ENTRY_TYPE_KEY**: '{EntryTypeKey}'", dataFile.FileType.FileImporterInfos.EntryType);
+               _logger.Error("   - **AVAILABLE_FORMAT_KEYS**: {AvailableFormats}", string.Join(", ", _dataFileActions.Keys));
+               
+               if (_dataFileActions.ContainsKey(dataFile.FileType.FileImporterInfos.Format))
+               {
+                   var formatActions = _dataFileActions[dataFile.FileType.FileImporterInfos.Format];
+                   _logger.Error("   - **AVAILABLE_ENTRY_TYPE_KEYS_FOR_FORMAT**: {AvailableEntryTypes}", string.Join(", ", formatActions.Keys));
+                   
+                   if (formatActions.ContainsKey(dataFile.FileType.FileImporterInfos.EntryType))
+                   {
+                       _logger.Error("✅ **DICTIONARY_LOOKUP_SUCCESS**: Both format and entry type keys found");
+                   }
+                   else
+                   {
+                       _logger.Error("❌ **ENTRY_TYPE_KEY_NOT_FOUND**: Entry type '{EntryType}' not found in format '{Format}' actions", 
+                           dataFile.FileType.FileImporterInfos.EntryType, dataFile.FileType.FileImporterInfos.Format);
+                   }
+               }
+               else
+               {
+                   _logger.Error("❌ **FORMAT_KEY_NOT_FOUND**: Format '{Format}' not found in _dataFileActions", 
+                       dataFile.FileType.FileImporterInfos.Format);
+               }
+
               var res =  await _dataFileActions
                        [dataFile.FileType.FileImporterInfos.Format]
                    [dataFile.FileType.FileImporterInfos.EntryType]

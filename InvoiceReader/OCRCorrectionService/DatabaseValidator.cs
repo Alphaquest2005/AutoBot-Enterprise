@@ -35,10 +35,8 @@ namespace InvoiceReader.OCRCorrectionService
         /// <returns>A summary of all cleanup actions performed.</returns>
         public CleanupResult ValidateAndHealTemplate()
         {
-            // FULFILLING MANDATE: Wrap the entire operation in a LogLevelOverride to force visibility.
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
-                _logger.Error("--- 🛡️ DATABASE VALIDATION & HEALING START (Verbose Logging Forced) 🛡️ ---");
+            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
+            _logger.Debug("--- 🛡️ DATABASE VALIDATION & HEALING START 🛡️ ---");
                 var finalResult = new CleanupResult { Success = true };
 
                 try
@@ -62,7 +60,6 @@ namespace InvoiceReader.OCRCorrectionService
 
                 _logger.Error("--- 🛡️ DATABASE VALIDATION & HEALING COMPLETE (Verbose Logging Forced) 🛡️ ---");
                 return finalResult;
-            }
         }
 
         private CleanupResult CleanupLegacyMisconfigurations()

@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace
                     return localRegex;
                 }
 
-                // ONLY if it's not in the DB and not in the local cache, create a new one.
+                // CRITICAL FIX: Create and IMMEDIATELY save regex to get database ID
                 var newRegex = new RegularExpressions
                                    {
                                        RegEx = pattern,
@@ -70,6 +70,11 @@ namespace WaterNut.DataSpace
                                        TrackingState = TrackingState.Added
                                    };
                 context.RegularExpressions.Add(newRegex);
+                
+                // IMMEDIATELY save to database to get ID and prevent relationship conflicts
+                await context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.Debug("🔧 **REGEX_SAVED_IMMEDIATELY**: Created and saved new regex to database, got ID={RegexId}, Pattern={Pattern}", newRegex.Id, pattern);
+                
                 return newRegex;
             }
 
@@ -669,6 +674,7 @@ namespace WaterNut.DataSpace
                 _logger = logger;
                 _strategies = new List<IDatabaseUpdateStrategy>
                 {
+                    new OCRCorrectionService.TemplateCreationStrategy(_logger),
                     new InferredValueUpdateStrategy(_logger),
                     new OmissionUpdateStrategy(_logger),
                     new FieldFormatUpdateStrategy(_logger)

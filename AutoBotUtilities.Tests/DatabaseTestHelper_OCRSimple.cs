@@ -45,7 +45,7 @@ namespace AutoBotUtilities.Tests
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 
                 using (var command = new SqlCommand(script, connection))
                 {
@@ -104,7 +104,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Id DESC;
             ";
 
-            await ExecuteSqlScript(recentScript, "Recent OCR corrections - all columns");
+            await this.ExecuteSqlScript(recentScript, "Recent OCR corrections - all columns").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Id DESC;
             ";
 
-            await ExecuteSqlScript(searchScript, "Amazon/Gift Card corrections search");
+            await this.ExecuteSqlScript(searchScript, "Amazon/Gift Card corrections search").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Total DESC;
             ";
 
-            await ExecuteSqlScript(statsScript, "Correction statistics by field");
+            await this.ExecuteSqlScript(statsScript, "Correction statistics by field").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace AutoBotUtilities.Tests
                 ORDER BY Id DESC;
             ";
 
-            await ExecuteSqlScript(recentScript, "Recent corrections by ID");
+            await this.ExecuteSqlScript(recentScript, "Recent corrections by ID").ConfigureAwait(false);
         }
     }
 }

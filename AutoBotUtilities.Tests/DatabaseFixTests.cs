@@ -35,9 +35,9 @@ namespace AutoBotUtilities.Tests
             {
                 // Find the problematic patterns based on the database evidence provided
                 var problematicPatterns = await context.RegularExpressions
-                    .Where(r => r.Description != null && r.Description.Contains("AutoOmission_TotalDeduction") && 
-                               r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
-                    .ToListAsync();
+                                              .Where(r => r.Description != null && r.Description.Contains("AutoOmission_TotalDeduction") && 
+                                                          r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
+                                              .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("🔍 **PATTERNS_FOUND**: Found {Count} problematic AutoOmission patterns to delete", problematicPatterns.Count);
 
@@ -52,13 +52,13 @@ namespace AutoBotUtilities.Tests
                     // Delete the problematic patterns
                     context.RegularExpressions.RemoveRange(problematicPatterns);
                     
-                    int deletedCount = await context.SaveChangesAsync();
+                    int deletedCount = await context.SaveChangesAsync().ConfigureAwait(false);
                     _logger.Information("✅ **DELETION_SUCCESS**: Deleted {Count} problematic AutoOmission TotalDeduction patterns", deletedCount);
                     
                     // Verify deletion
                     var remainingBadPatterns = await context.RegularExpressions
-                        .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
-                        .CountAsync();
+                                                   .Where(r => r.RegEx == "(?<TotalDeduction>\\d+\\.\\d{2})")
+                                                   .CountAsync().ConfigureAwait(false);
                     
                     if (remainingBadPatterns == 0)
                     {
@@ -89,15 +89,15 @@ namespace AutoBotUtilities.Tests
             {
                 // Check Amazon template (InvoiceId 5 based on the evidence)
                 var amazonPatterns = await context.RegularExpressions
-                    .Include(r => r.Lines)
-                    .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5))
-                    .Select(r => new { 
-                        r.Id, 
-                        r.Description, 
-                        r.RegEx,
-                        LineNames = r.Lines.Select(l => l.Name).ToList()
-                    })
-                    .ToListAsync();
+                                         .Include(r => r.Lines)
+                                         .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5))
+                                         .Select(r => new { 
+                                                                  r.Id, 
+                                                                  r.Description, 
+                                                                  r.RegEx,
+                                                                  LineNames = r.Lines.Select(l => l.Name).ToList()
+                                                              })
+                                         .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📊 **AMAZON_PATTERNS**: Found {Count} patterns in Amazon template", amazonPatterns.Count);
 
@@ -110,9 +110,9 @@ namespace AutoBotUtilities.Tests
 
                 // Check for any remaining problematic patterns
                 var broadPatterns = await context.RegularExpressions
-                    .Where(r => r.RegEx.Contains("(?<TotalDeduction>") && r.RegEx.Length < 50) // Short patterns are likely too broad
-                    .Select(r => new { r.Id, r.Description, r.RegEx })
-                    .ToListAsync();
+                                        .Where(r => r.RegEx.Contains("(?<TotalDeduction>") && r.RegEx.Length < 50) // Short patterns are likely too broad
+                                        .Select(r => new { r.Id, r.Description, r.RegEx })
+                                        .ToListAsync().ConfigureAwait(false);
 
                 if (broadPatterns.Any())
                 {
@@ -144,11 +144,11 @@ namespace AutoBotUtilities.Tests
             {
                 // Verify Gift Card pattern (should map to TotalInsurance)
                 var giftCardPattern = await context.RegularExpressions
-                    .Include(r => r.Lines)
-                    .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
-                               (r.Description.Contains("Gift Card") || r.RegEx.Contains("Gift Card")))
-                    .Select(r => new { r.Description, r.RegEx })
-                    .FirstOrDefaultAsync();
+                                          .Include(r => r.Lines)
+                                          .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
+                                                      (r.Description.Contains("Gift Card") || r.RegEx.Contains("Gift Card")))
+                                          .Select(r => new { r.Description, r.RegEx })
+                                          .FirstOrDefaultAsync().ConfigureAwait(false);
 
                 if (giftCardPattern != null)
                 {
@@ -158,11 +158,11 @@ namespace AutoBotUtilities.Tests
 
                 // Verify Free Shipping pattern (should map to TotalDeduction) 
                 var freeShippingPattern = await context.RegularExpressions
-                    .Include(r => r.Lines)
-                    .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
-                               (r.Description.Contains("FreeShipping") || r.RegEx.Contains("Free Shipping")))
-                    .Select(r => new { r.Description, r.RegEx })
-                    .FirstOrDefaultAsync();
+                                              .Include(r => r.Lines)
+                                              .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
+                                                          (r.Description.Contains("FreeShipping") || r.RegEx.Contains("Free Shipping")))
+                                              .Select(r => new { r.Description, r.RegEx })
+                                              .FirstOrDefaultAsync().ConfigureAwait(false);
 
                 if (freeShippingPattern != null)
                 {
@@ -172,11 +172,11 @@ namespace AutoBotUtilities.Tests
 
                 // Verify InvoiceTotal pattern exists and is not conflicted
                 var invoiceTotalPatterns = await context.RegularExpressions
-                    .Include(r => r.Lines)
-                    .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
-                               r.RegEx.Contains("InvoiceTotal"))
-                    .Select(r => new { r.Description, r.RegEx })
-                    .ToListAsync();
+                                               .Include(r => r.Lines)
+                                               .Where(r => r.Lines.Any(l => l.Parts.TemplateId == 5) && 
+                                                           r.RegEx.Contains("InvoiceTotal"))
+                                               .Select(r => new { r.Description, r.RegEx })
+                                               .ToListAsync().ConfigureAwait(false);
 
                 _logger.Information("📊 **INVOICE_TOTAL_PATTERNS**: Found {Count} InvoiceTotal patterns", invoiceTotalPatterns.Count);
                 

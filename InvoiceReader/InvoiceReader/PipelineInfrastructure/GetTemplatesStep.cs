@@ -266,13 +266,73 @@ namespace InvoiceReader.PipelineInfrastructure
                                     nameof(GetTemplates), "DiagnosticCheck", "Found inactive templates in database.", $"Count: {inactiveCount}", "");
                             }
 
+                            // **OCR TEMPLATE CREATION FALLBACK**: When no templates exist, automatically create one via OCR
+                            context.Logger?.Information("🚀 **OCR_FALLBACK_TRIGGERED**: No templates found - attempting OCR template creation");
+                            
+                            try
+                            {
+                                // Create OCR template using the same logic that was previously only available in later pipeline steps
+                                var ocrService = new WaterNut.DataSpace.OCRCorrectionService(context.Logger);
+                                
+                                // First extract PDF text using existing pipeline logic
+                                string pdfText = "";
+                                if (System.IO.File.Exists(context.FilePath))
+                                {
+                                    context.Logger?.Information("📄 **PDF_TEXT_EXTRACTION**: Extracting text from PDF for OCR template creation");
+                                    try
+                                    {
+                                        // Use the same PDF extraction logic as GetPdfTextStep
+                                        var pdfOcr = new pdf_ocr.PdfOcr(context.Logger);
+                                        pdfText = pdfOcr.Ocr(context.FilePath, Tesseract.PageSegMode.SingleColumn);
+                                        context.Logger?.Information("✅ **PDF_TEXT_EXTRACTED**: Successfully extracted {TextLength} characters from PDF", pdfText.Length);
+                                    }
+                                    catch (Exception pdfEx)
+                                    {
+                                        context.Logger?.Warning(pdfEx, "⚠️ **PDF_TEXT_EXTRACTION_FAILED**: Could not extract PDF text: {ErrorMessage}", pdfEx.Message);
+                                        pdfText = ""; // Continue with empty text for fallback
+                                    }
+                                }
+                                
+                                var newTemplate = await ocrService.CreateInvoiceTemplateAsync(pdfText, context.FilePath).ConfigureAwait(false);
+                                
+                                if (newTemplate != null)
+                                {
+                                    context.Logger?.Information("✅ **OCR_TEMPLATE_CREATED**: Successfully created template '{TemplateName}' (ID: {TemplateId})", 
+                                        newTemplate.OcrInvoices?.Name ?? "Unknown", newTemplate.OcrInvoices?.Id ?? 0);
+                                    
+                                    // Add the new template to our collection and cache
+                                    var templateList = new List<Invoice> { newTemplate };
+                                    context.Templates = templateList;
+                                    _allTemplates = templateList;
+                                    
+                                    // Invalidate cache to ensure fresh load next time
+                                    InvalidateTemplateCache();
+                                    
+                                    methodStopwatch.Stop();
+                                    context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
+                                        nameof(GetTemplates), "Successfully created OCR template when none existed", $"TemplateCount: 1, TemplateName: {newTemplate.OcrInvoices?.Name}", methodStopwatch.ElapsedMilliseconds);
+                                    context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
+                                        nameof(GetTemplates), "Successfully created OCR template and added to pipeline", methodStopwatch.ElapsedMilliseconds);
+                                    return true;
+                                }
+                                else
+                                {
+                                    context.Logger?.Warning("⚠️ **OCR_TEMPLATE_CREATION_FAILED**: OCR template creation returned null");
+                                }
+                            }
+                            catch (Exception ocrEx)
+                            {
+                                context.Logger?.Error(ocrEx, "❌ **OCR_TEMPLATE_CREATION_ERROR**: Failed to create OCR template: {ErrorMessage}", ocrEx.Message);
+                            }
+
+                            // Fallback: Continue with empty templates list
                             context.Templates = new List<Invoice>();
 
                             methodStopwatch.Stop(); // Stop stopwatch on failure
                             context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                                nameof(GetTemplates), "Load invoice templates from database", methodStopwatch.ElapsedMilliseconds, "No active templates found.");
+                                nameof(GetTemplates), "Load invoice templates from database and create OCR template fallback", methodStopwatch.ElapsedMilliseconds, "No active templates found and OCR template creation failed.");
                             context.Logger?.Error("ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
-                                nameof(GetTemplates), "Query results", methodStopwatch.ElapsedMilliseconds, "No active templates found in database.");
+                                nameof(GetTemplates), "Query results and OCR fallback", methodStopwatch.ElapsedMilliseconds, "No active templates found in database and OCR template creation failed.");
                             return false;
                         }
                         catch (Exception ex)

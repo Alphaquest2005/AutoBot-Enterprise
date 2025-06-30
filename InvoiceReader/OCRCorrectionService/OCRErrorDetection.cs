@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace
             string fileText,
             Dictionary<string, OCRFieldMetadata> metadata = null)
         {
-            return await DetectInvoiceErrorsAsync(invoice, fileText, metadata);
+            return await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace WaterNut.DataSpace
             string fileText,
             Dictionary<string, OCRFieldMetadata> metadata = null)
         {
-            var errors = await DetectInvoiceErrorsAsync(invoice, fileText, metadata);
+            var errors = await this.DetectInvoiceErrorsAsync(invoice, fileText, metadata).ConfigureAwait(false);
             
             // Capture the last explanation logged (if any)
             // This is a simple approach - in production we might want a more sophisticated method

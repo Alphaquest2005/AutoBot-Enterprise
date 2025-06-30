@@ -75,7 +75,7 @@ namespace AutoBotUtilities.Tests.Production
             };
             
             // Act - Call the private method using reflection
-            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(_service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata);
+            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(this._service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata).ConfigureAwait(false);
             
             // Assert
             Assert.That(results, Is.Not.Null);
@@ -97,7 +97,7 @@ namespace AutoBotUtilities.Tests.Production
             var errors = new List<InvoiceError> {
                 new InvoiceError { Field = "TotalDeduction", CorrectValue = "5.00", ErrorType = "omission"}
             };
-            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(_service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata);
+            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(this._service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata).ConfigureAwait(false);
             Assert.That(results.Count, Is.EqualTo(1));
             var cr = results.First();
             Assert.That(cr.Success, Is.True, "CorrectionResult Success should be true for DB processing.");
@@ -116,7 +116,7 @@ namespace AutoBotUtilities.Tests.Production
             var errors = new List<InvoiceError> {
                 new InvoiceError { Field = "InvoiceDetail_Line5_OmittedLineItem", CorrectValue = "Item XYZ, Qty 1...", ErrorType = "omitted_line_item"}
             };
-            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(_service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata);
+            var results = await InvokePrivateMethod<Task<List<CorrectionResult>>>(this._service, "ApplyCorrectionsAsync", invoice, errors, fileText, metadata).ConfigureAwait(false);
             Assert.That(results.Count, Is.EqualTo(1));
             var cr = results.First();
             Assert.That(cr.Success, Is.True, "OmittedLineItem CorrectionResult Success should be true for DB pattern learning.");
@@ -148,7 +148,7 @@ namespace AutoBotUtilities.Tests.Production
             var metadata = new Dictionary<string, OCRFieldMetadata>();
             var fileText = "Deduction: 10.99";
 
-            var result = await InvokePrivateMethod<Task<CorrectionResult>>(_service, "ProcessOmissionCorrectionAndApplyToInvoiceAsync", invoice, error, metadata, fileText);
+            var result = await InvokePrivateMethod<Task<CorrectionResult>>(this._service, "ProcessOmissionCorrectionAndApplyToInvoiceAsync", invoice, error, metadata, fileText).ConfigureAwait(false);
 
             Assert.That(result.Success, Is.True);
             Assert.That(result.FieldName, Is.EqualTo("TotalDeduction"));
@@ -165,7 +165,7 @@ namespace AutoBotUtilities.Tests.Production
             var invoice = new ShipmentInvoice { InvoiceTotal = 100.00 };
             var error = new InvoiceError { Field = "InvoiceTotal", ExtractedValue = "100.00", CorrectValue = "100.55", ErrorType = "value_error" };
 
-            var result = await InvokePrivateMethod<Task<CorrectionResult>>(_service, "ApplySingleValueOrFormatCorrectionToInvoiceAsync", invoice, error);
+            var result = await InvokePrivateMethod<Task<CorrectionResult>>(this._service, "ApplySingleValueOrFormatCorrectionToInvoiceAsync", invoice, error).ConfigureAwait(false);
 
             Assert.That(result.Success, Is.True);
             Assert.That(result.FieldName, Is.EqualTo("InvoiceTotal"));

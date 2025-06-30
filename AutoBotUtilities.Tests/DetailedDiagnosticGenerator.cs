@@ -119,7 +119,7 @@ Return ONLY the JSON object, no additional text.";
                     .Where(File.Exists)
                     .ToArray();
 
-                await ProcessDiagnosticFiles(allTextFiles);
+                await this.ProcessDiagnosticFiles(allTextFiles).ConfigureAwait(false);
             }
         }
 
@@ -147,7 +147,7 @@ Return ONLY the JSON object, no additional text.";
 
                 _logger.Information("📋 **MANGO_CHALLENGE_SCOPE**: Processing {FileCount} challenging invoices", allTextFiles.Length);
 
-                await ProcessDiagnosticFiles(allTextFiles);
+                await this.ProcessDiagnosticFiles(allTextFiles).ConfigureAwait(false);
             }
         }
 
@@ -176,7 +176,7 @@ Return ONLY the JSON object, no additional text.";
 
                 _logger.Information("📋 **ALL_FILES_SCOPE**: Processing {FileCount} PDF files with v1.1 enhanced protocol", allTextFiles.Length);
                 
-                await ProcessDiagnosticFiles(allTextFiles);
+                await this.ProcessDiagnosticFiles(allTextFiles).ConfigureAwait(false);
             }
         }
 
@@ -202,7 +202,7 @@ Return ONLY the JSON object, no additional text.";
                     var ocrText = File.ReadAllText(textFile);
                     
                     // Generate comprehensive diagnostic
-                    var diagnostic = await GenerateComprehensiveDiagnostic(fileName, ocrText, service);
+                    var diagnostic = await this.GenerateComprehensiveDiagnostic(fileName, ocrText, service).ConfigureAwait(false);
                     
                     // Save diagnostic file with timestamp
                     var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -289,7 +289,7 @@ Return ONLY the JSON object, no additional text.";
                         var ocrText = File.ReadAllText(textFile);
                         
                         // Generate comprehensive diagnostic
-                        var diagnostic = await GenerateComprehensiveDiagnostic(fileName, ocrText, service);
+                        var diagnostic = await this.GenerateComprehensiveDiagnostic(fileName, ocrText, service).ConfigureAwait(false);
                         
                         // Save diagnostic file with timestamp
                         var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -345,11 +345,11 @@ Return ONLY the JSON object, no additional text.";
             var ocrAnalysis = AnalyzeOCRStructure(ocrText);
             
             // 2. Generate JSON reference
-            var jsonReference = await GenerateJsonReference(ocrText, fileName);
+            var jsonReference = await this.GenerateJsonReference(ocrText, fileName).ConfigureAwait(false);
             
             // 3. Run DeepSeek detection with explanation capture
             var blankInvoice = CreateBlankInvoice(fileName);
-            var deepSeekDiagnostic = await RunDeepSeekDetectionWithExplanation(service, blankInvoice, ocrText);
+            var deepSeekDiagnostic = await this.RunDeepSeekDetectionWithExplanation(service, blankInvoice, ocrText).ConfigureAwait(false);
             var deepSeekResults = deepSeekDiagnostic.Errors;
             
             // 4. Perform detailed comparison
@@ -1075,21 +1075,21 @@ Return ONLY the JSON object, no additional text.";
                 try
                 {
                     var claudeClient = new AutoBotUtilities.Tests.Utils.ClaudeCodeApiClient(_logger);
-                    jsonResponse = await claudeClient.GetJsonExtractionAsync(jsonPrompt);
+                    jsonResponse = await claudeClient.GetJsonExtractionAsync(jsonPrompt).ConfigureAwait(false);
                     _logger.Information("✅ **CLAUDE_SDK_SUCCESS**: Using Claude Code SDK with subscription for JSON extraction");
                 }
                 catch (InvalidOperationException ex) when (ex.Message.Contains("Claude Code"))
                 {
                     _logger.Warning("⚠️ **CLAUDE_SDK_FALLBACK**: Claude Code SDK not available, falling back to DeepSeek for JSON extraction");
                     var deepSeekClient = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi(_logger);
-                    jsonResponse = await deepSeekClient.GetResponseAsync(jsonPrompt);
+                    jsonResponse = await deepSeekClient.GetResponseAsync(jsonPrompt).ConfigureAwait(false);
                     _logger.Information("✅ **DEEPSEEK_FALLBACK_SUCCESS**: Using DeepSeek for JSON extraction");
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex, "❌ **CLAUDE_API_ERROR**: Claude failed, falling back to DeepSeek");
                     var deepSeekClient = new WaterNut.Business.Services.Utils.DeepSeekInvoiceApi(_logger);
-                    jsonResponse = await deepSeekClient.GetResponseAsync(jsonPrompt);
+                    jsonResponse = await deepSeekClient.GetResponseAsync(jsonPrompt).ConfigureAwait(false);
                     _logger.Information("✅ **DEEPSEEK_FALLBACK_SUCCESS**: Using DeepSeek for JSON extraction");
                 }
                 
@@ -1289,7 +1289,7 @@ Return ONLY the JSON object, no additional text.";
         
         private async Task<List<InvoiceError>> RunDeepSeekDetection(OCRCorrectionService service, ShipmentInvoice invoice, string ocrText) 
         {
-            var result = await RunDeepSeekDetectionWithExplanation(service, invoice, ocrText);
+            var result = await this.RunDeepSeekDetectionWithExplanation(service, invoice, ocrText).ConfigureAwait(false);
             return result.Errors;
         }
         
@@ -1303,7 +1303,7 @@ Return ONLY the JSON object, no additional text.";
                 var metadata = new Dictionary<string, OCRFieldMetadata>();
                 
                 // Call the enhanced method that returns both errors and explanation
-                var diagnosticResult = await service.DetectInvoiceErrorsWithExplanationAsync(invoice, ocrText, metadata);
+                var diagnosticResult = await service.DetectInvoiceErrorsWithExplanationAsync(invoice, ocrText, metadata).ConfigureAwait(false);
                 
                 _logger.Information("✅ **DEEPSEEK_DETECTION_COMPLETE**: Found {ErrorCount} errors", diagnosticResult.Errors.Count);
                 _logger.Information("📊 **DEEPSEEK_DETECTION_DETAILS**: Errors by type: {ErrorBreakdown}", 
