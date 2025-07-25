@@ -164,6 +164,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     singleColumnTask?.Status.ToString() ?? "null", 
                     sparseTextTask?.Status.ToString() ?? "null");
                 
+                // **CRITICAL**: Reset thread abort to prevent automatic re-throw
+                System.Threading.Thread.ResetAbort();
+                context.Logger?.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully for main OCR coordination");
+                
                 // Don't re-throw ThreadAbortException - handle gracefully
                 context.Logger?.Warning("⚠️ **GRACEFUL_RECOVERY**: Continuing with partial OCR results due to thread termination");
             }
