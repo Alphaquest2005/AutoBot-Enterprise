@@ -21,7 +21,6 @@ namespace WaterNut.DataSpace
 {
     using System.Text.Json.Serialization;
     using WaterNut.Business.Services.Utils;
-    using WaterNut.Business.Services.Utils.LlmApi;
 
     public partial class OCRCorrectionService : IDisposable
     {
