@@ -196,8 +196,8 @@ namespace WaterNut.DataSpace
             try
             {
                 var prompt = this.CreateRegexCreationPrompt(correction, lineContext);
-                var responseJson = await this._deepSeekApi
-                                       .GetCompletionAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
+                var responseJson = await this._llmClient
+                                       .GetResponseAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
                                        .ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(responseJson)) return null;
                 return ParseRegexCreationResponseJson(responseJson);
@@ -227,8 +227,8 @@ namespace WaterNut.DataSpace
                 _logger.Information("🤖 **DEEPSEEK_REGEX_CORRECTION**: Requesting fix for failed regex for field {FieldName}", correction.FieldName);
 
                 var prompt = this.CreateRegexCorrectionPrompt(correction, lineContext, failedResponse, failureReason);
-                var responseJson = await this._deepSeekApi
-                                       .GetCompletionAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
+                var responseJson = await this._llmClient
+                                       .GetResponseAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
                                        .ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(responseJson)) return null;
 
