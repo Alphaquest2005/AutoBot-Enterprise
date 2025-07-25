@@ -973,7 +973,7 @@ namespace AutoBotUtilities.Tests
                         }
                     }
 
-                    Assert.That(invoiceExists, Is.True, "STEP 3 FAILED: ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence. This indicates template processing or invoice creation pipeline is failing.");
+                    Assert.That(invoiceExists, Is.True, "STEP 4 FAILED: ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence. This indicates template processing or invoice creation pipeline is failing.");
                     // ================== END OF ROBUST VERIFICATION ==================
 
                     using (var ctx = new EntryDataDSContext())
