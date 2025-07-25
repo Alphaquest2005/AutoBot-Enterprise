@@ -45,12 +45,12 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     _logger.Warning(ex, "⚠️ **PRIMARY_STRATEGY_FAILED**: DeepSeek initialization failed, will rely on fallback only");
                 }
 
-                // Create Gemini strategy (fallback) using factory pattern
+                // Create Gemini strategy (fallback) - get API key directly from environment
                 try
                 {
-                    var geminiClient = LlmApiClientFactory.CreateClient(LLMProvider.Gemini, _logger);
-                    // For now, create strategy directly with API key since we need raw access
-                    string geminiApiKey = LlmApiClientFactory.GetApiKeyFromEnv(LLMProvider.Gemini);
+                    string geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+                    if (string.IsNullOrWhiteSpace(geminiApiKey))
+                        throw new InvalidOperationException("GEMINI_API_KEY environment variable not set");
                     
                     // Create strategy with null http client and retry policy - they'll be initialized by the strategy  
                     _fallbackStrategy = new GeminiStrategy(geminiApiKey, _logger, null, null);
