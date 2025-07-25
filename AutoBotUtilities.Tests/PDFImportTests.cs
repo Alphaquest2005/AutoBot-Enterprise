@@ -945,8 +945,8 @@ namespace AutoBotUtilities.Tests
                         $"STEP 3 FAILED: Template persistence - Template created in memory but not saved to OCR database after {testStartTime}. " +
                         "This indicates database save operation (SaveChangesAsync) or transaction is failing.");
 
-                    // **VERIFICATION STEP 3**: ShipmentInvoice Persistence (THIRD - Final step after template processing)
-                    _logger.Information("3️⃣ **SHIPMENT_INVOICE_VERIFICATION**: Checking for persisted ShipmentInvoice with retry logic");
+                    // **VERIFICATION STEP 4**: ShipmentInvoice Persistence (FOURTH - Final step after template processing)
+                    _logger.Information("4️⃣ **SHIPMENT_INVOICE_VERIFICATION**: Checking for persisted ShipmentInvoice with retry logic");
                     bool invoiceExists = false;
                     ShipmentInvoice finalInvoice = null;
 
