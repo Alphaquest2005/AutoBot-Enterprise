@@ -21,12 +21,13 @@ namespace WaterNut.DataSpace
 {
     using System.Text.Json.Serialization;
     using WaterNut.Business.Services.Utils;
+    using WaterNut.Business.Services.Utils.LlmApi;
 
     public partial class OCRCorrectionService : IDisposable
     {
         #region Fields and Properties
 
-        private readonly DeepSeekInvoiceApi _deepSeekApi;
+        private readonly OCRLlmClient _llmClient;
 
         private readonly ILogger _logger;
 
@@ -50,11 +51,11 @@ namespace WaterNut.DataSpace
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             try
             {
-                _deepSeekApi = new DeepSeekInvoiceApi(_logger);
+                _llmClient = new OCRLlmClient(_logger);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "CRITICAL FAILURE: The DeepSeekInvoiceApi constructor threw an exception.");
+                _logger.Error(ex, "CRITICAL FAILURE: The OCRLlmClient constructor threw an exception.");
                 throw;
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
