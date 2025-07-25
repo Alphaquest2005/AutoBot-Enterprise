@@ -294,6 +294,60 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             if (!string.IsNullOrEmpty(error)) { Logger.Error("[DeepSeek] API returned an error message in response body: {ErrorMessage}", error); } // Changed LogError to Error
         }
 
+        /// <summary>
+        /// Raw prompt method for OCR correction integration.
+        /// Matches the interface of the old DeepSeekInvoiceApi.GetResponseAsync.
+        /// Provides direct prompt/response capability with proper retry and fallback support.
+        /// </summary>
+        public async Task<string> GetResponseAsync(string prompt, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(prompt))
+                throw new ArgumentException("Prompt cannot be null or empty", nameof(prompt));
+
+            Logger.Information("[{Provider}] Raw prompt request - Length: {PromptLength}, Temperature: {Temperature}, MaxTokens: {MaxTokens}", 
+                ProviderType, prompt.Length, temperature ?? DefaultTemperature, maxTokens ?? DefaultMaxTokens);
+
+            try
+            {
+                // Use provided values or defaults
+                var temp = temperature ?? DefaultTemperature;
+                var tokens = maxTokens ?? DefaultMaxTokens;
+                
+                // Create request body matching DeepSeek API format
+                var requestBody = new
+                {
+                    model = Model,
+                    messages = new[] { new { role = "user", content = prompt } },
+                    temperature = temp,
+                    max_tokens = tokens,
+                    stream = false
+                };
+                
+                // Use base class PostRequestAsync with proper error handling and retry
+                var apiUrl = GetApiUrl(Model);
+                var responseJson = await PostRequestAsync(apiUrl, requestBody, AddAuthentication, cancellationToken);
+                
+                // Parse response and extract content
+                var responseObj = JObject.Parse(responseJson);
+                CheckAndLogApiError(responseObj); // Check for API errors
+                
+                var content = responseObj["choices"]?[0]?["message"]?["content"]?.Value<string>();
+                
+                if (string.IsNullOrEmpty(content))
+                {
+                    Logger.Error("[{Provider}] No content found in API response", ProviderType);
+                    throw new InvalidOperationException($"{ProviderType} API returned empty content");
+                }
+                
+                Logger.Information("[{Provider}] Raw prompt response received - Length: {ResponseLength}", ProviderType, content.Length);
+                return content;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "[{Provider}] Raw prompt request failed: {ErrorMessage}", ProviderType, ex.Message);
+                throw; // Re-throw for retry policy or fallback handling
+            }
+        }
 
     }
 }
