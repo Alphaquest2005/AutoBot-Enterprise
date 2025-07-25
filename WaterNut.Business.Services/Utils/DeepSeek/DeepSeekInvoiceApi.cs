@@ -705,8 +705,6 @@ try
                 // **REQUEST_JSON_LOGGING**: Log the complete JSON request being sent
                 _logger.Error("🔍 **REQUEST_JSON_COMPLETE**: Complete JSON request: {RequestJson}", json);
                 
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
                 // **HTTP_REQUEST_STATE**: Log HTTP request state before sending
                 _logger.Error("🔍 **HTTP_REQUEST_STATE**: About to send POST request to {Url}", $"{_baseUrl}/chat/completions");
                 _logger.Error("🔍 **HTTP_REQUEST_HEADERS**: ContentType=application/json, Encoding=UTF8, Method=POST");
@@ -714,11 +712,15 @@ try
                 // **STATE_TRANSITION**: Request construction → HTTP execution with retry policy
                 _logger.Error("🔍 **STATE_TRANSITION**: REQUEST_CONSTRUCTION → HTTP_EXECUTION_WITH_RETRY");
                 
+                // **HTTPCONTENT_DISPOSAL_FIX**: Create new StringContent for each retry attempt to prevent ObjectDisposedException
                 var response = await _retryPolicy.ExecuteAsync(async () =>
                 {
                     _logger.Error("🔍 **HTTP_RETRY_ATTEMPT**: Executing HTTP request (with retry policy)");
                     using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
-                    requestMessage.Content = content;
+                    
+                    // **CRITICAL FIX**: Create NEW StringContent for each retry attempt
+                    // Previous bug: Same StringContent was reused after being disposed by first HttpRequestMessage
+                    requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
                     
                     var httpResponse = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                     
