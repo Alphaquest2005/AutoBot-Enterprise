@@ -9,6 +9,7 @@ using Serilog.Events; // Added for LogEventLevel
 using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -910,15 +911,13 @@ namespace AutoBotUtilities.Tests
                     // **VERIFICATION STEP 3**: Template Persistence (THIRD - Database save operation)
                     _logger.Information("3️⃣ **TEMPLATE_PERSISTENCE_VERIFICATION**: Checking if template was persisted to OCR database");
                     bool templatePersistedToDatabase = false;
-                    OCR.Business.Entities.Invoice persistedTemplate = null;
+                    OCR.Business.Entities.Invoices persistedTemplate = null;
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         // Look for MANGO template persisted after test start
                         persistedTemplate = await ocrCtx.Invoices
-                            .Include(x => x.Parts)
-                            .ThenInclude(p => p.Lines)
-                            .ThenInclude(l => l.Fields)
+                            .Include(x => x.Parts.Select(p => p.Lines.Select(l => l.Fields)))
                             .FirstOrDefaultAsync(x => x.Name == "MANGO" && x.CreatedDate > testStartTime)
                             .ConfigureAwait(false);
                             
