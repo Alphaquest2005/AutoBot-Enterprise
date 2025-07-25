@@ -850,7 +850,80 @@ namespace AutoBotUtilities.Tests
 
                     _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
 
-                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    // ================== ORDERED VERIFICATION CRITERIA (FAIL FAST AT FIRST ERROR) ==================
+                    _logger.Information("🎯 **SYSTEMATIC_VERIFICATION_START**: Checking success criteria in execution order to identify exact failure point");
+
+                    // **VERIFICATION STEP 1**: Template Creation and Persistence 
+                    _logger.Information("1️⃣ **TEMPLATE_VERIFICATION**: Checking if MANGO template was created and persisted to OCR database");
+                    bool templateExists = false;
+                    OCR.Business.Entities.Invoice createdTemplate = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        // Look for MANGO template created after test start
+                        createdTemplate = await ocrCtx.Invoices
+                            .Include(x => x.Parts)
+                            .ThenInclude(p => p.Lines)
+                            .ThenInclude(l => l.Fields)
+                            .FirstOrDefaultAsync(x => x.Name == "MANGO" && x.CreatedDate > testStartTime)
+                            .ConfigureAwait(false);
+                            
+                        templateExists = createdTemplate != null;
+                        
+                        if (templateExists)
+                        {
+                            _logger.Information("✅ **STEP_1_PASSED**: MANGO template created successfully");
+                            _logger.Information("   - **TEMPLATE_ID**: {TemplateId}", createdTemplate.Id);
+                            _logger.Information("   - **TEMPLATE_NAME**: {TemplateName}", createdTemplate.Name);
+                            _logger.Information("   - **PARTS_COUNT**: {PartsCount}", createdTemplate.Parts?.Count ?? 0);
+                            _logger.Information("   - **TOTAL_LINES**: {LinesCount}", createdTemplate.Parts?.Sum(p => p.Lines?.Count ?? 0) ?? 0);
+                            _logger.Information("   - **TOTAL_FIELDS**: {FieldsCount}", createdTemplate.Parts?.Sum(p => p.Lines?.Sum(l => l.Fields?.Count ?? 0) ?? 0) ?? 0);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **STEP_1_FAILED**: No MANGO template found in OCR database after {TestStartTime}", testStartTime);
+                        }
+                    }
+                    
+                    Assert.That(templateExists, Is.True, 
+                        $"STEP 1 FAILED: Template creation - No MANGO template found in OCR database after {testStartTime}. " +
+                        "This indicates CreateInvoiceTemplateAsync is failing or not persisting templates properly.");
+
+                    // **VERIFICATION STEP 2**: DeepSeek API Success Verification
+                    _logger.Information("2️⃣ **DEEPSEEK_VERIFICATION**: Checking if DeepSeek prompts succeeded and created valid corrections");
+                    bool deepSeekSuccess = false;
+                    List<OCR.Business.Entities.OCRCorrectionLearning> deepSeekCorrections = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        deepSeekCorrections = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .OrderByDescending(x => x.Id)
+                            .ToListAsync().ConfigureAwait(false);
+                            
+                        deepSeekSuccess = deepSeekCorrections.Any();
+                        
+                        if (deepSeekSuccess)
+                        {
+                            _logger.Information("✅ **STEP_2_PASSED**: DeepSeek corrections created successfully");
+                            _logger.Information("   - **CORRECTIONS_COUNT**: {CorrectionsCount}", deepSeekCorrections.Count);
+                            _logger.Information("   - **CORRECTION_TYPES**: {CorrectionTypes}", 
+                                string.Join(", ", deepSeekCorrections.Select(c => c.CorrectionType).Distinct()));
+                            _logger.Information("   - **SUCCESS_RATE**: {SuccessCount}/{TotalCount} successful", 
+                                deepSeekCorrections.Count(c => c.Success == true), deepSeekCorrections.Count);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **STEP_2_FAILED**: No DeepSeek corrections found in OCRCorrectionLearning after {TestStartTime}", testStartTime);
+                        }
+                    }
+                    
+                    Assert.That(deepSeekSuccess, Is.True, 
+                        $"STEP 2 FAILED: DeepSeek prompts - No corrections found in OCRCorrectionLearning after {testStartTime}. " +
+                        "This indicates DeepSeek API calls are failing or not creating correction entries properly.");
+
+                    // **VERIFICATION STEP 3**: ShipmentInvoice Persistence (Original verification)
+                    _logger.Information("3️⃣ **SHIPMENT_INVOICE_VERIFICATION**: Checking for persisted ShipmentInvoice with retry logic");
                     bool invoiceExists = false;
                     ShipmentInvoice finalInvoice = null;
 
@@ -877,7 +950,7 @@ namespace AutoBotUtilities.Tests
                         }
                     }
 
-                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence.");
+                    Assert.That(invoiceExists, Is.True, "STEP 3 FAILED: ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence. This indicates template processing or invoice creation pipeline is failing.");
                     // ================== END OF ROBUST VERIFICATION ==================
 
                     using (var ctx = new EntryDataDSContext())
