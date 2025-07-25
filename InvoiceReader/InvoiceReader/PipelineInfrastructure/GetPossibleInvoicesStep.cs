@@ -23,8 +23,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-                var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
-                string filePath = context?.FilePath ?? "Unknown";
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
+            string filePath = context?.FilePath ?? "Unknown";
                 context.Logger?.Information(
                     "METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
                     nameof(Execute),
@@ -475,8 +475,6 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     context.MatchedTemplates = new List<Invoice>();
                     return false;
                 }
-
-            } // Close LogLevelOverride for template creation - APPLICATION TERMINATES HERE
         }
 
         private bool ValidateContext(InvoiceProcessingContext context, string filePath)
