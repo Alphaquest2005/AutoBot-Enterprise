@@ -37,6 +37,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         context.Logger?.Warning(threadAbortEx, "🚨 **SPARSETEXT_THREADABORT_CAUGHT**: ThreadAbortException during Sparse Text OCR - using fallback text");
                         txt += "------------------------------------------SparseText (ThreadAbort Recovery)-------------------------\r\n";
                         txt += "** OCR processing was interrupted - partial results may be available **\r\n";
+                        
+                        // **CRITICAL**: Reset thread abort to prevent automatic re-throw
+                        System.Threading.Thread.ResetAbort();
+                        context.Logger?.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully for Sparse Text OCR");
                         // Don't re-throw - allow processing to continue with partial results
                     }
                     
