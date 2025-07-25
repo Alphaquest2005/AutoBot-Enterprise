@@ -29,10 +29,17 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             {
                 _logger.Information("🔄 **OCR_LLM_CLIENT_INIT**: Initializing DeepSeek (primary) and Gemini (fallback) strategies");
 
-                // Create DeepSeek strategy (primary)
+                // Create DeepSeek strategy (primary) directly
                 try
                 {
-                    _primaryStrategy = LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, _logger).Strategy as DeepSeekStrategy;
+                    string deepSeekApiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY");
+                    if (string.IsNullOrWhiteSpace(deepSeekApiKey))
+                        throw new InvalidOperationException("DEEPSEEK_API_KEY environment variable not set");
+
+                    var httpClient = LlmApiClientFactory.GetSharedHttpClient();
+                    var retryPolicy = LlmApiClientFactory.GetSharedRetryPolicy(_logger);
+                    
+                    _primaryStrategy = new DeepSeekStrategy(deepSeekApiKey, _logger, httpClient, retryPolicy);
                     _logger.Information("✅ **PRIMARY_STRATEGY_READY**: DeepSeek strategy initialized successfully");
                 }
                 catch (Exception ex)
@@ -40,10 +47,17 @@ namespace WaterNut.Business.Services.Utils.LlmApi
                     _logger.Warning(ex, "⚠️ **PRIMARY_STRATEGY_FAILED**: DeepSeek initialization failed, will rely on fallback only");
                 }
 
-                // Create Gemini strategy (fallback)
+                // Create Gemini strategy (fallback) directly
                 try
                 {
-                    _fallbackStrategy = LlmApiClientFactory.CreateClient(LLMProvider.Gemini, _logger).Strategy as GeminiStrategy;
+                    string geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+                    if (string.IsNullOrWhiteSpace(geminiApiKey))
+                        throw new InvalidOperationException("GEMINI_API_KEY environment variable not set");
+
+                    var httpClient = LlmApiClientFactory.GetSharedHttpClient();
+                    var retryPolicy = LlmApiClientFactory.GetSharedRetryPolicy(_logger);
+                    
+                    _fallbackStrategy = new GeminiStrategy(geminiApiKey, _logger, httpClient, retryPolicy);
                     _logger.Information("✅ **FALLBACK_STRATEGY_READY**: Gemini strategy initialized successfully");
                 }
                 catch (Exception ex)
