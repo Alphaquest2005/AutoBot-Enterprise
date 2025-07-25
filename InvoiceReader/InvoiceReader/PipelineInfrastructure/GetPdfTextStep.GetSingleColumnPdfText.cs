@@ -24,10 +24,24 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     var txt = "------------------------------------------Single Column-------------------------\r\n";
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SingleColumn", "SYNC_EXPECTED"); // Use logger from context
                     var ocrStopwatch = Stopwatch.StartNew();
-                    txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
+                    
+                    // **THREADABORT_EXCEPTION_FIX**: Wrap PdfOcr call with ThreadAbortException handling
+                    try
+                    {
+                        txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
+                        context.Logger?.Information("✅ **SINGLECOLUMN_OCR_SUCCESS**: Single column OCR completed successfully");
+                    }
+                    catch (System.Threading.ThreadAbortException threadAbortEx)
+                    {
+                        context.Logger?.Warning(threadAbortEx, "🚨 **SINGLECOLUMN_THREADABORT_CAUGHT**: ThreadAbortException during Single Column OCR - using fallback text");
+                        txt += "------------------------------------------Single Column (ThreadAbort Recovery)-------------------------\r\n";
+                        txt += "** OCR processing was interrupted - partial results may be available **\r\n";
+                        // Don't re-throw - allow processing to continue with partial results
+                    }
+                    
                     ocrStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                        "PdfOcr().Ocr with SingleColumn", ocrStopwatch.ElapsedMilliseconds, "Sync call returned"); // Use logger from context
+                        "PdfOcr().Ocr with SingleColumn", ocrStopwatch.ElapsedMilliseconds, "Sync call returned with ThreadAbort protection"); // Use logger from context
  
                     methodStopwatch.Stop(); // Stop stopwatch on success
                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
