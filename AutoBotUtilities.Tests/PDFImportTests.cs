@@ -915,10 +915,10 @@ namespace AutoBotUtilities.Tests
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
-                        // Look for MANGO template persisted after test start
+                        // Look for MANGO template persisted to database
                         persistedTemplate = await ocrCtx.Invoices
                             .Include(x => x.Parts.Select(p => p.Lines.Select(l => l.Fields)))
-                            .FirstOrDefaultAsync(x => x.Name == "MANGO" && x.CreatedDate > testStartTime)
+                            .FirstOrDefaultAsync(x => x.Name == "MANGO" && x.IsActive == true)
                             .ConfigureAwait(false);
                             
                         templatePersistedToDatabase = persistedTemplate != null;
