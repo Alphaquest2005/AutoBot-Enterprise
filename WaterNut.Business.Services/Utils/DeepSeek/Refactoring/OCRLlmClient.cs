@@ -29,12 +29,12 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             {
                 _logger.Information("🔄 **OCR_LLM_CLIENT_INIT**: Initializing DeepSeek (primary) and Gemini (fallback) strategies using factory pattern");
 
-                // Create DeepSeek strategy (primary) using factory-created client and extracting strategy
+                // Create DeepSeek strategy (primary) - get API key directly from environment
                 try
                 {
-                    var deepSeekClient = LlmApiClientFactory.CreateClient(LLMProvider.DeepSeek, _logger);
-                    // For now, create strategy directly with API key since we need raw access
-                    string deepSeekApiKey = LlmApiClientFactory.GetApiKeyFromEnv(LLMProvider.DeepSeek);
+                    string deepSeekApiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY");
+                    if (string.IsNullOrWhiteSpace(deepSeekApiKey))
+                        throw new InvalidOperationException("DEEPSEEK_API_KEY environment variable not set");
                     
                     // Create strategy with null http client and retry policy - they'll be initialized by the strategy
                     _primaryStrategy = new DeepSeekStrategy(deepSeekApiKey, _logger, null, null);
