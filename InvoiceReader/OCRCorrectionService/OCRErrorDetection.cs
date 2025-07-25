@@ -133,7 +133,7 @@ namespace WaterNut.DataSpace
                 // STEP 1: Header Field Detection (existing functionality)
                 _logger.Information("       - 📋 **HEADER_DETECTION**: Processing header fields and financial totals");
                 var headerPrompt = this.CreateHeaderErrorDetectionPrompt(invoice, fileText, metadata);
-                var headerResponseJson = await _deepSeekApi.GetResponseAsync(headerPrompt).ConfigureAwait(false);
+                var headerResponseJson = await _llmClient.GetResponseAsync(headerPrompt).ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(headerResponseJson))
                 {
@@ -150,7 +150,7 @@ namespace WaterNut.DataSpace
                 // STEP 2: Line Item Detection (new functionality) 
                 _logger.Information("       - 📦 **LINE_ITEM_DETECTION**: Processing invoice line items and product details");
                 var lineItemPrompt = this.CreateProductErrorDetectionPrompt(invoice, fileText);
-                var lineItemResponseJson = await _deepSeekApi.GetResponseAsync(lineItemPrompt).ConfigureAwait(false);
+                var lineItemResponseJson = await _llmClient.GetResponseAsync(lineItemPrompt).ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(lineItemResponseJson))
                 {
