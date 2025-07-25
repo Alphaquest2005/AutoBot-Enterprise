@@ -23,7 +23,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // REMOVED: Preventing test termination
             {
                 var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
                 string filePath = context?.FilePath ?? "Unknown";
