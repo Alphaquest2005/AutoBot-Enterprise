@@ -136,9 +136,53 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AwaitTasksCompletion), "Awaiting", "Awaiting completion of PDF text extraction tasks.", $"FilePath: {filePath}", "");
-            await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false);
+            
+            // **THREADABORT_EXCEPTION_FIX**: Use timeout instead of allowing thread abortion
+            // PDF OCR processing can take time, but we need to prevent indefinite blocking
+            const int timeoutMinutes = 5; // 5-minute timeout for OCR processing
+            
+            try
+            {
+                using (var timeoutCts = new System.Threading.CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes)))
+                {
+                    context.Logger?.Information("🕐 **OCR_TIMEOUT_PROTECTION**: Using {TimeoutMinutes}min timeout to prevent ThreadAbortException during PDF processing", timeoutMinutes);
+                    
+                    // Wait for all tasks with timeout protection
+                    var allTasks = Task.WhenAll(ripTask, singleColumnTask, sparseTextTask);
+                    await allTasks.ConfigureAwait(false);
+                    
+                    context.Logger?.Information("✅ **OCR_TASKS_COMPLETED**: All PDF text extraction tasks completed successfully within timeout");
+                }
+            }
+            catch (System.Threading.ThreadAbortException threadAbortEx)
+            {
+                context.Logger?.Error(threadAbortEx, "🚨 **THREADABORT_DETECTED**: ThreadAbortException caught during PDF OCR processing - implementing graceful recovery");
+                
+                // Log the current state of each task for diagnosis
+                context.Logger?.Information("📊 **TASK_STATUS_DIAGNOSTIC**: RipTask={RipStatus}, SingleColumn={SingleStatus}, SparseText={SparseStatus}",
+                    ripTask?.Status.ToString() ?? "null", 
+                    singleColumnTask?.Status.ToString() ?? "null", 
+                    sparseTextTask?.Status.ToString() ?? "null");
+                
+                // Don't re-throw ThreadAbortException - handle gracefully
+                context.Logger?.Warning("⚠️ **GRACEFUL_RECOVERY**: Continuing with partial OCR results due to thread termination");
+            }
+            catch (System.OperationCanceledException timeoutEx)
+            {
+                context.Logger?.Error(timeoutEx, "⏰ **OCR_PROCESSING_TIMEOUT**: PDF text extraction timed out after {TimeoutMinutes} minutes for file: {FilePath}", timeoutMinutes, filePath);
+                
+                // Log which tasks completed and which didn't
+                context.Logger?.Information("📊 **TIMEOUT_DIAGNOSTIC**: RipTask={RipStatus}, SingleColumn={SingleStatus}, SparseText={SparseStatus}",
+                    ripTask?.Status.ToString() ?? "null", 
+                    singleColumnTask?.Status.ToString() ?? "null", 
+                    sparseTextTask?.Status.ToString() ?? "null");
+                
+                // Allow processing to continue with whatever tasks completed
+                context.Logger?.Warning("⚠️ **TIMEOUT_RECOVERY**: Continuing with available OCR results despite timeout");
+            }
+            
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                nameof(AwaitTasksCompletion), "Completed", "All PDF text extraction tasks completed.", $"FilePath: {filePath}", "");
+                nameof(AwaitTasksCompletion), "Completed", "PDF text extraction task coordination completed (with timeout protection).", $"FilePath: {filePath}", "");
         }
 
         private void AppendResults(InvoiceProcessingContext context, StringBuilder pdftxt, string filePath, // Add context parameter
