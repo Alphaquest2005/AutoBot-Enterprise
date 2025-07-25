@@ -1,7 +1,11 @@
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
+using Polly;
+using Polly.Retry;
 using WaterNut.Business.Services.Utils.LlmApi;
 
 namespace WaterNut.Business.Services.Utils.LlmApi
