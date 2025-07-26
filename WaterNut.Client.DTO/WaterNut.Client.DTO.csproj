@@ -267,7 +267,9 @@
     <Compile Include="Generated Client Entities\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCR_KeywordDetectionLog.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_PartLineFields.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCR_TemplateTableMapping.cs" />
     <Compile Include="Generated Client Entities\OCR\Parts.cs" />
     <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
@@ -447,7 +449,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_KeywordDetectionLog.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_TemplateTableMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
@@ -627,7 +631,9 @@
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCR_KeywordDetectionLog.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_PartLineFields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCR_TemplateTableMapping.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />

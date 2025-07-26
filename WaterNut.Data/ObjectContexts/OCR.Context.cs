@@ -89,6 +89,10 @@ namespace OCR.Business.Entities
      
         public DbSet<vw_OCRCorrectionAnalysis> vw_OCRCorrectionAnalysis { get; set; }
      
+        public DbSet<OCR_KeywordDetectionLog> OCR_KeywordDetectionLog { get; set; }
+     
+        public DbSet<OCR_TemplateTableMapping> OCR_TemplateTableMapping { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -134,6 +138,10 @@ namespace OCR.Business.Entities
             modelBuilder.Configurations.Add(new OCRCorrectionLearningMap());
          
             modelBuilder.Configurations.Add(new vw_OCRCorrectionAnalysisMap());
+         
+            modelBuilder.Configurations.Add(new OCR_KeywordDetectionLogMap());
+         
+            modelBuilder.Configurations.Add(new OCR_TemplateTableMappingMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

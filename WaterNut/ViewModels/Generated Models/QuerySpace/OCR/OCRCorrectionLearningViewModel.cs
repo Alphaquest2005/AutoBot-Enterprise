@@ -528,6 +528,42 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private string _suggestedRegexFilter;
+        public string SuggestedRegexFilter
+        {
+            get
+            {
+                return _suggestedRegexFilter;
+            }
+            set
+            {
+                _suggestedRegexFilter = value;
+				NotifyPropertyChanged(x => SuggestedRegexFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _suggestedRegex_IndexedFilter;
+        public string SuggestedRegex_IndexedFilter
+        {
+            get
+            {
+                return _suggestedRegex_IndexedFilter;
+            }
+            set
+            {
+                _suggestedRegex_IndexedFilter = value;
+				NotifyPropertyChanged(x => SuggestedRegex_IndexedFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -651,6 +687,14 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(ContextLinesAfterFilter) == false)
 						res.Append(" && " + string.Format("ContextLinesAfter.Contains(\"{0}\")",  ContextLinesAfterFilter));						
+ 
+
+									if(string.IsNullOrEmpty(SuggestedRegexFilter) == false)
+						res.Append(" && " + string.Format("SuggestedRegex.Contains(\"{0}\")",  SuggestedRegexFilter));						
+ 
+
+									if(string.IsNullOrEmpty(SuggestedRegex_IndexedFilter) == false)
+						res.Append(" && " + string.Format("SuggestedRegex_Indexed.Contains(\"{0}\")",  SuggestedRegex_IndexedFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -725,7 +769,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     ContextLinesBefore = x.ContextLinesBefore ,
                     
  
-                    ContextLinesAfter = x.ContextLinesAfter 
+                    ContextLinesAfter = x.ContextLinesAfter ,
+                    
+ 
+                    SuggestedRegex = x.SuggestedRegex ,
+                    
+ 
+                    SuggestedRegex_Indexed = x.SuggestedRegex_Indexed 
                     
                 }).ToList()
             };
@@ -790,6 +840,12 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public string ContextLinesAfter { get; set; } 
+                    
+ 
+                    public string SuggestedRegex { get; set; } 
+                    
+ 
+                    public string SuggestedRegex_Indexed { get; set; } 
                     
         }
 

@@ -35,6 +35,8 @@
               this.Property(t => t.LineId).HasColumnName("LineId");
               this.Property(t => t.PartId).HasColumnName("PartId");
               this.Property(t => t.RegexId).HasColumnName("RegexId");
+              this.Property(t => t.SuggestedRegex).HasColumnName("SuggestedRegex");
+              this.Property(t => t.SuggestedRegex_Indexed).HasColumnName("SuggestedRegex_Indexed").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(450);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

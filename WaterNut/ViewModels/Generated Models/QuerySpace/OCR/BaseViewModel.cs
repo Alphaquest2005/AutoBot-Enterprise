@@ -66,7 +66,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedLinesIDChanged, OnCurrentOCR_FailedLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldMappingsIDChanged, OnCurrentOCR_FieldMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_KeywordDetectionLogIDChanged, OnCurrentOCR_KeywordDetectionLogIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, OnCurrentOCR_PartLineFieldsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_TemplateTableMappingIDChanged, OnCurrentOCR_TemplateTableMappingIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCRCorrectionLearningIDChanged, OnCurrentOCRCorrectionLearningIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
@@ -90,7 +92,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<OCR_FailedLines>(MessageToken.CurrentOCR_FailedLinesChanged, OnCurrentOCR_FailedLinesChanged);
                         RegisterToReceiveMessages<OCR_FieldMappings>(MessageToken.CurrentOCR_FieldMappingsChanged, OnCurrentOCR_FieldMappingsChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
+                        RegisterToReceiveMessages<OCR_KeywordDetectionLog>(MessageToken.CurrentOCR_KeywordDetectionLogChanged, OnCurrentOCR_KeywordDetectionLogChanged);
                         RegisterToReceiveMessages<OCR_PartLineFields>(MessageToken.CurrentOCR_PartLineFieldsChanged, OnCurrentOCR_PartLineFieldsChanged);
+                        RegisterToReceiveMessages<OCR_TemplateTableMapping>(MessageToken.CurrentOCR_TemplateTableMappingChanged, OnCurrentOCR_TemplateTableMappingChanged);
                         RegisterToReceiveMessages<OCRCorrectionLearning>(MessageToken.CurrentOCRCorrectionLearningChanged, OnCurrentOCRCorrectionLearningChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
@@ -468,6 +472,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentOCR_KeywordDetectionLogIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_KeywordDetectionLogRepository ctx = new OCR_KeywordDetectionLogRepository())
+                            {
+                                CurrentOCR_KeywordDetectionLog = await ctx.GetOCR_KeywordDetectionLog(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_KeywordDetectionLog);
+                        }
+
+                        private  string _currentOCR_KeywordDetectionLogID = "";
+                        public string CurrentOCR_KeywordDetectionLogID
+                        {
+                            get
+                            {
+                                return _currentOCR_KeywordDetectionLogID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_KeywordDetectionLogID != value)
+                                {
+                                    _currentOCR_KeywordDetectionLogID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_KeywordDetectionLogID)) BeginSendMessage(MessageToken.CurrentOCR_KeywordDetectionLogIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_KeywordDetectionLogIDChanged, _currentOCR_KeywordDetectionLogID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_KeywordDetectionLogID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentOCR_PartLineFieldsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (OCR_PartLineFieldsRepository ctx = new OCR_PartLineFieldsRepository())
@@ -492,6 +523,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentOCR_PartLineFieldsID)) BeginSendMessage(MessageToken.CurrentOCR_PartLineFieldsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, _currentOCR_PartLineFieldsID));
                                     NotifyPropertyChanged(x => this.CurrentOCR_PartLineFieldsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentOCR_TemplateTableMappingIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_TemplateTableMappingRepository ctx = new OCR_TemplateTableMappingRepository())
+                            {
+                                CurrentOCR_TemplateTableMapping = await ctx.GetOCR_TemplateTableMapping(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_TemplateTableMapping);
+                        }
+
+                        private  string _currentOCR_TemplateTableMappingID = "";
+                        public string CurrentOCR_TemplateTableMappingID
+                        {
+                            get
+                            {
+                                return _currentOCR_TemplateTableMappingID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_TemplateTableMappingID != value)
+                                {
+                                    _currentOCR_TemplateTableMappingID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_TemplateTableMappingID)) BeginSendMessage(MessageToken.CurrentOCR_TemplateTableMappingIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_TemplateTableMappingIDChanged, _currentOCR_TemplateTableMappingID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_TemplateTableMappingID);  
                                 }
                             }
                         }
@@ -1352,6 +1410,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
+        internal void OnCurrentOCR_KeywordDetectionLogChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_KeywordDetectionLog> e)
+        {
+            //CurrentOCR_KeywordDetectionLog = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_KeywordDetectionLog);
+        }
+
+        private  OCR_KeywordDetectionLog _currentOCR_KeywordDetectionLog;
+        public OCR_KeywordDetectionLog CurrentOCR_KeywordDetectionLog
+        {
+            get
+            {
+                return _currentOCR_KeywordDetectionLog;
+            }
+            set
+            {
+                if (_currentOCR_KeywordDetectionLog != value)
+                {
+                    _currentOCR_KeywordDetectionLog = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_KeywordDetectionLogChanged,
+                                                     new NotificationEventArgs<OCR_KeywordDetectionLog>(MessageToken.CurrentOCR_KeywordDetectionLogChanged, _currentOCR_KeywordDetectionLog)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_KeywordDetectionLog);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_KeywordDetectionLog> _vcurrentOCR_KeywordDetectionLog;
+        public VirtualListItem<OCR_KeywordDetectionLog> VCurrentOCR_KeywordDetectionLog
+        {
+            get
+            {
+                return _vcurrentOCR_KeywordDetectionLog;
+            }
+            set
+            {
+                if (_vcurrentOCR_KeywordDetectionLog != value)
+                {
+                    _vcurrentOCR_KeywordDetectionLog = value;
+					if(_vcurrentOCR_KeywordDetectionLog != null) CurrentOCR_KeywordDetectionLog = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_KeywordDetectionLog);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentOCR_PartLineFieldsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_PartLineFields> e)
         {
             //CurrentOCR_PartLineFields = e.Data;
@@ -1393,6 +1501,57 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentOCR_PartLineFields = value;
 					if(_vcurrentOCR_PartLineFields != null) CurrentOCR_PartLineFields = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentOCR_PartLineFields);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentOCR_TemplateTableMappingChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_TemplateTableMapping> e)
+        {
+            //CurrentOCR_TemplateTableMapping = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_TemplateTableMapping);
+        }
+
+        private  OCR_TemplateTableMapping _currentOCR_TemplateTableMapping;
+        public OCR_TemplateTableMapping CurrentOCR_TemplateTableMapping
+        {
+            get
+            {
+                return _currentOCR_TemplateTableMapping;
+            }
+            set
+            {
+                if (_currentOCR_TemplateTableMapping != value)
+                {
+                    _currentOCR_TemplateTableMapping = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_TemplateTableMappingChanged,
+                                                     new NotificationEventArgs<OCR_TemplateTableMapping>(MessageToken.CurrentOCR_TemplateTableMappingChanged, _currentOCR_TemplateTableMapping)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_TemplateTableMapping);    
+                    // all current navigation properties = null
+                 CurrentOCR_KeywordDetectionLog = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_TemplateTableMapping> _vcurrentOCR_TemplateTableMapping;
+        public VirtualListItem<OCR_TemplateTableMapping> VCurrentOCR_TemplateTableMapping
+        {
+            get
+            {
+                return _vcurrentOCR_TemplateTableMapping;
+            }
+            set
+            {
+                if (_vcurrentOCR_TemplateTableMapping != value)
+                {
+                    _vcurrentOCR_TemplateTableMapping = value;
+					if(_vcurrentOCR_TemplateTableMapping != null) CurrentOCR_TemplateTableMapping = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_TemplateTableMapping);                    
                 }
             }
         }

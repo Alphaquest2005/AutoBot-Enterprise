@@ -398,6 +398,40 @@ public Nullable<int> RegexId
 		}
      
 
+       
+       
+                
+                
+public string SuggestedRegex
+		{ 
+		    get { return this.ocrcorrectionlearning.SuggestedRegex; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.SuggestedRegex) return;
+				this.ocrcorrectionlearning.SuggestedRegex = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SuggestedRegex");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(450, ErrorMessage = "SuggestedRegex_Indexed has a max length of 450 letters ")]
+public string SuggestedRegex_Indexed
+		{ 
+		    get { return this.ocrcorrectionlearning.SuggestedRegex_Indexed; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.SuggestedRegex_Indexed) return;
+				this.ocrcorrectionlearning.SuggestedRegex_Indexed = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SuggestedRegex_Indexed");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.OCRCorrectionLearning> _changeTracker;    
         public ChangeTrackingCollection<DTO.OCRCorrectionLearning> ChangeTracker

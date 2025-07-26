@@ -307,6 +307,32 @@ namespace OCR.Client.DTO
 		}
         private Nullable<int> _RegexId;
 
+        [DataMember]
+        public string SuggestedRegex
+		{ 
+		    get { return _SuggestedRegex; }
+			set
+			{
+			    if (value == _SuggestedRegex) return;
+				_SuggestedRegex = value;
+				NotifyPropertyChanged();//m => this.SuggestedRegex
+			}
+		}
+        private string _SuggestedRegex;
+
+        [DataMember]
+        public string SuggestedRegex_Indexed
+		{ 
+		    get { return _SuggestedRegex_Indexed; }
+			set
+			{
+			    if (value == _SuggestedRegex_Indexed) return;
+				_SuggestedRegex_Indexed = value;
+				NotifyPropertyChanged();//m => this.SuggestedRegex_Indexed
+			}
+		}
+        private string _SuggestedRegex_Indexed;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

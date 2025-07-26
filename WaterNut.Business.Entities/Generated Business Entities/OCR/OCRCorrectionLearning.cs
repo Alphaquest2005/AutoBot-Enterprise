@@ -350,6 +350,36 @@ namespace OCR.Business.Entities
             }
         }
         Nullable<int> _regexid;
+        [DataMember]
+        public string SuggestedRegex 
+        {
+            get
+            {
+                return _suggestedregex;
+            }
+            set
+            {
+                _suggestedregex = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suggestedregex;
+        [DataMember]
+        public string SuggestedRegex_Indexed 
+        {
+            get
+            {
+                return _suggestedregex_indexed;
+            }
+            set
+            {
+                _suggestedregex_indexed = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suggestedregex_indexed;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

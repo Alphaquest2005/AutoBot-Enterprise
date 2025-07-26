@@ -88,12 +88,24 @@ namespace WaterNut.QuerySpace.OCR
 			public const string OCR_FieldValueDeleted = "OCR_FieldValueDeleted";
 			public const string OCR_FieldValueCreated = "OCR_FieldValueCreated";
 			public const string OCR_FieldValueUpdated = "OCR_FieldValueUpdated";
+			public const string OCR_KeywordDetectionLogFilterExpressionChanged = "OCR_KeywordDetectionLogFilterExpressionChanged";
+			public const string SelectedOCR_KeywordDetectionLogChanged = "SelectedOCR_KeywordDetectionLogChanged";
+            public const string OCR_KeywordDetectionLogChanged = "OCR_KeywordDetectionLogChanged";
+			public const string OCR_KeywordDetectionLogDeleted = "OCR_KeywordDetectionLogDeleted";
+			public const string OCR_KeywordDetectionLogCreated = "OCR_KeywordDetectionLogCreated";
+			public const string OCR_KeywordDetectionLogUpdated = "OCR_KeywordDetectionLogUpdated";
 			public const string OCR_PartLineFieldsFilterExpressionChanged = "OCR_PartLineFieldsFilterExpressionChanged";
 			public const string SelectedOCR_PartLineFieldsChanged = "SelectedOCR_PartLineFieldsChanged";
             public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
 			public const string OCR_PartLineFieldsDeleted = "OCR_PartLineFieldsDeleted";
 			public const string OCR_PartLineFieldsCreated = "OCR_PartLineFieldsCreated";
 			public const string OCR_PartLineFieldsUpdated = "OCR_PartLineFieldsUpdated";
+			public const string OCR_TemplateTableMappingFilterExpressionChanged = "OCR_TemplateTableMappingFilterExpressionChanged";
+			public const string SelectedOCR_TemplateTableMappingChanged = "SelectedOCR_TemplateTableMappingChanged";
+            public const string OCR_TemplateTableMappingChanged = "OCR_TemplateTableMappingChanged";
+			public const string OCR_TemplateTableMappingDeleted = "OCR_TemplateTableMappingDeleted";
+			public const string OCR_TemplateTableMappingCreated = "OCR_TemplateTableMappingCreated";
+			public const string OCR_TemplateTableMappingUpdated = "OCR_TemplateTableMappingUpdated";
 			public const string OCRCorrectionLearningFilterExpressionChanged = "OCRCorrectionLearningFilterExpressionChanged";
 			public const string SelectedOCRCorrectionLearningChanged = "SelectedOCRCorrectionLearningChanged";
             public const string OCRCorrectionLearningChanged = "OCRCorrectionLearningChanged";
@@ -151,7 +163,9 @@ namespace WaterNut.QuerySpace.OCR
           // public const string OCR_FailedLinesChanged = "OCR_FailedLinesChanged";
           // public const string OCR_FieldMappingsChanged = "OCR_FieldMappingsChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
+          // public const string OCR_KeywordDetectionLogChanged = "OCR_KeywordDetectionLogChanged";
           // public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
+          // public const string OCR_TemplateTableMappingChanged = "OCR_TemplateTableMappingChanged";
           // public const string OCRCorrectionLearningChanged = "OCRCorrectionLearningChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
@@ -188,7 +202,11 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
    
+           public const string CurrentOCR_KeywordDetectionLogChanged = "CurrentOCR_KeywordDetectionLogChanged";
+   
            public const string CurrentOCR_PartLineFieldsChanged = "CurrentOCR_PartLineFieldsChanged";
+   
+           public const string CurrentOCR_TemplateTableMappingChanged = "CurrentOCR_TemplateTableMappingChanged";
    
            public const string CurrentOCRCorrectionLearningChanged = "CurrentOCRCorrectionLearningChanged";
    
@@ -232,7 +250,11 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
    
+           public const string CurrentOCR_KeywordDetectionLogIDChanged = "OnCurrentOCR_KeywordDetectionLogIDChanged";
+   
            public const string CurrentOCR_PartLineFieldsIDChanged = "OnCurrentOCR_PartLineFieldsIDChanged";
+   
+           public const string CurrentOCR_TemplateTableMappingIDChanged = "OnCurrentOCR_TemplateTableMappingIDChanged";
    
            public const string CurrentOCRCorrectionLearningIDChanged = "OnCurrentOCRCorrectionLearningIDChanged";
    
