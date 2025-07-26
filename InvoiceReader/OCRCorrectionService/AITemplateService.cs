@@ -80,7 +80,7 @@ namespace WaterNut.DataSpace
                     provider, invoice?.SupplierName ?? "Unknown");
 
                 // 1. Load provider-specific template
-                var template = await LoadTemplateAsync(provider, "header-detection", invoice?.SupplierName);
+                var template = LoadTemplateAsync(provider, "header-detection", invoice?.SupplierName);
                 
                 // 2. Validate template
                 var validation = ValidateTemplate(template, provider);
