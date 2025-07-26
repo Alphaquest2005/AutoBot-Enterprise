@@ -264,11 +264,12 @@ namespace WaterNut.DataSpace.MetaAI
     }
 
     /// <summary>
-    /// Individual prompt recommendation.
+    /// Individual prompt recommendation with OCR-specific properties.
     /// </summary>
     public class PromptRecommendation
     {
         public string RecommendationId { get; set; } = Guid.NewGuid().ToString();
+        public ChangeType ChangeType { get; set; }
         public string Type { get; set; } // "structure", "content", "examples", "formatting"
         public string Title { get; set; }
         public string Description { get; set; }
@@ -278,6 +279,13 @@ namespace WaterNut.DataSpace.MetaAI
         public ConfidenceLevel Confidence { get; set; }
         public ImplementationComplexity Complexity { get; set; }
         public bool AutoImplementable { get; set; }
+        
+        // OCR-specific properties from test analysis
+        public string FieldName { get; set; }
+        public string TargetPattern { get; set; }
+        public string BeforeText { get; set; }
+        public string AfterText { get; set; }
+        
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 
