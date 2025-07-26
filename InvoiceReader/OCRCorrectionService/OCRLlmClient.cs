@@ -369,6 +369,24 @@ namespace WaterNut.DataSpace
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Helper method for JSON diagnostic analysis
+        /// </summary>
+        private static int CountOccurrences(string text, string substring)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(substring))
+                return 0;
+            
+            int count = 0;
+            int index = 0;
+            while ((index = text.IndexOf(substring, index)) != -1)
+            {
+                count++;
+                index += substring.Length;
+            }
+            return count;
+        }
     }
 
     /// <summary>
