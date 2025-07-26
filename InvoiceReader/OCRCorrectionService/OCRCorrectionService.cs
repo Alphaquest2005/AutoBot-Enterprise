@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using TrackableEntities;
 using WaterNut.DataSpace;
 using Core.Common.Extensions;
+using WaterNut.DataSpace.TemplateEngine;
+using WaterNut.DataSpace.MetaAI;
+using WaterNut.DataSpace.Configuration;
 
 namespace WaterNut.DataSpace
 {
@@ -32,6 +35,12 @@ namespace WaterNut.DataSpace
         private bool _disposed = false;
 
         private DatabaseUpdateStrategyFactory _strategyFactory;
+        
+        // Template system services for file-based prompt generation
+        private readonly ITemplateEngine _templateEngine;
+        private readonly OCRTemplateService _templateService;
+        private readonly IMetaAIService _metaAIService;
+        private readonly TemplateSystemConfiguration _templateConfig;
         
         // Diagnostic support for capturing DeepSeek explanations
         private string _lastDeepSeekExplanation;
@@ -60,6 +69,40 @@ namespace WaterNut.DataSpace
                 throw;
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
+            
+            // **TEMPLATE_SYSTEM_INITIALIZATION**: Initialize file-based template system
+            try
+            {
+                _logger.Information("🚀 **TEMPLATE_SYSTEM_INIT**: Initializing file-based template system with Meta AI integration");
+                
+                // Load template system configuration
+                _templateConfig = TemplateSystemConfiguration.LoadConfiguration(_logger);
+                _logger.Information("✅ **CONFIG_LOADED**: Template configuration loaded successfully");
+                
+                // Initialize template engine with Handlebars.NET
+                _templateEngine = new HandlebarsTemplateEngine(_templateConfig, _logger);
+                _logger.Information("✅ **TEMPLATE_ENGINE_READY**: Handlebars template engine initialized");
+                
+                // Initialize Meta AI service (if enabled in config)
+                if (_templateConfig.MetaAI.Enabled)
+                {
+                    _metaAIService = new MetaAIService(_templateConfig.MetaAI, _logger);
+                    _logger.Information("✅ **META_AI_READY**: Meta AI service initialized");
+                }
+                else
+                {
+                    _logger.Information("ℹ️ **META_AI_DISABLED**: Meta AI service disabled in configuration");
+                }
+                
+                // Initialize OCR template service with all dependencies
+                _templateService = new OCRTemplateService(_templateEngine, _metaAIService, _templateConfig, _logger);
+                _logger.Information("🎯 **TEMPLATE_SERVICE_READY**: OCR template service initialized - ready to replace hardcoded prompts");
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning(ex, "⚠️ **TEMPLATE_SYSTEM_FALLBACK**: Template system initialization failed, falling back to hardcoded prompts");
+                // Template services will be null, triggering fallback behavior
+            }
             
             // **BUSINESS_SERVICES_EQUIVALENT_INITIALIZATION**: Initialize PromptTemplate like DeepSeekInvoiceApi constructor
             SetDefaultPrompts();
