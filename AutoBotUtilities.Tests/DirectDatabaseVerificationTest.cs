@@ -115,7 +115,7 @@ namespace AutoBotUtilities.Tests
                         Assert.Fail($"Database connection failed: {ex.Message}");
                     }
                 }
-            }
+            // }
         }
     }
 }
