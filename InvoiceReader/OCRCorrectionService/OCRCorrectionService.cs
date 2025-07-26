@@ -986,8 +986,8 @@ namespace WaterNut.DataSpace
                     {
                         try
                         {
-                            // Extract SuggestedRegex from enhanced WindowText
-                            var suggestedRegex = ExtractSuggestedRegexFromWindowText(record.WindowText);
+                            // ✅ **DIRECT_FIELD_ACCESS**: Use dedicated SuggestedRegex field
+                            var suggestedRegex = record.SuggestedRegex;
                             
                             if (!string.IsNullOrWhiteSpace(suggestedRegex))
                             {
