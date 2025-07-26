@@ -638,19 +638,322 @@ namespace WaterNut.DataSpace.MetaAI
 
         private PromptRecommendation MapToPromptRecommendation(dynamic apiRecommendation)
         {
-            return new PromptRecommendation
+            // Parse change type from API response
+            var changeTypeString = apiRecommendation.change_type?.ToString() ?? apiRecommendation.type?.ToString() ?? "PromptOptimization";
+            var changeType = Enum.TryParse<ChangeType>(changeTypeString, true, out var ct) ? ct : ChangeType.PromptOptimization;
+
+            // Create base recommendation
+            var recommendation = new PromptRecommendation
             {
+                ChangeType = changeType,
                 Type = apiRecommendation.type?.ToString() ?? "unknown",
                 Title = apiRecommendation.title?.ToString() ?? "Untitled",
                 Description = apiRecommendation.description?.ToString() ?? "",
                 SuggestedChange = apiRecommendation.suggested_change?.ToString() ?? "",
                 Rationale = apiRecommendation.rationale?.ToString() ?? "",
                 ExpectedImpact = Convert.ToDouble(apiRecommendation.expected_impact ?? 0.0),
-                Confidence = Enum.TryParse<ConfidenceLevel>(apiRecommendation.confidence?.ToString(), true, out var conf) ? conf : ConfidenceLevel.Medium,
-                Complexity = Enum.TryParse<ImplementationComplexity>(apiRecommendation.complexity?.ToString(), true, out var comp) ? comp : ImplementationComplexity.Moderate,
-                AutoImplementable = Convert.ToBoolean(apiRecommendation.auto_implementable ?? false)
+                Confidence = ParseConfidenceLevel(apiRecommendation.confidence?.ToString()),
+                Complexity = ParseComplexity(apiRecommendation.complexity?.ToString()),
+                AutoImplementable = Convert.ToBoolean(apiRecommendation.auto_implementable ?? false),
+                FieldName = apiRecommendation.field_name?.ToString(),
+                TargetPattern = apiRecommendation.target_pattern?.ToString(),
+                BeforeText = apiRecommendation.before_text?.ToString(),
+                AfterText = apiRecommendation.after_text?.ToString()
             };
+
+            // Apply OCR-specific validation and enhancement based on change type
+            switch (changeType)
+            {
+                case ChangeType.RegexImprovement:
+                    return ProcessRegexImprovement(apiRecommendation, recommendation);
+                
+                case ChangeType.FieldMappingCorrection:
+                    return ProcessFieldMappingCorrection(apiRecommendation, recommendation);
+                
+                case ChangeType.InstructionClarification:
+                    return ProcessInstructionClarification(apiRecommendation, recommendation);
+                
+                case ChangeType.ExampleAddition:
+                    return ProcessExampleAddition(apiRecommendation, recommendation);
+                
+                case ChangeType.ContextualImprovement:
+                    return ProcessContextualImprovement(apiRecommendation, recommendation);
+                
+                default:
+                    return ProcessPromptOptimization(apiRecommendation, recommendation);
+            }
         }
+
+        #region Change Type Processors
+
+        /// <summary>
+        /// Processes a prompt optimization recommendation with OCR context.
+        /// </summary>
+        private PromptRecommendation ProcessPromptOptimization(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            baseRecommendation.Metadata["OptimizationType"] = apiRecommendation.optimization_type?.ToString() ?? "general";
+            baseRecommendation.Metadata["TargetModel"] = apiRecommendation.target_model?.ToString() ?? "DeepSeek";
+            
+            return baseRecommendation;
+        }
+
+        /// <summary>
+        /// Processes regex improvement recommendations with OCR-specific validation.
+        /// </summary>
+        private PromptRecommendation ProcessRegexImprovement(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            var suggestedChange = baseRecommendation.SuggestedChange;
+            
+            // Validate OCR-specific requirements
+            var ocrValidation = ValidateOCRRegexPattern(suggestedChange);
+            
+            // Adjust confidence based on OCR validation
+            if (!ocrValidation.IsValid)
+            {
+                baseRecommendation.Confidence = ConfidenceLevel.Low;
+                baseRecommendation.AutoImplementable = false;
+            }
+
+            baseRecommendation.Metadata["OCRValidation"] = ocrValidation;
+            baseRecommendation.Metadata["RequiresNamedGroups"] = !suggestedChange.Contains("(?<");
+            baseRecommendation.Metadata["PatternType"] = DetermineRegexPatternType(suggestedChange);
+            
+            return baseRecommendation;
+        }
+
+        /// <summary>
+        /// Processes field mapping correction recommendations.
+        /// </summary>
+        private PromptRecommendation ProcessFieldMappingCorrection(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            var fieldName = baseRecommendation.FieldName ?? "";
+            var suggestedMapping = apiRecommendation.suggested_mapping?.ToString() ?? "";
+            
+            baseRecommendation.Complexity = ImplementationComplexity.Simple; // Field mappings are usually simple
+            baseRecommendation.AutoImplementable = true; // Field mappings can usually be auto-implemented
+            
+            baseRecommendation.Metadata["OriginalMapping"] = apiRecommendation.original_mapping?.ToString();
+            baseRecommendation.Metadata["SuggestedMapping"] = suggestedMapping;
+            baseRecommendation.Metadata["DatabaseField"] = apiRecommendation.database_field?.ToString();
+            baseRecommendation.Metadata["MappingType"] = apiRecommendation.mapping_type?.ToString() ?? "standard";
+            
+            return baseRecommendation;
+        }
+
+        /// <summary>
+        /// Processes instruction clarification recommendations.
+        /// </summary>
+        private PromptRecommendation ProcessInstructionClarification(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            baseRecommendation.AutoImplementable = true; // Clarifications are usually safe to auto-implement
+            
+            baseRecommendation.Metadata["ClarificationSection"] = apiRecommendation.section?.ToString() ?? "general";
+            baseRecommendation.Metadata["InstructionType"] = apiRecommendation.instruction_type?.ToString() ?? "clarification";
+            
+            return baseRecommendation;
+        }
+
+        /// <summary>
+        /// Processes example addition recommendations.
+        /// </summary>
+        private PromptRecommendation ProcessExampleAddition(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            var examples = new List<string>();
+            if (apiRecommendation.examples is IEnumerable<object> exampleList)
+            {
+                examples.AddRange(exampleList.Select(e => e?.ToString()).Where(e => !string.IsNullOrEmpty(e)));
+            }
+            
+            baseRecommendation.Complexity = ImplementationComplexity.Simple;
+            baseRecommendation.AutoImplementable = true;
+            
+            if (examples.Any() && string.IsNullOrEmpty(baseRecommendation.SuggestedChange))
+            {
+                baseRecommendation.SuggestedChange = string.Join("\n", examples);
+            }
+            
+            baseRecommendation.Metadata["ExampleCount"] = examples.Count;
+            baseRecommendation.Metadata["ExampleType"] = apiRecommendation.example_type?.ToString() ?? "general";
+            baseRecommendation.Metadata["Examples"] = examples;
+            
+            return baseRecommendation;
+        }
+
+        /// <summary>
+        /// Processes contextual improvement recommendations.
+        /// </summary>
+        private PromptRecommendation ProcessContextualImprovement(dynamic apiRecommendation, PromptRecommendation baseRecommendation)
+        {
+            baseRecommendation.AutoImplementable = true;
+            
+            baseRecommendation.Metadata["ContextType"] = apiRecommendation.context_type?.ToString() ?? "general";
+            baseRecommendation.Metadata["TargetSection"] = apiRecommendation.target_section?.ToString();
+            
+            return baseRecommendation;
+        }
+
+        #endregion
+
+        #region OCR-Specific Validation
+
+        /// <summary>
+        /// Validates regex patterns against OCR-specific requirements.
+        /// Based on MANGO test analysis and production requirements.
+        /// </summary>
+        private OCRRegexValidationResult ValidateOCRRegexPattern(string pattern)
+        {
+            var result = new OCRRegexValidationResult { Pattern = pattern };
+
+            if (string.IsNullOrEmpty(pattern))
+            {
+                result.IsValid = false;
+                result.Issues.Add("Pattern cannot be empty");
+                return result;
+            }
+
+            // Check for named capture groups (critical OCR requirement from test analysis)
+            if (pattern.Contains("(") && !pattern.Contains("(?<"))
+            {
+                result.Issues.Add("Pattern must use named capture groups (?<name>pattern) instead of numbered groups");
+                result.IsValid = false;
+                result.HasNamedGroups = false;
+            }
+            else if (pattern.Contains("(?<"))
+            {
+                result.HasNamedGroups = true;
+                
+                // Extract field names from named groups
+                var namedGroupMatches = System.Text.RegularExpressions.Regex.Matches(pattern, @"\(\?<(\w+)>");
+                foreach (System.Text.RegularExpressions.Match match in namedGroupMatches)
+                {
+                    result.ExtractedFieldNames.Add(match.Groups[1].Value);
+                }
+            }
+
+            // Check for excessive escaping (addresses JSON truncation issue from logs)
+            if (pattern.Contains("\\\\\\\\\\\\"))
+            {
+                result.Issues.Add("Pattern contains excessive backslash escaping");
+                result.HasExcessiveEscaping = true;
+                result.Warnings.Add("Consider simplifying escaping patterns");
+            }
+
+            // Validate regex syntax
+            try
+            {
+                var regex = new System.Text.RegularExpressions.Regex(pattern);
+                result.IsValid = result.IsValid && result.Issues.Count == 0;
+            }
+            catch (Exception ex)
+            {
+                result.IsValid = false;
+                result.Issues.Add($"Invalid regex syntax: {ex.Message}");
+            }
+
+            // Determine pattern type and add specific validations
+            result.PatternType = DetermineRegexPatternType(pattern);
+            ValidatePatternTypeSpecificRequirements(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Determines the type of regex pattern for OCR processing.
+        /// Based on established field mappings from test analysis.
+        /// </summary>
+        private string DetermineRegexPatternType(string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern)) return "Unknown";
+
+            var lowerPattern = pattern.ToLower();
+
+            // MANGO-specific patterns from test analysis
+            if (lowerPattern.Contains("total amount") || lowerPattern.Contains("total_amount"))
+                return "MANGOTotalAmount";
+            if (lowerPattern.Contains("total") || lowerPattern.Contains("amount") || lowerPattern.Contains(@"[\$€£]"))
+                return "Currency";
+            if (lowerPattern.Contains("date") || lowerPattern.Contains(@"\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}"))
+                return "Date";
+            if (lowerPattern.Contains("item") || lowerPattern.Contains("product") || lowerPattern.Contains("description"))
+                return "Product";
+            if (lowerPattern.Contains("invoice") && lowerPattern.Contains("no"))
+                return "InvoiceNumber";
+            if (lowerPattern.Contains("supplier") || lowerPattern.Contains("vendor"))
+                return "Supplier";
+            if (lowerPattern.Contains("ref\\.") || lowerPattern.Contains("ref\\s"))
+                return "ReferenceCode";
+
+            return "General";
+        }
+
+        /// <summary>
+        /// Validates pattern-type specific requirements based on OCR needs.
+        /// </summary>
+        private void ValidatePatternTypeSpecificRequirements(OCRRegexValidationResult result)
+        {
+            switch (result.PatternType)
+            {
+                case "MANGOTotalAmount":
+                    // Specific validation for MANGO TOTAL AMOUNT field from test case
+                    if (!result.Pattern.Contains("TOTAL AMOUNT"))
+                    {
+                        result.Warnings.Add("MANGO TOTAL AMOUNT pattern should match exact text 'TOTAL AMOUNT'");
+                    }
+                    if (!result.Pattern.Contains(@"[\d,]+") && !result.Pattern.Contains(@"\d+"))
+                    {
+                        result.Warnings.Add("TOTAL AMOUNT pattern should include numeric matching for currency values");
+                    }
+                    break;
+
+                case "Currency":
+                    if (!result.Pattern.Contains(@"[\d,]+\.?\d*") && !result.Pattern.Contains(@"\d+"))
+                    {
+                        result.Warnings.Add("Currency pattern should include numeric matching");
+                    }
+                    if (!result.Pattern.Contains("€") && !result.Pattern.Contains("EUR") && !result.Pattern.Contains(@"[\$€£]"))
+                    {
+                        result.Warnings.Add("Currency pattern should include currency symbol or code");
+                    }
+                    break;
+
+                case "Date":
+                    if (!result.Pattern.Contains(@"\d") && !result.Pattern.Contains("date"))
+                    {
+                        result.Warnings.Add("Date pattern should include numeric date matching");
+                    }
+                    break;
+
+                case "ReferenceCode":
+                    // MANGO-specific reference code pattern (ref. 570003742302)
+                    if (!result.Pattern.Contains("ref") && !result.Pattern.Contains("REF"))
+                    {
+                        result.Warnings.Add("Reference code pattern should match 'ref.' prefix");
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Parses confidence level from API response.
+        /// </summary>
+        private ConfidenceLevel ParseConfidenceLevel(string confidence)
+        {
+            if (Enum.TryParse<ConfidenceLevel>(confidence, true, out var level))
+                return level;
+            return ConfidenceLevel.Medium;
+        }
+
+        /// <summary>
+        /// Parses implementation complexity from API response.
+        /// </summary>
+        private ImplementationComplexity ParseComplexity(string complexity)
+        {
+            if (Enum.TryParse<ImplementationComplexity>(complexity, true, out var comp))
+                return comp;
+            return ImplementationComplexity.Moderate;
+        }
+
+        #endregion
 
         private PromptAnalysisInsights MapToPromptInsights(dynamic apiInsights)
         {
