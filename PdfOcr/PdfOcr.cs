@@ -194,25 +194,59 @@ namespace pdf_ocr
                 //var ghostscriptRasterizer = new GhostscriptRasterizer();
                 //ghostscriptRasterizer.Open(pdfPath);
 
-                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Starting conversion for {PageCount} pages.", pageCount);
+                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Starting resilient conversion for {PageCount} pages.", pageCount);
+                
+                // **RESILIENT_PROCESSING**: Track success/failure for each page
+                int successfulPages = 0;
+                int failedPages = 0;
+                
                 for (int i = 1; i <= pageCount; i++)
                 {
                     _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Processing page {PageNumber}.", i);
                     var outputFilePath = GetTempFile(TempDir, ".png");
                     _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Generated temporary image path: {OutputFilePath}", outputFilePath);
-                    //using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
-                    //{
-                    //    img.Save(outputFilePath, System.Drawing.Imaging.ImageFormat.Png);
-                    //    img.Dispose();
-                    //}
-
-                    _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Calling PdfToPngWithGhostscriptPngDevice for page {PageNumber}.", i);
-                    PdfToPngWithGhostscriptPngDevice(pdfPath, i, pdfToImageDPI, pdfToImageDPI, outputFilePath);
-                    _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): PdfToPngWithGhostscriptPngDevice completed for page {PageNumber}.", i);
-
-
+                    
+                    try
+                    {
+                        _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Calling PdfToPngWithGhostscriptPngDevice for page {PageNumber}.", i);
+                        PdfToPngWithGhostscriptPngDevice(pdfPath, i, pdfToImageDPI, pdfToImageDPI, outputFilePath);
+                        _logger.Debug("✅ **PAGE_SUCCESS**: PdfToPngWithGhostscriptPngDevice completed for page {PageNumber}.", i);
+                        successfulPages++;
+                    }
+                    catch (TimeoutException timeoutEx)
+                    {
+                        _logger.Warning(timeoutEx, "⏰ **PAGE_TIMEOUT**: Page {PageNumber} conversion timed out, continuing with next page", i);
+                        failedPages++;
+                        // Continue processing other pages
+                    }
+                    catch (ThreadAbortException threadAbortEx)
+                    {
+                        _logger.Warning(threadAbortEx, "🚨 **PAGE_THREADABORT**: ThreadAbort on page {PageNumber}, attempting recovery", i);
+                        Thread.ResetAbort(); // Reset abort for current page
+                        failedPages++;
+                        // Continue processing other pages
+                    }
+                    catch (Exception pageEx)
+                    {
+                        _logger.Warning(pageEx, "❌ **PAGE_FAILURE**: Failed to convert page {PageNumber}, continuing with next page. Error: {ErrorMessage}", i, pageEx.Message);
+                        failedPages++;
+                        // Continue processing other pages rather than failing completely
+                    }
                 }
-                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Finished processing pages.");
+                
+                _logger.Information("🔍 **PROCESSING_SUMMARY**: Finished processing {TotalPages} pages. Success: {SuccessfulPages}, Failed: {FailedPages}", 
+                    pageCount, successfulPages, failedPages);
+                
+                // **GRACEFUL_DEGRADATION**: Allow partial success rather than complete failure
+                if (successfulPages == 0)
+                {
+                    throw new InvalidOperationException($"All {pageCount} pages failed to convert. No images could be generated from PDF.");
+                }
+                else if (failedPages > 0)
+                {
+                    _logger.Warning("⚠️ **PARTIAL_SUCCESS**: {FailedPages}/{TotalPages} pages failed, but continuing with {SuccessfulPages} successful pages", 
+                        failedPages, pageCount, successfulPages);
+                }
 
                 //ghostscriptRasterizer.Close();
                 _logger.Information("METHOD_EXIT_SUCCESS: GetImageFromPdf. IntentionAchieved: PDF pages converted to images. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { ConvertedPageCount = pageCount }, 0); // Placeholder for elapsed time
