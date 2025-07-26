@@ -1332,7 +1332,7 @@ namespace WaterNut.DataSpace
    
    - Ensure all strings are properly escaped within the JSON.
    - Validate field endings and ensure all objects and arrays are correctly closed before finalizing.
-   - The final output MUST be a single, complete, valid JSON structure ending precisely with `}}]}}`."";
+   - The final output MUST be a single, complete, valid JSON structure ending precisely with }}]}}";
         }
 
         /// <summary>
