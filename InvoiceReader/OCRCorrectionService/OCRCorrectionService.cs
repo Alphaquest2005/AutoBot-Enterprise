@@ -1155,119 +1155,300 @@ namespace WaterNut.DataSpace
             };
         }
 
+        #region Business Services LLM Fallback Functionality
+        
         /// <summary>
-        /// **BUSINESS_SERVICES_COMPATIBILITY**: Data extraction method that replaces DeepSeekInvoiceApi.ExtractShipmentInvoice
-        /// **ARCHITECTURAL_INTENT**: Self-contained OCR service provides data extraction without business services dependencies
-        /// **INTERFACE_MATCH**: Same signature and return type as DeepSeekInvoiceApi.ExtractShipmentInvoice for compatibility
+        /// **COMPLETE_COPY**: Exact copy of WaterNut.Business.Services.Utils.DeepSeekInvoiceApi.ExtractShipmentInvoice
+        /// **ARCHITECTURAL_INTENT**: Self-contained OCR service provides ALL LLM fallback functionality
+        /// **INTERFACE_MATCH**: Same signature and return type as business services for compatibility
+        /// **FALLBACK_PURPOSE**: Used when normal import fails and needs LLM data extraction
         /// </summary>
-        public async Task<List<dynamic>> ExtractShipmentInvoiceDataAsync(List<string> pdfTextVariants)
+        public async Task<List<dynamic>> ExtractShipmentInvoice(List<string> pdfTextVariants)
         {
-            _logger.Information("🚀 **DATA_EXTRACTION_START**: Self-contained OCR data extraction for {VariantCount} text variants", pdfTextVariants?.Count ?? 0);
-            _logger.Information("   - **ARCHITECTURAL_REPLACEMENT**: This method replaces WaterNut.Business.Services DeepSeekInvoiceApi.ExtractShipmentInvoice");
-            _logger.Information("   - **SELF_CONTAINED**: Uses OCRLlmClient instead of business services for LLM operations");
+            _logger.Information("🚀 **FALLBACK_LLM_EXTRACTION**: Self-contained LLM data extraction for {VariantCount} text variants", pdfTextVariants?.Count ?? 0);
+            _logger.Information("   - **BUSINESS_SERVICES_REPLACEMENT**: This method replaces WaterNut.Business.Services DeepSeekInvoiceApi.ExtractShipmentInvoice");
+            _logger.Information("   - **FALLBACK_FUNCTIONALITY**: Provides PDF data extraction when normal import fails");
 
             var results = new List<IDictionary<string, object>>();
-
-            if (pdfTextVariants == null || !pdfTextVariants.Any())
-            {
-                _logger.Warning("❌ **EMPTY_INPUT**: No PDF text variants provided for data extraction");
-                return results.Cast<dynamic>().ToList();
-            }
 
             foreach (var text in pdfTextVariants)
             {
                 try
                 {
-                    _logger.Information("🔍 **PROCESSING_VARIANT**: Processing text variant of {Length} characters", text?.Length ?? 0);
-                    
-                    if (string.IsNullOrWhiteSpace(text))
-                    {
-                        _logger.Warning("⚠️ **EMPTY_TEXT_VARIANT**: Skipping empty text variant");
-                        continue;
-                    }
-
-                    // Create basic invoice structure for processing
-                    var blankInvoice = new ShipmentInvoice 
-                    { 
-                        InvoiceNo = "DATA_EXTRACTION_SAMPLE",
-                        SupplierName = "UNKNOWN_SUPPLIER"
-                    };
-
-                    // Extract metadata for context
-                    var metadata = ExtractFullOCRMetadata(blankInvoice, text);
-                    
-                    // Use OCR error detection to identify field patterns
-                    _logger.Information("🤖 **LLM_ANALYSIS**: Using OCR correction service LLM for data extraction");
-                    var detectedErrors = await this.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, text, metadata).ConfigureAwait(false);
-                    
-                    if (detectedErrors != null && detectedErrors.Any())
-                    {
-                        _logger.Information("✅ **FIELDS_DETECTED**: Found {FieldCount} extractable fields", detectedErrors.Count);
-                        
-                        // Convert detected errors to data extraction format
-                        var extractedData = new Dictionary<string, object>
-                        {
-                            ["DocumentType"] = "ShipmentInvoice",
-                            ["SourceMethod"] = "OCRCorrectionService",
-                            ["ExtractionConfidence"] = detectedErrors.Average(e => e.Confidence),
-                            ["FieldCount"] = detectedErrors.Count
-                        };
-
-                        // Add detected field data
-                        foreach (var error in detectedErrors)
-                        {
-                            if (!string.IsNullOrWhiteSpace(error.Field) && !string.IsNullOrWhiteSpace(error.CorrectValue))
-                            {
-                                // Use field name as key, correct value as extracted data
-                                var fieldKey = error.Field.Replace("InvoiceDetail_", ""); // Clean field names
-                                extractedData[fieldKey] = error.CorrectValue;
-                                
-                                _logger.Information("📄 **FIELD_EXTRACTED**: {FieldName} = '{FieldValue}'", fieldKey, error.CorrectValue);
-                            }
-                        }
-
-                        results.Add(extractedData);
-                    }
-                    else
-                    {
-                        _logger.Warning("⚠️ **NO_FIELDS_DETECTED**: OCR analysis found no extractable fields in text variant");
-                        
-                        // Return basic structure even if no fields detected
-                        var basicData = new Dictionary<string, object>
-                        {
-                            ["DocumentType"] = "ShipmentInvoice",
-                            ["SourceMethod"] = "OCRCorrectionService",
-                            ["ExtractionConfidence"] = 0.0,
-                            ["FieldCount"] = 0,
-                            ["Status"] = "NoFieldsDetected"
-                        };
-                        results.Add(basicData);
-                    }
+                    var cleanedText = this.CleanTextForExtraction(text);
+                    var response = await this.ProcessTextVariantForExtraction(cleanedText).ConfigureAwait(false);
+                    results.AddRange(response);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "🚨 **EXTRACTION_ERROR**: Failed to process text variant");
-                    
-                    // Add error result to maintain pipeline compatibility
-                    var errorData = new Dictionary<string, object>
-                    {
-                        ["DocumentType"] = "ShipmentInvoice",
-                        ["SourceMethod"] = "OCRCorrectionService",
-                        ["ExtractionConfidence"] = 0.0,
-                        ["FieldCount"] = 0,
-                        ["Status"] = "ExtractionError",
-                        ["ErrorMessage"] = ex.Message
-                    };
-                    results.Add(errorData);
+                    _logger.Error(ex, "Failed to process text variant during LLM extraction");
                 }
             }
 
-            _logger.Information("🏁 **DATA_EXTRACTION_COMPLETE**: Extracted data from {ProcessedCount}/{TotalCount} variants", 
-                results.Count, pdfTextVariants.Count);
-            
-            // Return in same format as DeepSeekInvoiceApi for pipeline compatibility
+            // Return flat list of documents for test compatibility
             return results.Cast<dynamic>().ToList();
         }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: CleanText method from DeepSeekInvoiceApi
+        /// </summary>
+        private string CleanTextForExtraction(string rawText)
+        {
+            try
+            {
+                // Remove sections surrounded by 30+ dashes (common in OCR output)
+                var cleaned = Regex.Replace(rawText, @"-{30,}[^-]*-{30,}", "", RegexOptions.Multiline);
+
+                // Try to extract main content between common invoice markers
+                // Look for content between order/invoice details and customs/footer sections
+                var patterns = new[]
+                {
+                    @"(?<=Order\s*#|Invoice\s*#|Invoice\s*No)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)",
+                    @"(?<=Total\s*\$|Payment\s*method|Billing\s*Address)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)",
+                    @"(?<=Item\s*Code|Description|Shipped|Price|Amount)(.*?)(?=For Comptroller of Customs|Customs Office|Examination Officer)"
+                };
+
+                foreach (var pattern in patterns)
+                {
+                    var match = Regex.Match(cleaned, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    if (match.Success && match.Value.Trim().Length > 100) // Ensure we have substantial content
+                    {
+                        return match.Value;
+                    }
+                }
+
+                return cleaned;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Text cleaning failed during LLM extraction");
+                return rawText;
+            }
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: ProcessTextVariant method from DeepSeekInvoiceApi
+        /// </summary>
+        private async Task<List<IDictionary<string, object>>> ProcessTextVariantForExtraction(string text)
+        {
+            // Add a check for potentially incorrect input type (heuristic)
+            if (text != null && (text.StartsWith("System.Threading.Tasks.Task") || text.StartsWith("System.Text.StringBuilder")))
+            {
+                _logger.Warning("ProcessTextVariant received input that looks like a type name instead of content: {InputText}", text.Substring(0, Math.Min(100, text.Length)));
+                // Depending on desired behavior, could return empty list or throw exception here.
+                // For now, let it proceed but the log indicates the upstream issue.
+            }
+
+            var escapedText = this.EscapeBracesForExtraction(text);
+
+            // Use business services prompt template for compatibility
+            var promptTemplate = this.GetBusinessServicesPromptTemplate();
+            var prompt = string.Format(promptTemplate, escapedText);
+            
+            // Log the final prompt being sent (Debug level recommended due to potential length/sensitivity)
+            _logger.Debug("ProcessTextVariant - Generated Prompt: {Prompt}", prompt);
+            
+            // Use OCRLlmClient instead of business services HTTP client
+            var response = await _llmClient.GetResponseAsync(prompt, DefaultTemperature, DefaultMaxTokens).ConfigureAwait(false);
+            return this.ParseLlmResponseForExtraction(response);
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: EscapeBraces method from DeepSeekInvoiceApi
+        /// </summary>
+        private string EscapeBracesForExtraction(string input) => input.Replace("{", "{{").Replace("}", "}}");
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: Business services prompt template for LLM extraction
+        /// </summary>
+        private string GetBusinessServicesPromptTemplate()
+        {
+            return @"DOCUMENT PROCESSING RULES:
+
+0. PROCESS THIS TEXT INPUT:
+{0}
+
+1. TEXT STRUCTURE ANALYSIS:
+
+   - Priority order:
+     1. Item tables with prices/quantities
+     2. Customs declaration forms
+     3. Address blocks
+     4. Payment/header sections
+
+2. FIELD EXTRACTION GUIDANCE:
+   - SupplierCode:
+     * Source: Company/vendor name in header/footer (e.g., ""ACME"", ""SUPPLIER"")
+     * NEVER use consignee/customer name
+     * Fallback: Email domain analysis (@company.com)
+     * Make it short and unique (one word preferred)
+
+   - TotalDeduction:
+     * Look for: Discounts, credits, rebates, promotional reductions
+     * Calculate: Sum of all price reductions
+     * Examples: ""Discount"", ""Less:"", ""Credit"", ""Coupon""
+
+   - TotalInternalFreight:
+     * Combine: Shipping + Handling + Transportation fees
+     * Source: ""FREIGHT"", ""Shipping"", ""Delivery"" values
+     * Include all transportation-related costs
+
+   - TotalOtherCost:
+     * Include: Taxes + Fees + Duties + Surcharges
+     * Look for: ""Tax"", ""Duty"", ""Fee"", ""Surcharge"" markers
+     * Calculate: Sum of all non-freight additional costs
+
+3. CUSTOMS DECLARATION RULES:
+   - Packages = Count from ""No. of Packages"" or ""Package Count""
+   - GrossWeightKG = Numeric value from ""Gross Weight"" with KG units
+   - Freight: Extract numeric value after ""FREIGHT""
+   - FreightCurrency: Currency from freight context (e.g., ""US"" = USD)
+   - BLNumber: Full value from ""WayBill Number"" including letters/numbers
+   - ManifestYear/Number: Split ""Man Reg Number"" (e.g., 2024/1253 → 2024 & 1253)
+
+4. DATA VALIDATION REQUIREMENTS:
+   - Reject if:
+     * SupplierCode == ConsigneeName
+     * JSON contains unclosed brackets/braces
+     * Any field is truncated mid-name
+   - Required fields:
+     * InvoiceDetails.TariffCode (use ""000000"" if missing)
+     * CustomsDeclarations.Freight (0.0 if not found)
+     * CustomsDeclarations[] (must exist even if empty)
+
+5. JSON STRUCTURE VALIDATION:
+   - MUST close all arrays/objects - CRITICAL REQUIREMENT
+   - REQUIRED fields:
+     * Invoices[]
+     * CustomsDeclarations[]
+   - Field completion examples:
+     Good: ""GrossWeightKG"": 1.0}}
+     Bad: ""Gross""
+   - Final JSON must end with: }}]}}
+
+6. OUTPUT FORMAT REQUIREMENT:
+   Return ONLY valid JSON in this exact format:
+   {{""DocumentType"":""TYPE"",""Invoices"":[{{...}}],""CustomsDeclarations"":[{{...}}]}}
+   
+   - Ensure all strings are properly escaped within the JSON.
+   - Validate field endings and ensure all objects and arrays are correctly closed before finalizing.
+   - The final output MUST be a single, complete, valid JSON structure ending precisely with `}}]}}`."";
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: ParseApiResponse method from DeepSeekInvoiceApi
+        /// </summary>
+        private List<IDictionary<string, object>> ParseLlmResponseForExtraction(string jsonResponse)
+        {
+            var documents = new List<IDictionary<string, object>>();
+            string cleanJson = null; // Declare outside the try block
+            try
+            {
+                cleanJson = this.CleanJsonResponseForExtraction(jsonResponse); // Assign inside
+
+                using var document = JsonDocument.Parse(cleanJson);
+                var root = document.RootElement;
+
+                // Handle both single document and array of documents
+                if (root.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var docElement in root.EnumerateArray())
+                    {
+                        var docDict = this.JsonElementToDictionaryForExtraction(docElement);
+                        documents.Add(docDict);
+                    }
+                }
+                else if (root.ValueKind == JsonValueKind.Object)
+                {
+                    var docDict = this.JsonElementToDictionaryForExtraction(root);
+                    documents.Add(docDict);
+                }
+
+                return documents;
+            }
+            catch (JsonException ex)
+            {
+                _logger.Error(ex, "JSON parsing failed during LLM extraction. CleanedJSON: {CleanedJson}", cleanJson ?? jsonResponse);
+                
+                // Return basic structure to maintain pipeline compatibility
+                return new List<IDictionary<string, object>>
+                {
+                    new Dictionary<string, object>
+                    {
+                        ["DocumentType"] = "ShipmentInvoice",
+                        ["ParseError"] = ex.Message,
+                        ["RawResponse"] = jsonResponse
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: CleanJsonResponse method from DeepSeekInvoiceApi
+        /// </summary>
+        private string CleanJsonResponseForExtraction(string jsonResponse)
+        {
+            if (string.IsNullOrEmpty(jsonResponse))
+                return "{}";
+
+            // Remove markdown code blocks if present
+            var cleaned = jsonResponse;
+            if (cleaned.Contains("```json"))
+            {
+                var startIndex = cleaned.IndexOf("```json") + 7;
+                var endIndex = cleaned.LastIndexOf("```");
+                if (endIndex > startIndex)
+                {
+                    cleaned = cleaned.Substring(startIndex, endIndex - startIndex);
+                }
+            }
+
+            // Find the first '{' and last '}'
+            var firstBrace = cleaned.IndexOf('{');
+            var lastBrace = cleaned.LastIndexOf('}');
+
+            if (firstBrace >= 0 && lastBrace > firstBrace)
+            {
+                cleaned = cleaned.Substring(firstBrace, lastBrace - firstBrace + 1);
+            }
+
+            return cleaned.Trim();
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: JsonElementToDictionary method from DeepSeekInvoiceApi
+        /// </summary>
+        private IDictionary<string, object> JsonElementToDictionaryForExtraction(JsonElement element)
+        {
+            var dict = new Dictionary<string, object>();
+
+            foreach (var property in element.EnumerateObject())
+            {
+                dict[property.Name] = this.JsonElementToObjectForExtraction(property.Value);
+            }
+
+            return dict;
+        }
+
+        /// <summary>
+        /// **COPIED_FROM_BUSINESS_SERVICES**: JsonElementToObject method from DeepSeekInvoiceApi
+        /// </summary>
+        private object JsonElementToObjectForExtraction(JsonElement element)
+        {
+            return element.ValueKind switch
+            {
+                JsonValueKind.String => element.GetString(),
+                JsonValueKind.Number => element.TryGetInt32(out var intVal) ? intVal : element.GetDouble(),
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                JsonValueKind.Null => null,
+                JsonValueKind.Object => this.JsonElementToDictionaryForExtraction(element),
+                JsonValueKind.Array => element.EnumerateArray().Select(this.JsonElementToObjectForExtraction).ToArray(),
+                _ => element.ToString()
+            };
+        }
+
+        #endregion
 
         #endregion
 
