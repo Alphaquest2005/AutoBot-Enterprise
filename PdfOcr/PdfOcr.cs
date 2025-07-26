@@ -351,15 +351,11 @@ namespace pdf_ocr
                 }
                 finally
                 {
-                    // **RESOURCE_CLEANUP**: Ensure proper disposal of Ghostscript device
-                    try
+                    // **RESOURCE_CLEANUP**: GhostscriptPngDevice doesn't implement IDisposable, no cleanup needed
+                    if (dev != null)
                     {
-                        dev?.Dispose();
-                        _logger.Debug("✅ **RESOURCE_CLEANUP**: GhostscriptPngDevice disposed successfully");
-                    }
-                    catch (Exception disposeEx)
-                    {
-                        _logger.Warning(disposeEx, "⚠️ **DISPOSAL_WARNING**: Exception during GhostscriptPngDevice disposal (non-fatal)");
+                        _logger.Debug("✅ **RESOURCE_CLEANUP**: GhostscriptPngDevice processed, no disposal needed");
+                        dev = null; // Clear reference
                     }
                 }
             }
