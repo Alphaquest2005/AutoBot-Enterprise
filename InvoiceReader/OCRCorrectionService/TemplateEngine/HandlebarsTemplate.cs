@@ -69,34 +69,14 @@ namespace WaterNut.DataSpace.TemplateEngine
                 _logger.Verbose("✅ **BASIC_TEMPLATE_SUCCESS**: Template '{TemplateName}' rendered successfully. Output length: {OutputLength}", 
                     Name, result.Length);
                 
-                return await Task.FromResult(result);
-                    }
-                    else
-                    {
-                        throw new TimeoutException($"Template '{Name}' rendering exceeded timeout of {context.Options.RenderTimeout}");
-                    }
-                }
-                else
-                {
-                    result = _compiledTemplate(handlebarsData);
-                }
-
-                // Post-process result if needed
-                if (context.Options.ValidateOutput)
-                {
-                    ValidateRenderedOutput(result);
-                }
-
-                _logger.Verbose("✅ **TEMPLATE_RENDER_SUCCESS**: Template '{TemplateName}' rendered {Length} characters", 
-                    Name, result?.Length ?? 0);
-
                 return result;
             }
-            catch (TemplateValidationException)
+            catch (Exception ex)
             {
-                throw; // Re-throw validation exceptions as-is
+                _logger.Error(ex, "❌ **BASIC_TEMPLATE_ERROR**: Failed to render template '{TemplateName}'", Name);
+                throw new TemplateRenderException($"Failed to render template '{Name}': {ex.Message}", ex);
             }
-            catch (TimeoutException)
+        }
             {
                 throw; // Re-throw timeout exceptions as-is
             }
