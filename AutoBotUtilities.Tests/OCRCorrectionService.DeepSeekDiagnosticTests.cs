@@ -293,7 +293,7 @@ namespace AutoBotUtilities.Tests.Production
                     "Either DeepSeek or Amazon-specific detection should find missing financial fields (TotalDeduction or TotalInsurance)");
                 
                 _logger.Information("✅ **TEST_4_COMPLETE**: DeepSeek detection pipeline analysis complete");
-            }
+            // }
         }
         
         #endregion
