@@ -12,7 +12,6 @@ using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
-using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
@@ -278,7 +277,38 @@ using Serilog.Context;
             foreach (var file in fileInfos)
             {
               var txt = await InvoiceReader.InvoiceReader.GetPdftxt(file.FullName, logger).ConfigureAwait(false);
-              var res = await new DeepSeekInvoiceApi(logger).ExtractShipmentInvoice(new List<string>(){txt.ToString()}).ConfigureAwait(false);
+              
+              // **ARCHITECTURAL_FIX**: Use OCR correction service instead of business services
+              // **ELIMINATED_VIOLATION**: Replaced DeepSeekInvoiceApi with OCRCorrectionService.CreateInvoiceTemplateAsync
+              // **SELF_CONTAINED_OCR**: All LLM operations now go through OCR correction service
+              using (var ocrService = new WaterNut.DataSpace.OCRCorrectionService(logger))
+              {
+                  var invoiceTemplate = await ocrService.CreateInvoiceTemplateAsync(txt.ToString(), file.FullName).ConfigureAwait(false);
+                  
+                  if (invoiceTemplate == null)
+                  {
+                      logger.Warning("**OCR_TEMPLATE_CREATION_FAILED**: Could not create invoice template for {FileName}", file.FullName);
+                      continue; // Skip this file if template creation fails
+                  }
+                  
+                  // **TEMPLATE_TO_DOCUMENT_TYPE**: Convert Invoice template to document type result format
+                  // **COMPATIBILITY_LAYER**: Maintain existing pipeline interface expectations
+                  var documentType = invoiceTemplate.FileType?.FileImporterInfos?.EntryType ?? "ShipmentInvoice";
+                  
+                  // Create result structure compatible with existing pipeline
+                  var res = new List<List<IDictionary<string, object>>>
+                  {
+                      new List<IDictionary<string, object>>
+                      {
+                          new Dictionary<string, object>
+                          {
+                              ["DocumentType"] = documentType,
+                              ["InvoiceTemplate"] = invoiceTemplate,
+                              ["SourceFile"] = file.FullName,
+                              ["CreatedBy"] = "OCRCorrectionService"
+                          }
+                      }
+                  };
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {
