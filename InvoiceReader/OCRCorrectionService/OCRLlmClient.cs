@@ -195,7 +195,21 @@ namespace WaterNut.DataSpace
                     _logger.Debug("**HTTP_REQUEST**: POST to {Url}, Size: {Size} bytes", requestMessage.RequestUri, jsonRequest.Length);
                     
                     var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct);
+                    
+                    // **COMPRESSION_DEBUG**: Log response headers to debug compression issues
+                    _logger.Debug("**HTTP_RESPONSE_HEADERS**: ContentEncoding={ContentEncoding}, ContentType={ContentType}, ContentLength={ContentLength}", 
+                        response.Content.Headers.ContentEncoding?.FirstOrDefault() ?? "None",
+                        response.Content.Headers.ContentType?.MediaType ?? "Unknown", 
+                        response.Content.Headers.ContentLength?.ToString() ?? "Unknown");
+                    
                     var responseContent = await response.Content.ReadAsStringAsync();
+                    
+                    // **COMPRESSION_DEBUG**: Log response content summary for regex pattern analysis
+                    var containsRegexPatterns = responseContent.Contains("suggested_regex") || responseContent.Contains("regex") || responseContent.Contains("pattern");
+                    _logger.Debug("**HTTP_RESPONSE_ANALYSIS**: ContainsRegexPatterns={ContainsRegex}, FirstChars={FirstChars}, LastChars={LastChars}",
+                        containsRegexPatterns,
+                        responseContent.Length > 50 ? responseContent.Substring(0, 50) + "..." : responseContent,
+                        responseContent.Length > 50 ? "..." + responseContent.Substring(responseContent.Length - 50) : responseContent);
                     
                     // Handle HTTP status codes with retry logic
                     if (response.StatusCode == (HttpStatusCode)429)
