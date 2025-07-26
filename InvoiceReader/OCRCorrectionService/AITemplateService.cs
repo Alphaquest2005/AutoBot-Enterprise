@@ -577,7 +577,7 @@ Return your suggestions as JSON in this exact format:
             var existingRecommendations = new List<PromptRecommendation>();
             if (File.Exists(filePath))
             {
-                var existingJson = await File.ReadAllTextAsync(filePath);
+                var existingJson = File.ReadAllText(filePath);
                 existingRecommendations = JsonSerializer.Deserialize<List<PromptRecommendation>>(existingJson) ?? new List<PromptRecommendation>();
             }
             
