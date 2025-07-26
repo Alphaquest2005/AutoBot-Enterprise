@@ -205,12 +205,67 @@ namespace WaterNut.DataSpace
                     
                     var responseContent = await response.Content.ReadAsStringAsync();
                     
+                    // **🔬 ULTRA_DIAGNOSTIC_LOGGING**: Complete LLM troubleshooting information
+                    _logger.Information("🔬 **LLM_RESPONSE_FULL_CONTENT**: RAW_RESPONSE_START\n{ResponseContent}\nRAW_RESPONSE_END", responseContent ?? "[NULL_RESPONSE]");
+                    
+                    // **🔍 RESPONSE_STRUCTURE_ANALYSIS**: Detailed content analysis for LLM debugging
+                    var responseLength = responseContent?.Length ?? 0;
+                    var startsWithJson = responseContent?.TrimStart().StartsWith("{") == true;
+                    var endsWithJson = responseContent?.TrimEnd().EndsWith("}") == true;
+                    var containsBrackets = responseContent?.Contains("{") == true && responseContent?.Contains("}") == true;
+                    var lineCount = responseContent?.Split('\n').Length ?? 0;
+                    var hasMarkdownJson = responseContent?.Contains("```json") == true || responseContent?.Contains("```") == true;
+                    var hasJsonSchema = responseContent?.Contains("Invoices") == true && responseContent?.Contains("CustomsDeclarations") == true;
+                    
+                    _logger.Information("🔍 **LLM_RESPONSE_ANALYSIS**: Length={Length}, StartsWithJson={StartsJson}, EndsWithJson={EndsJson}, HasBrackets={HasBrackets}, LineCount={Lines}, HasMarkdown={HasMarkdown}, HasSchema={HasSchema}",
+                        responseLength, startsWithJson, endsWithJson, containsBrackets, lineCount, hasMarkdownJson, hasJsonSchema);
+                    
+                    // **🧹 JSON_CLEANING_DIAGNOSTICS**: Show what cleaning would be needed
+                    if (!string.IsNullOrEmpty(responseContent))
+                    {
+                        var trimmed = responseContent.Trim();
+                        var withoutMarkdown = trimmed.Replace("```json", "").Replace("```", "").Trim();
+                        var firstChar = trimmed.Length > 0 ? trimmed[0].ToString() : "[EMPTY]";
+                        var lastChar = trimmed.Length > 0 ? trimmed[trimmed.Length - 1].ToString() : "[EMPTY]";
+                        
+                        _logger.Information("🧹 **JSON_CLEANING_PREVIEW**: OriginalFirst='{FirstChar}', OriginalLast='{LastChar}', AfterMarkdownClean='{CleanedPreview}'",
+                            firstChar, lastChar, withoutMarkdown.Length > 100 ? withoutMarkdown.Substring(0, 100) + "..." : withoutMarkdown);
+                    }
+                    
+                    // **🚨 JSON_VALIDATION_ATTEMPT**: Try parsing to identify specific issues
+                    if (!string.IsNullOrEmpty(responseContent))
+                    {
+                        try
+                        {
+                            var testParse = Newtonsoft.Json.Linq.JObject.Parse(responseContent);
+                            _logger.Information("✅ **JSON_VALIDATION_SUCCESS**: Response is valid JSON with {PropertyCount} top-level properties", testParse.Properties().Count());
+                        }
+                        catch (Newtonsoft.Json.JsonReaderException jsonEx)
+                        {
+                            _logger.Error("❌ **JSON_VALIDATION_FAILED**: JsonReaderException at Line={Line}, Position={Position}, Path='{Path}', Error='{Error}'",
+                                jsonEx.LineNumber, jsonEx.LinePosition, jsonEx.Path ?? "[NO_PATH]", jsonEx.Message);
+                            
+                            // **🔧 SPECIFIC_JSON_ISSUE_ANALYSIS**: Common JSON problems
+                            var hasUnescapedQuotes = responseContent.Contains("\"") && !responseContent.Contains("\\\"");
+                            var hasTrailingCommas = responseContent.Contains(",}") || responseContent.Contains(",]");
+                            var hasUnterminatedStrings = CountOccurrences(responseContent, "\"") % 2 != 0;
+                            var hasMismatchedBraces = CountOccurrences(responseContent, "{") != CountOccurrences(responseContent, "}");
+                            
+                            _logger.Error("🔧 **JSON_ISSUE_DETAILS**: UnescapedQuotes={UnescapedQuotes}, TrailingCommas={TrailingCommas}, UnterminatedStrings={UnterminatedStrings}, MismatchedBraces={MismatchedBraces}",
+                                hasUnescapedQuotes, hasTrailingCommas, hasUnterminatedStrings, hasMismatchedBraces);
+                        }
+                        catch (Exception parseEx)
+                        {
+                            _logger.Error(parseEx, "❌ **JSON_VALIDATION_UNKNOWN_ERROR**: Unexpected parsing error: {ErrorType}", parseEx.GetType().Name);
+                        }
+                    }
+                    
                     // **COMPRESSION_DEBUG**: Log response content summary for regex pattern analysis
-                    var containsRegexPatterns = responseContent.Contains("suggested_regex") || responseContent.Contains("regex") || responseContent.Contains("pattern");
+                    var containsRegexPatterns = responseContent?.Contains("suggested_regex") == true || responseContent?.Contains("regex") == true || responseContent?.Contains("pattern") == true;
                     _logger.Debug("**HTTP_RESPONSE_ANALYSIS**: ContainsRegexPatterns={ContainsRegex}, FirstChars={FirstChars}, LastChars={LastChars}",
                         containsRegexPatterns,
-                        responseContent.Length > 50 ? responseContent.Substring(0, 50) + "..." : responseContent,
-                        responseContent.Length > 50 ? "..." + responseContent.Substring(responseContent.Length - 50) : responseContent);
+                        responseLength > 50 ? responseContent.Substring(0, 50) + "..." : responseContent ?? "[NULL]",
+                        responseLength > 50 ? "..." + responseContent.Substring(responseContent.Length - 50) : responseContent ?? "[NULL]");
                     
                     // Handle HTTP status codes with retry logic
                     if (response.StatusCode == (HttpStatusCode)429)
