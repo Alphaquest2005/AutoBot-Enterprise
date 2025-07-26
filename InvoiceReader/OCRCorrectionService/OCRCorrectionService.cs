@@ -64,38 +64,21 @@ namespace WaterNut.DataSpace
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
             
-            // **TEMPLATE_SYSTEM_INITIALIZATION**: Initialize file-based template system
+            // **AI_TEMPLATE_SYSTEM_INITIALIZATION**: Initialize AI-powered template service
             try
             {
-                _logger.Information("🚀 **TEMPLATE_SYSTEM_INIT**: Initializing file-based template system with Meta AI integration");
+                _logger.Information("🚀 **AI_TEMPLATE_INIT**: Initializing AI-powered template service with DeepSeek and Gemini integration");
                 
-                // Load template system configuration
-                _templateConfig = TemplateSystemConfiguration.LoadConfiguration(_logger);
-                _logger.Information("✅ **CONFIG_LOADED**: Template configuration loaded successfully");
+                // Initialize AITemplateService with OCRCorrectionService base path
+                var templateBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OCRCorrectionService");
+                _templateService = new AITemplateService(_logger, templateBasePath);
                 
-                // Initialize template engine with Handlebars.NET
-                _templateEngine = new HandlebarsTemplateEngine(_templateConfig, _logger);
-                _logger.Information("✅ **TEMPLATE_ENGINE_READY**: Handlebars template engine initialized");
-                
-                // Initialize Meta AI service (if enabled in config)
-                if (_templateConfig.MetaAI.Enabled)
-                {
-                    _metaAIService = new MetaAIService(_templateConfig.MetaAI, _logger);
-                    _logger.Information("✅ **META_AI_READY**: Meta AI service initialized");
-                }
-                else
-                {
-                    _logger.Information("ℹ️ **META_AI_DISABLED**: Meta AI service disabled in configuration");
-                }
-                
-                // Initialize OCR template service with all dependencies
-                _templateService = new OCRTemplateService(_templateEngine, _metaAIService, _templateConfig, _logger);
-                _logger.Information("🎯 **TEMPLATE_SERVICE_READY**: OCR template service initialized - ready to replace hardcoded prompts");
+                _logger.Information("🎯 **AI_TEMPLATE_SERVICE_READY**: AI template service initialized - ready for multi-provider prompt generation");
             }
             catch (Exception ex)
             {
-                _logger.Warning(ex, "⚠️ **TEMPLATE_SYSTEM_FALLBACK**: Template system initialization failed, falling back to hardcoded prompts");
-                // Template services will be null, triggering fallback behavior
+                _logger.Warning(ex, "⚠️ **AI_TEMPLATE_FALLBACK**: AI template service initialization failed, falling back to hardcoded prompts");
+                // Template service will be null, triggering fallback behavior
             }
             
             // **BUSINESS_SERVICES_EQUIVALENT_INITIALIZATION**: Initialize PromptTemplate like DeepSeekInvoiceApi constructor
