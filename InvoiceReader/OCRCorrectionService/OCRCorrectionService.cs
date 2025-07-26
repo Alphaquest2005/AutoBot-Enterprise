@@ -406,6 +406,10 @@ namespace WaterNut.DataSpace
                     }
 
                     _logger.Information("✅ **TEMPLATE_CREATION_SUCCESS**: Template '{TemplateName}' created successfully with ID {TemplateId}", templateName, result.RegexId.Value);
+                    
+                    // **STEP 7A**: Create OCRCorrectionLearning records for template creation process
+                    _logger.Information("📝 **TEMPLATE_LEARNING_START**: Creating OCRCorrectionLearning records for template creation insights");
+                    await CreateTemplateLearningRecordsAsync(dbContext, detectedErrors, templateName, filePath, result.RegexId.Value).ConfigureAwait(false);
                 
                     // Retrieve the created template from database and create Invoice object for pipeline
                     _logger.Information("🏗️ **RETRIEVING_DATABASE_TEMPLATE**: Getting template from database for pipeline processing");
