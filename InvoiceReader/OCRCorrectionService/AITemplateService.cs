@@ -146,7 +146,7 @@ namespace WaterNut.DataSpace
 
         #region Template Loading and Management
 
-        private async Task<string> LoadTemplateAsync(string provider, string templateType, string supplierName)
+        private string LoadTemplateAsync(string provider, string templateType, string supplierName)
         {
             // Provider-specific + supplier-specific template selection
             var templatePaths = new[]
