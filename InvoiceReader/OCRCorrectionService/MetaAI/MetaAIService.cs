@@ -1003,9 +1003,9 @@ namespace WaterNut.DataSpace.MetaAI
         public Dictionary<string, object> DefaultModelConfig { get; set; } = new Dictionary<string, object>();
     }
 
-    #region API Response Models (Private)
+    #region API Response Models (Internal)
 
-    private class PromptRecommendationResponse
+    internal class PromptRecommendationResponse
     {
         public bool Success { get; set; }
         public string Message { get; set; }
