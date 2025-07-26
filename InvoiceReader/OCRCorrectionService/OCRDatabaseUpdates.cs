@@ -330,7 +330,7 @@ namespace WaterNut.DataSpace
                                        RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId,
                                    };
                 
-                // ✅ **ISSUE_RESOLVED**: SuggestedRegex is now preserved in enhanced WindowText field
+                // ✅ **CLEAN_IMPLEMENTATION**: SuggestedRegex now stored in dedicated database field with proper separation
 
                 context.OCRCorrectionLearning.Add(learning);
                 await context.SaveChangesAsync().ConfigureAwait(false);
