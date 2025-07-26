@@ -48,6 +48,13 @@ namespace WaterNut.DataSpace
                 _logger.Information("🔬 **STEP_1_RAW_RESPONSE**: DeepSeek returned {Length} characters. RAW_START\n{RawResponse}\nRAW_END", 
                     rawResponse?.Length ?? 0, rawResponse ?? "[NULL_RESPONSE]");
                 
+                // **🔍 EARLY_VALIDATION**: Check for obviously malformed responses
+                if (string.IsNullOrWhiteSpace(rawResponse))
+                {
+                    _logger.Error("🚨 **STEP_1_ABORT**: DeepSeek returned null/empty response - cannot create template");
+                    return null;
+                }
+                
                 var cleanJson = this.CleanJsonResponse(rawResponse);
                 
                 // **🔬 ULTRA_DIAGNOSTIC_STEP_2**: Log the cleaned JSON
@@ -56,7 +63,7 @@ namespace WaterNut.DataSpace
                 
                 if (string.IsNullOrEmpty(cleanJson))
                 {
-                    _logger.Warning("🚨 **STEP_2_ABORT**: CleanJsonResponse returned null/empty. Cannot proceed with parsing.");
+                    _logger.Error("🚨 **STEP_2_ABORT**: CleanJsonResponse returned null/empty - TEMPLATE_CREATION_MUST_FAIL");
                     return null;
                 }
                 
@@ -99,6 +106,8 @@ namespace WaterNut.DataSpace
                         errorContext.Insert(relativeErrorPos, ">>>").Insert(relativeErrorPos + 3, "<<<"));
                 }
                 
+                // **🚨 CRITICAL_FAILURE**: JSON parsing failed - template creation MUST fail
+                _logger.Error("🚨 **TEMPLATE_CREATION_FAILURE**: DeepSeek JSON parsing failed - preventing NO_REGEX template creation");
                 return null;
             }
             catch (Exception ex)
@@ -112,6 +121,8 @@ namespace WaterNut.DataSpace
                 _logger.Error("🔬 **DEBUG_FAILED_CONTENT**: We were trying to parse this cleaned content: LENGTH={Length}\n{CleanedContent}",
                     cleanJson?.Length ?? 0, cleanJson ?? "[NULL_CONTENT]");
                 
+                // **🚨 CRITICAL_FAILURE**: Any parsing failure should prevent template creation
+                _logger.Error("🚨 **TEMPLATE_CREATION_FAILURE**: DeepSeek parsing failed generically - preventing NO_REGEX template creation");
                 return null;
             }
         }
