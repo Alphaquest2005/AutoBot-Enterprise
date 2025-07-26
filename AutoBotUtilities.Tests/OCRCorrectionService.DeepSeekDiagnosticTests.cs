@@ -438,7 +438,7 @@ namespace AutoBotUtilities.Tests.Production
                 Assert.That(allErrors, Is.Not.Null, "Detection pipeline should complete without errors");
                 
                 _logger.Information("✅ **TEST_6_COMPLETE**: Complete pipeline integration test finished");
-            }
+            // }
         }
         
         #endregion
