@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WaterNut.DataSpace.TemplateEngine;
 using WaterNut.DataSpace.MetaAI;
+using WaterNut.DataSpace.Services;
 using Serilog;
 
 namespace WaterNut.DataSpace.AutoImplementation
