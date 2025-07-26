@@ -1,0 +1,152 @@
+{{!-- 
+Template: MANGO Supplier Header Detection 
+Description: Specialized header field detection for MANGO fashion retailer invoices
+Version: 1.0.0
+Author: AutoBot-Enterprise OCR System
+Based on: MANGO test analysis and CreateHeaderErrorDetectionPrompt 
+Test Reference: CanImportMango03152025TotalAmount_AfterLearning
+--}}
+OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - MANGO Supplier Specialization):
+
+**CONTEXT:**
+You are analyzing a MANGO fashion retailer invoice with European formatting patterns. MANGO invoices have specific characteristics that require specialized handling.
+
+**🥭 MANGO-SPECIFIC PATTERNS:**
+- **Currency**: Primary EUR with comma decimal separators (e.g., "10,99" not "10.99")
+- **Date Format**: European DD/MM/YYYY or "March 15, 2025" formats
+- **Product Lines**: Fashion items with size/color variants and reference numbers
+- **Total Field**: Look specifically for "TOTAL AMOUNT" (not just "Total")
+- **Tax Handling**: European VAT/Tax formatting
+- **Reference Numbers**: Product codes in format like "ref. 57077738990R"
+
+**1. EXTRACTED FIELDS:**
+{{toJson invoice}}
+
+{{#if annotatedContext}}
+**2. CONTEXT & COMPONENTS:**
+{{annotatedContext}}
+{{/if}}
+
+{{#if balanceCheckContext}}
+**3. MANGO BALANCE CHECK:**
+{{balanceCheckContext}}
+{{/if}}
+
+**4. COMPLETE OCR TEXT:**
+{{truncate fileText 5000}}
+
+🎯 **MANGO V14.0 MANDATORY COMPLETION REQUIREMENTS**:
+
+🚨 **CRITICAL**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL OF THE FOLLOWING:
+
+1. ✅ **field**: The exact field name (NEVER null)
+2. ✅ **correct_value**: The actual value from the OCR text (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The actual line number where the value appears (NEVER 0 or null)
+5. ✅ **line_text**: The complete text of that line from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A working regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Explain why this value was missed (NEVER null)
+
+**🥭 MANGO-SPECIFIC FIELD PRIORITIES:**
+1. **TOTAL AMOUNT** field - Critical for test case {{testData.targetField}}
+2. **Invoice Date** - Expected format: {{testData.expectedDate}}
+3. **Currency handling** - EUR with comma decimals
+4. **Product reference numbers** - Extract ref. codes
+5. **European address formats** - Multi-line supplier addresses
+
+**🚨 CRITICAL REGEX REQUIREMENTS FOR MANGO PRODUCTION:**
+⚠️ **MANDATORY**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **MANGO TOTAL AMOUNT**: "{{escapeForJson 'TOTAL AMOUNT:\s*€?\s*(?<InvoiceTotal>[\d,]+\.?\d*)'}}"
+⚠️ **MANGO CURRENCY DECIMALS**: "{{escapeForJson '(?<Amount>[\d,]+,\d{2})'}}" for European comma format
+⚠️ **MANGO REFERENCE**: "{{escapeForJson 'ref\.\s*(?<ItemCode>[\d\w]+R?)'}}"
+
+**🏗️ MANGO OBJECT-ORIENTED ANALYSIS:**
+
+**MANGO-SPECIFIC GROUPED ENTITIES:**
+
+**A. MANGO Currency-Amount Objects:**
+- **European Format**: "€10,99", "EUR 123,45" 
+  - Treatment: Single object with comma decimal handling
+  - Field Name: Use standard field name (InvoiceTotal, SubTotal)
+  - **CRITICAL**: Convert comma decimals: "10,99" → "10.99" for database storage
+  
+**B. MANGO Product Reference Objects:**
+- **Pattern**: "High-waist shorts € 3.30\nref. 570003742302"
+  - Treatment: Product + price + reference as single object
+  - Field Name: "InvoiceDetail_MultiField_LineX"
+  - **Required Fields**: ItemDescription, UnitPrice, ItemCode (from ref.)
+
+**C. MANGO Date Objects:**
+- **Pattern**: "Date: March 15, 2025" or "15/03/2025"
+  - Treatment: Single InvoiceDate field
+  - **Format Conversion**: Convert to MM/dd/yyyy for production
+
+**🥭 MANGO CRITICAL EXTRACTION PATTERNS:**
+
+**1. TOTAL AMOUNT Detection (Primary Test Case):**
+```
+Pattern: {{escapeForJson 'TOTAL AMOUNT:\s*€?\s*(?<InvoiceTotal>[\d,]+\.?\d*)'}}
+Test Line: "TOTAL AMOUNT: €210.08"
+Expected: InvoiceTotal = "210.08"
+```
+
+**2. European Currency Conversion:**
+```
+Pattern: {{escapeForJson '€?\s*(?<Amount>[\d,]+,\d{2})'}}
+Conversion: "10,99" → "10.99" (comma to period)
+Field Correction: {"field_name": "Amount", "pattern": "(\\d+),(\\d{2})", "replacement": "$1.$2"}
+```
+
+**3. MANGO Reference Code Extraction:**
+```
+Pattern: {{escapeForJson 'ref\.\s*(?<ItemCode>[\d\w]+R?)'}}
+Test Line: "ref. 57077738990R" 
+Expected: ItemCode = "57077738990R"
+```
+
+### **MANGO-SPECIFIC INSTRUCTIONS:**
+
+#### **MANGO Field Mapping:**
+*   **TOTAL AMOUNT** → field: "InvoiceTotal"
+*   **European VAT/Tax** → field: "TotalOtherCost" 
+*   **MANGO Reference Codes** → field: "ItemNumber" (for InvoiceDetails)
+*   **European Currency Symbols** → Convert € to EUR, format corrections
+
+#### **🚨 MANGO PRODUCTION DATA STANDARDS:**
+
+**1. Currency Field Standards for MANGO:**
+*   **MANGO Standard**: EUR (3-letter code)
+*   **Common Issues**: "€", "EUR €", "Euro" → Must convert to "EUR"
+*   **Action**: Create `format_correction` with `field` = "Currency", `correct_value` = "EUR"
+
+**2. Decimal Format Conversion for MANGO:**
+*   **MANGO Standard**: Period decimal separator for database
+*   **Common Issues**: "10,99", "123,45" → Must convert to "10.99", "123.45"
+*   **Action**: Create `format_correction` with field_corrections array
+
+**3. Date Format for MANGO:**
+*   **MANGO Standard**: MM/dd/yyyy format
+*   **Common Issues**: "March 15, 2025", "15/03/2025" → Convert to "03/15/2025"
+
+**🥭 MANGO TEST CASE VALIDATION:**
+For test case '{{testData.targetField}}' on {{testData.expectedDate}}:
+- Look specifically for "TOTAL AMOUNT" field
+- Expected value: {{testData.expectedTotal}}
+- Ensure regex captures exact value from OCR text
+- Validate against balance calculation
+
+{{#if supplier.SupplierName}}
+**SUPPLIER CONTEXT**: {{supplier.SupplierName}} invoice processing
+{{/if}}
+
+**🚨 CRITICAL EMPTY RESPONSE REQUIREMENT:**
+If you return an empty errors array (no errors detected), you MUST include an "explanation" field explaining why no MANGO-specific corrections are needed.
+
+**MANGO EXPLANATION EXAMPLE:**
+"This appears to be a well-structured MANGO invoice. I found TOTAL AMOUNT (€{{invoice.InvoiceTotal}}), Tax, and other fields clearly visible. The European currency format with comma decimals is properly handled. All MANGO-specific patterns are correctly extracted. No corrections needed."
+
+**MANDATORY RESPONSE FORMAT:**
+- **If errors found**: { "errors": [error objects] }
+- **If NO errors found**: { "errors": [], "explanation": "MANGO-specific analysis explanation" }
+
+**CRITICAL**: Prioritize TOTAL AMOUNT field detection for MANGO test case validation!
