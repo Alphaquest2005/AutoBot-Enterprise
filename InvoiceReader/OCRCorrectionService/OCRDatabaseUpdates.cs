@@ -351,42 +351,13 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Extract SuggestedRegex from enhanced WindowText field
+        /// Extract SuggestedRegex from OCRCorrectionLearning record
+        /// Now uses dedicated SuggestedRegex field instead of parsing WindowText
         /// </summary>
-        private static string ExtractSuggestedRegexFromWindowText(string windowText)
+        private static string GetSuggestedRegexFromLearningRecord(OCRCorrectionLearning learningRecord)
         {
-            if (string.IsNullOrWhiteSpace(windowText)) return null;
-            
-            const string marker = "SUGGESTED_REGEX:";
-            var index = windowText.IndexOf(marker);
-            if (index == -1) return null;
-            
-            var start = index + marker.Length;
-            var pipeIndex = windowText.IndexOf('|', start);
-            
-            return pipeIndex == -1 
-                ? windowText.Substring(start) 
-                : windowText.Substring(start, pipeIndex - start);
-        }
-
-        /// <summary>
-        /// Get WindowText content without SuggestedRegex part
-        /// </summary>
-        private static string ExtractCleanWindowTextFromEnhanced(string enhancedWindowText)
-        {
-            if (string.IsNullOrWhiteSpace(enhancedWindowText)) return enhancedWindowText;
-            
-            const string marker = "|SUGGESTED_REGEX:";
-            var index = enhancedWindowText.IndexOf(marker);
-            if (index == -1)
-            {
-                // Check if it starts with SUGGESTED_REGEX: (no prefix)
-                if (enhancedWindowText.StartsWith("SUGGESTED_REGEX:"))
-                    return "";
-                return enhancedWindowText;
-            }
-            
-            return enhancedWindowText.Substring(0, index);
+            // ✅ **SIMPLE_ACCESS**: Direct field access, no parsing needed
+            return learningRecord?.SuggestedRegex;
         }
 
         #endregion
