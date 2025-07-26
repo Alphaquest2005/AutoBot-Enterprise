@@ -16,9 +16,6 @@ using System.Threading.Tasks;
 using TrackableEntities;
 using WaterNut.DataSpace;
 using Core.Common.Extensions;
-using WaterNut.DataSpace.TemplateEngine;
-using WaterNut.DataSpace.MetaAI;
-using WaterNut.DataSpace.Configuration;
 
 namespace WaterNut.DataSpace
 {
