@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace.TemplateEngine
     {
         private readonly ILogger _logger;
         private readonly IHandlebars _handlebars;
-        private readonly HandlebarsTemplate<object, object> _compiledTemplate;
+        private readonly Func<object, string> _compiledTemplate;
         private readonly string _templateContent;
 
         public string Name { get; }
