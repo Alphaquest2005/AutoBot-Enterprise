@@ -298,16 +298,10 @@ namespace WaterNut.DataSpace
                 _logger.Error("   - **Replacement**: '{Replacement}'", request.Replacement ?? "NULL");
                 _logger.Error("   - **CorrectionType**: '{CorrectionType}'", request.CorrectionType);
                 
-                // 🔧 **ENHANCED_WINDOWTEXT**: Combine WindowText and SuggestedRegex for complete data preservation
-                var enhancedWindowText = request.WindowText ?? "";
+                // ✅ **PROPER_FIELD_USAGE**: Now using dedicated SuggestedRegex field - no WindowText enhancement needed
                 if (!string.IsNullOrWhiteSpace(request.SuggestedRegex))
                 {
-                    // Store SuggestedRegex in structured format within WindowText field
-                    enhancedWindowText = string.IsNullOrWhiteSpace(enhancedWindowText) 
-                        ? $"SUGGESTED_REGEX:{request.SuggestedRegex}"
-                        : $"{enhancedWindowText}|SUGGESTED_REGEX:{request.SuggestedRegex}";
-                    
-                    _logger.Information("🔧 **SUGGESTED_REGEX_PRESERVED**: Storing SuggestedRegex '{SuggestedRegex}' in enhanced WindowText field", request.SuggestedRegex);
+                    _logger.Information("✅ **SUGGESTED_REGEX_DIRECT**: Storing SuggestedRegex '{SuggestedRegex}' in dedicated database field", request.SuggestedRegex);
                 }
 
                 var learning = new OCRCorrectionLearning
