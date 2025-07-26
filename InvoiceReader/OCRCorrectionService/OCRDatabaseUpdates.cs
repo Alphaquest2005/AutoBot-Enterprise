@@ -311,7 +311,8 @@ namespace WaterNut.DataSpace
                                        CorrectValue = request.NewValue ?? string.Empty,
                                        LineNumber = request.LineNumber,
                                        LineText = request.LineText ?? string.Empty,
-                                       WindowText = enhancedWindowText,
+                                       WindowText = request.WindowText ?? string.Empty, // ✅ **CLEAN_WINDOWTEXT**: Pure window text, no mixed data
+                                       SuggestedRegex = request.SuggestedRegex, // ✅ **PROPER_FIELD**: Direct assignment to dedicated field
                                        CorrectionType = request.CorrectionType,
                                        DeepSeekReasoning = TruncateForLog(request.DeepSeekReasoning, 1000),
                                        Confidence = safeConfidence,
@@ -327,7 +328,6 @@ namespace WaterNut.DataSpace
                                        LineId = request.LineId,
                                        PartId = request.PartId,
                                        RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId,
-                                       // ✅ **FIELD_PRESERVED**: SuggestedRegex now preserved in enhanced WindowText field
                                    };
                 
                 // ✅ **ISSUE_RESOLVED**: SuggestedRegex is now preserved in enhanced WindowText field
