@@ -952,6 +952,210 @@ namespace WaterNut.DataSpace
             }
         }
 
+        /// <summary>
+        /// Load successful regex patterns from previous learning records
+        /// This enables the system to apply previously learned patterns for improved accuracy
+        /// </summary>
+        public async Task<List<RegexPattern>> LoadLearnedRegexPatternsAsync(string invoiceType = null, double minimumConfidence = 0.8)
+        {
+            _logger.Information("📚 **LOADING_LEARNED_PATTERNS**: Loading regex patterns from OCRCorrectionLearning with confidence >= {MinConfidence}", minimumConfidence);
+            
+            var patterns = new List<RegexPattern>();
+            
+            try
+            {
+                using (var context = new OCRContext())
+                {
+                    var query = context.OCRCorrectionLearning
+                        .Where(l => l.Success == true && l.Confidence >= minimumConfidence);
+                    
+                    if (!string.IsNullOrWhiteSpace(invoiceType))
+                    {
+                        query = query.Where(l => l.InvoiceType == invoiceType);
+                    }
+                    
+                    var learningRecords = await query
+                        .OrderByDescending(l => l.CreatedDate)
+                        .Take(1000) // Limit to recent records
+                        .ToListAsync()
+                        .ConfigureAwait(false);
+                    
+                    _logger.Information("📊 **LEARNING_RECORDS_FOUND**: Found {Count} successful learning records", learningRecords.Count);
+                    
+                    foreach (var record in learningRecords)
+                    {
+                        try
+                        {
+                            // Extract SuggestedRegex from enhanced WindowText
+                            var suggestedRegex = ExtractSuggestedRegexFromWindowText(record.WindowText);
+                            
+                            if (!string.IsNullOrWhiteSpace(suggestedRegex))
+                            {
+                                var pattern = new RegexPattern
+                                {
+                                    FieldName = record.FieldName,
+                                    Pattern = suggestedRegex,
+                                    Replacement = record.CorrectValue,
+                                    StrategyType = DetermineStrategyType(record.CorrectionType),
+                                    Confidence = record.Confidence ?? 0.0,
+                                    CreatedDate = record.CreatedDate,
+                                    LastUpdated = record.CreatedDate,
+                                    UpdateCount = 1,
+                                    CreatedBy = record.CreatedBy,
+                                    InvoiceType = record.InvoiceType
+                                };
+                                
+                                patterns.Add(pattern);
+                                
+                                _logger.Information("📝 **PATTERN_LOADED**: Field='{Field}', Pattern='{Pattern}', Confidence={Confidence}", 
+                                    pattern.FieldName, pattern.Pattern, pattern.Confidence);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning(ex, "⚠️ **PATTERN_LOAD_ERROR**: Failed to process learning record ID {RecordId}", record.Id);
+                        }
+                    }
+                    
+                    _logger.Information("✅ **PATTERNS_LOADED**: Successfully loaded {PatternCount} regex patterns from learning records", patterns.Count);
+                    
+                    return patterns;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **LOAD_PATTERNS_FAILED**: Failed to load learned regex patterns");
+                return new List<RegexPattern>();
+            }
+        }
+
+        /// <summary>
+        /// Apply learned regex patterns to preprocess text before OCR processing
+        /// This improves accuracy by fixing known OCR errors proactively
+        /// </summary>
+        public async Task<string> PreprocessTextWithLearnedPatternsAsync(string originalText, string invoiceType = null)
+        {
+            if (string.IsNullOrWhiteSpace(originalText))
+            {
+                return originalText;
+            }
+            
+            _logger.Information("🔧 **PREPROCESSING_START**: Applying learned patterns to {TextLength} characters of text", originalText.Length);
+            
+            var patterns = await LoadLearnedRegexPatternsAsync(invoiceType, 0.9).ConfigureAwait(false); // High confidence only
+            
+            if (!patterns.Any())
+            {
+                _logger.Information("📝 **NO_PATTERNS_AVAILABLE**: No learned patterns available for preprocessing");
+                return originalText;
+            }
+            
+            var processedText = originalText;
+            var applicationsCount = 0;
+            
+            foreach (var pattern in patterns.Where(p => p.StrategyType == "FORMAT_FIX" || p.StrategyType == "CHARACTER_MAP"))
+            {
+                try
+                {
+                    var regex = new Regex(pattern.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    var matches = regex.Matches(processedText);
+                    
+                    if (matches.Count > 0)
+                    {
+                        processedText = regex.Replace(processedText, pattern.Replacement ?? "");
+                        applicationsCount++;
+                        
+                        _logger.Information("🔧 **PATTERN_APPLIED**: Field='{Field}', Matches={Count}, Pattern='{Pattern}'", 
+                            pattern.FieldName, matches.Count, pattern.Pattern);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning(ex, "⚠️ **PATTERN_APPLICATION_ERROR**: Failed to apply pattern for field '{Field}'", pattern.FieldName);
+                }
+            }
+            
+            _logger.Information("✅ **PREPROCESSING_COMPLETE**: Applied {ApplicationCount} learned patterns to text", applicationsCount);
+            
+            return processedText;
+        }
+
+        /// <summary>
+        /// Get learning analytics for specific fields or invoice types
+        /// This provides insights into OCR accuracy and improvement trends
+        /// </summary>
+        public async Task<LearningAnalytics> GetLearningAnalyticsAsync(string fieldName = null, string invoiceType = null, int daysPeriod = 30)
+        {
+            _logger.Information("📊 **ANALYTICS_START**: Generating learning analytics for period={Days} days", daysPeriod);
+            
+            try
+            {
+                using (var context = new OCRContext())
+                {
+                    var cutoffDate = DateTime.Now.AddDays(-daysPeriod);
+                    
+                    var query = context.OCRCorrectionLearning
+                        .Where(l => l.CreatedDate >= cutoffDate);
+                    
+                    if (!string.IsNullOrWhiteSpace(fieldName))
+                    {
+                        query = query.Where(l => l.FieldName == fieldName);
+                    }
+                    
+                    if (!string.IsNullOrWhiteSpace(invoiceType))
+                    {
+                        query = query.Where(l => l.InvoiceType == invoiceType);
+                    }
+                    
+                    var records = await query.ToListAsync().ConfigureAwait(false);
+                    
+                    var analytics = new LearningAnalytics
+                    {
+                        PeriodDays = daysPeriod,
+                        TotalRecords = records.Count,
+                        SuccessfulRecords = records.Count(r => r.Success),
+                        FailedRecords = records.Count(r => !r.Success),
+                        AverageConfidence = records.Where(r => r.Confidence.HasValue).Average(r => r.Confidence.Value),
+                        MostCommonFields = records.GroupBy(r => r.FieldName)
+                                                 .OrderByDescending(g => g.Count())
+                                                 .Take(10)
+                                                 .ToDictionary(g => g.Key, g => g.Count()),
+                        CorrectionTypes = records.GroupBy(r => r.CorrectionType)
+                                                .ToDictionary(g => g.Key, g => g.Count()),
+                        InvoiceTypes = records.GroupBy(r => r.InvoiceType)
+                                             .OrderByDescending(g => g.Count())
+                                             .Take(10)
+                                             .ToDictionary(g => g.Key, g => g.Count())
+                    };
+                    
+                    _logger.Information("📈 **ANALYTICS_COMPLETE**: Generated analytics - Total: {Total}, Success: {Success}, Failed: {Failed}", 
+                        analytics.TotalRecords, analytics.SuccessfulRecords, analytics.FailedRecords);
+                    
+                    return analytics;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **ANALYTICS_FAILED**: Failed to generate learning analytics");
+                return new LearningAnalytics { PeriodDays = daysPeriod };
+            }
+        }
+
+        /// <summary>
+        /// Determine strategy type from correction type for regex pattern classification
+        /// </summary>
+        private static string DetermineStrategyType(string correctionType)
+        {
+            return correctionType switch
+            {
+                "omission" => "FIELD_EXTRACTION",
+                "format_correction" => "FORMAT_FIX", 
+                "multi_field_omission" => "FIELD_EXTRACTION",
+                "template_creation" => "TEMPLATE_PATTERN",
+                _ => "GENERAL"
+            };
+        }
+
         #endregion
 
         #region IDisposable Implementation
