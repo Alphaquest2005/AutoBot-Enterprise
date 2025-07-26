@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HandlebarsNet;
+using Handlebars;
 using Serilog;
 
 namespace WaterNut.DataSpace.TemplateEngine
