@@ -229,28 +229,116 @@ namespace pdf_ocr
 
         private void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
         {
-            _logger.Information("METHOD_ENTRY: PdfToPngWithGhostscriptPngDevice. Intention: Convert a single PDF page to PNG using Ghostscript. InitialState: {InitialState}", new { SourceFile = srcFile, PageNumber = pageNo, DpiX = dpiX, DpiY = dpiY, TargetFile = tgtFile });
+            _logger.Information("METHOD_ENTRY: PdfToPngWithGhostscriptPngDevice. Intention: Convert a single PDF page to PNG using Ghostscript with timeout protection. InitialState: {InitialState}", new { SourceFile = srcFile, PageNumber = pageNo, DpiX = dpiX, DpiY = dpiY, TargetFile = tgtFile });
+            
+            // **GHOSTSCRIPT_TIMEOUT_FIX**: Set reasonable timeout for Ghostscript operations (30 seconds)
+            const int timeoutMs = 30000;
+            var startTime = DateTime.UtcNow;
+            
             try
             {
-                GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
- {
-     GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
-     TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
-     ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
- };
-                dev.InputFiles.Add(srcFile);
-                dev.Pdf.FirstPage = pageNo;
-                dev.Pdf.LastPage = pageNo;
-                dev.CustomSwitches.Add("-dDOINTERPOLATE");
-                dev.OutputPath = tgtFile;
-                _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDevice - Process): Calling dev.Process().");
-                dev.Process();
-                _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDevice - Process): dev.Process() completed.");
-                _logger.Information("METHOD_EXIT_SUCCESS: PdfToPngWithGhostscriptPngDevice. IntentionAchieved: PDF page converted to PNG. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { OutputFile = tgtFile }, 0); // Placeholder for elapsed time
+                GhostscriptPngDevice dev = null;
+                try
+                {
+                    dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
+                    {
+                        GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+                        TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+                        ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
+                    };
+                    
+                    dev.InputFiles.Add(srcFile);
+                    dev.Pdf.FirstPage = pageNo;
+                    dev.Pdf.LastPage = pageNo;
+                    dev.CustomSwitches.Add("-dDOINTERPOLATE");
+                    dev.CustomSwitches.Add("-dBATCH");
+                    dev.CustomSwitches.Add("-dNOPAUSE");
+                    dev.CustomSwitches.Add("-dSAFER");
+                    dev.OutputPath = tgtFile;
+                    
+                    _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDevice - Process): Calling dev.Process() with {TimeoutMs}ms timeout.", timeoutMs);
+                    
+                    // **TIMEOUT_WRAPPER**: Execute Ghostscript with timeout protection
+                    using (var cancellationTokenSource = new CancellationTokenSource(timeoutMs))
+                    {
+                        var task = Task.Run(() =>
+                        {
+                            try
+                            {
+                                // **THREADABORT_PROTECTION**: Wrap in try-catch to handle ThreadAbortException
+                                dev.Process();
+                                _logger.Debug("✅ **GHOSTSCRIPT_SUCCESS**: dev.Process() completed successfully");
+                                return true;
+                            }
+                            catch (ThreadAbortException threadAbortEx)
+                            {
+                                _logger.Warning(threadAbortEx, "🚨 **GHOSTSCRIPT_THREADABORT**: ThreadAbortException during Ghostscript processing");
+                                Thread.ResetAbort(); // Reset the abort to prevent re-throw
+                                return false;
+                            }
+                            catch (Exception ghostscriptEx)
+                            {
+                                _logger.Error(ghostscriptEx, "❌ **GHOSTSCRIPT_PROCESS_ERROR**: Exception during dev.Process()");
+                                return false;
+                            }
+                        }, cancellationTokenSource.Token);
+                        
+                        // Wait for completion or timeout
+                        var completed = task.Wait(timeoutMs);
+                        var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                        
+                        if (!completed)
+                        {
+                            _logger.Warning("⏰ **GHOSTSCRIPT_TIMEOUT**: Ghostscript operation timed out after {TimeoutMs}ms for page {PageNumber}", timeoutMs, pageNo);
+                            cancellationTokenSource.Cancel();
+                            
+                            // **GRACEFUL_DEGRADATION**: Create empty PNG file as fallback
+                            try
+                            {
+                                File.WriteAllBytes(tgtFile, new byte[0]); // Create empty file
+                                _logger.Information("🔄 **FALLBACK_CREATED**: Created empty PNG file as timeout fallback");
+                            }
+                            catch (Exception fallbackEx)
+                            {
+                                _logger.Error(fallbackEx, "❌ **FALLBACK_FAILED**: Could not create fallback PNG file");
+                            }
+                            
+                            throw new TimeoutException($"Ghostscript operation timed out after {timeoutMs}ms for page {pageNo}");
+                        }
+                        
+                        var success = task.Result;
+                        if (!success)
+                        {
+                            throw new InvalidOperationException($"Ghostscript processing failed for page {pageNo}");
+                        }
+                        
+                        _logger.Information("METHOD_EXIT_SUCCESS: PdfToPngWithGhostscriptPngDevice. IntentionAchieved: PDF page converted to PNG with timeout protection. FinalState: {FinalState}. Total execution time: {ElapsedMs:0}ms.", new { OutputFile = tgtFile, Success = true }, elapsedMs);
+                    }
+                }
+                finally
+                {
+                    // **RESOURCE_CLEANUP**: Ensure proper disposal of Ghostscript device
+                    try
+                    {
+                        dev?.Dispose();
+                        _logger.Debug("✅ **RESOURCE_CLEANUP**: GhostscriptPngDevice disposed successfully");
+                    }
+                    catch (Exception disposeEx)
+                    {
+                        _logger.Warning(disposeEx, "⚠️ **DISPOSAL_WARNING**: Exception during GhostscriptPngDevice disposal (non-fatal)");
+                    }
+                }
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                _logger.Error(timeoutEx, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDevice. IntentionFailed: Ghostscript timeout after {ElapsedMs:0}ms for page {PageNumber} of file {SourceFile}.", elapsedMs, pageNo, srcFile);
+                throw;
             }
             catch (Exception e)
             {
-                _logger.Error(e, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDevice. IntentionFailed: Failed to convert PDF page {PageNumber} to PNG for file {SourceFile}.", pageNo, srcFile);
+                var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                _logger.Error(e, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDevice. IntentionFailed: Failed to convert PDF page {PageNumber} to PNG for file {SourceFile} after {ElapsedMs:0}ms.", pageNo, srcFile, elapsedMs);
                 throw;
             }
         }
