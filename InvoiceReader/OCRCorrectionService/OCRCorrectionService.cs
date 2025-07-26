@@ -803,53 +803,51 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// **SHIPMENT_INVOICE_FILE_TYPE_RETRIEVAL**: Gets FileType configuration for ShipmentInvoice processing using FileTypeManager.
-        /// **ARCHITECTURAL_INTENT**: Use FileTypeManager to lookup proper FileType for ShipmentInvoice entity creation.
-        /// **BUSINESS_RULE**: FileType determines which entity type (ShipmentInvoice vs SimplifiedDeclaration) gets created.
+        /// **SELF_CONTAINED_FILE_TYPE**: Creates basic FileType structure without business services dependency
+        /// **ARCHITECTURAL_INTENT**: Self-contained OCR service doesn't depend on FileTypeManager
+        /// **FALLBACK_IMPLEMENTATION**: Provides minimal FileType for template creation compatibility
         /// </summary>
         private CoreEntities.Business.Entities.FileTypes GetShipmentInvoiceFileType()
         {
-            _logger.Error("🔍 **GET_SHIPMENT_INVOICE_FILE_TYPE_START**: Using FileTypeManager to lookup ShipmentInvoice FileType");
+            _logger.Information("🔍 **SELF_CONTAINED_FILE_TYPE**: Creating basic ShipmentInvoice FileType without business services");
 
             try
             {
-                _logger.Error("   - **LOOKUP_METHOD**: Using FileTypeManager.GetFileType() for EntryType='{EntryType}', Format='{Format}'", 
-                    FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
-
-                // Use FileTypeManager to get FileType by EntryType and Format
-                // Note: Using a generic filename pattern since we need any ShipmentInvoice PDF FileType
-                var shipmentInvoiceFileTypes = FileTypeManager.GetFileType(
-                    FileTypeManager.EntryTypes.ShipmentInvoice,
-                    FileTypeManager.FileFormats.PDF,
-                    "*.pdf"  // Generic PDF pattern to match any ShipmentInvoice FileType
-                ).Result;
-
-                if (shipmentInvoiceFileTypes != null && shipmentInvoiceFileTypes.Any())
+                // Create basic FileType structure for template compatibility
+                // This avoids dependency on WaterNut.Business.Services.Utils.FileTypeManager
+                var fileType = new CoreEntities.Business.Entities.FileTypes
                 {
-                    var fileType = shipmentInvoiceFileTypes.First();
-                    _logger.Error("✅ **FILETYPE_FOUND**: Found ShipmentInvoice PDF FileType via FileTypeManager");
-                    _logger.Error("   - **FILE_TYPE_ID**: {FileTypeId}", fileType.Id);
-                    _logger.Error("   - **DESCRIPTION**: '{Description}'", fileType.Description);
-                    _logger.Error("   - **ENTRY_TYPE**: '{EntryType}'", fileType.FileImporterInfos?.EntryType);
-                    _logger.Error("   - **FORMAT**: '{Format}'", fileType.FileImporterInfos?.Format);
-                    _logger.Error("   - **FILE_PATTERN**: '{FilePattern}'", fileType.FilePattern);
-                    return fileType;
-                }
-                else
+                    Id = 999, // Temporary ID for OCR-created templates
+                    Description = "OCR Generated ShipmentInvoice Template",
+                    FilePattern = "*.pdf",
+                    ApplicationSettingsId = 1 // Default application settings
+                };
+
+                // Create basic FileImporterInfos for EntryType compatibility
+                var importerInfo = new CoreEntities.Business.Entities.FileImporterInfos
                 {
-                    _logger.Error("❌ **NO_FILETYPE_FOUND**: FileTypeManager returned no ShipmentInvoice PDF FileTypes");
-                    _logger.Error("   - **LOOKUP_CRITERIA**: EntryType='{EntryType}', Format='{Format}', Pattern='*.pdf'", 
-                        FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
-                    _logger.Error("   - **POSSIBLE_CAUSES**: Missing FileType in database or incorrect ApplicationSettingsId");
-                    return null;
-                }
+                    EntryType = "ShipmentInvoice",
+                    Format = "PDF",
+                    FileTypeId = fileType.Id
+                };
+
+                // Link the FileImporterInfos to the FileType
+                fileType.FileImporterInfos = importerInfo;
+
+                _logger.Information("✅ **SELF_CONTAINED_FILETYPE_CREATED**: Created basic FileType structure");
+                _logger.Information("   - **FILE_TYPE_ID**: {FileTypeId}", fileType.Id);
+                _logger.Information("   - **DESCRIPTION**: '{Description}'", fileType.Description);
+                _logger.Information("   - **ENTRY_TYPE**: '{EntryType}'", fileType.FileImporterInfos?.EntryType);
+                _logger.Information("   - **FORMAT**: '{Format}'", fileType.FileImporterInfos?.Format);
+                _logger.Information("   - **SELF_CONTAINED**: No business services dependency");
+
+                return fileType;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "❌ **GET_SHIPMENT_INVOICE_FILE_TYPE_FAILED**: Exception using FileTypeManager");
+                _logger.Error(ex, "❌ **SELF_CONTAINED_FILE_TYPE_FAILED**: Exception creating basic FileType");
                 _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
-                _logger.Error("   - **LOOKUP_CRITERIA**: EntryType='{EntryType}', Format='{Format}'", 
-                    FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+                _logger.Error("   - **FALLBACK**: Returning null - template creation may fail");
                 return null;
             }
         }
