@@ -76,7 +76,8 @@ namespace WaterNut.DataSpace
         // ===========================================================================
 
         /// <summary>
-        /// OBJECT-ORIENTED INVOICE ANALYSIS (V13.0): Creates a prompt that treats invoice as structured business objects with grouped and independent field entities.
+        /// OBJECT-ORIENTED INVOICE ANALYSIS (V14.0): Creates a prompt using template system with fallback to hardcoded implementation.
+        /// Integrates file-based templates with Meta AI optimization for enhanced OCR correction.
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
