@@ -617,10 +617,7 @@ namespace WaterNut.DataSpace.TemplateEngine
     {
         public bool EnableHotReload { get; set; } = true;
         public TimeSpan FileWatcherDelay { get; set; } = TimeSpan.FromMilliseconds(100);
-        public HandlebarsConfiguration HandlebarsConfiguration { get; set; } = new HandlebarsConfiguration
-        {
-            ThrowOnUnresolvedBindingExpression = false,
-            MissingFormatter = "{0} is undefined"
-        };
+        public bool ThrowOnUnresolvedBindingExpression { get; set; } = false;
+        public string MissingFormatter { get; set; } = "{0} is undefined";
     }
 }
