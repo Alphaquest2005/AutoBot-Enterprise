@@ -128,7 +128,7 @@ namespace WaterNut.DataSpace
                 var response = await CallAIProviderAsync(provider, metaPrompt);
                 var recommendations = ParseRecommendations(response, provider);
                 
-                await SaveRecommendationsAsync(provider, recommendations);
+                SaveRecommendationsAsync(provider, recommendations);
                 
                 _logger.Information("✅ **RECOMMENDATION_SUCCESS**: Saved {Count} suggestions for {Provider}", 
                     recommendations.Count, provider);
