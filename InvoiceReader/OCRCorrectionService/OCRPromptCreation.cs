@@ -81,7 +81,37 @@ namespace WaterNut.DataSpace
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
-            _logger.Information("🚀 **PROMPT_CREATION_START (V14.0 - Object-Oriented Architecture)**: Creating object-aware prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+            _logger.Information("🚀 **PROMPT_CREATION_START (V14.0 - Template System Integration)**: Creating template-based prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
+
+            // **TEMPLATE_SYSTEM_INTEGRATION**: Try template system first, fallback to hardcoded implementation
+            if (_templateService != null)
+            {
+                try
+                {
+                    _logger.Information("🎯 **TEMPLATE_SYSTEM_PRIMARY**: Using file-based template system for prompt generation");
+                    var templatePrompt = _templateService.CreateHeaderErrorDetectionPromptAsync(invoice, fileText, metadata).GetAwaiter().GetResult();
+                    
+                    if (!string.IsNullOrWhiteSpace(templatePrompt))
+                    {
+                        _logger.Information("✅ **TEMPLATE_SUCCESS**: Template system generated prompt successfully. Length: {PromptLength} characters", templatePrompt.Length);
+                        return templatePrompt;
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **TEMPLATE_EMPTY**: Template system returned empty prompt, falling back to hardcoded implementation");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning(ex, "⚠️ **TEMPLATE_FALLBACK**: Template system failed, falling back to hardcoded implementation");
+                }
+            }
+            else
+            {
+                _logger.Information("ℹ️ **HARDCODED_FALLBACK**: Template service not available, using hardcoded prompt implementation");
+            }
+
+            _logger.Information("🔄 **HARDCODED_IMPLEMENTATION**: Using legacy hardcoded prompt generation");
 
             var currentValues = new Dictionary<string, object>
             {
