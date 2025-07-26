@@ -309,6 +309,8 @@ using Serilog.Context;
                           }
                       }
                   };
+                  
+                  // Process the result within the using block
               foreach (var doc in res.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
                            .GroupBy(x => x["DocumentType"]))
               {
