@@ -1,0 +1,144 @@
+{{!-- 
+Template: Base Header Detection 
+Description: Generic header field detection for invoice processing
+Version: 1.0.0
+Author: AutoBot-Enterprise OCR System
+Based on: CreateHeaderErrorDetectionPrompt from OCRPromptCreation.cs
+--}}
+OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - Business Entity Framework):
+
+**CONTEXT:**
+You are analyzing a structured business document with defined object schemas. Think about the invoice as containing business entities with grouped and independent field relationships.
+
+**1. EXTRACTED FIELDS:**
+{{toJson invoice}}
+
+{{#if annotatedContext}}
+**2. CONTEXT & COMPONENTS:**
+{{annotatedContext}}
+{{/if}}
+
+{{#if balanceCheckContext}}
+**3. BALANCE CHECK:**
+{{balanceCheckContext}}
+{{/if}}
+
+**4. COMPLETE OCR TEXT:**
+{{truncate fileText 5000}}
+
+🎯 **V14.0 MANDATORY COMPLETION REQUIREMENTS**:
+
+🚨 **CRITICAL**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL OF THE FOLLOWING:
+
+1. ✅ **field**: The exact field name (NEVER null)
+2. ✅ **correct_value**: The actual value from the OCR text (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The actual line number where the value appears (NEVER 0 or null)
+5. ✅ **line_text**: The complete text of that line from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A working regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Explain why this value was missed (NEVER null)
+
+❌ **ABSOLUTELY FORBIDDEN**: 
+   - "Reasoning": null
+   - "LineNumber": 0
+   - "LineText": null
+   - "SuggestedRegex": null
+
+🔥 **ERROR LEVEL REQUIREMENT**: Every field listed above MUST contain meaningful data.
+If you cannot provide complete information for an error, DO NOT report that error.
+
+**🚨 CRITICAL REGEX REQUIREMENTS FOR PRODUCTION:**
+⚠️ **MANDATORY**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **FORBIDDEN**: Never use numbered capture groups: (pattern) - these will fail in production
+⚠️ **PRODUCTION CONSTRAINT**: The system requires named groups for field extraction
+⚠️ **EXAMPLE CORRECT**: "{{escapeForJson 'Free Shipping:\s*-?\$?(?<TotalDeduction>[\d,]+\.?\d*)'}}"
+⚠️ **EXAMPLE WRONG**: "{{escapeForJson 'Free Shipping:\s*-?\$?([\d,]+\.?\d*)'}}" ← numbered group will fail
+
+**🏗️ OBJECT-ORIENTED ANALYSIS FRAMEWORK:**
+
+You must analyze this invoice using object-oriented thinking. Identify business entities and their field relationships BEFORE creating regex patterns.
+
+**GROUPED FIELD ENTITIES (Never split these - treat as single units):**
+
+**A. Currency-Amount Objects:**
+- **Fused Format**: "EUR $123,00", "USD $1,234.56", "XCD $456.78"
+  - Treatment: Single grouped field - currency correction affects amount format
+  - Field Name: Use standard field name (e.g., "InvoiceTotal", "SubTotal")
+  - Rule: Currency and decimal format are linked (EUR uses comma, USD uses period)
+- **Separated Format**: "Currency: EUR" + "Amount: 123.45" on different lines
+  - Treatment: Independent fields - can be corrected separately
+  - Field Names: "Currency" and separate amount field
+
+**B. Address Objects:**
+- **Properties**: SupplierName, AddressLine1, AddressLine2, City, State, PostalCode, Country
+- **Behavior**: Multi-line addresses are single objects
+- **Rule**: If any address component is incomplete, expand boundaries to capture complete address block
+- **Field Name**: "SupplierAddress_MultiField_LineX" with RequiresMultilineRegex: true
+
+**C. Date-Time Objects:**
+- **Fused Format**: "July 15, 2024 3:53 PM"
+  - Treatment: Single grouped field "InvoiceDate"
+- **Separated Format**: "Date: July 15, 2024" + "Time: 3:53 PM"
+  - Treatment: Independent fields
+
+**INDEPENDENT FIELD ENTITIES (Can be corrected separately):**
+- **Simple Fields**: InvoiceNo (when standalone), Currency (when separated from amount)
+- **Financial Totals**: SubTotal, TotalInternalFreight, TotalOtherCost, TotalInsurance, TotalDeduction
+- **Rule**: Each stands alone, OCR corrections don't affect other fields
+
+**🧠 OBJECT COMPLETION RULES:**
+1. **Analyze field relationships BEFORE creating regex patterns**
+2. **Identify object boundaries (not just line boundaries)**
+3. **If object spans multiple lines, use RequiresMultilineRegex: true**
+4. **Prioritize object completeness over line-by-line parsing**
+5. **One business object = One comprehensive regex pattern**
+
+### **Instructions for `omission` and `format_correction` types:**
+*   **Definition:** Use these types when the correct value is **directly visible** in the OCR text but was missed or misformatted by my system.
+*   **RULE: BE EXHAUSTIVE.** You must report **every single value** you find that was missed. If you see two "Free Shipping" lines, you MUST report two separate `omission` objects.
+
+#### **Caribbean Customs Field Mapping:**
+*   **SUPPLIER-CAUSED REDUCTION** (e.g., 'Free Shipping', 'Discount'):
+    *   Set `field` to "TotalDeduction". For `correct_value`, return the **absolute value** as a string (e.g., "6.53").
+*   **CUSTOMER-CAUSED REDUCTION** (e.g., 'Gift Card', 'Store Credit'):
+    *   Create an `omission` object: set `field` to "TotalInsurance", `correct_value` to the **negative absolute value** (e.g., "-6.99").
+
+#### **🚨 PRODUCTION DATA STANDARDS - MANDATORY FORMAT CORRECTIONS:**
+**CRITICAL**: When you detect fields that need format conversion for production compatibility, create `format_correction` errors:
+
+**1. Currency Field Standards:**
+*   **Production Standard**: 3-letter ISO currency codes (USD, EUR, CNY, XCD)
+*   **Common Issues**: "US$", "USS", "$", "€", "£" → Must convert to "USD", "EUR", "GBP"
+*   **Action**: Create `format_correction` with `field` = "Currency", `correct_value` = "USD" (3-letter code)
+
+**2. Date Field Standards:**
+*   **Production Standard**: Short date format MM/dd/yyyy (e.g., "07/23/2024")
+*   **Common Issues**: "Tuesday, July 23, 2024 at 03:42 PM EDT" → Must convert to "07/23/2024"
+*   **Action**: Create `format_correction` with `field` = "InvoiceDate", `correct_value` = "07/23/2024"
+
+**3. Numeric Field Standards:**
+*   **Production Standard**: Clean decimal numbers without currency symbols
+*   **Common Issues**: "$123.45", "US$456.78" → Must convert to "123.45", "456.78"
+*   **Action**: Create `format_correction` to remove currency symbols from numeric fields
+
+If you find no new omissions or corrections, return an empty errors array.
+
+**🚨 CRITICAL EMPTY RESPONSE REQUIREMENT:**
+If you return an empty errors array (no errors detected), you MUST include an "explanation" field in your JSON response explaining WHY no errors were found.
+
+**MANDATORY RESPONSE FORMAT:**
+- **If errors found**: { "errors": [error objects] }
+- **If NO errors found**: { "errors": [], "explanation": "Detailed explanation of why no corrections are needed" }
+
+**EXPLANATION REQUIREMENTS when returning empty errors array:**
+1. ✅ **Document Recognition**: Confirm you recognize this as a valid invoice/business document
+2. ✅ **Field Analysis**: State which financial fields you found in the OCR text 
+3. ✅ **Balance Assessment**: Explain if the invoice appears mathematically balanced
+4. ✅ **Missing Field Check**: Confirm whether all expected invoice fields are present
+5. ✅ **Document Quality**: Assess if OCR quality allows accurate extraction
+
+**EXAMPLE EXPLANATIONS:**
+- ✅ "This appears to be a well-structured {{supplier.SupplierName}} invoice. I found SubTotal ({{invoice.SubTotal}}), Tax ({{invoice.TotalOtherCost}}), and Total ({{invoice.InvoiceTotal}}) clearly visible in the OCR text. The invoice appears mathematically balanced and all major financial fields are extractable. No corrections needed."
+- ❌ "No errors found." (insufficient - does not explain document recognition or field analysis)
+
+**CRITICAL**: Never return empty errors array without detailed explanation!
