@@ -1047,7 +1047,7 @@ namespace WaterNut.DataSpace.MetaAI
         public List<dynamic> BestPractices { get; set; }
     }
 
-    private class ABTestingResponse
+    internal class ABTestingResponse
     {
         public bool Success { get; set; }
         public string Message { get; set; }
