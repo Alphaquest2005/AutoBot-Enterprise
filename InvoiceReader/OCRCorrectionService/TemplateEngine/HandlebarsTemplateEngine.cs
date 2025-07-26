@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace.TemplateEngine
 
                 var content = await File.ReadAllTextAsync(fullPath);
                 var metadata = await LoadTemplateMetadataAsync(fullPath);
-                var template = new HandlebarsTemplate(templateName, fullPath, content, metadata, _handlebars, _logger);
+                var template = new HandlebarsTemplate(templateName, fullPath, content, metadata, _logger);
                 
                 // Validate template during load
                 var validation = await template.ValidateAsync(new TemplateContext());
