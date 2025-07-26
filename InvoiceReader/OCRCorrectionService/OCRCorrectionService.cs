@@ -1155,6 +1155,120 @@ namespace WaterNut.DataSpace
             };
         }
 
+        /// <summary>
+        /// **BUSINESS_SERVICES_COMPATIBILITY**: Data extraction method that replaces DeepSeekInvoiceApi.ExtractShipmentInvoice
+        /// **ARCHITECTURAL_INTENT**: Self-contained OCR service provides data extraction without business services dependencies
+        /// **INTERFACE_MATCH**: Same signature and return type as DeepSeekInvoiceApi.ExtractShipmentInvoice for compatibility
+        /// </summary>
+        public async Task<List<dynamic>> ExtractShipmentInvoiceDataAsync(List<string> pdfTextVariants)
+        {
+            _logger.Information("🚀 **DATA_EXTRACTION_START**: Self-contained OCR data extraction for {VariantCount} text variants", pdfTextVariants?.Count ?? 0);
+            _logger.Information("   - **ARCHITECTURAL_REPLACEMENT**: This method replaces WaterNut.Business.Services DeepSeekInvoiceApi.ExtractShipmentInvoice");
+            _logger.Information("   - **SELF_CONTAINED**: Uses OCRLlmClient instead of business services for LLM operations");
+
+            var results = new List<IDictionary<string, object>>();
+
+            if (pdfTextVariants == null || !pdfTextVariants.Any())
+            {
+                _logger.Warning("❌ **EMPTY_INPUT**: No PDF text variants provided for data extraction");
+                return results.Cast<dynamic>().ToList();
+            }
+
+            foreach (var text in pdfTextVariants)
+            {
+                try
+                {
+                    _logger.Information("🔍 **PROCESSING_VARIANT**: Processing text variant of {Length} characters", text?.Length ?? 0);
+                    
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        _logger.Warning("⚠️ **EMPTY_TEXT_VARIANT**: Skipping empty text variant");
+                        continue;
+                    }
+
+                    // Create basic invoice structure for processing
+                    var blankInvoice = new ShipmentInvoice 
+                    { 
+                        InvoiceNo = "DATA_EXTRACTION_SAMPLE",
+                        SupplierName = "UNKNOWN_SUPPLIER"
+                    };
+
+                    // Extract metadata for context
+                    var metadata = ExtractFullOCRMetadata(blankInvoice, text);
+                    
+                    // Use OCR error detection to identify field patterns
+                    _logger.Information("🤖 **LLM_ANALYSIS**: Using OCR correction service LLM for data extraction");
+                    var detectedErrors = await this.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, text, metadata).ConfigureAwait(false);
+                    
+                    if (detectedErrors != null && detectedErrors.Any())
+                    {
+                        _logger.Information("✅ **FIELDS_DETECTED**: Found {FieldCount} extractable fields", detectedErrors.Count);
+                        
+                        // Convert detected errors to data extraction format
+                        var extractedData = new Dictionary<string, object>
+                        {
+                            ["DocumentType"] = "ShipmentInvoice",
+                            ["SourceMethod"] = "OCRCorrectionService",
+                            ["ExtractionConfidence"] = detectedErrors.Average(e => e.Confidence),
+                            ["FieldCount"] = detectedErrors.Count
+                        };
+
+                        // Add detected field data
+                        foreach (var error in detectedErrors)
+                        {
+                            if (!string.IsNullOrWhiteSpace(error.Field) && !string.IsNullOrWhiteSpace(error.CorrectValue))
+                            {
+                                // Use field name as key, correct value as extracted data
+                                var fieldKey = error.Field.Replace("InvoiceDetail_", ""); // Clean field names
+                                extractedData[fieldKey] = error.CorrectValue;
+                                
+                                _logger.Information("📄 **FIELD_EXTRACTED**: {FieldName} = '{FieldValue}'", fieldKey, error.CorrectValue);
+                            }
+                        }
+
+                        results.Add(extractedData);
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **NO_FIELDS_DETECTED**: OCR analysis found no extractable fields in text variant");
+                        
+                        // Return basic structure even if no fields detected
+                        var basicData = new Dictionary<string, object>
+                        {
+                            ["DocumentType"] = "ShipmentInvoice",
+                            ["SourceMethod"] = "OCRCorrectionService",
+                            ["ExtractionConfidence"] = 0.0,
+                            ["FieldCount"] = 0,
+                            ["Status"] = "NoFieldsDetected"
+                        };
+                        results.Add(basicData);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "🚨 **EXTRACTION_ERROR**: Failed to process text variant");
+                    
+                    // Add error result to maintain pipeline compatibility
+                    var errorData = new Dictionary<string, object>
+                    {
+                        ["DocumentType"] = "ShipmentInvoice",
+                        ["SourceMethod"] = "OCRCorrectionService",
+                        ["ExtractionConfidence"] = 0.0,
+                        ["FieldCount"] = 0,
+                        ["Status"] = "ExtractionError",
+                        ["ErrorMessage"] = ex.Message
+                    };
+                    results.Add(errorData);
+                }
+            }
+
+            _logger.Information("🏁 **DATA_EXTRACTION_COMPLETE**: Extracted data from {ProcessedCount}/{TotalCount} variants", 
+                results.Count, pdfTextVariants.Count);
+            
+            // Return in same format as DeepSeekInvoiceApi for pipeline compatibility
+            return results.Cast<dynamic>().ToList();
+        }
+
         #endregion
 
         #region IDisposable Implementation
