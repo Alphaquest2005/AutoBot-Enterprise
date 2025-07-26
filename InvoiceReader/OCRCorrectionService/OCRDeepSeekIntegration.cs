@@ -44,14 +44,74 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                // **🔬 ULTRA_DIAGNOSTIC_STEP_1**: Log the raw response before any processing
+                _logger.Information("🔬 **STEP_1_RAW_RESPONSE**: DeepSeek returned {Length} characters. RAW_START\n{RawResponse}\nRAW_END", 
+                    rawResponse?.Length ?? 0, rawResponse ?? "[NULL_RESPONSE]");
+                
                 var cleanJson = this.CleanJsonResponse(rawResponse);
-                if (string.IsNullOrEmpty(cleanJson)) return null;
+                
+                // **🔬 ULTRA_DIAGNOSTIC_STEP_2**: Log the cleaned JSON
+                _logger.Information("🔬 **STEP_2_CLEANED_JSON**: After CleanJsonResponse processing. Length={Length}, IsEmpty={IsEmpty}. CLEANED_START\n{CleanedJson}\nCLEANED_END", 
+                    cleanJson?.Length ?? 0, string.IsNullOrEmpty(cleanJson), cleanJson ?? "[NULL_OR_EMPTY]");
+                
+                if (string.IsNullOrEmpty(cleanJson))
+                {
+                    _logger.Warning("🚨 **STEP_2_ABORT**: CleanJsonResponse returned null/empty. Cannot proceed with parsing.");
+                    return null;
+                }
+                
+                // **🔬 ULTRA_DIAGNOSTIC_STEP_3**: Attempt JSON parsing with detailed error context
+                _logger.Information("🔬 **STEP_3_PARSING_ATTEMPT**: About to call JsonDocument.Parse on cleaned JSON");
+                
                 using var document = JsonDocument.Parse(cleanJson);
-                return document.RootElement.Clone();
+                var rootElement = document.RootElement.Clone();
+                
+                // **🔬 ULTRA_DIAGNOSTIC_STEP_4**: Successfully parsed - analyze structure
+                _logger.Information("✅ **STEP_4_PARSE_SUCCESS**: JSON parsed successfully. RootValueKind={ValueKind}, PropertyCount={PropertyCount}",
+                    rootElement.ValueKind, 
+                    rootElement.ValueKind == JsonValueKind.Object ? rootElement.EnumerateObject().Count() : -1);
+                
+                if (rootElement.ValueKind == JsonValueKind.Object)
+                {
+                    var properties = rootElement.EnumerateObject().Select(p => p.Name).ToArray();
+                    _logger.Information("📊 **STEP_4_OBJECT_PROPERTIES**: Found properties: [{Properties}]", string.Join(", ", properties));
+                }
+                
+                return rootElement;
+            }
+            catch (System.Text.Json.JsonException jsonEx)
+            {
+                // **🚨 ULTRA_DIAGNOSTIC_JSON_ERROR**: Detailed JSON parsing error analysis
+                _logger.Error("❌ **JSON_PARSE_FAILED**: System.Text.Json.JsonException at BytePosition={BytePosition}, LineNumber={LineNumber}, Path='{Path}', Message='{Message}'",
+                    jsonEx.BytePositionInLine, jsonEx.LineNumber, jsonEx.Path ?? "[NO_PATH]", jsonEx.Message);
+                
+                // **🔧 JSON_ERROR_CONTEXT**: Provide context around the error location
+                var cleanJson = this.CleanJsonResponse(rawResponse);
+                if (!string.IsNullOrEmpty(cleanJson) && jsonEx.BytePositionInLine.HasValue)
+                {
+                    var errorPos = (int)jsonEx.BytePositionInLine.Value;
+                    var contextStart = Math.Max(0, errorPos - 50);
+                    var contextEnd = Math.Min(cleanJson.Length, errorPos + 50);
+                    var errorContext = cleanJson.Substring(contextStart, contextEnd - contextStart);
+                    var relativeErrorPos = errorPos - contextStart;
+                    
+                    _logger.Error("🔧 **JSON_ERROR_CONTEXT**: Around error position (marked with >>> <<< ): '{Context}'", 
+                        errorContext.Insert(relativeErrorPos, ">>>").Insert(relativeErrorPos + 3, "<<<"));
+                }
+                
+                return null;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to parse DeepSeek response into valid JSON structure.");
+                // **🚨 ULTRA_DIAGNOSTIC_GENERIC_ERROR**: Non-JSON specific errors
+                _logger.Error(ex, "❌ **PARSE_FAILED_GENERIC**: Non-JSON exception during parsing. ExceptionType={ExceptionType}, Message='{Message}'",
+                    ex.GetType().Name, ex.Message);
+                
+                // **🔬 DEBUG_CLEANED_JSON_ON_ERROR**: Show what we were trying to parse
+                var cleanJson = this.CleanJsonResponse(rawResponse);
+                _logger.Error("🔬 **DEBUG_FAILED_CONTENT**: We were trying to parse this cleaned content: LENGTH={Length}\n{CleanedContent}",
+                    cleanJson?.Length ?? 0, cleanJson ?? "[NULL_CONTENT]");
+                
                 return null;
             }
         }
