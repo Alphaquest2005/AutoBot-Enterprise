@@ -36,9 +36,12 @@ namespace WaterNut.DataSpace
         // Diagnostic support for capturing DeepSeek explanations
         private string _lastDeepSeekExplanation;
 
-        public double DefaultTemperature { get; set; } = 0.1;
-
-        public int DefaultMaxTokens { get; set; } = 4096;
+        // **BUSINESS_SERVICES_EQUIVALENT_PROPERTIES**: Exact match with WaterNut.Business.Services.Utils.DeepSeekInvoiceApi
+        public string PromptTemplate { get; set; }
+        public string Model { get; set; } = "deepseek-chat";
+        public double DefaultTemperature { get; set; } = 0.3;  // **FIXED**: Was 0.1, now matches business services
+        public int DefaultMaxTokens { get; set; } = 8192;      // **FIXED**: Was 4096, now matches business services  
+        public string HsCodePattern { get; set; } = @"\b\d{4}(?:[\.\-]\d{2,4})*\b";
 
         #endregion
 
