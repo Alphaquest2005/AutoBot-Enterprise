@@ -29,31 +29,18 @@ namespace WaterNut.DataSpace.TemplateEngine
             string path, 
             string content, 
             TemplateMetadata metadata, 
-            IHandlebars handlebars, 
             ILogger logger)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Path = path ?? throw new ArgumentNullException(nameof(path));
-            _templateContent = content ?? throw new ArgumentNullException(nameof(content));
+            _rawTemplate = content ?? throw new ArgumentNullException(nameof(content));
             Metadata = metadata ?? new TemplateMetadata();
-            _handlebars = handlebars ?? throw new ArgumentNullException(nameof(handlebars));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             LastModified = File.GetLastWriteTimeUtc(path);
-            RequiredVariables = ExtractRequiredVariables(_templateContent);
+            RequiredVariables = ExtractRequiredVariables(_rawTemplate);
 
-            _logger.Verbose("🔧 **TEMPLATE_COMPILATION_START**: Compiling template '{TemplateName}'", Name);
-            
-            try
-            {
-                _compiledTemplate = _handlebars.Compile(_templateContent);
-                _logger.Verbose("✅ **TEMPLATE_COMPILATION_SUCCESS**: Template '{TemplateName}' compiled successfully", Name);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "❌ **TEMPLATE_COMPILATION_ERROR**: Failed to compile template '{TemplateName}'", Name);
-                throw new TemplateCompilationException($"Failed to compile template '{Name}': {ex.Message}", ex);
-            }
+            _logger.Verbose("🔧 **BASIC_TEMPLATE_READY**: Basic template '{TemplateName}' ready for rendering", Name);
         }
 
         public async Task<string> RenderAsync(TemplateContext context)
