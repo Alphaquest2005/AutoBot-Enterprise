@@ -77,15 +77,6 @@ namespace WaterNut.DataSpace.TemplateEngine
                 throw new TemplateRenderException($"Failed to render template '{Name}': {ex.Message}", ex);
             }
         }
-            {
-                throw; // Re-throw timeout exceptions as-is
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "❌ **TEMPLATE_RENDER_ERROR**: Failed to render template '{TemplateName}'", Name);
-                throw new TemplateRenderException($"Failed to render template '{Name}': {ex.Message}", ex);
-            }
-        }
 
         public async Task<TemplateValidationResult> ValidateAsync(TemplateContext context = null)
         {
