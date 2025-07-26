@@ -33,11 +33,8 @@ namespace WaterNut.DataSpace
 
         private DatabaseUpdateStrategyFactory _strategyFactory;
         
-        // Template system services for file-based prompt generation
-        private readonly ITemplateEngine _templateEngine;
-        private readonly OCRTemplateService _templateService;
-        private readonly IMetaAIService _metaAIService;
-        private readonly TemplateSystemConfiguration _templateConfig;
+        // AI-powered template service for file-based prompt generation
+        private readonly AITemplateService _templateService;
         
         // Diagnostic support for capturing DeepSeek explanations
         private string _lastDeepSeekExplanation;
