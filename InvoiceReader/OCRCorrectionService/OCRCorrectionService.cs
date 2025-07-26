@@ -60,6 +60,9 @@ namespace WaterNut.DataSpace
                 throw;
             }
             _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
+            
+            // **BUSINESS_SERVICES_EQUIVALENT_INITIALIZATION**: Initialize PromptTemplate like DeepSeekInvoiceApi constructor
+            SetDefaultPrompts();
         }
 
         #endregion
