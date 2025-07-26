@@ -1014,7 +1014,7 @@ namespace WaterNut.DataSpace.MetaAI
         public Dictionary<string, object> Metadata { get; set; }
     }
 
-    private class PromptAnalysisResponse
+    internal class PromptAnalysisResponse
     {
         public bool Success { get; set; }
         public string Message { get; set; }
@@ -1025,7 +1025,7 @@ namespace WaterNut.DataSpace.MetaAI
         public List<dynamic> Suggestions { get; set; }
     }
 
-    private class PromptOptimizationResponse
+    internal class PromptOptimizationResponse
     {
         public bool Success { get; set; }
         public string Message { get; set; }
