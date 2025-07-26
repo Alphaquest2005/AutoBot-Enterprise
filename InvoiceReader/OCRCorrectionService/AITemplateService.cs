@@ -166,7 +166,7 @@ namespace WaterNut.DataSpace
                 if (File.Exists(path))
                 {
                     _logger.Verbose("📄 **TEMPLATE_LOADED**: {TemplatePath}", path);
-                    return await File.ReadAllTextAsync(path);
+                    return File.ReadAllText(path);
                 }
             }
 
