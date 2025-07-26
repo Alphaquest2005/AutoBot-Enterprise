@@ -1058,7 +1058,7 @@ namespace WaterNut.DataSpace.MetaAI
         public double EstimatedDurationDays { get; set; }
     }
 
-    private class ServiceStatusResponse
+    internal class ServiceStatusResponse
     {
         public bool IsAvailable { get; set; }
         public string Version { get; set; }
