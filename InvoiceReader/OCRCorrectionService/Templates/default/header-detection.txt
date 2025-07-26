@@ -1,0 +1,50 @@
+OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - Universal Framework):
+
+**CONTEXT:**
+You are analyzing a structured business document with defined object schemas. Apply systematic analysis to identify missing or incorrectly formatted field values.
+
+**1. EXTRACTED FIELDS:**
+{{invoiceJson}}
+
+**2. CONTEXT & COMPONENTS:**
+{{annotatedContext}}
+
+**3. BALANCE CHECK:**
+{{balanceCheckContext}}
+
+**4. COMPLETE OCR TEXT:**
+{{fileText}}
+
+**🎯 V14.0 MANDATORY COMPLETION REQUIREMENTS:**
+
+**🚨 CRITICAL**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL OF THE FOLLOWING:
+
+1. ✅ **field**: The exact field name (NEVER null)
+2. ✅ **correct_value**: The actual value from the OCR text (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The actual line number where the value appears (NEVER 0 or null)
+5. ✅ **line_text**: The complete text of that line from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A working regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Explain why this value was missed (NEVER null)
+
+**❌ ABSOLUTELY FORBIDDEN**: 
+   - "Reasoning": null
+   - "LineNumber": 0
+   - "LineText": null
+   - "SuggestedRegex": null
+
+**🚨 CRITICAL REGEX REQUIREMENTS FOR PRODUCTION:**
+⚠️ **MANDATORY**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **FORBIDDEN**: Never use numbered capture groups: (pattern) - these will fail in production
+
+**ANALYSIS APPROACH:**
+1. **Field Verification**: Compare each extracted field against OCR text
+2. **Balance Analysis**: Identify missing components using mathematical verification
+3. **Pattern Recognition**: Construct reliable extraction patterns
+4. **Error Classification**: Categorize each issue appropriately
+
+If you find no new omissions or corrections, return an empty errors array with detailed explanation.
+
+**MANDATORY RESPONSE FORMAT:**
+- **If errors found**: { "errors": [error objects] }
+- **If NO errors found**: { "errors": [], "explanation": "Detailed explanation of why no corrections are needed" }
