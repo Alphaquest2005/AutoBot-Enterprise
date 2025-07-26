@@ -298,6 +298,18 @@ namespace WaterNut.DataSpace
                 _logger.Error("   - **Replacement**: '{Replacement}'", request.Replacement ?? "NULL");
                 _logger.Error("   - **CorrectionType**: '{CorrectionType}'", request.CorrectionType);
                 
+                // 🔧 **ENHANCED_WINDOWTEXT**: Combine WindowText and SuggestedRegex for complete data preservation
+                var enhancedWindowText = request.WindowText ?? "";
+                if (!string.IsNullOrWhiteSpace(request.SuggestedRegex))
+                {
+                    // Store SuggestedRegex in structured format within WindowText field
+                    enhancedWindowText = string.IsNullOrWhiteSpace(enhancedWindowText) 
+                        ? $"SUGGESTED_REGEX:{request.SuggestedRegex}"
+                        : $"{enhancedWindowText}|SUGGESTED_REGEX:{request.SuggestedRegex}";
+                    
+                    _logger.Information("🔧 **SUGGESTED_REGEX_PRESERVED**: Storing SuggestedRegex '{SuggestedRegex}' in enhanced WindowText field", request.SuggestedRegex);
+                }
+
                 var learning = new OCRCorrectionLearning
                                    {
                                        FieldName = request.FieldName,
@@ -305,7 +317,7 @@ namespace WaterNut.DataSpace
                                        CorrectValue = request.NewValue ?? string.Empty,
                                        LineNumber = request.LineNumber,
                                        LineText = request.LineText ?? string.Empty,
-                                       WindowText = request.WindowText,
+                                       WindowText = enhancedWindowText,
                                        CorrectionType = request.CorrectionType,
                                        DeepSeekReasoning = TruncateForLog(request.DeepSeekReasoning, 1000),
                                        Confidence = safeConfidence,
@@ -321,8 +333,7 @@ namespace WaterNut.DataSpace
                                        LineId = request.LineId,
                                        PartId = request.PartId,
                                        RegexId = dbUpdateResult.IsSuccess ? dbUpdateResult.RecordId : request.RegexId,
-                                       // 🚨 **CRITICAL_MISSING_FIELD**: SuggestedRegex not being saved - will be lost!
-                                       // TODO: Add SuggestedRegex = request.SuggestedRegex when database schema is updated
+                                       // ✅ **FIELD_PRESERVED**: SuggestedRegex now preserved in enhanced WindowText field
                                    };
                 
                 _logger.Error("🚨 **CRITICAL_ISSUE**: SuggestedRegex field '{SuggestedRegex}' will be LOST - not saved to database", request.SuggestedRegex ?? "NULL");
