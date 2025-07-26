@@ -286,7 +286,7 @@ namespace AutoBotUtilities.Tests
                     _logger.Error("🔍 **EXCEPTION_DETAILS**: Message: {Message}, StackTrace: {StackTrace}", e.Message, e.StackTrace);
                     Assert.Fail($"Test {testCase.TestName} failed: {e.Message}");
                 }
-            }
+            // }
         }
 
         /// <summary>
