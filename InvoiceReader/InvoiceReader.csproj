@@ -24,6 +24,7 @@
 	<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 	<PackageReference Include="System.Text.Json" Version="9.0.5" /> <!-- Adjust version if needed -->
 	<PackageReference Include="TrackableEntities.Client" Version="2.5.7" /> <!-- Adjust version if needed -->
+	<PackageReference Include="Handlebars.Net" Version="2.1.6" />
   </ItemGroup>
 
   <ItemGroup>
