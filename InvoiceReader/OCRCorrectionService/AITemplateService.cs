@@ -80,9 +80,14 @@ namespace WaterNut.DataSpace
                     provider, invoice?.SupplierName ?? "Unknown");
 
                 // 1. Load provider-specific template
+                _logger.Information("🔍 **TEMPLATE_LOADING**: Attempting to load template for provider={Provider}, type=header-detection, supplier={Supplier}", 
+                    provider, invoice?.SupplierName);
+                
                 var template = LoadTemplateAsync(provider, "header-detection", invoice?.SupplierName);
+                _logger.Information("✅ **TEMPLATE_LOADED**: Successfully loaded template. Length: {Length} characters", template?.Length ?? 0);
                 
                 // 2. Validate template
+                _logger.Information("🔍 **TEMPLATE_VALIDATING**: Validating template structure and required variables");
                 var validation = ValidateTemplate(template, provider);
                 if (!validation.IsValid)
                 {
@@ -90,12 +95,18 @@ namespace WaterNut.DataSpace
                         string.Join("; ", validation.Errors));
                     return CreateFallbackPrompt(invoice, fileText, metadata);
                 }
+                _logger.Information("✅ **TEMPLATE_VALID**: Template validation passed");
 
                 // 3. Prepare template data (extract from existing prompt creation logic)
+                _logger.Information("🔍 **DATA_PREPARATION**: Preparing template data from invoice and metadata");
                 var templateData = PrepareTemplateData(invoice, fileText, metadata);
+                _logger.Information("✅ **DATA_PREPARED**: Template data prepared. Variables: {Variables}", 
+                    string.Join(", ", templateData.Keys));
                 
                 // 4. Render template with data
+                _logger.Information("🔍 **TEMPLATE_RENDERING**: Rendering template with prepared data");
                 var prompt = RenderTemplate(template, templateData);
+                _logger.Information("✅ **TEMPLATE_RENDERED**: Template rendered successfully. Final prompt length: {Length}", prompt?.Length ?? 0);
                 
                 // 5. Async: Get AI recommendations for improvement (non-blocking)
                 if (_systemConfig.EnableRecommendations)
@@ -110,7 +121,9 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "❌ **AI_TEMPLATE_ERROR**: Failed for provider {Provider}, using fallback", provider);
+                _logger.Error(ex, "❌ **AI_TEMPLATE_ERROR**: Failed for provider {Provider} at step: {Step}. Exception: {Message}", 
+                    provider, "UNKNOWN", ex.Message);
+                _logger.Error("❌ **AI_TEMPLATE_STACK**: {StackTrace}", ex.StackTrace);
                 return CreateFallbackPrompt(invoice, fileText, metadata);
             }
         }
