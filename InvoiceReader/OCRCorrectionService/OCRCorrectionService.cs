@@ -856,6 +856,102 @@ namespace WaterNut.DataSpace
         }
 
 
+        /// <summary>
+        /// Create OCRCorrectionLearning records for template creation process
+        /// This preserves what DeepSeek learned during template creation for future analysis and improvement
+        /// </summary>
+        private async Task CreateTemplateLearningRecordsAsync(
+            OCRContext dbContext,
+            List<InvoiceError> detectedErrors,
+            string templateName,
+            string filePath,
+            int templateId)
+        {
+            if (detectedErrors == null || !detectedErrors.Any())
+            {
+                _logger.Information("📝 **NO_TEMPLATE_LEARNING**: No detected errors to create learning records from");
+                return;
+            }
+
+            _logger.Information("📝 **TEMPLATE_LEARNING_PROCESSING**: Creating {Count} learning records for template '{TemplateName}'", 
+                detectedErrors.Count, templateName);
+
+            var learningRecords = new List<OCRCorrectionLearning>();
+
+            foreach (var error in detectedErrors)
+            {
+                try
+                {
+                    // Build enhanced WindowText with SuggestedRegex for template creation context
+                    var enhancedWindowText = !string.IsNullOrWhiteSpace(error.CapturedFields?.FirstOrDefault())
+                        ? string.Join(",", error.CapturedFields)
+                        : error.LineText ?? "";
+
+                    if (!string.IsNullOrWhiteSpace(error.SuggestedRegex))
+                    {
+                        enhancedWindowText = string.IsNullOrWhiteSpace(enhancedWindowText)
+                            ? $"SUGGESTED_REGEX:{error.SuggestedRegex}"
+                            : $"{enhancedWindowText}|SUGGESTED_REGEX:{error.SuggestedRegex}";
+                    }
+
+                    var learning = new OCRCorrectionLearning
+                    {
+                        FieldName = error.Field ?? "Unknown",
+                        OriginalError = error.ExtractedValue ?? "Missing",
+                        CorrectValue = error.CorrectValue ?? "Template Pattern",
+                        LineNumber = error.LineNumber,
+                        LineText = error.LineText ?? "",
+                        WindowText = enhancedWindowText,
+                        CorrectionType = "template_creation", // Special type for template creation
+                        DeepSeekReasoning = error.Reasoning ?? $"Template creation pattern identification for {templateName}",
+                        Confidence = error.Confidence,
+                        InvoiceType = templateName,
+                        FilePath = filePath,
+                        Success = true, // Template creation was successful
+                        ErrorMessage = null,
+                        CreatedBy = "OCRCorrectionService_TemplateCreation",
+                        CreatedDate = DateTime.Now,
+                        RequiresMultilineRegex = error.RequiresMultilineRegex,
+                        ContextLinesBefore = error.ContextLinesBefore != null ? string.Join("\n", error.ContextLinesBefore) : null,
+                        ContextLinesAfter = error.ContextLinesAfter != null ? string.Join("\n", error.ContextLinesAfter) : null,
+                        RegexId = templateId // Link to the created template
+                    };
+
+                    learningRecords.Add(learning);
+                    
+                    _logger.Information("📝 **TEMPLATE_LEARNING_RECORD**: Field='{Field}', Type='{Type}', Confidence={Confidence}", 
+                        learning.FieldName, learning.CorrectionType, learning.Confidence);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning(ex, "⚠️ **TEMPLATE_LEARNING_ERROR**: Failed to create learning record for field '{Field}'", error.Field);
+                }
+            }
+
+            if (learningRecords.Any())
+            {
+                try
+                {
+                    _logger.Information("💾 **TEMPLATE_LEARNING_SAVE**: Saving {Count} template learning records to database", learningRecords.Count);
+                    
+                    dbContext.OCRCorrectionLearning.AddRange(learningRecords);
+                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                    
+                    _logger.Information("✅ **TEMPLATE_LEARNING_SUCCESS**: Successfully saved {Count} template learning records", learningRecords.Count);
+                    
+                    // Log summary of what was learned
+                    var fieldSummary = learningRecords.GroupBy(l => l.FieldName).ToDictionary(g => g.Key, g => g.Count());
+                    _logger.Information("📊 **TEMPLATE_LEARNING_SUMMARY**: Fields learned: {FieldSummary}", 
+                        string.Join(", ", fieldSummary.Select(kvp => $"{kvp.Key}({kvp.Value})")));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "🚨 **TEMPLATE_LEARNING_SAVE_FAILED**: Failed to save template learning records");
+                    // Don't throw - template creation was successful, learning is supplementary
+                }
+            }
+        }
+
         #endregion
 
         #region IDisposable Implementation
