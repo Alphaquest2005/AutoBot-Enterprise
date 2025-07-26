@@ -592,7 +592,7 @@ Return your suggestions as JSON in this exact format:
             
             // Save back to file
             var json = JsonSerializer.Serialize(recentRecommendations, new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(filePath, json);
+            File.WriteAllText(filePath, json);
         }
 
         #endregion
