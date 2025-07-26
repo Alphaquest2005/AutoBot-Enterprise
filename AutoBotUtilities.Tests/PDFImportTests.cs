@@ -118,7 +118,7 @@ namespace AutoBotUtilities.Tests
                 string logFilePath = Path.Combine(
                     TestContext.CurrentContext.TestDirectory,
                     "Logs",
-                    "AutoBotTests-.log");
+                    $"AutoBotTests-{DateTime.Now:yyyyMMdd}.log");
                 Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
 
                 // Define your custom System.Text.Json options
