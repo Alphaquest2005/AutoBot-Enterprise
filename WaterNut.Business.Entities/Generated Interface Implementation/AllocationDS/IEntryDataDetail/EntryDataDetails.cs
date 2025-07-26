@@ -15,7 +15,7 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Entities
 {
-		public partial class EntryDataDetails: IEntryDataDetail //AllocationDS
+		public partial class EntryDataDetails/*: IEntryDataDetail*/ //AllocationDS - T4 byproduct interface commented out
 		{  // please don't expect properties here, they are implict, only multilayer will appear here
                  [IgnoreDataMember]
                  [NotMapped]
