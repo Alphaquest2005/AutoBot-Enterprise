@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Handlebars;
+// using Handlebars; // Temporarily disable for basic template implementation
 using Serilog;
 
 namespace WaterNut.DataSpace.TemplateEngine
@@ -16,8 +16,8 @@ namespace WaterNut.DataSpace.TemplateEngine
     public class HandlebarsTemplate : ITemplate
     {
         private readonly ILogger _logger;
-        private readonly IHandlebars _handlebars;
-        private readonly Func<object, string> _compiledTemplate;
+        // Basic template implementation - replace Handlebars temporarily
+        private readonly string _templateContent;
         private readonly string _templateContent;
 
         public string Name { get; }
