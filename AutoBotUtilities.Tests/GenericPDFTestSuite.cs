@@ -233,8 +233,8 @@ namespace AutoBotUtilities.Tests
         {
             var testStartTime = DateTime.Now.AddSeconds(-5);
             
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+            // {
                 try
                 {
                     _logger.Information("🔍 **GENERIC_TEST_START**: {TestName}", testCase.TestName);
