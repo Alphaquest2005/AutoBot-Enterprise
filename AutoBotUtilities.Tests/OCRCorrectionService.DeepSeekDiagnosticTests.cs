@@ -381,8 +381,8 @@ namespace AutoBotUtilities.Tests.Production
             // Set TotalDeduction to null to simulate the actual test condition
             invoice.TotalDeduction = null;
             
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+            // {
                 _logger.Information("🔍 **INTEGRATION_TEST**: Running complete detection pipeline");
                 
                 // Step 1: Test Amazon-specific detection
