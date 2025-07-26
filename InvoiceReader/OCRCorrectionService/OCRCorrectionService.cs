@@ -823,15 +823,15 @@ namespace WaterNut.DataSpace
                     ApplicationSettingsId = 1 // Default application settings
                 };
 
-                // Create basic FileImporterInfos for EntryType compatibility
-                var importerInfo = new CoreEntities.Business.Entities.FileImporterInfos
+                // Create basic FileImporterInfo for EntryType compatibility
+                var importerInfo = new CoreEntities.Business.Entities.FileImporterInfo
                 {
                     EntryType = "ShipmentInvoice",
                     Format = "PDF",
                     FileTypeId = fileType.Id
                 };
 
-                // Link the FileImporterInfos to the FileType
+                // Link the FileImporterInfo to the FileType
                 fileType.FileImporterInfos = importerInfo;
 
                 _logger.Information("✅ **SELF_CONTAINED_FILETYPE_CREATED**: Created basic FileType structure");
