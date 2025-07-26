@@ -20,7 +20,6 @@ using Core.Common.Extensions;
 namespace WaterNut.DataSpace
 {
     using System.Text.Json.Serialization;
-    using WaterNut.Business.Services.Utils;
 
     public partial class OCRCorrectionService : IDisposable
     {
