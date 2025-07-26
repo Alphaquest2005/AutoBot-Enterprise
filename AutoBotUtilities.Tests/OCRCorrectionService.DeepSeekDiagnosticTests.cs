@@ -238,8 +238,8 @@ namespace AutoBotUtilities.Tests.Production
             invoice.TotalDeduction = null;
             
             // Enable comprehensive logging for DeepSeek calls
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+            // {
                 _logger.Information("🔍 **DEEPSEEK_PIPELINE_TEST**: Starting complete DeepSeek detection test");
                 
                 // Act - Call the private DetectHeaderFieldErrorsAndOmissionsAsync method
