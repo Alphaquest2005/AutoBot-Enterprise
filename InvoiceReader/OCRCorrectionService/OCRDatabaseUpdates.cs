@@ -336,7 +336,7 @@ namespace WaterNut.DataSpace
                                        // ✅ **FIELD_PRESERVED**: SuggestedRegex now preserved in enhanced WindowText field
                                    };
                 
-                _logger.Error("🚨 **CRITICAL_ISSUE**: SuggestedRegex field '{SuggestedRegex}' will be LOST - not saved to database", request.SuggestedRegex ?? "NULL");
+                // ✅ **ISSUE_RESOLVED**: SuggestedRegex is now preserved in enhanced WindowText field
 
                 context.OCRCorrectionLearning.Add(learning);
                 await context.SaveChangesAsync().ConfigureAwait(false);
