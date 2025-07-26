@@ -827,11 +827,10 @@ namespace WaterNut.DataSpace
                 var importerInfo = new CoreEntities.Business.Entities.FileImporterInfo
                 {
                     EntryType = "ShipmentInvoice",
-                    Format = "PDF",
-                    FileTypeId = fileType.Id
+                    Format = "PDF"
                 };
 
-                // Link the FileImporterInfo to the FileType
+                // Link the FileImporterInfo to the FileType (relationship is FileType -> FileImporterInfo)
                 fileType.FileImporterInfos = importerInfo;
 
                 _logger.Information("✅ **SELF_CONTAINED_FILETYPE_CREATED**: Created basic FileType structure");
