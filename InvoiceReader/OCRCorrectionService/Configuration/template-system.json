@@ -1,0 +1,235 @@
+{
+  "templatePaths": {
+    "basePath": "OCRCorrectionService/Templates",
+    "backupPath": "OCRCorrectionService/Templates/System/Backups",
+    "auditPath": "OCRCorrectionService/Templates/System/Audit",
+    "sharedResourcesPath": "OCRCorrectionService/Templates/OCR/Shared",
+    "metaAIPath": "OCRCorrectionService/Templates/MetaAI"
+  },
+  "templateEngine": {
+    "enableHotReload": true,
+    "fileWatcherDelayMs": 100,
+    "validationTimeout": "00:00:30",
+    "renderTimeout": "00:02:00",
+    "enableStrictValidation": true,
+    "cacheCompiledTemplates": true
+  },
+  "metaAI": {
+    "enabled": false,
+    "apiEndpoint": "https://api.meta.ai/v1/",
+    "apiKey": null,
+    "timeoutMinutes": 5,
+    "maxRetryAttempts": 3,
+    "enableOptimization": false,
+    "enableContinuousOptimization": false,
+    "optimizationInterval": "1.00:00:00",
+    "supportedFeatures": [
+      "prompt_recommendations",
+      "prompt_optimization", 
+      "prompt_analysis",
+      "prompt_validation",
+      "ab_testing",
+      "auto_implementation"
+    ],
+    "targetModels": [
+      "DeepSeek",
+      "Gemini", 
+      "Generic"
+    ],
+    "defaultOptimizationGoals": {
+      "improveAccuracy": true,
+      "reduceResponseTime": false,
+      "increaseConsistency": true,
+      "reduceTokenUsage": false,
+      "improveClarity": true,
+      "reduceHallucination": true,
+      "customGoals": [],
+      "goalWeights": {
+        "accuracy": 0.4,
+        "consistency": 0.3,
+        "clarity": 0.2,
+        "hallucination_reduction": 0.1
+      }
+    },
+    "abTestingConfig": {
+      "minimumSampleSize": 100,
+      "statisticalSignificanceLevel": 0.05,
+      "maxTestDuration": "7.00:00:00",
+      "enableAutomaticVariantGeneration": true,
+      "maxConcurrentTests": 3
+    }
+  },
+  "autoImplementation": {
+    "enabled": false,
+    "requireBackup": true,
+    "enableRollback": true,
+    "enableValidation": true,
+    "rollbackOnValidationFailure": true,
+    "restrictedOperations": [
+      "delete_template",
+      "modify_critical_sections"
+    ],
+    "validationTimeout": "00:05:00",
+    "supportedChangeTypes": [
+      "PromptOptimization",
+      "RegexImprovement", 
+      "InstructionClarification",
+      "FieldMappingCorrection",
+      "ExampleAddition",
+      "ContextualImprovement"
+    ],
+    "confidenceThresholds": {
+      "autoImplementable": "Medium",
+      "requiresReview": "Low",
+      "rejectThreshold": "Low"
+    }
+  },
+  "environments": {
+    "development": {
+      "name": "Development",
+      "overrideSettings": {
+        "enableMetaAI": false,
+        "enableHotReload": true,
+        "enableAutoImplementation": false,
+        "logLevel": "Verbose",
+        "enableABTesting": false,
+        "cacheTemplates": false
+      }
+    },
+    "testing": {
+      "name": "Testing", 
+      "overrideSettings": {
+        "enableMetaAI": true,
+        "enableHotReload": true,
+        "enableAutoImplementation": true,
+        "logLevel": "Information",
+        "enableABTesting": true,
+        "cacheTemplates": true,
+        "testDataPath": "TestData/MANGO"
+      }
+    },
+    "production": {
+      "name": "Production",
+      "overrideSettings": {
+        "enableMetaAI": true,
+        "enableHotReload": false,
+        "enableAutoImplementation": true,
+        "logLevel": "Warning",
+        "enableABTesting": false,
+        "cacheTemplates": true,
+        "performanceMonitoring": true
+      }
+    }
+  },
+  "logging": {
+    "minimumLevel": "Information",
+    "enableFileLogging": true,
+    "logFilePattern": "Logs/TemplateSystem-{Date}.log",
+    "retainedFileCount": 30,
+    "enableConsoleLogging": true,
+    "enablePerformanceLogging": true,
+    "categoryLevels": {
+      "TemplateEngine": "Information",
+      "MetaAI": "Information", 
+      "AutoImplementation": "Information",
+      "Validation": "Verbose",
+      "Performance": "Warning"
+    }
+  },
+  "ocrSpecificSettings": {
+    "enableNamedCaptureGroupValidation": true,
+    "enableJSONComplianceChecking": true,
+    "enableBalanceCheckIntegration": true,
+    "supportedOCRSections": [
+      "Single Column",
+      "Ripped Text", 
+      "SparseText",
+      "Multi Column",
+      "Table Format"
+    ],
+    "requiredFieldMappings": [
+      "InvoiceTotal",
+      "Currency",
+      "InvoiceDate",
+      "SupplierName",
+      "SubTotal"
+    ],
+    "supplierSpecificTemplates": {
+      "MANGO": {
+        "templatePath": "OCR/HeaderDetection/mango-specific.hbs",
+        "specialRequirements": [
+          "TOTAL AMOUNT field detection",
+          "European currency formatting",
+          "Fashion retailer invoice patterns"
+        ]
+      },
+      "Amazon": {
+        "templatePath": "OCR/HeaderDetection/amazon-specific.hbs",
+        "specialRequirements": [
+          "Order number extraction",
+          "Multiple shipping addresses",
+          "Digital receipt formatting"
+        ]
+      }
+    }
+  },
+  "performanceSettings": {
+    "templateCacheSize": 100,
+    "maxConcurrentRenders": 10,
+    "renderTimeoutWarningThreshold": "00:00:15",
+    "memoryUsageWarningThreshold": 52428800,
+    "enableMetrics": true,
+    "metricsRetentionDays": 30,
+    "enablePerformanceOptimization": true
+  },
+  "validationSettings": {
+    "enableSyntaxValidation": true,
+    "enableSemanticValidation": true,
+    "enablePerformanceValidation": true,
+    "enableSecurityValidation": true,
+    "customValidationRules": [
+      {
+        "name": "RequireNamedCaptureGroups",
+        "pattern": "\\([^?][^<].*?\\)",
+        "message": "Use named capture groups (?<name>pattern) instead of numbered groups",
+        "severity": "Error"
+      },
+      {
+        "name": "PreventExcessiveEscaping", 
+        "pattern": "\\\\\\\\\\\\\\\\+",
+        "message": "Avoid excessive backslash escaping",
+        "severity": "Warning"
+      }
+    ]
+  },
+  "backupSettings": {
+    "enableAutomaticBackups": true,
+    "backupRetentionDays": 30,
+    "maxBackupsPerTemplate": 10,
+    "compressionEnabled": true,
+    "includeMetadata": true,
+    "backupNamingPattern": "{templateName}_{timestamp}_{changeType}.backup"
+  },
+  "auditSettings": {
+    "enableAuditTrail": true,
+    "retentionPolicy": {
+      "retentionPeriod": "90.00:00:00",
+      "minimumEntriesToKeep": 100,
+      "createBackupBeforePurge": true
+    },
+    "trackingLevel": "Detailed",
+    "enableAnalytics": true,
+    "analyticsRetentionDays": 365
+  },
+  "securitySettings": {
+    "enablePathValidation": true,
+    "allowedDirectories": [
+      "OCRCorrectionService/Templates",
+      "OCRCorrectionService/Configuration"
+    ],
+    "preventDirectoryTraversal": true,
+    "enableInputSanitization": true,
+    "maxTemplateSizeBytes": 1048576,
+    "enableVirusScanningIfAvailable": false
+  }
+}
