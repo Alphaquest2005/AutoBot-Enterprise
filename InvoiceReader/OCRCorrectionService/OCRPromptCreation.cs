@@ -7,7 +7,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using EntryDataDS.Business.Entities; // For ShipmentInvoice
 using Serilog;
-using WaterNut.DataSpace.TemplateEngine; // For template system integration
 
 // WaterNut.DataSpace types (CorrectionResult, LineContext, OCRFieldMetadata) are in the same namespace.
 namespace WaterNut.DataSpace
