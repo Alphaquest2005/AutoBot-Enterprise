@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Handlebars;
+// using Handlebars; // Temporarily disable for basic template implementation
 using Serilog;
 
 namespace WaterNut.DataSpace.TemplateEngine
@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace.TemplateEngine
         private readonly string _templateBasePath;
         private readonly ConcurrentDictionary<string, ITemplate> _templateCache;
         private readonly ConcurrentDictionary<string, FileSystemWatcher> _fileWatchers;
-        private readonly IHandlebars _handlebars;
+        // Basic template engine - no Handlebars dependency
         private readonly TemplateEngineConfig _config;
 
         public event EventHandler<TemplateReloadedEventArgs> TemplateReloaded;
@@ -36,8 +36,7 @@ namespace WaterNut.DataSpace.TemplateEngine
             _templateCache = new ConcurrentDictionary<string, ITemplate>();
             _fileWatchers = new ConcurrentDictionary<string, FileSystemWatcher>();
             
-            // Initialize Handlebars with custom configuration
-            _handlebars = Handlebars.Create(_config.HandlebarsConfiguration);
+            // Basic template engine initialization - no Handlebars needed
             
             _logger.Information("🏗️ **TEMPLATE_ENGINE_INITIALIZED**: Base path='{BasePath}', Hot reload={HotReload}", 
                 _templateBasePath, _config.EnableHotReload);
