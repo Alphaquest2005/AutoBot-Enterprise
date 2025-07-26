@@ -1497,6 +1497,7 @@ namespace WaterNut.DataSpace
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
+                    _templateService?.Dispose();
                 }
                 _disposed = true;
             }
