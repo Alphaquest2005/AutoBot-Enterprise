@@ -16,9 +16,7 @@ namespace WaterNut.DataSpace.TemplateEngine
     public class HandlebarsTemplate : ITemplate
     {
         private readonly ILogger _logger;
-        // Basic template implementation - replace Handlebars temporarily
-        private readonly string _templateContent;
-        private readonly string _templateContent;
+        private readonly string _rawTemplate;
 
         public string Name { get; }
         public string Path { get; }
