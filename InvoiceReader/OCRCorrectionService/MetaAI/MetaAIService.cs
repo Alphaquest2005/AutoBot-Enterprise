@@ -1037,7 +1037,7 @@ namespace WaterNut.DataSpace.MetaAI
         public string Rationale { get; set; }
     }
 
-    private class PromptValidationResponse
+    internal class PromptValidationResponse
     {
         public bool IsValid { get; set; }
         public bool HasWarnings { get; set; }
