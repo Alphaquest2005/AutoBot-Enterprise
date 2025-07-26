@@ -1453,6 +1453,19 @@ namespace WaterNut.DataSpace
 
         #endregion
 
+        /// <summary>
+        /// **BUSINESS_SERVICES_EQUIVALENT_METHOD**: SetDefaultPrompts method equivalent to DeepSeekInvoiceApi
+        /// Initializes PromptTemplate property to match business services behavior exactly
+        /// </summary>
+        private void SetDefaultPrompts()
+        {
+            // **CRITICAL**: Initialize PromptTemplate to match business services DeepSeekInvoiceApi constructor behavior
+            PromptTemplate = GetBusinessServicesPromptTemplate();
+            
+            _logger.Debug("**BUSINESS_SERVICES_INIT**: PromptTemplate initialized to match DeepSeekInvoiceApi - Length: {PromptLength}", 
+                PromptTemplate?.Length ?? 0);
+        }
+
         #endregion
 
         #region IDisposable Implementation
