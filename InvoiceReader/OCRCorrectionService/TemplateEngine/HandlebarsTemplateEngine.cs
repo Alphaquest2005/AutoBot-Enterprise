@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HandlebarsNet;
+using Handlebars;
 using Serilog;
 
 namespace WaterNut.DataSpace.TemplateEngine
