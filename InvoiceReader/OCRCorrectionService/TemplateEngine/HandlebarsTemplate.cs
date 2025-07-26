@@ -45,33 +45,31 @@ namespace WaterNut.DataSpace.TemplateEngine
 
         public async Task<string> RenderAsync(TemplateContext context)
         {
-            _logger.Verbose("🎨 **TEMPLATE_RENDER_START**: Rendering template '{TemplateName}' with {VariableCount} variables", 
+            _logger.Verbose("🎨 **BASIC_TEMPLATE_RENDER**: Rendering basic template '{TemplateName}' with {VariableCount} variables", 
                 Name, context?.Variables?.Count ?? 0);
 
             try
             {
                 context = context ?? new TemplateContext();
                 
-                // Validate context has required variables
-                var validationResult = await ValidateContextAsync(context);
-                if (!validationResult.IsValid && context.Options.EnableStrictMode)
-                {
-                    var errorMessage = $"Template '{Name}' validation failed: {string.Join("; ", validationResult.Errors.Select(e => e.Message))}";
-                    throw new TemplateValidationException(errorMessage);
-                }
-
-                // Prepare data for Handlebars
-                var handlebarsData = PrepareHandlebarsData(context);
+                // Basic template rendering using string replacement
+                var result = _rawTemplate;
                 
-                // Apply timeout if specified
-                string result;
-                if (context.Options.RenderTimeout > TimeSpan.Zero)
+                // Replace variables in format {{variableName}}
+                if (context.Variables != null)
                 {
-                    var renderTask = Task.Run(() => _compiledTemplate(handlebarsData));
-                    
-                    if (await Task.WhenAny(renderTask, Task.Delay(context.Options.RenderTimeout)) == renderTask)
+                    foreach (var variable in context.Variables)
                     {
-                        result = await renderTask;
+                        var placeholder = $"{{{{{variable.Key}}}}}";
+                        var value = variable.Value?.ToString() ?? "";
+                        result = result.Replace(placeholder, value);
+                    }
+                }
+                
+                _logger.Verbose("✅ **BASIC_TEMPLATE_SUCCESS**: Template '{TemplateName}' rendered successfully. Output length: {OutputLength}", 
+                    Name, result.Length);
+                
+                return await Task.FromResult(result);
                     }
                     else
                     {
