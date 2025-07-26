@@ -22,7 +22,7 @@ namespace TestRunner
             {
                 // Use surgical debugging LogLevelOverride to capture complete execution
                 // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
-                {
+                // {
                     Log.Information("🔬 **SURGICAL_DEBUGGING_START**: Running MANGO test with comprehensive logging");
                     
                     // This scope will terminate the application when done, providing focused logs
