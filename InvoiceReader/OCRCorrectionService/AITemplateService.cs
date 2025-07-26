@@ -569,7 +569,7 @@ Return your suggestions as JSON in this exact format:
             }
         }
 
-        private async Task SaveRecommendationsAsync(string provider, List<PromptRecommendation> recommendations)
+        private void SaveRecommendationsAsync(string provider, List<PromptRecommendation> recommendations)
         {
             var filePath = Path.Combine(_recommendationsPath, $"{provider}-suggestions.json");
             
