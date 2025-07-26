@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Ghostscript.NET;
 using iText.Kernel.Pdf;
 using Tesseract;
