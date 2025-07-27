@@ -75,7 +75,7 @@ namespace WaterNut.DataSpace
                 try
                 {
                     _logger.Information("1️⃣ **TRYING_DEEPSEEK**: Attempting DeepSeek API call");
-                    var deepSeekResponse = await CallDeepSeekAsync(prompt, temperature ?? 0.3, maxTokens ?? 4096, cancellationToken);
+                    var deepSeekResponse = await CallDeepSeekAsync(prompt, temperature ?? 0.3, maxTokens ?? DeepSeekMaxTokens, cancellationToken);
                     
                     _logger.Information("✅ **DEEPSEEK_SUCCESS**: DeepSeek responded successfully - Length: {ResponseLength}", deepSeekResponse?.Length ?? 0);
                     return deepSeekResponse;

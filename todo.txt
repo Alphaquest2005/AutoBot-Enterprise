@@ -1,1 +1,10 @@
 previous document update not working after allocating
+
+"      "field": "Currency",
+      "correct_value": "US$",
+      "error_type": "omission",
+      "line_number": 6,
+      "line_text": "Long jumpsuit with back opening @ 18.99",
+      "suggested_regex": "(?<Currency>US\\$)",
+      "reasoning": "The currency 'US$' is used throughout the document but was not captured in the Currency field." this is a regression in prompt suppose to specify that the  currency code
+      is 
