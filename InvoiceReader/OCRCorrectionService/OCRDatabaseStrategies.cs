@@ -971,33 +971,206 @@ namespace WaterNut.DataSpace
 
         #region Inferred Value Update Strategy
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Inferred value strategy for static field values with LLM diagnostic workflow
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **STRATEGY PURPOSE**: Creates static field values with line-finding regex for fields with inferrable values
+        /// **INFERRED HANDLING**: Static value creation, line finder regex generation, database entity persistence
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of inferred value workflows and validation
+        /// </summary>
         public class InferredValueUpdateStrategy : DatabaseUpdateStrategyBase
         {
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Inferred value strategy constructor with LLM diagnostic initialization
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **CONSTRUCTOR LOGIC**: Initializes base strategy with logger injection for comprehensive diagnostic workflow
+            /// **STRATEGY TYPE**: Inferred strategy for static field value creation and line-finding workflows
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging infrastructure for LLM analysis of strategy lifecycle
+            /// </summary>
             public InferredValueUpdateStrategy(ILogger logger) : base(logger) { }
             public override string StrategyType => "Inferred";
-            public override bool CanHandle(RegexUpdateRequest request) => request.CorrectionType == "inferred";
+            
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Inferred value request validation with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **VALIDATION LOGIC**: Exact inferred type matching for static value field creation requirements
+            /// **INFERRED TYPES**: inferred correction type with exact string matching validation
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of request validation and strategy selection
+            /// </summary>
+            public override bool CanHandle(RegexUpdateRequest request)
+            {
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for inferred validation
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for Inferred strategy validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Request validation context with inferred type detection and static value analysis");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exact inferred type matching for static field value creation validation");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need inferred type confirmation, static value validation, request completeness");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Inferred strategy requires exact type matching for static value workflows");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for inferred validation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed type analysis, static value validation, inferred detection");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Inferred types, static values, correction type matching");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based Inferred strategy validation");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on static value requirements, implementing exact inferred type matching");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring type matches and inferred indicators");
+                
+                // **v4.1 INFERRED TYPE VALIDATION**: Enhanced exact correction type matching
+                _logger.Error("🔍 **INFERRED_TYPE_ANALYSIS**: Analyzing exact inferred correction type matching");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: CorrectionType='{CorrectionType}'", request.CorrectionType);
+                
+                bool isInferredType = request.CorrectionType == "inferred";
+                
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced inferred type detection with exact matching analysis");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: IsInferredType={IsInferredType}", isInferredType);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exact inferred type matching for static value field creation validation");
+                
+                if (isInferredType)
+                {
+                    _logger.Error("✅ **INFERRED_TYPE_MATCH**: Request matches exact inferred correction type");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Inferred type match confirms strategy applicability for static value creation");
+                    _logger.Error("📚 **FIX_RATIONALE**: Inferred detection enables static field value creation and line-finding workflows");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Inferred type confirmed - strategy can handle request");
+                    _logger.Error("🎯 **SUCCESS_ASSERTION**: Inferred strategy validation successful for static value workflow");
+                }
+                else
+                {
+                    _logger.Error("❌ **INFERRED_TYPE_MISMATCH**: Request does not match exact inferred correction type");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Non-inferred types require different strategy handling");
+                    _logger.Error("📚 **FIX_RATIONALE**: Type mismatch prevents inferred strategy application");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Strategy validation failure documented with type analysis");
+                }
+                
+                return isInferredType;
+            }
 
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Inferred value strategy execution with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **EXECUTION LOGIC**: Field mapping + static value creation + line finder regex + database entity persistence
+            /// **INFERRED PROCESSING**: Static field value creation, line finder generation, entity relationship management
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of inferred value workflows and outcomes
+            /// </summary>
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Error("🔍 **INFERRED_STRATEGY_START**: Executing for field: {FieldName}", request.FieldName);
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for inferred execution
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for inferred strategy execution");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Inferred execution context with static value creation and line finder workflow");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Field validation → mapping → static value creation → persistence pattern");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need field validation, mapping success, static value creation, persistence outcomes");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Inferred execution requires comprehensive static value processing with database persistence");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for inferred execution");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation, mapping, static value creation, persistence outcomes");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Field states, mapping results, static values, line finder patterns");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based inferred strategy execution");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on static value requirements, implementing comprehensive processing workflow");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring static value processing and database outcomes");
+                
+                // **v4.1 INFERRED EXECUTION INITIALIZATION**: Enhanced static value processing initiation
+                _logger.Error("🚀 **INFERRED_EXECUTION_START**: Beginning comprehensive inferred strategy execution");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Execution context - FieldName='{FieldName}'", request.FieldName);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Inferred execution pattern with static value validation and processing workflow");
 
+                // **v4.1 FIELD VALIDATION LOGGING**: Enhanced request precondition validation for static values
+                _logger.Error("🔍 **FIELD_VALIDATION_ANALYSIS**: Validating inferred request field completeness for static values");
                 if (string.IsNullOrEmpty(request.FieldName) || string.IsNullOrEmpty(request.NewValue) || string.IsNullOrEmpty(request.SuggestedRegex))
                 {
-                    _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing FieldName, NewValue (static value), or SuggestedRegex (line finder). Aborting strategy.");
+                    _logger.Error("❌ **FIELD_VALIDATION_FAILED**: Critical inferred request fields missing for static value creation");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - FieldName='{FieldName}', NewValuePresent={NewValuePresent}, SuggestedRegexPresent={SuggestedRegexPresent}", 
+                        request.FieldName ?? "NULL", !string.IsNullOrEmpty(request.NewValue), !string.IsNullOrEmpty(request.SuggestedRegex));
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Inferred strategy requires field name, static value, and line finder regex for processing");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Missing required fields prevent static value creation and line finder generation");
+                    _logger.Error("📚 **FIX_RATIONALE**: Field validation ensures inferred strategy has necessary data for static value processing");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Precondition failure documented - cannot proceed with inferred execution");
                     return DatabaseUpdateResult.Failed("Request for inferred value is missing critical fields.");
                 }
+                
+                _logger.Error("✅ **FIELD_VALIDATION_SUCCESS**: Inferred request field validation successful for static values");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - FieldName='{FieldName}', NewValue='{NewValue}', SuggestedRegex='{SuggestedRegex}'", 
+                    request.FieldName, request.NewValue, request.SuggestedRegex);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Field validation successful, proceeding with inferred static value processing workflow");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Complete field data enables comprehensive inferred strategy execution");
+                _logger.Error("📚 **FIX_RATIONALE**: Field validation success confirms inferred strategy can proceed with static value processing");
+                _logger.Error("🔍 **FIX_VALIDATION**: Field validation completed successfully with comprehensive static value data confirmation");
 
                 try
                 {
+                    // **v4.1 FIELD MAPPING LOGGING**: Enhanced database field mapping with static value validation
+                    _logger.Error("🗂️ **FIELD_MAPPING_START**: Beginning field mapping analysis for inferred static value processing");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mapping context - FieldName='{FieldName}'", request.FieldName);
+                    
                     var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
-                    if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
+                    
+                    if (fieldMappingInfo == null)
+                    {
+                        _logger.Error("❌ **FIELD_MAPPING_FAILED**: Database field mapping not found for inferred static value field");
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Unknown field mapping prevents inferred strategy execution");
+                        _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Field mapping required for database entity creation and static value validation");
+                        _logger.Error("📚 **FIX_RATIONALE**: Field mapping failure prevents inferred static value processing workflow");
+                        _logger.Error("🔍 **FIX_VALIDATION**: Field mapping failure documented - cannot proceed with inferred execution");
+                        return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
+                    }
+                    
+                    _logger.Error("✅ **FIELD_MAPPING_SUCCESS**: Database field mapping successful for inferred static value processing");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mapping success - DatabaseField='{DatabaseField}', EntityType='{EntityType}'", 
+                        fieldMappingInfo.DatabaseFieldName, fieldMappingInfo.EntityType);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Successful field mapping enables inferred database entity creation for static values");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Field mapping success confirms inferred strategy can proceed with static value processing");
+                    _logger.Error("📚 **FIX_RATIONALE**: Field mapping enables proper database entity relationships for static value validation");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Field mapping completed successfully with database field confirmation for static values");
 
-                    // Determine the PartId for the new rule
-                    // This now calls the inherited helper method from the base class.
-                    if (!request.PartId.HasValue) request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
-                    if (!request.PartId.HasValue) return DatabaseUpdateResult.Failed("Cannot determine PartId for new inferred value rule.");
+                    // **v4.1 PART DETERMINATION LOGGING**: Enhanced part ID resolution for inferred static value rules
+                    _logger.Error("🔍 **PART_DETERMINATION_START**: Determining PartId for inferred static value rule creation");
+                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced PartId resolution with static value rule context");
+                    
+                    if (!request.PartId.HasValue)
+                    {
+                        _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: PartId resolution required for inferred static value rule");
+                        request.PartId = await DeterminePartIdForNewOmissionLineAsync(context, fieldMappingInfo, request).ConfigureAwait(false);
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: PartId determination completed for static value entity creation");
+                    }
+                    
+                    if (!request.PartId.HasValue)
+                    {
+                        _logger.Error("❌ **PART_DETERMINATION_FAILED**: Cannot determine PartId for inferred static value rule creation");
+                        _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: PartId required for proper entity relationship creation in static value workflow");
+                        _logger.Error("📚 **FIX_RATIONALE**: PartId determination failure prevents inferred static value processing");
+                        _logger.Error("🔍 **FIX_VALIDATION**: PartId determination failure documented - cannot proceed with inferred execution");
+                        return DatabaseUpdateResult.Failed("Cannot determine PartId for new inferred value rule.");
+                    }
+                    
+                    _logger.Error("✅ **PART_DETERMINATION_SUCCESS**: PartId successfully determined for inferred static value rule");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: PartId determination success - PartId={PartId}", request.PartId.Value);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: PartId determination enables static value entity creation and relationship management");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: PartId success confirms inferred strategy can proceed with database processing");
+                    _logger.Error("📚 **FIX_RATIONALE**: PartId determination enables proper entity relationships for static value creation");
+                    _logger.Error("🔍 **FIX_VALIDATION**: PartId determination completed successfully for inferred static value workflow");
 
-                    // Create the new Line and Field with the static value
+                    // **v4.1 STATIC VALUE CREATION LOGGING**: Enhanced static value entity creation workflow
+                    _logger.Error("💾 **STATIC_VALUE_CREATION_START**: Beginning static value entity creation for inferred field");
+                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced static value creation with line finder and entity management");
+                    _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Static value entity creation with database persistence workflow");
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Static value creation pattern with line finder regex and field value entity");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Static value creation enables predictable field value assignment");
+                    _logger.Error("📚 **FIX_RATIONALE**: Static value creation provides reliable field value determination");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Static value creation workflow initiated with comprehensive entity management");
+                    
                     return await CreateNewLineForInferredValueAsync(context, request, fieldMappingInfo).ConfigureAwait(false);
                 }
                 catch (Exception ex)
