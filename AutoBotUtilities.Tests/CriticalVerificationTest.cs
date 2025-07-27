@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Serilog;
 using WaterNut.DataSpace;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AutoBotUtilities.Tests
 {
