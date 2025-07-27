@@ -225,6 +225,9 @@ You are analyzing a structured business document with defined object schemas. Th
 5. ✅ **line_text**: The complete text of that line from the OCR (NEVER null)
 6. ✅ **suggested_regex**: A working regex pattern that captures the value (NEVER null)
 7. ✅ **reasoning**: Explain why this value was missed (NEVER null)
+8. ✅ **group_id**: Unique identifier for transformation group (e.g., ""invoice_total_1"", ""currency_transform_1"") (NEVER null)
+9. ✅ **sequence_order**: Order within the group, starting from 1 (NEVER null or 0)
+10. ✅ **transformation_input**: Input source - ""ocr_text"" for first step, ""previous_output"" for subsequent steps (NEVER null)
 
 ❌ **ABSOLUTELY FORBIDDEN**: 
    - ""Reasoning"": null
