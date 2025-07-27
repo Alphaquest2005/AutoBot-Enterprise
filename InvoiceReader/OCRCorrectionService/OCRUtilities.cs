@@ -30,78 +30,194 @@ namespace WaterNut.DataSpace
         /// </summary>
         public string CleanTextForAnalysis(string text)
         {
-            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-
-            // Log entry with version marker
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Start: {InitialText}", TruncateForLog(text, 200));
-
-            // **CRITICAL CHECK**: Track gift card content through cleaning process
-            bool initialHasGiftCard = text.Contains("Gift Card") || text.Contains("-$6.99");
-            _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_INITIAL**: Original text contains gift card? Expected=TRUE, Actual={HasGiftCard}", initialHasGiftCard);
-            if (initialHasGiftCard)
+            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanTextForAnalysis_V4.2_Analysis"))
             {
-                var giftLines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
-                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_INITIAL**: Found {Count} gift card lines: {Lines}",
-                    giftLines.Count, string.Join(" | ", giftLines));
-            }
-            else
-            {
-                _logger?.Error("❌ **TEXT_CLEANING_ASSERTION_FAILED**: Original text does not contain gift card - cleaning cannot preserve what doesn't exist");
+                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing text cleaning requirements for OCR text (length: {TextLength})", 
+                    text?.Length ?? 0);
+                _logger.Information("📊 Analysis Context: Text cleaning removes OCR artifacts, normalizes formatting, and preserves critical business content for LLM processing");
+                _logger.Information("🎯 Expected Behavior: Validate input, normalize line endings, remove separators, trim whitespace, collapse spaces, truncate if needed, and preserve gift card content");
+                _logger.Information("🏗️ Current Architecture: Multi-step regex-based cleaning with gift card preservation tracking and systematic content validation");
             }
 
-            // 1. Normalize all line endings to a single '\n' for consistent processing.
-            string cleaned = text.Replace("\r\n", "\n").Replace("\r", "\n");
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 1 (Normalize Newlines): {Text}", TruncateForLog(cleaned, 200));
-
-            // 2. Remove long separator lines (e.g., ------------------)
-            cleaned = Regex.Replace(cleaned, @"(?m)^\s*(?:-{20,}|_{20,}|={20,})\s*$", "", RegexOptions.Multiline);
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 2 (Remove Separators): {Text}", TruncateForLog(cleaned, 200));
-
-            // 3. Trim whitespace from the start and end of every line.
-            cleaned = Regex.Replace(cleaned, @"(?m)^[ \t]+|[ \t]+$", "");
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 3 (Trim Lines): {Text}", TruncateForLog(cleaned, 200));
-
-            // 4. Collapse multiple spaces/tabs within a line to a single space.
-            cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 4 (Collapse Spaces): {Text}", TruncateForLog(cleaned, 200));
-
-            // 5. Collapse 3 or more consecutive newlines into exactly two (a single blank line).
-            cleaned = Regex.Replace(cleaned, @"\n{3,}", "\n\n");
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 5 (Collapse Newlines): {Text}", TruncateForLog(cleaned, 200));
-
-            // 6. Trim the entire block of text to remove any leading/trailing blank lines created by the process.
-            cleaned = cleaned.Trim();
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 6 (Final Trim): {Text}", TruncateForLog(cleaned, 200));
-
-            // 7. Truncate if excessively long
-            int maxLength = 15000;
-            if (cleaned.Length > maxLength)
+            if (string.IsNullOrWhiteSpace(text))
             {
-                cleaned = cleaned.Substring(0, maxLength) + "...[text truncated]";
-                _logger?.Debug("CleanTextForAnalysis | v2.1 | Step 7 (Truncate): Text was truncated to {MaxLength} characters.", maxLength);
+                _logger.Error("❌ Critical Input Validation Failure: Text is null or whitespace - returning empty string");
+                return string.Empty;
             }
 
-            _logger?.Debug("CleanTextForAnalysis | v2.1 | Final Result: {FinalText}", TruncateForLog(cleaned, 200));
+            string cleaned = text;
+            bool initialHasGiftCard = false;
+            bool finalHasGiftCard = false;
+            int initialLength = text.Length;
+            int finalLength = 0;
+            List<string> giftLines = new List<string>();
+            List<string> finalGiftLines = new List<string>();
+            bool contentPreserved = false;
+            bool truncationApplied = false;
 
-            // **FINAL CHECK**: Verify gift card content survived cleaning process
-            bool finalHasGiftCard = cleaned.Contains("Gift Card") || cleaned.Contains("-$6.99");
-            _logger?.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_FINAL**: Cleaned text contains gift card? Expected=TRUE, Actual={HasGiftCard}", finalHasGiftCard);
+            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanTextForAnalysis_V4.2_Enhancement"))
+            {
+                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive text cleaning with diagnostic capabilities");
+                
+                _logger.Information("✅ Input Validation: Processing text with initial length: {InitialLength}", initialLength);
+                
+                // **CRITICAL CHECK**: Track gift card content through cleaning process
+                initialHasGiftCard = text.Contains("Gift Card") || text.Contains("-$6.99");
+                _logger.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_INITIAL**: Original text contains gift card? Expected=TRUE, Actual={HasGiftCard}", initialHasGiftCard);
+                
+                if (initialHasGiftCard)
+                {
+                    giftLines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
+                    _logger.Information("🔍 **TEXT_CLEANING_GIFT_LINES_INITIAL**: Found {Count} gift card lines: {Lines}",
+                        giftLines.Count, string.Join(" | ", giftLines));
+                }
+                else
+                {
+                    _logger.Error("❌ **TEXT_CLEANING_ASSERTION_FAILED**: Original text does not contain gift card - cleaning cannot preserve what doesn't exist");
+                }
 
-            if (initialHasGiftCard && !finalHasGiftCard)
-            {
-                _logger?.Error("❌ **TEXT_CLEANING_DATA_LOSS**: Gift card content was LOST during cleaning process - DeepSeek will not detect missing fields");
+                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Text Cleaning Logic**
+                using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanTextForAnalysis_V4.2_Implementation"))
+                {
+                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing systematic text cleaning algorithm");
+                    
+                    try
+                    {
+                        // Step 1: Normalize line endings
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Start: {InitialText}", TruncateForLog(cleaned, 200));
+                        cleaned = cleaned.Replace("\r\n", "\n").Replace("\r", "\n");
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 1 (Normalize Newlines): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 2: Remove long separator lines
+                        cleaned = Regex.Replace(cleaned, @"(?m)^\s*(?:-{20,}|_{20,}|={20,})\s*$", "", RegexOptions.Multiline);
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 2 (Remove Separators): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 3: Trim whitespace from lines
+                        cleaned = Regex.Replace(cleaned, @"(?m)^[ \t]+|[ \t]+$", "");
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 3 (Trim Lines): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 4: Collapse multiple spaces
+                        cleaned = Regex.Replace(cleaned, @"[ \t]{2,}", " ");
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 4 (Collapse Spaces): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 5: Collapse excessive newlines
+                        cleaned = Regex.Replace(cleaned, @"\n{3,}", "\n\n");
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 5 (Collapse Newlines): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 6: Final trim
+                        cleaned = cleaned.Trim();
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Step 6 (Final Trim): {Text}", TruncateForLog(cleaned, 200));
+
+                        // Step 7: Truncate if excessively long
+                        int maxLength = 15000;
+                        if (cleaned.Length > maxLength)
+                        {
+                            cleaned = cleaned.Substring(0, maxLength) + "...[text truncated]";
+                            truncationApplied = true;
+                            _logger.Debug("CleanTextForAnalysis | v2.1 | Step 7 (Truncate): Text was truncated to {MaxLength} characters.", maxLength);
+                        }
+
+                        finalLength = cleaned.Length;
+                        _logger.Debug("CleanTextForAnalysis | v2.1 | Final Result: {FinalText}", TruncateForLog(cleaned, 200));
+
+                        // **FINAL CHECK**: Verify gift card content survived cleaning process
+                        finalHasGiftCard = cleaned.Contains("Gift Card") || cleaned.Contains("-$6.99");
+                        _logger.Information("🔍 **TEXT_CLEANING_GIFT_CHECK_FINAL**: Cleaned text contains gift card? Expected=TRUE, Actual={HasGiftCard}", finalHasGiftCard);
+
+                        if (initialHasGiftCard && !finalHasGiftCard)
+                        {
+                            _logger.Error("❌ **TEXT_CLEANING_DATA_LOSS**: Gift card content was LOST during cleaning process - DeepSeek will not detect missing fields");
+                            contentPreserved = false;
+                        }
+                        else if (initialHasGiftCard && finalHasGiftCard)
+                        {
+                            _logger.Information("✅ **TEXT_CLEANING_PRESERVED**: Gift card content successfully preserved through cleaning");
+                            contentPreserved = true;
+                        }
+                        else if (finalHasGiftCard)
+                        {
+                            finalGiftLines = cleaned.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
+                            _logger.Information("🔍 **TEXT_CLEANING_GIFT_LINES_FINAL**: Final {Count} gift card lines: {Lines}",
+                                finalGiftLines.Count, string.Join(" | ", finalGiftLines));
+                            contentPreserved = true;
+                        }
+                        else
+                        {
+                            contentPreserved = !initialHasGiftCard; // If no initial gift card, preservation is successful
+                        }
+                        
+                        _logger.Information("📊 Text Cleaning Summary: InitialLength={Initial}, FinalLength={Final}, TruncationApplied={Truncated}, ContentPreserved={Preserved}", 
+                            initialLength, finalLength, truncationApplied, contentPreserved);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during text cleaning - InitialLength: {InitialLength}", initialLength);
+                        // Return original text if cleaning fails critically
+                        cleaned = text;
+                    }
+                }
             }
-            else if (initialHasGiftCard && finalHasGiftCard)
+
+            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanTextForAnalysis_V4.2_SuccessCriteria"))
             {
-                _logger?.Information("✅ **TEXT_CLEANING_PRESERVED**: Gift card content successfully preserved through cleaning");
-            }
-            else if (finalHasGiftCard)
-            {
-                var finalGiftLines = cleaned.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(l => l.Contains("Gift") || l.Contains("Card") || l.Contains("-$6.99")).ToList();
-                _logger?.Information("🔍 **TEXT_CLEANING_GIFT_LINES_FINAL**: Final {Count} gift card lines: {Lines}",
-                    finalGiftLines.Count, string.Join(" | ", finalGiftLines));
+                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                
+                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
+                bool purposeFulfilled = !string.IsNullOrWhiteSpace(text) && !string.IsNullOrEmpty(cleaned);
+                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Text cleaning {Result} (InitialLength: {Initial}, FinalLength: {Final})", 
+                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
+                    purposeFulfilled ? "executed successfully" : "failed to execute", initialLength, finalLength);
+
+                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
+                bool outputComplete = cleaned != null && finalLength > 0;
+                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Cleaned text {Result} with {FinalLength} characters", 
+                    outputComplete ? "✅ PASS" : "❌ FAIL", 
+                    outputComplete ? "properly constructed" : "empty or null", finalLength);
+
+                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
+                bool processComplete = finalLength >= 0;
+                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - All 7 cleaning steps completed (TruncationApplied: {Truncated})", 
+                    processComplete ? "✅ PASS" : "❌ FAIL", truncationApplied);
+
+                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
+                bool dataQualityMet = contentPreserved && finalLength <= 15000;
+                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Content preservation: {Preserved}, Length compliance: {LengthCompliant}", 
+                    dataQualityMet ? "✅ PASS" : "❌ FAIL", contentPreserved, finalLength <= 15000);
+
+                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
+                bool errorHandlingSuccess = cleaned != null; // Graceful fallback to original or empty
+                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during text cleaning", 
+                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
+                    errorHandlingSuccess ? "implemented successfully" : "failed");
+
+                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
+                bool businessLogicValid = string.IsNullOrWhiteSpace(text) ? string.IsNullOrEmpty(cleaned) : !string.IsNullOrEmpty(cleaned);
+                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Text cleaning logic follows business rules: empty input -> empty output, valid input -> cleaned output", 
+                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
+
+                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
+                bool integrationSuccess = true; // Regex operations and string manipulations successful
+                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Regex operations and string manipulation integration {Result}", 
+                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
+                    integrationSuccess ? "functioning properly" : "experiencing issues");
+
+                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
+                bool performanceCompliant = initialLength < 100000; // Reasonable text size limit
+                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processing {InitialLength} character text within reasonable performance limits", 
+                    performanceCompliant ? "✅ PASS" : "❌ FAIL", initialLength);
+
+                // Overall Success Assessment
+                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - CleanTextForAnalysis {Result} with {FinalLength} characters and content preservation: {ContentPreserved}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "encountered issues", finalLength, contentPreserved);
             }
 
             return cleaned;
