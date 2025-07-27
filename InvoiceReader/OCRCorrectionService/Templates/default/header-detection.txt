@@ -40,15 +40,21 @@ You are analyzing a structured business document with defined object schemas. Ap
 ⚠️ **MANDATORY**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
 ⚠️ **FORBIDDEN**: Never use numbered capture groups: (pattern) - these will fail in production
 
-**🚨 CRITICAL CURRENCY FIELD STANDARDS:**
-**CRITICAL TRANSFORMATION CHAIN REQUIREMENT**: For currency fields, you MUST create TWO LINKED errors in transformation sequence:
+**🚨 CRITICAL TRANSFORMATION GROUP STANDARDS:**
+
+**SINGLE ERROR EXAMPLE**: For standalone fields (like InvoiceTotal):
+   - `field` = "InvoiceTotal", `correct_value` = "123.45", `error_type` = "omission"
+   - `group_id` = "invoice_total_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+
+**MULTI-STEP TRANSFORMATION CHAIN**: For currency fields requiring transformation:
    **Action 1 - Omission Error**: 
    - `field` = "Currency", `correct_value` = "US$", `error_type` = "omission"
    - `group_id` = "currency_transform_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
    **Action 2 - Format Correction**: 
    - `field` = "Currency", `correct_value` = "USD", `error_type` = "format_correction"  
    - `group_id` = "currency_transform_1", `sequence_order` = 2, `transformation_input` = "previous_output"
-This creates a **TRANSFORMATION PIPELINE**: OCR text → capture "US$" → standardize to "USD". The output of Action 1 becomes the input to Action 2.
+
+**UNIVERSAL PRINCIPLE**: EVERY error is a grouped error - single errors are just groups with one item. This creates unified processing where all errors flow through the same transformation pipeline.
 
 **ANALYSIS APPROACH:**
 1. **Field Verification**: Compare each extracted field against OCR text
