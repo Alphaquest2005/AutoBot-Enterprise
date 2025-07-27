@@ -642,23 +642,97 @@ namespace WaterNut.DataSpace
                 return canHandle;
             }
 
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Omission strategy execution with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **EXECUTION LOGIC**: Field mapping + DeepSeek regex generation + validation + database entity creation
+            /// **OMISSION PROCESSING**: Multi-attempt generation, pattern validation, duplicate detection, entity persistence
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of omission correction workflow and outcomes
+            /// </summary>
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
-                _logger.Error("🔍 **OMISSION_STRATEGY_START**: Executing for field: {FieldName}", request.FieldName);
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for omission execution
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for omission strategy execution");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Omission execution context with field mapping and regex generation workflow");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Field validation → mapping → generation → validation → persistence pattern");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need field validation, mapping success, generation outcomes, validation results");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Omission execution requires comprehensive field processing with database persistence");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for omission execution");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation, mapping, generation, persistence outcomes");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Field states, mapping results, regex patterns, validation outcomes");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based omission strategy execution");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on field omission requirements, implementing comprehensive processing workflow");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring field processing and database outcomes");
+                
+                // **v4.1 OMISSION EXECUTION INITIALIZATION**: Enhanced field processing initiation
+                _logger.Error("🚀 **OMISSION_EXECUTION_START**: Beginning comprehensive omission strategy execution");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Execution context - FieldName='{FieldName}'", request.FieldName);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Omission execution pattern with field validation and processing workflow");
 
+                // **v4.1 FIELD VALIDATION LOGGING**: Enhanced request precondition validation
+                _logger.Error("🔍 **FIELD_VALIDATION_ANALYSIS**: Validating omission request field completeness");
                 if (string.IsNullOrEmpty(request.FieldName) || request.NewValue == null)
                 {
-                    _logger.Error("   - ❌ **STRATEGY_FAIL**: Request is missing critical FieldName or NewValue. Aborting strategy.");
+                    _logger.Error("❌ **FIELD_VALIDATION_FAILED**: Critical omission request fields missing");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - FieldName='{FieldName}', NewValuePresent={NewValuePresent}", 
+                        request.FieldName ?? "NULL", request.NewValue != null);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Omission strategy requires both field name and target value for processing");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Missing required fields prevent regex generation and validation");
+                    _logger.Error("📚 **FIX_RATIONALE**: Field validation ensures omission strategy has necessary data for processing");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Precondition failure documented - cannot proceed with omission execution");
                     return DatabaseUpdateResult.Failed("Request object has null FieldName or NewValue.");
                 }
+                
+                _logger.Error("✅ **FIELD_VALIDATION_SUCCESS**: Omission request field validation successful");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - FieldName='{FieldName}', NewValue='{NewValue}'", 
+                    request.FieldName, request.NewValue);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Field validation successful, proceeding with omission processing workflow");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Complete field data enables comprehensive omission strategy execution");
+                _logger.Error("📚 **FIX_RATIONALE**: Field validation success confirms omission strategy can proceed with processing");
+                _logger.Error("🔍 **FIX_VALIDATION**: Field validation completed successfully with comprehensive data confirmation");
 
+                // **v4.1 REQUEST CONTEXT LOGGING**: Enhanced comprehensive request state documentation
                 var requestJson = JsonConvert.SerializeObject(request, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                _logger.Error("   - [CONTEXT_OBJECT_DUMP] Full RegexUpdateRequest: {RequestJson}", requestJson);
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced request context documentation for comprehensive analysis");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Complete request state - {RequestJson}", requestJson);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Full request context enables comprehensive omission processing analysis");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Complete request documentation enables debugging and workflow validation");
+                _logger.Error("📚 **FIX_RATIONALE**: Request context preservation enables comprehensive omission execution analysis");
+                _logger.Error("🔍 **FIX_VALIDATION**: Request context documented with complete state information for LLM analysis");
 
                 try
                 {
+                    // **v4.1 FIELD MAPPING LOGGING**: Enhanced database field mapping with comprehensive validation
+                    _logger.Error("🗂️ **FIELD_MAPPING_START**: Beginning field mapping analysis for omission processing");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mapping context - FieldName='{FieldName}'", request.FieldName);
+                    
                     var fieldMappingInfo = serviceInstance.MapDeepSeekFieldToDatabase(request.FieldName);
-                    if (fieldMappingInfo == null) return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
+                    
+                    if (fieldMappingInfo == null)
+                    {
+                        _logger.Error("❌ **FIELD_MAPPING_FAILED**: Database field mapping not found for omission field");
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Unknown field mapping prevents omission strategy execution");
+                        _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Field mapping required for database entity creation and validation");
+                        _logger.Error("📚 **FIX_RATIONALE**: Field mapping failure prevents omission processing workflow");
+                        _logger.Error("🔍 **FIX_VALIDATION**: Field mapping failure documented - cannot proceed with omission execution");
+                        return DatabaseUpdateResult.Failed($"Unknown field mapping for '{request.FieldName}'.");
+                    }
+                    
+                    _logger.Error("✅ **FIELD_MAPPING_SUCCESS**: Database field mapping successful for omission processing");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mapping success - DatabaseField='{DatabaseField}', EntityType='{EntityType}'", 
+                        fieldMappingInfo.DatabaseFieldName, fieldMappingInfo.EntityType);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Successful field mapping enables omission database entity creation");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Field mapping success confirms omission strategy can proceed with processing");
+                    _logger.Error("📚 **FIX_RATIONALE**: Field mapping enables proper database entity relationships and validation");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Field mapping completed successfully with database field confirmation");
 
                     var correctionForPrompt = new CorrectionResult
                     {
