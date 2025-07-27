@@ -74,8 +74,11 @@ namespace WaterNut.DataSpace
             {
                 try
                 {
-                    _logger.Information("1️⃣ **TRYING_DEEPSEEK**: Attempting DeepSeek API call");
-                    var deepSeekResponse = await CallDeepSeekAsync(prompt, temperature ?? 0.3, maxTokens ?? DeepSeekMaxTokens, cancellationToken);
+                    // Set provider-specific maxTokens: use minimum of requested vs DeepSeek limit
+                    var deepSeekTokens = maxTokens.HasValue ? Math.Min(maxTokens.Value, DeepSeekMaxTokens) : DeepSeekMaxTokens;
+                    
+                    _logger.Information("1️⃣ **TRYING_DEEPSEEK**: Attempting DeepSeek API call with {TokenLimit} tokens", deepSeekTokens);
+                    var deepSeekResponse = await CallDeepSeekAsync(prompt, temperature ?? 0.3, deepSeekTokens, cancellationToken);
                     
                     _logger.Information("✅ **DEEPSEEK_SUCCESS**: DeepSeek responded successfully - Length: {ResponseLength}", deepSeekResponse?.Length ?? 0);
                     return deepSeekResponse;
