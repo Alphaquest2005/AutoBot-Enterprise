@@ -304,58 +304,117 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Creates a mapping dictionary from canonical property names (like "InvoiceTotal")
-        /// to their (LineId, FieldId, PartId) within the given OCR Template.
-        /// LineId here refers to OCR.Business.Entities.Lines.Id.
-        /// FieldId here refers to OCR.Business.Entities.Fields.Id.
-        /// PartId here refers to OCR.Business.Entities.Parts.Id.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Template field mapping generator with comprehensive entity correlation
+        /// 
+        /// **LOG_THE_WHAT**: Template field mapping dictionary creation correlating canonical field names to database entity IDs
+        /// **LOG_THE_HOW**: Traverses Parts→Lines→Fields hierarchy, creates bidirectional mappings from Field and Key properties
+        /// **LOG_THE_WHY**: Enables rapid runtime field lookup for metadata extraction and template correlation workflows
+        /// **LOG_THE_WHO**: Returns Dictionary mapping field names to (LineId, FieldId, PartId) tuples for direct entity access
+        /// **LOG_THE_WHAT_IF**: Expects template with loaded navigation properties; handles null references with empty mapping
         /// </summary>
-        public Dictionary<string, (int LineId, int FieldId, int? PartId)> CreateEnhancedFieldMapping(Template ocrTemplate) // ocrTemplate is OCR.Business.Entities.Invoice
+        public Dictionary<string, (int LineId, int FieldId, int? PartId)> CreateEnhancedFieldMapping(Template ocrTemplate)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete field mapping generation narrative
+            _logger.Information("🗺️ **FIELD_MAPPING_GENERATOR_START**: Creating comprehensive template field mapping dictionary");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Build rapid lookup table correlating field names to database entity coordinates");
+            _logger.Information("   - **MAPPING_STRATEGY**: Traverse template hierarchy to extract all field definitions with entity relationships");
+            _logger.Information("   - **TEMPLATE_CONTEXT**: TemplateId={TemplateId}, Name={TemplateName}", 
+                ocrTemplate?.OcrTemplates?.Id ?? 0, ocrTemplate?.OcrTemplates?.Name ?? "Unknown");
+            
             var mappings = new Dictionary<string, (int LineId, int FieldId, int? PartId)>(StringComparer.OrdinalIgnoreCase);
-            if (ocrTemplate?.Parts == null) // ocrTemplate.Parts is a collection of InvoicePart wrappers
+            
+            if (ocrTemplate?.Parts == null)
             {
-                _logger.Warning("CreateEnhancedFieldMapping: OCR Template (ID: {TemplateId}) or its Parts collection is null.", ocrTemplate?.OcrTemplates.Id);
+                // **LOG_THE_WHAT_IF**: Invalid template handling with comprehensive error context
+                _logger.Warning("⚠️ **INVALID_TEMPLATE_STATE**: Template or Parts collection is null - cannot generate field mappings");
+                _logger.Warning("   - **TEMPLATE_STATE**: Template={TemplateState}, Parts={PartsState}", 
+                    ocrTemplate == null ? "NULL" : "PROVIDED", ocrTemplate?.Parts == null ? "NULL" : "PROVIDED");
+                _logger.Warning("   - **IMPACT_ASSESSMENT**: Field mapping will be empty, metadata extraction will fail for all fields");
+                _logger.Warning("   - **RECOMMENDED_ACTION**: Verify template loading includes Parts navigation properties");
+                
                 return mappings;
             }
 
             try
             {
+                // **LOG_THE_HOW**: Template hierarchy traversal with comprehensive entity processing
+                _logger.Information("🔄 **HIERARCHY_TRAVERSAL_START**: Processing template Parts→Lines→Fields structure");
+                var processedParts = 0;
+                var processedLines = 0;
+                var processedFields = 0;
+                var createdMappings = 0;
+                
                 foreach (var partWrapper in ocrTemplate.Parts.Where(pWrap => pWrap?.OCR_Part != null))
                 {
-                    var ocrPart = partWrapper.OCR_Part; // This is OCR.Business.Entities.Parts
-                    if (ocrPart.Lines == null) continue; // ocrPart.Lines is Collection<OCR.Business.Entities.Lines>
-
-                    foreach (var lineDef in ocrPart.Lines.Where(lDef => lDef?.Fields != null)) // lineDef is OCR.Business.Entities.Lines
+                    processedParts++;
+                    var ocrPart = partWrapper.OCR_Part;
+                    
+                    _logger.Verbose("🔧 **PART_PROCESSING**: Processing Part {PartNumber} - PartId={PartId}, PartTypeId={PartTypeId}", 
+                        processedParts, ocrPart.Id, ocrPart.PartTypeId);
+                    
+                    if (ocrPart.Lines == null)
                     {
-                        foreach (var fieldDef in lineDef.Fields) // fieldDef is OCR.Business.Entities.Fields
+                        _logger.Verbose("⚠️ **PART_NO_LINES**: Part {PartId} has no Lines collection - skipping", ocrPart.Id);
+                        continue;
+                    }
+
+                    foreach (var lineDef in ocrPart.Lines.Where(lDef => lDef?.Fields != null))
+                    {
+                        processedLines++;
+                        _logger.Verbose("🔧 **LINE_PROCESSING**: Processing Line {LineNumber} - LineId={LineId}, Name='{LineName}'", 
+                            processedLines, lineDef.Id, lineDef.Name);
+                        
+                        foreach (var fieldDef in lineDef.Fields)
                         {
-                            // Map based on OCR.Business.Entities.Fields.Field property
-                            string canonicalNameFromField = MapTemplateFieldToPropertyName(fieldDef.Field); // Static util
+                            processedFields++;
+                            _logger.Verbose("🔍 **FIELD_PROCESSING**: Field {FieldNumber} - FieldId={FieldId}, Field='{Field}', Key='{Key}'", 
+                                processedFields, fieldDef.Id, fieldDef.Field, fieldDef.Key);
+                            
+                            // **LOG_THE_WHO**: Canonical name mapping from Field property
+                            string canonicalNameFromField = MapTemplateFieldToPropertyName(fieldDef.Field);
                             if (!string.IsNullOrEmpty(canonicalNameFromField) && !mappings.ContainsKey(canonicalNameFromField))
                             {
                                 mappings[canonicalNameFromField] = (lineDef.Id, fieldDef.Id, ocrPart.Id);
+                                createdMappings++;
+                                _logger.Verbose("✅ **MAPPING_CREATED**: '{CanonicalName}' → LineId={LineId}, FieldId={FieldId}, PartId={PartId}", 
+                                    canonicalNameFromField, lineDef.Id, fieldDef.Id, ocrPart.Id);
                             }
 
-                            // Also map based on OCR.Business.Entities.Fields.Key property if different and not yet mapped
+                            // **LOG_THE_WHAT_IF**: Additional mapping from Key property if different
                             string canonicalNameFromKey = MapTemplateFieldToPropertyName(fieldDef.Key);
                             if (!string.IsNullOrEmpty(canonicalNameFromKey) &&
                                !mappings.ContainsKey(canonicalNameFromKey) &&
                                (string.IsNullOrEmpty(canonicalNameFromField) || !canonicalNameFromKey.Equals(canonicalNameFromField, StringComparison.OrdinalIgnoreCase)))
                             {
                                 mappings[canonicalNameFromKey] = (lineDef.Id, fieldDef.Id, ocrPart.Id);
+                                createdMappings++;
+                                _logger.Verbose("✅ **KEY_MAPPING_CREATED**: '{CanonicalKey}' → LineId={LineId}, FieldId={FieldId}, PartId={PartId}", 
+                                    canonicalNameFromKey, lineDef.Id, fieldDef.Id, ocrPart.Id);
                             }
                         }
                     }
                 }
+                
+                // **LOG_THE_WHO**: Mapping generation completion with comprehensive metrics
                 var templateLogId = ocrTemplate.OcrTemplates?.Id.ToString() ?? ocrTemplate.OcrTemplates.Id.ToString();
-                _logger.Debug("Created {MappingCount} enhanced field mappings from OCR Template (Log ID: {TemplateLogId}).", mappings.Count, templateLogId);
+                _logger.Information("✅ **FIELD_MAPPING_COMPLETE**: Enhanced field mapping dictionary generated successfully");
+                _logger.Information("   - **PROCESSING_METRICS**: Parts={Parts}, Lines={Lines}, Fields={Fields}, Mappings={Mappings}", 
+                    processedParts, processedLines, processedFields, createdMappings);
+                _logger.Information("   - **TEMPLATE_CONTEXT**: TemplateId={TemplateLogId}, TotalMappings={MappingCount}", 
+                    templateLogId, mappings.Count);
+                _logger.Information("   - **SUCCESS_ASSERTION**: Field mapping dictionary ready for rapid runtime field correlation");
             }
             catch (Exception ex)
             {
+                // **LOG_THE_WHAT_IF**: Exception handling with comprehensive error diagnostics
                 var templateLogId = ocrTemplate.OcrTemplates?.Id.ToString() ?? ocrTemplate.OcrTemplates.Id.ToString();
-                _logger?.Error(ex, "Error creating enhanced field mappings from OCR Template (Log ID: {TemplateLogId}).", templateLogId);
+                _logger.Error(ex, "❌ **FIELD_MAPPING_ERROR**: Exception occurred during field mapping generation");
+                _logger.Error("   - **ERROR_CONTEXT**: TemplateId={TemplateLogId}, ExceptionType={ExceptionType}", 
+                    templateLogId, ex.GetType().Name);
+                _logger.Error("   - **PARTIAL_STATE**: {MappingCount} mappings created before failure", mappings.Count);
+                _logger.Error("   - **IMPACT_ASSESSMENT**: Incomplete field mapping may cause metadata extraction failures");
             }
+            
             return mappings;
         }
         #endregion
