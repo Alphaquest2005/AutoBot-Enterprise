@@ -34,7 +34,7 @@ namespace AutoBotUtilities.Tests
                         var parts = context.Parts.Where(p => p.TemplateId == mangoTemplate.Id);
                         var lines = context.Lines.Where(l => parts.Any(p => p.Id == l.PartId));
                         var fields = context.Fields.Where(f => lines.Any(l => l.Id == f.LineId));
-                        var regex = context.RegularExpressions.Where(r => lines.Any(l => l.Id == r.LineId));
+                        var regex = context.RegularExpressions.Where(r => lines.Any(l => l.RegExId == r.Id));
                         
                         // Delete in order: regex -> fields -> lines -> parts -> invoice
                         context.RegularExpressions.RemoveRange(regex);
