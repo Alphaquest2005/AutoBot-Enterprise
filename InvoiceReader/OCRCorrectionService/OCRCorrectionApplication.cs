@@ -18,68 +18,72 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Processes transformation chains where grouped errors are applied sequentially,
         /// with the output of one error becoming the input to the next error in the chain.
+        /// ALL errors are now grouped - single errors are just groups with one item.
         /// </summary>
         private List<InvoiceError> ProcessTransformationChains(List<InvoiceError> errors, ShipmentInvoice invoice, string fileText)
         {
-            _logger.Information("🔗 **TRANSFORMATION_CHAINS_START**: Processing {Count} errors for transformation chains", errors.Count);
+            _logger.Information("🔗 **UNIFIED_TRANSFORMATION_START**: Processing {Count} errors - ALL errors are now grouped", errors.Count);
             
             var processedErrors = new List<InvoiceError>();
             
-            // Group errors by GroupId
-            var groupedErrors = errors.Where(e => !string.IsNullOrEmpty(e.GroupId))
-                                     .GroupBy(e => e.GroupId)
-                                     .ToList();
+            // Group ALL errors by GroupId (every error should have one now)
+            var groupedErrors = errors.GroupBy(e => e.GroupId ?? $"auto_group_{Guid.NewGuid():N}").ToList();
             
-            var individualErrors = errors.Where(e => string.IsNullOrEmpty(e.GroupId)).ToList();
+            _logger.Information("   - 🔗 Found {GroupCount} transformation groups (including single-step groups)", 
+                groupedErrors.Count);
             
-            _logger.Information("   - 🔗 Found {GroupCount} transformation groups and {IndividualCount} individual errors", 
-                groupedErrors.Count, individualErrors.Count);
-            
-            // Process transformation chains
+            // Process ALL transformation chains (including single-step "chains")
             foreach (var group in groupedErrors)
             {
-                _logger.Information("   - 🔄 Processing transformation chain '{GroupId}' with {Count} steps", 
-                    group.Key, group.Count());
-                
                 var chainErrors = group.OrderBy(e => e.SequenceOrder).ToList();
-                string transformationValue = null;
                 
-                foreach (var error in chainErrors)
+                if (chainErrors.Count == 1)
                 {
-                    var processedError = error; // Copy the error
-                    
-                    // Apply transformation logic based on input source
-                    if (error.TransformationInput == "ocr_text")
-                    {
-                        // First step in chain - use original CorrectValue from OCR analysis
-                        transformationValue = error.CorrectValue;
-                        _logger.Information("     - 📖 Step {Seq}: Input from OCR text → Output: '{Output}'", 
-                            error.SequenceOrder, transformationValue);
-                    }
-                    else if (error.TransformationInput == "previous_output" && transformationValue != null)
-                    {
-                        // Subsequent step - use output from previous transformation
-                        var previousValue = transformationValue;
-                        transformationValue = error.CorrectValue; // The AI's transformed value
-                        _logger.Information("     - 🔄 Step {Seq}: Input: '{Input}' → Output: '{Output}'", 
-                            error.SequenceOrder, previousValue, transformationValue);
-                        
-                        // Update the error's extracted value to show the transformation input
-                        processedError.ExtractedValue = previousValue;
-                    }
-                    
-                    processedErrors.Add(processedError);
+                    _logger.Information("   - ⚡ Processing single-step group '{GroupId}'", group.Key);
+                    // Single error group - no transformation needed, just pass through
+                    processedErrors.Add(chainErrors[0]);
                 }
-                
-                _logger.Information("   - ✅ Completed transformation chain '{GroupId}': Final output = '{FinalValue}'", 
-                    group.Key, transformationValue);
+                else
+                {
+                    _logger.Information("   - 🔄 Processing multi-step transformation chain '{GroupId}' with {Count} steps", 
+                        group.Key, chainErrors.Count);
+                    
+                    string transformationValue = null;
+                    
+                    foreach (var error in chainErrors)
+                    {
+                        var processedError = error; // Copy the error
+                        
+                        // Apply transformation logic based on input source
+                        if (error.TransformationInput == "ocr_text")
+                        {
+                            // First step in chain - use original CorrectValue from OCR analysis
+                            transformationValue = error.CorrectValue;
+                            _logger.Information("     - 📖 Step {Seq}: Input from OCR text → Output: '{Output}'", 
+                                error.SequenceOrder, transformationValue);
+                        }
+                        else if (error.TransformationInput == "previous_output" && transformationValue != null)
+                        {
+                            // Subsequent step - use output from previous transformation
+                            var previousValue = transformationValue;
+                            transformationValue = error.CorrectValue; // The AI's transformed value
+                            _logger.Information("     - 🔄 Step {Seq}: Input: '{Input}' → Output: '{Output}'", 
+                                error.SequenceOrder, previousValue, transformationValue);
+                            
+                            // Update the error's extracted value to show the transformation input
+                            processedError.ExtractedValue = previousValue;
+                        }
+                        
+                        processedErrors.Add(processedError);
+                    }
+                    
+                    _logger.Information("   - ✅ Completed transformation chain '{GroupId}': Final output = '{FinalValue}'", 
+                        group.Key, transformationValue);
+                }
             }
             
-            // Add individual errors (non-grouped)
-            processedErrors.AddRange(individualErrors);
-            
-            _logger.Information("🔗 **TRANSFORMATION_CHAINS_COMPLETE**: Processed {ProcessedCount} total errors", 
-                processedErrors.Count);
+            _logger.Information("🔗 **UNIFIED_TRANSFORMATION_COMPLETE**: Processed {ProcessedCount} total errors across {GroupCount} groups", 
+                processedErrors.Count, groupedErrors.Count);
             
             return processedErrors;
         }
