@@ -96,7 +96,7 @@ namespace WaterNut.DataSpace
             return !TotalsZero(res, out totalImbalanceSum, logger);
         }
 
-        public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Invoice template, List<string> textLines, ILogger logger)
+        public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Template template, List<string> textLines, ILogger logger)
         {
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
 
@@ -610,7 +610,7 @@ namespace WaterNut.DataSpace
 
         public static List<ShipmentInvoiceWithMetadata> ConvertDynamicToShipmentInvoicesWithMetadata(
             List<IDictionary<string, object>> res,
-            Invoice template, OCRCorrectionService serviceInstance, ILogger logger)
+            Template template, OCRCorrectionService serviceInstance, ILogger logger)
         {
             var allInvoices = new List<ShipmentInvoiceWithMetadata>();
             if (serviceInstance == null || res == null) return allInvoices;
@@ -629,7 +629,7 @@ namespace WaterNut.DataSpace
         }
 
         public static void UpdateTemplateLineValues(
-            Invoice template,
+            Template template,
             List<ShipmentInvoice> correctedInvoices,
             ILogger log)
         {

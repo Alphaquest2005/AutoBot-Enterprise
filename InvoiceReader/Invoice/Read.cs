@@ -10,7 +10,7 @@ using OCR.Business.Entities; // Added for InvoiceLine
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Assuming _logger exists from another partial part
         // private static readonly ILogger _logger = Log.ForContext<Template>();

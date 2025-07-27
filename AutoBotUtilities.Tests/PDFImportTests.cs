@@ -2779,7 +2779,7 @@ Return only the regex pattern, no explanation:";
                     _logger.Error("🔍 **TEST_STEP_1**: Loading initial template from database");
                     
                     int targetTemplateId = 5; // Amazon template ID from previous tests
-                    WaterNut.DataSpace.Invoice initialTemplate = null;
+                    WaterNut.DataSpace.Template initialTemplate = null;
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
@@ -2808,7 +2808,7 @@ Return only the regex pattern, no explanation:";
                             Assert.Fail($"Template ID {targetTemplateId} not found in database");
                         }
                         
-                        initialTemplate = new WaterNut.DataSpace.Invoice(templateData, _logger);
+                        initialTemplate = new WaterNut.DataSpace.Template(templateData, _logger);
                         _logger.Error("✅ **TEST_STEP_1_SUCCESS**: Initial template loaded with {PartCount} parts and {LineCount} total lines", 
                             initialTemplate.Parts?.Count ?? 0, initialTemplate.Lines?.Count ?? 0);
                     }
@@ -2918,7 +2918,7 @@ Return only the regex pattern, no explanation:";
                         }
                     }
                     
-                    WaterNut.DataSpace.Invoice reloadedTemplate = null;
+                    WaterNut.DataSpace.Template reloadedTemplate = null;
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         var reloadedTemplateData = ocrCtx.Invoices
@@ -2942,7 +2942,7 @@ Return only the regex pattern, no explanation:";
                         
                         if (reloadedTemplateData != null)
                         {
-                            reloadedTemplate = new WaterNut.DataSpace.Invoice(reloadedTemplateData, _logger);
+                            reloadedTemplate = new WaterNut.DataSpace.Template(reloadedTemplateData, _logger);
                             _logger.Error("✅ **TEST_STEP_5_SUCCESS**: Template reloaded with {PartCount} parts and {LineCount} total lines", 
                                 reloadedTemplate.Parts?.Count ?? 0, reloadedTemplate.Lines?.Count ?? 0);
                         }

@@ -306,7 +306,7 @@ namespace WaterNut.DataSpace
         /// **CRITICAL_CONTEXT**: OCR correction service was designed to UPDATE existing templates, not CREATE new templates from scratch.
         /// **RETURNS**: Complete Invoice template with Parts, Lines, Fields, and Regexes populated by DeepSeek analysis.
         /// </summary>
-        public async Task<Invoice> CreateInvoiceTemplateAsync(string pdfText, string filePath)
+        public async Task<Template> CreateInvoiceTemplateAsync(string pdfText, string filePath)
         {
             // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
             _logger.Information("🚀 **TEMPLATE_CREATION_START**: Starting comprehensive template creation for file '{FilePath}'", filePath);
@@ -479,10 +479,10 @@ namespace WaterNut.DataSpace
                     _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrInvoiceTemplate.IsActive.ToString() ?? "NULL");
                     
                     _logger.Information("🔄 **INVOICE_CONSTRUCTOR_START**: Calling Invoice constructor...");
-                    Invoice template = null;
+                    Template template = null;
                     try 
                     {
-                        template = new Invoice(ocrInvoiceTemplate, _logger);
+                        template = new Template(ocrInvoiceTemplate, _logger);
                         _logger.Information("✅ **INVOICE_CONSTRUCTOR_SUCCESS**: Invoice constructor completed successfully");
                     }
                     catch (Exception constructorEx)
@@ -733,7 +733,7 @@ namespace WaterNut.DataSpace
         /// **ARCHITECTURAL_INTENT**: Creates Invoice object with all required components for pipeline processing.
         /// **BUSINESS_RULE**: Template must be compatible with existing pipeline infrastructure and database schema.
         /// </summary>
-        private Invoice ParseDeepSeekTemplateResponse(string deepSeekResponse, string filePath)
+        private Template ParseDeepSeekTemplateResponse(string deepSeekResponse, string filePath)
         {
             _logger.Error("🔍 **RESPONSE_PARSING_START**: Parsing DeepSeek response into Invoice template");
             _logger.Error("   - **RESPONSE_LENGTH**: {ResponseLength} characters", deepSeekResponse?.Length ?? 0);

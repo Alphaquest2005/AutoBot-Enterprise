@@ -299,7 +299,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private void LogTemplateStructure(Invoice template, ILogger logger)
+        private void LogTemplateStructure(Template template, ILogger logger)
         {
             if (template?.OcrInvoices?.Parts == null) return;
             foreach (var part in template.OcrInvoices.Parts)
@@ -330,7 +330,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             }
         }
 
-        private void LogAndValidateInitialOcrData(InvoiceProcessingContext context, List<dynamic> res, Invoice template)
+        private void LogAndValidateInitialOcrData(InvoiceProcessingContext context, List<dynamic> res, Template template)
         {
             context.Logger?.Error("📊 **INITIAL_OCR_DATA_DUMP (CsvLines)**: Logging data structure returned from template.Read().");
             if (res == null || !res.Any())
@@ -386,7 +386,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             logger?.Error(sb.ToString());
         }
 
-        private bool ExecutionValidation(ILogger logger, Invoice template, string filePath)
+        private bool ExecutionValidation(ILogger logger, Template template, string filePath)
         {
             if (template == null || template.OcrInvoices == null)
             {
@@ -401,13 +401,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private List<string> GetTextLinesFromFormattedPdfText(ILogger logger, Invoice template)
+        private List<string> GetTextLinesFromFormattedPdfText(ILogger logger, Template template)
         {
             logger?.Verbose("Extracting text lines from FormattedPdfText for template '{TemplateName}'.", template.OcrInvoices.Name);
             return template.FormattedPdfText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
         }
 
-        private bool ExecutionSuccess(ILogger logger, Invoice template, string filePath)
+        private bool ExecutionSuccess(ILogger logger, Template template, string filePath)
         {
             if (template.CsvLines == null || !template.CsvLines.Any())
             {
@@ -536,7 +536,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         /// **BUSINESS_RULE**: OCR templates require special processing to create CsvLines data structure that can be processed by downstream pipeline steps.
         /// **DESIGN_BACKSTORY**: OCR templates are minimal structures created in GetPossibleInvoicesStep that need OCR correction to populate actual invoice data.
         /// </summary>
-        private async Task<bool> ProcessOcrTemplate(InvoiceProcessingContext context, Invoice template, string filePath)
+        private async Task<bool> ProcessOcrTemplate(InvoiceProcessingContext context, Template template, string filePath)
         {
             context.Logger?.Error("🏗️ **OCR_TEMPLATE_PROCESSOR_START**: Starting OCR template processing for template ID {TemplateId}", template.OcrInvoices?.Id);
             context.Logger?.Error("   - **PROCESSING_METHOD**: Create blank ShipmentInvoice and populate via OCR correction service");
