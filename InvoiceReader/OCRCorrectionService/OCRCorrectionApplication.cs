@@ -108,15 +108,15 @@ namespace WaterNut.DataSpace
             var processedErrors = ProcessTransformationChains(errors, invoice, fileText);
             // ================================= TRANSFORMATION CHAINS END =================================
 
-            // =================================== FIX START ===================================
-            // Filter out 'format_correction' errors from direct application, EXCEPT for transformation chains.
-            // Format corrections in transformation chains are part of the sequential processing.
-            // Standalone format_corrections are for database learning only.
+            // =================================== UNIFIED ERROR FILTERING ===================================
+            // Since ALL errors are now grouped, we need different logic:
+            // - Apply all high-confidence errors directly to in-memory objects
+            // - Format corrections that are part of multi-step chains (SequenceOrder > 1) are applied
+            // - All single-step groups (SequenceOrder = 1) are applied regardless of type
             var errorsToApplyDirectly = processedErrors
-                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD && 
-                       (e.ErrorType != "format_correction" || !string.IsNullOrEmpty(e.GroupId)))
+                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD)
                 .ToList();
-            // ==================================== FIX END ====================================
+            // ================================== UNIFIED FILTERING END ==================================
 
             _logger.Information("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
                 errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
