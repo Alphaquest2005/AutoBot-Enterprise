@@ -141,21 +141,35 @@ namespace WaterNut.DataSpace
         public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger) => TotalsZero(invoice, out _, logger);
 
         /// <summary>
-        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Dynamic invoice data balance validator with nested structure support
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Dynamic invoice data balance validator with LLM diagnostic workflow
         /// 
-        /// **LOG_THE_WHAT**: Dynamic invoice balance validation handling nested list structures and dictionary conversion
-        /// **LOG_THE_HOW**: Extracts dictionaries from dynamic data, creates temporary invoice, validates balance using core logic
-        /// **LOG_THE_WHY**: Enables balance validation on dynamic OCR results before ShipmentInvoice object creation
-        /// **LOG_THE_WHO**: Returns boolean balance status and outputs total imbalance sum for pipeline decisions
-        /// **LOG_THE_WHAT_IF**: Expects dynamic invoice data; handles nested lists and empty data gracefully; defaults to balanced
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **DYNAMIC VALIDATION**: Handles nested list structures, dictionary extraction, temporary invoice creation with balance delegation
+        /// **STRUCTURE SUPPORT**: Both flat dynamic lists and nested structures from OCR pipeline with graceful degradation
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of dynamic data processing and balance validation workflows
         /// </summary>
         public static bool TotalsZero(List<dynamic> dynamicInvoiceResults, out double totalImbalanceSum, ILogger logger = null)
         {
-            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete dynamic invoice balance validation narrative
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for dynamic validation
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
-            log.Verbose("🦠 **DYNAMIC_TOTALS_VALIDATION_START**: Dynamic invoice data balance validation with structure analysis");
-            log.Verbose("   - **ARCHITECTURAL_INTENT**: Validate dynamic OCR results balance before object conversion and processing");
-            log.Verbose("   - **DATA_HANDLING**: Support both flat dynamic lists and nested list structures from OCR pipeline");
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            log.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for dynamic invoice balance validation");
+            log.Error("📋 **AVAILABLE_LOG_DATA**: Dynamic validation context with nested structure analysis capability");
+            log.Error("🔍 **PATTERN_ANALYSIS**: Dynamic data processing pattern with dictionary extraction and temporary object creation");
+            log.Error("❓ **EVIDENCE_GAPS**: Need structure analysis, dictionary extraction confirmation, balance delegation validation");
+            log.Error("💡 **LOG_BASED_HYPOTHESIS**: Dynamic invoice validation requires structure-aware processing and graceful degradation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            log.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for dynamic validation");
+            log.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed structure analysis, dictionary extraction, temporary invoice creation");
+            log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Data state, structure detection, extraction results, balance delegation");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            log.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based dynamic balance validation");
+            log.Error("📚 **FIX_RATIONALE**: Based on OCR pipeline requirements, implementing comprehensive dynamic validation");
+            log.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring structure detection and balance calculation accuracy");
             
             totalImbalanceSum = 0.0;
             
