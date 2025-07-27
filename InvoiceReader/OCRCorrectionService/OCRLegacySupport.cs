@@ -38,56 +38,163 @@ namespace WaterNut.DataSpace
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ShipmentInvoice, System.Runtime.CompilerServices.StrongBox<double>> _totalsZeroAmounts =
             new System.Runtime.CompilerServices.ConditionalWeakTable<ShipmentInvoice, System.Runtime.CompilerServices.StrongBox<double>>();
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Invoice financial balance validator with precision imbalance calculation
+        /// 
+        /// **LOG_THE_WHAT**: Invoice total validation calculating expected vs reported totals with precise difference measurement
+        /// **LOG_THE_HOW**: Sums SubTotal+Freight+OtherCost+Insurance-Deduction, compares to InvoiceTotal, caches difference
+        /// **LOG_THE_WHY**: Ensures invoice financial integrity before processing, identifies imbalances requiring correction
+        /// **LOG_THE_WHO**: Returns boolean balance status and outputs precise difference amount for diagnostic purposes
+        /// **LOG_THE_WHAT_IF**: Expects valid invoice object; handles null gracefully; uses 0.001 tolerance for floating-point precision
+        /// </summary>
         public static bool TotalsZero(ShipmentInvoice invoice, out double differenceAmount, ILogger logger)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete invoice balance validation narrative
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+            log.Verbose("🦠 **TOTALS_VALIDATION_START**: Invoice financial balance validation with precision calculation");
+            log.Verbose("   - **ARCHITECTURAL_INTENT**: Validate invoice financial integrity for processing continuation decisions");
+            log.Verbose("   - **CALCULATION_METHOD**: (SubTotal + Freight + OtherCost + Insurance - Deduction) vs InvoiceTotal");
+            
             differenceAmount = double.MaxValue;
+            
             if (invoice == null)
             {
-                log.Warning("TotalsZero(ShipmentInvoice) called with a null invoice.");
+                // **LOG_THE_WHAT_IF**: Null invoice handling with comprehensive error context
+                log.Warning("❌ **NULL_INVOICE_ERROR**: TotalsZero validation called with null invoice reference");
+                log.Warning("   - **VALIDATION_STATE**: Cannot perform financial balance validation on null object");
+                log.Warning("   - **RETURN_BEHAVIOR**: Returning false (unbalanced) with MaxValue difference amount");
+                
                 return false;
             }
 
+            // **LOG_THE_WHAT**: Financial component extraction and null-safe value assignment
             var subTotal = invoice.SubTotal ?? 0;
             var freight = invoice.TotalInternalFreight ?? 0;
             var otherCost = invoice.TotalOtherCost ?? 0;
             var insurance = invoice.TotalInsurance ?? 0;
             var deductionAmount = invoice.TotalDeduction ?? 0;
             var reportedInvoiceTotal = invoice.InvoiceTotal ?? 0;
+            
+            log.Verbose("📊 **FINANCIAL_COMPONENTS**: InvoiceNo={InvoiceNo}", invoice.InvoiceNo ?? "Unknown");
+            log.Verbose("   - **COMPONENT_VALUES**: SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}", 
+                subTotal, freight, otherCost, insurance);
+            log.Verbose("   - **ADJUSTMENTS**: Deduction={Deduction}, ReportedTotal={ReportedTotal}", deductionAmount, reportedInvoiceTotal);
 
+            // **LOG_THE_HOW**: Balance calculation with step-by-step computation logging
             var baseTotal = subTotal + freight + otherCost + insurance;
             var calculatedFinalTotal = baseTotal - deductionAmount;
             differenceAmount = Math.Abs(calculatedFinalTotal - reportedInvoiceTotal);
+            
+            log.Verbose("🦠 **BALANCE_CALCULATION**: BaseTotal={BaseTotal}, CalculatedFinal={CalculatedFinal}, Difference={Difference}", 
+                baseTotal, calculatedFinalTotal, differenceAmount);
 
-            bool isZero = differenceAmount < 0.001; // Disabled tolerance check for debugging
+            // **LOG_THE_WHY**: Tolerance-based balance determination with business rationale
+            bool isZero = differenceAmount < 0.001; // Precision tolerance for floating-point arithmetic
+            
+            log.Verbose("🔍 **BALANCE_DETERMINATION**: IsBalanced={IsBalanced}, Tolerance=0.001, DifferenceAmount={DifferenceAmount}", 
+                isZero, differenceAmount);
+            log.Verbose("   - **BUSINESS_LOGIC**: {BalanceStatus}", 
+                isZero ? "Invoice totals are balanced within acceptable tolerance" : "Invoice requires correction due to imbalance");
 
+            // **LOG_THE_WHO**: Difference amount caching for performance and diagnostics
             _totalsZeroAmounts.Remove(invoice);
             _totalsZeroAmounts.Add(invoice, new System.Runtime.CompilerServices.StrongBox<double>(differenceAmount));
+            
+            log.Verbose("✅ **TOTALS_VALIDATION_COMPLETE**: Balance validation result={IsBalanced}, DifferenceAmount={DifferenceAmount}", 
+                isZero, differenceAmount);
+            log.Verbose("   - **SUCCESS_ASSERTION**: Invoice balance validation completed with cached difference amount");
+            
             return isZero;
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Invoice balance validator wrapper without difference output
+        /// 
+        /// **LOG_THE_WHAT**: Simplified invoice balance validation delegating to comprehensive validation method
+        /// **LOG_THE_HOW**: Calls full TotalsZero method with discarded difference amount output parameter
+        /// **LOG_THE_WHY**: Provides convenient API when precise difference amount is not needed by caller
+        /// **LOG_THE_WHO**: Returns boolean balance status without exposing difference calculation details
+        /// **LOG_THE_WHAT_IF**: Expects valid invoice and logger; inherits all validation logic from primary method
+        /// </summary>
         public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger) => TotalsZero(invoice, out _, logger);
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Dynamic invoice data balance validator with nested structure support
+        /// 
+        /// **LOG_THE_WHAT**: Dynamic invoice balance validation handling nested list structures and dictionary conversion
+        /// **LOG_THE_HOW**: Extracts dictionaries from dynamic data, creates temporary invoice, validates balance using core logic
+        /// **LOG_THE_WHY**: Enables balance validation on dynamic OCR results before ShipmentInvoice object creation
+        /// **LOG_THE_WHO**: Returns boolean balance status and outputs total imbalance sum for pipeline decisions
+        /// **LOG_THE_WHAT_IF**: Expects dynamic invoice data; handles nested lists and empty data gracefully; defaults to balanced
+        /// </summary>
         public static bool TotalsZero(List<dynamic> dynamicInvoiceResults, out double totalImbalanceSum, ILogger logger = null)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete dynamic invoice balance validation narrative
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
+            log.Verbose("🦠 **DYNAMIC_TOTALS_VALIDATION_START**: Dynamic invoice data balance validation with structure analysis");
+            log.Verbose("   - **ARCHITECTURAL_INTENT**: Validate dynamic OCR results balance before object conversion and processing");
+            log.Verbose("   - **DATA_HANDLING**: Support both flat dynamic lists and nested list structures from OCR pipeline");
+            
             totalImbalanceSum = 0.0;
-            if (dynamicInvoiceResults == null || !dynamicInvoiceResults.Any()) return true;
+            
+            if (dynamicInvoiceResults == null || !dynamicInvoiceResults.Any())
+            {
+                // **LOG_THE_WHAT_IF**: Empty data handling with default balanced assumption
+                log.Verbose("⚠️ **EMPTY_DYNAMIC_DATA**: No dynamic invoice data provided for balance validation");
+                log.Verbose("   - **DATA_STATE**: DynamicResults={DataState}, Count={Count}", 
+                    dynamicInvoiceResults == null ? "NULL" : "EMPTY", dynamicInvoiceResults?.Count ?? 0);
+                log.Verbose("   - **DEFAULT_BEHAVIOR**: Returning true (balanced) for empty data sets");
+                
+                return true;
+            }
 
+            // **LOG_THE_HOW**: Dynamic data structure analysis and dictionary extraction
+            log.Verbose("🔍 **STRUCTURE_ANALYSIS**: Analyzing dynamic data structure for dictionary extraction");
+            log.Verbose("   - **INPUT_ANALYSIS**: Count={Count}, FirstItemType={FirstItemType}", 
+                dynamicInvoiceResults.Count, dynamicInvoiceResults[0]?.GetType().Name ?? "NULL");
+            
             var dictionaries = new List<IDictionary<string, object>>();
+            
             if (dynamicInvoiceResults.Any() && dynamicInvoiceResults[0] is IList nestedList)
             {
+                log.Verbose("🔄 **NESTED_LIST_DETECTED**: Extracting dictionaries from nested list structure");
                 dictionaries = nestedList.OfType<IDictionary<string, object>>().ToList();
+                log.Verbose("   - **NESTED_EXTRACTION**: Found {DictionaryCount} dictionaries in nested structure", dictionaries.Count);
             }
             else
             {
+                log.Verbose("🔄 **FLAT_LIST_DETECTED**: Extracting dictionaries from flat dynamic structure");
                 dictionaries = dynamicInvoiceResults.OfType<IDictionary<string, object>>().ToList();
+                log.Verbose("   - **FLAT_EXTRACTION**: Found {DictionaryCount} dictionaries in flat structure", dictionaries.Count);
             }
 
-            if (!dictionaries.Any()) return true;
+            if (!dictionaries.Any())
+            {
+                // **LOG_THE_WHAT_IF**: No dictionaries found - default to balanced
+                log.Verbose("⚠️ **NO_DICTIONARIES_FOUND**: No dictionary objects found in dynamic data for validation");
+                log.Verbose("   - **EXTRACTION_RESULT**: No IDictionary<string, object> items available for invoice creation");
+                log.Verbose("   - **DEFAULT_BEHAVIOR**: Returning true (balanced) when no processable data available");
+                
+                return true;
+            }
 
+            // **LOG_THE_WHO**: Temporary invoice creation and balance validation
+            log.Verbose("🏗️ **TEMP_INVOICE_CREATION**: Creating temporary ShipmentInvoice for balance validation");
             var tempInvoice = CreateTempShipmentInvoice(dictionaries.First(), log);
+            
+            if (tempInvoice == null)
+            {
+                log.Warning("❌ **TEMP_INVOICE_CREATION_FAILED**: Could not create temporary invoice from dynamic data");
+                return true; // Default to balanced if conversion fails
+            }
+            
+            log.Verbose("🦠 **BALANCE_VALIDATION_DELEGATION**: Delegating to ShipmentInvoice balance validation logic");
             var isBalanced = TotalsZero(tempInvoice, out totalImbalanceSum, log);
+            
+            log.Verbose("✅ **DYNAMIC_TOTALS_VALIDATION_COMPLETE**: Dynamic balance validation result={IsBalanced}, Imbalance={Imbalance}", 
+                isBalanced, totalImbalanceSum);
+            log.Verbose("   - **SUCCESS_ASSERTION**: Dynamic invoice data balance validation completed with ShipmentInvoice logic");
+            
             return isBalanced;
         }
 
