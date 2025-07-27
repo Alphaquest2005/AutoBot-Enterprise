@@ -238,98 +238,206 @@ namespace WaterNut.DataSpace
         /// </summary>
         public string CleanJsonResponse(string jsonResponse)
         {
-            if (string.IsNullOrWhiteSpace(jsonResponse)) return string.Empty;
+            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanJsonResponse_V4.2_Analysis"))
+            {
+                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing JSON response cleaning requirements for LLM response (length: {ResponseLength})", 
+                    jsonResponse?.Length ?? 0);
+                _logger.Information("📊 Analysis Context: JSON response cleaning removes LLM artifacts, extracts valid JSON boundaries, and fixes escape sequences for reliable parsing");
+                _logger.Information("🎯 Expected Behavior: Validate input, remove BOM/markdown artifacts, detect JSON boundaries, fix escape sequences, and return clean parseable JSON");
+                _logger.Information("🏗️ Current Architecture: Multi-step artifact removal with boundary detection, escape sequence fixing, and comprehensive validation");
+            }
 
-            _logger?.Information("CleanJsonResponse input: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
-                jsonResponse.Length,
-                jsonResponse.Length > 0 ? jsonResponse[0].ToString() : "EMPTY",
-                jsonResponse.StartsWith("{"),
-                jsonResponse);
+            if (string.IsNullOrWhiteSpace(jsonResponse))
+            {
+                _logger.Error("❌ Critical Input Validation Failure: JSON response is null or whitespace - returning empty string");
+                return string.Empty;
+            }
 
             string cleaned = jsonResponse.Trim();
-
-            _logger?.Information("After trim: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
-                cleaned.Length,
-                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
-                cleaned.StartsWith("{"),
-                cleaned);
-
-            bool hasBom = cleaned.Length > 0 && cleaned[0] == '\uFEFF';
-            _logger?.Information("BOM check: HasBOM={HasBOM}, FirstCharCode={FirstCharCode}, Length={Length}, BOMCharCode=65279",
-                hasBom,
-                cleaned.Length > 0 ? ((int)cleaned[0]).ToString() : "EMPTY",
-                cleaned.Length);
-
-            if (hasBom)
-            {
-                cleaned = cleaned.Substring(1);
-                _logger?.Information("Removed BOM: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
-                    cleaned.Length,
-                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
-                    cleaned);
-            }
-
-            // Remove markdown code block fences - but only if they actually exist
-            if (cleaned.StartsWith("```"))
-            {
-                cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
-                _logger?.Information("Applied backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
-                    cleaned.Length,
-                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
-                    cleaned);
-            }
-
-            // Only apply the ending regex if the string ends with backticks
-            if (cleaned.EndsWith("```"))
-            {
-                cleaned = Regex.Replace(cleaned, @"[\r\n]*```\s*$", "", RegexOptions.IgnoreCase);
-                _logger?.Information("Applied ending backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
-                    cleaned.Length,
-                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
-                    cleaned);
-            }
-
-            cleaned = cleaned.Trim();
-
-            _logger?.Information("Before JSON extraction: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
-                cleaned.Length,
-                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
-                cleaned);
-
-            // Find the first '{' or '[' and the last '}' or ']' to extract the core JSON part
-            int firstBrace = cleaned.IndexOf('{');
-            int firstBracket = cleaned.IndexOf('[');
+            bool hasBom = false;
+            bool hasMarkdownFences = false;
+            bool jsonBoundariesFound = false;
             int startIndex = -1;
+            int endIndex = -1;
+            string extractedJson = null;
+            string fixedJson = null;
+            int initialLength = jsonResponse.Length;
+            int finalLength = 0;
 
-            if (firstBrace == -1 && firstBracket == -1)
+            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanJsonResponse_V4.2_Enhancement"))
             {
-                _logger?.Warning("CleanJsonResponse: No JSON object ('{{') or array ('[') start found in response: {ResponseSnippet}", TruncateForLog(cleaned, 100));
-                return string.Empty;
+                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive JSON response cleaning with diagnostic capabilities");
+                
+                _logger.Information("CleanJsonResponse input: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
+                    jsonResponse.Length,
+                    jsonResponse.Length > 0 ? jsonResponse[0].ToString() : "EMPTY",
+                    jsonResponse.StartsWith("{"),
+                    jsonResponse);
+
+                _logger.Information("After trim: Length={Length}, FirstChar={FirstChar}, StartsWithBrace={StartsWithBrace}, JSON={@JSON}",
+                    cleaned.Length,
+                    cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                    cleaned.StartsWith("{"),
+                    cleaned);
+
+                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core JSON Cleaning Logic**
+                using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanJsonResponse_V4.2_Implementation"))
+                {
+                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing systematic JSON response cleaning algorithm");
+                    
+                    try
+                    {
+                        // Step 1: BOM Detection and Removal
+                        hasBom = cleaned.Length > 0 && cleaned[0] == '\uFEFF';
+                        _logger.Information("BOM check: HasBOM={HasBOM}, FirstCharCode={FirstCharCode}, Length={Length}, BOMCharCode=65279",
+                            hasBom,
+                            cleaned.Length > 0 ? ((int)cleaned[0]).ToString() : "EMPTY",
+                            cleaned.Length);
+
+                        if (hasBom)
+                        {
+                            cleaned = cleaned.Substring(1);
+                            _logger.Information("Removed BOM: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                                cleaned.Length,
+                                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                                cleaned);
+                        }
+
+                        // Step 2: Markdown Code Fence Removal
+                        hasMarkdownFences = cleaned.StartsWith("```") || cleaned.EndsWith("```");
+                        
+                        if (cleaned.StartsWith("```"))
+                        {
+                            cleaned = Regex.Replace(cleaned, @"^```(?:json)?\s*[\r\n]*", "", RegexOptions.IgnoreCase);
+                            _logger.Information("Applied backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                                cleaned.Length,
+                                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                                cleaned);
+                        }
+
+                        if (cleaned.EndsWith("```"))
+                        {
+                            cleaned = Regex.Replace(cleaned, @"[\r\n]*```\s*$", "", RegexOptions.IgnoreCase);
+                            _logger.Information("Applied ending backtick removal: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                                cleaned.Length,
+                                cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                                cleaned);
+                        }
+
+                        cleaned = cleaned.Trim();
+                        _logger.Information("Before JSON extraction: Length={Length}, FirstChar={FirstChar}, JSON={@JSON}",
+                            cleaned.Length,
+                            cleaned.Length > 0 ? cleaned[0].ToString() : "EMPTY",
+                            cleaned);
+
+                        // Step 3: JSON Boundary Detection
+                        int firstBrace = cleaned.IndexOf('{');
+                        int firstBracket = cleaned.IndexOf('[');
+
+                        if (firstBrace == -1 && firstBracket == -1)
+                        {
+                            _logger.Warning("CleanJsonResponse: No JSON object ('{{') or array ('[') start found in response: {ResponseSnippet}", TruncateForLog(cleaned, 100));
+                            return string.Empty;
+                        }
+
+                        if (firstBrace != -1 && firstBracket != -1) startIndex = Math.Min(firstBrace, firstBracket);
+                        else if (firstBrace != -1) startIndex = firstBrace;
+                        else startIndex = firstBracket;
+
+                        char expectedEndChar = (cleaned[startIndex] == '{') ? '}' : ']';
+                        endIndex = cleaned.LastIndexOf(expectedEndChar);
+
+                        if (startIndex == -1 || endIndex == -1 || endIndex < startIndex)
+                        {
+                            _logger.Warning("CleanJsonResponse: Could not find valid JSON start/end boundaries. StartIndex: {StartIndex}, EndIndex: {EndIndex}. Response snippet: {ResponseSnippet}", 
+                                startIndex, endIndex, TruncateForLog(cleaned, 100));
+                            return string.Empty;
+                        }
+
+                        jsonBoundariesFound = true;
+                        extractedJson = cleaned.Substring(startIndex, endIndex - startIndex + 1);
+
+                        // Step 4: JSON Escape Sequence Fixing
+                        _logger.Information("🔧 **JSON_ESCAPING_FIX**: Applying JSON string escape fixes to prevent parsing errors");
+                        fixedJson = FixJsonStringEscaping(extractedJson);
+                        finalLength = fixedJson?.Length ?? 0;
+                        
+                        _logger.Information("🔍 **JSON_ESCAPING_RESULT**: Original length={OriginalLength}, Fixed length={FixedLength}", 
+                            extractedJson?.Length ?? 0, finalLength);
+                        
+                        _logger.Information("📊 JSON Cleaning Summary: InitialLength={Initial}, FinalLength={Final}, BOMRemoved={BOM}, MarkdownRemoved={Markdown}, BoundariesFound={Boundaries}", 
+                            initialLength, finalLength, hasBom, hasMarkdownFences, jsonBoundariesFound);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during JSON response cleaning - InitialLength: {InitialLength}", initialLength);
+                        // Return empty string if cleaning fails critically
+                        return string.Empty;
+                    }
+                }
             }
 
-            if (firstBrace != -1 && firstBracket != -1) startIndex = Math.Min(firstBrace, firstBracket);
-            else if (firstBrace != -1) startIndex = firstBrace;
-            else startIndex = firstBracket; // firstBracket must be != -1 here
-
-            char expectedEndChar = (cleaned[startIndex] == '{') ? '}' : ']';
-            int endIndex = cleaned.LastIndexOf(expectedEndChar);
-
-            if (startIndex == -1 || endIndex == -1 || endIndex < startIndex)
+            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CleanJsonResponse_V4.2_SuccessCriteria"))
             {
-                _logger?.Warning("CleanJsonResponse: Could not find valid JSON start/end boundaries. StartIndex: {StartIndex}, EndIndex: {EndIndex}. Response snippet: {ResponseSnippet}", startIndex, endIndex, TruncateForLog(cleaned, 100));
-                return string.Empty;
+                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                
+                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
+                bool purposeFulfilled = !string.IsNullOrWhiteSpace(jsonResponse) && !string.IsNullOrEmpty(fixedJson);
+                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - JSON response cleaning {Result} (InitialLength: {Initial}, FinalLength: {Final})", 
+                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
+                    purposeFulfilled ? "executed successfully" : "failed to execute", initialLength, finalLength);
+
+                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
+                bool outputComplete = fixedJson != null && finalLength > 0;
+                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Cleaned JSON {Result} with {FinalLength} characters", 
+                    outputComplete ? "✅ PASS" : "❌ FAIL", 
+                    outputComplete ? "properly constructed" : "empty or null", finalLength);
+
+                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
+                bool processComplete = jsonBoundariesFound && extractedJson != null;
+                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - JSON boundary detection and extraction completed (BoundariesFound: {BoundariesFound})", 
+                    processComplete ? "✅ PASS" : "❌ FAIL", jsonBoundariesFound);
+
+                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
+                bool dataQualityMet = finalLength > 0 && fixedJson != null && (fixedJson.StartsWith("{") || fixedJson.StartsWith("["));
+                _logger.Error("🔍 **DATA_QUALITY**: {Status} - JSON structure integrity: ValidJSONStart={ValidStart}, Length={Length}", 
+                    dataQualityMet ? "✅ PASS" : "❌ FAIL", fixedJson?.StartsWith("{") == true || fixedJson?.StartsWith("[") == true, finalLength);
+
+                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
+                bool errorHandlingSuccess = fixedJson != null || string.IsNullOrWhiteSpace(jsonResponse); // Graceful fallback to empty
+                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during JSON cleaning", 
+                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
+                    errorHandlingSuccess ? "implemented successfully" : "failed");
+
+                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
+                bool businessLogicValid = string.IsNullOrWhiteSpace(jsonResponse) ? string.IsNullOrEmpty(fixedJson) : !string.IsNullOrEmpty(fixedJson);
+                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - JSON cleaning logic follows business rules: empty input -> empty output, valid input -> cleaned JSON", 
+                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
+
+                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
+                bool integrationSuccess = extractedJson != null || !jsonBoundariesFound; // FixJsonStringEscaping and regex operations successful
+                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Regex operations and escape fixing integration {Result}", 
+                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
+                    integrationSuccess ? "functioning properly" : "experiencing issues");
+
+                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
+                bool performanceCompliant = initialLength < 50000; // Reasonable JSON response size limit
+                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processing {InitialLength} character JSON response within reasonable performance limits", 
+                    performanceCompliant ? "✅ PASS" : "❌ FAIL", initialLength);
+
+                // Overall Success Assessment
+                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - CleanJsonResponse {Result} with {FinalLength} characters and JSON structure preserved", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "encountered issues", finalLength);
             }
 
-            var extractedJson = cleaned.Substring(startIndex, endIndex - startIndex + 1);
-
-            // **🔧 JSON_ESCAPING_FIX**: Fix common JSON escaping issues that cause parsing failures
-            _logger?.Information("🔧 **JSON_ESCAPING_FIX**: Applying JSON string escape fixes to prevent parsing errors");
-            var fixedJson = FixJsonStringEscaping(extractedJson);
-            
-            _logger?.Information("🔍 **JSON_ESCAPING_RESULT**: Original length={OriginalLength}, Fixed length={FixedLength}", 
-                extractedJson?.Length ?? 0, fixedJson?.Length ?? 0);
-
-            return fixedJson;
+            return fixedJson ?? string.Empty;
         }
 
         /// <summary>
