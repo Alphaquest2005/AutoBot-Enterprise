@@ -75,7 +75,7 @@ namespace AutoBotUtilities.Tests
                 "test_template_content", failingPatterns, _mangoInvoiceText, "deepseek", "header-detection", "MANGO");
 
             // Assert
-            Assert.IsTrue(detectionResult, "Pattern failure detection and improvement cycle should succeed");
+            Assert.That(detectionResult, Is.True, "Pattern failure detection and improvement cycle should succeed");
             _logger.Information("✅ **TEST_RESULT**: Self-improving template cycle completed successfully");
         }
 
@@ -96,12 +96,12 @@ namespace AutoBotUtilities.Tests
             var templatePath = await TestTemplateVersioning(originalTemplate, improvedTemplate);
 
             // Assert
-            Assert.IsNotNull(templatePath, "Template versioning should return a valid path");
-            Assert.IsTrue(File.Exists(templatePath), "Versioned template file should exist");
-            Assert.IsTrue(templatePath.Contains("-v1.txt"), "Template file should include version number");
+            Assert.That(templatePath, Is.Not.Null, "Template versioning should return a valid path");
+            Assert.That(File.Exists(templatePath), Is.True, "Versioned template file should exist");
+            Assert.That(templatePath.Contains("-v1.txt"), Is.True, "Template file should include version number");
 
             var savedContent = File.ReadAllText(templatePath);
-            Assert.AreEqual(improvedTemplate, savedContent, "Saved template should match improved content");
+            Assert.That(savedContent, Is.EqualTo(improvedTemplate), "Saved template should match improved content");
 
             _logger.Information("✅ **TEST_RESULT**: Template versioning working correctly");
         }
