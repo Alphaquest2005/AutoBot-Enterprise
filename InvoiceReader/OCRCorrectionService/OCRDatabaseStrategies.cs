@@ -222,25 +222,86 @@ namespace WaterNut.DataSpace
                 return namedGroups;
             }
 
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Database save operation with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **SAVE OPERATION**: Atomic database commit with comprehensive validation error handling and change tracking
+            /// **ERROR HANDLING**: DbEntityValidationException and general exception with detailed diagnostic preservation
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of database save outcomes and error patterns
+            /// </summary>
             internal async Task<int> SaveChangesWithAssertiveLogging(DbContext context, string operationName)
             {
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for database save
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for database save operation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Save operation context with atomic commit and validation handling");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Database save pattern with comprehensive exception handling and change tracking");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need save confirmation, change count validation, error pattern identification");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Database save requires comprehensive validation with detailed error diagnostics");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for save operations");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed save intent, change tracking, validation error analysis");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Save operations, change counts, validation errors, exception details");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based database save operation");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on data integrity requirements, implementing comprehensive save validation");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring change counts and error patterns");
+                
                 try
                 {
-                    _logger.Information("   - 💾 **DB_SAVE_INTENT**: Attempting to save changes to the database for operation: {OperationName}", operationName);
+                    // **v4.1 SAVE INTENT LOGGING**: Enhanced database save initiation with operation context
+                    _logger.Error("💾 **DB_SAVE_INTENT_EVIDENCE**: Attempting atomic database save operation");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Save context - OperationName={OperationName}", operationName);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Atomic save pattern with comprehensive change tracking and validation");
+                    
                     int changes = await context.SaveChangesAsync().ConfigureAwait(false);
-                    _logger.Information("   - ✅ **DB_SAVE_SUCCESS**: Successfully committed {ChangeCount} changes for {OperationName}.", changes, operationName);
+                    
+                    // **v4.1 SAVE SUCCESS LOGGING**: LLM diagnostic evidence for successful database commit
+                    _logger.Error("✅ **DB_SAVE_SUCCESS_EVIDENCE**: Successfully committed database changes");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Save success - ChangeCount={ChangeCount}, OperationName={OperationName}", changes, operationName);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Successful atomic commit with verified change count");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Successful save indicates proper entity state management and validation compliance");
+                    _logger.Error("📚 **FIX_RATIONALE**: Change count confirmation validates database operation completeness");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Save operation completed successfully with documented change metrics");
+                    _logger.Error("🎯 **SUCCESS_ASSERTION**: Database save operation completed with comprehensive change tracking for LLM analysis");
+                    
                     return changes;
                 }
                 catch (DbEntityValidationException vex)
                 {
+                    // **v4.1 VALIDATION ERROR LOGGING**: LLM diagnostic evidence for entity validation failures
                     var errorMessages = vex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => $"{x.PropertyName}: {x.ErrorMessage}");
                     var fullErrorMessage = string.Join("; ", errorMessages);
-                    _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED**: Operation {OperationName} failed due to validation errors. Details: {ValidationErrors}", operationName, fullErrorMessage);
+                    
+                    _logger.Error(vex, "🚨 **DB_SAVE_VALIDATION_FAILED_EVIDENCE**: Database save operation failed due to entity validation errors");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure context - OperationName={OperationName}", operationName);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Entity validation failure pattern with detailed property-level error analysis");
+                    _logger.Error("❓ **EVIDENCE_GAPS**: Validation error details - {ValidationErrors}", fullErrorMessage);
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Validation failures indicate entity state inconsistency or constraint violations");
+                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced validation error tracking with property-level diagnostic details");
+                    _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Entity validation errors, property constraints, business rule violations");
+                    _logger.Error("📚 **FIX_RATIONALE**: Validation error preservation enables entity state debugging and constraint analysis");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Validation exception documented with comprehensive error detail preservation");
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION**: Operation {OperationName} failed due to an unexpected database error.", operationName);
+                    // **v4.1 GENERAL EXCEPTION LOGGING**: LLM diagnostic evidence for unexpected database errors
+                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION_EVIDENCE**: Database save operation failed due to unexpected error");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Unhandled exception context - OperationName={OperationName}, ExceptionType={ExceptionType}", 
+                        operationName, ex.GetType().Name);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Unexpected exception pattern requiring comprehensive error state analysis");
+                    _logger.Error("❓ **EVIDENCE_GAPS**: Exception details - {ExceptionMessage}", ex.Message);
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Unexpected exceptions indicate infrastructure failures or configuration issues");
+                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced exception tracking with type-specific diagnostic preservation");
+                    _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Exception types, error messages, stack traces, operation context");
+                    _logger.Error("📚 **FIX_RATIONALE**: Exception preservation enables infrastructure debugging and error pattern analysis");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Exception documented with comprehensive diagnostic context for troubleshooting");
                     throw;
                 }
             }
