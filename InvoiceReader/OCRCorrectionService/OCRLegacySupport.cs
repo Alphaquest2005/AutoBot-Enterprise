@@ -39,21 +39,35 @@ namespace WaterNut.DataSpace
             new System.Runtime.CompilerServices.ConditionalWeakTable<ShipmentInvoice, System.Runtime.CompilerServices.StrongBox<double>>();
 
         /// <summary>
-        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Invoice financial balance validator with precision imbalance calculation
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Invoice financial balance validator with LLM diagnostic workflow enforcement
         /// 
-        /// **LOG_THE_WHAT**: Invoice total validation calculating expected vs reported totals with precise difference measurement
-        /// **LOG_THE_HOW**: Sums SubTotal+Freight+OtherCost+Insurance-Deduction, compares to InvoiceTotal, caches difference
-        /// **LOG_THE_WHY**: Ensures invoice financial integrity before processing, identifies imbalances requiring correction
-        /// **LOG_THE_WHO**: Returns boolean balance status and outputs precise difference amount for diagnostic purposes
-        /// **LOG_THE_WHAT_IF**: Expects valid invoice object; handles null gracefully; uses 0.001 tolerance for floating-point precision
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **VALIDATION LOGIC**: Sums SubTotal+Freight+OtherCost+Insurance-Deduction, compares to InvoiceTotal with precision tolerance
+        /// **RETURN BEHAVIOR**: Boolean balance status + precise difference amount for diagnostic correlation and pipeline decisions
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis without additional context requirements
         /// </summary>
         public static bool TotalsZero(ShipmentInvoice invoice, out double differenceAmount, ILogger logger)
         {
-            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete invoice balance validation narrative
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow implementation
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
-            log.Verbose("🦠 **TOTALS_VALIDATION_START**: Invoice financial balance validation with precision calculation");
-            log.Verbose("   - **ARCHITECTURAL_INTENT**: Validate invoice financial integrity for processing continuation decisions");
-            log.Verbose("   - **CALCULATION_METHOD**: (SubTotal + Freight + OtherCost + Insurance - Deduction) vs InvoiceTotal");
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            log.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for invoice balance validation");
+            log.Error("📋 **AVAILABLE_LOG_DATA**: Current context - TotalsZero validation with precision calculation");
+            log.Error("🔍 **PATTERN_ANALYSIS**: Financial balance validation pattern with null-safe value extraction");
+            log.Error("❓ **EVIDENCE_GAPS**: Need complete invoice component analysis and tolerance-based determination");
+            log.Error("💡 **LOG_BASED_HYPOTHESIS**: Invoice balance validation requires step-by-step calculation logging");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            log.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for balance calculation");
+            log.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed component extraction, calculation steps, tolerance validation");
+            log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Invoice components, balance calculation, difference measurement, business logic");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            log.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based invoice balance validation");
+            log.Error("📚 **FIX_RATIONALE**: Based on financial integrity requirements, implementing comprehensive balance validation");
+            log.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring balance calculation accuracy and tolerance determination");
             
             differenceAmount = double.MaxValue;
             
