@@ -30,10 +30,12 @@ namespace WaterNut.DataSpace
         // DeepSeek Configuration
         private const string DeepSeekBaseUrl = "https://api.deepseek.com/v1";
         private const string DeepSeekModel = "deepseek-chat";
+        private const int DeepSeekMaxTokens = 8000;  // Official DeepSeek API limit for output tokens
         
         // Gemini Configuration  
         private const string GeminiBaseUrl = "https://generativelanguage.googleapis.com/v1beta/models";
         private const string GeminiModel = "gemini-1.5-flash-latest";
+        private const int GeminiMaxTokens = 8192;   // Official Gemini API limit for output tokens
 
         public OCRLlmClient(ILogger logger)
         {
