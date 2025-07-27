@@ -471,12 +471,12 @@ namespace WaterNut.DataSpace
                     _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrInvoiceTemplate.Name ?? "NULL");
                     
                     // Create Invoice object from database template for pipeline
-                    _logger.Information("🏗️ **CREATING_INVOICE_OBJECT**: Creating Invoice object from database template");
-                    _logger.Information("   - **DATABASE_TEMPLATE_VERIFICATION**: Validating database template before Invoice constructor");
-                    _logger.Information("     • **DB_TEMPLATE_ID**: {Id}", databaseTemplate.Id);
-                    _logger.Information("     • **DB_TEMPLATE_NAME**: '{Name}'", databaseTemplate.Name ?? "NULL");
-                    _logger.Information("     • **DB_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", databaseTemplate?.FileTypeId.ToString() ?? "NULL");
-                    _logger.Information("     • **DB_TEMPLATE_IS_ACTIVE**: {IsActive}", databaseTemplate.IsActive.ToString() ?? "NULL");
+                    _logger.Information("🏗️ **CREATING_INVOICE_OBJECT**: Creating Invoice object from OCR template definition");
+                    _logger.Information("   - **TEMPLATE_VERIFICATION**: Validating OCR template definition before Invoice constructor");
+                    _logger.Information("     • **OCR_TEMPLATE_ID**: {Id}", ocrInvoiceTemplate.Id);
+                    _logger.Information("     • **OCR_TEMPLATE_NAME**: '{Name}'", ocrInvoiceTemplate.Name ?? "NULL");
+                    _logger.Information("     • **OCR_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", ocrInvoiceTemplate?.FileTypeId.ToString() ?? "NULL");
+                    _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrInvoiceTemplate.IsActive.ToString() ?? "NULL");
                     
                     _logger.Information("🔄 **INVOICE_CONSTRUCTOR_START**: Calling Invoice constructor...");
                     Invoice template = null;
