@@ -800,6 +800,9 @@ namespace AutoBotUtilities.Tests
 
                 // Clear existing MANGO templates to force OCR template creation for new supplier
                 _logger.Information("🧹 **CLEARING_EXISTING_TEMPLATES**: Removing existing MANGO templates to simulate new supplier scenario");
+                
+                // **CRITICAL**: Delete existing bad MANGO template to force recreation with enhanced AITemplateService
+                await FixMangoTemplate.DeleteExistingMangoTemplate();
                 using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                 {
                     // CRITICAL FIX: Only target MANGO templates specifically, not all templates with ApplicationSettingsId = 3
