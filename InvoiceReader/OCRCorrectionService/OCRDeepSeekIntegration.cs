@@ -203,6 +203,26 @@ namespace WaterNut.DataSpace
                 Success = true
             };
 
+            // **PATTERN FALLBACK LOGGING**: Track when suggested_regex is used as Pattern fallback
+            if (pattern == null && correctionResult.Pattern != null)
+            {
+                _logger.Information("🔧 **PATTERN_FALLBACK_APPLIED**: Field='{FieldName}' used suggested_regex as Pattern fallback", 
+                    fieldName);
+                _logger.Information("   📋 **FALLBACK_PATTERN**: '{Pattern}'", correctionResult.Pattern);
+            }
+            else if (pattern != null)
+            {
+                _logger.Information("✅ **DIRECT_PATTERN_USED**: Field='{FieldName}' has explicit pattern from DeepSeek", 
+                    fieldName);
+            }
+            else
+            {
+                _logger.Warning("⚠️ **NO_PATTERN_AVAILABLE**: Field='{FieldName}' has neither pattern nor suggested_regex", 
+                    fieldName);
+            }
+
+            return correctionResult;
+
             // 🚀 **PHASE_2_ENHANCEMENT**: Handle multi-field extraction support
             _logger.Information("🔍 **MULTI_FIELD_PROCESSING**: Checking for multi-field extraction data in element for field {FieldName}", fieldName);
             
