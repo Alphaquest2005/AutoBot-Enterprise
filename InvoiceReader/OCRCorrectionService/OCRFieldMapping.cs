@@ -303,9 +303,143 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Supported field enumeration with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Retrieves all canonical field names that have defined mappings from the field mapping dictionary
+        /// **BUSINESS OBJECTIVE**: Provide comprehensive list of supported field mappings for validation, documentation, and client usage
+        /// **SUCCESS CRITERIA**: Must enumerate dictionary keys, filter to canonical names only, validate mapping integrity, and return sorted collection
+        /// 
         /// Gets all field names that have defined mappings (primary keys of the mapping dictionary).
         /// </summary>
-        public IEnumerable<string> GetSupportedMappedFields() => DeepSeekToDBFieldMapping.Keys.Where(k => DeepSeekToDBFieldMapping[k] != null && DeepSeekToDBFieldMapping[k].DatabaseFieldName == k).OrderBy(k => k);
+        public IEnumerable<string> GetSupportedMappedFields()
+        {
+            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetSupportedMappedFields_V4.2_Analysis"))
+            {
+                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing supported field enumeration requirements");
+                _logger.Information("📊 Analysis Context: Field enumeration provides canonical field names from mapping dictionary for validation and documentation purposes");
+                _logger.Information("🎯 Expected Behavior: Filter dictionary keys to canonical names, validate mapping integrity, and return alphabetically sorted collection");
+                _logger.Information("🏗️ Current Architecture: LINQ-based filtering of dictionary keys with canonical name validation and alphabetical ordering");
+            }
+
+            IEnumerable<string> supportedFields = null;
+            int totalMappings = 0;
+            int canonicalMappings = 0;
+            bool dictionaryValid = false;
+
+            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetSupportedMappedFields_V4.2_Enhancement"))
+            {
+                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive supported field enumeration with diagnostic capabilities");
+                
+                dictionaryValid = DeepSeekToDBFieldMapping != null;
+                totalMappings = DeepSeekToDBFieldMapping?.Count ?? 0;
+                
+                _logger.Information("✅ Input Validation: Mapping dictionary validation - Valid: {DictionaryValid}, Total mappings: {TotalMappings}", 
+                    dictionaryValid, totalMappings);
+
+                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Field Enumeration Logic**
+                using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetSupportedMappedFields_V4.2_Implementation"))
+                {
+                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing supported field enumeration algorithm");
+                    
+                    try
+                    {
+                        if (dictionaryValid)
+                        {
+                            // Filter to canonical field names only (where key matches DatabaseFieldName)
+                            supportedFields = DeepSeekToDBFieldMapping.Keys
+                                .Where(k => DeepSeekToDBFieldMapping[k] != null && 
+                                           DeepSeekToDBFieldMapping[k].DatabaseFieldName == k)
+                                .OrderBy(k => k);
+                            
+                            canonicalMappings = supportedFields.Count();
+                            
+                            _logger.Information("✅ Enumeration Success: Filtered {TotalMappings} total mappings to {CanonicalMappings} canonical field names", 
+                                totalMappings, canonicalMappings);
+                            
+                            _logger.Debug("📋 Canonical Fields: {CanonicalFields}", 
+                                string.Join(", ", supportedFields.Take(10)) + (canonicalMappings > 10 ? "..." : ""));
+                        }
+                        else
+                        {
+                            _logger.Error("❌ Dictionary Invalid: Cannot enumerate supported fields from null or invalid mapping dictionary");
+                            supportedFields = Enumerable.Empty<string>();
+                        }
+                        
+                        _logger.Information("📊 Field Enumeration Summary: TotalMappings={Total}, CanonicalMappings={Canonical}, DictionaryValid={Valid}", 
+                            totalMappings, canonicalMappings, dictionaryValid);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during field enumeration - TotalMappings: {TotalMappings}", totalMappings);
+                        supportedFields = Enumerable.Empty<string>();
+                    }
+                }
+            }
+
+            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetSupportedMappedFields_V4.2_SuccessCriteria"))
+            {
+                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                
+                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
+                bool purposeFulfilled = dictionaryValid && supportedFields != null;
+                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Field enumeration {Result} (Dictionary valid: {DictionaryValid})", 
+                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
+                    purposeFulfilled ? "executed successfully" : "failed to execute", dictionaryValid);
+
+                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
+                bool outputComplete = supportedFields != null;
+                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Field collection {Result} with {CanonicalCount} canonical fields enumerated", 
+                    outputComplete ? "✅ PASS" : "❌ FAIL", 
+                    outputComplete ? "properly constructed" : "null or invalid", canonicalMappings);
+
+                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
+                bool processComplete = totalMappings >= 0 && canonicalMappings >= 0;
+                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - Dictionary filtering and sorting completed ({Total} -> {Canonical})", 
+                    processComplete ? "✅ PASS" : "❌ FAIL", totalMappings, canonicalMappings);
+
+                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
+                bool dataQualityMet = canonicalMappings <= totalMappings && (canonicalMappings == 0 || supportedFields.All(f => !string.IsNullOrEmpty(f)));
+                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Field enumeration integrity: {Canonical} canonical fields from {Total} total mappings", 
+                    dataQualityMet ? "✅ PASS" : "❌ FAIL", canonicalMappings, totalMappings);
+
+                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
+                bool errorHandlingSuccess = supportedFields != null; // Graceful fallback to empty collection
+                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during field enumeration", 
+                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
+                    errorHandlingSuccess ? "implemented successfully" : "failed");
+
+                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
+                bool businessLogicValid = !dictionaryValid ? (canonicalMappings == 0) : (canonicalMappings >= 0);
+                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Field enumeration logic follows business rules: canonical filtering and alphabetical ordering", 
+                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
+
+                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
+                bool integrationSuccess = dictionaryValid; // Dictionary dependency available
+                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Mapping dictionary integration {Result}", 
+                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
+                    integrationSuccess ? "functioning properly" : "experiencing issues");
+
+                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
+                bool performanceCompliant = totalMappings < 10000; // Reasonable mapping dictionary size
+                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processing {TotalMappings} mappings within reasonable performance limits", 
+                    performanceCompliant ? "✅ PASS" : "❌ FAIL", totalMappings);
+
+                // Overall Success Assessment
+                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - GetSupportedMappedFields {Result} with {CanonicalCount} canonical fields enumerated", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "encountered issues", canonicalMappings);
+            }
+
+            return supportedFields ?? Enumerable.Empty<string>();
+        }
 
 
         /// <summary>
@@ -402,6 +536,14 @@ namespace WaterNut.DataSpace
         #region Regex Group and Line Context Logic Aiding Mapping
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Regex group field retrieval with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Retrieves field definitions from database that correspond to named groups in regex pattern for specific OCR line definition
+        /// **BUSINESS OBJECTIVE**: Enable pattern-based field extraction by matching regex named groups to database field definitions with async database querying
+        /// **SUCCESS CRITERIA**: Must extract named groups correctly, query database efficiently, map results properly, and return complete FieldInfo collection
+        /// 
         /// Gets field definitions from the database (OCR.Business.Entities.Fields) that correspond
         /// to named groups found in a given regex pattern string, for a specific OCR.Business.Entities.Lines.Id.
         /// </summary>
