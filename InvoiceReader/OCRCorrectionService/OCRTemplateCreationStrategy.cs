@@ -306,28 +306,61 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Creates the header part (PartTypeId=1) with all invoice-level fields.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Header part infrastructure factory with invoice-level field orchestration
+        /// 
+        /// **LOG_THE_WHAT**: Header part creation (PartTypeId=1) with comprehensive line and field generation for invoice metadata
+        /// **LOG_THE_HOW**: Creates Parts entity, generates Lines and Fields for each header field, manages entity relationships
+        /// **LOG_THE_WHY**: Establishes invoice-level field processing capability (InvoiceNo, Date, Total, Supplier info)
+        /// **LOG_THE_WHO**: Returns Parts entity with complete header field infrastructure ready for OCR processing
+        /// **LOG_THE_WHAT_IF**: Expects valid template and header fields; creates comprehensive part structure with error handling
         /// </summary>
         private async Task<Parts> CreateHeaderPartAsync(OCRContext context, Templates template, List<InvoiceError> headerFields)
         {
-            _logger.Information("🏗️ **HEADER_PART_CREATION**: Creating header part for template '{TemplateName}'", template.Name);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete header part creation narrative
+            _logger.Information("🏗️ **HEADER_PART_FACTORY_START**: Creating header part infrastructure for invoice-level field processing");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Establish PartTypeId=1 infrastructure for invoice metadata fields");
+            _logger.Information("   - **TEMPLATE_CONTEXT**: Template '{TemplateName}' (ID={TemplateId}) header field processing", 
+                template.Name, template.Id);
+            _logger.Information("   - **FIELD_SCOPE**: Processing {FieldCount} header fields for invoice-level data extraction", 
+                headerFields.Count);
+            _logger.Information("   - **ENTITY_STRUCTURE**: Part→Lines→Fields hierarchy for metadata processing");
 
+            // **LOG_THE_WHAT**: Header part entity creation with proper type designation
             var headerPart = new Parts
             {
                 TemplateId = template.Id,
-                PartTypeId = 1, // Header part type
+                PartTypeId = 1, // Header part type - invoice metadata processing
                 TrackingState = TrackingState.Added
             };
+            
+            _logger.Information("🔧 **HEADER_PART_ENTITY**: Created Parts entity with PartTypeId=1 for header processing");
+            _logger.Information("   - **ENTITY_CONFIGURATION**: TemplateId={TemplateId}, PartType=Header, TrackingState=Added", template.Id);
+            
             context.Parts.Add(headerPart);
+            _logger.Information("💾 **PART_REGISTRATION**: Header part registered with context for persistence");
 
-            // Create lines and fields for each header field
+            // **LOG_THE_HOW**: Individual header field processing with comprehensive logging
+            _logger.Information("🔄 **HEADER_FIELD_PROCESSING_START**: Creating lines and fields for each header field");
+            var processedFields = 0;
+            
             foreach (var headerField in headerFields)
             {
+                processedFields++;
+                _logger.Information("🔧 **HEADER_FIELD_CREATION**: Processing field {CurrentField}/{TotalFields} - '{FieldName}'", 
+                    processedFields, headerFields.Count, headerField.Field);
+                
                 await this.CreateHeaderLineAndFieldAsync(context, headerPart, headerField).ConfigureAwait(false);
-                _logger.Verbose("✅ **HEADER_FIELD_PROCESSED**: {Field}", headerField.Field);
+                
+                _logger.Verbose("✅ **HEADER_FIELD_PROCESSED**: Field '{Field}' line and field entities created", headerField.Field);
             }
 
-            _logger.Information("✅ **HEADER_PART_COMPLETE**: Created header part with {FieldCount} fields", headerFields.Count);
+            // **LOG_THE_WHO**: Header part completion with comprehensive metrics
+            _logger.Information("✅ **HEADER_PART_COMPLETE**: Header part infrastructure fully created");
+            _logger.Information("   - **COMPLETION_METRICS**: PartType=Header, FieldCount={FieldCount}, ProcessedFields={ProcessedFields}", 
+                headerFields.Count, processedFields);
+            _logger.Information("   - **INFRASTRUCTURE_READY**: Header part prepared for invoice metadata extraction");
+            _logger.Information("   - **SUCCESS_ASSERTION**: Complete header processing capability established for template");
+            
             return headerPart;
         }
 
@@ -690,12 +723,22 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Validates and filters DeepSeek errors against actual database schema.
-        /// Ensures only valid database fields are included in templates.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Database schema validation engine with comprehensive field filtering
+        /// 
+        /// **LOG_THE_WHAT**: Schema validation system ensuring only valid database fields are included in template creation
+        /// **LOG_THE_HOW**: Validates against ShipmentInvoice and InvoiceDetails schemas, filters invalid fields, maps field names
+        /// **LOG_THE_WHY**: Prevents template creation failures by ensuring database compatibility and referential integrity
+        /// **LOG_THE_WHO**: Returns GroupedDeepSeekErrors with only valid, database-compatible field specifications
+        /// **LOG_THE_WHAT_IF**: Expects DeepSeek errors; handles invalid fields gracefully; ensures production compatibility
         /// </summary>
         private GroupedDeepSeekErrors ValidateAndFilterAgainstSchema(List<InvoiceError> allErrors)
         {
-            _logger.Information("🔍 **SCHEMA_VALIDATION_START**: Validating {ErrorCount} DeepSeek errors against database schema", allErrors?.Count ?? 0);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete schema validation orchestration narrative
+            _logger.Information("🔍 **SCHEMA_VALIDATION_ENGINE_START**: Comprehensive database schema validation process");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Ensure template creation uses only valid, production-compatible database fields");
+            _logger.Information("   - **VALIDATION_INPUT**: {ErrorCount} DeepSeek errors requiring schema compliance verification", allErrors?.Count ?? 0);
+            _logger.Information("   - **SCHEMA_SOURCES**: DatabaseSchema.ShipmentInvoiceFields + DatabaseSchema.InvoiceDetailsFields");
+            _logger.Information("   - **QUALITY_GATE**: Invalid fields filtered out to prevent database constraint violations");
             
             var grouped = new GroupedDeepSeekErrors();
             var invalidFields = new List<string>();
@@ -703,9 +746,19 @@ namespace WaterNut.DataSpace
             
             if (allErrors == null || !allErrors.Any())
             {
-                _logger.Warning("⚠️ **NO_ERRORS_FOR_VALIDATION**: No DeepSeek errors provided for schema validation");
+                // **LOG_THE_WHAT_IF**: Empty input handling with impact assessment
+                _logger.Warning("⚠️ **NO_ERRORS_FOR_VALIDATION**: No DeepSeek errors provided for schema validation process");
+                _logger.Warning("   - **INPUT_STATE**: Error collection is null or empty - validation cannot proceed");
+                _logger.Warning("   - **TEMPLATE_IMPACT**: Template will be created with minimal field coverage");
+                _logger.Warning("   - **RECOMMENDATION**: Verify DeepSeek processing completed successfully");
+                
                 return grouped;
             }
+            
+            // **LOG_THE_HOW**: Individual error validation process initiation
+            _logger.Information("🔄 **INDIVIDUAL_VALIDATION_START**: Validating each DeepSeek error against database schema");
+            _logger.Information("   - **VALIDATION_CRITERIA**: Field existence, entity type mapping, data type compatibility");
+            _logger.Information("   - **FILTERING_STRATEGY**: Accept valid fields, reject invalid fields, map field names to database schema");
 
             foreach (var error in allErrors)
             {
