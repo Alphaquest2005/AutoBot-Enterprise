@@ -12,6 +12,14 @@ namespace WaterNut.DataSpace
         #region Invoice Data Validation Methods
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Mathematical consistency validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates mathematical consistency within invoice including line item calculations and reasonableness checks
+        /// **BUSINESS OBJECTIVE**: Ensure invoice mathematical integrity through calculation verification and value reasonableness validation
+        /// **SUCCESS CRITERIA**: Must detect calculation errors, validate line item math, perform reasonableness checks, and return comprehensive error list
+        /// 
         /// Validates mathematical consistency within the invoice.
         /// Checks line item totals (Quantity * Cost - Discount = TotalCost).
         /// Also performs basic reasonableness checks on quantities and costs.
