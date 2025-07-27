@@ -221,8 +221,6 @@ namespace WaterNut.DataSpace
                     fieldName);
             }
 
-            return correctionResult;
-
             // 🚀 **PHASE_2_ENHANCEMENT**: Handle multi-field extraction support
             _logger.Information("🔍 **MULTI_FIELD_PROCESSING**: Checking for multi-field extraction data in element for field {FieldName}", fieldName);
             
