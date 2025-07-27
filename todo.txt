@@ -130,4 +130,4 @@ The invoice contains multiple line items with varying formats, some spanning mul
 8. Confidence scores reflect high certainty in the patterns
 
 The patterns are designed to be generalizable across thousands of different products while still accurately capturing the specific items in this invoice. The field corrections handle common OCR artifacts while maintaining the integrity of the business objects."
-i notic
+i notice there is comments before and after this response... is the parsing taking out these comments? and creating good errors?
