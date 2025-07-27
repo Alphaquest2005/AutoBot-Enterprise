@@ -557,13 +557,90 @@ namespace WaterNut.DataSpace
 
         #region Omission Update Strategy (With Final Fix)
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Omission strategy for missing field detection with LLM diagnostic workflow
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **STRATEGY PURPOSE**: Creates new line/field/regex combinations for detecting omitted fields in invoice text
+        /// **OMISSION HANDLING**: DeepSeek regex generation, validation, and database entity creation workflow
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of omission detection and correction workflows
+        /// </summary>
         public class OmissionUpdateStrategy : DatabaseUpdateStrategyBase
         {
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Omission strategy constructor with LLM diagnostic initialization
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **CONSTRUCTOR LOGIC**: Initializes base strategy with logger injection for comprehensive diagnostic workflow
+            /// **STRATEGY TYPE**: Omission strategy for missing field detection and regex-based correction
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging infrastructure for LLM analysis of strategy lifecycle
+            /// </summary>
             public OmissionUpdateStrategy(ILogger logger) : base(logger) { }
             public override string StrategyType => "Omission";
-            public override bool CanHandle(RegexUpdateRequest request) => 
-                request.CorrectionType.StartsWith("omission") || 
-                request.CorrectionType.Equals("multi_field_omission", StringComparison.OrdinalIgnoreCase);
+            
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Omission request validation with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **VALIDATION LOGIC**: Omission type detection + multi-field omission handling + correction type analysis
+            /// **OMISSION TYPES**: omission, multi_field_omission with case-insensitive matching
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of request validation and strategy selection
+            /// </summary>
+            public override bool CanHandle(RegexUpdateRequest request)
+            {
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for omission validation
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for Omission strategy validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Request validation context with omission type detection and multi-field analysis");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Omission type matching + multi-field omission detection pattern");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need omission type confirmation, multi-field validation, request completeness");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Omission strategy requires comprehensive type analysis and field validation");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for omission validation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed type analysis, field validation, omission detection");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Omission types, field states, multi-field indicators");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based Omission strategy validation");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on field omission requirements, implementing comprehensive type detection");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring type matches and omission indicators");
+                
+                // **v4.1 OMISSION TYPE DETECTION**: Enhanced omission correction type analysis
+                _logger.Error("🔍 **OMISSION_TYPE_ANALYSIS**: Analyzing omission correction types and field indicators");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: CorrectionType='{CorrectionType}'", request.CorrectionType);
+                
+                bool isOmissionType = request.CorrectionType.StartsWith("omission");
+                bool isMultiFieldOmission = request.CorrectionType.Equals("multi_field_omission", StringComparison.OrdinalIgnoreCase);
+                
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced omission type detection with detailed analysis");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: IsOmissionType={IsOmissionType}, IsMultiFieldOmission={IsMultiFieldOmission}", 
+                    isOmissionType, isMultiFieldOmission);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Omission type pattern matching with case-insensitive multi-field support");
+                
+                bool canHandle = isOmissionType || isMultiFieldOmission;
+                
+                if (canHandle)
+                {
+                    _logger.Error("✅ **OMISSION_TYPE_MATCH**: Request matches omission correction type patterns");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Omission type match confirms strategy applicability for field detection");
+                    _logger.Error("📚 **FIX_RATIONALE**: Omission detection enables missing field regex creation and validation");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Omission type confirmed - strategy can handle request");
+                    _logger.Error("🎯 **SUCCESS_ASSERTION**: Omission strategy validation successful for field detection workflow");
+                }
+                else
+                {
+                    _logger.Error("❌ **OMISSION_TYPE_MISMATCH**: Request does not match omission correction type patterns");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Non-omission types require different strategy handling");
+                    _logger.Error("📚 **FIX_RATIONALE**: Type mismatch prevents omission strategy application");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Strategy validation failure documented with type analysis");
+                }
+                
+                return canHandle;
+            }
 
             public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
             {
