@@ -12,14 +12,14 @@ namespace AutoBotUtilities.Tests
     /// Critical verification of AITemplateService functionality claims
     /// Tests each claimed feature to verify 100% functionality
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class CriticalVerificationTest
     {
         private ILogger _logger;
         private AITemplateService _service;
         private string _testBasePath;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _logger = new LoggerConfiguration()
@@ -34,7 +34,7 @@ namespace AutoBotUtilities.Tests
             _logger.Information("🚨 **CRITICAL_VERIFICATION_START**: Testing AITemplateService claims");
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             _service?.Dispose();
@@ -47,7 +47,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// CRITICAL TEST 1: Verify pattern failure detection actually works
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CriticalTest1_PatternFailureDetection_ActuallyDetectsFailures()
         {
             _logger.Information("🧪 **CRITICAL_TEST_1**: Pattern Failure Detection");
@@ -81,7 +81,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// CRITICAL TEST 2: Verify template versioning file system operations work
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CriticalTest2_TemplateVersioning_FileOperationsWork()
         {
             _logger.Information("🧪 **CRITICAL_TEST_2**: Template Versioning File Operations");
@@ -119,7 +119,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// CRITICAL TEST 3: Verify template loading with versioning logic
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CriticalTest3_TemplateLoading_VersioningLogicWorks()
         {
             _logger.Information("🧪 **CRITICAL_TEST_3**: Template Loading with Versioning");
@@ -176,7 +176,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// CRITICAL TEST 4: Verify HTTP client setup for AI providers
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CriticalTest4_HttpClientSetup_IsConfiguredCorrectly()
         {
             _logger.Information("🧪 **CRITICAL_TEST_4**: HTTP Client Configuration");
@@ -202,7 +202,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// CRITICAL TEST 5: Verify configuration system works
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CriticalTest5_ConfigurationSystem_CreatesDefaultConfigs()
         {
             _logger.Information("🧪 **CRITICAL_TEST_5**: Configuration System");
@@ -239,7 +239,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// HONEST ASSESSMENT: What actually works vs what was claimed
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CriticalTest6_HonestAssessment_ActualVsClaimedFunctionality()
         {
             _logger.Information("🧪 **CRITICAL_TEST_6**: Honest Assessment");
