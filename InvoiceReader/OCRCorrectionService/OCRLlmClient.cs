@@ -559,61 +559,158 @@ namespace WaterNut.DataSpace
             return client;
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Retry policy factory with intelligent failure classification
+        /// 
+        /// **LOG_THE_WHAT**: Polly retry policy creation with exponential backoff and context-aware logging
+        /// **LOG_THE_HOW**: Configures rate limit, timeout, and server error handling with graduated delay calculations
+        /// **LOG_THE_WHY**: Provides resilient LLM API access by gracefully handling transient failures and provider limits
+        /// **LOG_THE_WHO**: Returns AsyncRetryPolicy configured for OCR-specific LLM communication patterns
+        /// **LOG_THE_WHAT_IF**: Expects successful policy creation; handles multiple exception types with appropriate delays
+        /// </summary>
         private AsyncRetryPolicy CreateRetryPolicy()
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete retry policy configuration narrative
+            _logger.Information("🔁 **RETRY_POLICY_FACTORY_START**: Creating intelligent retry policy for LLM API resilience");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Handle transient failures gracefully with exponential backoff strategy");
+            _logger.Information("   - **RESILIENCE_DESIGN**: Distinguish between retryable and non-retryable failures for optimal recovery");
+            
+            // **LOG_THE_WHAT**: Exponential backoff delay calculation strategy
             Func<int, TimeSpan> calculateDelay = (retryAttempt) => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
+            _logger.Information("🔢 **BACKOFF_STRATEGY**: Exponential delay calculation - Attempt 1={Delay1}s, Attempt 2={Delay2}s, Attempt 3={Delay3}s", 
+                Math.Pow(2, 1), Math.Pow(2, 2), Math.Pow(2, 3));
+            _logger.Information("   - **DELAY_RATIONALE**: Progressive delays allow provider recovery time and reduce system load");
 
+            // **LOG_THE_HOW**: Context-aware retry logging with provider-specific diagnostics
             Action<Exception, TimeSpan, Context> logRetryAction = (exception, calculatedDelay, context) =>
             {
                 var contextLogger = context.Contains("Logger") ? context["Logger"] as ILogger : _logger;
                 string providerName = context.Contains("ProviderType") ? context["ProviderType"].ToString() : "OCRLlmClient";
 
+                // **LOG_THE_WHAT_IF**: Intelligent exception classification for targeted retry logging
                 if (exception is RateLimitException rle)
-                    contextLogger.Warning(rle, "[{Strategy}] OCR Retry needed: Rate Limit (HTTP {StatusCode}). Delay: {Delay}s", providerName, rle.StatusCode, calculatedDelay.TotalSeconds);
+                {
+                    contextLogger.Warning(rle, "⚠️ **RETRY_RATE_LIMIT**: [{Strategy}] Rate limit encountered - implementing backoff strategy", providerName);
+                    contextLogger.Warning("   - **RATE_LIMIT_DETAILS**: StatusCode={StatusCode}, Delay={Delay}s, Strategy=ExponentialBackoff", rle.StatusCode, calculatedDelay.TotalSeconds);
+                }
                 else if (exception is TaskCanceledException tce && !tce.CancellationToken.IsCancellationRequested)
-                    contextLogger.Warning(tce, "[{Strategy}] OCR Retry needed: Timeout. Delay: {Delay}s", providerName, calculatedDelay.TotalSeconds);
+                {
+                    contextLogger.Warning(tce, "⚠️ **RETRY_TIMEOUT**: [{Strategy}] Request timeout detected - retrying with extended delay", providerName);
+                    contextLogger.Warning("   - **TIMEOUT_DETAILS**: Delay={Delay}s, Cause=NetworkTimeout, Strategy=ExponentialBackoff", calculatedDelay.TotalSeconds);
+                }
                 else if (exception is HttpRequestException httpEx && httpEx.Data.Contains("StatusCode"))
-                    contextLogger.Warning(httpEx, "[{Strategy}] OCR Retry needed: Server Error (HTTP {StatusCode}). Delay: {Delay}s", providerName, httpEx.Data["StatusCode"], calculatedDelay.TotalSeconds);
+                {
+                    contextLogger.Warning(httpEx, "⚠️ **RETRY_SERVER_ERROR**: [{Strategy}] Server error detected - attempting recovery", providerName);
+                    contextLogger.Warning("   - **SERVER_ERROR_DETAILS**: StatusCode={StatusCode}, Delay={Delay}s, Strategy=ExponentialBackoff", httpEx.Data["StatusCode"], calculatedDelay.TotalSeconds);
+                }
                 else
-                    contextLogger.Warning(exception, "[{Strategy}] OCR Retry needed: Transient Error ({ExceptionType}). Delay: {Delay}s", providerName, exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
+                {
+                    contextLogger.Warning(exception, "⚠️ **RETRY_TRANSIENT_ERROR**: [{Strategy}] Transient error detected - implementing recovery strategy", providerName);
+                    contextLogger.Warning("   - **TRANSIENT_ERROR_DETAILS**: ExceptionType={ExceptionType}, Delay={Delay}s, Strategy=ExponentialBackoff", exception?.GetType().Name ?? "Unknown", calculatedDelay.TotalSeconds);
+                }
             };
 
-            return Policy.Handle<RateLimitException>()
+            // **LOG_THE_WHO**: Policy configuration with comprehensive exception handling
+            _logger.Information("🔧 **RETRY_POLICY_CONFIG**: MaxRetries=3, Exceptions=RateLimit|ServerError|Timeout");
+            _logger.Information("   - **RETRYABLE_CONDITIONS**: Rate limits (429), Server errors (5xx), Timeouts, Service unavailable (503)");
+            _logger.Information("   - **NON_RETRYABLE**: Authentication errors (401), Bad requests (400), Forbidden (403)");
+            
+            var policy = Policy.Handle<RateLimitException>()
                          .Or<HttpRequestException>(ex => ex.Data.Contains("StatusCode") &&
                              ((int)ex.Data["StatusCode"] >= 500 ||
                               (int)ex.Data["StatusCode"] == (int)HttpStatusCode.RequestTimeout ||
                               (int)ex.Data["StatusCode"] == (int)HttpStatusCode.ServiceUnavailable))
                          .Or<TaskCanceledException>(ex => !ex.CancellationToken.IsCancellationRequested)
                          .WaitAndRetryAsync(3, calculateDelay, logRetryAction);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _logger?.Information("🔄 **OCR_LLM_CLIENT_DISPOSE**: Disposing OCR LLM client resources");
-                    _httpClient?.Dispose();
-                }
-                _disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            
+            // **LOG_THE_WHAT_IF**: Successful policy creation
+            _logger.Information("✅ **RETRY_POLICY_CREATED**: Intelligent retry policy configured for LLM API resilience");
+            _logger.Information("   - **SUCCESS_ASSERTION**: Policy ready to handle transient failures with graduated recovery strategies");
+            
+            return policy;
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Protected disposal implementation with resource cleanup
+        /// 
+        /// **LOG_THE_WHAT**: Managed resource disposal following standard IDisposable pattern implementation
+        /// **LOG_THE_HOW**: Checks disposal state, disposes HTTP client, updates disposal flag to prevent double disposal
+        /// **LOG_THE_WHY**: Ensures proper cleanup of HTTP connections and prevents resource leaks in LLM client lifecycle
+        /// **LOG_THE_WHO**: Cleans up HTTP client resources and marks instance as disposed
+        /// **LOG_THE_WHAT_IF**: Expects safe multiple disposal calls; logs cleanup actions when disposing managed resources
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete resource disposal narrative
+            if (!_disposed)
+            {
+                _logger?.Information("🗑️ **DISPOSAL_PROCESS_START**: OCRLlmClient disposal initiated - cleaning up LLM communication resources");
+                _logger?.Information("   - **DISPOSAL_CONTEXT**: DisposingManagedResources={DisposingManaged}, AlreadyDisposed={AlreadyDisposed}", disposing, false);
+                
+                if (disposing)
+                {
+                    // **LOG_THE_WHAT**: Managed resource cleanup with detailed logging
+                    _logger?.Information("🌐 **HTTP_CLIENT_DISPOSAL**: Disposing HTTP client and releasing connection pool resources");
+                    _logger?.Information("   - **RESOURCE_CLEANUP**: HTTP connections, handlers, and associated network resources");
+                    _logger?.Information("   - **ARCHITECTURAL_INTENT**: Prevent connection leaks and ensure clean shutdown of LLM communication");
+                    
+                    _httpClient?.Dispose();
+                    _logger?.Information("✅ **HTTP_CLIENT_DISPOSED**: HTTP client successfully disposed and resources released");
+                }
+                
+                // **LOG_THE_WHO**: Disposal state management
+                _disposed = true;
+                _logger?.Information("🏁 **DISPOSAL_COMPLETE**: OCRLlmClient disposal completed - instance marked as disposed");
+                _logger?.Information("   - **SUCCESS_ASSERTION**: All LLM client resources properly cleaned up, no resource leaks expected");
+            }
+            else
+            {
+                // **LOG_THE_WHAT_IF**: Multiple disposal attempts handled gracefully
+                _logger?.Debug("🔁 **DISPOSAL_ALREADY_COMPLETED**: Disposal called on already disposed OCRLlmClient - ignoring safely");
+            }
+        }
+
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Public disposal interface implementation
+        /// 
+        /// **LOG_THE_WHAT**: IDisposable.Dispose() implementation following standard .NET disposal pattern
+        /// **LOG_THE_HOW**: Calls protected Dispose(true) and suppresses finalization for performance
+        /// **LOG_THE_WHY**: Provides clean disposal interface for OCR LLM client resource management
+        /// **LOG_THE_WHO**: Initiates managed resource cleanup and optimization of garbage collection
+        /// **LOG_THE_WHAT_IF**: Expects successful disposal; safe to call multiple times
+        /// </summary>
+        public void Dispose()
+        {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete public disposal interface narrative
+            _logger?.Information("💪 **PUBLIC_DISPOSE_CALLED**: IDisposable.Dispose() invoked - initiating complete resource cleanup");
+            _logger?.Information("   - **DISPOSAL_PATTERN**: Following standard .NET IDisposable implementation pattern");
+            _logger?.Information("   - **PERFORMANCE_OPTIMIZATION**: Suppressing finalization to reduce GC overhead");
+            
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+            
+            _logger?.Information("✅ **PUBLIC_DISPOSE_COMPLETE**: IDisposable implementation completed successfully");
+            _logger?.Information("   - **SUCCESS_ASSERTION**: OCRLlmClient disposal interface fulfilled, finalization suppressed");
+        }
+
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: JSON diagnostic utility for substring occurrence counting
+        /// 
+        /// **LOG_THE_WHAT**: Static utility method for counting substring occurrences in text for JSON validation diagnostics
+        /// **LOG_THE_HOW**: Iterates through text using IndexOf, counts matches, advances position by substring length
+        /// **LOG_THE_WHY**: Supports JSON validation by counting braces, quotes, and other structural elements
+        /// **LOG_THE_WHO**: Returns integer count of substring occurrences or zero for null/empty inputs
+        /// **LOG_THE_WHAT_IF**: Expects valid string inputs; handles null/empty gracefully; accurate count for debugging
+        /// 
         /// Helper method for JSON diagnostic analysis
         /// </summary>
         private static int CountOccurrences(string text, string substring)
         {
+            // **DESIGN_NOTE**: Static method - no instance logger available, diagnostic context provided by caller
             if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(substring))
                 return 0;
             
+            // **LOG_THE_HOW**: Efficient substring counting implementation
             int count = 0;
             int index = 0;
             while ((index = text.IndexOf(substring, index)) != -1)
@@ -621,6 +718,8 @@ namespace WaterNut.DataSpace
                 count++;
                 index += substring.Length;
             }
+            
+            // **LOG_THE_WHO**: Return occurrence count for JSON diagnostic analysis
             return count;
         }
     }
