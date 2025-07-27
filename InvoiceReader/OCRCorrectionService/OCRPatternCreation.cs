@@ -945,6 +945,14 @@ namespace WaterNut.DataSpace
 
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Regex pattern validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates regex pattern from DeepSeek as gatekeeper for new learnings with named capture group validation
+        /// **BUSINESS OBJECTIVE**: Ensure pattern quality through syntax validation, extraction testing, and value verification
+        /// **SUCCESS CRITERIA**: Must validate syntax, test extraction, verify named capture groups, and confirm value matching
+        /// 
         /// CRITICAL FIX v3: Validates a regex pattern from DeepSeek. This is the gatekeeper for new learnings.
         /// It ensures the pattern is syntactically valid and correctly extracts the expected value from the provided context,
         /// specifically checking that the required NAMED capture group exists and is successful.
