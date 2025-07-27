@@ -730,6 +730,14 @@ namespace WaterNut.DataSpace
         #region Shared Pattern Utilities & Validation
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Internal pattern validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates correction result against internal business logic and format rules before rigorous validation
+        /// **BUSINESS OBJECTIVE**: Ensure correction quality through field support, data type validation, and regex syntax checking
+        /// **SUCCESS CRITERIA**: Must validate field support, data format, and regex syntax or appropriately mark correction as failed
+        /// 
         /// Validates a correction result, including its suggested regex, against internal business logic and format rules.
         /// This is an internal check before a pattern is sent for more rigorous validation.
         /// </summary>
