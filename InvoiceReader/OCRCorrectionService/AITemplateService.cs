@@ -945,11 +945,11 @@ Return your response as JSON:
                 return new TemplateImprovementResponse
                 {
                     Provider = provider,
-                    Confidence = GetDoubleValueWithLogging(root, "confidence", 0, 0.5),
+                    Confidence = root.TryGetProperty("confidence", out var confProp) && confProp.TryGetDouble(out var confVal) ? confVal : 0.5,
                     ImprovementsMade = improvements,
-                    ImprovedTemplate = GetStringValueWithLogging(root, "improved_template", 0) ?? "",
+                    ImprovedTemplate = root.TryGetProperty("improved_template", out var templateProp) ? templateProp.GetString() ?? "" : "",
                     ImprovedPatterns = patterns,
-                    Reasoning = GetStringValueWithLogging(root, "reasoning", 0, isOptional: true) ?? ""
+                    Reasoning = root.TryGetProperty("reasoning", out var reasonProp) ? reasonProp.GetString() ?? "" : ""
                 };
             }
             catch (Exception ex)
