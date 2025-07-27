@@ -14,7 +14,7 @@ namespace AutoBotUtilities.Tests
     /// Integration tests for the self-improving AI template system.
     /// Tests pattern failure detection, template improvement, versioning, and automatic retry cycles.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class SelfImprovingTemplateSystemTests
     {
         private ILogger _logger;
@@ -22,7 +22,7 @@ namespace AutoBotUtilities.Tests
         private string _testDataPath;
         private string _mangoInvoiceText;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             // Setup test logging
@@ -43,7 +43,7 @@ namespace AutoBotUtilities.Tests
             _logger.Information("🧪 **TEST_SETUP_COMPLETE**: SelfImprovingTemplateSystemTests initialized");
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             _templateService?.Dispose();
@@ -52,7 +52,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests the complete self-improving cycle: failure detection → improvement → versioning → retry
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSelfImprovingTemplateCycle_WithFailingPatterns_ShouldImproveAndRetry()
         {
             // Arrange
@@ -82,7 +82,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests template versioning system to ensure improved templates are saved with version numbers
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestTemplateVersioning_WithImprovements_ShouldCreateVersionedFiles()
         {
             // Arrange
@@ -109,7 +109,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests pattern failure detection with various regex patterns
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestPatternFailureDetection_WithZeroMatches_ShouldDetectFailures()
         {
             // Arrange
@@ -132,7 +132,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests the automatic retry cycle after template improvement
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestAutomaticRetryCycle_WithImprovedTemplate_ShouldRetryUntilSuccess()
         {
             // Arrange
@@ -159,7 +159,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests the post-execution pattern analysis for automatic improvement triggering
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestPostExecutionAnalysis_WithFailedExtractions_ShouldTriggerImprovement()
         {
             // Arrange
@@ -185,7 +185,7 @@ namespace AutoBotUtilities.Tests
         /// <summary>
         /// Tests end-to-end self-improving system with real MANGO data
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestEndToEndSelfImprovement_WithRealMangoData_ShouldCompleteSuccessfully()
         {
             // Arrange
