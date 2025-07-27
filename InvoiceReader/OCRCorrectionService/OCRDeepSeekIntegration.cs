@@ -194,7 +194,9 @@ namespace WaterNut.DataSpace
                 SuggestedRegex = this.GetStringValueWithLogging(element, "suggested_regex", itemIndex, true),
 
                 // =================================== FIX START ===================================
-                Pattern = pattern,
+                // **CRITICAL FIX**: Use suggested_regex as fallback when pattern is null
+                // This resolves the Pattern='null' issue for omission and multi_field_omission errors
+                Pattern = pattern ?? this.GetStringValueWithLogging(element, "suggested_regex", itemIndex, true),
                 Replacement = this.GetStringValueWithLogging(element, "replacement", itemIndex, true),
                 // ==================================== FIX END ====================================
 
