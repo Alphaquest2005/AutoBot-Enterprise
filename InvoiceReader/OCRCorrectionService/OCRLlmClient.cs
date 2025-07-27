@@ -132,60 +132,116 @@ namespace WaterNut.DataSpace
             _logger.Information("   - **FAILOVER_STRATEGY**: Primary=DeepSeek, Fallback=Gemini, RetryEnabled=true");
             _logger.Information("   - **EXPECTED_OUTCOME**: Valid LLM response or comprehensive error after all strategies exhausted");
 
-            // Try DeepSeek first (primary strategy)
+            // **LOG_THE_HOW**: Primary provider strategy execution (DeepSeek)
             if (!string.IsNullOrWhiteSpace(_deepSeekApiKey))
             {
+                _logger.Information("🥇 **PRIMARY_STRATEGY_START**: Attempting DeepSeek as primary LLM provider");
+                _logger.Information("   - **STRATEGY_RATIONALE**: DeepSeek provides optimal performance for OCR correction tasks");
+                
                 try
                 {
-                    // Use provider maximum if maxTokens not specified, otherwise cap at provider limit
+                    // **LOG_THE_WHAT**: Token limit calculation and provider-specific constraints
                     var effectiveTokens = maxTokens.HasValue ? Math.Min(maxTokens.Value, DeepSeekMaxTokens) : DeepSeekMaxTokens;
+                    var tokenLimitApplied = maxTokens.HasValue && maxTokens.Value > DeepSeekMaxTokens;
                     
-                    _logger.Information("1️⃣ **TRYING_DEEPSEEK**: Attempting DeepSeek API call with {TokenLimit} tokens (requested: {RequestedTokens})", 
-                        effectiveTokens, maxTokens?.ToString() ?? "default");
+                    _logger.Information("🔢 **TOKEN_LIMIT_CALCULATION**: Requested={RequestedTokens}, Effective={EffectiveTokens}, LimitApplied={LimitApplied}", 
+                        maxTokens?.ToString() ?? "provider_default", effectiveTokens, tokenLimitApplied);
+                    _logger.Information("   - **PROVIDER_CONSTRAINTS**: DeepSeek maximum output tokens = {MaxTokens}", DeepSeekMaxTokens);
+                    
+                    _logger.Information("1️⃣ **DEEPSEEK_API_CALL_START**: Initiating DeepSeek API request with validated parameters");
                     var deepSeekResponse = await CallDeepSeekAsync(prompt, temperature ?? 0.3, effectiveTokens, cancellationToken);
                     
-                    _logger.Information("✅ **DEEPSEEK_SUCCESS**: DeepSeek responded successfully - Length: {ResponseLength}", deepSeekResponse?.Length ?? 0);
+                    // **LOG_THE_WHO**: Successful primary strategy completion
+                    var responseLength = deepSeekResponse?.Length ?? 0;
+                    _logger.Information("✅ **PRIMARY_STRATEGY_SUCCESS**: DeepSeek responded successfully");
+                    _logger.Information("   - **RESPONSE_METRICS**: Length={ResponseLength}, Provider=DeepSeek, FallbackUsed=false", responseLength);
+                    _logger.Information("   - **SUCCESS_ASSERTION**: Primary provider delivered expected LLM response, no fallback required");
+                    
                     return deepSeekResponse;
                 }
                 catch (Exception deepSeekEx)
                 {
-                    _logger.Warning(deepSeekEx, "⚠️ **DEEPSEEK_FAILED**: DeepSeek strategy failed: {ErrorMessage} - Attempting Gemini fallback", deepSeekEx.Message);
+                    // **LOG_THE_WHAT_IF**: Primary strategy failure handling
+                    _logger.Warning(deepSeekEx, "⚠️ **PRIMARY_STRATEGY_FAILED**: DeepSeek strategy encountered error - initiating fallback protocol");
+                    _logger.Warning("   - **FAILURE_DETAILS**: ErrorType={ErrorType}, Message={ErrorMessage}", deepSeekEx.GetType().Name, deepSeekEx.Message);
+                    _logger.Warning("   - **FAILOVER_PROTOCOL**: Attempting Gemini fallback to maintain OCR processing continuity");
                 }
             }
             else
             {
-                _logger.Warning("⚠️ **DEEPSEEK_UNAVAILABLE**: DeepSeek API key not configured, going directly to Gemini fallback");
+                _logger.Warning("⚠️ **PRIMARY_STRATEGY_UNAVAILABLE**: DeepSeek API key not configured - skipping to fallback strategy");
+                _logger.Warning("   - **CONFIGURATION_STATE**: DEEPSEEK_API_KEY environment variable not set or empty");
+                _logger.Warning("   - **STRATEGY_ADJUSTMENT**: Proceeding directly to Gemini fallback provider");
             }
 
-            // Try Gemini fallback
+            // **LOG_THE_HOW**: Fallback provider strategy execution (Gemini)
             if (!string.IsNullOrWhiteSpace(_geminiApiKey))
             {
+                _logger.Information("🥈 **FALLBACK_STRATEGY_START**: Attempting Gemini as fallback LLM provider");
+                _logger.Information("   - **STRATEGY_RATIONALE**: Gemini provides reliable alternative when DeepSeek unavailable or failed");
+                _logger.Information("   - **RESILIENCE_DESIGN**: Dual-provider architecture ensures OCR processing continuity");
+                
                 try
                 {
-                    // Use provider maximum if maxTokens not specified, otherwise cap at provider limit
+                    // **LOG_THE_WHAT**: Fallback token limit calculation and provider constraints
                     var effectiveTokens = maxTokens.HasValue ? Math.Min(maxTokens.Value, GeminiMaxTokens) : GeminiMaxTokens;
+                    var tokenLimitApplied = maxTokens.HasValue && maxTokens.Value > GeminiMaxTokens;
                     
-                    _logger.Information("2️⃣ **TRYING_GEMINI**: Attempting Gemini API call (fallback) with {TokenLimit} tokens (requested: {RequestedTokens})", 
-                        effectiveTokens, maxTokens?.ToString() ?? "default");
+                    _logger.Information("🔢 **FALLBACK_TOKEN_CALCULATION**: Requested={RequestedTokens}, Effective={EffectiveTokens}, LimitApplied={LimitApplied}", 
+                        maxTokens?.ToString() ?? "provider_default", effectiveTokens, tokenLimitApplied);
+                    _logger.Information("   - **PROVIDER_CONSTRAINTS**: Gemini maximum output tokens = {MaxTokens}", GeminiMaxTokens);
+                    
+                    _logger.Information("2️⃣ **GEMINI_API_CALL_START**: Initiating Gemini API request as fallback strategy");
                     var geminiResponse = await CallGeminiAsync(prompt, temperature ?? 0.3, effectiveTokens, cancellationToken);
                     
-                    _logger.Information("✅ **GEMINI_SUCCESS**: Gemini responded successfully (FALLBACK SUCCESS) - Length: {ResponseLength}", geminiResponse?.Length ?? 0);
+                    // **LOG_THE_WHO**: Successful fallback strategy completion
+                    var responseLength = geminiResponse?.Length ?? 0;
+                    _logger.Information("✅ **FALLBACK_STRATEGY_SUCCESS**: Gemini responded successfully - system resilience demonstrated");
+                    _logger.Information("   - **RESPONSE_METRICS**: Length={ResponseLength}, Provider=Gemini, FallbackUsed=true", responseLength);
+                    _logger.Information("   - **SUCCESS_ASSERTION**: Fallback provider delivered expected LLM response, OCR processing can continue");
+                    
                     return geminiResponse;
                 }
                 catch (Exception geminiEx)
                 {
-                    _logger.Error(geminiEx, "❌ **GEMINI_FAILED**: Gemini strategy also failed: {ErrorMessage}", geminiEx.Message);
+                    // **LOG_THE_WHAT_IF**: Complete strategy failure - all providers exhausted
+                    _logger.Error(geminiEx, "❌ **FALLBACK_STRATEGY_FAILED**: Gemini strategy also failed - all LLM providers exhausted");
+                    _logger.Error("   - **FAILURE_DETAILS**: ErrorType={ErrorType}, Message={ErrorMessage}", geminiEx.GetType().Name, geminiEx.Message);
+                    _logger.Error("   - **SYSTEM_STATE**: Both DeepSeek and Gemini strategies failed - OCR processing cannot continue");
+                    _logger.Error("   - **RECOMMENDED_ACTION**: Check API keys, network connectivity, and provider service status");
+                    
                     throw new InvalidOperationException($"Both DeepSeek and Gemini strategies failed. Last error: {geminiEx.Message}", geminiEx);
                 }
             }
             else
             {
+                // **LOG_THE_WHAT_IF**: No fallback available - complete system failure
+                _logger.Error("❌ **NO_FALLBACK_AVAILABLE**: Gemini API key not configured and DeepSeek failed - no recovery possible");
+                _logger.Error("   - **CONFIGURATION_STATE**: GEMINI_API_KEY environment variable not set or empty");
+                _logger.Error("   - **SYSTEM_FAILURE**: No alternative LLM providers available for OCR processing");
+                _logger.Error("   - **REQUIRED_ACTION**: Configure at least one working API key (DEEPSEEK_API_KEY or GEMINI_API_KEY)");
+                
                 throw new InvalidOperationException("No fallback strategy available - Gemini API key not configured and DeepSeek failed");
             }
         }
+        }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: DeepSeek API integration with OCR-optimized request handling
+        /// 
+        /// **LOG_THE_WHAT**: DeepSeek-specific API request formatting, authentication, and response parsing
+        /// **LOG_THE_HOW**: Constructs chat completion request, handles Bearer authentication, parses choice responses
+        /// **LOG_THE_WHY**: Provides primary LLM capability with DeepSeek's OCR-optimized model for correction tasks
+        /// **LOG_THE_WHO**: Returns DeepSeek response content or throws detailed provider-specific exceptions
+        /// **LOG_THE_WHAT_IF**: Expects valid API key and prompt; handles rate limits and API errors gracefully
+        /// </summary>
         private async Task<string> CallDeepSeekAsync(string prompt, double temperature, int maxTokens, CancellationToken cancellationToken)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete DeepSeek API integration narrative
+            _logger.Information("🤖 **DEEPSEEK_API_INTEGRATION_START**: Initiating DeepSeek chat completion request");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Execute OCR correction prompt using DeepSeek's advanced language model");
+            _logger.Information("   - **PROVIDER_RATIONALE**: DeepSeek provides superior performance for structured data extraction tasks");
+            // **LOG_THE_WHAT**: DeepSeek request structure and parameters
             var requestBody = new
             {
                 model = DeepSeekModel,
@@ -194,28 +250,60 @@ namespace WaterNut.DataSpace
                 max_tokens = maxTokens,
                 stream = false
             };
+            
+            _logger.Information("🔧 **DEEPSEEK_REQUEST_CONFIG**: Model={Model}, Temperature={Temperature}, MaxTokens={MaxTokens}", 
+                DeepSeekModel, temperature, maxTokens);
+            _logger.Information("   - **MESSAGE_STRUCTURE**: Single user message with OCR correction prompt");
+            _logger.Information("   - **STREAMING_MODE**: Disabled for synchronous response processing");
 
+            // **LOG_THE_HOW**: API endpoint construction and authentication
             var apiUrl = $"{DeepSeekBaseUrl}/chat/completions";
+            _logger.Information("🌐 **DEEPSEEK_API_CALL**: Executing POST request to {ApiUrl}", apiUrl);
+            
             var responseJson = await PostRequestAsync(apiUrl, requestBody, (request, apiKey) =>
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                _logger.Debug("🔐 **DEEPSEEK_AUTH**: Bearer token authentication configured");
             }, _deepSeekApiKey, cancellationToken);
 
-            // Parse DeepSeek response
+            // **LOG_THE_WHO**: Response parsing and validation
+            _logger.Information("🔍 **DEEPSEEK_RESPONSE_PARSING**: Parsing DeepSeek API response structure");
             var responseObj = JObject.Parse(responseJson);
             CheckForApiError(responseObj, "DeepSeek");
             
             var content = responseObj["choices"]?[0]?["message"]?["content"]?.Value<string>();
+            _logger.Information("🔍 **DEEPSEEK_CONTENT_EXTRACTION**: Content extracted from choices[0].message.content path");
+            
             if (string.IsNullOrEmpty(content))
             {
+                _logger.Error("❌ **DEEPSEEK_EMPTY_CONTENT**: DeepSeek API returned null or empty content in response");
+                _logger.Error("   - **RESPONSE_STRUCTURE**: Choices array may be empty or content field missing");
                 throw new InvalidOperationException("DeepSeek API returned empty content");
             }
+            
+            // **LOG_THE_WHAT_IF**: Successful content return
+            _logger.Information("✅ **DEEPSEEK_CONTENT_SUCCESS**: Valid content extracted - Length={ContentLength}", content.Length);
+            _logger.Information("   - **SUCCESS_ASSERTION**: DeepSeek delivered expected OCR correction response");
             
             return content;
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Gemini API integration with fallback-optimized request handling
+        /// 
+        /// **LOG_THE_WHAT**: Gemini-specific API request formatting, API key authentication, and response parsing
+        /// **LOG_THE_HOW**: Constructs generateContent request, handles API key in URL, parses candidate responses
+        /// **LOG_THE_WHY**: Provides reliable fallback LLM capability when DeepSeek unavailable or failing
+        /// **LOG_THE_WHO**: Returns Gemini response content or throws detailed provider-specific exceptions
+        /// **LOG_THE_WHAT_IF**: Expects valid API key and prompt; handles rate limits and content filtering
+        /// </summary>
         private async Task<string> CallGeminiAsync(string prompt, double temperature, int maxTokens, CancellationToken cancellationToken)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete Gemini API integration narrative
+            _logger.Information("🤖 **GEMINI_API_INTEGRATION_START**: Initiating Gemini generateContent request as fallback strategy");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Execute OCR correction prompt using Gemini's reliable language model");
+            _logger.Information("   - **FALLBACK_RATIONALE**: Gemini provides consistent alternative when primary provider fails");
+            // **LOG_THE_WHAT**: Gemini request structure and configuration
             var requestBody = new
             {
                 contents = new[]
@@ -231,22 +319,43 @@ namespace WaterNut.DataSpace
                     maxOutputTokens = maxTokens
                 }
             };
+            
+            _logger.Information("🔧 **GEMINI_REQUEST_CONFIG**: Model={Model}, Temperature={Temperature}, MaxOutputTokens={MaxTokens}", 
+                GeminiModel, temperature, maxTokens);
+            _logger.Information("   - **CONTENT_STRUCTURE**: Single content part with OCR correction prompt text");
+            _logger.Information("   - **GENERATION_CONFIG**: Configured for consistent OCR correction output");
 
+            // **LOG_THE_HOW**: API endpoint construction with embedded authentication
             var apiUrl = $"{GeminiBaseUrl}/{GeminiModel}:generateContent?key={Uri.EscapeDataString(_geminiApiKey)}";
+            _logger.Information("🌐 **GEMINI_API_CALL**: Executing POST request to generateContent endpoint");
+            _logger.Information("   - **AUTHENTICATION_METHOD**: API key embedded in URL query parameter");
+            
             var responseJson = await PostRequestAsync(apiUrl, requestBody, (request, apiKey) =>
             {
                 request.Headers.TryAddWithoutValidation("x-goog-api-key", apiKey);
+                _logger.Debug("🔐 **GEMINI_AUTH**: x-goog-api-key header configured for additional security");
             }, _geminiApiKey, cancellationToken);
 
-            // Parse Gemini response
+            // **LOG_THE_WHO**: Response parsing and content extraction
+            _logger.Information("🔍 **GEMINI_RESPONSE_PARSING**: Parsing Gemini API response structure");
             var responseObj = JObject.Parse(responseJson);
             CheckForApiError(responseObj, "Gemini");
             
             var content = responseObj["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.Value<string>();
+            _logger.Information("🔍 **GEMINI_CONTENT_EXTRACTION**: Content extracted from candidates[0].content.parts[0].text path");
+            
             if (string.IsNullOrEmpty(content))
             {
+                _logger.Error("❌ **GEMINI_EMPTY_CONTENT**: Gemini API returned null or empty content in response");
+                _logger.Error("   - **RESPONSE_STRUCTURE**: Candidates array may be empty, filtered, or parts missing");
+                _logger.Error("   - **POTENTIAL_CAUSES**: Content filtering, safety blocks, or generation failure");
                 throw new InvalidOperationException("Gemini API returned empty content");
             }
+            
+            // **LOG_THE_WHAT_IF**: Successful fallback content return
+            _logger.Information("✅ **GEMINI_FALLBACK_SUCCESS**: Valid content extracted from fallback provider - Length={ContentLength}", content.Length);
+            _logger.Information("   - **SUCCESS_ASSERTION**: Gemini delivered expected OCR correction response as fallback");
+            _logger.Information("   - **RESILIENCE_DEMONSTRATED**: System successfully recovered from primary provider failure");
             
             return content;
         }
@@ -366,32 +475,86 @@ namespace WaterNut.DataSpace
             }, context, cancellationToken);
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: API error detection and provider-specific error handling
+        /// 
+        /// **LOG_THE_WHAT**: JSON response error field inspection and provider-specific error message extraction
+        /// **LOG_THE_HOW**: Parses error object from response JSON, extracts message, logs and throws exceptions
+        /// **LOG_THE_WHY**: Provides consistent error handling across all LLM providers with detailed diagnostics
+        /// **LOG_THE_WHO**: Validates response success or throws InvalidOperationException with provider context
+        /// **LOG_THE_WHAT_IF**: Expects valid response JSON; silent when no errors, throws on API error detection
+        /// </summary>
         private void CheckForApiError(JObject responseObj, string provider)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete API error validation narrative
+            _logger.Debug("🔍 **API_ERROR_CHECK_START**: Examining {Provider} response for error indicators", provider);
+            _logger.Debug("   - **VALIDATION_PURPOSE**: Detect and handle provider-specific API errors before content processing");
+            
             var error = responseObj["error"]?["message"]?.Value<string>();
             if (!string.IsNullOrEmpty(error))
             {
-                _logger.Error("[{Provider}] API returned error: {ErrorMessage}", provider, error);
+                // **LOG_THE_WHAT_IF**: API error detected - comprehensive error reporting
+                _logger.Error("❌ **API_ERROR_DETECTED**: [{Provider}] API returned error response", provider);
+                _logger.Error("   - **ERROR_MESSAGE**: {ErrorMessage}", error);
+                _logger.Error("   - **PROVIDER_CONTEXT**: {Provider} API rejected request with detailed error", provider);
+                _logger.Error("   - **FAILURE_IMPACT**: LLM request cannot be processed, provider strategy will fail");
+                
                 throw new InvalidOperationException($"{provider} API error: {error}");
             }
+            
+            // **LOG_THE_WHO**: Successful error validation
+            _logger.Debug("✅ **API_ERROR_CHECK_PASSED**: [{Provider}] response contains no error indicators", provider);
+            _logger.Debug("   - **SUCCESS_ASSERTION**: Response ready for content extraction and processing");
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: HTTP client factory with LLM-optimized configuration
+        /// 
+        /// **LOG_THE_WHAT**: HttpClient creation with compression, connection pooling, and timeout configuration
+        /// **LOG_THE_HOW**: Configures handler with decompression, sets connection limits, adds content negotiation headers
+        /// **LOG_THE_WHY**: Optimizes HTTP performance for LLM API calls with large payloads and extended processing times
+        /// **LOG_THE_WHO**: Returns fully configured HttpClient instance ready for multi-provider LLM communication
+        /// **LOG_THE_WHAT_IF**: Expects successful client creation; throws on configuration errors
+        /// </summary>
         private HttpClient CreateHttpClient()
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete HTTP client configuration narrative
+            _logger.Information("🌐 **HTTP_CLIENT_FACTORY_START**: Creating optimized HTTP client for LLM API communication");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Configure HTTP infrastructure for reliable multi-provider LLM access");
+            _logger.Information("   - **PERFORMANCE_DESIGN**: Enable compression and connection pooling for efficient API calls");
+            
+            // **LOG_THE_WHAT**: HTTP handler configuration with performance optimizations
             var handler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 MaxConnectionsPerServer = 20
             };
+            
+            _logger.Information("🔧 **HTTP_HANDLER_CONFIG**: Compression={CompressionTypes}, MaxConnections={MaxConnections}", 
+                "GZip|Deflate", 20);
+            _logger.Information("   - **COMPRESSION_RATIONALE**: Reduce bandwidth usage for large OCR prompt payloads");
+            _logger.Information("   - **CONNECTION_POOLING**: Allow multiple concurrent LLM requests for performance");
 
+            // **LOG_THE_HOW**: HTTP client instantiation with LLM-appropriate timeouts
             var client = new HttpClient(handler, disposeHandler: true)
             {
                 Timeout = TimeSpan.FromSeconds(300) // 5 minute timeout
             };
+            
+            _logger.Information("🕓 **HTTP_CLIENT_TIMEOUT**: Configured 5-minute timeout for LLM processing delays");
+            _logger.Information("   - **TIMEOUT_RATIONALE**: LLM APIs may require extended processing time for complex OCR tasks");
 
+            // **LOG_THE_WHO**: Content negotiation headers for optimal API communication
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            
+            _logger.Information("📋 **HTTP_HEADERS_CONFIG**: Accept=application/json, AcceptEncoding=gzip,deflate");
+            _logger.Information("   - **CONTENT_NEGOTIATION**: Ensure JSON responses with compression when available");
+            
+            // **LOG_THE_WHAT_IF**: Successful HTTP client creation
+            _logger.Information("✅ **HTTP_CLIENT_CREATED**: Fully configured HTTP client ready for LLM API communication");
+            _logger.Information("   - **SUCCESS_ASSERTION**: Client configured with optimal settings for multi-provider access");
 
             return client;
         }
