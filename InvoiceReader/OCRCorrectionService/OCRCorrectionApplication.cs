@@ -120,7 +120,7 @@ namespace WaterNut.DataSpace
 
             _logger.Information("🚀 **APPLY_CORRECTIONS_START**: Applying {Count} high-confidence (>= {Threshold:P0}) corrections to invoice {InvoiceNo}.",
                 errorsToApplyDirectly.Count, CONFIDENCE_THRESHOLD, invoice.InvoiceNo);
-            _logger.Information("   - **ARCHITECTURAL_INTENT**: To apply AI-found corrections to the in-memory invoice. Aggregate fields will be reset to zero before summing new components to prevent double-counting. 'format_correction' types are skipped here.");
+            _logger.Information("   - **UNIFIED_ARCHITECTURE**: All errors flow through transformation chain processing. Single-step and multi-step transformations are applied uniformly. Aggregate fields will be reset to zero before summing new components to prevent double-counting.");
 
             // ====== COMPREHENSIVE FREE SHIPPING DIAGNOSTIC LOGGING ======
             var freeShippingErrors = errorsToApplyDirectly.Where(e => e.Field == "TotalDeduction").ToList();
