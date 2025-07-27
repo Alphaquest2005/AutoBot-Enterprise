@@ -37,27 +37,78 @@ namespace WaterNut.DataSpace
             public abstract Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance);
             public abstract bool CanHandle(RegexUpdateRequest request);
 
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Regex entity creation/retrieval with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **REGEX MANAGEMENT**: Database-first lookup → local cache → immediate creation with ID assignment
+            /// **RELATIONSHIP SAFETY**: Immediate save prevents foreign key conflicts in subsequent strategy operations
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of regex creation and caching workflows
+            /// </summary>
             protected async Task<RegularExpressions> GetOrCreateRegexAsync(
     OCRContext context, string pattern, bool multiLine = false, int maxLines = 1, string description = null)
             {
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for regex management
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for regex entity management");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Regex lookup context with database-first pattern retrieval");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Database → local cache → immediate creation pattern with relationship safety");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need database lookup confirmation, cache hit validation, creation success verification");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Regex management requires comprehensive lookup and immediate save for foreign key safety");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for regex operations");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed lookup results, cache status, creation outcomes");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Database hits, cache hits, entity creation, ID assignment");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based regex entity management");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on foreign key safety requirements, implementing immediate save pattern");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring ID assignment and relationship integrity");
+                
+                // **v4.1 DATABASE LOOKUP LOGGING**: Enhanced database-first pattern retrieval
+                _logger.Error("🔍 **REGEX_LOOKUP_START**: Beginning database-first regex pattern lookup");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Lookup parameters - Pattern='{Pattern}', MultiLine={MultiLine}, MaxLines={MaxLines}", 
+                    pattern, multiLine, maxLines);
+                
                 // Checks DB first, then local cache, then creates. THIS IS THE CORRECT, FIXED VERSION.
                 var existingRegex = await context.RegularExpressions
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines).ConfigureAwait(false);
                 if (existingRegex != null)
                 {
-                    _logger.Debug("Found existing regex pattern in DB (ID: {RegexId}): {Pattern}", existingRegex.Id, pattern);
+                    // **v4.1 DATABASE HIT LOGGING**: LLM diagnostic evidence for successful database retrieval
+                    _logger.Error("✅ **DATABASE_HIT_EVIDENCE**: Found existing regex pattern in database");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Database hit - RegexId={RegexId}, Pattern='{Pattern}'", existingRegex.Id, pattern);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Database lookup successful, returning existing entity for relationship safety");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Database hit provides optimal performance with established entity relationships");
+                    _logger.Error("📚 **FIX_RATIONALE**: Existing regex entities eliminate creation overhead and relationship conflicts");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Database hit confirmed, regex entity ready for immediate use");
                     return existingRegex;
                 }
 
+                // **v4.1 LOCAL CACHE LOGGING**: Enhanced local cache lookup with diagnostic evidence
+                _logger.Error("🔍 **LOCAL_CACHE_LOOKUP**: Database miss - checking local cache for regex pattern");
                 var localRegex = context.RegularExpressions.Local
                                      .FirstOrDefault(r => r.RegEx == pattern && r.MultiLine == multiLine && r.MaxLines == maxLines);
                 if (localRegex != null)
                 {
-                    _logger.Debug("Found existing regex pattern in LOCAL CACHE (ID: {RegexId}): {Pattern}", localRegex.Id, pattern);
+                    // **v4.1 CACHE HIT LOGGING**: LLM diagnostic evidence for local cache retrieval
+                    _logger.Error("✅ **CACHE_HIT_EVIDENCE**: Found existing regex pattern in local cache");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Cache hit - RegexId={RegexId}, Pattern='{Pattern}'", localRegex.Id, pattern);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Local cache successful, returning cached entity for relationship safety");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Cache hit provides intermediate performance with pending entity relationships");
+                    _logger.Error("📚 **FIX_RATIONALE**: Cached regex entities provide efficiency while maintaining relationship integrity");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Cache hit confirmed, regex entity ready for immediate use");
                     return localRegex;
                 }
 
+                // **v4.1 ENTITY CREATION LOGGING**: Enhanced immediate creation with relationship safety
+                _logger.Error("🔧 **REGEX_CREATION_START**: Database and cache miss - creating new regex entity");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced creation with immediate save for foreign key safety");
+                
                 // CRITICAL FIX: Create and IMMEDIATELY save regex to get database ID
                 var newRegex = new RegularExpressions
                                    {
@@ -71,9 +122,17 @@ namespace WaterNut.DataSpace
                                    };
                 context.RegularExpressions.Add(newRegex);
                 
+                // **v4.1 IMMEDIATE SAVE LOGGING**: LLM diagnostic evidence for relationship safety
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Immediate save operation for foreign key relationship safety");
+                _logger.Error("📚 **FIX_RATIONALE**: Immediate save prevents foreign key conflicts in subsequent strategy operations");
+                
                 // IMMEDIATELY save to database to get ID and prevent relationship conflicts
                 await context.SaveChangesAsync().ConfigureAwait(false);
-                _logger.Debug("🔧 **REGEX_SAVED_IMMEDIATELY**: Created and saved new regex to database, got ID={RegexId}, Pattern={Pattern}", newRegex.Id, pattern);
+                
+                _logger.Error("✅ **REGEX_CREATION_SUCCESS**: Created and saved new regex to database with ID assignment");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Creation success - RegexId={RegexId}, Pattern='{Pattern}'", newRegex.Id, pattern);
+                _logger.Error("🔍 **FIX_VALIDATION**: Immediate save confirmed, regex entity ready with established database ID");
+                _logger.Error("🎯 **SUCCESS_ASSERTION**: Regex entity management completed with foreign key safety for LLM analysis");
                 
                 return newRegex;
             }
