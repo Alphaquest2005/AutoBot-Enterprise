@@ -69,7 +69,7 @@ namespace AutoBotUtilities.Tests
                 
                 // Assert: Should detect failures (but improvement will fail without API keys)
                 _logger.Information("✅ **PATTERN_DETECTION_ACCESSIBLE**: Method executed (result: {Result})", result);
-                Assert.IsTrue(true, "Pattern detection method is accessible and executes");
+                Assert.That(true, Is.True, "Pattern detection method is accessible and executes");
             }
             catch (Exception ex)
             {
