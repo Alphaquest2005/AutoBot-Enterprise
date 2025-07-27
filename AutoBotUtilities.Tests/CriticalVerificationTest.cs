@@ -161,8 +161,8 @@ namespace AutoBotUtilities.Tests
                     testInvoice, "test text", new Dictionary<string, OCRFieldMetadata>(), "deepseek");
 
                 // Assert: Should return a prompt (likely fallback, but method should work)
-                Assert.IsNotNull(prompt, "Template loading should return a prompt");
-                Assert.IsTrue(prompt.Length > 0, "Prompt should have content");
+                Assert.That(prompt, Is.Not.Null, "Template loading should return a prompt");
+                Assert.That(prompt.Length, Is.GreaterThan(0), "Prompt should have content");
 
                 _logger.Information("✅ **TEMPLATE_LOADING_WORKS**: Template loading with versioning logic functional");
             }
@@ -190,7 +190,7 @@ namespace AutoBotUtilities.Tests
                 
                 // If we got here, the HTTP client was configured successfully
                 _logger.Information("✅ **HTTP_CLIENT_SETUP**: HTTP client configuration successful");
-                Assert.IsTrue(true, "HTTP client setup works");
+                Assert.That(true, Is.True, "HTTP client setup works");
             }
             catch (Exception ex)
             {
@@ -216,8 +216,8 @@ namespace AutoBotUtilities.Tests
                 var aiProvidersConfig = Path.Combine(_testBasePath, "Config", "ai-providers.json");
                 var templateConfig = Path.Combine(_testBasePath, "Config", "template-config.json");
 
-                Assert.IsTrue(File.Exists(aiProvidersConfig), "AI providers config should be created");
-                Assert.IsTrue(File.Exists(templateConfig), "Template config should be created");
+                Assert.That(File.Exists(aiProvidersConfig), Is.True, "AI providers config should be created");
+                Assert.That(File.Exists(templateConfig), Is.True, "Template config should be created");
 
                 // Verify config content
                 var aiProvidersContent = File.ReadAllText(aiProvidersConfig);
