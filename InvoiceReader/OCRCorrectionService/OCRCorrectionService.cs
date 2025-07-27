@@ -460,15 +460,15 @@ namespace WaterNut.DataSpace
                         .ConfigureAwait(false);
                     
                     _logger.Information("🔍 **DATABASE_QUERY_RESULT**: Query completed");
-                    if (databaseTemplate == null)
+                    if (ocrInvoiceTemplate == null)
                     {
                         _logger.Error("❌ **DATABASE_TEMPLATE_RETRIEVAL_FAILED**: Could not retrieve template with ID {TemplateId}", templateId);
                         return null;
                     }
                     
                     _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved template successfully");
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", databaseTemplate.Id);
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", databaseTemplate.Name ?? "NULL");
+                    _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrInvoiceTemplate.Id);
+                    _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrInvoiceTemplate.Name ?? "NULL");
                     
                     // Create Invoice object from database template for pipeline
                     _logger.Information("🏗️ **CREATING_INVOICE_OBJECT**: Creating Invoice object from database template");
