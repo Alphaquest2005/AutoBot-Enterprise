@@ -548,20 +548,61 @@ namespace WaterNut.DataSpace
             }
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Dynamic data synchronization with LLM diagnostic workflow
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **SYNCHRONIZATION LOGIC**: Maps corrected ShipmentInvoice objects back to dynamic data with field-level change tracking
+        /// **CARIBBEAN CUSTOMS SUPPORT**: Special handling for TotalDeduction (Free Shipping) and TotalInsurance (Gift Cards)
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of synchronization accuracy and field update verification
+        /// </summary>
         public static void UpdateDynamicResultsWithCorrections(
             List<IDictionary<string, object>> dynamicItems,
             List<ShipmentInvoice> correctedInvoices,
             ILogger logger)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for sync operations
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for dynamic data synchronization");
+            logger.Error("📋 **AVAILABLE_LOG_DATA**: Sync context with corrected invoice mapping and field-level change tracking");
+            logger.Error("🔍 **PATTERN_ANALYSIS**: ShipmentInvoice → dynamic data synchronization with Caribbean customs support");
+            logger.Error("❓ **EVIDENCE_GAPS**: Need sync validation, field change verification, Caribbean customs field handling");
+            logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Dynamic sync requires comprehensive field mapping with change tracking");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for sync operations");
+            logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed sync metrics, field changes, Caribbean customs tracking");
+            logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Sync validation, invoice mapping, field updates, change verification");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based dynamic data synchronization");
+            logger.Error("📚 **FIX_RATIONALE**: Based on correction pipeline requirements, implementing comprehensive sync logic");
+            logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring field updates and Caribbean customs handling");
+            
             if (dynamicItems == null || !correctedInvoices.Any()) 
             {
-                logger.Warning("🔄 **SYNC_DATA_SKIP**: UpdateDynamicResultsWithCorrections called with null or empty data. DynamicItems={DynamicItems}, CorrectedInvoices={CorrectedInvoices}", 
+                // **v4.1 NULL/EMPTY SYNC LOGGING**: LLM diagnostic evidence for invalid sync scenarios
+                logger.Error("🔄 **SYNC_DATA_SKIP_EVIDENCE**: UpdateDynamicResultsWithCorrections called with null or empty data");
+                logger.Error("📋 **AVAILABLE_LOG_DATA**: Invalid sync context - DynamicItems={DynamicItems}, CorrectedInvoices={CorrectedInvoices}", 
                     dynamicItems?.Count ?? 0, correctedInvoices?.Count ?? 0);
+                logger.Error("🔍 **PATTERN_ANALYSIS**: Null/empty data pattern requires graceful exit with diagnostic preservation");
+                logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Invalid sync data indicates upstream processing failure or timing issue");
+                logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced invalid data handling with comprehensive state documentation");
+                logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Data validation, count verification, exit behavior rationale");
+                logger.Error("📚 **FIX_RATIONALE**: Invalid data requires early return for pipeline safety");
+                logger.Error("🔍 **FIX_VALIDATION**: Monitoring invalid sync attempts and upstream cause identification");
                 return;
             }
+            
+            // **v4.1 SYNC MAPPING LOGGING**: Enhanced invoice mapping and synchronization start
             var correctedInvoiceMap = correctedInvoices.ToDictionary(inv => inv.InvoiceNo, inv => inv);
-
-            logger.Information("🔄 **SYNC_DATA_START**: Synchronizing {CorrectedCount} corrected ShipmentInvoice objects back into a list of {DynamicCount} dynamic data items.", correctedInvoices.Count, dynamicItems.Count);
+            
+            logger.Error("🔄 **SYNC_DATA_START_EVIDENCE**: Synchronizing corrected ShipmentInvoice objects back into dynamic data");
+            logger.Error("📋 **AVAILABLE_LOG_DATA**: Sync metrics - CorrectedCount={CorrectedCount}, DynamicCount={DynamicCount}", 
+                correctedInvoices.Count, dynamicItems.Count);
+            logger.Error("🔍 **PATTERN_ANALYSIS**: Invoice mapping pattern with field-level synchronization and change tracking");
 
             // ====== FREE SHIPPING SYNC DIAGNOSTIC ENTRY ======
             var freeShippingInvoices = correctedInvoices.Where(inv => inv.TotalDeduction.HasValue && inv.TotalDeduction.Value > 0).ToList();
