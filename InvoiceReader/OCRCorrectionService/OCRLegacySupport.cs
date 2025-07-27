@@ -73,15 +73,21 @@ namespace WaterNut.DataSpace
             
             if (invoice == null)
             {
-                // **LOG_THE_WHAT_IF**: Null invoice handling with comprehensive error context
-                log.Warning("❌ **NULL_INVOICE_ERROR**: TotalsZero validation called with null invoice reference");
-                log.Warning("   - **VALIDATION_STATE**: Cannot perform financial balance validation on null object");
-                log.Warning("   - **RETURN_BEHAVIOR**: Returning false (unbalanced) with MaxValue difference amount");
+                // **v4.1 NULL VALIDATION LOGGING**: LLM diagnostic evidence for null invoice scenarios
+                log.Error("❌ **NULL_INVOICE_EVIDENCE**: TotalsZero validation attempted with null invoice reference");
+                log.Error("📋 **AVAILABLE_LOG_DATA**: Null validation context - no invoice object available for analysis");
+                log.Error("🔍 **PATTERN_ANALYSIS**: Null input pattern requires graceful degradation with diagnostic preservation");
+                log.Error("💡 **LOG_BASED_HYPOTHESIS**: Null invoice indicates upstream data conversion failure or invalid call context");
+                log.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced null handling with comprehensive error context preservation");
+                log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Validation state, return behavior, difference amount assignment");
+                log.Error("📚 **FIX_RATIONALE**: Null invoice requires false return with MaxValue difference for pipeline safety");
+                log.Error("🔍 **FIX_VALIDATION**: Monitoring null invoice frequency and upstream cause identification");
                 
                 return false;
             }
 
-            // **LOG_THE_WHAT**: Financial component extraction and null-safe value assignment
+            // **v4.1 COMPONENT EXTRACTION LOGGING**: Enhanced financial component analysis
+            log.Error("📊 **COMPONENT_EXTRACTION_START**: Financial component extraction with null-safe value assignment");
             var subTotal = invoice.SubTotal ?? 0;
             var freight = invoice.TotalInternalFreight ?? 0;
             var otherCost = invoice.TotalOtherCost ?? 0;
@@ -89,34 +95,36 @@ namespace WaterNut.DataSpace
             var deductionAmount = invoice.TotalDeduction ?? 0;
             var reportedInvoiceTotal = invoice.InvoiceTotal ?? 0;
             
-            log.Verbose("📊 **FINANCIAL_COMPONENTS**: InvoiceNo={InvoiceNo}", invoice.InvoiceNo ?? "Unknown");
-            log.Verbose("   - **COMPONENT_VALUES**: SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}", 
+            log.Error("📋 **AVAILABLE_LOG_DATA**: Invoice components extracted - InvoiceNo={InvoiceNo}", invoice.InvoiceNo ?? "Unknown");
+            log.Error("🔍 **PATTERN_ANALYSIS**: Component values - SubTotal={SubTotal}, Freight={Freight}, OtherCost={OtherCost}, Insurance={Insurance}", 
                 subTotal, freight, otherCost, insurance);
-            log.Verbose("   - **ADJUSTMENTS**: Deduction={Deduction}, ReportedTotal={ReportedTotal}", deductionAmount, reportedInvoiceTotal);
+            log.Error("❓ **EVIDENCE_GAPS**: Adjustment analysis - Deduction={Deduction}, ReportedTotal={ReportedTotal}", deductionAmount, reportedInvoiceTotal);
 
-            // **LOG_THE_HOW**: Balance calculation with step-by-step computation logging
+            // **v4.1 CALCULATION LOGGING**: Step-by-step balance calculation with enhanced diagnostics
+            log.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing balance calculation logging for precision analysis");
             var baseTotal = subTotal + freight + otherCost + insurance;
             var calculatedFinalTotal = baseTotal - deductionAmount;
             differenceAmount = Math.Abs(calculatedFinalTotal - reportedInvoiceTotal);
             
-            log.Verbose("🦠 **BALANCE_CALCULATION**: BaseTotal={BaseTotal}, CalculatedFinal={CalculatedFinal}, Difference={Difference}", 
+            log.Error("📊 **LOGGING_ENHANCEMENTS**: Balance calculation steps - BaseTotal={BaseTotal}, CalculatedFinal={CalculatedFinal}, Difference={Difference}", 
                 baseTotal, calculatedFinalTotal, differenceAmount);
 
-            // **LOG_THE_WHY**: Tolerance-based balance determination with business rationale
+            // **v4.1 TOLERANCE DETERMINATION LOGGING**: Business logic validation with comprehensive reasoning
             bool isZero = differenceAmount < 0.001; // Precision tolerance for floating-point arithmetic
             
-            log.Verbose("🔍 **BALANCE_DETERMINATION**: IsBalanced={IsBalanced}, Tolerance=0.001, DifferenceAmount={DifferenceAmount}", 
+            log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Balance determination - IsBalanced={IsBalanced}, Tolerance=0.001, DifferenceAmount={DifferenceAmount}", 
                 isZero, differenceAmount);
-            log.Verbose("   - **BUSINESS_LOGIC**: {BalanceStatus}", 
-                isZero ? "Invoice totals are balanced within acceptable tolerance" : "Invoice requires correction due to imbalance");
+            log.Error("📚 **FIX_RATIONALE**: Business logic - {BalanceStatus}", 
+                isZero ? "Invoice totals balanced within acceptable tolerance" : "Invoice requires correction due to imbalance");
 
-            // **LOG_THE_WHO**: Difference amount caching for performance and diagnostics
+            // **v4.1 CACHING LOGGING**: Performance optimization with diagnostic preservation
+            log.Error("🔍 **FIX_VALIDATION**: Difference amount caching for diagnostic correlation and performance optimization");
             _totalsZeroAmounts.Remove(invoice);
             _totalsZeroAmounts.Add(invoice, new System.Runtime.CompilerServices.StrongBox<double>(differenceAmount));
             
-            log.Verbose("✅ **TOTALS_VALIDATION_COMPLETE**: Balance validation result={IsBalanced}, DifferenceAmount={DifferenceAmount}", 
+            log.Error("✅ **VALIDATION_COMPLETE**: Balance validation result={IsBalanced}, DifferenceAmount={DifferenceAmount}", 
                 isZero, differenceAmount);
-            log.Verbose("   - **SUCCESS_ASSERTION**: Invoice balance validation completed with cached difference amount");
+            log.Error("🎯 **SUCCESS_ASSERTION**: Invoice balance validation completed with cached difference amount for LLM analysis");
             
             return isZero;
         }
