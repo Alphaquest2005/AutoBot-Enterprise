@@ -814,6 +814,14 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Invoice cloning with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Creates deep clone of ShipmentInvoice for safe testing of corrections without modifying original invoice data
+        /// **BUSINESS OBJECTIVE**: Ensure safe correction testing through complete invoice cloning with financial field preservation and line item integrity
+        /// **SUCCESS CRITERIA**: Must clone all relevant properties, preserve financial data integrity, create independent line items, and return complete functional clone
+        /// 
         /// Creates a clone of a ShipmentInvoice suitable for testing corrections without modifying the original.
         /// </summary>
         private ShipmentInvoice CloneInvoiceForValidation(ShipmentInvoice original)
