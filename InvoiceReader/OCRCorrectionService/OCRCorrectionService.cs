@@ -444,10 +444,17 @@ namespace WaterNut.DataSpace
                     // **STEP 8**: Retrieve the created template from database
                     var templateId = result.RegexId.Value;
                     
-                    _logger.Information("🔍 **DATABASE_QUERY_START**: Querying OCRContext.Invoices for template");
+                    // **CRITICAL_ARCHITECTURE_NOTE**: In OCR module design, the "Invoices" table stores TEMPLATE DEFINITIONS, not actual invoices.
+                    // - Invoices table = Template definitions (OCR patterns, parts, lines, fields)
+                    // - ShipmentInvoice entities = Actual invoice data (what gets imported)
+                    // - OCR_TemplateTableMapping = Document routing table (different purpose)
+                    // This naming convention is historical but functionally correct.
+                    
+                    _logger.Information("🔍 **DATABASE_QUERY_START**: Querying OCRContext.Invoices for template definition");
+                    _logger.Information("   - **ARCHITECTURAL_CONTEXT**: Invoices table contains TEMPLATE DEFINITIONS in OCR module");
                     _logger.Information("   - **QUERY_FILTER**: Id == {TemplateId}", templateId);
                     
-                    var databaseTemplate = await dbContext.Invoices
+                    var ocrInvoiceTemplate = await dbContext.Invoices
                         .Where(t => t.Id == templateId)
                         .FirstOrDefaultAsync()
                         .ConfigureAwait(false);
