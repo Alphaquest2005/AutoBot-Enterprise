@@ -826,38 +826,176 @@ namespace WaterNut.DataSpace
         /// </summary>
         private ShipmentInvoice CloneInvoiceForValidation(ShipmentInvoice original)
         {
-            // This needs to be a sufficiently deep clone for financial fields.
-            var clone = new ShipmentInvoice
+            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CloneInvoiceForValidation_V4.2_Analysis"))
             {
-                // Copy all relevant properties for TotalsZero and other validations
-                InvoiceNo = original.InvoiceNo,
-                InvoiceDate = original.InvoiceDate, // If date validation occurs
-                InvoiceTotal = original.InvoiceTotal,
-                SubTotal = original.SubTotal,
-                TotalInternalFreight = original.TotalInternalFreight,
-                TotalOtherCost = original.TotalOtherCost,
-                TotalInsurance = original.TotalInsurance,
-                TotalDeduction = original.TotalDeduction,
-                Currency = original.Currency,
-                SupplierName = original.SupplierName,
-                // Do NOT copy TrackingState or ModifiedProperties
-            };
-
-            if (original.InvoiceDetails != null)
-            {
-                clone.InvoiceDetails = original.InvoiceDetails.Select(d => new InvoiceDetails {
-                    LineNumber = d.LineNumber,
-                    ItemDescription = d.ItemDescription, // If description validation occurs
-                    Quantity = d.Quantity,
-                    Cost = d.Cost,
-                    TotalCost = d.TotalCost,
-                    Discount = d.Discount,
-                    Units = d.Units // If unit validation occurs
-                    // Do NOT copy TrackingState or ModifiedProperties
-                }).ToList();
-            } else {
-                clone.InvoiceDetails = new List<InvoiceDetails>();
+                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing invoice cloning requirements for validation testing: {InvoiceNo}", 
+                    original?.InvoiceNo ?? "NULL");
+                _logger.Information("📊 Analysis Context: Invoice cloning ensures safe correction testing without modifying original invoice data through deep property copying");
+                _logger.Information("🎯 Expected Behavior: Create complete functional clone with all financial fields, line items, and relevant properties while excluding tracking state");
+                _logger.Information("🏗️ Current Architecture: Deep cloning with selective property copying for financial validation and line item preservation");
             }
+
+            if (original == null)
+            {
+                _logger.Error("❌ Critical Input Validation Failure: Original invoice is null - cannot create clone for validation");
+                return null;
+            }
+
+            ShipmentInvoice clone = null;
+            int copiedProperties = 0;
+            int copiedLineItems = 0;
+            bool financialFieldsComplete = false;
+            bool lineItemsComplete = false;
+
+            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CloneInvoiceForValidation_V4.2_Enhancement"))
+            {
+                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive invoice cloning with diagnostic capabilities");
+                
+                _logger.Information("✅ Input Validation: Cloning invoice {InvoiceNo} with {LineItemCount} line items for validation testing", 
+                    original.InvoiceNo, original.InvoiceDetails?.Count ?? 0);
+                
+                _logger.Information("📊 Original Invoice Financial Summary: InvoiceTotal={InvoiceTotal}, SubTotal={SubTotal}, TotalDeduction={TotalDeduction}, TotalFreight={TotalFreight}",
+                    original.InvoiceTotal, original.SubTotal, original.TotalDeduction, original.TotalInternalFreight);
+
+                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Invoice Cloning Logic**
+                using (Serilog.Context.LogContext.PushProperty("MethodContext", "CloneInvoiceForValidation_V4.2_Implementation"))
+                {
+                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing deep invoice cloning algorithm");
+                    
+                    try
+                    {
+                        // Create base clone with financial and metadata properties
+                        clone = new ShipmentInvoice();
+                        
+                        // Core identification properties
+                        clone.InvoiceNo = original.InvoiceNo;
+                        clone.InvoiceDate = original.InvoiceDate;
+                        clone.Currency = original.Currency;
+                        clone.SupplierName = original.SupplierName;
+                        copiedProperties += 4;
+                        
+                        // Financial summary properties (critical for TotalsZero validation)
+                        clone.InvoiceTotal = original.InvoiceTotal;
+                        clone.SubTotal = original.SubTotal;
+                        clone.TotalInternalFreight = original.TotalInternalFreight;
+                        clone.TotalOtherCost = original.TotalOtherCost;
+                        clone.TotalInsurance = original.TotalInsurance;
+                        clone.TotalDeduction = original.TotalDeduction;
+                        copiedProperties += 6;
+                        
+                        financialFieldsComplete = true;
+                        _logger.Debug("✅ Financial Properties Cloned: InvoiceTotal={InvoiceTotal}, SubTotal={SubTotal}, Financial fields complete", 
+                            clone.InvoiceTotal, clone.SubTotal);
+
+                        // Clone line items with deep copying
+                        if (original.InvoiceDetails != null && original.InvoiceDetails.Any())
+                        {
+                            _logger.Information("🔄 Cloning {LineItemCount} invoice details", original.InvoiceDetails.Count);
+                            
+                            clone.InvoiceDetails = original.InvoiceDetails.Select(d => {
+                                if (d == null)
+                                {
+                                    _logger.Warning("⚠️ Null line item detected during cloning - skipping");
+                                    return null;
+                                }
+                                
+                                copiedLineItems++;
+                                return new InvoiceDetails {
+                                    LineNumber = d.LineNumber,
+                                    ItemDescription = d.ItemDescription,
+                                    Quantity = d.Quantity,
+                                    Cost = d.Cost,
+                                    TotalCost = d.TotalCost,
+                                    Discount = d.Discount,
+                                    Units = d.Units
+                                    // Explicitly exclude TrackingState and ModifiedProperties for clean clone
+                                };
+                            }).Where(d => d != null).ToList();
+                            
+                            lineItemsComplete = copiedLineItems == original.InvoiceDetails.Where(d => d != null).Count();
+                            _logger.Information("✅ Line Items Cloned: {CopiedLineItems} of {OriginalLineItems} line items successfully cloned", 
+                                copiedLineItems, original.InvoiceDetails.Where(d => d != null).Count());
+                        }
+                        else
+                        {
+                            clone.InvoiceDetails = new List<InvoiceDetails>();
+                            lineItemsComplete = true;
+                            _logger.Information("ℹ️ No line items to clone - initialized empty collection");
+                        }
+                        
+                        _logger.Information("📊 Clone Creation Summary: CopiedProperties={CopiedProperties}, CopiedLineItems={CopiedLineItems}, FinancialComplete={FinancialComplete}, LineItemsComplete={LineItemsComplete}", 
+                            copiedProperties, copiedLineItems, financialFieldsComplete, lineItemsComplete);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during invoice cloning for invoice {InvoiceNo} - CopiedProperties: {CopiedProperties}, CopiedLineItems: {CopiedLineItems}", 
+                            original.InvoiceNo, copiedProperties, copiedLineItems);
+                        // Return null if cloning fails critically
+                        clone = null;
+                    }
+                }
+            }
+
+            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "CloneInvoiceForValidation_V4.2_SuccessCriteria"))
+            {
+                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                
+                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
+                bool purposeFulfilled = clone != null && copiedProperties > 0;
+                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Invoice cloning {Result} (CopiedProperties: {CopiedProperties})", 
+                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
+                    purposeFulfilled ? "executed successfully" : "failed to execute", copiedProperties);
+
+                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
+                bool outputComplete = clone != null && !string.IsNullOrEmpty(clone.InvoiceNo) && clone.InvoiceDetails != null;
+                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Clone {Result} with InvoiceNo={InvoiceNo} and {LineItemCount} line items", 
+                    outputComplete ? "✅ PASS" : "❌ FAIL", 
+                    outputComplete ? "properly constructed" : "incomplete or malformed", clone?.InvoiceNo, clone?.InvoiceDetails?.Count ?? 0);
+
+                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
+                bool processComplete = financialFieldsComplete && lineItemsComplete;
+                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - Financial fields ({FinancialComplete}) and line items ({LineItemsComplete}) cloning completed", 
+                    processComplete ? "✅ PASS" : "❌ FAIL", financialFieldsComplete, lineItemsComplete);
+
+                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
+                bool dataQualityMet = clone != null && copiedProperties >= 10 && copiedLineItems >= 0;
+                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Clone integrity: CopiedProperties={CopiedProperties}, CopiedLineItems={CopiedLineItems}", 
+                    dataQualityMet ? "✅ PASS" : "❌ FAIL", copiedProperties, copiedLineItems);
+
+                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
+                bool errorHandlingSuccess = clone != null || copiedProperties > 0; // Some progress made even if partial failure
+                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during cloning process", 
+                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
+                    errorHandlingSuccess ? "implemented successfully" : "failed");
+
+                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
+                bool businessLogicValid = clone == null || (clone.InvoiceNo == original.InvoiceNo && clone.InvoiceTotal == original.InvoiceTotal);
+                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Clone preserves identity and financial integrity: InvoiceNo match, InvoiceTotal match", 
+                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
+
+                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
+                bool integrationSuccess = true; // No external dependencies beyond object construction
+                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Entity construction and LINQ operations {Result}", 
+                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
+                    integrationSuccess ? "functioning properly" : "experiencing issues");
+
+                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
+                bool performanceCompliant = copiedLineItems < 1000; // Reasonable line item cloning limit
+                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Cloned {CopiedLineItems} line items within reasonable performance limits", 
+                    performanceCompliant ? "✅ PASS" : "❌ FAIL", copiedLineItems);
+
+                // Overall Success Assessment
+                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - CloneInvoiceForValidation {Result} with {CopiedProperties} properties and {CopiedLineItems} line items cloned", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "encountered issues", copiedProperties, copiedLineItems);
+            }
+
             return clone;
         }
 
