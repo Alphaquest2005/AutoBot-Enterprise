@@ -737,9 +737,17 @@ namespace WaterNut.DataSpace
         #region Field Type and Property Mapping Utilities
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Value parsing with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Parses string values into appropriate object types based on target field characteristics with comprehensive type handling
+        /// **BUSINESS OBJECTIVE**: Ensure accurate data type conversion through field mapping, culture-aware parsing, and robust fallback mechanisms
+        /// **SUCCESS CRITERIA**: Must validate inputs, map field types, parse values correctly, handle cultural variations, and return appropriate object types
+        /// 
         /// Parses a string value into an appropriate object type based on the target field's characteristics.
         /// CRITICAL FIX: Now correctly returns the appropriate C# type for all supported data types.
-        /// Logging is enhanced to meet the Assertive Self-Documenting Logging Mandate v4.3.
+        /// Logging is enhanced to meet the Assertive Self-Documenting Logging Mandate v4.2.
         /// </summary>
         public object ParseCorrectedValue(string valueToParse, string targetFieldName)
         {
