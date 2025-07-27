@@ -340,8 +340,9 @@ namespace WaterNut.DataSpace
                     // **STEP 1**: Create blank invoice for error detection
                     var blankInvoice = new ShipmentInvoice 
                     { 
-                        InvoiceNo = $"{templateName}_SAMPLE",
-                        SupplierName = templateName
+                        //Human:removed this so that llm call can set all these properties as errors
+                        //InvoiceNo = $"{templateName}_SAMPLE",
+                        //SupplierName = templateName
                     };
                     _logger.Information("📋 **BLANK_INVOICE_CREATED**: Using invoice with InvoiceNo='{InvoiceNo}' for error detection", blankInvoice.InvoiceNo);
 
