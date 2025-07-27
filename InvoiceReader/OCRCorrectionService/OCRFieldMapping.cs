@@ -716,6 +716,14 @@ namespace WaterNut.DataSpace
         }
         
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Line context field validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates if field exists in line context by checking against FieldsInLine definitions or regex pattern named groups
+        /// **BUSINESS OBJECTIVE**: Ensure accurate field presence validation through multiple matching strategies and fallback pattern parsing
+        /// **SUCCESS CRITERIA**: Must validate inputs, map field names correctly, check FieldsInLine collection, fallback to regex parsing, and return accurate boolean
+        /// 
         /// Checks if a field (identified by its DeepSeek name) is expected to be extracted by the regex
         /// associated with the provided LineContext, by checking against its defined FieldsInLine.
         /// </summary>
