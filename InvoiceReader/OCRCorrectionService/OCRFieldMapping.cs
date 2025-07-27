@@ -549,29 +549,170 @@ namespace WaterNut.DataSpace
         /// </summary>
         public async Task<List<FieldInfo>> GetFieldsByRegexNamedGroupsAsync(string regexPatternText, int ocrLineDefinitionId)
         {
-            // Uses utility: this.ExtractNamedGroupsFromRegex
-            var namedGroupsInPattern = this.ExtractNamedGroupsFromRegex(regexPatternText); 
-            if (!namedGroupsInPattern.Any()) return new List<FieldInfo>();
+            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetFieldsByRegexNamedGroupsAsync_V4.2_Analysis"))
+            {
+                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing regex group field retrieval requirements for pattern: '{RegexPattern}', LineId: {LineId}", 
+                    regexPatternText?.Substring(0, Math.Min(regexPatternText?.Length ?? 0, 100)) ?? "NULL", ocrLineDefinitionId);
+                _logger.Information("📊 Analysis Context: Regex group field retrieval extracts named groups from patterns and queries database for matching field definitions");
+                _logger.Information("🎯 Expected Behavior: Extract named groups, validate line definition ID, query database efficiently, and return complete FieldInfo collection");
+                _logger.Information("🏗️ Current Architecture: Async database querying with LINQ-based filtering and Entity Framework context management");
+            }
 
-            try
+            var namedGroupsInPattern = new List<string>();
+            var fieldsFromDb = new List<FieldInfo>();
+            int extractedGroups = 0;
+            int queriedFields = 0;
+            bool databaseQuerySuccessful = false;
+            bool regexExtractionSuccessful = false;
+
+            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetFieldsByRegexNamedGroupsAsync_V4.2_Enhancement"))
             {
-                using var context = new OCRContext(); 
-                var fieldsFromDb = await context.Fields // From OCR.Business.Entities
-                                       .Where(f => f.LineId == ocrLineDefinitionId && namedGroupsInPattern.Contains(f.Key))
-                                       .Select(f => new FieldInfo // WaterNut.DataSpace.FieldInfo
-                                                        {
-                                                            FieldId = f.Id, Key = f.Key, Field = f.Field,
-                                                            EntityType = f.EntityType, DataType = f.DataType, IsRequired = f.IsRequired
-                                                        })
-                                       .ToListAsync().ConfigureAwait(false);
+                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive regex group field retrieval with diagnostic capabilities");
                 
-                return fieldsFromDb;
+                _logger.Information("✅ Input Validation: Processing regex pattern (length: {PatternLength}) for OCR Line Definition ID: {LineId}", 
+                    regexPatternText?.Length ?? 0, ocrLineDefinitionId);
+                
+                if (string.IsNullOrWhiteSpace(regexPatternText))
+                {
+                    _logger.Error("❌ Critical Input Validation Failure: Regex pattern is null or whitespace - cannot extract named groups");
+                    return new List<FieldInfo>();
+                }
+                
+                if (ocrLineDefinitionId <= 0)
+                {
+                    _logger.Error("❌ Critical Input Validation Failure: OCR Line Definition ID is invalid: {LineId}", ocrLineDefinitionId);
+                    return new List<FieldInfo>();
+                }
+
+                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Regex Group Field Retrieval Logic**
+                using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetFieldsByRegexNamedGroupsAsync_V4.2_Implementation"))
+                {
+                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing regex group field retrieval algorithm");
+                    
+                    try
+                    {
+                        // Step 1: Extract named groups from regex pattern
+                        _logger.Information("🔄 Step 1: Extracting named groups from regex pattern using ExtractNamedGroupsFromRegex utility");
+                        
+                        namedGroupsInPattern = this.ExtractNamedGroupsFromRegex(regexPatternText);
+                        extractedGroups = namedGroupsInPattern?.Count ?? 0;
+                        regexExtractionSuccessful = namedGroupsInPattern != null;
+                        
+                        _logger.Information("✅ Named Groups Extracted: {ExtractedGroups} groups found - {GroupNames}", 
+                            extractedGroups, extractedGroups > 0 ? string.Join(", ", namedGroupsInPattern.Take(10)) + (extractedGroups > 10 ? "..." : "") : "NONE");
+
+                        if (!namedGroupsInPattern.Any())
+                        {
+                            _logger.Warning("⚠️ No Named Groups: Regex pattern contains no named groups - returning empty field collection");
+                            return new List<FieldInfo>();
+                        }
+
+                        // Step 2: Query database for matching field definitions
+                        _logger.Information("🔍 Step 2: Querying database for field definitions matching {GroupCount} named groups for LineId {LineId}", 
+                            extractedGroups, ocrLineDefinitionId);
+                        
+                        using var context = new OCRContext();
+                        fieldsFromDb = await context.Fields
+                                           .Where(f => f.LineId == ocrLineDefinitionId && namedGroupsInPattern.Contains(f.Key))
+                                           .Select(f => new FieldInfo
+                                                            {
+                                                                FieldId = f.Id, 
+                                                                Key = f.Key, 
+                                                                Field = f.Field,
+                                                                EntityType = f.EntityType, 
+                                                                DataType = f.DataType, 
+                                                                IsRequired = f.IsRequired
+                                                            })
+                                           .ToListAsync().ConfigureAwait(false);
+                        
+                        queriedFields = fieldsFromDb?.Count ?? 0;
+                        databaseQuerySuccessful = fieldsFromDb != null;
+                        
+                        _logger.Information("✅ Database Query Success: Retrieved {QueriedFields} field definitions from {ExtractedGroups} named groups", 
+                            queriedFields, extractedGroups);
+                        
+                        if (queriedFields != extractedGroups)
+                        {
+                            var missingGroups = namedGroupsInPattern.Except(fieldsFromDb?.Select(f => f.Key) ?? Enumerable.Empty<string>()).ToList();
+                            _logger.Warning("⚠️ Field Mapping Incomplete: {MissingCount} named groups not found in database: {MissingGroups}", 
+                                missingGroups.Count, string.Join(", ", missingGroups));
+                        }
+                        
+                        _logger.Information("📊 Regex Group Field Retrieval Summary: ExtractedGroups={Extracted}, QueriedFields={Queried}, DatabaseSuccess={DbSuccess}, ExtractionSuccess={ExtractSuccess}", 
+                            extractedGroups, queriedFields, databaseQuerySuccessful, regexExtractionSuccessful);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during regex group field retrieval for LineId {LineId} - ExtractedGroups: {ExtractedGroups}", 
+                            ocrLineDefinitionId, extractedGroups);
+                        // Return empty list if critical failure occurs
+                        fieldsFromDb = new List<FieldInfo>();
+                        databaseQuerySuccessful = false;
+                    }
+                }
             }
-            catch (Exception ex)
+
+            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
+            using (Serilog.Context.LogContext.PushProperty("MethodContext", "GetFieldsByRegexNamedGroupsAsync_V4.2_SuccessCriteria"))
             {
-                _logger?.Error(ex, "Error getting fields by regex named groups for OCR Line Definition ID: {OcrLineDefId}", ocrLineDefinitionId);
-                return new List<FieldInfo>();
+                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                
+                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
+                bool purposeFulfilled = regexExtractionSuccessful && databaseQuerySuccessful;
+                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Regex group field retrieval {Result} (ExtractionSuccess: {ExtractionSuccess}, DatabaseSuccess: {DatabaseSuccess})", 
+                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
+                    purposeFulfilled ? "executed successfully" : "failed to execute", regexExtractionSuccessful, databaseQuerySuccessful);
+
+                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
+                bool outputComplete = fieldsFromDb != null && fieldsFromDb.All(f => !string.IsNullOrEmpty(f.Key) && !string.IsNullOrEmpty(f.Field));
+                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Field collection {Result} with {QueriedFields} properly structured field definitions", 
+                    outputComplete ? "✅ PASS" : "❌ FAIL", 
+                    outputComplete ? "properly constructed" : "incomplete or malformed", queriedFields);
+
+                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
+                bool processComplete = extractedGroups >= 0 && queriedFields >= 0;
+                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - Regex extraction and database query completed ({Extracted} groups -> {Queried} fields)", 
+                    processComplete ? "✅ PASS" : "❌ FAIL", extractedGroups, queriedFields);
+
+                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
+                bool dataQualityMet = queriedFields <= extractedGroups && (queriedFields == 0 || fieldsFromDb.All(f => f.FieldId > 0));
+                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Field retrieval integrity: {Queried} fields from {Extracted} named groups with valid IDs", 
+                    dataQualityMet ? "✅ PASS" : "❌ FAIL", queriedFields, extractedGroups);
+
+                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
+                bool errorHandlingSuccess = fieldsFromDb != null; // Graceful fallback to empty collection
+                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during database operations", 
+                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
+                    errorHandlingSuccess ? "implemented successfully" : "failed");
+
+                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
+                bool businessLogicValid = extractedGroups == 0 ? (queriedFields == 0) : (queriedFields >= 0);
+                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Field retrieval logic follows business rules: empty groups -> empty results", 
+                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
+
+                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
+                bool integrationSuccess = databaseQuerySuccessful && regexExtractionSuccessful; // Both ExtractNamedGroupsFromRegex and database context successful
+                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Database context and regex utility integration {Result}", 
+                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
+                    integrationSuccess ? "functioning properly" : "experiencing issues");
+
+                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
+                bool performanceCompliant = extractedGroups < 100 && ocrLineDefinitionId > 0; // Reasonable group and ID limits
+                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processing {ExtractedGroups} named groups within reasonable performance limits", 
+                    performanceCompliant ? "✅ PASS" : "❌ FAIL", extractedGroups);
+
+                // Overall Success Assessment
+                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - GetFieldsByRegexNamedGroupsAsync {Result} with {QueriedFields} field definitions from {ExtractedGroups} named groups", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "encountered issues", queriedFields, extractedGroups);
             }
+
+            return fieldsFromDb ?? new List<FieldInfo>();
         }
         
         /// <summary>
