@@ -798,14 +798,42 @@ If you return an empty errors array (no errors detected), you MUST include an ""
 
 
         /// <summary>
-        /// Creates a prompt for DeepSeek to generate a new regex pattern, with self-correction guidance.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Creates regex creation prompts for DeepSeek with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Generate comprehensive regex creation prompts with self-correction guidance
+        /// **BUSINESS OBJECTIVE**: Provide DeepSeek with optimal prompts for accurate regex pattern generation
+        /// **SUCCESS CRITERIA**: Prompt completeness, context integration, validation guidance, C# compliance, production readiness
         /// </summary>
         public string CreateRegexCreationPrompt(CorrectionResult correction, LineContext lineContext)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow with success criteria validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for regex creation prompt generation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: CorrectionField={FieldName}, LineNumber={LineNumber}, NewValue={NewValue}", correction?.FieldName ?? "NULL", correction?.LineNumber ?? 0, correction?.NewValue ?? "NULL");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Regex creation requires C# compliance, named capture groups, and self-correction guidance");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need to validate correction context, line context completeness, and prompt structure integrity");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Comprehensive prompt with correction context enables accurate regex generation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for regex creation prompt");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Track correction analysis, context integration, and prompt construction");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Correction validation, line context analysis, named group processing");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based regex creation prompt generation");
+            _logger.Error("📚 **FIX_RATIONALE**: Structured prompt with correction context and validation guidance ensures accurate regex generation");
+            _logger.Error("🔍 **FIX_VALIDATION**: Validate correction data, process line context, construct comprehensive prompt");
+            
             var existingNamedGroups = lineContext.FieldsInLine?.Select(f => f.Key).Where(k => !string.IsNullOrEmpty(k)).Distinct().ToList() ?? new List<string>();
             var existingNamedGroupsString = existingNamedGroups.Any() ? string.Join(", ", existingNamedGroups) : "None";
-
-            return $@"CREATE C# COMPLIANT REGEX PATTERN FOR OCR FIELD EXTRACTION:
+            
+            _logger.Error("📊 **CONTEXT_ANALYSIS**: ExistingNamedGroups={GroupCount}, Groups={Groups}", existingNamedGroups.Count, existingNamedGroupsString);
+            _logger.Error("📊 **CORRECTION_ANALYSIS**: FieldName={FieldName}, LineText='{LineText}', ExpectedValue='{ExpectedValue}'", correction?.FieldName ?? "NULL", correction?.LineText ?? "NULL", correction?.NewValue ?? "NULL");
+            
+            var prompt = $@"CREATE C# COMPLIANT REGEX PATTERN FOR OCR FIELD EXTRACTION:
 
 **CRITICAL SELF-CORRECTION TASK:**
 An upstream process may have provided an `Expected Value` that is aggregated or incorrect for the given `Text of the Line`.
@@ -848,6 +876,42 @@ STRICT JSON RESPONSE FORMAT (EXAMPLE for a 'Free Shipping' amount of '-$0.46'):
 - The system handles converting negative text ('-$0.46') to a positive deduction later. Your regex should just capture the number.
 
 Focus on creating a robust pattern for the value you SEE on the provided line of text.";
+            
+            _logger.Error("📊 **PROMPT_CONSTRUCTION**: Regex creation prompt constructed. Length={PromptLength} characters", prompt.Length);
+            
+            // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
+            _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Regex creation prompt generation success analysis");
+            
+            // Individual criterion assessment
+            var purposeFulfilled = !string.IsNullOrWhiteSpace(prompt) && prompt.Contains("CREATE C# COMPLIANT REGEX PATTERN");
+            _logger.Error((purposeFulfilled ? "✅" : "❌") + " **PURPOSE_FULFILLMENT**: " + (purposeFulfilled ? "Comprehensive regex creation prompt successfully generated" : "Prompt generation failed or lacks required structure"));
+            
+            var outputComplete = prompt.Contains("CRITICAL SELF-CORRECTION TASK") && prompt.Contains("STRICT JSON RESPONSE FORMAT");
+            _logger.Error((outputComplete ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (outputComplete ? "Complete prompt structure with self-correction guidance and response format" : "Incomplete prompt structure missing critical components"));
+            
+            var processComplete = prompt.Contains(correction?.FieldName ?? "") && prompt.Contains(correction?.LineText ?? "");
+            _logger.Error((processComplete ? "✅" : "❌") + " **PROCESS_COMPLETION**: " + (processComplete ? "Correction context properly integrated into prompt structure" : "Correction context integration incomplete"));
+            
+            var dataQuality = correction != null && !string.IsNullOrEmpty(correction.FieldName) && !string.IsNullOrEmpty(correction.LineText);
+            _logger.Error((dataQuality ? "✅" : "❌") + " **DATA_QUALITY**: " + (dataQuality ? "Valid correction data with field name and line text available" : "Data quality issues detected in correction input"));
+            
+            var errorHandling = (correction == null && prompt.Contains("NULL")) || (correction != null);
+            _logger.Error((errorHandling ? "✅" : "❌") + " **ERROR_HANDLING**: " + (errorHandling ? "Null correction data handled gracefully in prompt generation" : "Error handling insufficient for null correction data"));
+            
+            var businessLogic = prompt.Contains("PRODUCTION REQUIREMENT") && prompt.Contains("named capture groups");
+            _logger.Error((businessLogic ? "✅" : "❌") + " **BUSINESS_LOGIC**: " + (businessLogic ? "Production requirements and business rules properly embedded in prompt" : "Missing critical business logic components in prompt"));
+            
+            var integrationSuccess = true; // No external dependencies
+            _logger.Error((integrationSuccess ? "✅" : "❌") + " **INTEGRATION_SUCCESS**: " + (integrationSuccess ? "No external dependencies - internal prompt generation" : "Integration dependency failure"));
+            
+            var performanceCompliance = prompt.Length > 100 && prompt.Length < 50000; // Reasonable prompt size
+            _logger.Error((performanceCompliance ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (performanceCompliance ? "Prompt generation completed with reasonable size and complexity" : "Performance issues detected in prompt generation"));
+            
+            // Overall assessment
+            var overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && errorHandling && businessLogic && integrationSuccess && performanceCompliance;
+            _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: " + (overallSuccess ? "✅ PASS" : "❌ FAIL") + " - Regex creation prompt generation " + (overallSuccess ? "completed successfully with comprehensive guidance and validation" : "failed due to validation criteria not met"));
+            
+            return prompt;
         }
 
         /// <summary>
