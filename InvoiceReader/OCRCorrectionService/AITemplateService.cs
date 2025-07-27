@@ -33,6 +33,10 @@ namespace WaterNut.DataSpace
         
         // Field to store last DeepSeek explanation for diagnostic purposes
         private string _lastDeepSeekExplanation = string.Empty;
+        
+        // API keys from environment variables (same as OCRLlmClient)
+        private readonly string _deepSeekApiKey;
+        private readonly string _geminiApiKey;
 
         #region Constructor and Initialization
 
