@@ -125,7 +125,7 @@ namespace AutoBotUtilities.Tests
             var hasFailures = await TestPatternDetection(mixedPatterns, _mangoInvoiceText);
 
             // Assert
-            Assert.IsTrue(hasFailures, "Should detect that some patterns fail even when others work");
+            Assert.That(hasFailures, Is.True, "Should detect that some patterns fail even when others work");
             _logger.Information("✅ **TEST_RESULT**: Pattern failure detection working correctly");
         }
 
@@ -151,8 +151,8 @@ namespace AutoBotUtilities.Tests
                 invoice, _mangoInvoiceText, new Dictionary<string, OCRFieldMetadata>(), previouslyFailedPatterns, "deepseek");
 
             // Assert
-            Assert.IsNotNull(improvedPrompt, "Improved prompt should be generated");
-            Assert.IsTrue(improvedPrompt.Length > 0, "Improved prompt should have content");
+            Assert.That(improvedPrompt, Is.Not.Null, "Improved prompt should be generated");
+            Assert.That(improvedPrompt.Length, Is.GreaterThan(0), "Improved prompt should have content");
             _logger.Information("✅ **TEST_RESULT**: Automatic retry cycle working correctly");
         }
 
@@ -178,7 +178,7 @@ namespace AutoBotUtilities.Tests
                 usedPatterns, _mangoInvoiceText, failedExtractionResults, "deepseek", "header-detection", "MANGO");
 
             // Assert
-            Assert.IsFalse(improvementTriggered, "Post-execution analysis should handle failed extractions gracefully");
+            Assert.That(improvementTriggered, Is.False, "Post-execution analysis should handle failed extractions gracefully");
             _logger.Information("✅ **TEST_RESULT**: Post-execution analysis working correctly");
         }
 
@@ -214,7 +214,7 @@ namespace AutoBotUtilities.Tests
                     invoice, _mangoInvoiceText, metadata, failingPatterns, "deepseek");
 
                 // Assert
-                Assert.IsNotNull(improvedPrompt, "End-to-end improvement should generate a prompt");
+                Assert.That(improvedPrompt, Is.Not.Null, "End-to-end improvement should generate a prompt");
                 _logger.Information("✅ **TEST_RESULT**: End-to-end self-improvement completed successfully");
             }
             catch (Exception ex)
@@ -222,7 +222,7 @@ namespace AutoBotUtilities.Tests
                 _logger.Error(ex, "❌ **TEST_FAILED**: End-to-end test encountered exception");
                 
                 // Even if AI calls fail, the system should handle it gracefully
-                Assert.IsNotNull(ex, "Exception handling should be robust");
+                Assert.That(ex, Is.Not.Null, "Exception handling should be robust");
                 _logger.Information("✅ **TEST_RESULT**: System handled exceptions gracefully");
             }
         }
