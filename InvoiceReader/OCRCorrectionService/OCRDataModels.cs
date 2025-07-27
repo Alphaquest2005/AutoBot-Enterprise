@@ -88,6 +88,11 @@ namespace WaterNut.DataSpace
         // Multi-field extraction support
         public List<string> CapturedFields { get; set; } = new List<string>();
         public List<FieldCorrection> FieldCorrections { get; set; } = new List<FieldCorrection>();
+        
+        // Transformation chain support for grouped/linked errors
+        public string GroupId { get; set; }  // Links related errors together
+        public int SequenceOrder { get; set; } // Order within the group (1, 2, 3...)
+        public string TransformationInput { get; set; } // "ocr_text" or "previous_output" or specific field name
 
         public string Pattern
         {
