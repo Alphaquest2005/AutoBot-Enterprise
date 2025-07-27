@@ -100,7 +100,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldMappings" Width="1.5" PointX="3.75" PointY="150.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_Fields" Width="1.5" PointX="5.25" PointY="24.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldValue" Width="1.5" PointX="7.5" PointY="25.875" />
-        <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx" Width="1.5" PointX="6" PointY="21.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_TemplateIdentificatonRegEx" Width="1.5" PointX="6" PointY="21.625" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceRegEx" Width="1.5" PointX="6" PointY="18.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_Invoices" Width="1.5" PointX="1.5" PointY="9" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_Lines" Width="1.5" PointX="3" PointY="17.625" />
@@ -380,8 +380,8 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" />

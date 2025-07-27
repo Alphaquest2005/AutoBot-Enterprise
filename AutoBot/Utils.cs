@@ -63,7 +63,6 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = EntryDataDS.Business.Entities.EntryDataDetails;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using InventoryItemAlias = EntryDataDS.Business.Entities.InventoryItemAlias;
-using Invoices = OCR.Business.Entities.Invoices;
 using xBondAllocations = AllocationDS.Business.Entities.xBondAllocations;
 using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 

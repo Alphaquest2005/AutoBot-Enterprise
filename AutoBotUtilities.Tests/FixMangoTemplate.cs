@@ -22,7 +22,7 @@ namespace AutoBotUtilities.Tests
                 using (var context = new OCRContext())
                 {
                     // Find existing MANGO template
-                    var mangoTemplate = await context.Invoices
+                    var mangoTemplate = await context.Templates
                         .Where(i => i.Name == "MANGO" || i.Id == 1329)
                         .FirstOrDefaultAsync();
                     
@@ -41,7 +41,7 @@ namespace AutoBotUtilities.Tests
                         context.Fields.RemoveRange(fields);
                         context.Lines.RemoveRange(lines);
                         context.Parts.RemoveRange(parts);
-                        context.Invoices.Remove(mangoTemplate);
+                        context.Templates.Remove(mangoTemplate);
                         
                         await context.SaveChangesAsync();
                         

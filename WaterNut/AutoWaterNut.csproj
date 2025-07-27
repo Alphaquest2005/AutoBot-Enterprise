@@ -378,9 +378,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\ImportErrorsViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCRCorrectionLearningViewModel.cs" />
@@ -397,6 +394,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\TemplateIdentificatonRegExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\TemplateRegExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\TemplatesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\vw_OCRCorrectionAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs" />
@@ -568,9 +568,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\ImportErrorsTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRCorrectionLearningTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs" />
@@ -585,6 +582,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\TemplateIdentificatonRegExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\TemplateRegExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\TemplatesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\vw_OCRCorrectionAnalysisTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs" />
@@ -746,9 +746,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ImportErrorsVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRCorrectionLearningVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs" />
@@ -763,6 +760,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\TemplateIdentificatonRegExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\TemplateRegExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\TemplatesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\vw_OCRCorrectionAnalysisVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs" />

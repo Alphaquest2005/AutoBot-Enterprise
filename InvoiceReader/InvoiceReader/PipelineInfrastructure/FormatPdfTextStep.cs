@@ -41,7 +41,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 foreach (var template in context.MatchedTemplates)
                 {
-                    int templateId = template.OcrInvoices?.Id ?? 0;
+                    int templateId = template.OcrTemplates?.Id ?? 0;
                     LogTemplateDetails(context.Logger, templateId, filePath, context.PdfText.Length); // Pass logger
 
                     try

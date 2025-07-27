@@ -78,7 +78,7 @@ namespace WaterNut.DataSpace
 
         private dynamic GetValue(string field)
         {
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             _logger.Debug("Entering GetValue(string field) for Field: '{Field}', InvoiceId: {InvoiceId}", field,
                 invoiceId);
             try

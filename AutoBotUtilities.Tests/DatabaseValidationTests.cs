@@ -18,7 +18,7 @@ namespace AutoBotUtilities.Tests
         private Mock<DbSet<Fields>> _mockFields;
         private Mock<DbSet<Lines>> _mockLines;
         private Mock<DbSet<Parts>> _mockParts;
-        private Mock<DbSet<Invoices>> _mockInvoices;
+        private Mock<DbSet<Templates>> _mockInvoices;
         private Mock<DbSet<RegularExpressions>> _mockRegex;
         private ILogger _logger;
 
@@ -30,10 +30,10 @@ namespace AutoBotUtilities.Tests
             var fieldsData = new List<Fields>
             {
                 // Duplicate mapping for Gift Card
-                new Fields { Id = 1, LineId = 1, Key = "GiftCard", Field = "TotalOtherCost", EntityType = "Invoice", DataType = "Number", AppendValues = true, IsRequired = false, Lines = new Lines { Id = 1, Name = "Gift Card", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Invoices = new Invoices { Id = 5, Name = "Amazon" } } } },
-                new Fields { Id = 2, LineId = 1, Key = "GiftCard", Field = "TotalInsurance", EntityType = "ShipmentInvoice", DataType = "decimal", AppendValues = true, IsRequired = false, Lines = new Lines { Id = 1, Name = "Gift Card", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Invoices = new Invoices { Id = 5, Name = "Amazon" } } } },
+                new Fields { Id = 1, LineId = 1, Key = "GiftCard", Field = "TotalOtherCost", EntityType = "Invoice", DataType = "Number", AppendValues = true, IsRequired = false, Lines = new Lines { Id = 1, Name = "Gift Card", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Templates = new Templates { Id = 5, Name = "Amazon" } } } },
+                new Fields { Id = 2, LineId = 1, Key = "GiftCard", Field = "TotalInsurance", EntityType = "ShipmentInvoice", DataType = "decimal", AppendValues = true, IsRequired = false, Lines = new Lines { Id = 1, Name = "Gift Card", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Templates = new Templates { Id = 5, Name = "Amazon" } } } },
                 // Valid mapping
-                new Fields { Id = 3, LineId = 2, Key = "SubTotal", Field = "SubTotal", EntityType = "Invoice", DataType = "decimal", AppendValues = false, IsRequired = true, Lines = new Lines { Id = 2, Name = "SubTotal Line", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Invoices = new Invoices { Id = 5, Name = "Amazon" } } } }
+                new Fields { Id = 3, LineId = 2, Key = "SubTotal", Field = "SubTotal", EntityType = "Invoice", DataType = "decimal", AppendValues = false, IsRequired = true, Lines = new Lines { Id = 2, Name = "SubTotal Line", PartId = 1, Parts = new Parts { Id = 1, TemplateId = 5, Templates = new Templates { Id = 5, Name = "Amazon" } } } }
             }.AsQueryable();
 
             _mockFields = new Mock<DbSet<Fields>>();

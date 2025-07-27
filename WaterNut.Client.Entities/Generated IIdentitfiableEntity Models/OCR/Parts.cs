@@ -28,34 +28,34 @@ namespace OCR.Client.Entities
                 this.Id = Convert.ToInt32(value);
             }
         }
-        public string InvoicesEntityName
+        public string TemplatesEntityName
         {
             get
             {
-                return this.Invoices == null ? "" : this.Invoices.EntityName;
+                return this.Templates == null ? "" : this.Templates.EntityName;
             }
             set
             {
                                 if (string.IsNullOrEmpty(value)) return;
                 string[] vals = value.Split(',');
                
-                    using (InvoicesClient ctx = new InvoicesClient())
+                    using (TemplatesClient ctx = new TemplatesClient())
                     {
-                        var dto = ctx.GetInvoices().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        var dto = ctx.GetTemplates().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
                         
 
                         if ( dto == null)
                         {
-                            this.Invoices = (Invoices)new Invoices().CreateEntityFromString(value);
+                            this.Templates = (Templates)new Templates().CreateEntityFromString(value);
 							
-							this.Id = Convert.ToInt32(this.Invoices.Id);
+							this.Id = Convert.ToInt32(this.Templates.Id);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddInvoices");
+                           NotifyPropertyChanged("AddTemplates");
                         }
                         else
                         {
-                            var obj = new Invoices(dto);
-                           if (this.Invoices == null || this.Invoices.EntityId != obj.EntityId) this.Invoices = obj;
+                            var obj = new Templates(dto);
+                           if (this.Templates == null || this.Templates.EntityId != obj.EntityId) this.Templates = obj;
                            
                         }
                          

@@ -14,7 +14,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
     {
         var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
         // Template null check happens in caller's Where clause
-        int invoiceId = template.OcrInvoices?.Id ?? -1; // Handle null OcrInvoices defensively
+        int invoiceId = template.OcrTemplates?.Id ?? -1; // Handle null OcrInvoices defensively
         logger?.Debug("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
             nameof(IsInvoiceDocument), "Check if document matches a specific invoice template", $"InvoiceId: {invoiceId}, FilePath: {filePath}");
 
@@ -23,8 +23,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
         try
         {
-            // Check if InvoiceIdentificatonRegEx collection exists and has items
-            if (template.OcrInvoices?.InvoiceIdentificatonRegEx == null || !template.OcrInvoices.InvoiceIdentificatonRegEx.Any())
+            // Check if TemplateIdentificatonRegEx collection exists and has items
+            if (template.OcrTemplates?.TemplateIdentificatonRegEx == null || !template.OcrTemplates.TemplateIdentificatonRegEx.Any())
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Cannot determine if it's an invoice document based on regex.",
                     nameof(IsInvoiceDocument), "Validation", "No Template Identification Regex patterns found.", $"InvoiceId: {invoiceId}");
@@ -39,7 +39,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
             bool isMatch = false;
             // Iterate through regex patterns, ensuring inner objects aren't null
-            foreach (var regexInfo in template.OcrInvoices.InvoiceIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
+            foreach (var regexInfo in template.OcrTemplates.TemplateIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
             {
                 string pattern = regexInfo.OCR_RegularExpressions.RegEx;
                 int regexId = regexInfo.OCR_RegularExpressions.Id;

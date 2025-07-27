@@ -92,7 +92,7 @@
             </Grid>
 
         </DataTemplate>
-        <DataTemplate  DataType="{x:Type QSOCREntities:Invoices}">
+        <DataTemplate  DataType="{x:Type QSOCREntities:Templates}">
             
                     <Grid d:DesignWidth="561.4" d:DesignHeight="40.6" Width="561"  Background="#00000000">
                         <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Template Regex"/>

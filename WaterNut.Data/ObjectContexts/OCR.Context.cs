@@ -49,7 +49,7 @@ namespace OCR.Business.Entities
 
         public DbSet<End> End { get; set; }
      
-        public DbSet<Invoices> Invoices { get; set; }
+        public DbSet<Templates> Templates { get; set; }
      
         public DbSet<Parts> Parts { get; set; }
      
@@ -67,11 +67,11 @@ namespace OCR.Business.Entities
      
         public DbSet<OCR_FieldValue> OCR_FieldValue { get; set; }
      
-        public DbSet<InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+        public DbSet<TemplateRegEx> OCR_InvoiceRegEx { get; set; }
      
         public DbSet<FieldFormatRegEx> OCR_FieldFormatRegEx { get; set; }
      
-        public DbSet<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
+        public DbSet<TemplateIdentificatonRegEx> TemplatesIdentificatonRegEx { get; set; }
      
         public DbSet<ImportErrors> ImportErrors { get; set; }
      
@@ -99,7 +99,7 @@ namespace OCR.Business.Entities
         {
             modelBuilder.Configurations.Add(new EndMap());
          
-            modelBuilder.Configurations.Add(new InvoicesMap());
+            modelBuilder.Configurations.Add(new TemplatesMap());
          
             modelBuilder.Configurations.Add(new PartsMap());
          
@@ -117,11 +117,11 @@ namespace OCR.Business.Entities
          
             modelBuilder.Configurations.Add(new OCR_FieldValueMap());
          
-            modelBuilder.Configurations.Add(new InvoiceRegExMap());
+            modelBuilder.Configurations.Add(new TemplateRegExMap());
          
             modelBuilder.Configurations.Add(new FieldFormatRegExMap());
          
-            modelBuilder.Configurations.Add(new InvoiceIdentificatonRegExMap());
+            modelBuilder.Configurations.Add(new TemplateIdentificatonRegExMap());
          
             modelBuilder.Configurations.Add(new ImportErrorsMap());
          

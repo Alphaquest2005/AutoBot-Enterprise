@@ -66,14 +66,14 @@ namespace AutoBotUtilities.Tests
             if (template != null)
             {
                 _logger.Information("✅ **VERIFICATION_SUCCESS**: Template created successfully");
-                _logger.Information("   - Template ID: {TemplateId}", template.OcrInvoices?.Id);
-                _logger.Information("   - Template Name: {TemplateName}", template.OcrInvoices?.Name);
+                _logger.Information("   - Template ID: {TemplateId}", template.OcrTemplates?.Id);
+                _logger.Information("   - Template Name: {TemplateName}", template.OcrTemplates?.Name);
                 _logger.Information("   - Parts Count: {PartsCount}", template.Parts?.Count ?? 0);
                 _logger.Information("   - Lines Count: {LinesCount}", template.Lines?.Count ?? 0);
                 _logger.Information("   - FileType: {FileType}", template.FileType?.FileImporterInfos?.EntryType);
 
                 // Verify minimum expected entities were created
-                Assert.That(template.OcrInvoices?.Id, Is.Not.Null, "Template should have been created with an ID");
+                Assert.That(template.OcrTemplates?.Id, Is.Not.Null, "Template should have been created with an ID");
                 Assert.That(template.Parts?.Count ?? 0, Is.GreaterThan(0), "At least one part should have been created");
                 Assert.That(template.Lines?.Count ?? 0, Is.GreaterThan(0), "At least one line should have been created");
 
@@ -124,7 +124,7 @@ namespace AutoBotUtilities.Tests
             // 5. Handle the result (production error handling)
             if (template != null)
             {
-                _logger.Information("🎯 **PRODUCTION_SUCCESS**: Template '{TemplateName}' created for future invoice processing", template.OcrInvoices?.Name);
+                _logger.Information("🎯 **PRODUCTION_SUCCESS**: Template '{TemplateName}' created for future invoice processing", template.OcrTemplates?.Name);
                 
                 // In production, you might:
                 // - Log the template creation for audit
@@ -132,7 +132,7 @@ namespace AutoBotUtilities.Tests
                 // - Notify administrators of the new supplier
                 // - Re-process the original invoice with the new template
                 
-                Assert.Pass($"Template created successfully: ID={template.OcrInvoices?.Id}, Name={template.OcrInvoices?.Name}");
+                Assert.Pass($"Template created successfully: ID={template.OcrTemplates?.Id}, Name={template.OcrTemplates?.Name}");
             }
             else
             {

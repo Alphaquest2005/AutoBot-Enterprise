@@ -50,8 +50,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
 
@@ -142,7 +142,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Added check for template null
             if (template == null || template.CsvLines == null || !template.CsvLines.Any() || !(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
                  // Use FilePath as the identifier
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(AddRequiredFieldValuesToDocuments), "Validation", "CsvLines is null, empty, or not in the expected format.", $"TemplateId:{templateId}, File: {template?.FilePath ?? "Unknown"}", "Expected List<IDictionary<string, object>> format.");

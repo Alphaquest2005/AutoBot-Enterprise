@@ -137,3 +137,21 @@ i notice there is comments before and after this response... is the parsing taki
         "UnitPrice": "18.99",
         "ItemCode": "570502122243"
       }"  i also noticed the correct value like this is the code capable of handling multiple values form the correct_value property... like this...
+
+    "DetectHeaderFieldErrorsAndOmissionsAsync" ensure this method is serializing outputs and input variables
+
+    change invoice => template in the database too
+
+
+    "            private void WatcherOnCreatedAsync(object sender, FileSystemEventArgs fileSystemEventArgs)
+            {
+                if (fileSystemEventArgs.Name.EndsWith(".csv"))
+                {
+                    var fileType = fileSystemEventArgs.Name.Substring(0, fileSystemEventArgs.Name.IndexOf("-"));
+                    var docSet = AsycudaDocumentSetExRepository.Instance
+                        .GetAsycudaDocumentSetExsByExpression(
+                            $"Declarant_Reference_Number == \"{_fileTypeDocumentSets["fileType"]}\"").Result.First();
+                    var t = EntryDataExRepository.Instance.SaveCSV(fileSystemEventArgs.FullPath, fileType,
+                        docSet.AsycudaDocumentSetId, true, _logger);
+                }
+            }" reanalyse this code and make the fix using business.services

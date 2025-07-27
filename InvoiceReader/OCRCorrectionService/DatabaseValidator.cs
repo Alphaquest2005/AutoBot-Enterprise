@@ -175,7 +175,7 @@ namespace InvoiceReader.OCRCorrectionService
             try
             {
                 var duplicates = new List<DuplicateFieldMapping>();
-                var baseQuery = _context.Fields.Include(f => f.Lines.Parts.Invoices).Where(f => f.Lines != null && f.Field != null);
+                var baseQuery = _context.Fields.Include(f => f.Lines.Parts.Templates).Where(f => f.Lines != null && f.Field != null);
                 if (invoiceId.HasValue) { baseQuery = baseQuery.Where(f => f.Lines.Parts.TemplateId == invoiceId.Value); }
                 var allFields = baseQuery.AsNoTracking().ToList();
                 var keyDuplicateGroups = allFields.Where(f => f.Key != null).GroupBy(f => new { f.LineId, f.Key }).Where(g => g.Select(f => f.Field).Distinct().Count() > 1).ToList();
@@ -189,7 +189,7 @@ namespace InvoiceReader.OCRCorrectionService
                         Key = group.Key.Key,
                         ConflictType = "Key-based Duplicate",
                         LineName = firstField.Lines?.Name ?? "Unknown",
-                        InvoiceName = firstField.Lines?.Parts?.Invoices?.Name ?? "Unknown",
+                        InvoiceName = firstField.Lines?.Parts?.Templates?.Name ?? "Unknown",
                         DuplicateFields = fieldsInGroup.Select(f => new FieldMappingInfo
                         {
                             FieldId = f.Id,
@@ -213,7 +213,7 @@ namespace InvoiceReader.OCRCorrectionService
                         Key = "(Multiple Keys)",
                         ConflictType = "LineId Conflict",
                         LineName = firstField.Lines?.Name ?? "Unknown",
-                        InvoiceName = firstField.Lines?.Parts?.Invoices?.Name ?? "Unknown",
+                        InvoiceName = firstField.Lines?.Parts?.Templates?.Name ?? "Unknown",
                         DuplicateFields = fieldsInGroup.Select(f => new FieldMappingInfo
                         {
                             FieldId = f.Id,

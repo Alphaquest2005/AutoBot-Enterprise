@@ -17,7 +17,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         public static void CreateTestCase(string file, List<Line> failedlst, string txtFile, string body)
         {
             // Extract context info safely for logging
-            string firstInvoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Invoices?.Name ?? "UnknownInvoice";
+            string firstInvoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Templates?.Name ?? "UnknownInvoice";
             _utilsLogger.Debug("CreateTestCase called for File: {FilePath}, InvoiceName: {InvoiceName}", file, firstInvoiceName);
 
             try
@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             try // Wrap potentially failing calls to get context
             {
-                 invoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Invoices?.Name ?? invoiceName;
+                 invoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Templates?.Name ?? invoiceName;
                  callingClass = FunctionLibary.NameOfCallingClass() ?? callingClass;
                  // Added null checks for BaseDataModel path
                  dataFolder = BaseDataModel.Instance?.CurrentApplicationSettings?.DataFolder ?? dataFolder;
@@ -83,8 +83,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         private static dynamic CreateTestCaseData(string file, List<Line> failedlst, string txtFile, string body)
         {
              // Extract context info safely for logging
-             string firstInvoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Invoices?.Name ?? "UnknownInvoice";
-             int? firstInvoiceId = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Invoices?.Id; // Nullable int
+             string firstInvoiceName = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Templates?.Name ?? "UnknownInvoice";
+             int? firstInvoiceId = failedlst?.FirstOrDefault()?.OCR_Lines?.Parts?.Templates?.Id; // Nullable int
 
              _utilsLogger.Debug("Creating test case data object for File: {FilePath}, InvoiceName: {InvoiceName}", file, firstInvoiceName);
 

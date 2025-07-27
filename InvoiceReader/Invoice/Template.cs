@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 ﻿using Core.Common.Extensions;
 using EntryDataDS.Business.Entities;
-using Invoices = OCR.Business.Entities.Invoices;
+
 using MoreEnumerable = MoreLinq.MoreEnumerable;
 using OCR.Business.Entities; // Added for Part, Line
 using System.Collections.Generic; // Added
@@ -20,7 +20,7 @@ namespace WaterNut.DataSpace
         private readonly ILogger _logger;
 
         private EntryData EntryData { get; } = new EntryData(); // Simple initialization, no logging needed
-        public Invoices OcrInvoices { get; }
+        public Templates OcrTemplates { get; }
         public List<Part> Parts { get; set; } // Set in constructor
 
         public List<AsycudaDocumentSet> DocSet { get; set; }
@@ -88,7 +88,7 @@ namespace WaterNut.DataSpace
         {
             get
             {
-                 int? invoiceId = this.OcrInvoices?.Id;
+                 int? invoiceId = this.OcrTemplates?.Id;
                  _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Evaluating Template Success for InvoiceId: {InvoiceId}", nameof(Template), "PropertyGet", invoiceId);
                  // Added null check for Parts collection itself and individual parts
                  bool success = this.Parts?.All(x => x != null && x.Success) ?? true; // Default to true if Parts is null? Or false? Assuming true.
@@ -101,7 +101,7 @@ namespace WaterNut.DataSpace
              get
              {
                   var propertyStopwatch = Stopwatch.StartNew();
-                  int? invoiceId = this.OcrInvoices?.Id;
+                  int? invoiceId = this.OcrTemplates?.Id;
                   _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Evaluating Template Lines property for InvoiceId: {InvoiceId}", nameof(Template), "PropertyGet", invoiceId);
                   List<Line> lines = null;
                   try
@@ -131,32 +131,32 @@ namespace WaterNut.DataSpace
         }
 
 
-        public Template(Invoices ocrInvoices, ILogger logger)
+        public Template(Templates ocrTemplates, ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             var methodStopwatch = Stopwatch.StartNew();
-            int? invoiceId = ocrInvoices?.Id;
+            int? invoiceId = ocrTemplates?.Id;
             _logger.Debug("ACTION_START: {ActionName}. Context: [OcrInvoicesId: {InvoiceId}]",
                 nameof(Template), invoiceId);
 
              // Null check input
-             if (ocrInvoices == null)
+             if (ocrTemplates == null)
              {
                   methodStopwatch.Stop();
                   _logger.Error("ACTION_END_FAILURE: {ActionName}. Total observed duration: {TotalObservedDurationMs}ms. Reason: Null OcrInvoices object.",
                       nameof(Template), methodStopwatch.ElapsedMilliseconds);
-                  throw new ArgumentNullException(nameof(ocrInvoices), "OcrInvoices object cannot be null.");
+                  throw new ArgumentNullException(nameof(ocrTemplates), "OcrInvoices object cannot be null.");
              }
 
-            OcrInvoices = ocrInvoices;
+            this.OcrTemplates = ocrTemplates;
              _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Assigned OcrInvoices (Id: {InvoiceId}) to Template property.", nameof(Template), "Assignment", invoiceId);
 
             // Initialize Parts collection safely
             try
             {
                  _logger.Debug("INTERNAL_STEP ({OperationName} - {Stage}): Filtering and selecting Parts for InvoiceId: {InvoiceId}", nameof(Template), "PartsInitialization", invoiceId);
-                 if (ocrInvoices.Parts == null)
+                 if (ocrTemplates.Parts == null)
                  {
                       _logger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): OcrInvoices Id: {InvoiceId} has a null Parts collection. Template will have no parts.", nameof(Template), "PartsInitialization", invoiceId);
                       this.Parts = new List<Part>(); // Initialize to empty list
@@ -165,7 +165,7 @@ namespace WaterNut.DataSpace
                  {
                      _logger.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): Filtering criteria: Part is not null AND ((Has ParentParts AND No ChildParts) OR (No ParentParts AND No ChildParts))", nameof(Template), "PartsInitialization");
                      // Added null checks within LINQ for safety
-                     this.Parts = ocrInvoices.Parts
+                     this.Parts = ocrTemplates.Parts
                          //.Where(x => x != null && // Check part is not null
                          //            ( (x.ParentParts != null && x.ParentParts.Any() && (x.ChildParts == null || !x.ChildParts.Any())) || // Condition 1 (safe checks)
                          //              ((x.ParentParts == null || !x.ParentParts.Any()) && (x.ChildParts == null || !x.ChildParts.Any())) ) // Condition 2 (safe checks)
@@ -230,7 +230,7 @@ namespace WaterNut.DataSpace
         public void ClearInvoiceForReimport()
         {
             var methodStopwatch = Stopwatch.StartNew();
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             string methodName = nameof(ClearInvoiceForReimport);
 
             _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}]", methodName, invoiceId);

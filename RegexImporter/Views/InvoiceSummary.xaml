@@ -91,7 +91,7 @@
 
 
         </DataTemplate>
-        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:Invoices}">
+        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:Templates}">
             <Expander Expanded="Invoice_Expanded" Collapsed="Invoice_Collapsed" >
                 <Expander.Header>
                     <Grid d:DesignWidth="561.4" d:DesignHeight="40.6" Width="561"  Background="#00000000">

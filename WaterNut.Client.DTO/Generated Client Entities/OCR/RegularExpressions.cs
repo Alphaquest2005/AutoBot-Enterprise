@@ -153,30 +153,30 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Start> _Start = new ChangeTrackingCollection<Start>();
 
         [DataMember]
-        public ChangeTrackingCollection<InvoiceRegEx> InvoiceRegEx
+        public ChangeTrackingCollection<TemplateRegEx> TemplateRegEx
 		{
-		    get { return _InvoiceRegEx; }
+		    get { return _TemplateRegEx; }
 			set
 			{
-			    if (Equals(value, _InvoiceRegEx)) return;
-				_InvoiceRegEx = value;
-				NotifyPropertyChanged();//m => this.InvoiceRegEx
+			    if (Equals(value, _TemplateRegEx)) return;
+				_TemplateRegEx = value;
+				NotifyPropertyChanged();//m => this.TemplateRegEx
 			}
 		}
-        private ChangeTrackingCollection<InvoiceRegEx> _InvoiceRegEx = new ChangeTrackingCollection<InvoiceRegEx>();
+        private ChangeTrackingCollection<TemplateRegEx> _TemplateRegEx = new ChangeTrackingCollection<TemplateRegEx>();
 
         [DataMember]
-        public ChangeTrackingCollection<InvoiceRegEx> InvoiceRepRegEx
+        public ChangeTrackingCollection<TemplateRegEx> TemplateRepRegEx
 		{
-		    get { return _InvoiceRepRegEx; }
+		    get { return _TemplateRepRegEx; }
 			set
 			{
-			    if (Equals(value, _InvoiceRepRegEx)) return;
-				_InvoiceRepRegEx = value;
-				NotifyPropertyChanged();//m => this.InvoiceRepRegEx
+			    if (Equals(value, _TemplateRepRegEx)) return;
+				_TemplateRepRegEx = value;
+				NotifyPropertyChanged();//m => this.TemplateRepRegEx
 			}
 		}
-        private ChangeTrackingCollection<InvoiceRegEx> _InvoiceRepRegEx = new ChangeTrackingCollection<InvoiceRegEx>();
+        private ChangeTrackingCollection<TemplateRegEx> _TemplateRepRegEx = new ChangeTrackingCollection<TemplateRegEx>();
 
         [DataMember]
         public ChangeTrackingCollection<FieldFormatRegEx> FieldFormatRegEx
@@ -205,17 +205,17 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<FieldFormatRegEx> _FieldFormatRepRegEx = new ChangeTrackingCollection<FieldFormatRegEx>();
 
         [DataMember]
-        public ChangeTrackingCollection<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx
+        public ChangeTrackingCollection<TemplateIdentificatonRegEx> TemplateIdentificatonRegEx
 		{
-		    get { return _InvoiceIdentificatonRegEx; }
+		    get { return _TemplateIdentificatonRegEx; }
 			set
 			{
-			    if (Equals(value, _InvoiceIdentificatonRegEx)) return;
-				_InvoiceIdentificatonRegEx = value;
-				NotifyPropertyChanged();//m => this.InvoiceIdentificatonRegEx
+			    if (Equals(value, _TemplateIdentificatonRegEx)) return;
+				_TemplateIdentificatonRegEx = value;
+				NotifyPropertyChanged();//m => this.TemplateIdentificatonRegEx
 			}
 		}
-        private ChangeTrackingCollection<InvoiceIdentificatonRegEx> _InvoiceIdentificatonRegEx = new ChangeTrackingCollection<InvoiceIdentificatonRegEx>();
+        private ChangeTrackingCollection<TemplateIdentificatonRegEx> _TemplateIdentificatonRegEx = new ChangeTrackingCollection<TemplateIdentificatonRegEx>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

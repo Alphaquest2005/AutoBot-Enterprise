@@ -86,7 +86,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                             ", ",
                             context.MatchedTemplates?.Select(
                                 t =>
-                                    $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL_ENTRYTYPE"})")
+                                    $"{t.OcrTemplates?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL_ENTRYTYPE"})")
                             ?? new string[0]));
 
                     // **VERIFICATION_LOGGING**: Add detailed logging to verify FileType and EntryType mappings
@@ -96,8 +96,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     {
                         context.Logger?.Information(
                             "   - **TEMPLATE_DETAIL**: '{TemplateName}' (ID: {TemplateId})",
-                            template.OcrInvoices?.Name ?? "NULL",
-                            template.OcrInvoices?.Id ?? 0);
+                            template.OcrTemplates?.Name ?? "NULL",
+                            template.OcrTemplates?.Id ?? 0);
                         context.Logger?.Information(
                             "     └── **FILETYPE_ID**: {FileTypeId}",
                             template.FileType?.Id ?? 0);
@@ -201,7 +201,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                             string.Join(
                                 ", ",
                                 context.MatchedTemplates?.Select(
-                                    t => $"{t.OcrInvoices?.Name}({t.FileType?.FileImporterInfos?.EntryType})")
+                                    t => $"{t.OcrTemplates?.Name}({t.FileType?.FileImporterInfos?.EntryType})")
                                 ?? new string[0]));
 
                         var containsInvoiceKeywords = ContainsInvoiceKeywords(pdfTextString, context.Logger);
@@ -275,10 +275,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                             "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice template successfully");
                                         context.Logger?.Information(
                                             "   - **RETURNED_TEMPLATE_NAME**: '{TemplateName}'",
-                                            ocrTemplate.OcrInvoices?.Name ?? "NULL");
+                                            ocrTemplate.OcrTemplates?.Name ?? "NULL");
                                         context.Logger?.Information(
                                             "   - **RETURNED_TEMPLATE_ID**: {TemplateId}",
-                                            ocrTemplate.OcrInvoices?.Id.ToString() ?? "NULL");
+                                            ocrTemplate.OcrTemplates?.Id.ToString() ?? "NULL");
                                         context.Logger?.Information(
                                             "   - **RETURNED_FILE_TYPE**: {FileType}",
                                             ocrTemplate.FileType?.FileImporterInfos?.EntryType ?? "NULL");
@@ -337,13 +337,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                                 ", ",
                                                 context.MatchedTemplates.Select(
                                                     t =>
-                                                        $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL"})")));
+                                                        $"{t.OcrTemplates?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL"})")));
 
                                         context.Logger?.Information(
                                             "🎯 **TEMPLATE_CREATION_SUCCESS_SUMMARY**: OCR template creation and integration completed successfully");
                                         context.Logger?.Information(
                                             "   - **NEW_TEMPLATE_NAME**: '{Name}'",
-                                            ocrTemplate.OcrInvoices?.Name);
+                                            ocrTemplate.OcrTemplates?.Name);
                                         context.Logger?.Information(
                                             "   - **NEW_TEMPLATE_TYPE**: '{Type}'",
                                             ocrTemplate.FileType?.FileImporterInfos?.EntryType);
@@ -406,7 +406,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     .Where(
                                         t => t.FileType?.FileImporterInfos?.EntryType
                                              == FileTypeManager.EntryTypes.ShipmentInvoice)
-                                    .Select(t => t.OcrInvoices?.Name)));
+                                    .Select(t => t.OcrTemplates?.Name)));
                         context.Logger?.Information(
                             "   - **REASON**: No template creation needed - ShipmentInvoice already present");
                     }
@@ -513,8 +513,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(GetPossibleInvoices), "Filtering", "Ordering templates and filtering based on PDF text match.", $"FilePath: {filePath}");
 
             var possibleInvoices = context.Templates
-                .OrderBy(x => !(x?.OcrInvoices?.Name?.ToUpperInvariant().Contains("TROPICAL") ?? false))
-                .ThenBy(x => x?.OcrInvoices?.Id ?? int.MaxValue)
+                .OrderBy(x => !(x?.OcrTemplates?.Name?.ToUpperInvariant().Contains("TROPICAL") ?? false))
+                .ThenBy(x => x?.OcrTemplates?.Id ?? int.MaxValue)
                 .Where(tmp =>
                 {
                     if (tmp == null)
@@ -524,27 +524,27 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         return false;
                     }
 
-                    if (tmp.OcrInvoices == null)
+                    if (tmp.OcrTemplates == null)
                     {
                         context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.OcrInvoices.Id}");
+                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.OcrTemplates.Id}");
                         return false;
                     }
 
                     context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                        nameof(GetPossibleInvoices), "Filtering", "Checking template match.", $"TemplateId: {tmp.OcrInvoices.Id}, TemplateName: {tmp.OcrInvoices.Name}");
+                        nameof(GetPossibleInvoices), "Filtering", "Checking template match.", $"TemplateId: {tmp.OcrTemplates.Id}, TemplateName: {tmp.OcrTemplates.Name}");
 
                     // Call the partial method IsInvoiceDocument
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                        $"IsInvoiceDocument for Template {tmp.OcrInvoices.Id}", "SYNC_EXPECTED");
+                        $"IsInvoiceDocument for Template {tmp.OcrTemplates.Id}", "SYNC_EXPECTED");
                     var isMatchStopwatch = Stopwatch.StartNew();
                     bool isMatch = IsInvoiceDocument(tmp, pdfTextString, filePath, context.Logger);
                     isMatchStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                        $"IsInvoiceDocument for Template {tmp.OcrInvoices.Id}", isMatchStopwatch.ElapsedMilliseconds, "Sync call returned");
+                        $"IsInvoiceDocument for Template {tmp.OcrTemplates.Id}", isMatchStopwatch.ElapsedMilliseconds, "Sync call returned");
 
                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                        nameof(GetPossibleInvoices), "Filtering", "Template match result.", $"TemplateId: {tmp.OcrInvoices.Id}, IsMatch: {isMatch}");
+                        nameof(GetPossibleInvoices), "Filtering", "Template match result.", $"TemplateId: {tmp.OcrTemplates.Id}, IsMatch: {isMatch}");
                     return isMatch;
                 })
                 // .Select(x =>
@@ -568,7 +568,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(GetPossibleInvoices), "Filtering", "Finished filtering templates.", $"PossibleInvoiceCount: {possibleInvoices.Count}, FilePath: {filePath}");
 
             // need to get fresh templates
-            var lst = possibleInvoices.Select(x => x.OcrInvoices.Id).ToList();
+            var lst = possibleInvoices.Select(x => x.OcrTemplates.Id).ToList();
             if (!lst.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Expected at least one possible invoice.",
@@ -579,7 +579,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                 "GetTemplatesStep.GetTemplates (Refresh)", "ASYNC_EXPECTED");
             var getTemplatesStopwatch = Stopwatch.StartNew();
-            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.OcrInvoices.Id)).ConfigureAwait(false);
+            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.OcrTemplates.Id)).ConfigureAwait(false);
             getTemplatesStopwatch.Stop();
             context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                 "GetTemplatesStep.GetTemplates (Refresh)", getTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -597,7 +597,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             if (possibleInvoices.Any())
             {
-                var invoiceDetails = possibleInvoices.Select(inv => new { Name = inv.OcrInvoices?.Name, Id = inv.OcrInvoices?.Id }).ToList();
+                var invoiceDetails = possibleInvoices.Select(inv => new { Name = inv.OcrTemplates?.Name, Id = inv.OcrTemplates?.Id }).ToList();
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] {OptionalData}",
                     nameof(GetPossibleInvoicesStep), "Summary", "Details of possible invoices.", $"FilePath: {filePath}", new { InvoiceDetails = invoiceDetails });
             }

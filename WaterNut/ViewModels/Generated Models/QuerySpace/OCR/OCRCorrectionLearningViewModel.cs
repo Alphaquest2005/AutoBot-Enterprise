@@ -335,24 +335,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private string _invoiceTypeFilter;
-        public string InvoiceTypeFilter
-        {
-            get
-            {
-                return _invoiceTypeFilter;
-            }
-            set
-            {
-                _invoiceTypeFilter = value;
-				NotifyPropertyChanged(x => InvoiceTypeFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _filePathFilter;
         public string FilePathFilter
         {
@@ -564,6 +546,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private string _documentTypeFilter;
+        public string DocumentTypeFilter
+        {
+            get
+            {
+                return _documentTypeFilter;
+            }
+            set
+            {
+                _documentTypeFilter = value;
+				NotifyPropertyChanged(x => DocumentTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -628,10 +628,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 					if(ConfidenceFilter.HasValue)
 						res.Append(" && " + string.Format("Confidence == {0}",  ConfidenceFilter.ToString()));				 
 
-									if(string.IsNullOrEmpty(InvoiceTypeFilter) == false)
-						res.Append(" && " + string.Format("InvoiceType.Contains(\"{0}\")",  InvoiceTypeFilter));						
- 
-
 									if(string.IsNullOrEmpty(FilePathFilter) == false)
 						res.Append(" && " + string.Format("FilePath.Contains(\"{0}\")",  FilePathFilter));						
  
@@ -695,6 +691,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(SuggestedRegex_IndexedFilter) == false)
 						res.Append(" && " + string.Format("SuggestedRegex_Indexed.Contains(\"{0}\")",  SuggestedRegex_IndexedFilter));						
+ 
+
+									if(string.IsNullOrEmpty(DocumentTypeFilter) == false)
+						res.Append(" && " + string.Format("DocumentType.Contains(\"{0}\")",  DocumentTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -745,9 +745,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     Confidence = x.Confidence ,
                     
  
-                    InvoiceType = x.InvoiceType ,
-                    
- 
                     FilePath = x.FilePath ,
                     
  
@@ -775,7 +772,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     SuggestedRegex = x.SuggestedRegex ,
                     
  
-                    SuggestedRegex_Indexed = x.SuggestedRegex_Indexed 
+                    SuggestedRegex_Indexed = x.SuggestedRegex_Indexed ,
+                    
+ 
+                    DocumentType = x.DocumentType 
                     
                 }).ToList()
             };
@@ -815,9 +815,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     public Nullable<double> Confidence { get; set; } 
                     
  
-                    public string InvoiceType { get; set; } 
-                    
- 
                     public string FilePath { get; set; } 
                     
  
@@ -846,6 +843,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public string SuggestedRegex_Indexed { get; set; } 
+                    
+ 
+                    public string DocumentType { get; set; } 
                     
         }
 

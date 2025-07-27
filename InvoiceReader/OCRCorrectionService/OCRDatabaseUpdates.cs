@@ -316,7 +316,7 @@ namespace WaterNut.DataSpace
                                        CorrectionType = request.CorrectionType,
                                        DeepSeekReasoning = TruncateForLog(request.DeepSeekReasoning, 1000),
                                        Confidence = safeConfidence,
-                                       InvoiceType = request.InvoiceType,
+                                       DocumentType =  request.InvoiceType,
                                        FilePath = request.FilePath,
                                        Success = dbUpdateResult.IsSuccess,
                                        ErrorMessage = dbUpdateResult.IsSuccess ? null : TruncateForLog(dbUpdateResult.Message, 2000),

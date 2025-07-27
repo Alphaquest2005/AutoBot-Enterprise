@@ -77,7 +77,7 @@ namespace OCR.Business.Entities
         [DataMember]
         public List<End> End { get; set; }
         [DataMember]
-        public Invoices Invoices { get; set; }
+        public Templates Templates { get; set; }
         [DataMember]
         public PartTypes PartTypes { get; set; }
         [DataMember]

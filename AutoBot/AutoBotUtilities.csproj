@@ -218,14 +218,6 @@
       <Project>{02885f55-31e7-48fb-9944-df99540f3270}</Project>
       <Name>WaterNut.Business.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj">
-      <Project>{367497E0-90A4-47BF-B740-717D8769710C}</Project>
-      <Name>WaterNut.Client.Entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj">
-      <Project>{E16CFFE7-8F60-41A8-8895-7CB73FE09399}</Project>
-      <Name>WaterNut.Client.Repositories</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
       <Project>{92EB0CBF-4018-427B-AA8B-13B088650DB8}</Project>
       <Name>WaterNut.Data</Name>

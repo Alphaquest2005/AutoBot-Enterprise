@@ -40,24 +40,6 @@ namespace WaterNut.QuerySpace.OCR
 			public const string ImportErrorsDeleted = "ImportErrorsDeleted";
 			public const string ImportErrorsCreated = "ImportErrorsCreated";
 			public const string ImportErrorsUpdated = "ImportErrorsUpdated";
-			public const string InvoiceIdentificatonRegExFilterExpressionChanged = "InvoiceIdentificatonRegExFilterExpressionChanged";
-			public const string SelectedInvoiceIdentificatonRegExChanged = "SelectedInvoiceIdentificatonRegExChanged";
-            public const string InvoiceIdentificatonRegExChanged = "InvoiceIdentificatonRegExChanged";
-			public const string InvoiceIdentificatonRegExDeleted = "InvoiceIdentificatonRegExDeleted";
-			public const string InvoiceIdentificatonRegExCreated = "InvoiceIdentificatonRegExCreated";
-			public const string InvoiceIdentificatonRegExUpdated = "InvoiceIdentificatonRegExUpdated";
-			public const string OCR_InvoiceRegExFilterExpressionChanged = "OCR_InvoiceRegExFilterExpressionChanged";
-			public const string SelectedOCR_InvoiceRegExChanged = "SelectedOCR_InvoiceRegExChanged";
-            public const string OCR_InvoiceRegExChanged = "OCR_InvoiceRegExChanged";
-			public const string OCR_InvoiceRegExDeleted = "OCR_InvoiceRegExDeleted";
-			public const string OCR_InvoiceRegExCreated = "OCR_InvoiceRegExCreated";
-			public const string OCR_InvoiceRegExUpdated = "OCR_InvoiceRegExUpdated";
-			public const string InvoicesFilterExpressionChanged = "InvoicesFilterExpressionChanged";
-			public const string SelectedInvoicesChanged = "SelectedInvoicesChanged";
-            public const string InvoicesChanged = "InvoicesChanged";
-			public const string InvoicesDeleted = "InvoicesDeleted";
-			public const string InvoicesCreated = "InvoicesCreated";
-			public const string InvoicesUpdated = "InvoicesUpdated";
 			public const string LinesFilterExpressionChanged = "LinesFilterExpressionChanged";
 			public const string SelectedLinesChanged = "SelectedLinesChanged";
             public const string LinesChanged = "LinesChanged";
@@ -142,6 +124,24 @@ namespace WaterNut.QuerySpace.OCR
 			public const string StartDeleted = "StartDeleted";
 			public const string StartCreated = "StartCreated";
 			public const string StartUpdated = "StartUpdated";
+			public const string TemplatesIdentificatonRegExFilterExpressionChanged = "TemplatesIdentificatonRegExFilterExpressionChanged";
+			public const string SelectedTemplatesIdentificatonRegExChanged = "SelectedTemplatesIdentificatonRegExChanged";
+            public const string TemplatesIdentificatonRegExChanged = "TemplatesIdentificatonRegExChanged";
+			public const string TemplatesIdentificatonRegExDeleted = "TemplatesIdentificatonRegExDeleted";
+			public const string TemplatesIdentificatonRegExCreated = "TemplatesIdentificatonRegExCreated";
+			public const string TemplatesIdentificatonRegExUpdated = "TemplatesIdentificatonRegExUpdated";
+			public const string OCR_InvoiceRegExFilterExpressionChanged = "OCR_InvoiceRegExFilterExpressionChanged";
+			public const string SelectedOCR_InvoiceRegExChanged = "SelectedOCR_InvoiceRegExChanged";
+            public const string OCR_InvoiceRegExChanged = "OCR_InvoiceRegExChanged";
+			public const string OCR_InvoiceRegExDeleted = "OCR_InvoiceRegExDeleted";
+			public const string OCR_InvoiceRegExCreated = "OCR_InvoiceRegExCreated";
+			public const string OCR_InvoiceRegExUpdated = "OCR_InvoiceRegExUpdated";
+			public const string TemplatesFilterExpressionChanged = "TemplatesFilterExpressionChanged";
+			public const string SelectedTemplatesChanged = "SelectedTemplatesChanged";
+            public const string TemplatesChanged = "TemplatesChanged";
+			public const string TemplatesDeleted = "TemplatesDeleted";
+			public const string TemplatesCreated = "TemplatesCreated";
+			public const string TemplatesUpdated = "TemplatesUpdated";
 			public const string vw_OCRCorrectionAnalysisFilterExpressionChanged = "vw_OCRCorrectionAnalysisFilterExpressionChanged";
 			public const string Selectedvw_OCRCorrectionAnalysisChanged = "Selectedvw_OCRCorrectionAnalysisChanged";
             public const string vw_OCRCorrectionAnalysisChanged = "vw_OCRCorrectionAnalysisChanged";
@@ -155,9 +155,6 @@ namespace WaterNut.QuerySpace.OCR
           // public const string FieldFormatRegExChanged = "FieldFormatRegExChanged";
           // public const string FieldsChanged = "FieldsChanged";
           // public const string ImportErrorsChanged = "ImportErrorsChanged";
-          // public const string InvoiceIdentificatonRegExChanged = "InvoiceIdentificatonRegExChanged";
-          // public const string InvoiceRegExChanged = "InvoiceRegExChanged";
-          // public const string InvoicesChanged = "InvoicesChanged";
           // public const string LinesChanged = "LinesChanged";
           // public const string OCR_FailedFieldsChanged = "OCR_FailedFieldsChanged";
           // public const string OCR_FailedLinesChanged = "OCR_FailedLinesChanged";
@@ -172,6 +169,9 @@ namespace WaterNut.QuerySpace.OCR
           // public const string RecuringPartChanged = "RecuringPartChanged";
           // public const string RegularExpressionsChanged = "RegularExpressionsChanged";
           // public const string StartChanged = "StartChanged";
+          // public const string TemplateIdentificatonRegExChanged = "TemplateIdentificatonRegExChanged";
+          // public const string TemplateRegExChanged = "TemplateRegExChanged";
+          // public const string TemplatesChanged = "TemplatesChanged";
           // public const string vw_OCRCorrectionAnalysisChanged = "vw_OCRCorrectionAnalysisChanged";
  
 
@@ -185,12 +185,6 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentFieldsChanged = "CurrentFieldsChanged";
    
            public const string CurrentImportErrorsChanged = "CurrentImportErrorsChanged";
-   
-           public const string CurrentInvoiceIdentificatonRegExChanged = "CurrentInvoiceIdentificatonRegExChanged";
-   
-           public const string CurrentInvoiceRegExChanged = "CurrentInvoiceRegExChanged";
-   
-           public const string CurrentInvoicesChanged = "CurrentInvoicesChanged";
    
            public const string CurrentLinesChanged = "CurrentLinesChanged";
    
@@ -220,6 +214,12 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentStartChanged = "CurrentStartChanged";
    
+           public const string CurrentTemplateIdentificatonRegExChanged = "CurrentTemplateIdentificatonRegExChanged";
+   
+           public const string CurrentTemplateRegExChanged = "CurrentTemplateRegExChanged";
+   
+           public const string CurrentTemplatesChanged = "CurrentTemplatesChanged";
+   
            public const string Currentvw_OCRCorrectionAnalysisChanged = "Currentvw_OCRCorrectionAnalysisChanged";
     
 
@@ -233,12 +233,6 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentFieldsIDChanged = "OnCurrentFieldsIDChanged";
    
            public const string CurrentImportErrorsIDChanged = "OnCurrentImportErrorsIDChanged";
-   
-           public const string CurrentInvoiceIdentificatonRegExIDChanged = "OnCurrentInvoiceIdentificatonRegExIDChanged";
-   
-           public const string CurrentInvoiceRegExIDChanged = "OnCurrentInvoiceRegExIDChanged";
-   
-           public const string CurrentInvoicesIDChanged = "OnCurrentInvoicesIDChanged";
    
            public const string CurrentLinesIDChanged = "OnCurrentLinesIDChanged";
    
@@ -267,6 +261,12 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentRegularExpressionsIDChanged = "OnCurrentRegularExpressionsIDChanged";
    
            public const string CurrentStartIDChanged = "OnCurrentStartIDChanged";
+   
+           public const string CurrentTemplateIdentificatonRegExIDChanged = "OnCurrentTemplateIdentificatonRegExIDChanged";
+   
+           public const string CurrentTemplateRegExIDChanged = "OnCurrentTemplateRegExIDChanged";
+   
+           public const string CurrentTemplatesIDChanged = "OnCurrentTemplatesIDChanged";
    
            public const string Currentvw_OCRCorrectionAnalysisIDChanged = "OnCurrentvw_OCRCorrectionAnalysisIDChanged";
       

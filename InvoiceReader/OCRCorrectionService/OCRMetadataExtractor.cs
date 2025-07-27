@@ -34,7 +34,7 @@ namespace WaterNut.DataSpace
             }
 
             // Use OcrInvoices.Id if available for logging, otherwise fallback to Invoice.Id
-            var templateLogId = ocrTemplate.OcrInvoices?.Id.ToString() ?? ocrTemplate.OcrInvoices.Id.ToString();
+            var templateLogId = ocrTemplate.OcrTemplates?.Id.ToString() ?? ocrTemplate.OcrTemplates.Id.ToString();
             _logger.Debug("Starting metadata extraction against OCR Template (Log ID: {TemplateLogId}) for {FieldCount} runtime fields.", templateLogId, runtimeInvoiceData.Count);
 
             var fieldMappings = precomputedMappings ?? this.CreateEnhancedFieldMapping(ocrTemplate);
@@ -133,15 +133,15 @@ namespace WaterNut.DataSpace
         {
             if (template == null) return new InvoiceContext();
             // template.OcrInvoices is the navigation property to the OCR_Invoices table entry from the Invoice entity.
-            if (template.OcrInvoices == null)
+            if (template.OcrTemplates == null)
             {
-                _logger.Debug("OCR Template (Invoice.Id: {TemplateId}) does not have OcrInvoices details linked directly. Using Invoice.Id as fallback for context.", template.OcrInvoices.Id);
-                return new InvoiceContext { InvoiceId = template.OcrInvoices.Id, InvoiceName = template.OcrInvoices.Name ?? "Unknown OCR Template Name" };
+                _logger.Debug("OCR Template (Invoice.Id: {TemplateId}) does not have OcrInvoices details linked directly. Using Invoice.Id as fallback for context.", template.OcrTemplates.Id);
+                return new InvoiceContext { InvoiceId = template.OcrTemplates.Id, InvoiceName = template.OcrTemplates.Name ?? "Unknown OCR Template Name" };
             }
             return new InvoiceContext
             {
-                InvoiceId = template.OcrInvoices.Id,
-                InvoiceName = template.OcrInvoices.Name
+                InvoiceId = template.OcrTemplates.Id,
+                InvoiceName = template.OcrTemplates.Name
             };
         }
 
@@ -165,7 +165,7 @@ namespace WaterNut.DataSpace
                     PartTypeId = ocrPart.PartTypeId
                 };
             }
-            _logger.Debug("PartId {PartIdVal} not found within the provided OCR Template's (Invoice.Id: {TemplateId}) Parts collection.", partId.Value, template.OcrInvoices.Id);
+            _logger.Debug("PartId {PartIdVal} not found within the provided OCR Template's (Invoice.Id: {TemplateId}) Parts collection.", partId.Value, template.OcrTemplates.Id);
             return new PartContext { PartId = partId }; // Return with PartId if known
         }
 
@@ -220,7 +220,7 @@ namespace WaterNut.DataSpace
             var mappings = new Dictionary<string, (int LineId, int FieldId, int? PartId)>(StringComparer.OrdinalIgnoreCase);
             if (ocrTemplate?.Parts == null) // ocrTemplate.Parts is a collection of InvoicePart wrappers
             {
-                _logger.Warning("CreateEnhancedFieldMapping: OCR Template (ID: {TemplateId}) or its Parts collection is null.", ocrTemplate?.OcrInvoices.Id);
+                _logger.Warning("CreateEnhancedFieldMapping: OCR Template (ID: {TemplateId}) or its Parts collection is null.", ocrTemplate?.OcrTemplates.Id);
                 return mappings;
             }
 
@@ -253,12 +253,12 @@ namespace WaterNut.DataSpace
                         }
                     }
                 }
-                var templateLogId = ocrTemplate.OcrInvoices?.Id.ToString() ?? ocrTemplate.OcrInvoices.Id.ToString();
+                var templateLogId = ocrTemplate.OcrTemplates?.Id.ToString() ?? ocrTemplate.OcrTemplates.Id.ToString();
                 _logger.Debug("Created {MappingCount} enhanced field mappings from OCR Template (Log ID: {TemplateLogId}).", mappings.Count, templateLogId);
             }
             catch (Exception ex)
             {
-                var templateLogId = ocrTemplate.OcrInvoices?.Id.ToString() ?? ocrTemplate.OcrInvoices.Id.ToString();
+                var templateLogId = ocrTemplate.OcrTemplates?.Id.ToString() ?? ocrTemplate.OcrTemplates.Id.ToString();
                 _logger?.Error(ex, "Error creating enhanced field mappings from OCR Template (Log ID: {TemplateLogId}).", templateLogId);
             }
             return mappings;

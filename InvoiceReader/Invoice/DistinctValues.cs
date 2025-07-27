@@ -15,7 +15,7 @@ namespace WaterNut.DataSpace
                 Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>>
                     lineValues)
         {
-            int? invoiceId = this.OcrInvoices?.Id; // For logging context
+            int? invoiceId = this.OcrTemplates?.Id; // For logging context
             _logger.Debug("Entering DistinctValues for InvoiceId: {InvoiceId}. Input dictionary count: {InputCount}",
                 invoiceId, lineValues?.Count ?? 0);
 

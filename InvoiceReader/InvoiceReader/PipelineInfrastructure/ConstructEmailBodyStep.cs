@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 {
                     // Safely get the first invoice name
                     firstInvoiceName = context.FailedLines.FirstOrDefault()?
-                                           .OCR_Lines?.Parts?.Invoices?.Name ?? string.Empty;
+                                           .OCR_Lines?.Parts?.Templates?.Name ?? string.Empty;
                     if (!string.IsNullOrEmpty(firstInvoiceName))
                     {
                         context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

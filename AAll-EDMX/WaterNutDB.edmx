@@ -1256,7 +1256,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaWarehouseData' doe
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="OCR-InvoiceIdentificatonRegEx">
+        <EntityType Name="OCR-TemplateIdentificatonRegEx">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -4935,28 +4935,28 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
+        <Association Name="FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices">
           <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateIdentificatonRegEx" Type="Self.OCR-TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-Invoices">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR-TemplateIdentificatonRegEx">
               <PropertyRef Name="InvoiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
+        <Association Name="FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions">
           <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
-          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateIdentificatonRegEx" Type="Self.OCR-TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR-TemplateIdentificatonRegEx">
               <PropertyRef Name="RegExId" />
             </Dependent>
           </ReferentialConstraint>
@@ -6774,7 +6774,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
           <EntitySet Name="OCR-FieldMappings" EntityType="Self.OCR-FieldMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Fields" EntityType="Self.OCR-Fields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldValue" EntityType="Self.OCR-FieldValue" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-InvoiceIdentificatonRegEx" EntityType="Self.OCR-InvoiceIdentificatonRegEx" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-TemplateIdentificatonRegEx" EntityType="Self.OCR-TemplateIdentificatonRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-InvoiceRegEx" EntityType="Self.OCR-InvoiceRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Invoices" EntityType="Self.OCR-Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Lines" EntityType="Self.OCR-Lines" Schema="dbo" store:Type="Tables" />
@@ -7596,13 +7596,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
             <End Role="OCR-FieldValue" EntitySet="OCR-FieldValue" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
+          <AssociationSet Name="FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices">
             <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
-            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
+            <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
+          <AssociationSet Name="FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
-            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
+            <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceRegEx_OCR-Invoices">
             <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
@@ -8205,7 +8205,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
           <EntitySet Name="OCR_FieldMappings" EntityType="WaterNutDBModel.OCR_FieldMappings" />
           <EntitySet Name="OCR_Fields" EntityType="WaterNutDBModel.OCR_Fields" />
           <EntitySet Name="OCR_FieldValue" EntityType="WaterNutDBModel.OCR_FieldValue" />
-          <EntitySet Name="OCR_InvoiceIdentificatonRegEx" EntityType="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx" />
+          <EntitySet Name="OCR_TemplateIdentificatonRegEx" EntityType="WaterNutDBModel.OCR_TemplateIdentificatonRegEx" />
           <EntitySet Name="OCR_InvoiceRegEx" EntityType="WaterNutDBModel.OCR_InvoiceRegEx" />
           <EntitySet Name="OCR_Invoices" EntityType="WaterNutDBModel.OCR_Invoices" />
           <EntitySet Name="OCR_Lines" EntityType="WaterNutDBModel.OCR_Lines" />
@@ -8857,13 +8857,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
             <End Role="OCR_Fields" EntitySet="OCR_Fields" />
             <End Role="OCR_FieldValue" EntitySet="OCR_FieldValue" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
+          <AssociationSet Name="FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices">
             <End Role="OCR_Invoices" EntitySet="OCR_Invoices" />
-            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="OCR_InvoiceIdentificatonRegEx" />
+            <End Role="OCR_TemplateIdentificatonRegEx" EntitySet="OCR_TemplateIdentificatonRegEx" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+          <AssociationSet Name="FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions">
             <End Role="OCR_RegularExpressions" EntitySet="OCR_RegularExpressions" />
-            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="OCR_InvoiceIdentificatonRegEx" />
+            <End Role="OCR_TemplateIdentificatonRegEx" EntitySet="OCR_TemplateIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices">
             <End Role="OCR_Invoices" EntitySet="OCR_Invoices" />
@@ -10822,15 +10822,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="OCR_Fields" Relationship="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" FromRole="OCR_FieldValue" ToRole="OCR_Fields" />
         </EntityType>
-        <EntityType Name="OCR_InvoiceIdentificatonRegEx">
+        <EntityType Name="OCR_TemplateIdentificatonRegEx">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InvoiceId" Type="Int32" Nullable="false" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="OCR_Invoices" />
-          <NavigationProperty Name="OCR_RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="OCR_RegularExpressions" />
+          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" FromRole="OCR_TemplateIdentificatonRegEx" ToRole="OCR_Invoices" />
+          <NavigationProperty Name="OCR_RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_TemplateIdentificatonRegEx" ToRole="OCR_RegularExpressions" />
         </EntityType>
         <EntityType Name="OCR_InvoiceRegEx">
           <Key>
@@ -10854,7 +10854,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="FileType" Relationship="WaterNutDBModel.FK_OCR_Invoices_FileTypes" FromRole="OCR_Invoices" ToRole="FileType" />
-          <NavigationProperty Name="OCR_InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_InvoiceIdentificatonRegEx" />
+          <NavigationProperty Name="OCR_TemplateIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_TemplateIdentificatonRegEx" />
           <NavigationProperty Name="OCR_InvoiceRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="OCR_Parts" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_Parts" />
         </EntityType>
@@ -10921,7 +10921,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
           <NavigationProperty Name="OCR_End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_End" />
           <NavigationProperty Name="OCR_FieldFormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <NavigationProperty Name="OCR_FieldFormatRegEx1" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="OCR_RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
-          <NavigationProperty Name="OCR_InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
+          <NavigationProperty Name="OCR_TemplateIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_TemplateIdentificatonRegEx" />
           <NavigationProperty Name="OCR_InvoiceRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="OCR_InvoiceRegEx1" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="OCR_RegularExpressions" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="OCR_Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_Lines" />
@@ -14622,28 +14622,28 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
+        <Association Name="FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices">
           <End Type="WaterNutDBModel.OCR_Invoices" Role="OCR_Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.OCR_TemplateIdentificatonRegEx" Role="OCR_TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR_Invoices">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR_TemplateIdentificatonRegEx">
               <PropertyRef Name="InvoiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+        <Association Name="FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions">
           <End Type="WaterNutDBModel.OCR_RegularExpressions" Role="OCR_RegularExpressions" Multiplicity="1" />
-          <End Type="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.OCR_TemplateIdentificatonRegEx" Role="OCR_TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR_RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR_TemplateIdentificatonRegEx">
               <PropertyRef Name="RegExId" />
             </Dependent>
           </ReferentialConstraint>
@@ -17822,9 +17822,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.shipping Discrepancies Ap
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OCR_InvoiceIdentificatonRegEx">
-            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_InvoiceIdentificatonRegEx">
-              <MappingFragment StoreEntitySet="OCR-InvoiceIdentificatonRegEx">
+          <EntitySetMapping Name="OCR_TemplateIdentificatonRegEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_TemplateIdentificatonRegEx">
+              <MappingFragment StoreEntitySet="OCR-TemplateIdentificatonRegEx">
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

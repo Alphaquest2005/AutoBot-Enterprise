@@ -42,7 +42,7 @@ namespace AutoBotUtilities.Tests
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
                         var template = new Template(amazonTemplate, _logger);
@@ -150,7 +150,7 @@ Grand Total: $166.30";
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
                         var template = new Template(amazonTemplate, _logger);

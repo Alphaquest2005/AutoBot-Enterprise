@@ -119,13 +119,13 @@ namespace InvoiceReader.PipelineInfrastructure
                     // Each template should preserve its own FileType from the database
                     // Only assign context-specific properties that don't affect template identity
                     
-                    var originalFileTypeId = x.OcrInvoices?.FileTypeId ?? 0;
+                    var originalFileTypeId = x.OcrTemplates?.FileTypeId ?? 0;
                     var originalFileTypeName = x.FileType?.Description ?? "NULL";
                     var contextFileTypeId = context.FileType?.Id ?? 0;
                     var contextFileTypeName = context.FileType?.Description ?? "NULL";
                     
                     context.Logger?.Error("🔍 **FILETYPE_PRESERVATION_DEBUG**: Template '{TemplateName}' (ID: {TemplateId})", 
-                        x.OcrInvoices?.Name ?? "NULL", x.OcrInvoices?.Id ?? 0);
+                        x.OcrTemplates?.Name ?? "NULL", x.OcrTemplates?.Id ?? 0);
                     context.Logger?.Error("   - **TEMPLATE_FILETYPE_ID**: {TemplateFileTypeId} (preserving from database)", originalFileTypeId);
                     context.Logger?.Error("   - **CONTEXT_FILETYPE_ID**: {ContextFileTypeId} (NOT overwriting template)", contextFileTypeId);
                     context.Logger?.Error("   - **PRESERVATION_STRATEGY**: Keep template's original FileType, assign only context properties");
@@ -167,7 +167,7 @@ namespace InvoiceReader.PipelineInfrastructure
                         x.FileType?.Id ?? 0, x.FileType?.Description ?? "NULL", x.FileType?.FileImporterInfos?.EntryType ?? "NULL");
 
                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                        nameof(GetContextTemplates), "TemplateSetup", "Template configured with preserved FileType.", $"TemplateId: {x.OcrInvoices?.Id}, DocSetAssigned: {x.DocSet != null}, DocSetCount: {x.DocSet?.Count ?? 0}", "");
+                        nameof(GetContextTemplates), "TemplateSetup", "Template configured with preserved FileType.", $"TemplateId: {x.OcrTemplates?.Id}, DocSetAssigned: {x.DocSet != null}, DocSetCount: {x.DocSet?.Count ?? 0}", "");
 
                     return x;
                 }).ToList();
@@ -211,7 +211,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                 foreach (var t in templates)
                                 {
                                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                        nameof(GetTemplates), "TemplateDetails", "Template details.", $"TemplateId: {t.OcrInvoices.Id}, TemplateName: {t.OcrInvoices.Name ?? "null"}, PartCount: {t.Parts?.Count ?? 0}, IsActive: {t.OcrInvoices.IsActive}", "");
+                                        nameof(GetTemplates), "TemplateDetails", "Template details.", $"TemplateId: {t.OcrTemplates.Id}, TemplateName: {t.OcrTemplates.Name ?? "null"}, PartCount: {t.Parts?.Count ?? 0}, IsActive: {t.OcrTemplates.IsActive}", "");
                                 }
 
                                 /////////////////////////////////// Move this step to possible invoices because we only getting the invoices once!
@@ -243,7 +243,7 @@ namespace InvoiceReader.PipelineInfrastructure
                             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                                 "Check for any templates", "ASYNC_EXPECTED"); // Log before AnyAsync
                             var anyTemplatesStopwatch = Stopwatch.StartNew(); // Start stopwatch
-                            var anyTemplates = await ctx.Invoices.AnyAsync().ConfigureAwait(false);
+                            var anyTemplates = await ctx.Templates.AnyAsync().ConfigureAwait(false);
                             anyTemplatesStopwatch.Stop(); // Stop stopwatch
                             context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                 "Check for any templates", anyTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after AnyAsync
@@ -258,7 +258,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                 context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                                     "Count inactive templates", "ASYNC_EXPECTED"); // Log before CountAsync
                                 var inactiveCountStopwatch = Stopwatch.StartNew(); // Start stopwatch
-                                var inactiveCount = await ctx.Invoices.CountAsync(x => !x.IsActive).ConfigureAwait(false);
+                                var inactiveCount = await ctx.Templates.CountAsync(x => !x.IsActive).ConfigureAwait(false);
                                 inactiveCountStopwatch.Stop(); // Stop stopwatch
                                 context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                                     "Count inactive templates", inactiveCountStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return"); // Log after CountAsync
@@ -298,7 +298,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                 if (newTemplate != null)
                                 {
                                     context.Logger?.Information("✅ **OCR_TEMPLATE_CREATED**: Successfully created template '{TemplateName}' (ID: {TemplateId})", 
-                                        newTemplate.OcrInvoices?.Name ?? "Unknown", newTemplate.OcrInvoices?.Id ?? 0);
+                                        newTemplate.OcrTemplates?.Name ?? "Unknown", newTemplate.OcrTemplates?.Id ?? 0);
                                     
                                     // Add the new template to our collection and cache
                                     var templateList = new List<Template> { newTemplate };
@@ -310,7 +310,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                     
                                     methodStopwatch.Stop();
                                     context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                                        nameof(GetTemplates), "Successfully created OCR template when none existed", $"TemplateCount: 1, TemplateName: {newTemplate.OcrInvoices?.Name}", methodStopwatch.ElapsedMilliseconds);
+                                        nameof(GetTemplates), "Successfully created OCR template when none existed", $"TemplateCount: 1, TemplateName: {newTemplate.OcrTemplates?.Name}", methodStopwatch.ElapsedMilliseconds);
                                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
                                         nameof(GetTemplates), "Successfully created OCR template and added to pipeline", methodStopwatch.ElapsedMilliseconds);
                                     return true;
@@ -396,8 +396,8 @@ namespace InvoiceReader.PipelineInfrastructure
             foreach (var template in templates)
             {
                 context.Logger?.Error("   - **DB_TEMPLATE**: '{TemplateName}' (ID: {TemplateId})", 
-                    template.OcrInvoices?.Name ?? "NULL", template.OcrInvoices?.Id ?? 0);
-                context.Logger?.Error("     └── **DB_FILETYPE_ID**: {FileTypeId}", template.OcrInvoices?.FileTypeId ?? 0);
+                    template.OcrTemplates?.Name ?? "NULL", template.OcrTemplates?.Id ?? 0);
+                context.Logger?.Error("     └── **DB_FILETYPE_ID**: {FileTypeId}", template.OcrTemplates?.FileTypeId ?? 0);
                 context.Logger?.Error("     └── **DB_FILETYPE_FROM_WRAPPER**: '{FileTypeDescription}'", template.FileType?.Description ?? "NULL");
                 if (template.FileType?.FileImporterInfos != null)
                 {
@@ -423,13 +423,13 @@ namespace InvoiceReader.PipelineInfrastructure
 
 
 
-        public static List<Invoices> GetActiveTemplatesQuery(OCRContext ctx, Expression<Func<Invoices, bool>> exp)
+        public static List<Templates> GetActiveTemplatesQuery(OCRContext ctx, Expression<Func<Templates, bool>> exp)
         {
 
-            var activeTemplates = ctx.Invoices
+            var activeTemplates = ctx.Templates
                 .AsNoTracking()
                 .Include(x => x.Parts)
-                .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
                 .Include("RegEx.RegEx")
                 .Include("RegEx.ReplacementRegEx")
                 .Include("Parts.RecuringPart")

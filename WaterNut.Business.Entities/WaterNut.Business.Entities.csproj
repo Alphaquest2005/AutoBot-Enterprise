@@ -538,9 +538,6 @@
     <Compile Include="Generated Business Entities\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Business Entities\OCR\Fields.cs" />
     <Compile Include="Generated Business Entities\OCR\ImportErrors.cs" />
-    <Compile Include="Generated Business Entities\OCR\InvoiceIdentificatonRegEx.cs" />
-    <Compile Include="Generated Business Entities\OCR\InvoiceRegEx.cs" />
-    <Compile Include="Generated Business Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Business Entities\OCR\Lines.cs" />
     <Compile Include="Generated Business Entities\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedFields.cs" />
@@ -555,6 +552,9 @@
     <Compile Include="Generated Business Entities\OCR\RecuringPart.cs" />
     <Compile Include="Generated Business Entities\OCR\RegularExpressions.cs" />
     <Compile Include="Generated Business Entities\OCR\Start.cs" />
+    <Compile Include="Generated Business Entities\OCR\TemplateIdentificatonRegEx.cs" />
+    <Compile Include="Generated Business Entities\OCR\TemplateRegEx.cs" />
+    <Compile Include="Generated Business Entities\OCR\Templates.cs" />
     <Compile Include="Generated Business Entities\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated Business Entities\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\PreviousDocumentDS\EntryPreviousItems.cs" />
@@ -979,9 +979,6 @@
     <Compile Include="Generated ChangeTracking Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Fields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\ImportErrors.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\InvoiceIdentificatonRegEx.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\InvoiceRegEx.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\Invoices.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Lines.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedFields.cs" />
@@ -996,6 +993,9 @@
     <Compile Include="Generated ChangeTracking Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Start.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\TemplateIdentificatonRegEx.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\TemplateRegEx.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Templates.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated ChangeTracking Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\PreviousDocumentDS\EntryPreviousItems.cs" />
@@ -1420,9 +1420,6 @@
     <Compile Include="Generated Constructors Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Fields.cs" />
     <Compile Include="Generated Constructors Models\OCR\ImportErrors.cs" />
-    <Compile Include="Generated Constructors Models\OCR\InvoiceIdentificatonRegEx.cs" />
-    <Compile Include="Generated Constructors Models\OCR\InvoiceRegEx.cs" />
-    <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
     <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedFields.cs" />
@@ -1437,6 +1434,9 @@
     <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated Constructors Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated Constructors Models\OCR\Start.cs" />
+    <Compile Include="Generated Constructors Models\OCR\TemplateIdentificatonRegEx.cs" />
+    <Compile Include="Generated Constructors Models\OCR\TemplateRegEx.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Templates.cs" />
     <Compile Include="Generated Constructors Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentDS\EntryPreviousItems.cs" />
@@ -1861,9 +1861,6 @@
     <Compile Include="Generated IEntitiyWithKey Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Fields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\ImportErrors.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\InvoiceIdentificatonRegEx.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\InvoiceRegEx.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\Invoices.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Lines.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedFields.cs" />
@@ -1878,6 +1875,9 @@
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Start.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\TemplateIdentificatonRegEx.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\TemplateRegEx.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Templates.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryPreviousItems.cs" />
@@ -2302,9 +2302,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\ImportErrors.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceIdentificatonRegEx.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRCorrectionLearning.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
@@ -2319,6 +2316,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Start.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateIdentificatonRegEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateRegEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Templates.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\vw_OCRCorrectionAnalysis.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryPreviousItems.cs" />
@@ -2753,9 +2753,6 @@
     <Compile Include="Generated Mappings\OCR\FieldFormatRegEx.map.cs" />
     <Compile Include="Generated Mappings\OCR\Fields.map.cs" />
     <Compile Include="Generated Mappings\OCR\ImportErrors.map.cs" />
-    <Compile Include="Generated Mappings\OCR\InvoiceIdentificatonRegEx.map.cs" />
-    <Compile Include="Generated Mappings\OCR\InvoiceRegEx.map.cs" />
-    <Compile Include="Generated Mappings\OCR\Invoices.map.cs" />
     <Compile Include="Generated Mappings\OCR\Lines.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCRCorrectionLearning.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedFields.map.cs" />
@@ -2770,6 +2767,9 @@
     <Compile Include="Generated Mappings\OCR\RecuringPart.map.cs" />
     <Compile Include="Generated Mappings\OCR\RegularExpressions.map.cs" />
     <Compile Include="Generated Mappings\OCR\Start.map.cs" />
+    <Compile Include="Generated Mappings\OCR\TemplateIdentificatonRegEx.map.cs" />
+    <Compile Include="Generated Mappings\OCR\TemplateRegEx.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Templates.map.cs" />
     <Compile Include="Generated Mappings\OCR\vw_OCRCorrectionAnalysis.map.cs" />
     <Compile Include="Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs" />

@@ -156,11 +156,11 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Creates or retrieves the main template entity (OCR-Invoices table).
         /// </summary>
-        private async Task<Invoices> GetOrCreateTemplateAsync(OCRContext context, string templateName)
+        private async Task<Templates> GetOrCreateTemplateAsync(OCRContext context, string templateName)
         {
             _logger.Information("🔍 **TEMPLATE_LOOKUP**: Searching for existing template '{TemplateName}'", templateName);
 
-            var existingTemplate = await context.Invoices
+            var existingTemplate = await context.Templates
                 .FirstOrDefaultAsync(t => t.Name == templateName)
                 .ConfigureAwait(false);
 
@@ -170,7 +170,7 @@ namespace WaterNut.DataSpace
                 return existingTemplate;
             }
 
-            var newTemplate = new Invoices
+            var newTemplate = new Templates
             {
                 Name = templateName,
                 FileTypeId = 1147, // Standard ShipmentInvoice FileType
@@ -179,7 +179,7 @@ namespace WaterNut.DataSpace
                 TrackingState = TrackingState.Added
             };
 
-            context.Invoices.Add(newTemplate);
+            context.Templates.Add(newTemplate);
             _logger.Information("🆕 **TEMPLATE_CREATED**: New template '{TemplateName}' prepared for database", templateName);
             return newTemplate;
         }
@@ -210,7 +210,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Creates the header part (PartTypeId=1) with all invoice-level fields.
         /// </summary>
-        private async Task<Parts> CreateHeaderPartAsync(OCRContext context, Invoices template, List<InvoiceError> headerFields)
+        private async Task<Parts> CreateHeaderPartAsync(OCRContext context, Templates template, List<InvoiceError> headerFields)
         {
             _logger.Information("🏗️ **HEADER_PART_CREATION**: Creating header part for template '{TemplateName}'", template.Name);
 
@@ -288,7 +288,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Creates a line item part (PartTypeId=2) for multi-field patterns.
         /// </summary>
-        private async Task<Parts> CreateLineItemPartAsync(OCRContext context, Invoices template, InvoiceError multiFieldError)
+        private async Task<Parts> CreateLineItemPartAsync(OCRContext context, Templates template, InvoiceError multiFieldError)
         {
             _logger.Information("🏗️ **LINE_ITEM_PART_CREATION**: Creating line item part for '{FieldName}'", multiFieldError.Field);
 

@@ -11,7 +11,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         // Added string filePath parameter
         private static bool IsValidErrorState(ILogger logger, Template template, List<Line> failedlines, string filePath) // Add logger parameter
         {
-            int? templateId = template?.OcrInvoices?.Id;
+            int? templateId = template?.OcrTemplates?.Id;
             // Removed line using static _context: string filePath = _context?.FilePath ?? "Unknown";
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(IsValidErrorState), "Validation", "Checking IsValidErrorState.", $"File: {filePath}, TemplateId: {templateId}", "");

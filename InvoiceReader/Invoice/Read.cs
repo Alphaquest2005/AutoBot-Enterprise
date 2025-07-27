@@ -26,8 +26,8 @@ namespace WaterNut.DataSpace
             // Console.WriteLine($"**CRITICAL_READ_ENTRY**: Invoice.Read(List<string>) method called with {text?.Count ?? 0} lines");
             
             var methodStopwatch = Stopwatch.StartNew();
-            int? invoiceId = this.OcrInvoices?.Id;
-            string invoiceName = this.OcrInvoices?.Name ?? "Unknown";
+            int? invoiceId = this.OcrTemplates?.Id;
+            string invoiceName = this.OcrTemplates?.Name ?? "Unknown";
             int inputLineCount = text?.Count ?? 0;
             string methodName = nameof(Read) + "(List<string>)";
             _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, Name: '{InvoiceName}', InputLineCount: {InputLineCount}]",

@@ -454,35 +454,35 @@ namespace WaterNut.DataSpace
                     _logger.Information("   - **ARCHITECTURAL_CONTEXT**: Invoices table contains TEMPLATE DEFINITIONS in OCR module");
                     _logger.Information("   - **QUERY_FILTER**: Id == {TemplateId}", templateId);
                     
-                    var ocrInvoiceTemplate = await dbContext.Invoices
+                    var ocrTemplate = await dbContext.Templates
                         .Where(t => t.Id == templateId)
                         .FirstOrDefaultAsync()
                         .ConfigureAwait(false);
                     
                     _logger.Information("🔍 **DATABASE_QUERY_RESULT**: Query completed");
-                    if (ocrInvoiceTemplate == null)
+                    if (ocrTemplate == null)
                     {
                         _logger.Error("❌ **DATABASE_TEMPLATE_RETRIEVAL_FAILED**: Could not retrieve template with ID {TemplateId}", templateId);
                         return null;
                     }
                     
                     _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved template successfully");
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrInvoiceTemplate.Id);
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrInvoiceTemplate.Name ?? "NULL");
+                    _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
+                    _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
                     
                     // Create Invoice object from database template for pipeline
                     _logger.Information("🏗️ **CREATING_INVOICE_OBJECT**: Creating Invoice object from OCR template definition");
                     _logger.Information("   - **TEMPLATE_VERIFICATION**: Validating OCR template definition before Invoice constructor");
-                    _logger.Information("     • **OCR_TEMPLATE_ID**: {Id}", ocrInvoiceTemplate.Id);
-                    _logger.Information("     • **OCR_TEMPLATE_NAME**: '{Name}'", ocrInvoiceTemplate.Name ?? "NULL");
-                    _logger.Information("     • **OCR_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", ocrInvoiceTemplate?.FileTypeId.ToString() ?? "NULL");
-                    _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrInvoiceTemplate.IsActive.ToString() ?? "NULL");
+                    _logger.Information("     • **OCR_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
+                    _logger.Information("     • **OCR_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
+                    _logger.Information("     • **OCR_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", ocrTemplate?.FileTypeId.ToString() ?? "NULL");
+                    _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrTemplate.IsActive.ToString() ?? "NULL");
                     
                     _logger.Information("🔄 **INVOICE_CONSTRUCTOR_START**: Calling Invoice constructor...");
                     Template template = null;
                     try 
                     {
-                        template = new Template(ocrInvoiceTemplate, _logger);
+                        template = new Template(ocrTemplate, _logger);
                         _logger.Information("✅ **INVOICE_CONSTRUCTOR_SUCCESS**: Invoice constructor completed successfully");
                     }
                     catch (Exception constructorEx)
@@ -501,7 +501,7 @@ namespace WaterNut.DataSpace
                     }
                     
                     _logger.Information("✅ **INVOICE_OBJECT_CREATED**: Invoice object created successfully");
-                    _logger.Information("   - **INVOICE_OCR_INVOICES**: {OcrInvoices}", template.OcrInvoices?.Id.ToString() ?? "NULL");
+                    _logger.Information("   - **INVOICE_OCR_INVOICES**: {OcrInvoices}", template.OcrTemplates?.Id.ToString() ?? "NULL");
                     _logger.Information("   - **INVOICE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count.ToString() ?? "NULL");
                     _logger.Information("   - **INVOICE_LINES_COUNT**: {LinesCount}", template.Lines?.Count.ToString() ?? "NULL");
                     
@@ -518,8 +518,8 @@ namespace WaterNut.DataSpace
                     _logger.Information("   - **FILE_TYPE_ID**: {FileTypeId}", fileType?.Id.ToString() ?? "NULL");
                     
                     _logger.Information("✅ **PIPELINE_TEMPLATE_READY**: Invoice template ready for pipeline processing");
-                    _logger.Information("   - **FINAL_TEMPLATE_NAME**: '{TemplateName}'", template.OcrInvoices?.Name ?? "NULL");
-                    _logger.Information("   - **FINAL_TEMPLATE_ID**: {TemplateId}", template.OcrInvoices?.Id.ToString() ?? "NULL");
+                    _logger.Information("   - **FINAL_TEMPLATE_NAME**: '{TemplateName}'", template.OcrTemplates.Name ?? "NULL");
+                    _logger.Information("   - **FINAL_TEMPLATE_ID**: {TemplateId}", template.OcrTemplates?.Id.ToString() ?? "NULL");
                     _logger.Information("   - **FINAL_PDF_TEXT_LENGTH**: {TextLength} characters", template.FormattedPdfText?.Length ?? 0);
                     _logger.Information("   - **FINAL_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
                     _logger.Information("   - **TEMPLATE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count ?? 0);
@@ -529,12 +529,12 @@ namespace WaterNut.DataSpace
                     _logger.Information("   - **RETURN_VALUE_TYPE**: {ReturnType}", template?.GetType().FullName ?? "NULL");
                     _logger.Information("   - **RETURN_VALUE_NULL_CHECK**: {IsNull}", template == null ? "TRUE" : "FALSE");
                     
-                    if (template?.OcrInvoices != null)
+                    if (template?.OcrTemplates != null)
                     {
                         _logger.Information("🔍 **FINAL_TEMPLATE_VERIFICATION**: Final template verification before return");
-                        _logger.Information("     • **OCR_INVOICES_ID**: {Id}", template.OcrInvoices.Id);
-                        _logger.Information("     • **OCR_INVOICES_NAME**: '{Name}'", template.OcrInvoices.Name ?? "NULL");
-                        _logger.Information("     • **OCR_INVOICES_FILE_TYPE_ID**: {FileTypeId}", template.OcrInvoices?.FileTypeId.ToString() ?? "NULL");
+                        _logger.Information("     • **OCR_INVOICES_ID**: {Id}", template.OcrTemplates.Id);
+                        _logger.Information("     • **OCR_INVOICES_NAME**: '{Name}'", template.OcrTemplates.Name ?? "NULL");
+                        _logger.Information("     • **OCR_INVOICES_FILE_TYPE_ID**: {FileTypeId}", template.OcrTemplates?.FileTypeId.ToString() ?? "NULL");
                         _logger.Information("     • **TEMPLATE_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
                         _logger.Information("     • **FORMATTED_PDF_TEXT**: {HasText}", !string.IsNullOrEmpty(template.FormattedPdfText) ? "PRESENT" : "MISSING");
                     }
@@ -807,7 +807,7 @@ namespace WaterNut.DataSpace
         /// **ARCHITECTURAL_INTENT**: Provide minimum required structure for Invoice template instantiation.
         /// **BUSINESS_RULE**: Template must have valid OcrInvoices object to be processed by pipeline.
         /// </summary>
-        private OCR.Business.Entities.Invoices CreateBasicOcrInvoices(string templateName, string filePath)
+        private OCR.Business.Entities.Templates CreateBasicOcrInvoices(string templateName, string filePath)
         {
             _logger.Error("🏗️ **CREATE_BASIC_OCR_INVOICES_START**: Creating minimal OcrInvoices structure");
             _logger.Error("   - **TEMPLATE_NAME**: {TemplateName}", templateName);
@@ -815,7 +815,7 @@ namespace WaterNut.DataSpace
 
             try
             {
-                var ocrInvoices = new OCR.Business.Entities.Invoices
+                var ocrInvoices = new OCR.Business.Entities.Templates
                 {
                     Name = templateName,
                     Id = 0, // Temporary ID for runtime template
@@ -935,7 +935,7 @@ namespace WaterNut.DataSpace
                         CorrectionType = "template_creation", // Special type for template creation
                         DeepSeekReasoning = error.Reasoning ?? $"Template creation pattern identification for {templateName}",
                         Confidence = error.Confidence,
-                        InvoiceType = templateName,
+                        DocumentType = templateName,
                         FilePath = filePath,
                         Success = true, // Template creation was successful
                         ErrorMessage = null,
@@ -986,7 +986,7 @@ namespace WaterNut.DataSpace
         /// Load successful regex patterns from previous learning records
         /// This enables the system to apply previously learned patterns for improved accuracy
         /// </summary>
-        public async Task<List<RegexPattern>> LoadLearnedRegexPatternsAsync(string invoiceType = null, double minimumConfidence = 0.8)
+        public async Task<List<RegexPattern>> LoadLearnedRegexPatternsAsync(string documentType = null, double minimumConfidence = 0.8)
         {
             _logger.Information("📚 **LOADING_LEARNED_PATTERNS**: Loading regex patterns from OCRCorrectionLearning with confidence >= {MinConfidence}", minimumConfidence);
             
@@ -999,9 +999,9 @@ namespace WaterNut.DataSpace
                     var query = context.OCRCorrectionLearning
                         .Where(l => l.Success == true && l.Confidence >= minimumConfidence);
                     
-                    if (!string.IsNullOrWhiteSpace(invoiceType))
+                    if (!string.IsNullOrWhiteSpace(documentType))
                     {
-                        query = query.Where(l => l.InvoiceType == invoiceType);
+                        query = query.Where(l => l.DocumentType == documentType);
                     }
                     
                     var learningRecords = await query
@@ -1032,7 +1032,7 @@ namespace WaterNut.DataSpace
                                     LastUpdated = record.CreatedDate,
                                     UpdateCount = 1,
                                     CreatedBy = record.CreatedBy,
-                                    InvoiceType = record.InvoiceType
+                                    InvoiceType = record.DocumentType
                                 };
                                 
                                 patterns.Add(pattern);
@@ -1114,7 +1114,7 @@ namespace WaterNut.DataSpace
         /// Get learning analytics for specific fields or invoice types
         /// This provides insights into OCR accuracy and improvement trends
         /// </summary>
-        public async Task<LearningAnalytics> GetLearningAnalyticsAsync(string fieldName = null, string invoiceType = null, int daysPeriod = 30)
+        public async Task<LearningAnalytics> GetLearningAnalyticsAsync(string fieldName = null, string documentType = null, int daysPeriod = 30)
         {
             _logger.Information("📊 **ANALYTICS_START**: Generating learning analytics for period={Days} days", daysPeriod);
             
@@ -1132,9 +1132,9 @@ namespace WaterNut.DataSpace
                         query = query.Where(l => l.FieldName == fieldName);
                     }
                     
-                    if (!string.IsNullOrWhiteSpace(invoiceType))
+                    if (!string.IsNullOrWhiteSpace(documentType))
                     {
-                        query = query.Where(l => l.InvoiceType == invoiceType);
+                        query = query.Where(l => l.DocumentType == documentType);
                     }
                     
                     var records = await query.ToListAsync().ConfigureAwait(false);
@@ -1152,7 +1152,7 @@ namespace WaterNut.DataSpace
                                                  .ToDictionary(g => g.Key, g => g.Count()),
                         CorrectionTypes = records.GroupBy(r => r.CorrectionType)
                                                 .ToDictionary(g => g.Key, g => g.Count()),
-                        InvoiceTypes = records.GroupBy(r => r.InvoiceType)
+                        InvoiceTypes = records.GroupBy(r => r.DocumentType)
                                              .OrderByDescending(g => g.Count())
                                              .Take(10)
                                              .ToDictionary(g => g.Key, g => g.Count())

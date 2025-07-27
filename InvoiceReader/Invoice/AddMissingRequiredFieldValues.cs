@@ -14,7 +14,7 @@ namespace WaterNut.DataSpace
         private void AddMissingRequiredFieldValues()
         {
             // Use instance property for logging context if available (e.g., OcrInvoices.Id)
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             _logger.Debug("Starting AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}", invoiceId);
 
             try

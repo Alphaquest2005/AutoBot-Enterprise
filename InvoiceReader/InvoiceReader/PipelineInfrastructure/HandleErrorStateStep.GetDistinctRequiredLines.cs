@@ -12,7 +12,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         private static List<Line> GetDistinctRequiredLines(ILogger logger, Template template) // Add logger parameter, rename context to template
         {
 
-            int? templateId = template?.OcrInvoices?.Id;
+            int? templateId = template?.OcrTemplates?.Id;
             logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetDistinctRequiredLines), "Processing", "Getting distinct required lines.", $"TemplateId: {templateId}", "");
             // Null check

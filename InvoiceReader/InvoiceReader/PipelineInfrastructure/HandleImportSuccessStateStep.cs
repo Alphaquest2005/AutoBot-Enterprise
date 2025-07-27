@@ -49,8 +49,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Iterate over MatchedTemplates instead of all Templates
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing matched template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
                  context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -172,8 +172,8 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
         private static bool IsRequiredDataMissing(ILogger logger, Template template) // Add logger parameter
         {
              logger?.Error("🔍 **VALIDATION_START**: Starting comprehensive validation check for OCR template");
-             logger?.Error("   - **TEMPLATE_ID**: {TemplateId}", template?.OcrInvoices?.Id ?? 0);
-             logger?.Error("   - **TEMPLATE_NAME**: {TemplateName}", template?.OcrInvoices?.Name ?? "NULL");
+             logger?.Error("   - **TEMPLATE_ID**: {TemplateId}", template?.OcrTemplates?.Id ?? 0);
+             logger?.Error("   - **TEMPLATE_NAME**: {TemplateName}", template?.OcrTemplates?.Name ?? "NULL");
              logger?.Error("   - **VALIDATION_PURPOSE**: Ensure all required data is present for HandleImportSuccessStateStep processing");
 
              // Check each property and log which one is missing if any
@@ -211,7 +211,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
              // **VALIDATION 3: OcrInvoices Check**
              logger?.Error("🔎 **VALIDATION_3_OCR_INVOICES**: Checking OcrInvoices structure");
-             if (template?.OcrInvoices == null) 
+             if (template?.OcrTemplates == null) 
              { 
                  logger?.Error("❌ **VALIDATION_FAILED**: Template.OcrInvoices is null");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot resolve FileType in downstream processing");
@@ -220,9 +220,9 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true; 
              }
              logger?.Error("✅ **VALIDATION_3_PASSED**: OcrInvoices is present");
-             logger?.Error("   - **OCR_INVOICES_ID**: {OcrInvoicesId}", template.OcrInvoices.Id);
-             logger?.Error("   - **OCR_INVOICES_NAME**: {OcrInvoicesName}", template.OcrInvoices.Name ?? "NULL");
-             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", template.OcrInvoices.FileTypeId);
+             logger?.Error("   - **OCR_INVOICES_ID**: {OcrInvoicesId}", template.OcrTemplates.Id);
+             logger?.Error("   - **OCR_INVOICES_NAME**: {OcrInvoicesName}", template.OcrTemplates.Name ?? "NULL");
+             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", template.OcrTemplates.FileTypeId);
 
              // **VALIDATION 4: CsvLines Check**
              logger?.Error("🔎 **VALIDATION_4_CSV_LINES**: Checking CsvLines data structure");
@@ -316,9 +316,9 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                  nameof(ResolveFileType), "Resolution", "Entering ResolveFileType.", "", "");
              // Context and Template null checks happen in caller
-             int? templateId = template?.OcrInvoices?.Id; // Null check done by caller
+             int? templateId = template?.OcrTemplates?.Id; // Null check done by caller
              int originalFileTypeId = template.FileType.Id; // Null check done by caller
-             int templateFileTypeId = template.OcrInvoices.FileTypeId; // Null check done by caller
+             int templateFileTypeId = template.OcrTemplates.FileTypeId; // Null check done by caller
 
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                  nameof(ResolveFileType), "Resolution", "Resolving FileType.", $"OriginalContextFileTypeId: {originalFileTypeId}, TemplateFileTypeId: {templateFileTypeId}", "");
@@ -400,7 +400,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
               {
                   // DEBUG: Add detailed logging for DocSet state
                   logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                      nameof(CreateDataFile), "Creation", "DocSet validation.", $"DocSetIsNull: {template?.DocSet == null}, DocSetCount: {template?.DocSet?.Count ?? 0}, TemplateId: {template?.OcrInvoices?.Id}", "");
+                      nameof(CreateDataFile), "Creation", "DocSet validation.", $"DocSetIsNull: {template?.DocSet == null}, DocSetCount: {template?.DocSet?.Count ?? 0}, TemplateId: {template?.OcrTemplates?.Id}", "");
 
                   // Ensure DocSet is not null before accessing its properties if needed by DataFile constructor
                   if (template?.DocSet == null || !template.DocSet.Any()) {
@@ -450,7 +450,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
                   dataFile = new DataFile(fileType, template.DocSet, template.OverWriteExisting,
                                                     template.EmailId,
-                                                    template.FilePath, template.CsvLines, (template.OcrInvoices, lineValues));
+                                                    template.FilePath, template.CsvLines, (template.OcrTemplates, lineValues));
                    logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                        nameof(CreateDataFile), "Creation", "DataFile object created successfully.", $"FilePath: {filePath}", "");
               }

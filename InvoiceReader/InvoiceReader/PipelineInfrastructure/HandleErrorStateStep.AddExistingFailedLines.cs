@@ -13,7 +13,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
           
 
 
-                int? templateId = template?.OcrInvoices?.Id;
+                int? templateId = template?.OcrTemplates?.Id;
                 logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(AddExistingFailedLines), "Processing", "Adding existing failed lines from template parts.", $"TemplateId: {templateId}", "");
                 // Null checks

@@ -171,21 +171,6 @@ namespace OCR.Business.Entities
         }
         Nullable<double> _confidence;
         [DataMember]
-        public string InvoiceType 
-        {
-            get
-            {
-                return _invoicetype;
-            }
-            set
-            {
-                _invoicetype = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _invoicetype;
-        [DataMember]
         public string FilePath 
         {
             get
@@ -380,6 +365,21 @@ namespace OCR.Business.Entities
             }
         }
         string _suggestedregex_indexed;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

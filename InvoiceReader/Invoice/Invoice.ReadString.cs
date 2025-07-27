@@ -10,7 +10,7 @@ namespace WaterNut.DataSpace
         public List<dynamic> Read(string text)
         {
             var methodStopwatch = Stopwatch.StartNew();
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             string methodName = nameof(Read) + "(string)";
             _logger.Information("ACTION_START: {ActionName}. Context: [InvoiceId: {InvoiceId}, InputTextLength: {Length}]",
                 methodName, invoiceId, text?.Length ?? 0);

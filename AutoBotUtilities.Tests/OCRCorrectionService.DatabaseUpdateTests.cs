@@ -14,7 +14,6 @@ namespace AutoBotUtilities.Tests.Production
 {
     using NUnit.Framework.Legacy;
 
-    using Invoices = OCR.Business.Entities.Invoices;
     using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
 
     /// <summary>
@@ -223,19 +222,19 @@ namespace AutoBotUtilities.Tests.Production
             {
                 // Assuming OcrInvoicesId 1 exists or is a valid test Invoice template.
                 // For robust tests, you might need to create a dummy OcrInvoices entry as well.
-                var testInvoiceTemplate = await ctx.Invoices.FirstOrDefaultAsync().ConfigureAwait(false);
+                var testInvoiceTemplate = await ctx.Templates.FirstOrDefaultAsync().ConfigureAwait(false);
                 int invoiceIdToUse = testInvoiceTemplate?.Id ?? 0;
                 if (invoiceIdToUse == 0)
                 {
-                    var tempOcrInv = new Invoices { Name = $"TestTempInvoice_{_testRunId}", TrackingState = TrackingState.Added };
-                    ctx.Invoices.Add(tempOcrInv);
+                    var tempOcrInv = new Templates { Name = $"TestTempInvoice_{_testRunId}", TrackingState = TrackingState.Added };
+                    ctx.Templates.Add(tempOcrInv);
                     await ctx.SaveChangesAsync().ConfigureAwait(false);
                     invoiceIdToUse = tempOcrInv.Id;
                     _logger.Debug("Created temporary OcrInvoices entry (ID: {TempInvoiceId}) for part creation.", invoiceIdToUse);
                 }
 
 
-                part = new Parts { PartTypes = partType, Invoices = testInvoiceTemplate, TrackingState = TrackingState.Added };
+                part = new Parts { PartTypes = partType, Templates = testInvoiceTemplate, TrackingState = TrackingState.Added };
                 ctx.Parts.Add(part);
                 await ctx.SaveChangesAsync().ConfigureAwait(false); // Save to get ID
                                               // Do not add to a cleanup list as Parts are usually fundamental.

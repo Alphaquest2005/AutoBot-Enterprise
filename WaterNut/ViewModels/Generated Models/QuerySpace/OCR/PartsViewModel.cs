@@ -54,7 +54,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 			RegisterToReceiveMessages(MessageToken.PartsFilterExpressionChanged, OnPartsFilterExpressionChanged);
 
  
-			RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
+			RegisterToReceiveMessages<Templates>(MessageToken.CurrentTemplatesChanged, OnCurrentTemplatesChanged);
  
 			RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
  
@@ -142,9 +142,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
             void CurrentParts__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddInvoices")
+                    //if (e.PropertyName == "AddTemplates")
                    // {
-                   //    if(Invoices.Contains(CurrentParts.Invoices) == false) Invoices.Add(CurrentParts.Invoices);
+                   //    if(Templates.Contains(CurrentParts.Templates) == false) Templates.Add(CurrentParts.Templates);
                     //}
                     //if (e.PropertyName == "AddPartTypes")
                    // {
@@ -163,9 +163,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 
  	
-		 internal virtual void OnCurrentInvoicesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Invoices> e)
+		 internal virtual void OnCurrentTemplatesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Templates> e)
 			{
-			if(ViewCurrentInvoices == false) return;
+			if(ViewCurrentTemplates == false) return;
 			if (e.Data == null || e.Data.Id == null)
                 {
                     vloader.FilterExpression = "None";
@@ -218,17 +218,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
   
 // Filtering Each Field except IDs
  	
-		 bool _viewCurrentInvoices = false;
-         public bool ViewCurrentInvoices
+		 bool _viewCurrentTemplates = false;
+         public bool ViewCurrentTemplates
          {
              get
              {
-                 return _viewCurrentInvoices;
+                 return _viewCurrentTemplates;
              }
              set
              {
-                 _viewCurrentInvoices = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentInvoices);
+                 _viewCurrentTemplates = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentTemplates);
                 FilterData();
              }
          }

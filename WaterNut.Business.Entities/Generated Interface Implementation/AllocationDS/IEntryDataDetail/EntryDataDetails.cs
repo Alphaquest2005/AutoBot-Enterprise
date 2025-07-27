@@ -15,7 +15,7 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Entities
 {
-		public partial class EntryDataDetails/*: IEntryDataDetail*/ //AllocationDS - T4 byproduct interface commented out
+		public partial class EntryDataDetails: IEntryDataDetail //AllocationDS
 		{  // please don't expect properties here, they are implict, only multilayer will appear here
                  /*[IgnoreDataMember]
                  [NotMapped]
@@ -24,7 +24,7 @@ namespace AllocationDS.Business.Entities
                     get{ return this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId; }                
                     set { this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId = value;}
                 }*/
-                // T4 byproduct - entire property commented out to prevent duplicate definition
+                          
         }
 }
 

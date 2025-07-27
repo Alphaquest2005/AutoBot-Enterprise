@@ -125,11 +125,11 @@ namespace WaterNut.DataSpace
                 var freshTemplate = GetTemplatesStep.GetAllTemplates(
                     new InvoiceProcessingContext(logger) { FilePath = template.FilePath },
                     new OCRContext()
-                ).FirstOrDefault(x => x.OcrInvoices.Id == template.OcrInvoices.Id);
+                ).FirstOrDefault(x => x.OcrTemplates.Id == template.OcrTemplates.Id);
 
                 if (freshTemplate == null)
                 {
-                    log.Error("   - ❌ FATAL_ERROR: Could not reload template with ID {TemplateId}. Aborting correction.", template.OcrInvoices.Id);
+                    log.Error("   - ❌ FATAL_ERROR: Could not reload template with ID {TemplateId}. Aborting correction.", template.OcrTemplates.Id);
                     return res;
                 }
 
@@ -236,7 +236,7 @@ namespace WaterNut.DataSpace
                             ContextLinesAfter = e.ContextLinesAfter,
                             RequiresMultilineRegex = e.RequiresMultilineRegex,
                             SuggestedRegex = e.SuggestedRegex,
-                            InvoiceId = template.OcrInvoices.Id,
+                            InvoiceId = template.OcrTemplates.Id,
                             FilePath = template.FilePath,
                            
                             // =================== THE FIX ===================

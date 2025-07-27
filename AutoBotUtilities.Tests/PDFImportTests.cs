@@ -897,12 +897,12 @@ namespace AutoBotUtilities.Tests
                     // **VERIFICATION STEP 3**: Template Persistence (THIRD - Database save operation)
                     _logger.Information("3️⃣ **TEMPLATE_PERSISTENCE_VERIFICATION**: Checking if template was persisted to OCR database");
                     bool templatePersistedToDatabase = false;
-                    OCR.Business.Entities.Invoices persistedTemplate = null;
+                    OCR.Business.Entities.Templates persistedTemplate = null;
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
                         // Look for MANGO template persisted to database
-                        persistedTemplate = await ocrCtx.Invoices
+                        persistedTemplate = await ocrCtx.Templates
                             .Include(x => x.Parts.Select(p => p.Lines.Select(l => l.Fields)))
                             .FirstOrDefaultAsync(x => x.Name == "MANGO" && x.IsActive == true)
                             .ConfigureAwait(false);
@@ -2422,7 +2422,7 @@ Return only the regex pattern, no explanation:";
                             entry.Success,
                             entry.LineNumber,
                             entry.LineText ?? "NULL",
-                            entry.InvoiceType ?? "NULL",
+                            entry.DocumentType ?? "NULL",
                             entry.FilePath ?? "NULL",
                             entry.CreatedDate,
                             entry.CreatedBy ?? "NULL",
@@ -2783,10 +2783,10 @@ Return only the regex pattern, no explanation:";
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
-                        var templateData = ocrCtx.Invoices
+                        var templateData = ocrCtx.Templates
                             .AsNoTracking()
                             .Include("Parts")
-                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
                             .Include("RegEx.RegEx")
                             .Include("RegEx.ReplacementRegEx")
                             .Include("Parts.RecuringPart")
@@ -2921,10 +2921,10 @@ Return only the regex pattern, no explanation:";
                     WaterNut.DataSpace.Template reloadedTemplate = null;
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
-                        var reloadedTemplateData = ocrCtx.Invoices
+                        var reloadedTemplateData = ocrCtx.Templates
                             .AsNoTracking()
                             .Include("Parts")
-                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
                             .Include("RegEx.RegEx")
                             .Include("RegEx.ReplacementRegEx")
                             .Include("Parts.RecuringPart")
