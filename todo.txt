@@ -131,3 +131,9 @@ The invoice contains multiple line items with varying formats, some spanning mul
 
 The patterns are designed to be generalizable across thousands of different products while still accurately capturing the specific items in this invoice. The field corrections handle common OCR artifacts while maintaining the integrity of the business objects."
 i notice there is comments before and after this response... is the parsing taking out these comments? and creating good errors?
+
+"{
+        "ItemDescription": "Long jumpsuit with back opening",
+        "UnitPrice": "18.99",
+        "ItemCode": "570502122243"
+      }"  i also noticed the correct value like this is the code capable of handling multiple values form the correct_value property... like this...

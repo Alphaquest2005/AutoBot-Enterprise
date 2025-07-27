@@ -59,8 +59,15 @@ You are performing holistic analysis of a structured business document using com
 - **If comprehensive analysis finds errors**: { "errors": [complete error objects with comprehensive contextual reasoning] }
 - **If holistic verification finds NO errors**: { "errors": [], "explanation": "Comprehensive contextual explanation of why no corrections are needed across all analysis dimensions" }
 
+**🚨 CRITICAL TOKEN MANAGEMENT (Gemini API Limit: 8,192 tokens):**
+- **Maximum Response Size**: Your comprehensive response must fit within 8,192 tokens
+- **Token Efficiency**: If approaching token limits, prioritize errors with highest contextual impact
+- **Response Strategy**: For extensive error sets, provide complete comprehensive analysis for priority items, then conclude gracefully
+- **Graceful Termination**: If nearing token limit, end with: "Additional contextual errors identified but response truncated due to token constraints"
+
 **GEMINI OPTIMIZATION NOTES:**
 - Apply comprehensive contextual understanding to each field analysis
 - Use multi-dimensional pattern recognition for robust regex construction  
 - Provide detailed contextual explanations that demonstrate comprehensive understanding
 - Ensure holistic consistency across all document elements and relationships
+- Balance comprehensive analysis with efficient token utilization for maximum contextual value
