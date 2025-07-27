@@ -99,12 +99,18 @@ namespace WaterNut.DataSpace
 
             const double CONFIDENCE_THRESHOLD = 0.90;
 
+            // ================================ TRANSFORMATION CHAINS START ================================
+            // Process transformation chains where grouped errors are applied sequentially
+            var processedErrors = ProcessTransformationChains(errors, invoice, fileText);
+            // ================================= TRANSFORMATION CHAINS END =================================
+
             // =================================== FIX START ===================================
-            // Filter out 'format_correction' errors from direct application.
-            // Their sole purpose is for database learning, not for in-memory calculation in this pass,
-            // as the AI already provides transformed values in the 'omission' objects.
-            var errorsToApplyDirectly = errors
-                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD && e.ErrorType != "format_correction")
+            // Filter out 'format_correction' errors from direct application, EXCEPT for transformation chains.
+            // Format corrections in transformation chains are part of the sequential processing.
+            // Standalone format_corrections are for database learning only.
+            var errorsToApplyDirectly = processedErrors
+                .Where(e => e.Confidence >= CONFIDENCE_THRESHOLD && 
+                       (e.ErrorType != "format_correction" || !string.IsNullOrEmpty(e.GroupId)))
                 .ToList();
             // ==================================== FIX END ====================================
 
