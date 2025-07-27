@@ -233,6 +233,14 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Cross-field consistency validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates consistency between summary fields (SubTotal, InvoiceTotal) and their derived components using TotalsZero canonical validation
+        /// **BUSINESS OBJECTIVE**: Ensure invoice financial integrity through cross-field mathematical validation and component relationship verification
+        /// **SUCCESS CRITERIA**: Must validate SubTotal against line item totals, verify InvoiceTotal balance using TotalsZero logic, and return comprehensive inconsistency errors
+        /// 
         /// Validates consistency between summary fields (SubTotal, InvoiceTotal) and their derived components.
         /// Uses the static OCRCorrectionService.TotalsZero method (from OCRLegacySupport.cs) as the canonical check for overall balance.
         /// </summary>
