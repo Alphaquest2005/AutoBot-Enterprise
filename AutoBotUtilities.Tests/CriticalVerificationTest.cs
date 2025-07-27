@@ -223,9 +223,9 @@ namespace AutoBotUtilities.Tests
                 var aiProvidersContent = File.ReadAllText(aiProvidersConfig);
                 var templateConfigContent = File.ReadAllText(templateConfig);
 
-                Assert.IsTrue(aiProvidersContent.Contains("deepseek"), "AI providers config should contain DeepSeek");
-                Assert.IsTrue(aiProvidersContent.Contains("gemini"), "AI providers config should contain Gemini");
-                Assert.IsTrue(templateConfigContent.Contains("MANGO"), "Template config should contain MANGO supplier");
+                Assert.That(aiProvidersContent.Contains("deepseek"), Is.True, "AI providers config should contain DeepSeek");
+                Assert.That(aiProvidersContent.Contains("gemini"), Is.True, "AI providers config should contain Gemini");
+                Assert.That(templateConfigContent.Contains("MANGO"), Is.True, "Template config should contain MANGO supplier");
 
                 _logger.Information("✅ **CONFIGURATION_SYSTEM_WORKS**: Configuration system functional");
             }
@@ -263,7 +263,7 @@ namespace AutoBotUtilities.Tests
             }
 
             // The core architecture is sound, but full functionality requires AI API access
-            Assert.IsTrue(true, "Assessment completed - core functionality verified");
+            Assert.That(true, Is.True, "Assessment completed - core functionality verified");
         }
     }
 }
