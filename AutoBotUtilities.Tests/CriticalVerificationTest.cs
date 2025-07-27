@@ -102,10 +102,10 @@ namespace AutoBotUtilities.Tests
                 File.WriteAllText(versionedFile, versionedTemplate);
 
                 // Assert: Files should exist and contain correct content
-                Assert.IsTrue(File.Exists(originalFile), "Original template file should exist");
-                Assert.IsTrue(File.Exists(versionedFile), "Versioned template file should exist");
-                Assert.AreEqual(originalTemplate, File.ReadAllText(originalFile), "Original template content should match");
-                Assert.AreEqual(versionedTemplate, File.ReadAllText(versionedFile), "Versioned template content should match");
+                Assert.That(File.Exists(originalFile), Is.True, "Original template file should exist");
+                Assert.That(File.Exists(versionedFile), Is.True, "Versioned template file should exist");
+                Assert.That(File.ReadAllText(originalFile), Is.EqualTo(originalTemplate), "Original template content should match");
+                Assert.That(File.ReadAllText(versionedFile), Is.EqualTo(versionedTemplate), "Versioned template content should match");
 
                 _logger.Information("✅ **FILE_OPERATIONS_WORK**: Template versioning file operations successful");
             }
