@@ -803,23 +803,6 @@ namespace AutoBotUtilities.Tests
                 
                 // **CRITICAL**: Delete existing bad MANGO template to force recreation with enhanced AITemplateService
                 await FixMangoTemplate.DeleteExistingMangoTemplate();
-                using (var ocrCtx = new OCR.Business.Entities.OCRContext())
-                {
-                    // CRITICAL FIX: Only target MANGO templates specifically, not all templates with ApplicationSettingsId = 3
-                    var existingTemplates = ocrCtx.Invoices.Where(x => x.Name == "MANGO").ToList();
-                    _logger.Information("   - **TEMPLATES_TO_REMOVE**: {Count} MANGO templates found", existingTemplates.Count);
-                    
-                    if (existingTemplates.Any())
-                    {
-                        ocrCtx.Invoices.RemoveRange(existingTemplates);
-                        await ocrCtx.SaveChangesAsync().ConfigureAwait(false);
-                        _logger.Information("   - **TEMPLATES_CLEARED**: All existing MANGO templates removed for new supplier test");
-                    }
-                    else
-                    {
-                        _logger.Information("   - **NO_MANGO_TEMPLATES**: No existing MANGO templates found to remove");
-                    }
-                }
 
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\03152025_TOTAL AMOUNT.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
