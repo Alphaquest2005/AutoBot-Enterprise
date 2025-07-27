@@ -38,10 +38,10 @@ You are performing systematic analysis of a structured business document using l
 ⚠️ **FORBIDDEN ANTI-PATTERN**: Never use numbered capture groups: (pattern) - these will fail in production systems
 
 **🚨 CRITICAL CURRENCY FIELD STANDARDS:**
-**CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO separate errors:
+**CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO LINKED errors:
    **Action 1 - Omission Error**: Create `omission` with `field` = "Currency", `correct_value` = "US$" (original OCR text)
    **Action 2 - Format Correction**: Create `format_correction` with `field` = "Currency", `correct_value` = "USD" (3-letter ISO code)
-This ensures both capture of the original currency symbol AND standardization to international currency codes.
+These errors are RELATED - first capture the original currency symbol, then standardize to international currency codes. Both errors work together to complete currency field correction.
 
 **LOGICAL REASONING APPROACH:**
 1. **Systematic Field Verification**: Compare each extracted field against OCR text using logical pattern matching
