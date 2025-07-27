@@ -14,7 +14,7 @@ namespace WaterNut.DataSpace
     using MoreLinq;
 // Temporary class for LogLevelOverride for debugging purposes.
     // In a production environment, Serilog's LoggingLevelSwitch should be used for dynamic log level control.
-    public partial class Template
+    public partial class Invoice
     {
         #region V11 Static Members (moved here for proper compilation)
         
