@@ -311,11 +311,15 @@ Analyze the OCR text and generate JSON objects in the `errors` array, applying o
 **1. Currency Field Standards:**
 *   **Production Standard**: 3-letter ISO currency codes (USD, EUR, CNY, XCD)
 *   **Common Issues**: ""US$"", ""USS"", ""$"", ""€"", ""£"" → Must convert to ""USD"", ""EUR"", ""GBP""
-*   **CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO separate errors:
-*   **Action 1 - Omission Error**: Create `omission` with `field` = ""Currency"", `correct_value` = ""US$"" (original OCR text)
-*   **Action 2 - Format Correction**: Create `format_correction` with `field` = ""Currency"", `correct_value` = ""USD"" (3-letter ISO code)
-*   **Example**: If OCR shows ""US$"", create BOTH an omission error (to capture ""US$"") AND a format_correction error (to convert to ""USD"")
-*   **Reasoning**: The omission captures the raw currency symbol, the format_correction standardizes it to ISO codes
+*   **CRITICAL TRANSFORMATION CHAIN REQUIREMENT**: For currency fields, you MUST create TWO LINKED errors in transformation sequence:
+*   **Action 1 - Omission Error**: 
+*   - `field` = ""Currency"", `correct_value` = ""US$"", `error_type` = ""omission""
+*   - `group_id` = ""currency_transform_1"", `sequence_order` = 1, `transformation_input` = ""ocr_text""
+*   **Action 2 - Format Correction**: 
+*   - `field` = ""Currency"", `correct_value` = ""USD"", `error_type` = ""format_correction""
+*   - `group_id` = ""currency_transform_1"", `sequence_order` = 2, `transformation_input` = ""previous_output""
+*   **Pipeline**: This creates a TRANSFORMATION PIPELINE: OCR text → capture ""US$"" → standardize to ""USD""
+*   **Reasoning**: The output of Action 1 becomes the input to Action 2, enabling sequential processing
 
 **2. Date Field Standards:**
 *   **Production Standard**: Short date format MM/dd/yyyy (e.g., ""07/23/2024"")
