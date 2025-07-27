@@ -37,6 +37,12 @@ You are performing systematic analysis of a structured business document using l
 ⚠️ **MANDATORY LOGICAL PATTERN**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
 ⚠️ **FORBIDDEN ANTI-PATTERN**: Never use numbered capture groups: (pattern) - these will fail in production systems
 
+**🚨 CRITICAL CURRENCY FIELD STANDARDS:**
+**CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO separate errors:
+   **Action 1 - Omission Error**: Create `omission` with `field` = "Currency", `correct_value` = "US$" (original OCR text)
+   **Action 2 - Format Correction**: Create `format_correction` with `field` = "Currency", `correct_value` = "USD" (3-letter ISO code)
+This ensures both capture of the original currency symbol AND standardization to international currency codes.
+
 **LOGICAL REASONING APPROACH:**
 1. **Systematic Field Verification**: Compare each extracted field against OCR text using logical pattern matching
 2. **Balance Equation Analysis**: Apply mathematical reasoning to identify missing components
