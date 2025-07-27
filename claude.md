@@ -207,27 +207,61 @@ catch (System.Threading.ThreadAbortException threadAbortEx)
 
 **Fix**: Preserve template's original FileType while only assigning context-specific properties (EmailId, FilePath, DocSet).
 
-## 📜 **The Assertive Self-Documenting Logging Mandate v5.0**
+## 🧠 **Enhanced Ultradiagnostic Logging with Business Success Criteria**
 
-**Directive Name**: `ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5`  
-**Status**: ✅ **ACTIVE**  
+### **📋 MANDATORY DIRECTIVE REFERENCE**
 
-**Core Principle**: All diagnostic logging must form a complete, self-contained narrative including architectural intent, historical context, and explicit assertions about expected state.
+**🔗 PRIMARY DIRECTIVE**: [`ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md`](./ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md)  
+**Status**: ✅ **ACTIVE** - Enhanced with Business Success Criteria Validation  
+**Version**: 4.2  
+**Purpose**: Comprehensive diagnostic logging with business outcome validation for definitive root cause analysis  
 
-**🚨 CRITICAL CODE INTEGRITY RULES v5.0**:
+### **🎯 KEY ENHANCEMENTS IN v4.2**
+
+✅ **Business Success Criteria Validation** - Every method logs ✅ PASS or ❌ FAIL indicators  
+✅ **Root Cause Analysis Ready** - First method failure clearly identifiable in logs  
+✅ **Evidence-Based Assessment** - Each criterion includes specific evidence  
+✅ **8-Dimension Success Framework** - Comprehensive business outcome validation  
+✅ **Phase 4 Success Validation** - Added to existing 3-phase LLM diagnostic workflow  
+
+### **🚀 IMPLEMENTATION STATUS**
+
+**✅ TESTED ON**: `DetectHeaderFieldErrorsAndOmissionsAsync` in OCRErrorDetection.cs  
+**🎯 NEXT**: Systematic application to all OCR service files with v4.2 pattern  
+**🏆 GOAL**: 100% comprehensive implementation for definitive root cause analysis capability  
+
+### **📊 SUCCESS CRITERIA FRAMEWORK**
+
+1. **🎯 PURPOSE_FULFILLMENT** - Method achieves stated business objective  
+2. **📊 OUTPUT_COMPLETENESS** - Returns complete, well-formed data structures  
+3. **⚙️ PROCESS_COMPLETION** - All required processing steps executed successfully  
+4. **🔍 DATA_QUALITY** - Output meets business rules and validation requirements  
+5. **🛡️ ERROR_HANDLING** - Appropriate error detection and graceful recovery  
+6. **💼 BUSINESS_LOGIC** - Method behavior aligns with business requirements  
+7. **🔗 INTEGRATION_SUCCESS** - External dependencies respond appropriately  
+8. **⚡ PERFORMANCE_COMPLIANCE** - Execution within reasonable timeframes  
+
+### **🔍 ROOT CAUSE ANALYSIS CAPABILITY**
+
+**The Question**: *"Look at the logs and determine the root cause of failure by looking for the first method to fail its success criteria?"*
+
+**The Answer**: Search logs for first `🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL` with specific ❌ criterion evidence
+
+**🚨 CRITICAL CODE INTEGRITY RULES v4.2**:
 1. **NO CODE DEGRADATION**: Never remove functionality to fix compilation issues
-2. **NO FUNCTIONALITY DROPPING**: Preserve all existing functionality when fixing syntax
+2. **NO FUNCTIONALITY DROPPING**: Preserve all existing functionality when fixing syntax  
 3. **PROPER SYNTAX RESOLUTION**: Fix compilation by correcting syntax while maintaining functionality
 4. **HISTORICAL SOLUTION REFERENCE**: Reference previous successful solutions
-5. **PROPER LOG LEVELS**: NEVER use `.Error()` just for visibility - use appropriate levels with LogLevelOverride
-6. **LOG LEVEL STANDARDS**: Error for actual errors, Warning for potential issues, Information for key operations
+5. **SUCCESS CRITERIA MANDATORY**: Every method must include Phase 4 success validation with ✅/❌ indicators
+6. **EVIDENCE-BASED ASSESSMENT**: Every criterion assessment must include specific evidence for root cause analysis
+7. **PROPER LOG LEVELS**: Use appropriate log levels (.Error() for visibility with LogLevelOverride)
 
-**Mandatory Logging Requirements (What, How, Why, Who, What-If)**:
-- **Log the "What"**: Configuration state, input data, design specifications, expected behavior
-- **Log the "How"**: Internal state, method flow, decision points, data transformations
-- **Log the "Why"**: Architectural intent, design backstory, business rule rationale
-- **Log the "Who"**: Function returns, state changes, error details, success/failure
-- **Log the "What-If"**: Intention assertion, success confirmation, failure diagnosis, context-free understanding
+**📋 COMPLETE DIRECTIVE**: See [`ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md`](./ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md) for:
+- Complete 4-Phase LLM Diagnostic Workflow
+- Business Success Criteria Framework  
+- Implementation Patterns and Examples
+- Root Cause Analysis Guidelines
+- Evidence-Based Assessment Standards
 
 ## 🏗️ **The Established Codebase Respect Mandate v1.0**
 
