@@ -116,33 +116,92 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Helper to find an OCR.Business.Entities.Fields definition within a loaded OCR Template.
-        /// Assumes the ocrTemplate object has its navigation properties (Lines, OCR_Lines.Fields) loaded if not using lazy loading.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Template field definition locator with navigation property traversal
+        /// 
+        /// **LOG_THE_WHAT**: OCR field definition resolver navigating template entity relationships to find specific field
+        /// **LOG_THE_HOW**: Traverses Lines→OCR_Lines→Fields navigation properties using LineId and FieldId selectors
+        /// **LOG_THE_WHY**: Provides template field definition lookup for metadata extraction and field context resolution
+        /// **LOG_THE_WHO**: Returns OCR.Business.Entities.Fields or null if navigation path fails or field not found
+        /// **LOG_THE_WHAT_IF**: Expects loaded navigation properties; handles null references gracefully in chain
         /// </summary>
         private OCR.Business.Entities.Fields FindOcrFieldDefinitionInTemplate(Template ocrTemplate, int lineId, int fieldId)
         {
-            // ocrTemplate.Lines is a collection of InvoiceLine (wrapper), each has an OCR_Lines property.
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete template field definition lookup narrative
+            _logger.Verbose("🔍 **FIELD_DEFINITION_LOOKUP**: Locating OCR field definition in template structure");
+            _logger.Verbose("   - **LOOKUP_PARAMETERS**: LineId={LineId}, FieldId={FieldId}, TemplateId={TemplateId}", 
+                lineId, fieldId, ocrTemplate?.OcrTemplates?.Id ?? 0);
+            _logger.Verbose("   - **NAVIGATION_PATH**: Template→Lines→OCR_Lines→Fields entity relationship traversal");
+            
+            // **LOG_THE_HOW**: Navigation property traversal with null-safe chaining
             var invoiceLineWrapper = ocrTemplate.Lines?.FirstOrDefault(lWrapper => lWrapper.OCR_Lines?.Id == lineId);
-            return invoiceLineWrapper?.OCR_Lines?.Fields?.FirstOrDefault(f => f.Id == fieldId);
+            
+            if (invoiceLineWrapper?.OCR_Lines == null)
+            {
+                _logger.Verbose("⚠️ **LINE_NOT_FOUND**: LineId={LineId} not found in template Lines collection", lineId);
+                return null;
+            }
+            
+            var fieldDefinition = invoiceLineWrapper.OCR_Lines.Fields?.FirstOrDefault(f => f.Id == fieldId);
+            
+            if (fieldDefinition == null)
+            {
+                _logger.Verbose("⚠️ **FIELD_NOT_FOUND**: FieldId={FieldId} not found in LineId={LineId} Fields collection", fieldId, lineId);
+            }
+            else
+            {
+                _logger.Verbose("✅ **FIELD_DEFINITION_FOUND**: Located field '{FieldName}' with Key='{FieldKey}'", 
+                    fieldDefinition.Field, fieldDefinition.Key);
+            }
+            
+            return fieldDefinition;
         }
 
         /// <summary>
-        /// Gets InvoiceContext (ID and Name of the OcrInvoice template definition).
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Invoice context extractor with template identification
+        /// 
+        /// **LOG_THE_WHAT**: Invoice context data extraction providing template identification and naming information
+        /// **LOG_THE_HOW**: Accesses OcrTemplates navigation property, handles null references with fallback logic
+        /// **LOG_THE_WHY**: Provides invoice-level context for metadata objects linking fields to their parent template
+        /// **LOG_THE_WHO**: Returns InvoiceContext with InvoiceId and InvoiceName or empty context for null input
+        /// **LOG_THE_WHAT_IF**: Expects template with OcrTemplates navigation; creates fallback context when missing
         /// </summary>
         private InvoiceContext GetInvoiceContext(Template template)
         {
-            if (template == null) return new InvoiceContext();
-            // template.OcrInvoices is the navigation property to the OCR_Invoices table entry from the Invoice entity.
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete invoice context extraction narrative
+            _logger.Verbose("🔍 **INVOICE_CONTEXT_EXTRACTION**: Extracting invoice-level context from template");
+            
+            if (template == null)
+            {
+                _logger.Verbose("⚠️ **NULL_TEMPLATE**: Template is null - returning empty InvoiceContext");
+                return new InvoiceContext();
+            }
+            
+            // **LOG_THE_HOW**: Navigation property access with fallback handling
             if (template.OcrTemplates == null)
             {
-                _logger.Debug("OCR Template (Invoice.Id: {TemplateId}) does not have OcrInvoices details linked directly. Using Invoice.Id as fallback for context.", template.OcrTemplates.Id);
-                return new InvoiceContext { InvoiceId = template.OcrTemplates.Id, InvoiceName = template.OcrTemplates.Name ?? "Unknown OCR Template Name" };
+                _logger.Debug("⚠️ **MISSING_OCR_TEMPLATES**: Template OcrTemplates navigation property is null");
+                _logger.Debug("   - **FALLBACK_STRATEGY**: Using Template.OcrTemplates.Id as fallback for InvoiceContext");
+                _logger.Debug("   - **CONTEXT_LIMITATION**: Limited context available due to missing navigation property");
+                
+                return new InvoiceContext 
+                { 
+                    InvoiceId = template.OcrTemplates.Id, 
+                    InvoiceName = template.OcrTemplates.Name ?? "Unknown OCR Template Name" 
+                };
             }
-            return new InvoiceContext
+            
+            // **LOG_THE_WHO**: Complete context extraction with full template details
+            var context = new InvoiceContext
             {
                 InvoiceId = template.OcrTemplates.Id,
                 InvoiceName = template.OcrTemplates.Name
             };
+            
+            _logger.Verbose("✅ **INVOICE_CONTEXT_COMPLETE**: InvoiceId={InvoiceId}, Name='{InvoiceName}'", 
+                context.InvoiceId, context.InvoiceName);
+            _logger.Verbose("   - **SUCCESS_ASSERTION**: Complete invoice context extracted for metadata correlation");
+            
+            return context;
         }
 
         /// <summary>
@@ -170,41 +229,77 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Gets FieldFormatRegexInfo for a given database FieldId (OCR.Business.Entities.Fields.Id) by querying the database.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Database field format regex retriever with pattern extraction
+        /// 
+        /// **LOG_THE_WHAT**: Format correction pattern retrieval from FieldFormatRegEx table for automatic data standardization
+        /// **LOG_THE_HOW**: Database query with Include for navigation properties, transforms to FieldFormatRegexInfo objects
+        /// **LOG_THE_WHY**: Provides format correction patterns for metadata objects enabling automatic data format standardization
+        /// **LOG_THE_WHO**: Returns List<FieldFormatRegexInfo> with pattern and replacement regexes or empty list
+        /// **LOG_THE_WHAT_IF**: Expects valid FieldId; handles database errors gracefully; returns empty list on failure
         /// </summary>
         private List<FieldFormatRegexInfo> GetFieldFormatRegexesFromDb(int? fieldDefinitionId)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete format regex retrieval narrative
+            _logger.Verbose("📊 **FORMAT_REGEX_RETRIEVAL**: Retrieving field format correction patterns from database");
+            _logger.Verbose("   - **ARCHITECTURAL_INTENT**: Load automatic format correction patterns for field data standardization");
+            _logger.Verbose("   - **QUERY_TARGET**: FieldDefinitionId={FieldDefinitionId}", fieldDefinitionId);
+            
             var formatRegexesInfoList = new List<FieldFormatRegexInfo>();
-            if (!fieldDefinitionId.HasValue) return formatRegexesInfoList;
+            
+            if (!fieldDefinitionId.HasValue)
+            {
+                _logger.Verbose("⚠️ **NULL_FIELD_ID**: FieldDefinitionId is null - returning empty format regex list");
+                return formatRegexesInfoList;
+            }
 
             try
             {
+                // **LOG_THE_HOW**: Database context creation and query execution
+                _logger.Verbose("💾 **DATABASE_QUERY_START**: Executing FieldFormatRegEx query with navigation includes");
+                
                 using (var ctx = new OCRContext())
                 {
-                    // Ensure navigation property names match your EF model for FieldFormatRegEx -> RegularExpressions
                     var dbFieldFormats = ctx.OCR_FieldFormatRegEx
                         .Where(ffr => ffr.FieldId == fieldDefinitionId.Value)
-                        .Include(ffr => ffr.RegEx)     // Assumes navigation property name for pattern regex is "RegEx"
-                        .Include(ffr => ffr.ReplacementRegEx)    // Assumes navigation property name for replacement regex is "ReplacementRegEx"
+                        .Include(ffr => ffr.RegEx)
+                        .Include(ffr => ffr.ReplacementRegEx)
                         .ToList();
 
+                    _logger.Verbose("📊 **QUERY_RESULT**: Found {FormatCount} format correction rules for field", dbFieldFormats.Count);
+
+                    // **LOG_THE_WHO**: Format regex transformation and object creation
                     foreach (var dbffr in dbFieldFormats)
                     {
-                        formatRegexesInfoList.Add(new FieldFormatRegexInfo
+                        var formatInfo = new FieldFormatRegexInfo
                         {
                             FormatRegexId = dbffr.Id,
                             RegexId = dbffr.RegExId,
                             ReplacementRegexId = dbffr.ReplacementRegExId,
                             Pattern = dbffr.RegEx?.RegEx,
                             Replacement = dbffr.ReplacementRegEx?.RegEx
-                        });
+                        };
+                        
+                        formatRegexesInfoList.Add(formatInfo);
+                        
+                        _logger.Verbose("🔧 **FORMAT_RULE_LOADED**: Pattern='{Pattern}' → Replacement='{Replacement}'", 
+                            formatInfo.Pattern, formatInfo.Replacement);
                     }
                 }
+                
+                // **LOG_THE_WHAT_IF**: Successful retrieval completion
+                _logger.Verbose("✅ **FORMAT_REGEX_RETRIEVAL_COMPLETE**: {RuleCount} format correction rules loaded successfully", 
+                    formatRegexesInfoList.Count);
             }
             catch (Exception ex)
             {
-                _logger?.Error(ex, "Error retrieving field format regexes from DB for FieldDefinitionId {FieldDefId}", fieldDefinitionId.Value);
+                // **LOG_THE_WHAT_IF**: Database error handling with comprehensive diagnostics
+                _logger.Error(ex, "❌ **FORMAT_REGEX_RETRIEVAL_ERROR**: Database error retrieving format correction patterns");
+                _logger.Error("   - **ERROR_CONTEXT**: FieldDefinitionId={FieldDefId}, ExceptionType={ExceptionType}", 
+                    fieldDefinitionId.Value, ex.GetType().Name);
+                _logger.Error("   - **IMPACT_ASSESSMENT**: Field will not have format correction patterns available");
+                _logger.Error("   - **FALLBACK_BEHAVIOR**: Returning empty format regex list for graceful degradation");
             }
+            
             return formatRegexesInfoList;
         }
 
