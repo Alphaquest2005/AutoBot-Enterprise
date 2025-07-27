@@ -283,16 +283,16 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                var fixed = result.ToString();
+                var fixedJson = result.ToString();
                 
                 // Log if we made any fixes
-                if (fixed != json)
+                if (fixedJson != json)
                 {
                     _logger?.Information("✅ **JSON_ESCAPING_APPLIED**: Fixed {Changes} JSON escaping issues", 
-                        json.Length - fixed.Length);
+                        json.Length - fixedJson.Length);
                 }
 
-                return fixed;
+                return fixedJson;
             }
             catch (Exception ex)
             {
