@@ -95,11 +95,8 @@ namespace WaterNut.DataSpace
             {
                 try
                 {
-                    // Set provider-specific maxTokens: use minimum of requested vs Gemini limit
-                    var geminiTokens = maxTokens.HasValue ? Math.Min(maxTokens.Value, GeminiMaxTokens) : GeminiMaxTokens;
-                    
-                    _logger.Information("2️⃣ **TRYING_GEMINI**: Attempting Gemini API call (fallback) with {TokenLimit} tokens", geminiTokens);
-                    var geminiResponse = await CallGeminiAsync(prompt, temperature ?? 0.3, geminiTokens, cancellationToken);
+                    _logger.Information("2️⃣ **TRYING_GEMINI**: Attempting Gemini API call (fallback) with {TokenLimit} tokens", GeminiMaxTokens);
+                    var geminiResponse = await CallGeminiAsync(prompt, temperature ?? 0.3, GeminiMaxTokens, cancellationToken);
                     
                     _logger.Information("✅ **GEMINI_SUCCESS**: Gemini responded successfully (FALLBACK SUCCESS) - Length: {ResponseLength}", geminiResponse?.Length ?? 0);
                     return geminiResponse;
