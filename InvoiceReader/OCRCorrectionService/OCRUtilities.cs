@@ -199,6 +199,107 @@ namespace WaterNut.DataSpace
             return fixedJson;
         }
 
+        /// <summary>
+        /// Fixes common JSON string escaping issues that cause parsing failures.
+        /// Specifically addresses: invalid escape sequences like \', unescaped quotes, etc.
+        /// </summary>
+        private string FixJsonStringEscaping(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return json;
+
+            try
+            {
+                var result = new StringBuilder(json.Length);
+                bool inString = false;
+                bool inEscape = false;
+
+                for (int i = 0; i < json.Length; i++)
+                {
+                    char current = json[i];
+                    char next = (i + 1 < json.Length) ? json[i + 1] : '\0';
+
+                    if (!inString)
+                    {
+                        // Outside strings - copy as-is and detect string starts
+                        result.Append(current);
+                        if (current == '"') inString = true;
+                    }
+                    else
+                    {
+                        // Inside strings - handle escaping
+                        if (inEscape)
+                        {
+                            // Previous char was backslash - validate escape sequence
+                            switch (current)
+                            {
+                                case '"':
+                                case '\\':
+                                case '/':
+                                case 'b':
+                                case 'f':
+                                case 'n':
+                                case 'r':
+                                case 't':
+                                    // Valid escape sequences
+                                    result.Append(current);
+                                    break;
+                                case 'u':
+                                    // Unicode escape - need to validate 4 hex digits follow
+                                    result.Append(current);
+                                    break;
+                                case '\'':
+                                    // **CRITICAL FIX**: Single quote doesn't need escaping in JSON
+                                    _logger?.Warning("🔧 **FIXED_INVALID_ESCAPE**: Removed invalid escape sequence \\' -> '");
+                                    result.Length--; // Remove the backslash we just added
+                                    result.Append('\'');
+                                    break;
+                                default:
+                                    // Invalid escape sequence - remove the backslash
+                                    _logger?.Warning("🔧 **FIXED_INVALID_ESCAPE**: Removed invalid escape sequence \\{Character} -> {Character}", current, current);
+                                    result.Length--; // Remove the backslash we just added
+                                    result.Append(current);
+                                    break;
+                            }
+                            inEscape = false;
+                        }
+                        else if (current == '\\')
+                        {
+                            // Start of escape sequence
+                            result.Append(current);
+                            inEscape = true;
+                        }
+                        else if (current == '"')
+                        {
+                            // End of string
+                            result.Append(current);
+                            inString = false;
+                        }
+                        else
+                        {
+                            // Regular character in string
+                            result.Append(current);
+                        }
+                    }
+                }
+
+                var fixed = result.ToString();
+                
+                // Log if we made any fixes
+                if (fixed != json)
+                {
+                    _logger?.Information("✅ **JSON_ESCAPING_APPLIED**: Fixed {Changes} JSON escaping issues", 
+                        json.Length - fixed.Length);
+                }
+
+                return fixed;
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, "❌ **JSON_ESCAPING_FAILED**: Error fixing JSON escaping, returning original");
+                return json;
+            }
+        }
+
         #endregion
 
         #region JSON Element Parsing Utilities (with Logging)
