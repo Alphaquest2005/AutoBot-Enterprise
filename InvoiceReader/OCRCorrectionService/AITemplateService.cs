@@ -44,6 +44,13 @@ namespace WaterNut.DataSpace
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             
+            // Get API keys from environment variables (same as OCRLlmClient)
+            _deepSeekApiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY");
+            _geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            
+            _logger.Information("🔑 **API_KEYS_LOADED**: DeepSeek={HasDeepSeek}, Gemini={HasGemini}", 
+                !string.IsNullOrWhiteSpace(_deepSeekApiKey), !string.IsNullOrWhiteSpace(_geminiApiKey));
+            
             // Setup paths
             var rootPath = basePath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OCRCorrectionService");
             _templateBasePath = Path.Combine(rootPath, "Templates");
@@ -63,8 +70,8 @@ namespace WaterNut.DataSpace
             _providerConfigs = LoadProviderConfigs();
             _systemConfig = LoadSystemConfig();
             
-            _logger.Information("🚀 **AI_TEMPLATE_SERVICE_INITIALIZED**: Base path='{BasePath}', Providers={ProviderCount}", 
-                rootPath, _providerConfigs.Count);
+            _logger.Information("🚀 **AI_TEMPLATE_SERVICE_INITIALIZED**: Base path='{BasePath}', Providers={ProviderCount}, HasAPIKeys={HasKeys}", 
+                rootPath, _providerConfigs.Count, !string.IsNullOrWhiteSpace(_deepSeekApiKey) || !string.IsNullOrWhiteSpace(_geminiApiKey));
         }
 
         #endregion
