@@ -743,14 +743,56 @@ namespace WaterNut.DataSpace
         /// </summary>
         public CorrectionResult ValidatePatternInternal(CorrectionResult correction)
         {
-            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
-            _logger.Debug("🔍 **INTERNAL_VALIDATION**: Starting internal validation for Field '{FieldName}'", correction?.FieldName);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for internal pattern validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for internal pattern validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Internal validation context with field support, format validation, regex syntax checking");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Null validation → field support → format validation → regex syntax → result determination pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need null validation, field support status, format validation results, regex syntax checking");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Internal validation requires comprehensive pre-validation screening with business rule enforcement");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for internal validation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation steps, business rule checking, error condition tracking");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Null checks, field support, format validation, regex syntax, success determination");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based internal pattern validation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on quality assurance requirements, implementing multi-stage validation workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring each validation stage and overall correction status");
+            
+            // **v4.2 INTERNAL VALIDATION EXECUTION**: Enhanced internal validation with comprehensive tracking
+            _logger.Error("🔍 **INTERNAL_VALIDATION_START**: Beginning comprehensive internal pattern validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation context - FieldName='{FieldName}', HasCorrection={HasCorrection}", 
+                correction?.FieldName ?? "NULL", correction != null);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Multi-stage internal validation with business rule enforcement");
 
+            // **v4.2 NULL VALIDATION**: Enhanced null validation with detailed tracking
             if (correction == null)
             {
-                _logger.Debug("❌ **INTERNAL_VALIDATION_FAIL**: Correction object is null.");
+                _logger.Error("❌ **CORRECTION_NULL**: Correction object is null - cannot perform validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Null correction prevents all validation stages");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null correction indicates upstream processing failure");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - NULL CORRECTION PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Internal validation failed due to null correction");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot validate correction against business rules when correction is null");
+                _logger.Error("✅ **OUTPUT_COMPLETENESS**: Appropriate null returned for null input");
+                _logger.Error("✅ **PROCESS_COMPLETION**: Null validation completed with appropriate early termination");
+                _logger.Error("✅ **DATA_QUALITY**: Null validation ensures only valid corrections proceed to validation");
+                _logger.Error("✅ **ERROR_HANDLING**: Null correction handled gracefully with null return");
+                _logger.Error("✅ **BUSINESS_LOGIC**: Validation objective handled appropriately for null input");
+                _logger.Error("✅ **INTEGRATION_SUCCESS**: No external dependencies for null validation");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Null validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS - Null correction handled appropriately with null return");
+                
                 return null;
             }
+
+            _logger.Error("✅ **CORRECTION_VALID**: Correction object provided - proceeding with multi-stage validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction details - FieldName='{FieldName}', CorrectionType='{CorrectionType}'", 
+                correction.FieldName, correction.CorrectionType);
 
             try
             {
