@@ -161,18 +161,8 @@ namespace WaterNut.DataSpace
 
         private string LoadTemplateAsync(string provider, string templateType, string supplierName)
         {
-            // Provider-specific + supplier-specific template selection
-            var templatePaths = new[]
-            {
-                // 1. Supplier-specific template for provider (e.g., deepseek/mango-header.txt)
-                Path.Combine(_templateBasePath, provider, $"{supplierName?.ToLower()}-{templateType}.txt"),
-                
-                // 2. Standard template for provider (e.g., deepseek/header-detection.txt)
-                Path.Combine(_templateBasePath, provider, $"{templateType}.txt"),
-                
-                // 3. Default fallback template (e.g., default/header-detection.txt)
-                Path.Combine(_templateBasePath, "default", $"{templateType}.txt")
-            };
+            // Check for versioned templates first, then fall back to standard templates
+            var templatePaths = GetTemplateLoadPaths(provider, templateType, supplierName);
 
             foreach (var path in templatePaths)
             {
@@ -184,6 +174,82 @@ namespace WaterNut.DataSpace
             }
 
             throw new FileNotFoundException($"No template found for {provider}/{templateType} (supplier: {supplierName})");
+        }
+
+        /// <summary>
+        /// Gets template loading paths in priority order, including versioned templates.
+        /// </summary>
+        private string[] GetTemplateLoadPaths(string provider, string templateType, string supplierName)
+        {
+            var paths = new List<string>();
+            
+            // Check for latest versioned templates first
+            var latestVersion = GetLatestTemplateVersion(provider, templateType, supplierName);
+            
+            if (latestVersion > 0)
+            {
+                var baseFileName = !string.IsNullOrEmpty(supplierName)
+                    ? $"{supplierName.ToLower()}-{templateType}"
+                    : templateType;
+                
+                // 1. Latest versioned supplier-specific template
+                if (!string.IsNullOrEmpty(supplierName))
+                {
+                    paths.Add(Path.Combine(_templateBasePath, provider, $"{baseFileName}-v{latestVersion}.txt"));
+                }
+                
+                // 2. Latest versioned standard template
+                paths.Add(Path.Combine(_templateBasePath, provider, $"{templateType}-v{latestVersion}.txt"));
+            }
+            
+            // 3. Standard supplier-specific template for provider
+            if (!string.IsNullOrEmpty(supplierName))
+            {
+                paths.Add(Path.Combine(_templateBasePath, provider, $"{supplierName.ToLower()}-{templateType}.txt"));
+            }
+            
+            // 4. Standard template for provider
+            paths.Add(Path.Combine(_templateBasePath, provider, $"{templateType}.txt"));
+            
+            // 5. Default fallback template
+            paths.Add(Path.Combine(_templateBasePath, "default", $"{templateType}.txt"));
+            
+            return paths.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the latest version number for a template, or 0 if no versions exist.
+        /// </summary>
+        private int GetLatestTemplateVersion(string provider, string templateType, string supplierName)
+        {
+            try
+            {
+                var versionTrackingPath = Path.Combine(_configBasePath, "template-versions.json");
+                
+                if (!File.Exists(versionTrackingPath))
+                {
+                    return 0;
+                }
+                
+                var versionJson = File.ReadAllText(versionTrackingPath);
+                var versionData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(versionJson)
+                                  ?? new Dictionary<string, Dictionary<string, int>>();
+                
+                if (!versionData.ContainsKey(provider))
+                {
+                    return 0;
+                }
+                
+                var templateKey = $"{provider}/{(!string.IsNullOrEmpty(supplierName) ? $"{supplierName.ToLower()}-" : "")}{templateType}";
+                
+                return versionData[provider].TryGetValue(templateKey, out var version) ? version : 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning(ex, "⚠️ **VERSION_CHECK_FAILED**: Could not check template version for {Provider}/{TemplateType}", 
+                    provider, templateType);
+                return 0;
+            }
         }
 
         private TemplateValidationResult ValidateTemplate(string template, string provider)
@@ -441,6 +507,540 @@ Your primary goal is to find all missing values in the text that account for thi
             }
             
             return result;
+        }
+
+        #endregion
+
+        #region Self-Improving Template System (Pattern Failure Detection & Auto-Improvement)
+
+        /// <summary>
+        /// Detects when regex patterns fail (return zero matches) and triggers automatic template improvement.
+        /// This is the core of the self-improving system.
+        /// </summary>
+        public async Task<bool> DetectAndHandlePatternFailure(
+            string templateUsed,
+            List<string> regexPatterns,
+            string actualText,
+            string provider,
+            string templateType,
+            string supplierName)
+        {
+            try
+            {
+                _logger.Information("🔍 **PATTERN_FAILURE_DETECTION**: Analyzing {PatternCount} regex patterns for zero matches",
+                    regexPatterns?.Count ?? 0);
+
+                var failedPatterns = new List<FailedPatternInfo>();
+                
+                // Test each regex pattern against actual text
+                foreach (var pattern in regexPatterns ?? new List<string>())
+                {
+                    if (string.IsNullOrEmpty(pattern)) continue;
+                    
+                    try
+                    {
+                        var regex = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        var matches = regex.Matches(actualText);
+                        
+                        if (matches.Count == 0)
+                        {
+                            _logger.Warning("⚠️ **PATTERN_FAILED**: Pattern '{Pattern}' returned zero matches", pattern);
+                            failedPatterns.Add(new FailedPatternInfo
+                            {
+                                Pattern = pattern,
+                                FailureReason = "Zero matches found",
+                                ActualText = actualText
+                            });
+                        }
+                        else
+                        {
+                            _logger.Information("✅ **PATTERN_SUCCESS**: Pattern '{Pattern}' found {MatchCount} matches", 
+                                pattern, matches.Count);
+                        }
+                    }
+                    catch (Exception regexEx)
+                    {
+                        _logger.Error(regexEx, "❌ **PATTERN_INVALID**: Regex pattern '{Pattern}' is invalid", pattern);
+                        failedPatterns.Add(new FailedPatternInfo
+                        {
+                            Pattern = pattern,
+                            FailureReason = $"Invalid regex: {regexEx.Message}",
+                            ActualText = actualText
+                        });
+                    }
+                }
+
+                // If we have failed patterns, trigger improvement cycle
+                if (failedPatterns.Any())
+                {
+                    _logger.Warning("🚨 **TEMPLATE_IMPROVEMENT_TRIGGERED**: {FailedCount} patterns failed, starting improvement cycle",
+                        failedPatterns.Count);
+                    
+                    return await ProcessTemplateImprovementCycle(
+                        templateUsed,
+                        failedPatterns,
+                        actualText,
+                        provider,
+                        templateType,
+                        supplierName);
+                }
+                
+                _logger.Information("✅ **ALL_PATTERNS_WORKING**: No pattern failures detected");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **PATTERN_FAILURE_DETECTION_ERROR**: Failed to analyze patterns");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Main orchestration method for the self-improving template system.
+        /// Cycles through AI provider improvements until patterns work or max attempts reached.
+        /// </summary>
+        public async Task<bool> ProcessTemplateImprovementCycle(
+            string currentTemplate,
+            List<FailedPatternInfo> failedPatterns,
+            string actualText,
+            string provider,
+            string templateType,
+            string supplierName,
+            int maxAttempts = 3)
+        {
+            try
+            {
+                _logger.Information("🔄 **IMPROVEMENT_CYCLE_START**: Starting template improvement cycle for {Provider}/{TemplateType}",
+                    provider, templateType);
+
+                var currentTemplateContent = currentTemplate;
+                var attemptNumber = 1;
+                
+                while (attemptNumber <= maxAttempts)
+                {
+                    _logger.Information("🔄 **IMPROVEMENT_ATTEMPT_{AttemptNumber}**: Requesting template improvements from AI providers",
+                        attemptNumber);
+                    
+                    // Request improvements from both DeepSeek and Gemini
+                    var deepseekImprovement = await RequestTemplateImprovementAsync(
+                        "deepseek", currentTemplateContent, failedPatterns, actualText, templateType, supplierName);
+                    
+                    var geminiImprovement = await RequestTemplateImprovementAsync(
+                        "gemini", currentTemplateContent, failedPatterns, actualText, templateType, supplierName);
+                    
+                    // Choose the best improvement (prefer provider-specific, then highest confidence)
+                    var chosenImprovement = ChooseBestImprovement(deepseekImprovement, geminiImprovement, provider);
+                    
+                    if (chosenImprovement != null)
+                    {
+                        // Save improved template as new version
+                        var versionedTemplatePath = await SaveImprovedTemplateVersion(
+                            provider, templateType, supplierName, chosenImprovement.ImprovedTemplate, attemptNumber);
+                        
+                        _logger.Information("💾 **TEMPLATE_VERSION_SAVED**: Saved improved template v{Version} to {Path}",
+                            attemptNumber, versionedTemplatePath);
+                        
+                        // Test the improved template
+                        var testResult = await TestImprovedTemplate(
+                            chosenImprovement.ImprovedTemplate, actualText, chosenImprovement.ImprovedPatterns);
+                        
+                        if (testResult.Success)
+                        {
+                            _logger.Information("✅ **IMPROVEMENT_SUCCESS**: Template improvement successful after {Attempts} attempts",
+                                attemptNumber);
+                            return true;
+                        }
+                        else
+                        {
+                            _logger.Warning("⚠️ **IMPROVEMENT_FAILED**: Template v{Version} still has {FailedCount} failing patterns",
+                                attemptNumber, testResult.FailedPatterns.Count);
+                            
+                            // Update failed patterns for next iteration
+                            failedPatterns = testResult.FailedPatterns;
+                            currentTemplateContent = chosenImprovement.ImprovedTemplate;
+                        }
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **NO_IMPROVEMENTS**: AI providers returned no valid improvements for attempt {Attempt}",
+                            attemptNumber);
+                    }
+                    
+                    attemptNumber++;
+                }
+                
+                _logger.Error("❌ **IMPROVEMENT_CYCLE_FAILED**: Template improvement failed after {MaxAttempts} attempts",
+                    maxAttempts);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **IMPROVEMENT_CYCLE_ERROR**: Exception during template improvement cycle");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Requests template improvement from a specific AI provider.
+        /// </summary>
+        private async Task<TemplateImprovementResponse> RequestTemplateImprovementAsync(
+            string provider,
+            string currentTemplate,
+            List<FailedPatternInfo> failedPatterns,
+            string actualText,
+            string templateType,
+            string supplierName)
+        {
+            try
+            {
+                _logger.Information("🤖 **REQUESTING_IMPROVEMENT**: Asking {Provider} to improve template", provider);
+                
+                var improvementPrompt = CreateTemplateImprovementPrompt(
+                    provider, currentTemplate, failedPatterns, actualText, templateType, supplierName);
+                
+                var response = await CallAIProviderAsync(provider, improvementPrompt);
+                
+                if (string.IsNullOrEmpty(response))
+                {
+                    _logger.Warning("⚠️ **NO_RESPONSE**: {Provider} returned empty response for template improvement", provider);
+                    return null;
+                }
+                
+                return ParseTemplateImprovementResponse(response, provider);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **IMPROVEMENT_REQUEST_FAILED**: Failed to get template improvement from {Provider}", provider);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a detailed prompt asking an AI provider to improve a failing template.
+        /// </summary>
+        private string CreateTemplateImprovementPrompt(
+            string provider,
+            string currentTemplate,
+            List<FailedPatternInfo> failedPatterns,
+            string actualText,
+            string templateType,
+            string supplierName)
+        {
+            var failedPatternsText = string.Join("\n", failedPatterns.Select((fp, i) => 
+                $"{i + 1}. Pattern: {fp.Pattern}\n   Reason: {fp.FailureReason}"));
+            
+            var actualTextTruncated = actualText.Length > 2000 ? actualText.Substring(0, 2000) + "..." : actualText;
+            
+            return $@"
+You are an expert prompt engineer specializing in {provider.ToUpper()} optimization. 
+A template for {templateType} processing (supplier: {supplierName ?? "Generic"}) is failing because its regex patterns don't match the actual text.
+
+**CURRENT FAILING TEMPLATE:**
+{currentTemplate}
+
+**FAILED PATTERNS:**
+{failedPatternsText}
+
+**ACTUAL TEXT TO MATCH:**
+{actualTextTruncated}
+
+**YOUR TASK:**
+Analyze why the regex patterns are failing and create an improved template that will successfully extract data from this text.
+
+**REQUIREMENTS:**
+1. Keep the same template structure and variables ({{invoiceJson}}, {{fileText}}, etc.)
+2. Focus on improving the regex pattern generation instructions
+3. Add specific guidance for this supplier's text format
+4. Ensure all regex patterns use named capture groups: (?<FieldName>pattern)
+5. Make instructions more specific to prevent zero-match failures
+
+**RESPONSE FORMAT:**
+Return your response as JSON:
+{{
+  ""provider"": ""{provider}"",
+  ""confidence"": 0.85,
+  ""improvements_made"": [
+    ""Specific improvement 1"",
+    ""Specific improvement 2""
+  ],
+  ""improved_template"": ""Your complete improved template here"",
+  ""improved_patterns"": [
+    ""(?<InvoiceTotal>pattern1)"",
+    ""(?<InvoiceDate>pattern2)""
+  ],
+  ""reasoning"": ""Explanation of why these improvements will work""
+}}
+
+**{provider.ToUpper()}-SPECIFIC OPTIMIZATION:**
+{GetProviderSpecificGuidance(provider)}
+";
+        }
+
+        /// <summary>
+        /// Provides provider-specific guidance for template improvements.
+        /// </summary>
+        private string GetProviderSpecificGuidance(string provider)
+        {
+            return provider.ToLower() switch
+            {
+                "deepseek" => @"
+- Leverage DeepSeek's logical reasoning to create more robust pattern matching
+- Use systematic analysis to identify text structure patterns
+- Focus on logical edge case handling in regex patterns
+- Create step-by-step reasoning for pattern construction",
+                "gemini" => @"
+- Utilize Gemini's comprehensive understanding of document formats
+- Focus on contextual pattern recognition across different layouts
+- Leverage multi-modal reasoning for text structure analysis
+- Create adaptive patterns that work across format variations",
+                _ => "Focus on creating robust, specific regex patterns that match the actual text format."
+            };
+        }
+
+        /// <summary>
+        /// Parses the AI provider's template improvement response.
+        /// </summary>
+        private TemplateImprovementResponse ParseTemplateImprovementResponse(string response, string provider)
+        {
+            try
+            {
+                var cleanJson = ExtractJsonFromProviderResponse(response, provider);
+                if (string.IsNullOrEmpty(cleanJson))
+                {
+                    _logger.Warning("⚠️ **PARSE_FAILED**: No valid JSON found in {Provider} improvement response", provider);
+                    return null;
+                }
+                
+                using var doc = JsonDocument.Parse(cleanJson);
+                var root = doc.RootElement;
+                
+                var improvements = new List<string>();
+                if (root.TryGetProperty("improvements_made", out var improvementsArray) && 
+                    improvementsArray.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in improvementsArray.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.String)
+                        {
+                            improvements.Add(item.GetString());
+                        }
+                    }
+                }
+                
+                var patterns = new List<string>();
+                if (root.TryGetProperty("improved_patterns", out var patternsArray) && 
+                    patternsArray.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in patternsArray.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.String)
+                        {
+                            patterns.Add(item.GetString());
+                        }
+                    }
+                }
+                
+                return new TemplateImprovementResponse
+                {
+                    Provider = provider,
+                    Confidence = GetDoubleValueWithLogging(root, "confidence", 0, 0.5),
+                    ImprovementsMade = improvements,
+                    ImprovedTemplate = GetStringValueWithLogging(root, "improved_template", 0) ?? "",
+                    ImprovedPatterns = patterns,
+                    Reasoning = GetStringValueWithLogging(root, "reasoning", 0, isOptional: true) ?? ""
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **PARSE_IMPROVEMENT_FAILED**: Failed to parse {Provider} improvement response", provider);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Chooses the best improvement from multiple AI provider responses.
+        /// </summary>
+        private TemplateImprovementResponse ChooseBestImprovement(
+            TemplateImprovementResponse deepseekResponse,
+            TemplateImprovementResponse geminiResponse,
+            string preferredProvider)
+        {
+            var responses = new[] { deepseekResponse, geminiResponse }
+                .Where(r => r != null && !string.IsNullOrEmpty(r.ImprovedTemplate))
+                .ToList();
+            
+            if (!responses.Any())
+            {
+                _logger.Warning("⚠️ **NO_VALID_IMPROVEMENTS**: No valid improvements received from any provider");
+                return null;
+            }
+            
+            // Prefer the provider-specific response if available
+            var preferredResponse = responses.FirstOrDefault(r => r.Provider.Equals(preferredProvider, StringComparison.OrdinalIgnoreCase));
+            if (preferredResponse != null)
+            {
+                _logger.Information("✅ **CHOSEN_PREFERRED**: Selected {Provider} improvement (preferred provider)", preferredProvider);
+                return preferredResponse;
+            }
+            
+            // Otherwise, choose the highest confidence response
+            var bestResponse = responses.OrderByDescending(r => r.Confidence).First();
+            _logger.Information("✅ **CHOSEN_BEST**: Selected {Provider} improvement (confidence: {Confidence})", 
+                bestResponse.Provider, bestResponse.Confidence);
+            
+            return bestResponse;
+        }
+
+        /// <summary>
+        /// Saves an improved template as a new version file.
+        /// </summary>
+        private async Task<string> SaveImprovedTemplateVersion(
+            string provider,
+            string templateType,
+            string supplierName,
+            string improvedTemplate,
+            int versionNumber)
+        {
+            try
+            {
+                // Determine template file name
+                var baseFileName = !string.IsNullOrEmpty(supplierName)
+                    ? $"{supplierName.ToLower()}-{templateType}"
+                    : templateType;
+                
+                var versionedFileName = $"{baseFileName}-v{versionNumber}.txt";
+                var templatePath = Path.Combine(_templateBasePath, provider, versionedFileName);
+                
+                // Ensure directory exists
+                Directory.CreateDirectory(Path.GetDirectoryName(templatePath));
+                
+                // Write improved template
+                await Task.Run(() => File.WriteAllText(templatePath, improvedTemplate));
+                
+                _logger.Information("💾 **TEMPLATE_SAVED**: Saved improved template to {Path}", templatePath);
+                
+                // Update template loading to use the latest version
+                UpdateTemplateVersionTracking(provider, templateType, supplierName, versionNumber);
+                
+                return templatePath;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **SAVE_TEMPLATE_FAILED**: Failed to save improved template v{Version}", versionNumber);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Updates template version tracking to use the latest version.
+        /// </summary>
+        private void UpdateTemplateVersionTracking(string provider, string templateType, string supplierName, int versionNumber)
+        {
+            try
+            {
+                var versionTrackingPath = Path.Combine(_configBasePath, "template-versions.json");
+                
+                var versionData = new Dictionary<string, Dictionary<string, int>>();
+                if (File.Exists(versionTrackingPath))
+                {
+                    var existingJson = File.ReadAllText(versionTrackingPath);
+                    versionData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(existingJson) 
+                                  ?? new Dictionary<string, Dictionary<string, int>>();
+                }
+                
+                var templateKey = $"{provider}/{(!string.IsNullOrEmpty(supplierName) ? $"{supplierName.ToLower()}-" : "")}{templateType}";
+                
+                if (!versionData.ContainsKey(provider))
+                {
+                    versionData[provider] = new Dictionary<string, int>();
+                }
+                
+                versionData[provider][templateKey] = versionNumber;
+                
+                var json = JsonSerializer.Serialize(versionData, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(versionTrackingPath, json);
+                
+                _logger.Information("📊 **VERSION_TRACKING_UPDATED**: {TemplateKey} now at v{Version}", templateKey, versionNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **VERSION_TRACKING_FAILED**: Failed to update version tracking");
+            }
+        }
+
+        /// <summary>
+        /// Tests an improved template against actual text to verify patterns work.
+        /// </summary>
+        private async Task<TemplateTestResult> TestImprovedTemplate(
+            string improvedTemplate,
+            string actualText,
+            List<string> improvedPatterns)
+        {
+            try
+            {
+                _logger.Information("🧪 **TESTING_TEMPLATE**: Testing improved template with {PatternCount} patterns",
+                    improvedPatterns?.Count ?? 0);
+                
+                var failedPatterns = new List<FailedPatternInfo>();
+                var successfulPatterns = new List<string>();
+                
+                foreach (var pattern in improvedPatterns ?? new List<string>())
+                {
+                    if (string.IsNullOrEmpty(pattern)) continue;
+                    
+                    try
+                    {
+                        var regex = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        var matches = regex.Matches(actualText);
+                        
+                        if (matches.Count == 0)
+                        {
+                            failedPatterns.Add(new FailedPatternInfo
+                            {
+                                Pattern = pattern,
+                                FailureReason = "Zero matches found",
+                                ActualText = actualText
+                            });
+                        }
+                        else
+                        {
+                            successfulPatterns.Add(pattern);
+                        }
+                    }
+                    catch (Exception regexEx)
+                    {
+                        failedPatterns.Add(new FailedPatternInfo
+                        {
+                            Pattern = pattern,
+                            FailureReason = $"Invalid regex: {regexEx.Message}",
+                            ActualText = actualText
+                        });
+                    }
+                }
+                
+                var success = !failedPatterns.Any();
+                _logger.Information("🧪 **TEST_RESULT**: Success={Success}, Working={WorkingCount}, Failed={FailedCount}",
+                    success, successfulPatterns.Count, failedPatterns.Count);
+                
+                return new TemplateTestResult
+                {
+                    Success = success,
+                    SuccessfulPatterns = successfulPatterns,
+                    FailedPatterns = failedPatterns,
+                    ImprovedTemplate = improvedTemplate
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **TEMPLATE_TEST_FAILED**: Exception during template testing");
+                return new TemplateTestResult
+                {
+                    Success = false,
+                    FailedPatterns = new List<FailedPatternInfo>(),
+                    SuccessfulPatterns = new List<string>(),
+                    ImprovedTemplate = improvedTemplate
+                };
+            }
         }
 
         #endregion
@@ -735,6 +1335,35 @@ If you find no new omissions or corrections, return an empty errors array with d
 **MANDATORY RESPONSE FORMAT:**
 - **If errors found**: {{ ""errors"": [error objects] }}
 - **If NO errors found**: {{ ""errors"": [], ""explanation"": ""Detailed explanation of why no corrections are needed"" }}";
+        }
+
+        #endregion
+
+        #region Self-Improving System Data Models
+
+        public class FailedPatternInfo
+        {
+            public string Pattern { get; set; }
+            public string FailureReason { get; set; }
+            public string ActualText { get; set; }
+        }
+
+        public class TemplateImprovementResponse
+        {
+            public string Provider { get; set; }
+            public double Confidence { get; set; }
+            public List<string> ImprovementsMade { get; set; } = new List<string>();
+            public string ImprovedTemplate { get; set; }
+            public List<string> ImprovedPatterns { get; set; } = new List<string>();
+            public string Reasoning { get; set; }
+        }
+
+        public class TemplateTestResult
+        {
+            public bool Success { get; set; }
+            public List<string> SuccessfulPatterns { get; set; } = new List<string>();
+            public List<FailedPatternInfo> FailedPatterns { get; set; } = new List<FailedPatternInfo>();
+            public string ImprovedTemplate { get; set; }
         }
 
         #endregion
