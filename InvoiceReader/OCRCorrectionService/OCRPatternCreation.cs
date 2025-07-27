@@ -633,7 +633,46 @@ namespace WaterNut.DataSpace
             return null;
         }
 
-        private (string, string)? CreateSpaceManipulationPattern(string o, string c) =>
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Space manipulation pattern creation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Create patterns to remove unwanted spaces that OCR incorrectly inserted into values
+        /// **BUSINESS OBJECTIVE**: Enable automatic removal of OCR-generated spacing errors that break value parsing
+        /// **SUCCESS CRITERIA**: Must identify space removal needs and create appropriate pattern or return null
+        /// </summary>
+        private (string, string)? CreateSpaceManipulationPattern(string o, string c)
+        {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for space manipulation pattern creation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for space manipulation pattern creation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Space pattern context with OCR spacing error correction analysis");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Space detection → removal validation → pattern generation → result selection pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need space detection, removal validation, pattern accuracy, regex escaping correctness");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Space manipulation requires precise space removal validation with regex escaping");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for space pattern creation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed space detection, removal validation, regex escaping tracking");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Space presence, removal validation, pattern escaping, replacement accuracy");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based space manipulation pattern creation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on OCR spacing error requirements, implementing space removal with regex escaping");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring space detection and removal accuracy");
+            
+            // **v4.2 SPACE PATTERN CREATION**: Enhanced space manipulation analysis with validation
+            _logger.Error("📝 **SPACE_PATTERN_START**: Beginning space manipulation pattern analysis");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Space context - Original='{Original}', Corrected='{Corrected}'", 
+                o ?? "NULL", c ?? "NULL");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: OCR spacing error detection and removal pattern creation");
+            
+            // **v4.2 SPACE REMOVAL VALIDATION**: Enhanced space removal analysis with comprehensive checks
+            bool originalHasSpaces = o?.Contains(" ") == true;
+            bool correctedHasNoSpaces = c?.Contains(" ") == false;
+            bool spaceRemovalValid = originalHasSpaces && correctedHasNoSpaces && o?.Replace(" ", "") == c;
             o.Contains(" ") && !c.Contains(" ") && o.Replace(" ", "") == c
                 ? (Regex.Escape(o).Replace(@"\ ", @"\s*"), c)
                 : ((string, string)?)null;
