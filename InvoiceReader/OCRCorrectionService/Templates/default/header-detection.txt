@@ -45,6 +45,17 @@ You are analyzing a structured business document with defined object schemas. Ap
 
 If you find no new omissions or corrections, return an empty errors array with detailed explanation.
 
+**🚨 CRITICAL TOKEN MANAGEMENT (Universal API Constraint):**
+- **Maximum Response Size**: Structure your response to fit within token limits (typically 8,000-8,192 tokens)
+- **Token Efficiency**: Prioritize the most critical errors if response becomes lengthy
+- **Response Strategy**: Provide complete error objects for priority items, then conclude if space limits reached
+- **Graceful Termination**: If nearing limits, end with: "Additional errors detected but response truncated due to token constraints"
+
 **MANDATORY RESPONSE FORMAT:**
 - **If errors found**: { "errors": [error objects] }
 - **If NO errors found**: { "errors": [], "explanation": "Detailed explanation of why no corrections are needed" }
+
+**OPTIMIZATION NOTES:**
+- Balance thoroughness with efficient token utilization
+- Prioritize errors with highest impact on data accuracy
+- Ensure complete JSON structure even if truncating error list
