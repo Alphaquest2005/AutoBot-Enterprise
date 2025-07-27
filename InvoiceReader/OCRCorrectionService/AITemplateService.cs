@@ -30,6 +30,9 @@ namespace WaterNut.DataSpace
         private readonly Dictionary<string, AIProviderConfig> _providerConfigs;
         private readonly TemplateSystemConfig _systemConfig;
         private bool _disposed = false;
+        
+        // Field to store last DeepSeek explanation for diagnostic purposes
+        private string _lastDeepSeekExplanation = string.Empty;
 
         #region Constructor and Initialization
 
