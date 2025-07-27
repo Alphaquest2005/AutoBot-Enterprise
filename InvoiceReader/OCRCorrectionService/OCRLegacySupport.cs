@@ -175,61 +175,71 @@ namespace WaterNut.DataSpace
             
             if (dynamicInvoiceResults == null || !dynamicInvoiceResults.Any())
             {
-                // **LOG_THE_WHAT_IF**: Empty data handling with default balanced assumption
-                log.Verbose("⚠️ **EMPTY_DYNAMIC_DATA**: No dynamic invoice data provided for balance validation");
-                log.Verbose("   - **DATA_STATE**: DynamicResults={DataState}, Count={Count}", 
+                // **v4.1 EMPTY DATA LOGGING**: LLM diagnostic evidence for empty dynamic scenarios
+                log.Error("⚠️ **EMPTY_DYNAMIC_EVIDENCE**: No dynamic invoice data provided for balance validation");
+                log.Error("📋 **AVAILABLE_LOG_DATA**: Empty data context - DynamicResults={DataState}, Count={Count}", 
                     dynamicInvoiceResults == null ? "NULL" : "EMPTY", dynamicInvoiceResults?.Count ?? 0);
-                log.Verbose("   - **DEFAULT_BEHAVIOR**: Returning true (balanced) for empty data sets");
+                log.Error("🔍 **PATTERN_ANALYSIS**: Empty input pattern requires default balanced assumption with diagnostic preservation");
+                log.Error("💡 **LOG_BASED_HYPOTHESIS**: Empty dynamic data indicates upstream processing completion or invalid call timing");
+                log.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced empty handling with comprehensive state documentation");
+                log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Data state analysis, count verification, default behavior rationale");
+                log.Error("📚 **FIX_RATIONALE**: Empty data requires true return (balanced) for pipeline continuation safety");
+                log.Error("🔍 **FIX_VALIDATION**: Monitoring empty data frequency and upstream cause identification");
                 
                 return true;
             }
 
-            // **LOG_THE_HOW**: Dynamic data structure analysis and dictionary extraction
-            log.Verbose("🔍 **STRUCTURE_ANALYSIS**: Analyzing dynamic data structure for dictionary extraction");
-            log.Verbose("   - **INPUT_ANALYSIS**: Count={Count}, FirstItemType={FirstItemType}", 
+            // **v4.1 STRUCTURE ANALYSIS LOGGING**: Enhanced dynamic data structure detection
+            log.Error("🔍 **STRUCTURE_ANALYSIS_START**: Analyzing dynamic data structure for dictionary extraction");
+            log.Error("📋 **AVAILABLE_LOG_DATA**: Input analysis - Count={Count}, FirstItemType={FirstItemType}", 
                 dynamicInvoiceResults.Count, dynamicInvoiceResults[0]?.GetType().Name ?? "NULL");
+            log.Error("🔍 **PATTERN_ANALYSIS**: Dynamic structure detection pattern with nested vs flat list analysis");
             
             var dictionaries = new List<IDictionary<string, object>>();
             
             if (dynamicInvoiceResults.Any() && dynamicInvoiceResults[0] is IList nestedList)
             {
-                log.Verbose("🔄 **NESTED_LIST_DETECTED**: Extracting dictionaries from nested list structure");
+                log.Error("🔄 **NESTED_LIST_EVIDENCE**: Extracting dictionaries from nested list structure");
                 dictionaries = nestedList.OfType<IDictionary<string, object>>().ToList();
-                log.Verbose("   - **NESTED_EXTRACTION**: Found {DictionaryCount} dictionaries in nested structure", dictionaries.Count);
+                log.Error("❓ **EVIDENCE_GAPS**: Nested extraction result - Found {DictionaryCount} dictionaries", dictionaries.Count);
             }
             else
             {
-                log.Verbose("🔄 **FLAT_LIST_DETECTED**: Extracting dictionaries from flat dynamic structure");
+                log.Error("🔄 **FLAT_LIST_EVIDENCE**: Extracting dictionaries from flat dynamic structure");
                 dictionaries = dynamicInvoiceResults.OfType<IDictionary<string, object>>().ToList();
-                log.Verbose("   - **FLAT_EXTRACTION**: Found {DictionaryCount} dictionaries in flat structure", dictionaries.Count);
+                log.Error("❓ **EVIDENCE_GAPS**: Flat extraction result - Found {DictionaryCount} dictionaries", dictionaries.Count);
             }
 
             if (!dictionaries.Any())
             {
-                // **LOG_THE_WHAT_IF**: No dictionaries found - default to balanced
-                log.Verbose("⚠️ **NO_DICTIONARIES_FOUND**: No dictionary objects found in dynamic data for validation");
-                log.Verbose("   - **EXTRACTION_RESULT**: No IDictionary<string, object> items available for invoice creation");
-                log.Verbose("   - **DEFAULT_BEHAVIOR**: Returning true (balanced) when no processable data available");
+                // **v4.1 NO DICTIONARIES LOGGING**: LLM diagnostic evidence for extraction failure
+                log.Error("⚠️ **NO_DICTIONARIES_EVIDENCE**: No dictionary objects found in dynamic data for validation");
+                log.Error("📊 **LOGGING_ENHANCEMENTS**: Extraction failure analysis - no IDictionary<string, object> items available");
+                log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Extraction result verification, processable data assessment");
+                log.Error("📚 **FIX_RATIONALE**: No processable data requires true return (balanced) for graceful degradation");
+                log.Error("🔍 **FIX_VALIDATION**: Monitoring dictionary extraction failures and data structure consistency");
                 
                 return true;
             }
 
-            // **LOG_THE_WHO**: Temporary invoice creation and balance validation
-            log.Verbose("🏗️ **TEMP_INVOICE_CREATION**: Creating temporary ShipmentInvoice for balance validation");
+            // **v4.1 TEMPORARY INVOICE LOGGING**: Enhanced temporary object creation with delegation
+            log.Error("🏗️ **TEMP_INVOICE_CREATION_START**: Creating temporary ShipmentInvoice for balance validation");
+            log.Error("📚 **FIX_RATIONALE**: Temporary invoice creation enables balance delegation to comprehensive validation logic");
             var tempInvoice = CreateTempShipmentInvoice(dictionaries.First(), log);
             
             if (tempInvoice == null)
             {
-                log.Warning("❌ **TEMP_INVOICE_CREATION_FAILED**: Could not create temporary invoice from dynamic data");
+                log.Error("❌ **TEMP_INVOICE_CREATION_FAILED**: Could not create temporary invoice from dynamic data");
+                log.Error("🔍 **FIX_VALIDATION**: Monitoring temporary invoice creation failures and data conversion issues");
                 return true; // Default to balanced if conversion fails
             }
             
-            log.Verbose("🦠 **BALANCE_VALIDATION_DELEGATION**: Delegating to ShipmentInvoice balance validation logic");
+            log.Error("🦠 **BALANCE_VALIDATION_DELEGATION**: Delegating to ShipmentInvoice balance validation logic");
             var isBalanced = TotalsZero(tempInvoice, out totalImbalanceSum, log);
             
-            log.Verbose("✅ **DYNAMIC_TOTALS_VALIDATION_COMPLETE**: Dynamic balance validation result={IsBalanced}, Imbalance={Imbalance}", 
+            log.Error("✅ **DYNAMIC_VALIDATION_COMPLETE**: Dynamic balance validation result={IsBalanced}, Imbalance={Imbalance}", 
                 isBalanced, totalImbalanceSum);
-            log.Verbose("   - **SUCCESS_ASSERTION**: Dynamic invoice data balance validation completed with ShipmentInvoice logic");
+            log.Error("🎯 **SUCCESS_ASSERTION**: Dynamic invoice data balance validation completed with ShipmentInvoice delegation for LLM analysis");
             
             return isBalanced;
         }
