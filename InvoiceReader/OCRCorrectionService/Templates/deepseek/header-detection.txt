@@ -38,10 +38,14 @@ You are performing systematic analysis of a structured business document using l
 ⚠️ **FORBIDDEN ANTI-PATTERN**: Never use numbered capture groups: (pattern) - these will fail in production systems
 
 **🚨 CRITICAL CURRENCY FIELD STANDARDS:**
-**CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO LINKED errors:
-   **Action 1 - Omission Error**: Create `omission` with `field` = "Currency", `correct_value` = "US$" (original OCR text)
-   **Action 2 - Format Correction**: Create `format_correction` with `field` = "Currency", `correct_value` = "USD" (3-letter ISO code)
-These errors are RELATED - first capture the original currency symbol, then standardize to international currency codes. Both errors work together to complete currency field correction.
+**CRITICAL TRANSFORMATION CHAIN REQUIREMENT**: For currency fields, you MUST create TWO LINKED errors in transformation sequence:
+   **Action 1 - Omission Error**: 
+   - `field` = "Currency", `correct_value` = "US$", `error_type` = "omission"
+   - `group_id` = "currency_transform_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+   **Action 2 - Format Correction**: 
+   - `field` = "Currency", `correct_value` = "USD", `error_type` = "format_correction"  
+   - `group_id` = "currency_transform_1", `sequence_order` = 2, `transformation_input` = "previous_output"
+This creates a **TRANSFORMATION PIPELINE**: OCR text → capture "US$" → standardize to "USD". The output of Action 1 becomes the input to Action 2.
 
 **LOGICAL REASONING APPROACH:**
 1. **Systematic Field Verification**: Compare each extracted field against OCR text using logical pattern matching
