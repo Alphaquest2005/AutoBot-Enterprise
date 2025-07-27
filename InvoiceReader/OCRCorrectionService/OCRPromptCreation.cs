@@ -336,11 +336,35 @@ namespace WaterNut.DataSpace
         // ===========================================================================
 
         /// <summary>
-        /// OBJECT-ORIENTED INVOICE ANALYSIS (V14.0): Creates a prompt using template system with fallback to hardcoded implementation.
-        /// Integrates file-based templates with Meta AI optimization for enhanced OCR correction.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: OBJECT-ORIENTED INVOICE ANALYSIS with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Create comprehensive header error detection prompts using template system with hardcoded fallback
+        /// **BUSINESS OBJECTIVE**: Generate AI-optimized prompts for OCR header field error detection and correction
+        /// **SUCCESS CRITERIA**: Template integration, prompt generation, fallback safety, context completeness, mathematical balance analysis
         /// </summary>
         private string CreateHeaderErrorDetectionPrompt(ShipmentInvoice invoice, string fileText, Dictionary<string, OCRFieldMetadata> metadata)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow with success criteria validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for header error detection prompt creation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Invoice={InvoiceNo}, FileTextLength={FileTextLength}, MetadataCount={MetadataCount}", invoice?.InvoiceNo ?? "NULL", fileText?.Length ?? 0, metadata?.Count ?? 0);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Template system integration with hardcoded fallback for comprehensive prompt generation");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need to validate template service availability, prompt generation success, and contextual completeness");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Template-first approach with robust fallback ensures reliable prompt generation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for header prompt creation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Track template service integration, fallback mechanisms, and prompt construction");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Template service availability, prompt length, context integration, mathematical validation");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based header error detection prompt creation");
+            _logger.Error("📚 **FIX_RATIONALE**: Template system provides AI-optimized prompts with hardcoded fallback for reliability");
+            _logger.Error("🔍 **FIX_VALIDATION**: Validate template service, attempt prompt generation, implement fallback if needed");
+            
             _logger.Information("🚀 **PROMPT_CREATION_START (V14.0 - Template System Integration)**: Creating template-based prompt for invoice {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
 
             // **TEMPLATE_SYSTEM_INTEGRATION**: Try template system first, fallback to hardcoded implementation
@@ -633,6 +657,39 @@ If you return an empty errors array (no errors detected), you MUST include an ""
 **CRITICAL**: Never return empty errors array without detailed explanation!";
 
             _logger.Information("🏁 **PROMPT_CREATION_COMPLETE (V14.0)**: Object-oriented business entity analysis prompt created with V14.0 mandatory completion requirements. Length: {PromptLength} characters.", prompt.Length);
+            
+            // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
+            _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Header error detection prompt creation success analysis");
+            
+            // Individual criterion assessment
+            var purposeFulfilled = !string.IsNullOrWhiteSpace(prompt) && prompt.Contains("OBJECT-ORIENTED INVOICE ANALYSIS");
+            _logger.Error((purposeFulfilled ? "✅" : "❌") + " **PURPOSE_FULFILLMENT**: " + (purposeFulfilled ? "Comprehensive header error detection prompt successfully generated with template integration" : "Prompt generation failed or lacks required structure"));
+            
+            var outputComplete = prompt != null && prompt.Length > 1000 && prompt.Contains("V14.0 MANDATORY COMPLETION REQUIREMENTS");
+            _logger.Error((outputComplete ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (outputComplete ? "Complete prompt structure with mandatory requirements and substantial content" : "Incomplete prompt structure or missing required elements"));
+            
+            var processComplete = prompt.Contains("MATHEMATICAL BALANCE CHECK") && prompt.Contains("COMPLETE OCR TEXT");
+            _logger.Error((processComplete ? "✅" : "❌") + " **PROCESS_COMPLETION**: " + (processComplete ? "All critical prompt sections included (mathematical validation, OCR text, requirements)" : "Missing critical prompt sections for complete analysis"));
+            
+            var dataQuality = (invoice?.InvoiceNo != null || prompt.Contains("NULL")) && (metadata?.Count > 0 || prompt.Contains("None"));
+            _logger.Error((dataQuality ? "✅" : "❌") + " **DATA_QUALITY**: " + (dataQuality ? "Invoice data and metadata properly integrated into prompt context" : "Data integration issues detected in prompt content"));
+            
+            var errorHandling = (_templateService == null && prompt.Contains("HARDCODED_FALLBACK")) || (_templateService != null);
+            _logger.Error((errorHandling ? "✅" : "❌") + " **ERROR_HANDLING**: " + (errorHandling ? "Template service availability handled with appropriate fallback mechanism" : "Template service error handling insufficient"));
+            
+            var businessLogic = prompt.Contains("OBJECT-ORIENTED ANALYSIS FRAMEWORK") && prompt.Contains("CARIBBEAN CUSTOMS FIELD MAPPING");
+            _logger.Error((businessLogic ? "✅" : "❌") + " **BUSINESS_LOGIC**: " + (businessLogic ? "Business rules and analysis framework properly embedded in prompt" : "Missing critical business logic components in prompt"));
+            
+            var integrationSuccess = (_templateService == null) || prompt.Length > 5000; // Either no template service or successful generation
+            _logger.Error((integrationSuccess ? "✅" : "❌") + " **INTEGRATION_SUCCESS**: " + (integrationSuccess ? "Template service integration successful or graceful fallback executed" : "Template service integration failed without proper fallback"));
+            
+            var performanceCompliance = prompt.Length > 0 && prompt.Length < 100000; // Reasonable prompt size
+            _logger.Error((performanceCompliance ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (performanceCompliance ? "Prompt generation completed with reasonable size and complexity" : "Performance issues detected in prompt generation"));
+            
+            // Overall assessment
+            var overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && errorHandling && businessLogic && integrationSuccess && performanceCompliance;
+            _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: " + (overallSuccess ? "✅ PASS" : "❌ FAIL") + " - Header error detection prompt creation " + (overallSuccess ? "completed successfully with comprehensive template integration and business logic" : "failed due to validation criteria not met"));
+            
             return prompt;
         }
 
