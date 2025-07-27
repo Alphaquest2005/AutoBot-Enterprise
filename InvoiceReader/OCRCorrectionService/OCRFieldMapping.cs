@@ -932,6 +932,14 @@ namespace WaterNut.DataSpace
         }
         
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Enhanced field mapping with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Maps DeepSeek field name to EnhancedDatabaseFieldInfo with OCR metadata enrichment and fallback resolution strategies
+        /// **BUSINESS OBJECTIVE**: Provide comprehensive field mapping with runtime extraction context through metadata integration and intelligent fallback mechanisms
+        /// **SUCCESS CRITERIA**: Must validate inputs, resolve field mappings, handle metadata fallbacks, enrich with context, and return complete EnhancedDatabaseFieldInfo
+        /// 
         /// Maps a DeepSeek field name to an EnhancedDatabaseFieldInfo object, enriching it with OCR metadata if provided.
         /// Returns null for unknown fields that cannot be mapped, even if metadata is provided.
         /// </summary>
