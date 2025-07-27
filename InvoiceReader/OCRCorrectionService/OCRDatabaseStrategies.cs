@@ -749,33 +749,78 @@ namespace WaterNut.DataSpace
                         ContextLinesAfter = request.ContextLinesAfter
                     };
 
+                    // **v4.1 REGEX GENERATION INITIALIZATION**: Enhanced DeepSeek regex generation workflow
+                    _logger.Error("🤖 **REGEX_GENERATION_START**: Initiating DeepSeek regex generation for omission field");
+                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced generation workflow with multi-attempt validation");
+                    
                     RegexCreationResponse regexResponse = null;
                     string failureReason = "Initial generation failed.";
                     int maxAttempts = 2;
+                    
+                    _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: MaxAttempts={MaxAttempts}, InitialFailureReason='{FailureReason}'", 
+                        maxAttempts, failureReason);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Multi-attempt generation pattern with validation and correction workflow");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Multi-attempt generation ensures reliable regex pattern creation");
+                    _logger.Error("📚 **FIX_RATIONALE**: Generation attempts with validation enable robust omission pattern creation");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Regex generation initialization completed with multi-attempt framework");
+                    
                     for (int attempt = 1; attempt <= maxAttempts; attempt++)
                     {
-                        _logger.Information("  -> Regex generation attempt {Attempt}/{MaxAttempts} for field '{FieldName}'", attempt, maxAttempts, request.FieldName);
+                        // **v4.1 GENERATION ATTEMPT LOGGING**: Enhanced attempt-specific processing documentation
+                        _logger.Error("🔄 **GENERATION_ATTEMPT_START**: Beginning regex generation attempt for omission field");
+                        _logger.Error("📋 **AVAILABLE_LOG_DATA**: Attempt {Attempt}/{MaxAttempts} for field '{FieldName}'", attempt, maxAttempts, request.FieldName);
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Incremental generation attempt with validation and correction workflow");
 
                         if (attempt == 1)
                         {
+                            // **v4.1 INITIAL GENERATION LOGGING**: Enhanced first attempt regex generation
+                            _logger.Error("🎯 **INITIAL_GENERATION**: Requesting new regex pattern from DeepSeek for omission field");
+                            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Initial generation provides foundation pattern for field detection");
                             regexResponse = await serviceInstance.RequestNewRegexFromDeepSeek(correctionForPrompt, lineContextForPrompt).ConfigureAwait(false);
+                            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Initial generation request completed");
                         }
                         else
                         {
-                            _logger.Warning("  -> Requesting correction from DeepSeek for failed pattern. Reason: {FailureReason}", failureReason);
+                            // **v4.1 CORRECTION GENERATION LOGGING**: Enhanced retry attempt with failure analysis
+                            _logger.Error("🔧 **CORRECTION_GENERATION**: Requesting pattern correction from DeepSeek for failed validation");
+                            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction request - FailureReason='{FailureReason}'", failureReason);
+                            _logger.Error("🔍 **PATTERN_ANALYSIS**: Correction generation pattern with failure feedback and improvement");
+                            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Correction generation improves pattern accuracy based on validation failures");
                             regexResponse = await serviceInstance.RequestRegexCorrectionFromDeepSeek(correctionForPrompt, lineContextForPrompt, regexResponse, failureReason).ConfigureAwait(false);
+                            _logger.Error("📚 **FIX_RATIONALE**: Correction generation enables iterative pattern improvement and validation");
                         }
 
+                        // **v4.1 RESPONSE VALIDATION LOGGING**: Enhanced regex response validation and error handling
+                        _logger.Error("🔍 **RESPONSE_VALIDATION_ANALYSIS**: Validating DeepSeek regex generation response");
                         if (regexResponse == null || string.IsNullOrWhiteSpace(regexResponse.RegexPattern))
                         {
                             failureReason = "DeepSeek did not return a regex pattern.";
-                            _logger.Warning("  -> ❌ Attempt {Attempt} failed: {Reason}", attempt, failureReason);
+                            _logger.Error("❌ **RESPONSE_VALIDATION_FAILED**: DeepSeek generation response invalid or empty");
+                            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - Attempt {Attempt}, Reason='{FailureReason}'", attempt, failureReason);
+                            _logger.Error("🔍 **PATTERN_ANALYSIS**: Invalid response pattern requires additional generation attempts");
+                            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Empty responses indicate generation issues requiring retry or correction");
+                            _logger.Error("📚 **FIX_RATIONALE**: Response validation ensures viable patterns for omission field detection");
+                            _logger.Error("🔍 **FIX_VALIDATION**: Response validation failure documented with retry strategy");
                             continue;
                         }
+                        
+                        _logger.Error("✅ **RESPONSE_VALIDATION_SUCCESS**: DeepSeek regex response validation successful");
+                        _logger.Error("📋 **AVAILABLE_LOG_DATA**: Response success - Pattern='{Pattern}'", regexResponse.RegexPattern);
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Valid response enables pattern validation and database processing");
 
+                        // **v4.1 PATTERN VALIDATION LOGGING**: Enhanced regex pattern validation with comprehensive analysis
+                        _logger.Error("🧪 **PATTERN_VALIDATION_START**: Beginning regex pattern validation against target value");
+                        _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation context - Pattern='{Pattern}', TargetValue='{TargetValue}'", 
+                            regexResponse.RegexPattern, correctionForPrompt.NewValue);
+                        
                         if (serviceInstance.ValidateRegexPattern(regexResponse, correctionForPrompt))
                         {
-                            _logger.Information("  -> ✅ Regex validation successful for field '{FieldName}' on attempt {Attempt}.", request.FieldName, attempt);
+                            _logger.Error("✅ **PATTERN_VALIDATION_SUCCESS**: Regex pattern validation successful for omission field");
+                            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - Field='{FieldName}', Attempt={Attempt}", request.FieldName, attempt);
+                            _logger.Error("🔍 **PATTERN_ANALYSIS**: Successful validation enables database entity creation and persistence");
+                            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Pattern validation success confirms regex accuracy for field detection");
+                            _logger.Error("📚 **FIX_RATIONALE**: Validation success enables omission strategy database processing workflow");
+                            _logger.Error("🔍 **FIX_VALIDATION**: Pattern validation completed successfully with accuracy confirmation");
 
                             // ======================================================================================
                             //                          *** DEFINITIVE FIX IS HERE ***
@@ -813,10 +858,25 @@ namespace WaterNut.DataSpace
                             return await CreateNewLineForOmissionAsync(context, request, regexResponse, fieldMappingInfo, serviceInstance).ConfigureAwait(false);
                         }
 
+                        // **v4.1 VALIDATION FAILURE LOGGING**: Enhanced pattern validation failure analysis
                         failureReason = $"The pattern '{regexResponse.RegexPattern}' failed to extract the expected value '{correctionForPrompt.NewValue}' from the provided text '{correctionForPrompt.LineText}'.";
-                        _logger.Warning("  -> ❌ Attempt {Attempt} failed validation. Reason: {Reason}", attempt, failureReason);
+                        _logger.Error("❌ **PATTERN_VALIDATION_FAILED**: Regex pattern validation failed for omission field");
+                        _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - Attempt {Attempt}, Reason='{FailureReason}'", attempt, failureReason);
+                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation failure pattern requires pattern correction or regeneration");
+                        _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Validation failures indicate pattern accuracy issues requiring correction");
+                        _logger.Error("📚 **FIX_RATIONALE**: Validation failure enables pattern improvement through DeepSeek correction");
+                        _logger.Error("🔍 **FIX_VALIDATION**: Validation failure documented with detailed pattern analysis for correction");
                     }
 
+                    // **v4.1 GENERATION FAILURE LOGGING**: Enhanced comprehensive generation failure analysis
+                    _logger.Error("❌ **GENERATION_WORKFLOW_FAILED**: Complete DeepSeek generation workflow failed for omission field");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Workflow failure - Field='{FieldName}', MaxAttempts={MaxAttempts}, LastFailure='{FailureReason}'", 
+                        request.FieldName, maxAttempts, failureReason);
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Generation workflow failure prevents omission strategy execution");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Generation failures indicate field complexity or prompt issues");
+                    _logger.Error("📚 **FIX_RATIONALE**: Generation failure documentation enables workflow debugging and improvement");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Complete generation failure documented with comprehensive attempt analysis");
+                    
                     return DatabaseUpdateResult.Failed($"DeepSeek failed to generate/validate a regex for '{request.FieldName}' after {maxAttempts} attempts. Last failure reason: {failureReason}");
                 }
                 catch (Exception ex)
