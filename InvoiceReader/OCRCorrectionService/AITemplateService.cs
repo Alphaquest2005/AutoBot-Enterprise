@@ -1389,7 +1389,7 @@ Return your suggestions as JSON in this exact format:
                         Endpoint = "https://api.deepseek.com/v1/chat/completions",
                         Model = "deepseek-chat",
                         ApiKeyEnvVar = "DEEPSEEK_API_KEY",
-                        MaxTokens = 8192,
+                        MaxTokens = 8000,  // Official DeepSeek API output limit
                         Temperature = 0.3
                     },
                     ["gemini"] = new AIProviderConfig
@@ -1397,7 +1397,7 @@ Return your suggestions as JSON in this exact format:
                         Endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
                         Model = "gemini-pro",
                         ApiKeyEnvVar = "GEMINI_API_KEY", 
-                        MaxTokens = 8192,
+                        MaxTokens = 8192,  // Official Gemini API output limit  
                         Temperature = 0.3
                     }
                 };
