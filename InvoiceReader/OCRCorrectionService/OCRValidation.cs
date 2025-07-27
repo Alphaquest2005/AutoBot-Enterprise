@@ -614,6 +614,14 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Mathematical impact validation with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Validates proposed error corrections by testing mathematical impact through invoice cloning and TotalsZero balance verification
+        /// **BUSINESS OBJECTIVE**: Ensure correction proposals maintain or improve mathematical consistency without compromising invoice balance integrity
+        /// **SUCCESS CRITERIA**: Must clone invoices safely, apply corrections accurately, validate mathematical impact, and return mathematically consistent error set
+        /// 
         /// Validates a list of proposed error corrections by temporarily applying them to a clone
         /// of the original invoice and checking if they improve or maintain overall mathematical balance (TotalsZero).
         /// </summary>
