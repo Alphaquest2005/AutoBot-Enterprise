@@ -201,55 +201,106 @@ namespace WaterNut.DataSpace
         #region Template Creation Core Methods
 
         /// <summary>
-        /// Creates or retrieves the main template entity (OCR-Invoices table).
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Template entity factory with existence validation and configuration
+        /// 
+        /// **LOG_THE_WHAT**: Template entity creation or retrieval with standardized FileType and ApplicationSettings configuration
+        /// **LOG_THE_HOW**: Database lookup by name, conditional creation with production settings, context registration
+        /// **LOG_THE_WHY**: Prevents duplicate templates while ensuring consistent configuration for invoice processing
+        /// **LOG_THE_WHO**: Returns Templates entity ready for Parts association and database persistence
+        /// **LOG_THE_WHAT_IF**: Expects valid template name; creates new entity if not found; handles database query failures
         /// </summary>
         private async Task<Templates> GetOrCreateTemplateAsync(OCRContext context, string templateName)
         {
-            _logger.Information("🔍 **TEMPLATE_LOOKUP**: Searching for existing template '{TemplateName}'", templateName);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete template entity management narrative
+            _logger.Information("🔍 **TEMPLATE_ENTITY_DISCOVERY**: Initiating template entity lookup and creation process");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Ensure unique template entity exists with proper configuration for OCR processing");
+            _logger.Information("   - **LOOKUP_TARGET**: Searching for existing template '{TemplateName}' in Templates table", templateName);
+            _logger.Information("   - **CREATION_STRATEGY**: Create new entity if not found, with standardized production settings");
 
+            // **LOG_THE_HOW**: Database query execution with existence validation
+            _logger.Information("📊 **DATABASE_QUERY_START**: Executing template existence query by name");
             var existingTemplate = await context.Templates
                 .FirstOrDefaultAsync(t => t.Name == templateName)
                 .ConfigureAwait(false);
 
             if (existingTemplate != null)
             {
-                _logger.Information("♻️ **TEMPLATE_EXISTS**: Found existing template ID={TemplateId}", existingTemplate.Id);
+                // **LOG_THE_WHO**: Existing template found - return with details
+                _logger.Information("♻️ **TEMPLATE_EXISTS**: Found existing template entity - reusing configuration");
+                _logger.Information("   - **EXISTING_TEMPLATE**: ID={TemplateId}, Name='{TemplateName}', FileTypeId={FileTypeId}", 
+                    existingTemplate.Id, existingTemplate.Name, existingTemplate.FileTypeId);
+                _logger.Information("   - **REUSE_BENEFIT**: Avoiding duplicate template creation, maintaining consistent configuration");
+                _logger.Information("   - **SUCCESS_ASSERTION**: Existing template ready for Parts and Lines association");
+                
                 return existingTemplate;
             }
 
+            // **LOG_THE_WHAT**: New template creation with production configuration
+            _logger.Information("🆕 **NEW_TEMPLATE_CREATION**: Creating new template entity with standardized configuration");
+            _logger.Information("   - **CONFIGURATION_STANDARDS**: FileTypeId=1147 (ShipmentInvoice), ApplicationSettingsId=3 (Standard)");
+            _logger.Information("   - **ENTITY_STATE**: TrackingState.Added for Entity Framework change tracking");
+            
             var newTemplate = new Templates
             {
                 Name = templateName,
-                FileTypeId = 1147, // Standard ShipmentInvoice FileType
-                ApplicationSettingsId = 3, // Standard application settings
+                FileTypeId = 1147, // Standard ShipmentInvoice FileType - production configuration
+                ApplicationSettingsId = 3, // Standard application settings - production configuration
                 IsActive = true,
                 TrackingState = TrackingState.Added
             };
 
+            // **LOG_THE_WHAT_IF**: Context registration and preparation for persistence
             context.Templates.Add(newTemplate);
-            _logger.Information("🆕 **TEMPLATE_CREATED**: New template '{TemplateName}' prepared for database", templateName);
+            _logger.Information("✅ **NEW_TEMPLATE_PREPARED**: Template entity configured and registered with context");
+            _logger.Information("   - **TEMPLATE_CONFIGURATION**: Name='{TemplateName}', FileType=ShipmentInvoice, Active=true", templateName);
+            _logger.Information("   - **PERSISTENCE_READINESS**: Entity ready for SaveChanges to generate database ID");
+            _logger.Information("   - **SUCCESS_ASSERTION**: New template prepared for complete infrastructure creation");
+            
             return newTemplate;
         }
 
         /// <summary>
-        /// Groups DeepSeek errors by their target entity type for structured processing.
-        /// Includes database schema validation to ensure only valid fields are included.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: DeepSeek error intelligence classifier with database schema validation
+        /// 
+        /// **LOG_THE_WHAT**: Error classification system transforming DeepSeek results into database entity-specific groupings
+        /// **LOG_THE_HOW**: Validates against schema, categorizes by entity type, filters invalid fields, ensures data integrity
+        /// **LOG_THE_WHY**: Prevents template creation failures by ensuring only valid database fields are included
+        /// **LOG_THE_WHO**: Returns GroupedDeepSeekErrors with validated Header, LineItem, and FormatCorrection categories
+        /// **LOG_THE_WHAT_IF**: Expects DeepSeek error list; handles null/empty gracefully; filters invalid fields automatically
         /// </summary>
         private GroupedDeepSeekErrors GroupErrorsByEntityType(List<InvoiceError> allErrors)
         {
-            _logger.Information("📋 **ERROR_ANALYSIS_START**: Analyzing {ErrorCount} DeepSeek errors with database schema validation", allErrors?.Count ?? 0);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete error classification intelligence narrative
+            _logger.Information("📋 **ERROR_CLASSIFICATION_START**: Intelligent DeepSeek error analysis with database schema validation");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Transform DeepSeek intelligence into database-compatible entity groupings");
+            _logger.Information("   - **INPUT_ANALYSIS**: Processing {ErrorCount} DeepSeek errors for classification", allErrors?.Count ?? 0);
+            _logger.Information("   - **VALIDATION_SCOPE**: ShipmentInvoice schema + InvoiceDetails schema + FieldFormatRegEx patterns");
+            _logger.Information("   - **QUALITY_ASSURANCE**: Invalid fields filtered out to prevent template creation failures");
 
             if (allErrors == null || !allErrors.Any())
             {
-                _logger.Warning("⚠️ **NO_ERRORS_PROVIDED**: No DeepSeek errors to process");
+                // **LOG_THE_WHAT_IF**: Empty input handling with graceful degradation
+                _logger.Warning("⚠️ **NO_ERRORS_PROVIDED**: No DeepSeek errors available for processing");
+                _logger.Warning("   - **INPUT_STATE**: Error list is null or empty - template creation will have minimal content");
+                _logger.Warning("   - **IMPACT_ASSESSMENT**: Template will be created but may lack comprehensive field coverage");
+                _logger.Warning("   - **RECOMMENDATION**: Verify DeepSeek processing completed successfully before template creation");
+                
                 return new GroupedDeepSeekErrors();
             }
 
-            // **CRITICAL**: Validate all errors against actual database schema before processing
+            // **LOG_THE_HOW**: Schema validation and intelligent filtering process
+            _logger.Information("🔍 **SCHEMA_VALIDATION_START**: Validating errors against production database schema");
+            _logger.Information("   - **VALIDATION_PURPOSE**: Ensure only valid database fields are included in template creation");
+            _logger.Information("   - **SCHEMA_SOURCES**: DatabaseSchema.ShipmentInvoiceFields + DatabaseSchema.InvoiceDetailsFields");
+            
             var validatedGrouped = ValidateAndFilterAgainstSchema(allErrors);
 
-            _logger.Information("📊 **ERROR_GROUPING_SUMMARY**: {HeaderCount} header fields, {LineItemCount} line patterns, {FormatCount} format corrections (post-validation)",
+            // **LOG_THE_WHO**: Classification results with comprehensive metrics
+            _logger.Information("✅ **ERROR_CLASSIFICATION_COMPLETE**: DeepSeek intelligence successfully classified and validated");
+            _logger.Information("   - **CLASSIFICATION_RESULTS**: Headers={HeaderCount}, LineItems={LineItemCount}, FormatCorrections={FormatCount}",
                 validatedGrouped.HeaderFields.Count, validatedGrouped.LineItemPatterns.Count, validatedGrouped.FormatCorrections.Count);
+            _logger.Information("   - **DATA_QUALITY**: All included fields validated against database schema for production compatibility");
+            _logger.Information("   - **SUCCESS_ASSERTION**: Classified errors ready for structured template entity creation");
 
             return validatedGrouped;
         }
