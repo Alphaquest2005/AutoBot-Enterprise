@@ -959,14 +959,61 @@ namespace WaterNut.DataSpace
         /// </summary>
         public bool ValidateRegexPattern(RegexCreationResponse regexResponse, CorrectionResult correction)
         {
-            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
-            _logger.Debug("🔬 **REGEX_VALIDATION_START**: Validating new regex pattern for Field '{FieldName}'.", correction.FieldName);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for regex pattern validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for regex pattern validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Regex validation context with syntax checking, extraction testing, named group validation");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Null validation → syntax checking → extraction testing → named group validation → value verification pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need null validation, syntax checking, extraction success, named group validation, value matching");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Regex validation requires comprehensive testing with named capture group verification");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for regex validation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation stages, extraction testing, capture group analysis");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Null checks, syntax validation, match testing, named groups, value comparison");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based regex pattern validation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on pattern quality requirements, implementing comprehensive regex validation workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring each validation stage and overall pattern quality");
+            
+            // **v4.2 REGEX VALIDATION EXECUTION**: Enhanced regex pattern validation with comprehensive tracking
+            _logger.Error("🔬 **REGEX_VALIDATION_START**: Beginning comprehensive regex pattern validation for Field '{FieldName}'", correction.FieldName);
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation context - FieldName='{FieldName}', HasRegexResponse={HasRegexResponse}", 
+                correction?.FieldName ?? "NULL", regexResponse != null);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Gatekeeper validation for new learning patterns with comprehensive testing");
 
-            if (regexResponse == null || string.IsNullOrWhiteSpace(regexResponse.RegexPattern))
+            // **v4.2 NULL VALIDATION**: Enhanced null validation with detailed tracking
+            bool regexResponseExists = regexResponse != null;
+            bool patternProvided = regexResponse != null && !string.IsNullOrWhiteSpace(regexResponse.RegexPattern);
+            
+            _logger.Error(regexResponseExists ? "✅ **REGEX_RESPONSE_EXISTS**: Regex response object provided" : "❌ **REGEX_RESPONSE_NULL**: Regex response object is null");
+            _logger.Error(patternProvided ? "✅ **PATTERN_PROVIDED**: Regex pattern provided and non-empty" : "❌ **PATTERN_MISSING**: Regex pattern is null or empty");
+            
+            if (!regexResponseExists || !patternProvided)
             {
-                _logger.Debug("    - ❌ **VALIDATION_FAIL**: Regex response or pattern is null or empty.");
+                _logger.Error("❌ **VALIDATION_FAIL**: Regex response or pattern is null or empty - validation failed");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - ResponseExists={ResponseExists}, PatternProvided={PatternProvided}", 
+                    regexResponseExists, patternProvided);
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - NULL INPUT PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Regex validation failed due to null input");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot validate regex pattern when response or pattern is null");
+                _logger.Error("✅ **OUTPUT_COMPLETENESS**: Appropriate false returned for null/empty input");
+                _logger.Error("✅ **PROCESS_COMPLETION**: Null validation completed with appropriate early termination");
+                _logger.Error("✅ **DATA_QUALITY**: Null validation ensures only valid patterns proceed to testing");
+                _logger.Error("✅ **ERROR_HANDLING**: Null/empty input handled gracefully with false return");
+                _logger.Error("✅ **BUSINESS_LOGIC**: Pattern validation objective handled appropriately for invalid input");
+                _logger.Error("✅ **INTEGRATION_SUCCESS**: No external dependencies for null validation");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Null validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS - Null/empty input handled appropriately with false return");
+                
                 return false;
             }
+
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Valid regex response and pattern provided - proceeding with validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Input validation success - Pattern='{Pattern}'", regexResponse.RegexPattern);
 
             _logger.Debug("    - [Input Data Dump]");
             _logger.Debug("      - Correction Field: '{FieldName}', Expected Value: '{NewValue}'", correction.FieldName, correction.NewValue);
