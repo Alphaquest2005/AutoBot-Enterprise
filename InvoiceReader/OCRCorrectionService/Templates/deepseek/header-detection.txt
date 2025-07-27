@@ -47,8 +47,15 @@ You are performing systematic analysis of a structured business document using l
 - **If logical analysis finds errors**: { "errors": [complete error objects with all 7 required fields] }
 - **If systematic verification finds NO errors**: { "errors": [], "explanation": "Detailed logical explanation of why no corrections are needed" }
 
+**🚨 CRITICAL TOKEN MANAGEMENT (DeepSeek API Limit: 8,000 tokens):**
+- **Maximum Response Size**: Your response must fit within 8,000 tokens
+- **Token Efficiency**: If you approach token limits, prioritize the most critical errors first
+- **Response Strategy**: For large error sets, provide complete errors for highest priority items, then stop gracefully
+- **Graceful Termination**: If nearing token limit, end with: "Additional errors detected but truncated due to token limits"
+
 **DEEPSEEK OPTIMIZATION NOTES:**
 - Apply step-by-step logical reasoning to each field
 - Use systematic pattern recognition for regex construction  
 - Provide clear causal explanations for each identified issue
 - Ensure mathematical consistency in balance verification
+- Structure responses efficiently to maximize information density within token constraints
