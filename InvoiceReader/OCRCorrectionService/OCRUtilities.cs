@@ -18,6 +18,14 @@ namespace WaterNut.DataSpace
         #region Text Manipulation and Cleaning Utilities
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Text cleaning with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Cleans raw OCR text by removing artifacts, normalizing formatting, and truncating for LLM processing with gift card preservation
+        /// **BUSINESS OBJECTIVE**: Ensure optimal OCR text quality through systematic cleaning while preserving critical business content like gift cards
+        /// **SUCCESS CRITERIA**: Must validate input, clean systematically, preserve critical content, truncate appropriately, and return optimized text
+        /// 
         /// Cleans raw OCR text by removing common artifacts and truncating if too long for LLM processing.
         /// </summary>
         public string CleanTextForAnalysis(string text)
