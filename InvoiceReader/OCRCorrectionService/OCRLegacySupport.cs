@@ -130,13 +130,13 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Invoice balance validator wrapper without difference output
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Invoice balance validator wrapper with LLM diagnostic delegation
         /// 
-        /// **LOG_THE_WHAT**: Simplified invoice balance validation delegating to comprehensive validation method
-        /// **LOG_THE_HOW**: Calls full TotalsZero method with discarded difference amount output parameter
-        /// **LOG_THE_WHY**: Provides convenient API when precise difference amount is not needed by caller
-        /// **LOG_THE_WHO**: Returns boolean balance status without exposing difference calculation details
-        /// **LOG_THE_WHAT_IF**: Expects valid invoice and logger; inherits all validation logic from primary method
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Delegates to primary validation method for complete Phase 1-3 implementation
+        /// **WRAPPER LOGIC**: Simplified API calling comprehensive validation with discarded difference parameter
+        /// **DELEGATION PATTERN**: Inherits full v4.1 diagnostic workflow from primary TotalsZero method
+        /// **DIAGNOSTIC INTEGRATION**: Complete LLM analysis capability through method delegation without context loss
         /// </summary>
         public static bool TotalsZero(ShipmentInvoice invoice, ILogger logger) => TotalsZero(invoice, out _, logger);
 
