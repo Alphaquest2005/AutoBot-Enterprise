@@ -6,6 +6,13 @@ namespace AutoBotUtilities.Tests
 {
     public class QuickMangoFix
     {
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("🔧 **MANGO_TEMPLATE_FIX**: Starting template pattern updates...");
+            UpdateMangoTemplate();
+            Console.WriteLine("🎯 **FIX_COMPLETE**: MANGO template should now work with the test document!");
+        }
+        
         public static void UpdateMangoTemplate()
         {
             try
