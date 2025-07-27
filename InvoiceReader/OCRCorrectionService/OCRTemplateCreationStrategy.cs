@@ -15,6 +15,14 @@ namespace WaterNut.DataSpace
     public partial class OCRCorrectionService
     {
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete OCR template creation from DeepSeek intelligence
+        /// 
+        /// **LOG_THE_WHAT**: Advanced template creation strategy transforming DeepSeek errors into complete database OCR templates
+        /// **LOG_THE_HOW**: Orchestrates entity creation across Templates, Parts, Lines, Fields, and FormatCorrections with validation
+        /// **LOG_THE_WHY**: Enables dynamic template generation for unknown suppliers, eliminating manual template creation overhead
+        /// **LOG_THE_WHO**: Serves OCRCorrectionService with production-ready templates for automatic invoice processing
+        /// **LOG_THE_WHAT_IF**: Expects validated DeepSeek errors; creates complete template infrastructure with database integrity
+        /// 
         /// Creates complete OCR templates from DeepSeek error detection results.
         /// Handles unknown suppliers by dynamically creating all required database entities.
         /// </summary>
@@ -22,13 +30,52 @@ namespace WaterNut.DataSpace
     {
         public override string StrategyType => "template_creation";
 
-        public TemplateCreationStrategy(ILogger logger) : base(logger) { }
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Constructor - Initialize template creation strategy with logging capability
+        /// 
+        /// **LOG_THE_WHAT**: Constructor accepting logger dependency for comprehensive template creation diagnostics
+        /// **LOG_THE_HOW**: Inherits from DatabaseUpdateStrategyBase, establishing logging foundation for complex operations
+        /// **LOG_THE_WHY**: Provides structured logging infrastructure for troubleshooting template creation failures
+        /// **LOG_THE_WHO**: Returns configured TemplateCreationStrategy ready for DeepSeek-driven template generation
+        /// **LOG_THE_WHAT_IF**: Expects valid logger instance; throws on null dependency injection
+        /// </summary>
+        public TemplateCreationStrategy(ILogger logger) : base(logger) 
+        {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete constructor initialization narrative
+            _logger.Information("🏗️ **TEMPLATE_STRATEGY_CONSTRUCTOR**: TemplateCreationStrategy constructor initializing with inherited logger");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Establish comprehensive template creation capability from DeepSeek intelligence");
+            _logger.Information("   - **STRATEGY_SCOPE**: Handles Templates, Parts, Lines, Fields, and FormatCorrections entity orchestration");
+            _logger.Information("   - **SUCCESS_ASSERTION**: Template creation strategy ready for dynamic OCR template generation");
+        }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Strategy selection logic for template creation requests
+        /// 
+        /// **LOG_THE_WHAT**: Request evaluation determining if this strategy can handle template creation operations
+        /// **LOG_THE_HOW**: Examines ErrorType and template creation flags to determine strategy applicability
+        /// **LOG_THE_WHY**: Ensures template creation strategy only processes appropriate requests with sufficient context
+        /// **LOG_THE_WHO**: Returns boolean indicating strategy capability for given request parameters
+        /// **LOG_THE_WHAT_IF**: Expects valid request object; handles null parameters gracefully
+        /// </summary>
         public override bool CanHandle(RegexUpdateRequest request)
         {
-            // Handle requests that create new templates from DeepSeek corrections
-            return request.ErrorType == "template_creation" || 
-                   (request.TemplateName != null && request.CreateNewTemplate);
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete request evaluation narrative
+            _logger.Information("🔍 **STRATEGY_EVALUATION_START**: Evaluating template creation strategy applicability");
+            _logger.Information("   - **REQUEST_ANALYSIS**: ErrorType={ErrorType}, TemplateName={TemplateName}, CreateNewTemplate={CreateNewTemplate}", 
+                request?.ErrorType ?? "null", request?.TemplateName ?? "null", request?.CreateNewTemplate ?? false);
+            _logger.Information("   - **EVALUATION_CRITERIA**: Accepts 'template_creation' error type OR template name with creation flag");
+            
+            // **LOG_THE_HOW**: Strategy selection logic with detailed reasoning
+            var canHandleByErrorType = request?.ErrorType == "template_creation";
+            var canHandleByTemplateFlag = request?.TemplateName != null && (request?.CreateNewTemplate ?? false);
+            var canHandle = canHandleByErrorType || canHandleByTemplateFlag;
+            
+            _logger.Information("📦 **STRATEGY_EVALUATION_RESULT**: CanHandle={CanHandle} (ErrorType={ErrorTypeMatch}, TemplateFlag={TemplateFlagMatch})", 
+                canHandle, canHandleByErrorType, canHandleByTemplateFlag);
+            _logger.Information("   - **DECISION_RATIONALE**: {Rationale}", 
+                canHandle ? "Template creation strategy will process this request" : "Request does not match template creation criteria");
+            
+            return canHandle;
         }
 
         public override async Task<DatabaseUpdateResult> ExecuteAsync(OCRContext context, RegexUpdateRequest request, OCRCorrectionService serviceInstance)
