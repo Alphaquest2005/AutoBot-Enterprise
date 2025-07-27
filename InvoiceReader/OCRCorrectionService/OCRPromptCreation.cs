@@ -311,8 +311,11 @@ Analyze the OCR text and generate JSON objects in the `errors` array, applying o
 **1. Currency Field Standards:**
 *   **Production Standard**: 3-letter ISO currency codes (USD, EUR, CNY, XCD)
 *   **Common Issues**: ""US$"", ""USS"", ""$"", ""€"", ""£"" → Must convert to ""USD"", ""EUR"", ""GBP""
-*   **Action**: Create `format_correction` with `field` = ""Currency"", `correct_value` = ""USD"" (3-letter code)
-*   **Example**: If OCR shows ""US$"" or ""USS"", create format_correction to convert to ""USD""
+*   **CRITICAL DUAL-ERROR REQUIREMENT**: For currency fields, you MUST create TWO separate errors:
+*   **Action 1 - Omission Error**: Create `omission` with `field` = ""Currency"", `correct_value` = ""US$"" (original OCR text)
+*   **Action 2 - Format Correction**: Create `format_correction` with `field` = ""Currency"", `correct_value` = ""USD"" (3-letter ISO code)
+*   **Example**: If OCR shows ""US$"", create BOTH an omission error (to capture ""US$"") AND a format_correction error (to convert to ""USD"")
+*   **Reasoning**: The omission captures the raw currency symbol, the format_correction standardizes it to ISO codes
 
 **2. Date Field Standards:**
 *   **Production Standard**: Short date format MM/dd/yyyy (e.g., ""07/23/2024"")
