@@ -26,6 +26,9 @@ You are performing holistic analysis of a structured business document using com
 5. ✅ **line_text**: The complete contextual line text from the OCR (NEVER null)
 6. ✅ **suggested_regex**: A comprehensively designed regex pattern that captures the value (NEVER null)
 7. ✅ **reasoning**: Comprehensive contextual explanation of why this value was missed (NEVER null)
+8. ✅ **group_id**: Unique identifier for transformation group (e.g., "invoice_total_1", "currency_transform_1") (NEVER null)
+9. ✅ **sequence_order**: Order within the group, starting from 1 (NEVER null or 0)
+10. ✅ **transformation_input**: Input source - "ocr_text" for first step, "previous_output" for subsequent steps (NEVER null)
 
 **❌ ABSOLUTELY FORBIDDEN CONTEXTUAL VIOLATIONS**:
    - "Reasoning": null
