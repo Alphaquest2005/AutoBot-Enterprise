@@ -96,7 +96,7 @@ namespace WaterNut.DataSpace
                 try
                 {
                     _logger.Information("2️⃣ **TRYING_GEMINI**: Attempting Gemini API call (fallback)");
-                    var geminiResponse = await CallGeminiAsync(prompt, temperature ?? 0.3, maxTokens ?? 4096, cancellationToken);
+                    var geminiResponse = await CallGeminiAsync(prompt, temperature ?? 0.3, maxTokens ?? GeminiMaxTokens, cancellationToken);
                     
                     _logger.Information("✅ **GEMINI_SUCCESS**: Gemini responded successfully (FALLBACK SUCCESS) - Length: {ResponseLength}", geminiResponse?.Length ?? 0);
                     return geminiResponse;
