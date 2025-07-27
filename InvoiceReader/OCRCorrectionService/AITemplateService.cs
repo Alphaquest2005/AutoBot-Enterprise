@@ -1200,20 +1200,70 @@ Return your suggestions as JSON in this exact format:
                 throw new NotSupportedException($"Provider {provider} not configured");
             }
 
+            // Check if we have the required API key
+            string apiKey = provider.ToLower() switch
+            {
+                "deepseek" => _deepSeekApiKey,
+                "gemini" => _geminiApiKey,
+                _ => null
+            };
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                throw new InvalidOperationException($"API key not available for provider {provider}");
+            }
+
             var config = _providerConfigs[provider];
             var requestBody = CreateProviderRequest(provider, prompt, config);
             
+            _logger.Information("🌐 **API_CALL_START**: Making {Provider} API call, prompt length: {Length}", 
+                provider, prompt.Length);
+            
             try
             {
-                var response = await _httpClient.PostAsync(config.Endpoint, 
-                    new StringContent(requestBody, Encoding.UTF8, "application/json"));
+                // Create request with proper Authorization header
+                var request = new HttpRequestMessage(HttpMethod.Post, config.Endpoint)
+                {
+                    Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
+                };
+
+                // Set authorization header based on provider
+                if (provider.ToLower() == "deepseek")
+                {
+                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+                }
+                else if (provider.ToLower() == "gemini")
+                {
+                    // Gemini uses query parameter for API key
+                    var uriBuilder = new UriBuilder(config.Endpoint);
+                    uriBuilder.Query = $"key={apiKey}";
+                    request.RequestUri = uriBuilder.Uri;
+                }
+
+                var response = await _httpClient.SendAsync(request);
                 
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.Error("❌ **API_CALL_FAILED**: {Provider} returned {StatusCode}: {Error}", 
+                        provider, response.StatusCode, errorContent);
+                    throw new HttpRequestException($"{provider} API returned {response.StatusCode}: {errorContent}");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.Information("✅ **API_CALL_SUCCESS**: {Provider} responded with {Length} characters", 
+                    provider, responseContent?.Length ?? 0);
+                
+                return responseContent;
             }
             catch (HttpRequestException ex)
             {
-                _logger.Warning(ex, "HTTP request failed for provider {Provider}", provider);
+                _logger.Error(ex, "❌ **HTTP_REQUEST_FAILED**: {Provider} API call failed", provider);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **API_CALL_EXCEPTION**: Unexpected error calling {Provider}", provider);
                 throw;
             }
         }
