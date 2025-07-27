@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         private static bool ValueForAllInstances(Line line, List<(string Instance, int LineNumber)> instances)
         {

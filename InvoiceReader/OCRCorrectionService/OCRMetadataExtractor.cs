@@ -23,7 +23,7 @@ namespace WaterNut.DataSpace
         /// <returns>A dictionary where the key is the runtime field name and the value is the corresponding OCRFieldMetadata.</returns>
         public Dictionary<string, OCRFieldMetadata> ExtractEnhancedOCRMetadata(
             IDictionary<string, object> runtimeInvoiceData,
-            Invoice ocrTemplate, // This is OCR.Business.Entities.Invoice
+            Template ocrTemplate, // This is OCR.Business.Entities.Invoice
             Dictionary<string, (int LineId, int FieldId, int? PartId)> precomputedMappings = null)
         {
             var metadataOutput = new Dictionary<string, OCRFieldMetadata>();
@@ -119,7 +119,7 @@ namespace WaterNut.DataSpace
         /// Helper to find an OCR.Business.Entities.Fields definition within a loaded OCR Template.
         /// Assumes the ocrTemplate object has its navigation properties (Lines, OCR_Lines.Fields) loaded if not using lazy loading.
         /// </summary>
-        private OCR.Business.Entities.Fields FindOcrFieldDefinitionInTemplate(Invoice ocrTemplate, int lineId, int fieldId)
+        private OCR.Business.Entities.Fields FindOcrFieldDefinitionInTemplate(Template ocrTemplate, int lineId, int fieldId)
         {
             // ocrTemplate.Lines is a collection of InvoiceLine (wrapper), each has an OCR_Lines property.
             var invoiceLineWrapper = ocrTemplate.Lines?.FirstOrDefault(lWrapper => lWrapper.OCR_Lines?.Id == lineId);
@@ -129,7 +129,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Gets InvoiceContext (ID and Name of the OcrInvoice template definition).
         /// </summary>
-        private InvoiceContext GetInvoiceContext(Invoice template)
+        private InvoiceContext GetInvoiceContext(Template template)
         {
             if (template == null) return new InvoiceContext();
             // template.OcrInvoices is the navigation property to the OCR_Invoices table entry from the Invoice entity.
@@ -148,7 +148,7 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Gets PartContext from the OCR Template based on a PartId.
         /// </summary>
-        private PartContext GetPartContextFromTemplate(Invoice template, int? partId)
+        private PartContext GetPartContextFromTemplate(Template template, int? partId)
         {
             if (!partId.HasValue || template?.Parts == null) return new PartContext { PartId = partId }; // Return with PartId if known, even if not found
 
@@ -215,7 +215,7 @@ namespace WaterNut.DataSpace
         /// FieldId here refers to OCR.Business.Entities.Fields.Id.
         /// PartId here refers to OCR.Business.Entities.Parts.Id.
         /// </summary>
-        public Dictionary<string, (int LineId, int FieldId, int? PartId)> CreateEnhancedFieldMapping(Invoice ocrTemplate) // ocrTemplate is OCR.Business.Entities.Invoice
+        public Dictionary<string, (int LineId, int FieldId, int? PartId)> CreateEnhancedFieldMapping(Template ocrTemplate) // ocrTemplate is OCR.Business.Entities.Invoice
         {
             var mappings = new Dictionary<string, (int LineId, int FieldId, int? PartId)>(StringComparer.OrdinalIgnoreCase);
             if (ocrTemplate?.Parts == null) // ocrTemplate.Parts is a collection of InvoicePart wrappers

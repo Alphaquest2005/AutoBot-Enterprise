@@ -27,7 +27,7 @@ namespace AutoBotUtilities.Tests.Production
 
         private static ILogger _logger;
         private OCRCorrectionService _service;
-        private Invoice _mockOcrTemplate; // OCR.Business.Entities.Invoice
+        private Template _mockOcrTemplate; // OCR.Business.Entities.Invoice
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -60,10 +60,10 @@ namespace AutoBotUtilities.Tests.Production
         }
 
         // Helper to create a more detailed mock OCR Template
-        private Invoice CreateDetailedMockOcrTemplate()
+        private Template CreateDetailedMockOcrTemplate()
         {
             var ocrInvoiceEntity = new Invoices { Id = 1, Name = "DetailedTestTemplate" };
-            var template = new Invoice(ocrInvoiceEntity, _logger) { FilePath = "detailed_test.pdf" };
+            var template = new Template(ocrInvoiceEntity, _logger) { FilePath = "detailed_test.pdf" };
 
             var headerPartEntity = new Parts { Id = 10, Invoices= ocrInvoiceEntity, PartTypeId = 1, PartTypes = new PartTypes { Id = 1, Name = "Header" } };
             template.Parts.Add(new Part(headerPartEntity, _logger));

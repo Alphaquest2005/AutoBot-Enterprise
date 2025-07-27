@@ -23,7 +23,7 @@ namespace InvoiceReader.PipelineInfrastructure
     {
         // Remove static logger
         // private static readonly ILogger _logger = Log.ForContext<GetTemplatesStep>();
-        private static IEnumerable<Invoice> _allTemplates = null;
+        private static IEnumerable<Template> _allTemplates = null;
 
         // ADD THIS NEW METHOD
         public static void InvalidateTemplateCache()
@@ -88,13 +88,13 @@ namespace InvoiceReader.PipelineInfrastructure
             }
         }
 
-        public static async Task<List<Invoice>> GetTemplates(InvoiceProcessingContext context, Func<Invoice, bool> templateExpression)
+        public static async Task<List<Template>> GetTemplates(InvoiceProcessingContext context, Func<Template, bool> templateExpression)
         {
             var templates = _allTemplates.Where(templateExpression).ToList();
             return await GetContextTemplates(context, templates).ConfigureAwait(false);//GetActiveTemplatesQuery(new OCRContext(), templateExpression);
         }
 
-        public static async Task<List<Invoice>> GetContextTemplates(InvoiceProcessingContext context, List<Invoice> templates)
+        public static async Task<List<Template>> GetContextTemplates(InvoiceProcessingContext context, List<Template> templates)
         {
             context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetContextTemplates), "DocSetRetrieval", "Getting DocSets for templates.", $"FileTypeId: {context.FileType?.Id}, ContextDocSetIsNull: {context.DocSet == null}", "");
@@ -301,7 +301,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                         newTemplate.OcrInvoices?.Name ?? "Unknown", newTemplate.OcrInvoices?.Id ?? 0);
                                     
                                     // Add the new template to our collection and cache
-                                    var templateList = new List<Invoice> { newTemplate };
+                                    var templateList = new List<Template> { newTemplate };
                                     context.Templates = templateList;
                                     _allTemplates = templateList;
                                     
@@ -326,7 +326,7 @@ namespace InvoiceReader.PipelineInfrastructure
                             }
 
                             // Fallback: Continue with empty templates list
-                            context.Templates = new List<Invoice>();
+                            context.Templates = new List<Template>();
 
                             methodStopwatch.Stop(); // Stop stopwatch on failure
                             context.Logger?.Error("METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
@@ -343,7 +343,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                 nameof(GetTemplates), "Load invoice templates from database", methodStopwatch.ElapsedMilliseconds, errorMessage);
                             context.Logger?.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                                 nameof(GetTemplates), "Database query", methodStopwatch.ElapsedMilliseconds, errorMessage);
-                            context.Templates = new List<Invoice>();
+                            context.Templates = new List<Template>();
                             return false;
                         }
                     }
@@ -370,12 +370,12 @@ namespace InvoiceReader.PipelineInfrastructure
                     nameof(GetTemplates), "Load invoice templates from database", methodStopwatch.ElapsedMilliseconds, errorMessage);
                 context.Logger?.Error(ex, "ACTION_END_FAILURE: {ActionName}. StageOfFailure: {StageOfFailure}. Duration: {TotalObservedDurationMs}ms. Error: {ErrorMessage}",
                     nameof(GetTemplates), "Unexpected error during execution", methodStopwatch.ElapsedMilliseconds, errorMessage);
-                context.Templates = new List<Invoice>();
+                context.Templates = new List<Template>();
                 return false;
             }
         }
 
-        public static IEnumerable<Invoice> GetAllTemplates(InvoiceProcessingContext context, OCRContext ctx)
+        public static IEnumerable<Template> GetAllTemplates(InvoiceProcessingContext context, OCRContext ctx)
         {
             // Load all active templates
             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
@@ -389,7 +389,7 @@ namespace InvoiceReader.PipelineInfrastructure
             //ctx.Configuration.ProxyCreationEnabled = false;
 
             var activeTemplatesQuery = GetActiveTemplatesQuery(ctx, x => true);
-            var templates = activeTemplatesQuery.Select(x => new Invoice(x, context.Logger)).ToList(); // activeTemplatesQuery is already a List
+            var templates = activeTemplatesQuery.Select(x => new Template(x, context.Logger)).ToList(); // activeTemplatesQuery is already a List
 
             // **DEBUG_LOGGING**: Log original templates from database before any context assignment
             context.Logger?.Error("🔍 **TEMPLATES_FROM_DATABASE**: {TemplateCount} templates loaded from database", templates.Count);

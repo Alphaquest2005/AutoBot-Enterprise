@@ -8,7 +8,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static void AddExistingFailedLines(ILogger logger, Invoice template, List<Line> failedlines) // Add logger parameter
+        private static void AddExistingFailedLines(ILogger logger, Template template, List<Line> failedlines) // Add logger parameter
         {
           
 

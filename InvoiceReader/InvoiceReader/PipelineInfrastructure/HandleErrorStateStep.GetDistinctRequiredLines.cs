@@ -9,7 +9,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static List<Line> GetDistinctRequiredLines(ILogger logger, Invoice template) // Add logger parameter, rename context to template
+        private static List<Line> GetDistinctRequiredLines(ILogger logger, Template template) // Add logger parameter, rename context to template
         {
 
             int? templateId = template?.OcrInvoices?.Id;

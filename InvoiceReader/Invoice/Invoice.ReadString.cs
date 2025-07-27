@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         public List<dynamic> Read(string text)
         {

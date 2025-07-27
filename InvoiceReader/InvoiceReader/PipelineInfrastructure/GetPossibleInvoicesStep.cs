@@ -92,7 +92,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     // **VERIFICATION_LOGGING**: Add detailed logging to verify FileType and EntryType mappings
                     context.Logger?.Information(
                         "🔍 **TEMPLATE_VERIFICATION_START**: Detailed analysis of each matched template");
-                    foreach (var template in context.MatchedTemplates ?? Enumerable.Empty<Invoice>())
+                    foreach (var template in context.MatchedTemplates ?? Enumerable.Empty<Template>())
                     {
                         context.Logger?.Information(
                             "   - **TEMPLATE_DETAIL**: '{TemplateName}' (ID: {TemplateId})",
@@ -322,7 +322,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                             "   - **BEFORE_INTEGRATION_COUNT**: {Count}",
                                             context.MatchedTemplates?.Count() ?? 0);
 
-                                        var templateList = context.MatchedTemplates?.ToList() ?? new List<Invoice>();
+                                        var templateList = context.MatchedTemplates?.ToList() ?? new List<Template>();
                                         templateList.Add(ocrTemplate);
                                         context.MatchedTemplates = templateList;
 
@@ -472,7 +472,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         methodStopwatch.ElapsedMilliseconds,
                         errorMessage);
                     context.AddError(errorMessage);
-                    context.MatchedTemplates = new List<Invoice>();
+                    context.MatchedTemplates = new List<Template>();
                     return false;
                 }
         }
@@ -488,7 +488,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Expected templates for processing.",
                     nameof(ValidateContext), "Validation", "Skipping GetPossibleInvoicesStep: Templates collection is null.", $"FilePath: {filePath}");
-                context.Templates = new List<Invoice>();
+                context.Templates = new List<Template>();
                 return true; // Treat as successful validation but no work done
             }
 
@@ -507,7 +507,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private async Task<List<Invoice>> GetPossibleInvoices(InvoiceProcessingContext context, string pdfTextString, string filePath)
+        private async Task<List<Template>> GetPossibleInvoices(InvoiceProcessingContext context, string pdfTextString, string filePath)
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                 nameof(GetPossibleInvoices), "Filtering", "Ordering templates and filtering based on PDF text match.", $"FilePath: {filePath}");
@@ -573,7 +573,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Expected at least one possible invoice.",
                      nameof(GetPossibleInvoices), "TemplateRefresh", "No possible invoices found, skipping template refresh.", $"FilePath: {filePath}");
-                 return new List<Invoice>(); // Return empty list if no possible invoices
+                 return new List<Template>(); // Return empty list if no possible invoices
             }
 
             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
@@ -590,7 +590,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return res;
         }
 
-        private void LogPossibleInvoices(InvoiceProcessingContext context, List<Invoice> possibleInvoices, int totalTemplateCount, string filePath)
+        private void LogPossibleInvoices(InvoiceProcessingContext context, List<Template> possibleInvoices, int totalTemplateCount, string filePath)
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                 nameof(GetPossibleInvoicesStep), "Summary", "Possible invoices found.", $"PossibleInvoiceCount: {possibleInvoices.Count}, TotalTemplateCount: {totalTemplateCount}, FilePath: {filePath}");

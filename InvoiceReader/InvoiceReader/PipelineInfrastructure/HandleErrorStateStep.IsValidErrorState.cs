@@ -9,7 +9,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         // Added string filePath parameter
         // Added string filePath parameter
-        private static bool IsValidErrorState(ILogger logger, Invoice template, List<Line> failedlines, string filePath) // Add logger parameter
+        private static bool IsValidErrorState(ILogger logger, Template template, List<Line> failedlines, string filePath) // Add logger parameter
         {
             int? templateId = template?.OcrInvoices?.Id;
             // Removed line using static _context: string filePath = _context?.FilePath ?? "Unknown";

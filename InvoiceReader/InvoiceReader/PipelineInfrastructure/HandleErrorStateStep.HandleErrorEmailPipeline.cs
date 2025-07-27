@@ -13,7 +13,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         // Added InvoiceProcessingContext context parameter
         // Added InvoiceProcessingContext context parameter
-        private static async Task<bool> HandleErrorEmailPipeline(ILogger logger, InvoiceProcessingContext context, Invoice template, string filePath) // Add logger parameter
+        private static async Task<bool> HandleErrorEmailPipeline(ILogger logger, InvoiceProcessingContext context, Template template, string filePath) // Add logger parameter
         {
              filePath = filePath ?? context?.FilePath ?? "Unknown"; // Get filePath from context if null
             logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

@@ -130,7 +130,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
 
-        private void AddRequiredFieldValuesToDocuments(ILogger logger, Invoice template, // Add logger parameter
+        private void AddRequiredFieldValuesToDocuments(ILogger logger, Template template, // Add logger parameter
             List<Fields> requiredFieldsList)
         {
              // Use FilePath as the identifier
@@ -180,7 +180,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  nameof(AddRequiredFieldValuesToDocuments), "Completion", "Finished adding required field values to documents.", $"FilePath: {template?.FilePath ?? "Unknown"}", "");
         }
 
-       private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Invoice template) // Add logger parameter
+       private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Template template) // Add logger parameter
        {
             // Use FilePath as the identifier
            context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

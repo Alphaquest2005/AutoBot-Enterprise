@@ -3,7 +3,7 @@ using OCR.Business.Entities;
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         private static bool ValueContainsRequiredField(Line x, Fields field)
         {

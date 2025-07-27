@@ -7,7 +7,7 @@ using System.Collections.Generic; // Added for IEnumerable
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Logger instance is defined in the main Template.cs partial class file.
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5); // Define a timeout
