@@ -14,6 +14,14 @@ using Newtonsoft.Json.Linq;
 namespace WaterNut.DataSpace
 {
     /// <summary>
+    /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: OCR-dedicated LLM client with intelligent provider failover
+    /// 
+    /// **LOG_THE_WHAT**: Multi-provider LLM client supporting DeepSeek primary + Gemini fallback for OCR correction tasks
+    /// **LOG_THE_HOW**: Implements automatic provider switching, retry policies, and comprehensive error handling
+    /// **LOG_THE_WHY**: Ensures OCR processing continues even when primary LLM provider fails, maximizing system reliability
+    /// **LOG_THE_WHO**: Serves OCRCorrectionService with identical interface to legacy DeepSeekInvoiceApi
+    /// **LOG_THE_WHAT_IF**: Expects either DeepSeek or Gemini availability; graceful degradation when providers fail
+    /// 
     /// OCR-dedicated LLM client with automatic DeepSeek -> Gemini fallback capability.
     /// Self-contained implementation specifically for OCR correction service needs.
     /// Provides the same interface as the old DeepSeekInvoiceApi but with fallback support.
@@ -37,37 +45,92 @@ namespace WaterNut.DataSpace
         private const string GeminiModel = "gemini-1.5-flash-latest";
         private const int GeminiMaxTokens = 8192;   // Official Gemini API limit for output tokens
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Constructor - Initialize OCR LLM client with provider discovery
+        /// 
+        /// **LOG_THE_WHAT**: Constructor accepting logger dependency, discovering available API keys, initializing HTTP infrastructure
+        /// **LOG_THE_HOW**: Environment variable discovery, HTTP client creation, retry policy setup, dependency validation
+        /// **LOG_THE_WHY**: Establishes dual-provider architecture ensuring OCR processing resilience and API redundancy
+        /// **LOG_THE_WHO**: Returns configured OCRLlmClient ready for OCR correction service integration
+        /// **LOG_THE_WHAT_IF**: Expects at least one API key available; throws InvalidOperationException if none configured
+        /// </summary>
         public OCRLlmClient(ILogger logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete constructor initialization narrative
+            _logger.Information("🏗️ **CONSTRUCTOR_INIT_START**: OCRLlmClient constructor beginning with dependency injection and provider discovery");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Self-contained LLM client with DeepSeek primary + Gemini fallback for OCR processing reliability");
+            _logger.Information("   - **DESIGN_BACKSTORY**: Replaces single-provider DeepSeekInvoiceApi with intelligent failover capability");
             
-            // Get API keys from environment
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.Information("✅ **DEPENDENCY_INJECTION_SUCCESS**: Logger dependency successfully injected and validated");
+            
+            // **LOG_THE_WHAT**: Environment variable discovery for API authentication
+            _logger.Information("🔍 **API_KEY_DISCOVERY_START**: Discovering available LLM provider API keys from environment variables");
             _deepSeekApiKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY");
             _geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             
-            if (string.IsNullOrWhiteSpace(_deepSeekApiKey) && string.IsNullOrWhiteSpace(_geminiApiKey))
+            var hasDeepSeek = !string.IsNullOrWhiteSpace(_deepSeekApiKey);
+            var hasGemini = !string.IsNullOrWhiteSpace(_geminiApiKey);
+            _logger.Information("🔍 **API_KEY_DISCOVERY_RESULT**: DeepSeek={HasDeepSeek}, Gemini={HasGemini}", hasDeepSeek, hasGemini);
+            _logger.Information("   - **PROVIDER_AVAILABILITY**: Primary={PrimaryProvider}, Fallback={FallbackProvider}", 
+                hasDeepSeek ? "DeepSeek" : "None", hasGemini ? "Gemini" : "None");
+            
+            if (!hasDeepSeek && !hasGemini)
             {
+                _logger.Error("❌ **CONFIGURATION_FAILURE**: No LLM provider API keys configured - cannot initialize client");
+                _logger.Error("   - **REQUIRED_ENVIRONMENT_VARIABLES**: DEEPSEEK_API_KEY or GEMINI_API_KEY must be set");
                 throw new InvalidOperationException("At least one API key must be set: DEEPSEEK_API_KEY or GEMINI_API_KEY");
             }
 
-            // Initialize HTTP client and retry policy
+            // **LOG_THE_HOW**: HTTP infrastructure initialization
+            _logger.Information("🌐 **HTTP_INFRASTRUCTURE_INIT_START**: Creating HTTP client and retry policy for LLM communication");
             _httpClient = CreateHttpClient();
-            _retryPolicy = CreateRetryPolicy();
+            _logger.Information("✅ **HTTP_CLIENT_CREATED**: HTTP client initialized with compression and timeout settings");
             
-            _logger.Information("🔄 **OCR_LLM_CLIENT_INIT**: Initialized with DeepSeek={HasDeepSeek}, Gemini={HasGemini}", 
-                !string.IsNullOrWhiteSpace(_deepSeekApiKey), !string.IsNullOrWhiteSpace(_geminiApiKey));
+            _retryPolicy = CreateRetryPolicy();
+            _logger.Information("✅ **RETRY_POLICY_CREATED**: Exponential backoff retry policy configured for transient failures");
+            
+            // **LOG_THE_WHAT_IF**: Constructor completion and readiness assertion
+            _logger.Information("🏁 **CONSTRUCTOR_COMPLETE**: OCRLlmClient fully initialized and ready for OCR processing");
+            _logger.Information("   - **CAPABILITY_SUMMARY**: Primary={Primary}, Fallback={Fallback}, RetryEnabled={RetryEnabled}", 
+                hasDeepSeek ? "DeepSeek" : "None", hasGemini ? "Gemini" : "None", true);
+            _logger.Information("   - **EXPECTATION_ASSERTION**: Client expects successful LLM responses with automatic failover capability");
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Main LLM request orchestrator with intelligent provider fallback
+        /// 
+        /// **LOG_THE_WHAT**: Primary LLM request method accepting prompt, temperature, and token limits with provider failover
+        /// **LOG_THE_HOW**: Attempts DeepSeek first, falls back to Gemini on failure, handles all provider-specific protocols
+        /// **LOG_THE_WHY**: Ensures OCR processing continues despite individual provider failures, maintaining system uptime
+        /// **LOG_THE_WHO**: Returns LLM response string or throws after all providers exhausted
+        /// **LOG_THE_WHAT_IF**: Expects valid prompt input; gracefully handles provider failures; throws when all strategies fail
+        /// 
         /// Gets response from LLM with automatic DeepSeek -> Gemini fallback.
         /// Matches the interface of the old DeepSeekInvoiceApi.GetResponseAsync.
         /// </summary>
         public async Task<string> GetResponseAsync(string prompt, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete LLM request orchestration narrative
+            _logger.Information("🎯 **LLM_REQUEST_ORCHESTRATOR_START**: Main LLM request beginning with intelligent provider fallback strategy");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Execute prompt against available LLM providers with seamless failover capability");
+            _logger.Information("   - **BUSINESS_RATIONALE**: Maximize OCR processing reliability by eliminating single points of failure");
+            
             if (string.IsNullOrWhiteSpace(prompt))
+            {
+                _logger.Error("❌ **VALIDATION_FAILURE**: Prompt validation failed - null or empty prompt provided");
                 throw new ArgumentException("Prompt cannot be null or empty", nameof(prompt));
+            }
 
-            _logger.Information("🎯 **OCR_LLM_REQUEST**: Starting prompt request with fallback capability - Length: {PromptLength}", prompt.Length);
+            // **LOG_THE_WHAT**: Request configuration and parameter analysis
+            var promptLength = prompt.Length;
+            var effectiveTemperature = temperature ?? 0.3;
+            var requestedTokens = maxTokens?.ToString() ?? "provider_default";
+            
+            _logger.Information("🔧 **REQUEST_CONFIGURATION**: Length={PromptLength}, Temperature={Temperature}, MaxTokens={MaxTokens}", 
+                promptLength, effectiveTemperature, requestedTokens);
+            _logger.Information("   - **FAILOVER_STRATEGY**: Primary=DeepSeek, Fallback=Gemini, RetryEnabled=true");
+            _logger.Information("   - **EXPECTED_OUTCOME**: Valid LLM response or comprehensive error after all strategies exhausted");
 
             // Try DeepSeek first (primary strategy)
             if (!string.IsNullOrWhiteSpace(_deepSeekApiKey))
