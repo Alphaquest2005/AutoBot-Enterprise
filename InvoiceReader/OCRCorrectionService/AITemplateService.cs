@@ -132,6 +132,105 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// Detects pattern failures and triggers automatic improvement cycle.
+        /// This is called after template execution to check if patterns worked.
+        /// </summary>
+        public async Task<bool> HandlePostExecutionPatternAnalysis(
+            List<string> usedPatterns,
+            string actualText,
+            List<object> extractionResults,
+            string provider,
+            string templateType,
+            string supplierName)
+        {
+            try
+            {
+                _logger.Information("📊 **POST_EXECUTION_ANALYSIS**: Analyzing {PatternCount} patterns against extraction results",
+                    usedPatterns?.Count ?? 0);
+                
+                // Check if extraction results indicate pattern failures
+                var hasFailures = extractionResults?.Count == 0 || 
+                                  extractionResults?.All(r => r == null || r.ToString() == "0") == true;
+                
+                if (hasFailures && usedPatterns?.Any() == true)
+                {
+                    _logger.Warning("🚨 **PATTERN_FAILURES_DETECTED**: No successful extractions, triggering improvement cycle");
+                    
+                    return await DetectAndHandlePatternFailure(
+                        "template_used_in_execution", // This would be passed from the calling context
+                        usedPatterns,
+                        actualText,
+                        provider,
+                        templateType,
+                        supplierName);
+                }
+                
+                _logger.Information("✅ **PATTERNS_WORKING**: Extraction successful, no improvement needed");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **POST_EXECUTION_ANALYSIS_ERROR**: Failed to analyze pattern performance");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Creates header error detection prompt with automatic pattern improvement.
+        /// This method includes the self-improving cycle when patterns fail.
+        /// </summary>
+        public async Task<string> CreateHeaderErrorDetectionPromptWithImprovementAsync(
+            ShipmentInvoice invoice, 
+            string fileText, 
+            Dictionary<string, OCRFieldMetadata> metadata,
+            List<string> previouslyFailedPatterns = null,
+            string provider = "deepseek")
+        {
+            try
+            {
+                _logger.Information("🚀 **AI_TEMPLATE_WITH_IMPROVEMENT_START**: Creating self-improving prompt for {Provider}", provider);
+                
+                // 1. Get the base prompt first
+                var basePrompt = await CreateHeaderErrorDetectionPromptAsync(invoice, fileText, metadata, provider);
+                
+                // 2. If we have previously failed patterns, trigger improvement cycle
+                if (previouslyFailedPatterns?.Any() == true)
+                {
+                    _logger.Information("🔄 **TRIGGERING_IMPROVEMENT**: {FailedCount} patterns previously failed, starting improvement cycle", 
+                        previouslyFailedPatterns.Count);
+                    
+                    var failedPatterns = previouslyFailedPatterns.Select(p => new FailedPatternInfo
+                    {
+                        Pattern = p,
+                        FailureReason = "Zero matches found in previous execution",
+                        ActualText = fileText
+                    }).ToList();
+                    
+                    var improvementSuccess = await ProcessTemplateImprovementCycle(
+                        basePrompt, failedPatterns, fileText, provider, "header-detection", invoice?.SupplierName);
+                    
+                    if (improvementSuccess)
+                    {
+                        // Reload the improved template
+                        _logger.Information("✅ **IMPROVEMENT_SUCCESS**: Reloading improved template");
+                        return await CreateHeaderErrorDetectionPromptAsync(invoice, fileText, metadata, provider);
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **IMPROVEMENT_FAILED**: Using original template as fallback");
+                    }
+                }
+                
+                return basePrompt;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **AI_TEMPLATE_WITH_IMPROVEMENT_ERROR**: Failed for provider {Provider}", provider);
+                return CreateFallbackPrompt(invoice, fileText, metadata);
+            }
+        }
+
+        /// <summary>
         /// Gets AI recommendations for improving a prompt from specified provider.
         /// </summary>
         public async Task<List<PromptRecommendation>> GetRecommendationsAsync(string prompt, string provider)
