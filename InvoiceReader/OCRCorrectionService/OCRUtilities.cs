@@ -224,6 +224,14 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: JSON response cleaning with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Cleans raw JSON response from LLM by removing markdown artifacts, BOMs, and extracting valid JSON structure
+        /// **BUSINESS OBJECTIVE**: Ensure reliable JSON parsing through systematic artifact removal and boundary detection with escape sequence fixes
+        /// **SUCCESS CRITERIA**: Must validate input, remove artifacts, detect JSON boundaries, fix escaping issues, and return clean parseable JSON
+        /// 
         /// Cleans a raw JSON response string, typically from an LLM, by removing common non-JSON artifacts
         /// like markdown code fences (```json ... ```) and Byte Order Marks (BOM).
         /// It attempts to extract the main JSON object or array.
