@@ -482,7 +482,7 @@ namespace WaterNut.DataSpace
                     Invoice template = null;
                     try 
                     {
-                        template = new Invoice(databaseTemplate, _logger);
+                        template = new Invoice(ocrInvoiceTemplate, _logger);
                         _logger.Information("✅ **INVOICE_CONSTRUCTOR_SUCCESS**: Invoice constructor completed successfully");
                     }
                     catch (Exception constructorEx)
