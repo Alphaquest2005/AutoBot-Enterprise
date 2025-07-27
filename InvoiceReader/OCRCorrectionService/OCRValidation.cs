@@ -432,6 +432,14 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Field conflict resolution with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Resolves conflicts when multiple error proposals exist for same field by selecting highest confidence and validating mathematical consistency
+        /// **BUSINESS OBJECTIVE**: Ensure optimal error correction selection through confidence-based deduplication and mathematical impact validation
+        /// **SUCCESS CRITERIA**: Must deduplicate conflicting errors, preserve highest confidence corrections, validate mathematical impact, and return consistent error set
+        /// 
         /// Resolves conflicts if multiple error proposals exist for the same field by choosing the one with
         /// the highest confidence. Then, it validates if applying this chosen set of corrections maintains
         /// or improves mathematical consistency of the invoice.
