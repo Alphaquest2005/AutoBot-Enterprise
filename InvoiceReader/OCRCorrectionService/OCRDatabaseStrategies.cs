@@ -342,16 +342,73 @@ namespace WaterNut.DataSpace
 
         #region Field Format Strategy
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Field format correction strategy with LLM diagnostic workflow
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **STRATEGY PURPOSE**: Creates formatting rules (pattern/replacement) attached to existing Field definitions
+        /// **FORMAT CORRECTION**: Handles character confusion, decimal separators, and explicit format corrections
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of format correction workflows and validation
+        /// </summary>
         public class FieldFormatUpdateStrategy : DatabaseUpdateStrategyBase
         {
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Field format strategy constructor with LLM diagnostic initialization
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **CONSTRUCTOR LOGIC**: Initializes base strategy with logger injection for comprehensive diagnostic workflow
+            /// **STRATEGY TYPE**: FieldFormat strategy for pattern/replacement correction rule creation
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging infrastructure for LLM analysis of strategy lifecycle
+            /// </summary>
             public FieldFormatUpdateStrategy(ILogger logger) : base(logger) { }
 
             public override string StrategyType => "FieldFormat";
 
+            /// <summary>
+            /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Request handling validation with LLM diagnostic workflow
+            /// 
+            /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+            /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+            /// **VALIDATION LOGIC**: Explicit format correction types + potential format correction detection
+            /// **FORMAT TYPES**: FieldFormat, FORMAT_FIX, format_correction, decimal_separator, character_confusion
+            /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of request validation and strategy selection
+            /// </summary>
             public override bool CanHandle(RegexUpdateRequest request)
             {
-                if (string.IsNullOrEmpty(request.OldValue) && !string.IsNullOrEmpty(request.NewValue)) return false;
+                // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for request validation
+                
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for FieldFormat strategy validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Request validation context with format correction type analysis");
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Explicit format types + potential correction detection pattern");
+                _logger.Error("❓ **EVIDENCE_GAPS**: Need explicit type confirmation, potential correction validation, request completeness");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Format strategy requires comprehensive type analysis and value comparison");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for strategy validation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed type analysis, value comparison, correction detection");
+                _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Correction types, value states, potential correction indicators");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based FieldFormat strategy validation");
+                _logger.Error("📚 **FIX_RATIONALE**: Based on format correction requirements, implementing comprehensive type detection");
+                _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring type matches and correction potential");
+                
+                // **v4.1 VALIDATION PRECONDITIONS**: Enhanced request state validation
+                if (string.IsNullOrEmpty(request.OldValue) && !string.IsNullOrEmpty(request.NewValue))
+                {
+                    _logger.Error("❌ **VALIDATION_PRECONDITION_FAILED**: OldValue empty with NewValue present - not a format correction scenario");
+                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Precondition failure - OldValue={OldValue}, NewValue={NewValue}", 
+                        request.OldValue ?? "NULL", request.NewValue ?? "NULL");
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Format corrections require both old and new values for pattern/replacement generation");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Missing OldValue indicates omission rather than format correction scenario");
+                    _logger.Error("📚 **FIX_RATIONALE**: Format strategy requires value comparison for pattern extraction");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Precondition failure documented - strategy cannot handle request");
+                    return false;
+                }
 
+                // **v4.1 EXPLICIT FORMAT TYPE DETECTION**: Enhanced explicit correction type analysis
                 bool isExplicitFormatCorrection =
                     request.CorrectionType == "FieldFormat" ||
                     request.CorrectionType == "FORMAT_FIX" ||
@@ -360,12 +417,32 @@ namespace WaterNut.DataSpace
                     request.CorrectionType == "DecimalSeparator" ||
                     request.CorrectionType == "character_confusion";
 
+                _logger.Error("🔍 **EXPLICIT_FORMAT_TYPE_ANALYSIS**: Analyzing explicit format correction types");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: CorrectionType='{CorrectionType}', IsExplicit={IsExplicit}", 
+                    request.CorrectionType, isExplicitFormatCorrection);
+
                 if (isExplicitFormatCorrection)
                 {
+                    _logger.Error("✅ **EXPLICIT_FORMAT_MATCH**: Request matches explicit format correction type");
+                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Explicit type match confirms FieldFormat strategy applicability");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Explicit format types require immediate strategy acceptance");
+                    _logger.Error("📚 **FIX_RATIONALE**: Explicit type match eliminates need for potential correction analysis");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Explicit format correction confirmed - strategy can handle request");
+                    _logger.Error("🎯 **SUCCESS_ASSERTION**: FieldFormat strategy validation successful for explicit type");
                     return true;
                 }
 
-                return IsPotentialFormatCorrection(request.OldValue, request.NewValue);
+                // **v4.1 POTENTIAL CORRECTION DETECTION**: Enhanced value comparison analysis
+                _logger.Error("🔍 **POTENTIAL_CORRECTION_ANALYSIS**: Analyzing potential format correction indicators");
+                var isPotential = IsPotentialFormatCorrection(request.OldValue, request.NewValue);
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Potential correction analysis - IsPotential={IsPotential}", isPotential);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Value comparison analysis for implicit format correction detection");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Potential correction detection enables broader format correction coverage");
+                _logger.Error("📚 **FIX_RATIONALE**: Potential detection extends strategy applicability beyond explicit types");
+                _logger.Error("🔍 **FIX_VALIDATION**: Potential correction analysis completed with definitive result");
+                _logger.Error("🎯 **SUCCESS_ASSERTION**: FieldFormat strategy validation completed with comprehensive type analysis");
+
+                return isPotential;
             }
 
             private bool IsPotentialFormatCorrection(string oldValue, string newValue)
