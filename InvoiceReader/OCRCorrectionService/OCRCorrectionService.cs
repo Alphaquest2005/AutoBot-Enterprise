@@ -52,37 +52,93 @@ namespace WaterNut.DataSpace
 
         public OCRCorrectionService(ILogger logger)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete constructor initialization narrative
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            
+            // **LOG_THE_WHAT**: Configuration state, input data, design specifications, expected behavior
+            _logger.Information("🏗️ **CONSTRUCTOR_INIT_START**: OCRCorrectionService constructor beginning with dependency injection and component initialization");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: Self-contained OCR correction service with LLM integration, database strategies, and AI template support");
+            _logger.Information("   - **DESIGN_SPECIFICATIONS**: Must match business services equivalence with DeepSeek chat model, 0.3 temperature, 8192 max tokens");
+            _logger.Information("   - **EXPECTED_BEHAVIOR**: Initialize LLM client, strategy factory, AI template service with graceful fallback handling");
+            _logger.Information("   - **BUSINESS_RULE_RATIONALE**: OCR correction requires LLM intelligence for error detection and pattern learning");
+            
+            // **LOG_THE_HOW**: Internal state, method flow, decision points, data transformations
+            _logger.Information("🔄 **COMPONENT_INIT_SEQUENCE**: Initializing core service components in dependency order");
+            _logger.Information("   - **STEP_1**: Creating OCRLlmClient for DeepSeek/Gemini API integration");
+            _logger.Information("   - **STEP_2**: Creating DatabaseUpdateStrategyFactory for learning pattern storage");
+            _logger.Information("   - **STEP_3**: Creating AITemplateService for file-based prompt optimization");
+            _logger.Information("   - **STEP_4**: Setting business services equivalent properties via SetDefaultPrompts");
+            
             try
             {
+                _logger.Information("🚀 **LLM_CLIENT_CREATION**: Creating OCRLlmClient with logger dependency injection");
                 _llmClient = new OCRLlmClient(_logger);
+                _logger.Information("✅ **LLM_CLIENT_SUCCESS**: OCRLlmClient created successfully - DeepSeek and Gemini fallback ready");
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "CRITICAL FAILURE: The OCRLlmClient constructor threw an exception.");
+                // **LOG_THE_WHO**: Function returns, state changes, error details, success/failure
+                _logger.Error(ex, "❌ **LLM_CLIENT_CREATION_FAILED**: CRITICAL FAILURE - OCRLlmClient constructor threw exception");
+                _logger.Error("   - **FAILURE_IMPACT**: Service cannot function without LLM client - constructor must abort");
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                _logger.Error("   - **ARCHITECTURAL_VIOLATION**: LLM client is critical dependency - cannot proceed without it");
                 throw;
             }
-            _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
             
-            // **AI_TEMPLATE_SYSTEM_INITIALIZATION**: Initialize AI-powered template service
+            _logger.Information("🎯 **STRATEGY_FACTORY_CREATION**: Creating DatabaseUpdateStrategyFactory for OCR learning database operations");
+            _strategyFactory = new DatabaseUpdateStrategyFactory(_logger);
+            _logger.Information("✅ **STRATEGY_FACTORY_SUCCESS**: DatabaseUpdateStrategyFactory created - ready for omission, format, and template strategies");
+            
+            // **LOG_THE_WHY**: Architectural intent, design backstory, business rule rationale  
+            _logger.Information("🎯 **AI_TEMPLATE_SYSTEM_RATIONALE**: AI template service enables provider-specific prompt optimization");
+            _logger.Information("   - **DESIGN_BACKSTORY**: Multi-provider AI integration requires tailored prompts for optimal performance");
+            _logger.Information("   - **BUSINESS_RULE**: MANGO invoices get MANGO-optimized templates, DeepSeek gets DeepSeek prompts");
+            _logger.Information("   - **ARCHITECTURAL_INTENT**: File-based templates allow prompt modification without recompilation");
+            
             try
             {
-                _logger.Information("🚀 **AI_TEMPLATE_INIT**: Initializing AI-powered template service with DeepSeek and Gemini integration");
+                _logger.Information("🚀 **AI_TEMPLATE_INIT_START**: Initializing AI-powered template service with multi-provider support");
+                _logger.Information("   - **TEMPLATE_PATH_CALCULATION**: Determining AITemplateService base path from current domain");
                 
                 // Initialize AITemplateService with OCRCorrectionService base path
                 var templateBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OCRCorrectionService");
+                _logger.Information("   - **CALCULATED_BASE_PATH**: {BasePath}", templateBasePath);
+                _logger.Information("   - **EXPECTED_STRUCTURE**: Templates/{provider}/, Config/, Recommendations/ subdirectories");
+                
                 _templateService = new AITemplateService(_logger, templateBasePath);
                 
-                _logger.Information("🎯 **AI_TEMPLATE_SERVICE_READY**: AI template service initialized - ready for multi-provider prompt generation");
+                // **LOG_THE_WHAT_IF**: Intention assertion, success confirmation, failure diagnosis
+                _logger.Information("✅ **AI_TEMPLATE_SERVICE_READY**: AI template service initialized successfully");
+                _logger.Information("   - **CAPABILITY_CONFIRMED**: Multi-provider prompt generation ready (DeepSeek, Gemini, default)");
+                _logger.Information("   - **FALLBACK_BEHAVIOR**: If file-based templates fail, will use hardcoded prompts from SetDefaultPrompts");
+                _logger.Information("   - **PERFORMANCE_EXPECTATION**: Template loading should be fast, prompt generation should be near-instantaneous");
             }
             catch (Exception ex)
             {
-                _logger.Warning(ex, "⚠️ **AI_TEMPLATE_FALLBACK**: AI template service initialization failed, falling back to hardcoded prompts");
+                // **LOG_THE_WHO**: Function returns, state changes, error details, success/failure
+                _logger.Warning(ex, "⚠️ **AI_TEMPLATE_FALLBACK**: AI template service initialization failed - falling back to hardcoded prompts");
+                _logger.Warning("   - **FALLBACK_STRATEGY**: Service will continue with hardcoded business services equivalent prompts");
+                _logger.Warning("   - **PERFORMANCE_IMPACT**: No provider-specific optimization, no file-based template updates");
+                _logger.Warning("   - **FUNCTIONALITY_PRESERVED**: Core OCR correction capabilities remain fully functional");
+                _logger.Warning("   - **TEMPLATE_SERVICE_STATE**: _templateService = null (triggers fallback behavior)");
                 // Template service will be null, triggering fallback behavior
             }
             
             // **BUSINESS_SERVICES_EQUIVALENT_INITIALIZATION**: Initialize PromptTemplate like DeepSeekInvoiceApi constructor
+            _logger.Information("🔧 **BUSINESS_SERVICES_INIT**: Setting default prompts to match DeepSeekInvoiceApi constructor behavior");
+            _logger.Information("   - **EQUIVALENCE_REQUIREMENT**: Must exactly match WaterNut.Business.Services.Utils.DeepSeekInvoiceApi initialization");
+            _logger.Information("   - **PROPERTY_INITIALIZATION**: PromptTemplate, Model, DefaultTemperature, DefaultMaxTokens, HsCodePattern");
+            
             SetDefaultPrompts();
+            
+            // **CONSTRUCTOR_COMPLETION_VERIFICATION**
+            _logger.Information("🏁 **CONSTRUCTOR_COMPLETE**: OCRCorrectionService initialization finished - all components ready");
+            _logger.Information("   - **LLM_CLIENT_STATUS**: {LlmClientStatus}", _llmClient != null ? "READY" : "NULL");
+            _logger.Information("   - **STRATEGY_FACTORY_STATUS**: {StrategyFactoryStatus}", _strategyFactory != null ? "READY" : "NULL");
+            _logger.Information("   - **AI_TEMPLATE_SERVICE_STATUS**: {TemplateServiceStatus}", _templateService != null ? "READY" : "FALLBACK_MODE");
+            _logger.Information("   - **BUSINESS_SERVICES_EQUIVALENT**: Properties initialized to match DeepSeekInvoiceApi");
+            _logger.Information("   - **SERVICE_CAPABILITIES**: Error detection, pattern learning, template creation, LLM fallback extraction");
         }
 
         #endregion
