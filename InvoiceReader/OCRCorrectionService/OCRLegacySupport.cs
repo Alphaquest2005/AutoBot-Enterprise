@@ -249,14 +249,41 @@ namespace WaterNut.DataSpace
             return !TotalsZero(res, out totalImbalanceSum, logger);
         }
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Comprehensive invoice correction pipeline with LLM diagnostic workflow
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation
+        /// **CORRECTION PIPELINE**: Database healing → Template refresh → Error detection → Correction application → Learning → Synchronization
+        /// **MULTI-INVOICE SUPPORT**: Processes all invoices with comprehensive balance validation and Caribbean customs rules
+        /// **DIAGNOSTIC INTEGRATION**: Complete logging for LLM analysis of correction workflow and balance validation outcomes
+        /// </summary>
         public static async Task<List<dynamic>> CorrectInvoices(List<dynamic> res, Template template, List<string> textLines, ILogger logger)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.1**: Complete LLM diagnostic workflow for correction pipeline
             var log = logger ?? Log.Logger.ForContext(typeof(OCRCorrectionService));
 
             try
             {
-                log.Error("🏁 **CORRECT_INVOICES_ENTRY**: Starting correction process with native data structure handling.");
-                log.Error("   - **ARCHITECTURAL_INTENT**: Heal DB -> Read -> Detect -> Apply -> Learn -> Sync -> Re-wrap.");
+                // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+                log.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for invoice correction pipeline");
+                log.Error("📋 **AVAILABLE_LOG_DATA**: Correction pipeline context with multi-invoice processing capability");
+                log.Error("🔍 **PATTERN_ANALYSIS**: Database healing → template refresh → error detection → correction → learning → sync pattern");
+                log.Error("❓ **EVIDENCE_GAPS**: Need pipeline step validation, balance verification, correction application confirmation");
+                log.Error("💡 **LOG_BASED_HYPOTHESIS**: Invoice correction requires systematic pipeline with comprehensive validation");
+                
+                // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+                log.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for correction pipeline");
+                log.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed pipeline steps, balance tracking, correction outcomes, sync verification");
+                log.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Database state, template refresh, error detection, balance validation, sync results");
+                
+                // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+                log.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based invoice correction pipeline");
+                log.Error("📚 **FIX_RATIONALE**: Based on OCR pipeline requirements, implementing comprehensive correction workflow");
+                log.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring balance corrections and sync accuracy");
+                
+                log.Error("🏁 **CORRECT_INVOICES_ENTRY**: Starting correction process with native data structure handling");
+                log.Error("   - **ARCHITECTURAL_INTENT**: Heal DB → Read → Detect → Apply → Learn → Sync → Re-wrap");
 
                 var actualInvoiceData = new List<IDictionary<string, object>>();
                 if (res != null && res.Any() && res[0] is IList nestedList)
