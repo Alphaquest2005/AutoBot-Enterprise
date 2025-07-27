@@ -187,7 +187,16 @@ namespace WaterNut.DataSpace
                 return string.Empty;
             }
 
-            return cleaned.Substring(startIndex, endIndex - startIndex + 1);
+            var extractedJson = cleaned.Substring(startIndex, endIndex - startIndex + 1);
+
+            // **🔧 JSON_ESCAPING_FIX**: Fix common JSON escaping issues that cause parsing failures
+            _logger?.Information("🔧 **JSON_ESCAPING_FIX**: Applying JSON string escape fixes to prevent parsing errors");
+            var fixedJson = FixJsonStringEscaping(extractedJson);
+            
+            _logger?.Information("🔍 **JSON_ESCAPING_RESULT**: Original length={OriginalLength}, Fixed length={FixedLength}", 
+                extractedJson?.Length ?? 0, fixedJson?.Length ?? 0);
+
+            return fixedJson;
         }
 
         #endregion
