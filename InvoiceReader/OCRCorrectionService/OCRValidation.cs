@@ -262,18 +262,32 @@ namespace WaterNut.DataSpace
                     (requiredMathFieldsSuccess ? $"All required mathematical fields present for {documentType} (Required: {string.Join(",", requiredMathFields)})" : 
                     $"Missing required mathematical fields for {documentType}"));
                 
-                // **TEMPLATE_SPEC_4: MATHEMATICAL DATA TYPE AND BUSINESS RULES VALIDATION**
-                bool mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
-                    d.Quantity >= 0 && (d.Cost ?? 0) >= 0 && (d.TotalCost ?? 0) >= 0) ?? true;
+                // **TEMPLATE_SPEC_4: DATABASE-DRIVEN MATHEMATICAL DATA TYPE AND BUSINESS RULES VALIDATION**
+                bool mathDataTypeRulesSuccess = true;
+                if (templateMapping?.Rules?.BusinessRules != null && templateMapping.Rules.BusinessRules.Any())
+                {
+                    // Apply database-driven business rules
+                    mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
+                        ValidateBusinessRulesForInvoiceDetail(d, templateMapping.Rules.BusinessRules)) ?? true;
+                }
+                else
+                {
+                    // Default mathematical validation rules
+                    mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
+                        d.Quantity >= 0 && (d.Cost ?? 0) >= 0 && (d.TotalCost ?? 0) >= 0) ?? true;
+                }
                 _logger.Error((mathDataTypeRulesSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_DATA_RULES**: " + 
-                    (mathDataTypeRulesSuccess ? $"Mathematical data types and business rules compliant for {documentType}" : 
+                    (mathDataTypeRulesSuccess ? $"Mathematical data types and business rules compliant for {documentType} (Database-driven validation)" : 
                     $"Mathematical data type or business rule violations for {documentType}"));
                 
-                // **TEMPLATE_SPEC_5: MATHEMATICAL TEMPLATE EFFECTIVENESS VALIDATION**
-                bool mathTemplateEffectivenessSuccess = calculationErrors <= processedLineItems * 0.05; // 95% accuracy
+                // **TEMPLATE_SPEC_5: DATABASE-DRIVEN MATHEMATICAL TEMPLATE EFFECTIVENESS VALIDATION**
+                double effectivenessThreshold = templateMapping?.Rules?.BusinessRules?.ContainsKey("ErrorThreshold") == true 
+                    ? Convert.ToDouble(templateMapping.Rules.BusinessRules["ErrorThreshold"]["max"] ?? 0.05) 
+                    : 0.05; // Default 95% accuracy
+                bool mathTemplateEffectivenessSuccess = calculationErrors <= processedLineItems * effectivenessThreshold;
                 _logger.Error((mathTemplateEffectivenessSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_EFFECTIVENESS**: " + 
-                    (mathTemplateEffectivenessSuccess ? $"Mathematical template effectiveness validated for {documentType}" : 
-                    $"Mathematical template effectiveness issues detected for {documentType}"));
+                    (mathTemplateEffectivenessSuccess ? $"Mathematical template effectiveness validated for {documentType} (Threshold: {effectivenessThreshold:P1})" : 
+                    $"Mathematical template effectiveness issues detected for {documentType} (Errors: {calculationErrors}/{processedLineItems})"));
                 
                 // **OVERALL SUCCESS VALIDATION WITH DUAL-LAYER TEMPLATE SPECIFICATIONS**
                 bool templateSpecificationSuccess = templateSpec1Success && entityTypeMappingSuccess && 
