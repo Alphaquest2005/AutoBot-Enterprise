@@ -268,37 +268,209 @@ Return your analysis in this exact JSON format:
         }
 
         /// <summary>
-        /// Basic content analysis fallback when AI detection fails
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: General document structure analysis fallback
+        /// 
+        /// Uses general text patterns and document structure analysis to detect document boundaries.
+        /// Completely general - analyzes formatting, structure, and content density without domain knowledge.
         /// </summary>
         private Dictionary<string, double> PerformBasicContentAnalysis(string text)
         {
-            _logger.Information("🔍 **BASIC_CONTENT_ANALYSIS**: Performing fallback content analysis");
+            _logger.Information("🔍 **STRUCTURAL_CONTENT_ANALYSIS**: Performing general document structure analysis");
             
             var detection = new Dictionary<string, double>();
+            var lines = text?.Split('\n') ?? new string[0];
             
-            // Simple keyword-based detection as absolute fallback
-            var lowerText = text?.ToLower() ?? "";
+            // **GENERAL DOCUMENT BOUNDARY DETECTION**
+            var documentBoundaries = DetectDocumentBoundaries(lines);
             
-            if (lowerText.Contains("invoice") || lowerText.Contains("order") || lowerText.Contains("total"))
+            _logger.Information("📊 **BOUNDARY_ANALYSIS**: Found {Count} potential document boundaries", documentBoundaries.Count);
+            
+            if (documentBoundaries.Count > 0)
             {
-                detection["Generic_Invoice"] = 0.6;
-                _logger.Information("📄 **BASIC_DETECTION**: Generic_Invoice detected");
+                // Multiple documents detected based on structure
+                for (int i = 0; i <= documentBoundaries.Count; i++)
+                {
+                    var docType = $"Document_{i + 1}";
+                    var confidence = 0.6; // Medium confidence for structural detection
+                    
+                    detection[docType] = confidence;
+                    _logger.Information("📄 **STRUCTURAL_DETECTION**: {DocType} detected via boundary analysis", docType);
+                }
             }
-            
-            if (lowerText.Contains("customs") || lowerText.Contains("declaration") || lowerText.Contains("freight"))
+            else
             {
-                detection["Generic_Customs"] = 0.6;
-                _logger.Information("🏛️ **BASIC_DETECTION**: Generic_Customs detected");
-            }
-            
-            // If nothing detected, assume single document
-            if (detection.Count == 0)
-            {
-                detection["Generic_Document"] = 0.5;
-                _logger.Information("📄 **BASIC_DETECTION**: Generic_Document as fallback");
+                // **CONTENT DENSITY ANALYSIS** - Look for sections with different characteristics
+                var contentSections = AnalyzeContentDensity(lines);
+                
+                _logger.Information("📊 **DENSITY_ANALYSIS**: Found {Count} content sections", contentSections.Count);
+                
+                if (contentSections.Count > 1)
+                {
+                    for (int i = 0; i < contentSections.Count; i++)
+                    {
+                        var section = contentSections[i];
+                        var docType = $"Section_{section.Type}_{i + 1}";
+                        var confidence = section.Confidence;
+                        
+                        detection[docType] = confidence;
+                        _logger.Information("📄 **DENSITY_DETECTION**: {DocType} detected (Lines: {Start}-{End})", 
+                            docType, section.StartLine, section.EndLine);
+                    }
+                }
+                else
+                {
+                    // Single document fallback
+                    detection["Single_Document"] = 0.5;
+                    _logger.Information("📄 **SINGLE_DOCUMENT_FALLBACK**: No structural indicators of multiple documents");
+                }
             }
             
             return detection;
+        }
+
+        /// <summary>
+        /// Detects document boundaries using general formatting patterns
+        /// </summary>
+        private List<int> DetectDocumentBoundaries(string[] lines)
+        {
+            var boundaries = new List<int>();
+            
+            for (int i = 1; i < lines.Length - 1; i++)
+            {
+                var line = lines[i].Trim();
+                var prevLine = lines[i - 1].Trim();
+                var nextLine = lines[i + 1].Trim();
+                
+                // **BOUNDARY INDICATORS** (general formatting patterns)
+                bool isBoundary = false;
+                
+                // Page break indicators
+                if (line.Contains("---") && line.Length > 10) isBoundary = true;
+                if (line.Contains("===") && line.Length > 10) isBoundary = true;
+                if (line.Contains("___") && line.Length > 10) isBoundary = true;
+                
+                // Form separators
+                if (line.StartsWith("Page ") && (line.Contains(" of ") || line.Contains("/"))) isBoundary = true;
+                if (line.All(c => c == '-' || c == '=' || c == '_' || char.IsWhiteSpace(c)) && line.Length > 5) isBoundary = true;
+                
+                // Content transitions (empty line surrounded by substantial content)
+                if (string.IsNullOrWhiteSpace(line) && 
+                    prevLine.Length > 20 && nextLine.Length > 20 &&
+                    !string.IsNullOrWhiteSpace(prevLine) && !string.IsNullOrWhiteSpace(nextLine))
+                {
+                    // Check if this might be a document boundary based on content change
+                    var prevWords = prevLine.Split(' ');
+                    var nextWords = nextLine.Split(' ');
+                    var commonWords = prevWords.Intersect(nextWords, StringComparer.OrdinalIgnoreCase).Count();
+                    
+                    if (commonWords < Math.Min(prevWords.Length, nextWords.Length) * 0.3)
+                    {
+                        isBoundary = true; // Significant content change across empty line
+                    }
+                }
+                
+                if (isBoundary)
+                {
+                    boundaries.Add(i);
+                    _logger.Verbose("🔍 **BOUNDARY_DETECTED**: Line {LineNo} - '{Line}'", i, line.Length > 50 ? line.Substring(0, 50) + "..." : line);
+                }
+            }
+            
+            return boundaries;
+        }
+
+        /// <summary>
+        /// Analyzes content density to identify distinct document sections
+        /// </summary>
+        private List<ContentSection> AnalyzeContentDensity(string[] lines)
+        {
+            var sections = new List<ContentSection>();
+            var currentSection = new ContentSection { StartLine = 0, Type = "Dense" };
+            
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i].Trim();
+                var lineType = ClassifyLineType(line);
+                
+                // Detect section transitions based on content type changes
+                if (i > 0 && lineType != currentSection.Type)
+                {
+                    // Close current section
+                    currentSection.EndLine = i - 1;
+                    currentSection.LineCount = currentSection.EndLine - currentSection.StartLine + 1;
+                    currentSection.Confidence = CalculateSectionConfidence(currentSection, lines);
+                    
+                    if (currentSection.LineCount >= 3) // Minimum section size
+                    {
+                        sections.Add(currentSection);
+                    }
+                    
+                    // Start new section
+                    currentSection = new ContentSection 
+                    { 
+                        StartLine = i, 
+                        Type = lineType 
+                    };
+                }
+            }
+            
+            // Close final section
+            currentSection.EndLine = lines.Length - 1;
+            currentSection.LineCount = currentSection.EndLine - currentSection.StartLine + 1;
+            currentSection.Confidence = CalculateSectionConfidence(currentSection, lines);
+            
+            if (currentSection.LineCount >= 3)
+            {
+                sections.Add(currentSection);
+            }
+            
+            return sections;
+        }
+
+        /// <summary>
+        /// Classifies line type based on general content patterns
+        /// </summary>
+        private string ClassifyLineType(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line)) return "Empty";
+            if (line.Length < 10) return "Short";
+            if (line.Contains(":") && line.Split(':').Length == 2) return "Label";
+            if (line.All(c => char.IsDigit(c) || char.IsPunctuation(c) || char.IsWhiteSpace(c))) return "Numeric";
+            if (line.Split(' ').Length > 10) return "Dense";
+            return "Standard";
+        }
+
+        /// <summary>
+        /// Calculates confidence score for a content section
+        /// </summary>
+        private double CalculateSectionConfidence(ContentSection section, string[] lines)
+        {
+            double confidence = 0.5; // Base confidence
+            
+            // Longer sections get higher confidence
+            if (section.LineCount > 10) confidence += 0.2;
+            if (section.LineCount > 20) confidence += 0.1;
+            
+            // Consistent content type increases confidence
+            var sectionLines = lines.Skip(section.StartLine).Take(section.LineCount);
+            var consistentTypeCount = sectionLines.Count(line => ClassifyLineType(line.Trim()) == section.Type);
+            var consistency = (double)consistentTypeCount / section.LineCount;
+            
+            confidence += consistency * 0.3;
+            
+            return Math.Min(confidence, 0.9); // Cap at 0.9 for fallback detection
+        }
+
+        /// <summary>
+        /// Represents a content section with structural characteristics
+        /// </summary>
+        private class ContentSection
+        {
+            public int StartLine { get; set; }
+            public int EndLine { get; set; }
+            public int LineCount { get; set; }
+            public string Type { get; set; }
+            public double Confidence { get; set; }
         }
 
         /// <summary>
@@ -331,78 +503,201 @@ Return your analysis in this exact JSON format:
         }
 
         /// <summary>
-        /// Separates mixed document content into distinct documents
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: AI-powered content separation for any document types
+        /// 
+        /// Uses DeepSeek AI to intelligently separate mixed document content by document type.
+        /// Completely general - works with any supplier, any document format, any content organization.
         /// </summary>
-        private List<SeparatedDocument> SeparateMixedDocument(string text, Dictionary<string, double> detectedTypes)
+        private async Task<List<SeparatedDocument>> SeparateMixedDocumentAsync(string text, Dictionary<string, double> detectedTypes)
+        {
+            _logger.Information("🤖 **AI_CONTENT_SEPARATION_START**: Using DeepSeek to separate document content");
+            _logger.Information("   - **DETECTED_TYPES**: {Types}", string.Join(", ", detectedTypes.Keys));
+            _logger.Information("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
+            _logger.Information("   - **SEPARATION_APPROACH**: AI-powered, format-adaptive");
+
+            var documents = new List<SeparatedDocument>();
+
+            try
+            {
+                // **AI PROMPT**: Ask DeepSeek to separate content by document type
+                var separationPrompt = BuildContentSeparationPrompt(text, detectedTypes);
+                
+                _logger.Information("🔄 **AI_SEPARATION_CALL**: Calling DeepSeek for content separation");
+                var aiResponse = await CallDeepSeekForDocumentAnalysis(separationPrompt);
+                
+                _logger.Information("📊 **AI_SEPARATION_RESPONSE**: Received {Length} chars from DeepSeek", aiResponse?.Length ?? 0);
+
+                // Parse AI response to extract separated content for each document type
+                documents = ParseContentSeparationResponse(aiResponse, detectedTypes);
+                
+                _logger.Information("✅ **AI_CONTENT_SEPARATION_COMPLETE**: Created {Count} separated documents", documents.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **AI_SEPARATION_ERROR**: Failed to separate content via AI");
+                
+                // **FALLBACK**: Use basic line-by-line assignment if AI fails
+                _logger.Warning("🔄 **FALLBACK_SEPARATION**: Using basic content assignment as fallback");
+                documents = PerformBasicContentSeparation(text, detectedTypes);
+            }
+
+            return documents;
+        }
+
+        /// <summary>
+        /// Builds AI prompt for content separation based on detected document types
+        /// </summary>
+        private string BuildContentSeparationPrompt(string text, Dictionary<string, double> detectedTypes)
+        {
+            var typesList = string.Join(", ", detectedTypes.Keys);
+            
+            var prompt = $@"Please separate this mixed document text into distinct documents by type.
+
+DETECTED DOCUMENT TYPES: {typesList}
+
+TEXT TO SEPARATE:
+{text}
+
+Instructions:
+1. Analyze the content and identify which portions belong to each document type
+2. For each document type found, extract all relevant content (including headers, body, footers)
+3. Ensure no content is duplicated between documents
+4. If content is ambiguous, assign it to the most appropriate document type
+
+Return your separation in this exact JSON format:
+{{
+  ""separated_documents"": [
+    {{
+      ""document_type"": ""DocumentTypeName"",
+      ""content"": ""All content for this document type..."",
+      ""confidence"": 0.95,
+      ""reasoning"": ""Brief explanation of separation logic""
+    }}
+  ]
+}}
+
+IMPORTANT: Each document's content should be complete and self-contained. Include ALL relevant text for each document type.";
+
+            return prompt;
+        }
+
+        /// <summary>
+        /// Parses AI response to extract separated document content
+        /// </summary>
+        private List<SeparatedDocument> ParseContentSeparationResponse(string aiResponse, Dictionary<string, double> originalDetection)
         {
             var documents = new List<SeparatedDocument>();
-            var lines = text.Split('\n');
             
-            _logger.Information("🔍 **MIXED_SEPARATION**: Processing {LineCount} lines across {TypeCount} document types", 
-                lines.Length, detectedTypes.Count);
-
-            // **SECTION-BASED SEPARATION**
-            var documentSections = new Dictionary<string, List<string>>();
-            foreach (var docType in detectedTypes.Keys)
+            try
             {
-                documentSections[docType] = new List<string>();
-            }
-
-            string currentSection = null;
-            
-            for (int i = 0; i < lines.Length; i++)
-            {
-                var line = lines[i].Trim();
+                _logger.Information("📊 **PARSING_SEPARATION_RESPONSE**: Extracting separated content from AI response");
                 
-                // **SECTION BOUNDARY DETECTION**
-                var lineDocType = DetermineLineDocumentType(line, detectedTypes.Keys);
+                // Parse JSON response from DeepSeek
+                var responseData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(aiResponse);
+                var separatedDocs = responseData?.separated_documents;
                 
-                if (lineDocType != null)
+                if (separatedDocs != null)
                 {
-                    currentSection = lineDocType;
-                    _logger.Verbose("🔄 **SECTION_CHANGE**: Line {LineNo} → {DocumentType}", i, lineDocType);
-                }
-
-                // **LINE ASSIGNMENT**
-                if (currentSection != null && documentSections.ContainsKey(currentSection))
-                {
-                    documentSections[currentSection].Add(line);
-                }
-                else
-                {
-                    // **CONTENT-BASED ASSIGNMENT** for ambiguous lines
-                    var bestMatch = GetBestDocumentMatch(line, detectedTypes.Keys);
-                    if (bestMatch != null)
+                    int position = 0;
+                    
+                    foreach (var doc in separatedDocs)
                     {
-                        documentSections[bestMatch].Add(line);
-                    }
-                    else
-                    {
-                        // **DEFAULT ASSIGNMENT** to highest confidence document
-                        var primaryDoc = detectedTypes.OrderByDescending(kvp => kvp.Value).First().Key;
-                        documentSections[primaryDoc].Add(line);
+                        var docType = doc.document_type?.ToString() ?? "Unknown";
+                        var content = doc.content?.ToString() ?? "";
+                        var aiConfidence = double.TryParse(doc.confidence?.ToString(), out var conf) ? conf : 0.5;
+                        var reasoning = doc.reasoning?.ToString() ?? "No reasoning provided";
+                        
+                        // Use AI confidence, fallback to original detection confidence
+                        var finalConfidence = originalDetection.ContainsKey(docType) 
+                            ? Math.Max(aiConfidence, originalDetection[docType]) 
+                            : aiConfidence;
+                        
+                        var separatedDoc = new SeparatedDocument
+                        {
+                            DocumentType = docType,
+                            Content = content,
+                            StartPosition = position,
+                            Length = content.Length,
+                            ConfidenceScore = finalConfidence
+                        };
+                        
+                        documents.Add(separatedDoc);
+                        position += content.Length;
+                        
+                        _logger.Information("📄 **SEPARATED_DOCUMENT**: {Type} - {Length} chars (Confidence: {Confidence:F2})", 
+                            docType, content.Length, finalConfidence);
+                        _logger.Verbose("   - **SEPARATION_REASONING**: {Reasoning}", reasoning);
                     }
                 }
-            }
-
-            // **DOCUMENT ASSEMBLY**
-            foreach (var kvp in documentSections.Where(kvp => kvp.Value.Any()))
-            {
-                var content = string.Join("\n", kvp.Value);
-                var doc = new SeparatedDocument
-                {
-                    DocumentType = kvp.Key,
-                    Content = content,
-                    StartPosition = documents.Sum(d => d.Length),
-                    Length = content.Length,
-                    ConfidenceScore = detectedTypes[kvp.Key]
-                };
                 
-                documents.Add(doc);
-                _logger.Information("✅ **DOCUMENT_ASSEMBLED**: {Type} with {LineCount} lines, {CharCount} characters", 
-                    kvp.Key, kvp.Value.Count, content.Length);
+                _logger.Information("✅ **SEPARATION_PARSING_COMPLETE**: Created {Count} separated documents", documents.Count);
             }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **SEPARATION_PARSING_ERROR**: Failed to parse AI separation response");
+                throw;
+            }
+            
+            return documents;
+        }
 
+        /// <summary>
+        /// Basic content separation fallback when AI separation fails
+        /// </summary>
+        private List<SeparatedDocument> PerformBasicContentSeparation(string text, Dictionary<string, double> detectedTypes)
+        {
+            _logger.Information("🔍 **BASIC_CONTENT_SEPARATION**: Performing fallback content separation");
+            
+            var documents = new List<SeparatedDocument>();
+            
+            if (detectedTypes.Count == 1)
+            {
+                // Single document type - assign all content
+                var docType = detectedTypes.Keys.First();
+                documents.Add(new SeparatedDocument
+                {
+                    DocumentType = docType,
+                    Content = text,
+                    StartPosition = 0,
+                    Length = text.Length,
+                    ConfidenceScore = detectedTypes[docType]
+                });
+                
+                _logger.Information("📄 **SINGLE_DOCUMENT_FALLBACK**: Assigned all content to {Type}", docType);
+            }
+            else
+            {
+                // Multiple document types - split content roughly by document count
+                var lines = text.Split('\n');
+                var linesPerDoc = lines.Length / detectedTypes.Count;
+                var position = 0;
+                
+                int docIndex = 0;
+                foreach (var kvp in detectedTypes)
+                {
+                    var startLine = docIndex * linesPerDoc;
+                    var endLine = (docIndex == detectedTypes.Count - 1) ? lines.Length : (docIndex + 1) * linesPerDoc;
+                    
+                    var docLines = lines.Skip(startLine).Take(endLine - startLine);
+                    var content = string.Join("\n", docLines);
+                    
+                    documents.Add(new SeparatedDocument
+                    {
+                        DocumentType = kvp.Key,
+                        Content = content,
+                        StartPosition = position,
+                        Length = content.Length,
+                        ConfidenceScore = kvp.Value * 0.7 // Reduce confidence for basic separation
+                    });
+                    
+                    position += content.Length;
+                    docIndex++;
+                    
+                    _logger.Information("📄 **BASIC_SEPARATION**: {Type} - Lines {Start}-{End} ({Length} chars)", 
+                        kvp.Key, startLine, endLine - 1, content.Length);
+                }
+            }
+            
             return documents;
         }
 
