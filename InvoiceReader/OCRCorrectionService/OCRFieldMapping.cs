@@ -248,8 +248,45 @@ namespace WaterNut.DataSpace
                 _logger.Information("📊 Field Mapping Summary: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}", 
                     originalFieldName, fieldNameToMap, prefixStripped, mappingFound);
                 
-                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
-                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Field mapping success analysis");
+                // **STEP 4: MANDATORY TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION** ⭐ **ENHANCED WITH TEMPLATE SPECIFICATIONS**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_SUCCESS_CRITERIA_VALIDATION**: Field mapping success analysis with Template Specifications compliance");
+                
+                // **TEMPLATE_SPEC_1: EntityType Classification Validation**
+                bool entityTypeValid = fieldInfo == null || (
+                    fieldInfo.EntityType == "Invoice" || 
+                    fieldInfo.EntityType == "InvoiceDetails" || 
+                    fieldInfo.EntityType == "ShipmentBL" || 
+                    fieldInfo.EntityType == "PurchaseOrders");
+                _logger.Error((entityTypeValid ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_CLASSIFICATION**: " + 
+                    (entityTypeValid ? $"Field EntityType classification valid - '{fieldInfo?.EntityType ?? "NULL"}' is recognized template EntityType" : 
+                    $"Field EntityType classification invalid - '{fieldInfo?.EntityType ?? "NULL"}' is not a valid template EntityType"));
+                
+                // **TEMPLATE_SPEC_2: Field-to-EntityType Mapping Compliance**
+                bool fieldEntityMappingValid = fieldInfo == null || ValidateFieldEntityMapping(fieldInfo.DatabaseFieldName, fieldInfo.EntityType);
+                _logger.Error((fieldEntityMappingValid ? "✅" : "❌") + " **TEMPLATE_SPEC_FIELD_ENTITY_MAPPING**: " + 
+                    (fieldEntityMappingValid ? $"Field-EntityType mapping compliant - '{fieldInfo?.DatabaseFieldName}' → '{fieldInfo?.EntityType}' follows template specifications" : 
+                    $"Field-EntityType mapping non-compliant - '{fieldInfo?.DatabaseFieldName}' → '{fieldInfo?.EntityType}' violates template specifications"));
+                
+                // **TEMPLATE_SPEC_3: Required Field Pattern Validation**
+                bool requiredFieldPatternValid = fieldInfo == null || ValidateRequiredFieldPattern(fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.IsRequired);
+                _logger.Error((requiredFieldPatternValid ? "✅" : "❌") + " **TEMPLATE_SPEC_REQUIRED_FIELD_PATTERN**: " + 
+                    (requiredFieldPatternValid ? $"Required field pattern valid - '{fieldInfo?.DatabaseFieldName}' IsRequired={fieldInfo?.IsRequired} aligns with template specifications" : 
+                    $"Required field pattern invalid - '{fieldInfo?.DatabaseFieldName}' IsRequired={fieldInfo?.IsRequired} misaligns with template specifications"));
+                
+                // **TEMPLATE_SPEC_4: Data Type Specification Compliance**
+                bool dataTypeSpecValid = fieldInfo == null || ValidateDataTypeSpecification(fieldInfo.DatabaseFieldName, fieldInfo.DataType);
+                _logger.Error((dataTypeSpecValid ? "✅" : "❌") + " **TEMPLATE_SPEC_DATA_TYPE**: " + 
+                    (dataTypeSpecValid ? $"Data type specification compliant - '{fieldInfo?.DatabaseFieldName}' DataType='{fieldInfo?.DataType}' follows template standards" : 
+                    $"Data type specification non-compliant - '{fieldInfo?.DatabaseFieldName}' DataType='{fieldInfo?.DataType}' violates template standards"));
+                
+                // **TEMPLATE_SPEC_5: Field Naming Convention Compliance**
+                bool fieldNamingConventionValid = fieldInfo == null || ValidateFieldNamingConvention(fieldInfo.DatabaseFieldName, fieldInfo.EntityType);
+                _logger.Error((fieldNamingConventionValid ? "✅" : "❌") + " **TEMPLATE_SPEC_NAMING_CONVENTION**: " + 
+                    (fieldNamingConventionValid ? $"Field naming convention compliant - '{fieldInfo?.DatabaseFieldName}' follows template naming standards for '{fieldInfo?.EntityType}'" : 
+                    $"Field naming convention non-compliant - '{fieldInfo?.DatabaseFieldName}' violates template naming standards for '{fieldInfo?.EntityType}'"));
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION** ⭐ **ENHANCED WITH TEMPLATE SPECIFICATIONS**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Field mapping success analysis with enhanced template specification validation");
                 
                 bool validationExecuted = !string.IsNullOrWhiteSpace(rawFieldName) && !string.IsNullOrEmpty(fieldNameToMap);
                 bool mappingResultValid = fieldInfo == null || (!string.IsNullOrEmpty(fieldInfo.DatabaseFieldName) && !string.IsNullOrEmpty(fieldInfo.EntityType));
