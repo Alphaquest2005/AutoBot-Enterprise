@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace
         /// **BUSINESS OBJECTIVE**: Enable proper template matching by providing clean, single-document content streams
         /// **SUCCESS CRITERIA**: Accurate document type detection, complete content preservation, proper boundary detection
         /// </summary>
-        public List<SeparatedDocument> SeparateDocuments(string rawText)
+        public async Task<List<SeparatedDocument>> SeparateDocumentsAsync(string rawText)
         {
             // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow with success criteria validation
             
