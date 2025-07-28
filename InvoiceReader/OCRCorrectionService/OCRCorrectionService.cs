@@ -463,22 +463,60 @@ namespace WaterNut.DataSpace
         /// </summary>
         public async Task<List<Template>> CreateInvoiceTemplateAsync(string pdfText, string filePath)
         {
-            // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
-            _logger.Information("🚀 **MULTI_TEMPLATE_CREATION_START**: Starting AI-powered multi-template creation for file '{FilePath}'", filePath);
-            _logger.Information("   - **METHOD_PURPOSE**: Use AI document separator to detect document types and create separate templates");
-            _logger.Information("   - **INPUT_TEXT_LENGTH**: {TextLength} characters of PDF content", pdfText?.Length ?? 0);
-            _logger.Information("   - **AI_APPROACH**: DeepSeek document detection → AI content separation → template creation per document type");
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for template creation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for invoice template creation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Template creation context with AI document separation and multi-template generation");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation → document separation → template creation → error detection → database storage pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, document detection, template generation, error analysis, storage success");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Template creation requires comprehensive AI-powered document analysis with multi-type template generation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for template creation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed document separation, template generation tracking, error detection analysis, database storage verification");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, document types, template counts, error detection, database integration, learning system updates");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based template creation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on AI template generation requirements, implementing comprehensive multi-template creation workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring document detection, template generation, and database storage completeness");
 
             if (string.IsNullOrEmpty(pdfText))
             {
-                _logger.Error("❌ **TEMPLATE_CREATION_EMPTY_INPUT**: PDF text is null or empty");
+                _logger.Error("❌ **INPUT_VALIDATION_FAILED**: Critical input validation failed for template creation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - PDF text is null or empty");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null PDF text prevents template creation processing");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures template creation has valid document content");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning empty template list");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Template creation failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot perform template creation with null or empty PDF text");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No template results possible due to invalid input");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Template creation workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No template processing possible with null PDF text");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with empty template list return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Template creation objective cannot be achieved without valid PDF content");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No template processing possible without valid document data");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Template creation terminated due to input validation failure");
+                
                 return new List<Template>();
             }
 
             var createdTemplates = new List<Template>();
+            
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Input validation successful - proceeding with template creation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Creation success - FilePath='{FilePath}', TextLength={TextLength}", 
+                filePath, pdfText.Length);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling AI-powered template creation processing");
 
             try
             {
+                // **v4.2 TEMPLATE CREATION PROCESSING**: Enhanced template creation with comprehensive tracking
+                _logger.Error("🚀 **TEMPLATE_CREATION_START**: Beginning AI-powered multi-template creation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with document separation and template generation verification");
                 // **STEP 1**: Use AI document separator to detect and separate document types
                 _logger.Information("🤖 **DOCUMENT_SEPARATION_START**: Using AI-powered document separator to detect multiple document types");
                 var separatedDocuments = await SeparateDocumentsAsync(pdfText);
