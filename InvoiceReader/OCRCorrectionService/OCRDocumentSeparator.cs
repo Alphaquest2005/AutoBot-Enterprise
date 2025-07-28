@@ -55,8 +55,8 @@ namespace WaterNut.DataSpace
                 return documents;
             }
 
-            // **DETECTION PHASE**: Identify document types present
-            var detectionResult = DetectDocumentTypes(fullText);
+            // **DETECTION PHASE**: Identify document types present using AI
+            var detectionResult = await DetectDocumentTypesAsync(fullText);
             _logger.Information("🎯 **DETECTION_RESULTS**: Found {DocumentTypeCount} document types - {Types}", 
                 detectionResult.Count, string.Join(", ", detectionResult.Keys));
 
@@ -78,9 +78,9 @@ namespace WaterNut.DataSpace
             }
             else
             {
-                // **MIXED DOCUMENT**: Apply separation logic
-                _logger.Information("🔀 **MIXED_DOCUMENT_DETECTED**: {TypeCount} document types found, applying separation logic", detectionResult.Count);
-                documents = SeparateMixedDocument(fullText, detectionResult);
+                // **MIXED DOCUMENT**: Apply AI-powered separation logic
+                _logger.Information("🔀 **MIXED_DOCUMENT_DETECTED**: {TypeCount} document types found, applying AI separation logic", detectionResult.Count);
+                documents = await SeparateMixedDocumentAsync(fullText, detectionResult);
             }
 
             // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
