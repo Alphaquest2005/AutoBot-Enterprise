@@ -219,12 +219,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("✅ **INTEGRATION_SUCCESS**: Mathematical validation processing completed without external dependencies");
                 _logger.Error(((processedLineItems < 10000) ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
                 
-                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - DUAL LAYER APPROACH**
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - DATABASE-DRIVEN DUAL LAYER APPROACH**
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Mathematical consistency dual-layer template specification compliance analysis");
                 
-                // Determine document type using FileTypeManager.EntryTypes
-                string documentType = FileTypeManager.EntryTypes.ShipmentInvoice; // Default for ShipmentInvoice parameter
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using document-specific validation rules");
+                // Get template mapping from database using FileTypeId (if available) or default to ShipmentInvoice
+                var templateMapping = invoice.FileTypeId.HasValue 
+                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId.Value)
+                    : null;
+                string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven validation rules");
                 
                 // **TEMPLATE_SPEC_1: AI MATHEMATICAL RECOMMENDATION QUALITY + ACTUAL MATHEMATICAL DATA VALIDATION**
                 // LAYER 1: AI recommendation quality for mathematical consistency (simulated for mathematical context)
