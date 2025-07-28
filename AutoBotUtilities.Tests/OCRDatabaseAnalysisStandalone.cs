@@ -13,7 +13,7 @@ namespace AutoBotUtilities.Tests
     /// </summary>
     public class OCRDatabaseAnalysisStandalone
     {
-        private readonly string _connectionString = "data source=MINIJOE\\SQLDEVELOPER2022;initial catalog=WebSource-AutoBot;user=sa;password=pa$word;Connect Timeout=30;MultipleActiveResultSets=True";
+        private readonly string _connectionString = "data source=MINIJOE\\SQLDEVELOPER2022;initial catalog=WebSource-AutoBot;user=sa;password=pa$$word;Connect Timeout=30;MultipleActiveResultSets=True";
 
         public static async Task Main(string[] args)
         {
