@@ -1150,6 +1150,147 @@ namespace WaterNut.DataSpace
 
             return enhancedInfo;
         }
+
+        #region Template Specification Validation Helpers
+
+        /// <summary>
+        /// **TEMPLATE SPECIFICATION HELPER**: Validates that a field-EntityType mapping conforms to Template Specifications
+        /// </summary>
+        private bool ValidateFieldEntityMapping(string fieldName, string entityType)
+        {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(entityType))
+                return false;
+
+            // Template Specification-based field-EntityType validation
+            switch (entityType)
+            {
+                case "Invoice":
+                    return fieldName == "InvoiceNo" || fieldName == "InvoiceDate" || fieldName == "InvoiceTotal" || 
+                           fieldName == "SubTotal" || fieldName == "Currency" || fieldName == "SupplierCode" || 
+                           fieldName == "PONumber" || fieldName == "SupplierName";
+
+                case "InvoiceDetails":
+                    return fieldName == "ItemNumber" || fieldName == "ItemDescription" || fieldName == "Quantity" || 
+                           fieldName == "Cost" || fieldName == "TotalCost" || fieldName == "Units" || 
+                           fieldName == "Description" || fieldName == "UnitPrice" || fieldName == "ExtendedPrice";
+
+                case "ShipmentBL":
+                    return fieldName == "BLNumber" || fieldName == "Vessel" || fieldName == "Voyage" || 
+                           fieldName == "Container" || fieldName == "WeightKG" || fieldName == "VolumeM3" ||
+                           fieldName == "xBond_Item_Id" || fieldName == "Item_Id" || fieldName == "DutyLiabilityPercent";
+
+                case "PurchaseOrders":
+                    return fieldName == "PONumber" || fieldName == "LineNumber" || fieldName == "Quantity" ||
+                           fieldName == "ItemNumber" || fieldName == "Description";
+
+                default:
+                    return false; // Unknown EntityType
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE SPECIFICATION HELPER**: Validates required field patterns according to Template Specifications
+        /// </summary>
+        private bool ValidateRequiredFieldPattern(string fieldName, string entityType, bool isRequired)
+        {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(entityType))
+                return true; // Allow null mappings
+
+            // Template Specification-based required field validation
+            switch (entityType)
+            {
+                case "Invoice":
+                    // Critical invoice fields should typically be required unless multiple patterns exist
+                    return !(fieldName == "InvoiceNo" && !isRequired) && 
+                           !(fieldName == "InvoiceTotal" && !isRequired) &&
+                           !(fieldName == "SupplierCode" && !isRequired && fieldName != "SupplierName");
+
+                case "InvoiceDetails":
+                    // Essential line item fields should typically be required
+                    return !(fieldName == "ItemNumber" && !isRequired && fieldName != "ItemDescription") &&
+                           !(fieldName == "Quantity" && !isRequired) &&
+                           !(fieldName == "Cost" && !isRequired && fieldName != "TotalCost");
+
+                case "ShipmentBL":
+                    // Key shipping fields should typically be required
+                    return !(fieldName == "BLNumber" && !isRequired) &&
+                           !(fieldName == "WeightKG" && !isRequired);
+
+                default:
+                    return true; // Allow other EntityTypes without strict validation
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE SPECIFICATION HELPER**: Validates data type specifications according to Template Specifications
+        /// </summary>
+        private bool ValidateDataTypeSpecification(string fieldName, string dataType)
+        {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(dataType))
+                return true; // Allow null mappings
+
+            // Template Specification-based data type validation
+            switch (fieldName)
+            {
+                case "InvoiceDate":
+                    return dataType == "Date" || dataType == "English Date";
+
+                case "InvoiceTotal":
+                case "SubTotal":
+                case "Cost":
+                case "TotalCost":
+                case "UnitPrice":
+                case "ExtendedPrice":
+                case "WeightKG":
+                case "VolumeM3":
+                case "DutyLiabilityPercent":
+                    return dataType == "Number" || dataType == "Numeric" || dataType == "Decimal";
+
+                case "Quantity":
+                case "LineNumber":
+                    return dataType == "Number" || dataType == "Numeric" || dataType == "Integer";
+
+                case "InvoiceNo":
+                case "ItemNumber":
+                case "PONumber":
+                case "BLNumber":
+                case "Container":
+                case "Vessel":
+                case "Voyage":
+                case "Currency":
+                    return dataType == "String";
+
+                default:
+                    return dataType == "String"; // Default to string for most fields
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE SPECIFICATION HELPER**: Validates field naming conventions according to Template Specifications
+        /// </summary>
+        private bool ValidateFieldNamingConvention(string fieldName, string entityType)
+        {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(entityType))
+                return true; // Allow null mappings
+
+            // Template Specification naming convention validation
+            // Field names should be consistent across suppliers for the same concept
+            var standardFieldNames = new HashSet<string>
+            {
+                // Invoice fields
+                "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "SupplierName",
+                // InvoiceDetails fields  
+                "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost", "Units", "Description", "UnitPrice", "ExtendedPrice",
+                // ShipmentBL fields
+                "BLNumber", "Vessel", "Voyage", "Container", "WeightKG", "VolumeM3", "xBond_Item_Id", "Item_Id", "DutyLiabilityPercent",
+                // PurchaseOrders fields
+                "PONumber", "LineNumber", "ItemNumber", "Quantity", "Description"
+            };
+
+            return standardFieldNames.Contains(fieldName);
+        }
+
+        #endregion
         
         #endregion
     }
