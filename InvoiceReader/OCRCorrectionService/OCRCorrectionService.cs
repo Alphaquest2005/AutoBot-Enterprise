@@ -479,18 +479,22 @@ namespace WaterNut.DataSpace
 
             try
             {
-                // Extract template name from file path
-                string templateName = System.IO.Path.GetFileNameWithoutExtension(filePath)
-                    ?.Replace("03152025_TOTAL AMOUNT", "MANGO")
-                    ?.Replace("_", "")
-                    ?.Replace(" ", "")
-                    ?.ToUpperInvariant() ?? "UNKNOWN";
+                // **STEP 1**: Use AI document separator to detect and separate document types
+                _logger.Information("🤖 **DOCUMENT_SEPARATION_START**: Using AI-powered document separator to detect multiple document types");
+                var separatedDocuments = await SeparateDocumentsAsync(pdfText);
                 
-                _logger.Information("🔧 **TEMPLATE_NAME_EXTRACTED**: '{TemplateName}' from file '{FileName}'", 
-                    templateName, System.IO.Path.GetFileName(filePath));
+                _logger.Information("📊 **DOCUMENT_SEPARATION_COMPLETE**: Found {Count} document types", separatedDocuments.Count);
+                foreach (var doc in separatedDocuments)
+                {
+                    _logger.Information("   - **DETECTED_DOCUMENT**: Type='{Type}', Length={Length} chars, Confidence={Confidence:F2}", 
+                        doc.DocumentType, doc.Length, doc.ConfidenceScore);
+                }
 
-                // **CONSOLIDATED TEMPLATE CREATION**: DeepSeek implementation moved inline
-                _logger.Information("🏗️ **TEMPLATE_CREATION_ORCHESTRATION_START**: Creating template '{TemplateName}' from DeepSeek analysis", templateName);
+                if (!separatedDocuments.Any())
+                {
+                    _logger.Warning("⚠️ **NO_DOCUMENTS_DETECTED**: Document separator found no processable documents");
+                    return createdTemplates;
+                }
                 
                 using (var dbContext = new OCRContext())
                 {
