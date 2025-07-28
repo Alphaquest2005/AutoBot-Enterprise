@@ -386,6 +386,17 @@ namespace WaterNut.DataSpace
         #region Template Specification Validation Framework
 
         /// <summary>
+        /// AI-generated prompt recommendation for template improvement
+        /// </summary>
+        public class PromptRecommendation
+        {
+            public string Description { get; set; }
+            public string Reasoning { get; set; }
+            public string Category { get; set; }
+            public int Priority { get; set; }
+        }
+
+        /// <summary>
         /// Template specification object containing validation rules for a specific document type
         /// </summary>
         public class TemplateSpecification
