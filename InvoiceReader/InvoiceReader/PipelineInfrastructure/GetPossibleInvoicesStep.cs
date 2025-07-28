@@ -360,9 +360,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     else
                                     {
                                         context.Logger?.Error(
-                                            "❌ **OCR_TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned NULL");
+                                            "❌ **OCR_TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned NULL or empty list");
                                         context.Logger?.Error(
-                                            "   - **FAILURE_IMPACT**: No new template will be added to MatchedTemplates");
+                                            "   - **FAILURE_IMPACT**: No new templates will be added to MatchedTemplates");
                                         context.Logger?.Error(
                                             "   - **PIPELINE_CONTINUATION**: Will proceed with existing {Count} templates",
                                             context.MatchedTemplates?.Count() ?? 0);
