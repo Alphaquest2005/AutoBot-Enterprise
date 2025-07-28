@@ -482,6 +482,7 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Extension methods for fluent template specification validation with short-circuiting
+        /// DUAL-LAYER APPROACH: AI Recommendation Quality + Actual Data Validation
         /// </summary>
         public static class TemplateSpecificationExtensions
         {
