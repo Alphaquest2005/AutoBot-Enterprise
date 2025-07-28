@@ -295,15 +295,18 @@ namespace InvoiceReader.PipelineInfrastructure
                                 
                                 var newTemplates = await ocrService.CreateInvoiceTemplateAsync(pdfText, context.FilePath).ConfigureAwait(false);
                                 
-                                if (newTemplate != null)
+                                if (newTemplates != null && newTemplates.Any())
                                 {
-                                    context.Logger?.Information("✅ **OCR_TEMPLATE_CREATED**: Successfully created template '{TemplateName}' (ID: {TemplateId})", 
-                                        newTemplate.OcrTemplates?.Name ?? "Unknown", newTemplate.OcrTemplates?.Id ?? 0);
+                                    context.Logger?.Information("✅ **OCR_TEMPLATE_CREATED**: Successfully created {TemplateCount} templates", newTemplates.Count);
+                                    foreach (var template in newTemplates)
+                                    {
+                                        context.Logger?.Information("   - Template: '{TemplateName}' (ID: {TemplateId})",
+                                            template.OcrTemplates?.Name ?? "Unknown", template.OcrTemplates?.Id ?? 0);
+                                    }
                                     
-                                    // Add the new template to our collection and cache
-                                    var templateList = new List<Template> { newTemplate };
-                                    context.Templates = templateList;
-                                    _allTemplates = templateList;
+                                    // Add the new templates to our collection and cache
+                                    context.Templates = newTemplates;
+                                    _allTemplates = newTemplates;
                                     
                                     // Invalidate cache to ensure fresh load next time
                                     InvalidateTemplateCache();
