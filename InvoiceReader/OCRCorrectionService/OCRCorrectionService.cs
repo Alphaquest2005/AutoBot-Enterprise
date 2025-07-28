@@ -690,50 +690,55 @@ namespace WaterNut.DataSpace
                             continue; // Skip this document and continue with next
                         }
                     
-                    _logger.Information("✅ **INVOICE_OBJECT_CREATED**: Invoice object created successfully");
-                    _logger.Information("   - **INVOICE_OCR_INVOICES**: {OcrInvoices}", template.OcrTemplates?.Id.ToString() ?? "NULL");
-                    _logger.Information("   - **INVOICE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count.ToString() ?? "NULL");
-                    _logger.Information("   - **INVOICE_LINES_COUNT**: {LinesCount}", template.Lines?.Count.ToString() ?? "NULL");
+                        _logger.Information("✅ **TEMPLATE_OBJECT_CREATED**: Template object created successfully for '{DocumentType}'", separatedDoc.DocumentType);
+                        _logger.Information("   - **TEMPLATE_OCR_TEMPLATES**: {OcrTemplates}", template.OcrTemplates?.Id.ToString() ?? "NULL");
+                        _logger.Information("   - **TEMPLATE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count.ToString() ?? "NULL");
+                        _logger.Information("   - **TEMPLATE_LINES_COUNT**: {LinesCount}", template.Lines?.Count.ToString() ?? "NULL");
+                        
+                        // **STEP 2L**: Set separated document content for template processing
+                        _logger.Information("🔧 **SETTING_DOCUMENT_TEXT**: Assigning separated document content to template for '{DocumentType}'", separatedDoc.DocumentType);
+                        template.FormattedPdfText = separatedDoc.Content;
+                        _logger.Information("   - **DOCUMENT_TEXT_ASSIGNED**: {Length} characters for '{DocumentType}'", separatedDoc.Content?.Length ?? 0, separatedDoc.DocumentType);
+                        
+                        // **STEP 2M**: Set FileType for ShipmentInvoice processing
+                        _logger.Information("🔧 **SETTING_FILE_TYPE**: Getting ShipmentInvoice FileType for '{DocumentType}'", separatedDoc.DocumentType);
+                        var fileType = GetShipmentInvoiceFileType();
+                        template.FileType = fileType;
+                        _logger.Information("   - **FILE_TYPE_ASSIGNED**: {FileType}", fileType?.FileImporterInfos?.EntryType ?? "NULL");
+                        _logger.Information("   - **FILE_TYPE_ID**: {FileTypeId}", fileType?.Id.ToString() ?? "NULL");
+                        
+                        // **STEP 2N**: Add completed template to collection
+                        _logger.Information("✅ **TEMPLATE_READY_FOR_PIPELINE**: Template for '{DocumentType}' ready for pipeline processing", separatedDoc.DocumentType);
+                        _logger.Information("   - **FINAL_TEMPLATE_NAME**: '{TemplateName}'", template.OcrTemplates.Name ?? "NULL");
+                        _logger.Information("   - **FINAL_TEMPLATE_ID**: {TemplateId}", template.OcrTemplates?.Id.ToString() ?? "NULL");
+                        _logger.Information("   - **FINAL_DOCUMENT_TEXT_LENGTH**: {TextLength} characters", template.FormattedPdfText?.Length ?? 0);
+                        _logger.Information("   - **FINAL_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                        _logger.Information("   - **TEMPLATE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count ?? 0);
+                        _logger.Information("   - **TEMPLATE_LINES_COUNT**: {LinesCount}", template.Lines?.Count ?? 0);
+                        
+                        if (template?.OcrTemplates != null)
+                        {
+                            _logger.Information("🔍 **TEMPLATE_VERIFICATION**: Template verification for '{DocumentType}' before adding to collection", separatedDoc.DocumentType);
+                            _logger.Information("     • **OCR_TEMPLATES_ID**: {Id}", template.OcrTemplates.Id);
+                            _logger.Information("     • **OCR_TEMPLATES_NAME**: '{Name}'", template.OcrTemplates.Name ?? "NULL");
+                            _logger.Information("     • **OCR_TEMPLATES_FILE_TYPE_ID**: {FileTypeId}", template.OcrTemplates?.FileTypeId.ToString() ?? "NULL");
+                            _logger.Information("     • **TEMPLATE_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                            _logger.Information("     • **FORMATTED_DOCUMENT_TEXT**: {HasText}", !string.IsNullOrEmpty(template.FormattedPdfText) ? "PRESENT" : "MISSING");
+                            
+                            // **Add template to collection**
+                            createdTemplates.Add(template);
+                            _logger.Information("✅ **TEMPLATE_ADDED_TO_COLLECTION**: Template for '{DocumentType}' added to collection. Total templates: {Count}", 
+                                separatedDoc.DocumentType, createdTemplates.Count);
+                        }
+                        else 
+                        {
+                            _logger.Warning("⚠️ **TEMPLATE_OCR_TEMPLATES_NULL**: template.OcrTemplates is null for '{DocumentType}' - not adding to collection", separatedDoc.DocumentType);
+                        }
+                    } // End of document processing loop
                     
-                    // Set FormattedPdfText for template processing
-                    _logger.Information("🔧 **SETTING_PDF_TEXT**: Assigning FormattedPdfText to template");
-                    template.FormattedPdfText = pdfText;
-                    _logger.Information("   - **PDF_TEXT_ASSIGNED**: {Length} characters", pdfText?.Length ?? 0);
-                    
-                    // Set FileType for ShipmentInvoice processing
-                    _logger.Information("🔧 **SETTING_FILE_TYPE**: Getting ShipmentInvoice FileType");
-                    var fileType = GetShipmentInvoiceFileType();
-                    template.FileType = fileType;
-                    _logger.Information("   - **FILE_TYPE_ASSIGNED**: {FileType}", fileType?.FileImporterInfos?.EntryType ?? "NULL");
-                    _logger.Information("   - **FILE_TYPE_ID**: {FileTypeId}", fileType?.Id.ToString() ?? "NULL");
-                    
-                    _logger.Information("✅ **PIPELINE_TEMPLATE_READY**: Invoice template ready for pipeline processing");
-                    _logger.Information("   - **FINAL_TEMPLATE_NAME**: '{TemplateName}'", template.OcrTemplates.Name ?? "NULL");
-                    _logger.Information("   - **FINAL_TEMPLATE_ID**: {TemplateId}", template.OcrTemplates?.Id.ToString() ?? "NULL");
-                    _logger.Information("   - **FINAL_PDF_TEXT_LENGTH**: {TextLength} characters", template.FormattedPdfText?.Length ?? 0);
-                    _logger.Information("   - **FINAL_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
-                    _logger.Information("   - **TEMPLATE_PARTS_COUNT**: {PartsCount}", template.Parts?.Count ?? 0);
-                    _logger.Information("   - **TEMPLATE_LINES_COUNT**: {LinesCount}", template.Lines?.Count ?? 0);
-                    
-                    _logger.Information("🏁 **TEMPLATE_CREATION_RETURNING**: Returning created template to caller");
-                    _logger.Information("   - **RETURN_VALUE_TYPE**: {ReturnType}", template?.GetType().FullName ?? "NULL");
-                    _logger.Information("   - **RETURN_VALUE_NULL_CHECK**: {IsNull}", template == null ? "TRUE" : "FALSE");
-                    
-                    if (template?.OcrTemplates != null)
-                    {
-                        _logger.Information("🔍 **FINAL_TEMPLATE_VERIFICATION**: Final template verification before return");
-                        _logger.Information("     • **OCR_INVOICES_ID**: {Id}", template.OcrTemplates.Id);
-                        _logger.Information("     • **OCR_INVOICES_NAME**: '{Name}'", template.OcrTemplates.Name ?? "NULL");
-                        _logger.Information("     • **OCR_INVOICES_FILE_TYPE_ID**: {FileTypeId}", template.OcrTemplates?.FileTypeId.ToString() ?? "NULL");
-                        _logger.Information("     • **TEMPLATE_FILE_TYPE**: {FileType}", template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
-                        _logger.Information("     • **FORMATTED_PDF_TEXT**: {HasText}", !string.IsNullOrEmpty(template.FormattedPdfText) ? "PRESENT" : "MISSING");
-                    }
-                    else 
-                    {
-                        _logger.Warning("⚠️ **TEMPLATE_OCR_INVOICES_NULL**: template.OcrInvoices is null before return");
-                    }
-                    
-                    return template;
+                    _logger.Information("🔄 **TEMPLATE_CREATION_LOOP_COMPLETE**: Completed processing all {Count} separated documents", separatedDocuments.Count);
+                    _logger.Information("📊 **FINAL_TEMPLATE_COUNT**: Successfully created {SuccessCount} templates out of {TotalCount} documents", 
+                        createdTemplates.Count, separatedDocuments.Count);
                 }
             }
             catch (Exception ex)
