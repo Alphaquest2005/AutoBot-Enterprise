@@ -28,14 +28,30 @@ namespace WaterNut.DataSpace
         /// <returns>A list of InvoiceError objects for any detected inconsistencies.</returns>
         private List<InvoiceError> ValidateMathematicalConsistency(ShipmentInvoice invoice)
         {
-            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateMathematicalConsistency_V4.2_Analysis"))
-            {
-                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing mathematical consistency validation requirements for invoice: {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
-                _logger.Information("📊 Analysis Context: Mathematical consistency validation ensures invoice calculations integrity through line item verification and reasonableness checks");
-                _logger.Information("🎯 Expected Behavior: Detect calculation errors, validate line item math (Qty * Cost - Discount = TotalCost), and perform reasonableness checks");
-                _logger.Information("🏗️ Current Architecture: Individual line item validation with floating-point tolerance and business rule enforcement");
-            }
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for mathematical consistency validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for mathematical consistency validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mathematical validation context with invoice calculation verification and reasonableness checks");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation → line item processing → calculation verification → reasonableness checking → error collection pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, line item processing success, calculation accuracy, error detection completeness");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Mathematical consistency requires comprehensive validation with floating-point tolerance and business rules");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for mathematical consistency validation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation tracking, calculation verification, error detection analysis");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, line item counts, calculation variances, reasonableness checks, error collections");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based mathematical consistency validation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on invoice integrity requirements, implementing comprehensive mathematical validation workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring calculation accuracy and error detection completeness");
+            
+            // **v4.2 MATHEMATICAL VALIDATION INITIALIZATION**: Enhanced mathematical validation with comprehensive tracking
+            _logger.Error("🧮 **MATHEMATICAL_VALIDATION_START**: Beginning mathematical consistency validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation context - InvoiceNo='{InvoiceNo}', HasInvoice={HasInvoice}", 
+                invoice?.InvoiceNo ?? "NULL", invoice != null);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Mathematical validation pattern with line item verification and calculation checks");
 
             var errors = new List<InvoiceError>();
             int processedLineItems = 0;
