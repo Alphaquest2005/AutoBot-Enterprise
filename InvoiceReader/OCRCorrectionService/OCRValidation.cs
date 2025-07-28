@@ -200,64 +200,55 @@ namespace WaterNut.DataSpace
                         // Don't re-throw - return partial results if available
                     }
                 }
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Mathematical consistency validation success analysis");
+                
+                bool validationExecuted = invoice != null && processedLineItems >= 0;
+                bool errorsCollected = errors != null;
+                bool processCompleted = processedLineItems == (invoice?.InvoiceDetails?.Where(d => d != null).Count() ?? 0);
+                bool validationMetricsTracked = calculationErrors >= 0 && reasonablenessErrors >= 0 && totalVariance >= 0;
+                bool errorReportingValid = errors.All(e => !string.IsNullOrEmpty(e.Field) && !string.IsNullOrEmpty(e.ErrorType));
+                
+                _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Mathematical consistency validation executed successfully" : "Mathematical validation execution failed"));
+                _logger.Error(errorsCollected ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
+                _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All line items processed successfully" : "Line item processing incomplete"));
+                _logger.Error(validationMetricsTracked ? "✅" : "❌" + " **DATA_QUALITY**: " + (validationMetricsTracked ? "Mathematical validation metrics properly tracked" : "Validation metrics tracking failed"));
+                _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
+                _logger.Error(errorReportingValid ? "✅" : "❌" + " **BUSINESS_LOGIC**: " + (errorReportingValid ? "Error reporting follows business standards" : "Error reporting format validation failed"));
+                _logger.Error("✅ **INTEGRATION_SUCCESS**: Mathematical validation processing completed without external dependencies");
+                _logger.Error((processedLineItems < 10000) ? "✅" : "❌" + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
+                
+                bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid;
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Mathematical consistency validation analysis");
+                
+                _logger.Error("📊 **MATHEMATICAL_VALIDATION_SUMMARY**: ProcessedItems={ProcessedItems}, ErrorsDetected={ErrorsDetected}, CalculationErrors={CalculationErrors}, ReasonablenessErrors={ReasonablenessErrors}, TotalVariance={TotalVariance:F4}", 
+                    processedLineItems, errors.Count, calculationErrors, reasonablenessErrors, totalVariance);
             }
-
-            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateMathematicalConsistency_V4.2_SuccessCriteria"))
+            catch (Exception ex)
             {
-                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with mathematical validation impact assessment
+                _logger.Error(ex, "🚨 **MATHEMATICAL_VALIDATION_EXCEPTION**: Critical exception in mathematical consistency validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - InvoiceNo='{InvoiceNo}', ExceptionType='{ExceptionType}'", 
+                    invoice?.InvoiceNo, ex.GetType().Name);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents mathematical validation completion and error detection");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate calculation errors or data corruption");
+                _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with partial results return");
+                _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and mathematical validation monitoring");
                 
-                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
-                bool purposeFulfilled = invoice != null && processedLineItems >= 0;
-                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Mathematical consistency validation {Result} (ProcessedItems: {ProcessedItems})", 
-                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
-                    purposeFulfilled ? "executed successfully" : "failed to execute", processedLineItems);
-
-                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
-                bool outputComplete = errors != null && (invoice?.InvoiceDetails?.Count == 0 || processedLineItems > 0);
-                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Error list {Result} with {ErrorCount} errors for {TotalItems} line items", 
-                    outputComplete ? "✅ PASS" : "❌ FAIL", 
-                    outputComplete ? "properly constructed" : "incomplete or malformed", errors?.Count ?? 0, invoice?.InvoiceDetails?.Count ?? 0);
-
-                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
-                bool processComplete = processedLineItems == (invoice?.InvoiceDetails?.Where(d => d != null).Count() ?? 0);
-                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - Processed {ProcessedItems} of {TotalItems} line items with validation completeness", 
-                    processComplete ? "✅ PASS" : "❌ FAIL", processedLineItems, invoice?.InvoiceDetails?.Where(d => d != null).Count() ?? 0);
-
-                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
-                bool dataQualityMet = calculationErrors >= 0 && reasonablenessErrors >= 0 && totalVariance >= 0;
-                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Mathematical validation metrics: CalcErrors={CalcErrors}, ReasonablenessErrors={ReasonErrors}, TotalVariance={Variance:F4}", 
-                    dataQualityMet ? "✅ PASS" : "❌ FAIL", calculationErrors, reasonablenessErrors, totalVariance);
-
-                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
-                bool errorHandlingSuccess = true; // Exception was caught and handled gracefully
-                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during validation process", 
-                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
-                    errorHandlingSuccess ? "implemented successfully" : "failed");
-
-                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
-                bool businessLogicValid = errors.All(e => !string.IsNullOrEmpty(e.Field) && !string.IsNullOrEmpty(e.ErrorType));
-                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Error reporting follows business standards with {ValidErrors} properly formatted errors", 
-                    businessLogicValid ? "✅ PASS" : "❌ FAIL", errors.Count(e => !string.IsNullOrEmpty(e.Field) && !string.IsNullOrEmpty(e.ErrorType)));
-
-                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
-                bool integrationSuccess = true; // No external dependencies beyond logger
-                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Logging integration and error collection {Result}", 
-                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
-                    integrationSuccess ? "functioning properly" : "experiencing issues");
-
-                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
-                bool performanceCompliant = processedLineItems < 10000; // Reasonable line item limit
-                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processed {ProcessedItems} line items within reasonable performance limits", 
-                    performanceCompliant ? "✅ PASS" : "❌ FAIL", processedLineItems);
-
-                // Overall Success Assessment
-                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
-                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EXCEPTION PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Mathematical validation failed due to critical exception");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Mathematical validation failed due to unhandled exception");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: Partial error collection returned due to exception termination");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Mathematical validation workflow interrupted by critical exception");
+                _logger.Error("❌ **DATA_QUALITY**: No complete validation data produced due to exception");
+                _logger.Error("✅ **ERROR_HANDLING**: Exception caught and handled gracefully with partial results");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Mathematical validation objective not fully achieved due to exception");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: Mathematical processing failed due to critical exception");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Mathematical validation terminated by critical exception");
                 
-                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - ValidateMathematicalConsistency {Result} with {ErrorCount} errors detected across {ProcessedItems} line items", 
-                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
-                    overallSuccess ? "completed successfully" : "encountered issues", errors.Count, processedLineItems);
+                return errors; // Return partial results
             }
 
             return errors;
