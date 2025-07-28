@@ -58,21 +58,37 @@ namespace WaterNut.DataSpace
             int calculationErrors = 0;
             int reasonablenessErrors = 0;
             double totalVariance = 0.0;
-
-            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateMathematicalConsistency_V4.2_Enhancement"))
+            
+            if (invoice == null)
             {
-                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive mathematical consistency validation with diagnostic capabilities");
+                _logger.Error("❌ **INPUT_VALIDATION_FAILED**: Critical input validation failed for mathematical consistency validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - InvoiceNull={InvoiceNull}", invoice == null);
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null invoice prevents mathematical validation processing");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures mathematical validation has valid invoice data");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning empty error list");
                 
-                if (invoice == null)
-                {
-                    _logger.Error("❌ Critical Input Validation Failure: Invoice object is null - cannot perform mathematical consistency validation");
-                    _logger.Information("🔄 Recovery Action: Returning empty error list to prevent downstream failures");
-                    return errors;
-                }
-
-                _logger.Information("✅ Input Validation: Invoice object validated - InvoiceNo: {InvoiceNo}, Details Count: {DetailsCount}", 
-                    invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Mathematical validation failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot perform mathematical validation with null invoice");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No validation results possible due to invalid input");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Mathematical validation workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No validation processing possible with null invoice");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with empty error list return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Mathematical validation objective cannot be achieved without valid invoice");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No mathematical processing possible without valid invoice data");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Mathematical validation terminated due to input validation failure");
+                
+                return errors;
+            }
+            
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Input validation successful - proceeding with mathematical consistency validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - InvoiceNo='{InvoiceNo}', LineItemCount={LineItemCount}", 
+                invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling mathematical calculation verification");
+            
+            try
+            {
 
                 // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Mathematical Validation Logic**
                 using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateMathematicalConsistency_V4.2_Implementation"))
