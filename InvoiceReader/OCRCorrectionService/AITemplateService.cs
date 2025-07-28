@@ -333,58 +333,23 @@ namespace WaterNut.DataSpace
                     (performanceCompliance ? "Recommendation generation completed within reasonable bounds" : 
                     "Performance concerns - excessive recommendation count may impact system performance"));
                 
-                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION**
-                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI recommendations template specification compliance analysis");
+                // **TEMPLATE SPECIFICATION VALIDATION - OBJECT-ORIENTED FUNCTIONAL APPROACH**
+                // Create template specification object for document type (could be detected from context)
+                var templateSpec = TemplateSpecification.CreateForRecommendations("Invoice"); // Future: DocumentTypeDetector.Detect(prompt)
                 
-                // **TEMPLATE_SPEC_1: EntityType-Aware Recommendations**
-                var entityTypeRecommendations = recommendations?.Where(r => 
-                    r.Description.Contains("Invoice") || r.Description.Contains("InvoiceDetails") || 
-                    r.Description.Contains("ShipmentBL") || r.Description.Contains("PurchaseOrders") ||
-                    r.Reasoning.Contains("EntityType")).ToList() ?? new List<PromptRecommendation>();
-                bool entityTypeAwarenessSuccess = entityTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
-                _logger.Error((entityTypeAwarenessSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_AWARENESS**: " + 
-                    (entityTypeAwarenessSuccess ? $"Generated {entityTypeRecommendations.Count} EntityType-aware recommendations" : 
-                    "No EntityType-aware recommendations detected - may lack template specification context"));
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(recommendations)
+                    .ValidateFieldMappingEnhancement(recommendations)
+                    .ValidateDataTypeRecommendations(recommendations)
+                    .ValidatePatternQuality(recommendations)
+                    .ValidateTemplateOptimization(recommendations);
                 
-                // **TEMPLATE_SPEC_2: Field Mapping Enhancement Recommendations**
-                var fieldMappingRecommendations = recommendations?.Where(r => 
-                    r.Description.Contains("field") || r.Description.Contains("mapping") || 
-                    r.Category == "Field Mapping").ToList() ?? new List<PromptRecommendation>();
-                bool fieldMappingEnhancementSuccess = fieldMappingRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
-                _logger.Error((fieldMappingEnhancementSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_FIELD_MAPPING**: " + 
-                    (fieldMappingEnhancementSuccess ? $"Generated {fieldMappingRecommendations.Count} field mapping enhancement recommendations" : 
-                    "No field mapping recommendations detected - may miss critical template improvement opportunities"));
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
                 
-                // **TEMPLATE_SPEC_3: Data Type Validation Recommendations**
-                var dataTypeRecommendations = recommendations?.Where(r => 
-                    r.Description.Contains("data type") || r.Description.Contains("validation") || 
-                    r.Description.Contains("decimal") || r.Description.Contains("date")).ToList() ?? new List<PromptRecommendation>();
-                bool dataTypeValidationSuccess = dataTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
-                _logger.Error((dataTypeValidationSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_DATATYPE_RECOMMENDATIONS**: " + 
-                    (dataTypeValidationSuccess ? $"Generated {dataTypeRecommendations.Count} data type validation recommendations" : 
-                    "No data type validation recommendations - may miss type safety improvements"));
-                
-                // **TEMPLATE_SPEC_4: Pattern Quality Enhancement**
-                var patternQualityRecommendations = recommendations?.Where(r => 
-                    r.Description.Contains("regex") || r.Description.Contains("pattern") || 
-                    r.Category == "Pattern Quality").ToList() ?? new List<PromptRecommendation>();
-                bool patternQualitySuccess = patternQualityRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
-                _logger.Error((patternQualitySuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_PATTERN_QUALITY**: " + 
-                    (patternQualitySuccess ? $"Generated {patternQualityRecommendations.Count} pattern quality enhancement recommendations" : 
-                    "No pattern quality recommendations - may miss regex and extraction improvements"));
-                
-                // **TEMPLATE_SPEC_5: Template Optimization Business Rules**
-                var templateOptimizationRecommendations = recommendations?.Where(r => 
-                    r.Category == "Template Optimization" || r.Description.Contains("optimization") || 
-                    r.Description.Contains("performance")).ToList() ?? new List<PromptRecommendation>();
-                bool templateOptimizationSuccess = templateOptimizationRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
-                _logger.Error((templateOptimizationSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_OPTIMIZATION**: " + 
-                    (templateOptimizationSuccess ? $"Generated {templateOptimizationRecommendations.Count} template optimization recommendations" : 
-                    "No template optimization recommendations - may miss performance improvement opportunities"));
-                
-                // **OVERALL SUCCESS VALIDATION WITH TEMPLATE SPECIFICATIONS**
-                bool templateSpecificationSuccess = entityTypeAwarenessSuccess && fieldMappingEnhancementSuccess && 
-                    dataTypeValidationSuccess && patternQualitySuccess && templateOptimizationSuccess;
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
                 bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && 
                     errorHandling && businessLogic && integrationSuccess && performanceCompliance && templateSpecificationSuccess;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
