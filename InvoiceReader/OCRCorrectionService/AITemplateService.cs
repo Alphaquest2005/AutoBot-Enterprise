@@ -834,18 +834,25 @@ namespace WaterNut.DataSpace
             {
                 if (spec.HasFailure) return spec; // Short-circuit if already failed
 
+                // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
                 var patternQualityRecommendations = recommendations?.Where(r => 
                     r.Description.Contains("regex") || r.Description.Contains("pattern") || 
                     r.Category == "Pattern Quality").ToList() ?? new List<PromptRecommendation>();
                 
-                bool success = patternQualityRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                bool aiRecommendationSuccess = patternQualityRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
                 
-                var result = success 
-                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_PATTERN_QUALITY", 
-                        $"Generated {patternQualityRecommendations.Count} pattern quality enhancement recommendations", 
+                // **DUAL LAYER 2: COMPREHENSIVE 8-LAYER ACTUAL DATA COMPLIANCE VALIDATION**
+                // Validate actual business data against ALL Template_Specifications.md requirements
+                bool actualDataCompliance = ValidateActualDataCompliance(spec, spec.DocumentType);
+                
+                bool overallSuccess = aiRecommendationSuccess && actualDataCompliance;
+                
+                var result = overallSuccess 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_PATTERN_QUALITY_DUAL_LAYER", 
+                        $"✅ AI Quality: {patternQualityRecommendations.Count} recommendations + ✅ Data Compliance: 8-layer validation passed for {spec.DocumentType}", 
                         patternQualityRecommendations.Count)
-                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_PATTERN_QUALITY", 
-                        "No pattern quality recommendations - may miss regex and extraction improvements");
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_PATTERN_QUALITY_DUAL_LAYER", 
+                        $"❌ AI Quality: {aiRecommendationSuccess} + ❌ Data Compliance: {actualDataCompliance} - 8-layer validation failed for {spec.DocumentType}");
                 
                 spec.ValidationResults.Add(result);
                 return spec;
