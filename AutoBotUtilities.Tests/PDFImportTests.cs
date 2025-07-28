@@ -874,24 +874,26 @@ namespace AutoBotUtilities.Tests
                         "This indicates DeepSeek API calls are failing or not creating correction entries properly.");
 
                     // **VERIFICATION STEP 2**: Template Creation (SECOND - In-memory object construction from DeepSeek)
-                    _logger.Information("2️⃣ **TEMPLATE_CREATION_VERIFICATION**: Checking if CreateInvoiceTemplateAsync created template object in memory");
+                    _logger.Information("2️⃣ **TEMPLATE_CREATION_VERIFICATION**: Checking if CreateInvoiceTemplateAsync created template objects in memory");
                     
                     // TODO: We need to capture the template creation result from CreateInvoiceTemplateAsync 
                     // For now, we'll infer creation success from DeepSeek corrections existence
-                    bool templateCreatedInMemory = deepSeekSuccess; // If DeepSeek worked, template creation should work
+                    // Note: CreateInvoiceTemplateAsync now returns List<Template> instead of single Template
+                    bool templatesCreatedInMemory = deepSeekSuccess; // If DeepSeek worked, template creation should work
                     
-                    if (templateCreatedInMemory)
+                    if (templatesCreatedInMemory)
                     {
                         _logger.Information("✅ **STEP_2_PASSED**: Template creation in memory inferred successful (DeepSeek corrections exist)");
-                        _logger.Information("   - **INFERENCE_BASIS**: DeepSeek corrections exist, so CreateInvoiceTemplateAsync should construct template object");
+                        _logger.Information("   - **INFERENCE_BASIS**: DeepSeek corrections exist, so CreateInvoiceTemplateAsync should construct template objects");
+                        _logger.Information("   - **EXPECTED_RESULT**: CreateInvoiceTemplateAsync should return List<Template> with one or more templates");
                     }
                     else
                     {
                         _logger.Error("❌ **STEP_2_FAILED**: Template creation in memory failed (no DeepSeek corrections to build from)");
                     }
                     
-                    Assert.That(templateCreatedInMemory, Is.True, 
-                        $"STEP 2 FAILED: Template creation - CreateInvoiceTemplateAsync could not construct template object in memory. " +
+                    Assert.That(templatesCreatedInMemory, Is.True, 
+                        $"STEP 2 FAILED: Template creation - CreateInvoiceTemplateAsync could not construct template objects in memory. " +
                         "This indicates DeepSeek response parsing or template object construction is failing.");
 
                     // **VERIFICATION STEP 3**: Template Persistence (THIRD - Database save operation)
