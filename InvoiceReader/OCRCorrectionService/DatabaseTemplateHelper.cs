@@ -1,0 +1,326 @@
+// File: OCRCorrectionService/DatabaseTemplateHelper.cs
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using Serilog;
+using WaterNut.DataSpace;
+using Newtonsoft.Json;
+
+namespace WaterNut.DataSpace
+{
+    /// <summary>
+    /// Database-driven template specification helper
+    /// Connects FileTypeManager.EntryTypes to OCR template system through database
+    /// </summary>
+    public static class DatabaseTemplateHelper
+    {
+        private static readonly ILogger _logger = Log.ForContext(typeof(DatabaseTemplateHelper));
+
+        /// <summary>
+        /// Template mapping information from database
+        /// </summary>
+        public class TemplateMapping
+        {
+            public int FileTypeId { get; set; }
+            public string DocumentType { get; set; } // Maps to FileTypeManager.EntryTypes
+            public string PrimaryEntityType { get; set; }
+            public List<string> SecondaryEntityTypes { get; set; } = new List<string>();
+            public List<string> RequiredFields { get; set; } = new List<string>();
+            public ValidationRules Rules { get; set; } = new ValidationRules();
+        }
+
+        /// <summary>
+        /// Validation rules from database JSON
+        /// </summary>
+        public class ValidationRules
+        {
+            public List<string> EntityTypes { get; set; } = new List<string>();
+            public Dictionary<string, string> DataTypes { get; set; } = new Dictionary<string, string>();
+            public Dictionary<string, Dictionary<string, object>> BusinessRules { get; set; } = new Dictionary<string, Dictionary<string, object>>();
+        }
+
+        /// <summary>
+        /// Get template mapping for a FileTypeId from database
+        /// </summary>
+        /// <param name="fileTypeId">FileTypeId from FileTypes table</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>Template mapping or null if not found</returns>
+        public static TemplateMapping GetTemplateMappingByFileTypeId(int fileTypeId, int applicationSettingsId = 1)
+        {
+            try
+            {
+                _logger.Information("🔍 **DATABASE_TEMPLATE_LOOKUP**: Retrieving template mapping for FileTypeId={FileTypeId}", fileTypeId);
+
+                using (var context = new CoreEntitiesContext())
+                {
+                    var query = @"
+                        SELECT 
+                            ottm.[FileTypeId],
+                            ottm.[DocumentType],
+                            ottm.[PrimaryEntityType],
+                            ottm.[SecondaryEntityTypes],
+                            ottm.[RequiredFields],
+                            ottm.[ValidationRules]
+                        FROM [dbo].[OCR_TemplateTableMapping] ottm
+                        WHERE ottm.[FileTypeId] = @FileTypeId 
+                            AND ottm.[ApplicationSettingsId] = @ApplicationSettingsId
+                            AND ottm.[IsActive] = 1";
+
+                    using (var command = new SqlCommand(query, context.Database.Connection as SqlConnection))
+                    {
+                        command.Parameters.Add(new SqlParameter("@FileTypeId", fileTypeId));
+                        command.Parameters.Add(new SqlParameter("@ApplicationSettingsId", applicationSettingsId));
+
+                        if (context.Database.Connection.State != System.Data.ConnectionState.Open)
+                            context.Database.Connection.Open();
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var mapping = new TemplateMapping
+                                {
+                                    FileTypeId = reader.GetInt32("FileTypeId"),
+                                    DocumentType = reader.GetString("DocumentType"),
+                                    PrimaryEntityType = reader.GetString("PrimaryEntityType")
+                                };
+
+                                // Parse secondary entity types
+                                var secondaryTypes = reader.IsDBNull(reader.GetOrdinal("SecondaryEntityTypes")) 
+                                    ? string.Empty 
+                                    : reader.GetString("SecondaryEntityTypes");
+                                if (!string.IsNullOrEmpty(secondaryTypes))
+                                {
+                                    mapping.SecondaryEntityTypes = secondaryTypes.Split(',').Select(s => s.Trim()).ToList();
+                                }
+
+                                // Parse required fields
+                                var requiredFields = reader.IsDBNull(reader.GetOrdinal("RequiredFields")) 
+                                    ? string.Empty 
+                                    : reader.GetString("RequiredFields");
+                                if (!string.IsNullOrEmpty(requiredFields))
+                                {
+                                    mapping.RequiredFields = requiredFields.Split(',').Select(s => s.Trim()).ToList();
+                                }
+
+                                // Parse validation rules JSON
+                                var validationRulesJson = reader.IsDBNull(reader.GetOrdinal("ValidationRules")) 
+                                    ? string.Empty 
+                                    : reader.GetString("ValidationRules");
+                                if (!string.IsNullOrEmpty(validationRulesJson))
+                                {
+                                    try
+                                    {
+                                        mapping.Rules = JsonConvert.DeserializeObject<ValidationRules>(validationRulesJson) ?? new ValidationRules();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Warning(ex, "⚠️ Failed to parse validation rules JSON for FileTypeId={FileTypeId}", fileTypeId);
+                                        mapping.Rules = new ValidationRules();
+                                    }
+                                }
+
+                                _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved mapping for FileTypeId={FileTypeId}, DocumentType={DocumentType}, PrimaryEntity={PrimaryEntity}", 
+                                    fileTypeId, mapping.DocumentType, mapping.PrimaryEntityType);
+                                return mapping;
+                            }
+                        }
+                    }
+                }
+
+                _logger.Warning("⚠️ **DATABASE_TEMPLATE_NOT_FOUND**: No template mapping found for FileTypeId={FileTypeId}", fileTypeId);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **DATABASE_TEMPLATE_ERROR**: Failed to retrieve template mapping for FileTypeId={FileTypeId}", fileTypeId);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get template mapping by document type (EntryType constant)
+        /// </summary>
+        /// <param name="documentType">Document type from FileTypeManager.EntryTypes</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>List of template mappings for the document type</returns>
+        public static List<TemplateMapping> GetTemplateMappingsByDocumentType(string documentType, int applicationSettingsId = 1)
+        {
+            try
+            {
+                _logger.Information("🔍 **DATABASE_TEMPLATE_LOOKUP_BY_TYPE**: Retrieving template mappings for DocumentType={DocumentType}", documentType);
+
+                var mappings = new List<TemplateMapping>();
+
+                using (var context = new CoreEntitiesContext())
+                {
+                    var query = @"
+                        SELECT 
+                            ottm.[FileTypeId],
+                            ottm.[DocumentType],
+                            ottm.[PrimaryEntityType],
+                            ottm.[SecondaryEntityTypes],
+                            ottm.[RequiredFields],
+                            ottm.[ValidationRules]
+                        FROM [dbo].[OCR_TemplateTableMapping] ottm
+                        WHERE ottm.[DocumentType] = @DocumentType 
+                            AND ottm.[ApplicationSettingsId] = @ApplicationSettingsId
+                            AND ottm.[IsActive] = 1
+                        ORDER BY ottm.[FileTypeId]";
+
+                    using (var command = new SqlCommand(query, context.Database.Connection as SqlConnection))
+                    {
+                        command.Parameters.Add(new SqlParameter("@DocumentType", documentType));
+                        command.Parameters.Add(new SqlParameter("@ApplicationSettingsId", applicationSettingsId));
+
+                        if (context.Database.Connection.State != System.Data.ConnectionState.Open)
+                            context.Database.Connection.Open();
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var mapping = new TemplateMapping
+                                {
+                                    FileTypeId = reader.GetInt32("FileTypeId"),
+                                    DocumentType = reader.GetString("DocumentType"),
+                                    PrimaryEntityType = reader.GetString("PrimaryEntityType")
+                                };
+
+                                // Parse secondary entity types
+                                var secondaryTypes = reader.IsDBNull(reader.GetOrdinal("SecondaryEntityTypes")) 
+                                    ? string.Empty 
+                                    : reader.GetString("SecondaryEntityTypes");
+                                if (!string.IsNullOrEmpty(secondaryTypes))
+                                {
+                                    mapping.SecondaryEntityTypes = secondaryTypes.Split(',').Select(s => s.Trim()).ToList();
+                                }
+
+                                // Parse required fields
+                                var requiredFields = reader.IsDBNull(reader.GetOrdinal("RequiredFields")) 
+                                    ? string.Empty 
+                                    : reader.GetString("RequiredFields");
+                                if (!string.IsNullOrEmpty(requiredFields))
+                                {
+                                    mapping.RequiredFields = requiredFields.Split(',').Select(s => s.Trim()).ToList();
+                                }
+
+                                // Parse validation rules JSON
+                                var validationRulesJson = reader.IsDBNull(reader.GetOrdinal("ValidationRules")) 
+                                    ? string.Empty 
+                                    : reader.GetString("ValidationRules");
+                                if (!string.IsNullOrEmpty(validationRulesJson))
+                                {
+                                    try
+                                    {
+                                        mapping.Rules = JsonConvert.DeserializeObject<ValidationRules>(validationRulesJson) ?? new ValidationRules();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Warning(ex, "⚠️ Failed to parse validation rules JSON for FileTypeId={FileTypeId}", mapping.FileTypeId);
+                                        mapping.Rules = new ValidationRules();
+                                    }
+                                }
+
+                                mappings.Add(mapping);
+                            }
+                        }
+                    }
+                }
+
+                _logger.Information("✅ **DATABASE_TEMPLATE_FOUND_BY_TYPE**: Retrieved {Count} mappings for DocumentType={DocumentType}", 
+                    mappings.Count, documentType);
+                return mappings;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **DATABASE_TEMPLATE_ERROR_BY_TYPE**: Failed to retrieve template mappings for DocumentType={DocumentType}", documentType);
+                return new List<TemplateMapping>();
+            }
+        }
+
+        /// <summary>
+        /// Get all expected EntityTypes for a document type from database
+        /// </summary>
+        /// <param name="documentType">Document type from FileTypeManager.EntryTypes</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>List of expected EntityTypes</returns>
+        public static List<string> GetExpectedEntityTypesForDocumentType(string documentType, int applicationSettingsId = 1)
+        {
+            var mappings = GetTemplateMappingsByDocumentType(documentType, applicationSettingsId);
+            var entityTypes = new List<string>();
+
+            foreach (var mapping in mappings)
+            {
+                if (!string.IsNullOrEmpty(mapping.PrimaryEntityType) && !entityTypes.Contains(mapping.PrimaryEntityType))
+                {
+                    entityTypes.Add(mapping.PrimaryEntityType);
+                }
+
+                foreach (var secondaryType in mapping.SecondaryEntityTypes)
+                {
+                    if (!string.IsNullOrEmpty(secondaryType) && !entityTypes.Contains(secondaryType))
+                    {
+                        entityTypes.Add(secondaryType);
+                    }
+                }
+            }
+
+            return entityTypes;
+        }
+
+        /// <summary>
+        /// Validate if a field is appropriate for a document type based on database mappings
+        /// </summary>
+        /// <param name="fieldName">Field name to validate</param>
+        /// <param name="documentType">Document type from FileTypeManager.EntryTypes</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>True if field is appropriate for document type</returns>
+        public static bool IsFieldAppropriateForDocumentType(string fieldName, string documentType, int applicationSettingsId = 1)
+        {
+            var mappings = GetTemplateMappingsByDocumentType(documentType, applicationSettingsId);
+            
+            foreach (var mapping in mappings)
+            {
+                if (mapping.RequiredFields.Contains(fieldName, StringComparer.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                // Check in validation rules
+                if (mapping.Rules.DataTypes.ContainsKey(fieldName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Get required fields for a document type from database
+        /// </summary>
+        /// <param name="documentType">Document type from FileTypeManager.EntryTypes</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>List of required field names</returns>
+        public static List<string> GetRequiredFieldsForDocumentType(string documentType, int applicationSettingsId = 1)
+        {
+            var mappings = GetTemplateMappingsByDocumentType(documentType, applicationSettingsId);
+            var requiredFields = new List<string>();
+
+            foreach (var mapping in mappings)
+            {
+                foreach (var field in mapping.RequiredFields)
+                {
+                    if (!string.IsNullOrEmpty(field) && !requiredFields.Contains(field, StringComparer.OrdinalIgnoreCase))
+                    {
+                        requiredFields.Add(field);
+                    }
+                }
+            }
+
+            return requiredFields;
+        }
+    }
+}
