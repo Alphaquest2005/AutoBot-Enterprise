@@ -511,21 +511,42 @@ namespace WaterNut.DataSpace
             {
                 if (spec.HasFailure) return spec; // Short-circuit if already failed
 
+                // Document-type specific field mapping validation
+                var documentSpecificFields = GetExpectedFieldsForDocument(spec.DocumentType);
                 var fieldMappingRecommendations = recommendations?.Where(r => 
                     r.Description.Contains("field") || r.Description.Contains("mapping") || 
-                    r.Category == "Field Mapping").ToList() ?? new List<PromptRecommendation>();
+                    r.Category == "Field Mapping" ||
+                    documentSpecificFields.Any(field => r.Description.Contains(field))).ToList() ?? new List<PromptRecommendation>();
                 
                 bool success = fieldMappingRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
                 
                 var result = success 
                     ? TemplateValidationResult.Success("TEMPLATE_SPEC_FIELD_MAPPING", 
-                        $"Generated {fieldMappingRecommendations.Count} field mapping enhancement recommendations", 
+                        $"Generated {fieldMappingRecommendations.Count} {spec.DocumentType}-specific field mapping recommendations", 
                         fieldMappingRecommendations.Count)
                     : TemplateValidationResult.Failure("TEMPLATE_SPEC_FIELD_MAPPING", 
-                        "No field mapping recommendations detected - may miss critical template improvement opportunities");
+                        $"No {spec.DocumentType}-specific field mapping recommendations detected - may miss critical template improvement opportunities");
                 
                 spec.ValidationResults.Add(result);
                 return spec;
+            }
+
+            /// <summary>
+            /// Gets expected field names for a specific document type
+            /// Based on Template_Specifications.md field mappings
+            /// </summary>
+            private static List<string> GetExpectedFieldsForDocument(string documentType)
+            {
+                return documentType.ToLower() switch
+                {
+                    "invoice" => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost" },
+                    "shipmentbl" => new List<string> { "BLNumber", "Vessel", "Voyage", "Container", "WeightKG", "VolumeM3", "xBond_Item_Id", "Item_Id", "DutyLiabilityPercent" },
+                    "freight" => new List<string> { "FreightInvoiceNo", "FreightTotal", "CarrierName", "ServiceType", "Weight", "Volume" },
+                    "manifest" => new List<string> { "ManifestNo", "VesselName", "VoyageNo", "PortOfLoading", "PortOfDischarge" },
+                    "rider" => new List<string> { "RiderNo", "RiderDate", "RiderTotal", "RiderDescription" },
+                    "purchaseorder" => new List<string> { "PONumber", "LineNumber", "Quantity", "UnitPrice", "LineTotal" },
+                    _ => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber" } // Default to Invoice fields
+                };
             }
 
             public static TemplateSpecification ValidateDataTypeRecommendations(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
