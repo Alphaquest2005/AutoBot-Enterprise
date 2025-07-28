@@ -617,18 +617,19 @@ namespace WaterNut.DataSpace
                             continue; // Skip this document and continue with next
                         }
 
-                    _logger.Information("✅ **TEMPLATE_CREATION_SUCCESS**: Template '{TemplateName}' created successfully with ID {TemplateId}", templateName, result.RegexId.Value);
+                        _logger.Information("✅ **TEMPLATE_CREATION_SUCCESS**: Template '{TemplateName}' created successfully with ID {TemplateId} for '{DocumentType}'", 
+                            templateName, result.RegexId.Value, separatedDoc.DocumentType);
+                        
+                        // **STEP 2I**: Create OCRCorrectionLearning records for this document type
+                        _logger.Information("📝 **TEMPLATE_LEARNING_START**: Creating OCRCorrectionLearning records for '{DocumentType}' template creation insights", separatedDoc.DocumentType);
+                        var documentSpecificFilePath = $"{filePath}_{separatedDoc.DocumentType}";
+                        await CreateTemplateLearningRecordsAsync(dbContext, detectedErrors, templateName, documentSpecificFilePath, result.RegexId.Value).ConfigureAwait(false);
                     
-                    // **STEP 7A**: Create OCRCorrectionLearning records for template creation process
-                    _logger.Information("📝 **TEMPLATE_LEARNING_START**: Creating OCRCorrectionLearning records for template creation insights");
-                    await CreateTemplateLearningRecordsAsync(dbContext, detectedErrors, templateName, filePath, result.RegexId.Value).ConfigureAwait(false);
-                
-                    // Retrieve the created template from database and create Invoice object for pipeline
-                    _logger.Information("🏗️ **RETRIEVING_DATABASE_TEMPLATE**: Getting template from database for pipeline processing");
-                    _logger.Information("   - **LOOKING_FOR_TEMPLATE_ID**: {TemplateId}", result.RegexId.Value);
-                
-                    // **STEP 8**: Retrieve the created template from database
-                    var templateId = result.RegexId.Value;
+                        // **STEP 2J**: Retrieve the created template from database and create Template object for pipeline
+                        _logger.Information("🏗️ **RETRIEVING_DATABASE_TEMPLATE**: Getting template from database for '{DocumentType}' pipeline processing", separatedDoc.DocumentType);
+                        _logger.Information("   - **LOOKING_FOR_TEMPLATE_ID**: {TemplateId}", result.RegexId.Value);
+                    
+                        var templateId = result.RegexId.Value;
                     
                     // **CRITICAL_ARCHITECTURE_NOTE**: In OCR module design, the "Invoices" table stores TEMPLATE DEFINITIONS, not actual invoices.
                     // - Invoices table = Template definitions (OCR patterns, parts, lines, fields)
