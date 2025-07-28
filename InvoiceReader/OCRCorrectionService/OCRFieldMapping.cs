@@ -259,17 +259,17 @@ namespace WaterNut.DataSpace
                 bool fieldNameReasonable = originalFieldName == null || originalFieldName.Length < 500;
                 bool businessLogicCorrect = string.IsNullOrWhiteSpace(rawFieldName) ? (fieldInfo == null) : true;
                 
-                _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Field mapping executed successfully" : "Field mapping execution failed"));
-                _logger.Error(mappingResultValid ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (mappingResultValid ? "Valid field mapping result returned with proper structure" : "Field mapping result malformed or incomplete"));
-                _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All field processing steps completed successfully" : "Field processing incomplete"));
-                _logger.Error(mappingConsistent ? "✅" : "❌" + " **DATA_QUALITY**: " + (mappingConsistent ? "Field mapping consistency properly verified" : "Field mapping consistency validation failed"));
+                _logger.Error((validationExecuted ? "✅" : "❌") + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Field mapping executed successfully" : "Field mapping execution failed"));
+                _logger.Error((mappingResultValid ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (mappingResultValid ? "Valid field mapping result returned with proper structure" : "Field mapping result malformed or incomplete"));
+                _logger.Error((processCompleted ? "✅" : "❌") + " **PROCESS_COMPLETION**: " + (processCompleted ? "All field processing steps completed successfully" : "Field processing incomplete"));
+                _logger.Error((mappingConsistent ? "✅" : "❌") + " **DATA_QUALITY**: " + (mappingConsistent ? "Field mapping consistency properly verified" : "Field mapping consistency validation failed"));
                 _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
-                _logger.Error(businessLogicCorrect ? "✅" : "❌" + " **BUSINESS_LOGIC**: " + (businessLogicCorrect ? "Field mapping follows business rules" : "Field mapping business logic validation failed"));
-                _logger.Error(dictionaryAccessible ? "✅" : "❌" + " **INTEGRATION_SUCCESS**: " + (dictionaryAccessible ? "Mapping dictionary integration functioning properly" : "Mapping dictionary integration failed"));
-                _logger.Error(fieldNameReasonable ? "✅" : "❌" + " **PERFORMANCE_COMPLIANCE**: " + (fieldNameReasonable ? "Field name length within reasonable performance limits" : "Field name length exceeds performance limits"));
+                _logger.Error((businessLogicCorrect ? "✅" : "❌") + " **BUSINESS_LOGIC**: " + (businessLogicCorrect ? "Field mapping follows business rules" : "Field mapping business logic validation failed"));
+                _logger.Error((dictionaryAccessible ? "✅" : "❌") + " **INTEGRATION_SUCCESS**: " + (dictionaryAccessible ? "Mapping dictionary integration functioning properly" : "Mapping dictionary integration failed"));
+                _logger.Error((fieldNameReasonable ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (fieldNameReasonable ? "Field name length within reasonable performance limits" : "Field name length exceeds performance limits"));
                 
                 bool overallSuccess = validationExecuted && mappingResultValid && processCompleted && mappingConsistent && dictionaryAccessible && fieldNameReasonable && businessLogicCorrect;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Field mapping analysis");
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Field mapping analysis"));
                 
                 _logger.Error("📊 **FIELD_MAPPING_SUMMARY**: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}, DatabaseField='{DbField}'", 
                     originalFieldName, fieldNameToMap, prefixStripped, mappingFound, fieldInfo?.DatabaseFieldName);
