@@ -743,14 +743,33 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 **TEMPLATE_CREATION_EXCEPTION**: Critical exception during template creation");
-                _logger.Information("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
-                _logger.Information("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
-                _logger.Information("   - **FILE_PATH**: {FilePath}", filePath);
-                _logger.Information("   - **PDF_TEXT_LENGTH**: {TextLength}", pdfText?.Length ?? 0);
-                _logger.Information("   - **STACK_TRACE**: {StackTrace}", ex.StackTrace);
-                return null;
+                _logger.Error(ex, "🚨 **MULTI_TEMPLATE_CREATION_EXCEPTION**: Critical exception during AI-powered multi-template creation");
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                _logger.Error("   - **FILE_PATH**: {FilePath}", filePath);
+                _logger.Error("   - **PDF_TEXT_LENGTH**: {TextLength}", pdfText?.Length ?? 0);
+                _logger.Error("   - **TEMPLATES_CREATED_BEFORE_EXCEPTION**: {CreatedCount}", createdTemplates.Count);
+                _logger.Error("   - **STACK_TRACE**: {StackTrace}", ex.StackTrace);
+                
+                _logger.Warning("⚠️ **RETURNING_PARTIAL_RESULTS**: Returning {Count} templates created before exception", createdTemplates.Count);
+                return createdTemplates; // Return whatever templates were successfully created
             }
+            
+            // **FINAL RESULT**
+            _logger.Information("🏁 **MULTI_TEMPLATE_CREATION_COMPLETE**: AI-powered multi-template creation completed");
+            _logger.Information("   - **TOTAL_TEMPLATES_CREATED**: {Count}", createdTemplates.Count);
+            _logger.Information("   - **SUCCESS_RATE**: {SuccessCount}/{TotalCount} documents successfully processed", 
+                createdTemplates.Count, separatedDocuments?.Count ?? 0);
+            
+            foreach (var template in createdTemplates)
+            {
+                _logger.Information("📄 **CREATED_TEMPLATE**: Name='{Name}', ID={Id}, DocumentText={Length} chars", 
+                    template.OcrTemplates?.Name ?? "NULL", 
+                    template.OcrTemplates?.Id.ToString() ?? "NULL", 
+                    template.FormattedPdfText?.Length ?? 0);
+            }
+            
+            return createdTemplates;
         }
 
         #endregion
