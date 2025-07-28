@@ -300,22 +300,25 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                                         // **CRITICAL**: Use GetContextTemplates method to properly assign context properties
                                         context.Logger?.Information(
-                                            "🔧 **CONTEXT_PROPERTY_ASSIGNMENT**: Using GetContextTemplates pattern for OCR template");
+                                            "🔧 **CONTEXT_PROPERTY_ASSIGNMENT**: Using GetContextTemplates pattern for OCR templates");
 
-                                        // Apply the same context property assignment pattern as GetContextTemplates
-                                        ocrTemplate.DocSet = context.DocSet;
-                                        ocrTemplate.FilePath = context.FilePath;
-                                        ocrTemplate.EmailId = context.EmailId;
+                                        // Apply the same context property assignment pattern as GetContextTemplates to all templates
+                                        foreach (var ocrTemplate in ocrTemplates)
+                                        {
+                                            ocrTemplate.DocSet = context.DocSet;
+                                            ocrTemplate.FilePath = context.FilePath;
+                                            ocrTemplate.EmailId = context.EmailId;
+                                        }
 
                                         context.Logger?.Information(
-                                            "   - **DOCSET_ASSIGNED**: {DocSetCount} document sets",
-                                            ocrTemplate.DocSet?.Count ?? 0);
+                                            "   - **DOCSET_ASSIGNED**: {DocSetCount} document sets to {TemplateCount} templates",
+                                            context.DocSet?.Count ?? 0, ocrTemplates.Count);
                                         context.Logger?.Information(
-                                            "   - **FILEPATH_ASSIGNED**: '{FilePath}'",
-                                            ocrTemplate.FilePath ?? "NULL");
+                                            "   - **FILEPATH_ASSIGNED**: '{FilePath}' to {TemplateCount} templates",
+                                            context.FilePath ?? "NULL", ocrTemplates.Count);
                                         context.Logger?.Information(
-                                            "   - **EMAILID_ASSIGNED**: '{EmailId}'",
-                                            ocrTemplate.EmailId ?? "NULL");
+                                            "   - **EMAILID_ASSIGNED**: '{EmailId}' to {TemplateCount} templates",
+                                            context.EmailId ?? "NULL", ocrTemplates.Count);
 
                                         // **INTEGRATION**: Add to MatchedTemplates for pipeline processing
                                         context.Logger?.Information(

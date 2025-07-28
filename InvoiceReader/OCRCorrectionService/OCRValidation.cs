@@ -331,19 +331,9 @@ namespace WaterNut.DataSpace
                 _logger.Error("🔍 **CROSS_FIELD_VALIDATION_START**: Beginning cross-field consistency validation");
                 _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with SubTotal summation and TotalsZero verification");
 
-                _logger.Information("✅ Input Validation: Invoice object validated - InvoiceNo: {InvoiceNo}, Details Count: {DetailsCount}", 
-                    invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
                 
                 _logger.Information("📊 Financial Summary Analysis: SubTotal={SubTotal}, InvoiceTotal={InvoiceTotal}, TotalDeduction={TotalDeduction}, TotalFreight={TotalFreight}",
                     invoice.SubTotal, invoice.InvoiceTotal, invoice.TotalDeduction, invoice.TotalInternalFreight);
-
-                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Cross-Field Validation Logic**
-                using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateCrossFieldConsistency_V4.2_Implementation"))
-                {
-                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing cross-field consistency validation algorithm");
-                    
-                    try
-                    {
                         // 1. SubTotal Validation Against Line Item Totals
                         if (invoice.InvoiceDetails?.Any() == true)
                         {
