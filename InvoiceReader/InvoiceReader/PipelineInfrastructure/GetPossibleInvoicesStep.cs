@@ -332,7 +332,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         context.MatchedTemplates = templateList;
 
                                         context.Logger?.Information(
-                                            "✅ **TEMPLATE_INTEGRATION_COMPLETE**: OCR template successfully added to MatchedTemplates");
+                                            "✅ **TEMPLATE_INTEGRATION_COMPLETE**: OCR templates successfully added to MatchedTemplates");
                                         context.Logger?.Information(
                                             "   - **AFTER_INTEGRATION_COUNT**: {Count} templates will be processed",
                                             context.MatchedTemplates.Count());
@@ -347,13 +347,15 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         context.Logger?.Information(
                                             "🎯 **TEMPLATE_CREATION_SUCCESS_SUMMARY**: OCR template creation and integration completed successfully");
                                         context.Logger?.Information(
-                                            "   - **NEW_TEMPLATE_NAME**: '{Name}'",
-                                            ocrTemplate.OcrTemplates?.Name);
+                                            "   - **NEW_TEMPLATES_COUNT**: {Count} templates created", ocrTemplates.Count);
+                                        foreach (var template in ocrTemplates)
+                                        {
+                                            context.Logger?.Information(
+                                                "   - **NEW_TEMPLATE**: '{Name}' ({Type})",
+                                                template.OcrTemplates?.Name, template.FileType?.FileImporterInfos?.EntryType);
+                                        }
                                         context.Logger?.Information(
-                                            "   - **NEW_TEMPLATE_TYPE**: '{Type}'",
-                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType);
-                                        context.Logger?.Information(
-                                            "   - **PIPELINE_READY**: Template is now part of MatchedTemplates and ready for downstream processing");
+                                            "   - **PIPELINE_READY**: Templates are now part of MatchedTemplates and ready for downstream processing");
                                     }
                                     else
                                     {
