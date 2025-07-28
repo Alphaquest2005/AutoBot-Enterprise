@@ -73,7 +73,7 @@ namespace AutoBotUtilities.Tests
 
                 await ExecuteSqlScript(fileTypesScript, "FileTypes-FileImporterInfo DocumentType mappings");
 
-                // 4. Check if FileTypeId column exists in OCR_TemplateTableMapping
+                // 5. Check if FileTypeId column exists in OCR_TemplateTableMapping
                 var columnExistsScript = @"
                     SELECT 
                         CASE 
