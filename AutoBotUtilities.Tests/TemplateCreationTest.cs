@@ -129,7 +129,10 @@ namespace AutoBotUtilities.Tests
             // 5. Handle the result (production error handling)
             if (templates != null && templates.Any())
             {
-                _logger.Information("🎯 **PRODUCTION_SUCCESS**: Template '{TemplateName}' created for future invoice processing", template.OcrTemplates?.Name);
+                _logger.Information("🎯 **PRODUCTION_SUCCESS**: {TemplateCount} templates created for future invoice processing", templates.Count);
+                
+                // Use first template for existing single-template test logic
+                var template = templates.First();
                 
                 // In production, you might:
                 // - Log the template creation for audit
@@ -137,18 +140,18 @@ namespace AutoBotUtilities.Tests
                 // - Notify administrators of the new supplier
                 // - Re-process the original invoice with the new template
                 
-                Assert.Pass($"Template created successfully: ID={template.OcrTemplates?.Id}, Name={template.OcrTemplates?.Name}");
+                Assert.Pass($"Templates created successfully: Count={templates.Count}, First Template: ID={template.OcrTemplates?.Id}, Name={template.OcrTemplates?.Name}");
             }
             else
             {
-                _logger.Error("❌ **PRODUCTION_FAILURE**: Template creation failed - CreateInvoiceTemplateAsync returned null");
+                _logger.Error("❌ **PRODUCTION_FAILURE**: Template creation failed - CreateInvoiceTemplateAsync returned null or empty");
                 
                 // In production, you might:
                 // - Alert administrators to manual template creation needed
                 // - Queue the invoice for manual processing
                 // - Log the failure for analysis
                 
-                Assert.Fail("Production template creation failed: CreateInvoiceTemplateAsync returned null");
+                Assert.Fail("Production template creation failed: CreateInvoiceTemplateAsync returned null or empty");
             }
         }
 
