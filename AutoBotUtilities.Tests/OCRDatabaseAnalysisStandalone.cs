@@ -106,7 +106,7 @@ namespace AutoBotUtilities.Tests
 
                 await ExecuteSqlScript(entityTypeAnalysisScript, "OCR-PartLineFields EntityType analysis");
 
-                // 6. Check current database relationships 
+                // 7. Check current database relationships 
                 var relationshipsScript = @"
                     -- Show current relationship between FileTypes and OCR templates (if exists)
                     SELECT 
