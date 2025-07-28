@@ -574,18 +574,18 @@ namespace WaterNut.DataSpace
                             continue; // Skip this document and continue with next
                         }
 
-                    // **STEP 4**: Log detected errors for LLM analysis
-                    LogDetectedErrorsForDiagnosis(detectedErrors, templateName);
+                        // **STEP 2E**: Log detected errors for LLM analysis
+                        LogDetectedErrorsForDiagnosis(detectedErrors, templateName);
 
-                    // **STEP 5**: Create template creation request
-                    var templateRequest = new RegexUpdateRequest
-                    {
-                        TemplateName = templateName,
-                        CreateNewTemplate = true,
-                        ErrorType = "template_creation",
-                        AllDeepSeekErrors = detectedErrors,
-                        ReasoningContext = $"Template creation for new supplier: {templateName}"
-                    };
+                        // **STEP 2F**: Create template creation request for this document type
+                        var templateRequest = new RegexUpdateRequest
+                        {
+                            TemplateName = templateName,
+                            CreateNewTemplate = true,
+                            ErrorType = "template_creation",
+                            AllDeepSeekErrors = detectedErrors,
+                            ReasoningContext = $"Template creation for document type: {separatedDoc.DocumentType}"
+                        };
 
                     // **STEP 6**: Execute template creation strategy
                     _logger.Information("🚀 **TEMPLATE_STRATEGY_EXECUTION**: Executing template creation strategy");
