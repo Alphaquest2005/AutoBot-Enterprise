@@ -258,7 +258,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     context.Logger?.Information(
                                         "✅ **OCR_SERVICE_CREATED**: Service instantiated successfully, calling CreateInvoiceTemplateAsync");
 
-                                    var ocrTemplate =
+                                    var ocrTemplates =
                                         await ocrService.CreateInvoiceTemplateAsync(pdfTextString, filePath)
                                             .ConfigureAwait(false);
 
