@@ -362,7 +362,7 @@ namespace WaterNut.DataSpace
         /// **CRITICAL_CONTEXT**: OCR correction service was designed to UPDATE existing templates, not CREATE new templates from scratch.
         /// **RETURNS**: Complete Invoice template with Parts, Lines, Fields, and Regexes populated by DeepSeek analysis.
         /// </summary>
-        public async Task<Template> CreateInvoiceTemplateAsync(string pdfText, string filePath)
+        public async Task<List<Template>> CreateInvoiceTemplateAsync(string pdfText, string filePath)
         {
             // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
             _logger.Information("🚀 **TEMPLATE_CREATION_START**: Starting comprehensive template creation for file '{FilePath}'", filePath);
