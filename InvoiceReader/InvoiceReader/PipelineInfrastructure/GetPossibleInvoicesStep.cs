@@ -272,29 +272,31 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     if (ocrTemplates != null && ocrTemplates.Any())
                                     {
                                         context.Logger?.Information(
-                                            "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice template successfully");
+                                            "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice templates successfully");
                                         context.Logger?.Information(
-                                            "   - **RETURNED_TEMPLATE_NAME**: '{TemplateName}'",
-                                            ocrTemplate.OcrTemplates?.Name ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_TEMPLATE_ID**: {TemplateId}",
-                                            ocrTemplate.OcrTemplates?.Id.ToString() ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_FILE_TYPE**: {FileType}",
-                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_FILE_TYPE_ID**: {FileTypeId}",
-                                            ocrTemplate.FileType?.Id ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_PARTS_COUNT**: {PartsCount}",
-                                            ocrTemplate.Parts?.Count ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_LINES_COUNT**: {LinesCount}",
-                                            ocrTemplate.Lines?.Count ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **PDF_TEXT_ASSIGNED**: {HasPdfText} ({Length} chars)",
-                                            !string.IsNullOrEmpty(ocrTemplate.FormattedPdfText),
-                                            ocrTemplate.FormattedPdfText?.Length ?? 0);
+                                            "   - **RETURNED_TEMPLATES**: {TemplateCount}", ocrTemplates.Count);
+                                        foreach (var template in ocrTemplates)
+                                        {
+                                            context.Logger?.Information(
+                                                "   - Template: '{Name}' (ID: {Id})",
+                                                template.OcrTemplates?.Name ?? "NULL", template.OcrTemplates?.Id ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **FILE_TYPE**: {FileType}",
+                                                template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                                            context.Logger?.Information(
+                                                "     └── **FILE_TYPE_ID**: {FileTypeId}",
+                                                template.FileType?.Id ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **PARTS_COUNT**: {PartsCount}",
+                                                template.Parts?.Count ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **LINES_COUNT**: {LinesCount}",
+                                                template.Lines?.Count ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **PDF_TEXT_ASSIGNED**: {HasPdfText} ({Length} chars)",
+                                                !string.IsNullOrEmpty(template.FormattedPdfText),
+                                                template.FormattedPdfText?.Length ?? 0);
+                                        }
 
                                         // **CRITICAL**: Use GetContextTemplates method to properly assign context properties
                                         context.Logger?.Information(

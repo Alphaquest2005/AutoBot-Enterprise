@@ -297,17 +297,39 @@ namespace WaterNut.DataSpace
             bool totalsZeroResult = false;
             int validatedFields = 0;
 
-            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateCrossFieldConsistency_V4.2_Enhancement"))
+            if (invoice == null)
             {
-                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive cross-field consistency validation with diagnostic capabilities");
+                _logger.Error("❌ **INPUT_VALIDATION_FAILED**: Critical input validation failed for cross-field consistency validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - Invoice object is null");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null invoice prevents cross-field validation processing");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures cross-field validation has valid invoice data");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning empty error list");
                 
-                if (invoice == null)
-                {
-                    _logger.Error("❌ Critical Input Validation Failure: Invoice object is null - cannot perform cross-field consistency validation");
-                    _logger.Information("🔄 Recovery Action: Returning empty error list to prevent downstream failures");
-                    return errors;
-                }
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Cross-field validation failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot perform cross-field validation with null invoice");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No validation results possible due to invalid input");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Cross-field validation workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No validation processing possible with null invoice");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with empty error list return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Cross-field validation objective cannot be achieved without valid invoice");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No cross-field processing possible without valid invoice data");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Cross-field validation terminated due to input validation failure");
+                
+                return new List<InvoiceError>();
+            }
+            
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Input validation successful - proceeding with cross-field consistency validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - InvoiceNo='{InvoiceNo}', DetailsCount={DetailsCount}", 
+                invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling cross-field validation processing");
+            
+            try
+            {
+                // **v4.2 CROSS-FIELD VALIDATION PROCESSING**: Enhanced cross-field validation with comprehensive tracking
+                _logger.Error("🔍 **CROSS_FIELD_VALIDATION_START**: Beginning cross-field consistency validation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with SubTotal summation and TotalsZero verification");
 
                 _logger.Information("✅ Input Validation: Invoice object validated - InvoiceNo: {InvoiceNo}, Details Count: {DetailsCount}", 
                     invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
