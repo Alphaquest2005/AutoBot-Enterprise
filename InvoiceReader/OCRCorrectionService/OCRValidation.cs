@@ -220,7 +220,7 @@ namespace WaterNut.DataSpace
                 _logger.Error(((processedLineItems < 10000) ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
                 
                 bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Mathematical consistency validation analysis"));
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Mathematical consistency validation analysis");
                 
                 _logger.Error("📊 **MATHEMATICAL_VALIDATION_SUMMARY**: ProcessedItems={ProcessedItems}, ErrorsDetected={ErrorsDetected}, CalculationErrors={CalculationErrors}, ReasonablenessErrors={ReasonablenessErrors}, TotalVariance={TotalVariance:F4}", 
                     processedLineItems, errors.Count, calculationErrors, reasonablenessErrors, totalVariance);
