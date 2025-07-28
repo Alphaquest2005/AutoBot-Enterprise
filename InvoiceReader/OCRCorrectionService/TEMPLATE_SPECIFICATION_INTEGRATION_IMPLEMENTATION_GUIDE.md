@@ -138,15 +138,220 @@ private static bool ValidateAIRecommendationQuality(List<PromptRecommendation> r
     };
 }
 
+/// <summary>
+/// **COMPREHENSIVE ACTUAL DATA COMPLIANCE VALIDATION**
+/// Validates business data against ALL Template_Specifications.md requirements
+/// </summary>
 private static bool ValidateActualDataCompliance(object businessData, string documentType)
 {
-    // Validate actual business data against Template_Specifications.md requirements
-    return documentType switch
+    // **PRIMARY VALIDATION LAYERS** - ALL must pass for compliance
+    
+    // LAYER 1: Required Fields Validation (Template_Specifications.md: "Standard Required Fields by EntityType")
+    bool requiredFieldsValid = ValidateRequiredFieldsCompliance(businessData, documentType);
+    
+    // LAYER 2: Data Type Validation (Template_Specifications.md: "Data Type System")
+    bool dataTypesValid = ValidateDataTypeCompliance(businessData, documentType);
+    
+    // LAYER 3: EntityType Mapping Validation (Template_Specifications.md: "EntityType Mapping")
+    bool entityTypesValid = ValidateEntityTypeMappingCompliance(businessData, documentType);
+    
+    // LAYER 4: Field Mapping Standards (Template_Specifications.md: "Field Mapping Patterns")
+    bool fieldMappingValid = ValidateFieldMappingStandardsCompliance(businessData, documentType);
+    
+    // LAYER 5: Values Column Validation (Template_Specifications.md: "Value Column Usage")
+    bool valuesColumnValid = ValidateValuesColumnCompliance(businessData, documentType);
+    
+    // LAYER 6: AppendValues Logic Validation (Template_Specifications.md: "AppendValues Functionality")
+    bool appendValuesValid = ValidateAppendValuesCompliance(businessData, documentType);
+    
+    // LAYER 7: Regex Pattern Structure (Template_Specifications.md: "Regular Expression Patterns")
+    bool regexPatternsValid = ValidateRegexPatternStructureCompliance(businessData, documentType);
+    
+    // LAYER 8: Multi-Format Support (Template_Specifications.md: "Multi-Supplier and Multi-Format Support")
+    bool multiFormatValid = ValidateMultiFormatSupportCompliance(businessData, documentType);
+
+    return requiredFieldsValid && dataTypesValid && entityTypesValid && 
+           fieldMappingValid && valuesColumnValid && appendValuesValid &&
+           regexPatternsValid && multiFormatValid;
+}
+
+/// <summary>
+/// LAYER 1: Required Fields Validation per Template_Specifications.md
+/// Validates: IsRequired field strategy, multiple pattern handling, critical identifier presence
+/// </summary>
+private static bool ValidateRequiredFieldsCompliance(object businessData, string documentType)
+{
+    var requiredFields = GetDocumentTypeRequiredFields(documentType);
+    
+    foreach (var requiredField in requiredFields)
     {
-        FileTypeManager.EntryTypes.Inv => ValidateInvoiceDataCompliance(businessData),
-        FileTypeManager.EntryTypes.ShipmentInvoice => ValidateShipmentInvoiceDataCompliance(businessData), 
-        FileTypeManager.EntryTypes.BL => ValidateShipmentBLDataCompliance(businessData),
-        FileTypeManager.EntryTypes.Po => ValidatePurchaseOrderDataCompliance(businessData),
+        // Validate field presence and non-empty values
+        if (!HasValidFieldValue(businessData, requiredField))
+        {
+            return false; // Missing required field
+        }
+    }
+    
+    // Validate IsRequired=0 logic for multiple pattern scenarios
+    return ValidateMultiplePatternRequiredFieldLogic(businessData, documentType);
+}
+
+/// <summary>
+/// LAYER 2: Data Type Validation per Template_Specifications.md "Data Type System"
+/// Validates: String, Number/Numeric, Date, English Date format compliance
+/// </summary>
+private static bool ValidateDataTypeCompliance(object businessData, string documentType)
+{
+    var fieldDataTypes = GetDocumentTypeFieldDataTypes(documentType);
+    
+    foreach (var fieldType in fieldDataTypes)
+    {
+        var fieldValue = GetFieldValue(businessData, fieldType.Key);
+        if (fieldValue != null && !ValidateDataTypeFormat(fieldValue, fieldType.Value))
+        {
+            return false; // Data type validation failed
+        }
+    }
+    
+    return true;
+}
+
+/// <summary>
+/// LAYER 3: EntityType Mapping Validation per Template_Specifications.md
+/// Validates: Header-Details relationships, EntityType assignments, unified entity mapping
+/// </summary>
+private static bool ValidateEntityTypeMappingCompliance(object businessData, string documentType)
+{
+    var expectedEntityTypes = GetExpectedEntityTypesForDocument(documentType);
+    var actualEntityTypes = GetActualEntityTypesFromData(businessData);
+    
+    // Validate entity types are appropriate for document type
+    foreach (var expectedEntity in expectedEntityTypes)
+    {
+        if (!actualEntityTypes.Any(actual => actual.Equals(expectedEntity, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false; // Missing expected EntityType
+        }
+    }
+    
+    // Validate Header-Details relationships (e.g., Invoice → InvoiceDetails)
+    return ValidateHeaderDetailsRelationships(actualEntityTypes, documentType);
+}
+
+/// <summary>
+/// LAYER 4: Field Mapping Standards per Template_Specifications.md "Field Mapping Patterns"
+/// Validates: Consistent field naming, cross-supplier mapping standards, field semantics preservation
+/// </summary>
+private static bool ValidateFieldMappingStandardsCompliance(object businessData, string documentType)
+{
+    var standardMappings = GetStandardFieldMappingsForDocument(documentType);
+    var actualFields = GetActualFieldsFromData(businessData);
+    
+    // Validate consistent field naming across suppliers
+    foreach (var fieldMapping in standardMappings)
+    {
+        var mappingGroup = fieldMapping.Value;
+        var hasConsistentMapping = actualFields.Any(field => 
+            mappingGroup.Any(mapping => mapping.Equals(field, StringComparison.OrdinalIgnoreCase)));
+            
+        if (!hasConsistentMapping && IsRequiredMappingGroup(fieldMapping.Key, documentType))
+        {
+            return false; // Inconsistent field mapping
+        }
+    }
+    
+    return true;
+}
+
+/// <summary>
+/// LAYER 5: Values Column Validation per Template_Specifications.md "Value Column Usage"
+/// Validates: Supplier identification, currency defaults, fixed values, error detection values
+/// </summary>
+private static bool ValidateValuesColumnCompliance(object businessData, string documentType)
+{
+    // Validate supplier identification values
+    if (!ValidateSupplierIdentificationValues(businessData, documentType))
+        return false;
+        
+    // Validate currency default values
+    if (!ValidateCurrencyDefaultValues(businessData, documentType))
+        return false;
+        
+    // Validate fixed processing values
+    if (!ValidateFixedProcessingValues(businessData, documentType))
+        return false;
+        
+    return true;
+}
+
+/// <summary>
+/// LAYER 6: AppendValues Logic Validation per Template_Specifications.md "AppendValues Functionality"
+/// Validates: Concatenation vs replacement logic, field-specific append behavior
+/// </summary>
+private static bool ValidateAppendValuesCompliance(object businessData, string documentType)
+{
+    var appendValueFields = GetAppendValueFieldsForDocument(documentType);
+    
+    foreach (var appendField in appendValueFields)
+    {
+        var fieldValue = GetFieldValue(businessData, appendField.Key);
+        var expectedAppendBehavior = appendField.Value; // true = concatenate, false = replace
+        
+        if (!ValidateAppendValuesBehavior(fieldValue, expectedAppendBehavior))
+        {
+            return false; // AppendValues logic violation
+        }
+    }
+    
+    return true;
+}
+
+/// <summary>
+/// LAYER 7: Regex Pattern Structure per Template_Specifications.md "Regular Expression Patterns"
+/// Validates: Named capture groups, key naming conventions, multiline pattern support
+/// </summary>
+private static bool ValidateRegexPatternStructureCompliance(object businessData, string documentType)
+{
+    var regexPatterns = GetRegexPatternsFromData(businessData);
+    
+    foreach (var pattern in regexPatterns)
+    {
+        // Validate named capture groups
+        if (!HasValidNamedCaptureGroups(pattern))
+            return false;
+            
+        // Validate key naming conventions
+        if (!FollowsKeyNamingConventions(pattern, documentType))
+            return false;
+            
+        // Validate multiline pattern structure if applicable
+        if (IsMultilinePattern(pattern) && !ValidateMultilineStructure(pattern))
+            return false;
+    }
+    
+    return true;
+}
+
+/// <summary>
+/// LAYER 8: Multi-Format Support per Template_Specifications.md "Multi-Supplier and Multi-Format Support"
+/// Validates: Unified entity mapping, multiple supplier handling, format variation support
+/// </summary>
+private static bool ValidateMultiFormatSupportCompliance(object businessData, string documentType)
+{
+    // Validate unified entity mapping strategy
+    if (!ValidateUnifiedEntityMappingStrategy(businessData, documentType))
+        return false;
+        
+    // Validate multiple format handling for same supplier
+    if (!ValidateMultipleFormatHandling(businessData, documentType))
+        return false;
+        
+    // Validate cross-document type consistency
+    if (!ValidateCrossDocumentTypeConsistency(businessData, documentType))
+        return false;
+        
+    return true;
+}
         _ => ValidateGenericDataCompliance(businessData)
     };
 }
