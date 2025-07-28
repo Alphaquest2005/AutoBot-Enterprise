@@ -216,6 +216,7 @@ WHERE fii.[EntryType] = 'Simplified Declaration'
 -- **STEP 5: CREATE VIEW FOR EASY ACCESS TO TEMPLATE MAPPINGS**
 IF EXISTS (SELECT * FROM sys.views WHERE name = 'vw_OCR_TemplateTableMapping')
     DROP VIEW [dbo].[vw_OCR_TemplateTableMapping];
+GO
 
 CREATE VIEW [dbo].[vw_OCR_TemplateTableMapping] AS
 SELECT 
