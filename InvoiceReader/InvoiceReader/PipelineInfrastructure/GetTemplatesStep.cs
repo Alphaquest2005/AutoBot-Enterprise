@@ -313,14 +313,14 @@ namespace InvoiceReader.PipelineInfrastructure
                                     
                                     methodStopwatch.Stop();
                                     context.Logger?.Information("METHOD_EXIT_SUCCESS: {MethodName}. IntentionAchieved: {IntentionAchievedStatus}. FinalState: [{FinalStateContext}]. Total execution time: {ExecutionDurationMs}ms.",
-                                        nameof(GetTemplates), "Successfully created OCR template when none existed", $"TemplateCount: 1, TemplateName: {newTemplate.OcrTemplates?.Name}", methodStopwatch.ElapsedMilliseconds);
+                                        nameof(GetTemplates), "Successfully created OCR templates when none existed", $"TemplateCount: {newTemplates.Count}, TemplateNames: [{string.Join(", ", newTemplates.Select(t => t.OcrTemplates?.Name ?? "Unknown"))}]", methodStopwatch.ElapsedMilliseconds);
                                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",
-                                        nameof(GetTemplates), "Successfully created OCR template and added to pipeline", methodStopwatch.ElapsedMilliseconds);
+                                        nameof(GetTemplates), "Successfully created OCR templates and added to pipeline", methodStopwatch.ElapsedMilliseconds);
                                     return true;
                                 }
                                 else
                                 {
-                                    context.Logger?.Warning("⚠️ **OCR_TEMPLATE_CREATION_FAILED**: OCR template creation returned null");
+                                    context.Logger?.Warning("⚠️ **OCR_TEMPLATE_CREATION_FAILED**: OCR template creation returned null or empty list");
                                 }
                             }
                             catch (Exception ocrEx)
