@@ -496,20 +496,40 @@ namespace WaterNut.DataSpace
                     return createdTemplates;
                 }
                 
+                // **STEP 2**: Create templates for each separated document
                 using (var dbContext = new OCRContext())
                 {
-                    // **STEP 1**: Create blank invoice for error detection
-                    var blankInvoice = new ShipmentInvoice 
-                    { 
-                        //Human:removed this so that llm call can set all these properties as errors
-                        //InvoiceNo = $"{templateName}_SAMPLE",
-                        //SupplierName = templateName
-                    };
-                    _logger.Information("📋 **BLANK_INVOICE_CREATED**: Using invoice with InvoiceNo='{InvoiceNo}' for error detection", blankInvoice.InvoiceNo);
+                    _logger.Information("🔄 **TEMPLATE_CREATION_LOOP_START**: Creating template for each separated document");
+                    
+                    for (int docIndex = 0; docIndex < separatedDocuments.Count; docIndex++)
+                    {
+                        var separatedDoc = separatedDocuments[docIndex];
+                        _logger.Information("🔧 **DOCUMENT_TEMPLATE_START**: Processing document {Index}/{Total} - Type '{Type}'", 
+                            docIndex + 1, separatedDocuments.Count, separatedDoc.DocumentType);
 
-                    // **STEP 2**: Extract metadata for context
-                    var metadata = ExtractFullOCRMetadata(blankInvoice, pdfText);
-                    _logger.Information("📊 **METADATA_EXTRACTED**: Found {MetadataCount} metadata entries", metadata?.Count ?? 0);
+                        // **STEP 2A**: Generate template name from document type and file path
+                        var baseFileName = System.IO.Path.GetFileNameWithoutExtension(filePath) ?? "Unknown";
+                        var templateName = $"{baseFileName}_{separatedDoc.DocumentType}"
+                            .Replace(" ", "_")
+                            .Replace("-", "_")
+                            .ToUpperInvariant();
+                        
+                        _logger.Information("🏷️ **TEMPLATE_NAME_GENERATED**: '{TemplateName}' for document type '{DocumentType}'", 
+                            templateName, separatedDoc.DocumentType);
+
+                        // **STEP 2B**: Create blank invoice for this document type
+                        var blankInvoice = new ShipmentInvoice 
+                        { 
+                            //Human:removed this so that llm call can set all these properties as errors
+                            //InvoiceNo = $"{templateName}_SAMPLE",
+                            //SupplierName = templateName
+                        };
+                        _logger.Information("📋 **BLANK_INVOICE_CREATED**: Using invoice for document '{DocumentType}'", separatedDoc.DocumentType);
+
+                        // **STEP 2C**: Extract metadata from separated document content
+                        var metadata = ExtractFullOCRMetadata(blankInvoice, separatedDoc.Content);
+                        _logger.Information("📊 **METADATA_EXTRACTED**: Found {MetadataCount} metadata entries for '{DocumentType}'", 
+                            metadata?.Count ?? 0, separatedDoc.DocumentType);
 
                     // **STEP 3**: Run DeepSeek error detection to identify all patterns
                     _logger.Information("🤖 **DEEPSEEK_ANALYSIS_START**: Running DeepSeek error detection for template creation");
