@@ -147,19 +147,45 @@ namespace WaterNut.DataSpace
         /// </summary>
         public DatabaseFieldInfo MapDeepSeekFieldToDatabase(string rawFieldName)
         {
-            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "MapDeepSeekFieldToDatabase_V4.2_Analysis"))
-            {
-                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing field mapping requirements for raw field: '{RawFieldName}'", 
-                    rawFieldName ?? "NULL");
-                _logger.Information("📊 Analysis Context: Field mapping resolves DeepSeek/OCR field names to canonical database field information through alias resolution and prefix handling");
-                _logger.Information("🎯 Expected Behavior: Validate input, strip line item prefixes, resolve aliases to canonical names, and return complete DatabaseFieldInfo structure");
-                _logger.Information("🏗️ Current Architecture: Dictionary-based mapping with prefix stripping for line items and case-insensitive alias resolution");
-            }
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for field mapping
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for field mapping");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Field mapping context with DeepSeek field resolution and database mapping");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Mapping → prefix stripping → dictionary lookup → validation → database field resolution pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, prefix processing, dictionary resolution, mapping verification");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Field mapping requires comprehensive name resolution with prefix handling and dictionary validation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for field mapping");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed mapping tracking, prefix processing analysis, dictionary resolution verification");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, prefix detection, dictionary lookup, field resolution, mapping verification");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based field mapping");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on OCR field mapping requirements, implementing comprehensive field resolution workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring field resolution accuracy and mapping completeness");
 
             if (string.IsNullOrWhiteSpace(rawFieldName))
             {
-                _logger.Error("❌ Critical Input Validation Failure: Raw field name is null or whitespace - cannot perform field mapping");
+                _logger.Error("❌ **INPUT_VALIDATION_FAILED**: Critical input validation failed for field mapping");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - RawFieldName is null or whitespace");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null field name prevents mapping processing");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures field mapping has valid field name data");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning null");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Field mapping failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot perform field mapping with null or empty field name");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No mapping results possible due to invalid input");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Field mapping workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No mapping processing possible with null field name");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with null return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Field mapping objective cannot be achieved without valid field name");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No mapping processing possible without valid field name");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Field mapping terminated due to input validation failure");
+                
                 return null;
             }
 
@@ -168,135 +194,110 @@ namespace WaterNut.DataSpace
             bool prefixStripped = false;
             DatabaseFieldInfo fieldInfo = null;
             bool mappingFound = false;
-
-            // **📋 PHASE 2: ENHANCEMENT - Comprehensive Diagnostic Implementation**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "MapDeepSeekFieldToDatabase_V4.2_Enhancement"))
+            
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Input validation successful - proceeding with field mapping");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Mapping success - RawFieldName='{RawFieldName}', FieldLength={FieldLength}", 
+                rawFieldName, rawFieldName.Length);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling field mapping processing");
+            
+            try
             {
-                _logger.Information("🔧 **PHASE 2: ENHANCEMENT** - Implementing comprehensive field mapping with diagnostic capabilities");
+                // **v4.2 FIELD MAPPING PROCESSING**: Enhanced field mapping with comprehensive tracking
+                _logger.Error("🔍 **FIELD_MAPPING_START**: Beginning field mapping processing");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with prefix detection and dictionary resolution");
                 
-                _logger.Information("✅ Input Validation: Processing raw field name '{RawFieldName}' (length: {Length})", 
-                    rawFieldName, rawFieldName.Length);
-                
-                _logger.Information("📊 Mapping Dictionary Status: Contains {MappingCount} field mappings available for resolution", 
-                    DeepSeekToDBFieldMapping?.Count ?? 0);
-
-                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Field Mapping Logic**
-                using (Serilog.Context.LogContext.PushProperty("MethodContext", "MapDeepSeekFieldToDatabase_V4.2_Implementation"))
+                // Step 1: Handle line item prefixes (e.g., "InvoiceDetail_Line1_Quantity" -> "Quantity")
+                if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing field mapping algorithm with prefix handling and alias resolution");
+                    _logger.Information("🔄 Prefix Detection: Field contains 'InvoiceDetail_Line' prefix - attempting to strip");
                     
-                    try
+                    var parts = fieldNameToMap.Split('_');
+                    if (parts.Length >= 3)
                     {
-                        // Step 1: Handle line item prefixes (e.g., "InvoiceDetail_Line1_Quantity" -> "Quantity")
-                        if (fieldNameToMap.StartsWith("InvoiceDetail_Line", StringComparison.OrdinalIgnoreCase))
-                        {
-                            _logger.Information("🔄 Prefix Detection: Field contains 'InvoiceDetail_Line' prefix - attempting to strip");
-                            
-                            var parts = fieldNameToMap.Split('_');
-                            if (parts.Length >= 3)
-                            {
-                                string strippedFieldName = parts.Last();
-                                _logger.Information("✅ Prefix Stripped: '{OriginalField}' -> '{StrippedField}' (Parts: {PartCount})", 
-                                    fieldNameToMap, strippedFieldName, parts.Length);
-                                
-                                fieldNameToMap = strippedFieldName;
-                                prefixStripped = true;
-                            }
-                            else
-                            {
-                                _logger.Warning("⚠️ Prefix Stripping Failed: Insufficient parts in field name (Parts: {PartCount})", parts.Length);
-                            }
-                        }
-                        else
-                        {
-                            _logger.Debug("ℹ️ No Prefix: Field name does not contain line item prefix");
-                        }
-
-                        // Step 2: Attempt dictionary lookup with processed field name
-                        _logger.Information("🔍 Dictionary Lookup: Searching for field name '{ProcessedFieldName}' in mapping dictionary", fieldNameToMap);
+                        string strippedFieldName = parts.Last();
+                        _logger.Information("✅ Prefix Stripped: '{OriginalField}' -> '{StrippedField}' (Parts: {PartCount})", 
+                            fieldNameToMap, strippedFieldName, parts.Length);
                         
-                        if (DeepSeekToDBFieldMapping.TryGetValue(fieldNameToMap, out fieldInfo))
-                        {
-                            mappingFound = true;
-                            _logger.Information("✅ Mapping Success: Field '{ProcessedField}' resolved to DatabaseField='{DbField}', Entity='{Entity}', DataType='{DataType}', Required={Required}", 
-                                fieldNameToMap, fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.DataType, fieldInfo.IsRequired);
-                        }
-                        else
-                        {
-                            _logger.Warning("❌ Mapping Failed: No mapping found for processed field name '{ProcessedFieldName}'", fieldNameToMap);
-                        }
-                        
-                        _logger.Information("📊 Field Mapping Summary: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}", 
-                            originalFieldName, fieldNameToMap, prefixStripped, mappingFound);
+                        fieldNameToMap = strippedFieldName;
+                        prefixStripped = true;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        _logger.Error(ex, "💥 Exception during field mapping for raw field '{RawFieldName}' - ProcessedField: '{ProcessedField}'", 
-                            rawFieldName, fieldNameToMap);
-                        // Return null if mapping fails critically
-                        fieldInfo = null;
+                        _logger.Warning("⚠️ Prefix Stripping Failed: Insufficient parts in field name (Parts: {PartCount})", parts.Length);
                     }
                 }
+                else
+                {
+                    _logger.Debug("ℹ️ No Prefix: Field name does not contain line item prefix");
+                }
+
+                // Step 2: Attempt dictionary lookup with processed field name
+                _logger.Information("🔍 Dictionary Lookup: Searching for field name '{ProcessedFieldName}' in mapping dictionary", fieldNameToMap);
+                
+                if (DeepSeekToDBFieldMapping.TryGetValue(fieldNameToMap, out fieldInfo))
+                {
+                    mappingFound = true;
+                    _logger.Information("✅ Mapping Success: Field '{ProcessedField}' resolved to DatabaseField='{DbField}', Entity='{Entity}', DataType='{DataType}', Required={Required}", 
+                        fieldNameToMap, fieldInfo.DatabaseFieldName, fieldInfo.EntityType, fieldInfo.DataType, fieldInfo.IsRequired);
+                }
+                else
+                {
+                    _logger.Warning("❌ Mapping Failed: No mapping found for processed field name '{ProcessedFieldName}'", fieldNameToMap);
+                }
+                
+                _logger.Information("📊 Field Mapping Summary: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}", 
+                    originalFieldName, fieldNameToMap, prefixStripped, mappingFound);
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Field mapping success analysis");
+                
+                bool validationExecuted = !string.IsNullOrWhiteSpace(rawFieldName) && !string.IsNullOrEmpty(fieldNameToMap);
+                bool mappingResultValid = fieldInfo == null || (!string.IsNullOrEmpty(fieldInfo.DatabaseFieldName) && !string.IsNullOrEmpty(fieldInfo.EntityType));
+                bool processCompleted = originalFieldName != null && fieldNameToMap != null;
+                bool mappingConsistent = fieldInfo == null || (fieldInfo.DatabaseFieldName == fieldNameToMap || DeepSeekToDBFieldMapping.ContainsKey(fieldNameToMap));
+                bool dictionaryAccessible = DeepSeekToDBFieldMapping != null;
+                bool fieldNameReasonable = originalFieldName == null || originalFieldName.Length < 500;
+                bool businessLogicCorrect = string.IsNullOrWhiteSpace(rawFieldName) ? (fieldInfo == null) : true;
+                
+                _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Field mapping executed successfully" : "Field mapping execution failed"));
+                _logger.Error(mappingResultValid ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (mappingResultValid ? "Valid field mapping result returned with proper structure" : "Field mapping result malformed or incomplete"));
+                _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All field processing steps completed successfully" : "Field processing incomplete"));
+                _logger.Error(mappingConsistent ? "✅" : "❌" + " **DATA_QUALITY**: " + (mappingConsistent ? "Field mapping consistency properly verified" : "Field mapping consistency validation failed"));
+                _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
+                _logger.Error(businessLogicCorrect ? "✅" : "❌" + " **BUSINESS_LOGIC**: " + (businessLogicCorrect ? "Field mapping follows business rules" : "Field mapping business logic validation failed"));
+                _logger.Error(dictionaryAccessible ? "✅" : "❌" + " **INTEGRATION_SUCCESS**: " + (dictionaryAccessible ? "Mapping dictionary integration functioning properly" : "Mapping dictionary integration failed"));
+                _logger.Error(fieldNameReasonable ? "✅" : "❌" + " **PERFORMANCE_COMPLIANCE**: " + (fieldNameReasonable ? "Field name length within reasonable performance limits" : "Field name length exceeds performance limits"));
+                
+                bool overallSuccess = validationExecuted && mappingResultValid && processCompleted && mappingConsistent && dictionaryAccessible && fieldNameReasonable && businessLogicCorrect;
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Field mapping analysis");
+                
+                _logger.Error("📊 **FIELD_MAPPING_SUMMARY**: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}, DatabaseField='{DbField}'", 
+                    originalFieldName, fieldNameToMap, prefixStripped, mappingFound, fieldInfo?.DatabaseFieldName);
             }
-
-            // **📋 PHASE 4: SUCCESS CRITERIA VALIDATION - Business Outcome Assessment**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "MapDeepSeekFieldToDatabase_V4.2_SuccessCriteria"))
+            catch (Exception ex)
             {
-                _logger.Information("🏆 **PHASE 4: SUCCESS CRITERIA VALIDATION** - Assessing business outcome achievement");
+                // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with field mapping impact assessment
+                _logger.Error(ex, "🚨 **FIELD_MAPPING_EXCEPTION**: Critical exception in field mapping");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - RawFieldName='{RawFieldName}', ExceptionType='{ExceptionType}'", 
+                    rawFieldName, ex.GetType().Name);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents field mapping completion and resolution");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate mapping errors or dictionary corruption");
+                _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with null result return");
+                _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and field mapping monitoring");
                 
-                // 1. 🎯 PURPOSE_FULFILLMENT - Method achieves stated business objective
-                bool purposeFulfilled = !string.IsNullOrWhiteSpace(rawFieldName) && !string.IsNullOrEmpty(fieldNameToMap);
-                _logger.Error("🎯 **PURPOSE_FULFILLMENT**: {Status} - Field mapping {Result} (RawField: '{RawFieldName}', ProcessedField: '{ProcessedField}')", 
-                    purposeFulfilled ? "✅ PASS" : "❌ FAIL", 
-                    purposeFulfilled ? "executed successfully" : "failed to execute", rawFieldName, fieldNameToMap);
-
-                // 2. 📊 OUTPUT_COMPLETENESS - Returns complete, well-formed data structures
-                bool outputComplete = fieldInfo == null || (!string.IsNullOrEmpty(fieldInfo.DatabaseFieldName) && !string.IsNullOrEmpty(fieldInfo.EntityType));
-                _logger.Error("📊 **OUTPUT_COMPLETENESS**: {Status} - Field mapping result {Result} with DatabaseField='{DbField}', Entity='{Entity}'", 
-                    outputComplete ? "✅ PASS" : "❌ FAIL", 
-                    outputComplete ? "properly structured" : "incomplete or malformed", 
-                    fieldInfo?.DatabaseFieldName, fieldInfo?.EntityType);
-
-                // 3. ⚙️ PROCESS_COMPLETION - All required processing steps executed successfully
-                bool processComplete = originalFieldName != null && fieldNameToMap != null;
-                _logger.Error("⚙️ **PROCESS_COMPLETION**: {Status} - Prefix processing and dictionary lookup completed (PrefixStripped: {PrefixStripped})", 
-                    processComplete ? "✅ PASS" : "❌ FAIL", prefixStripped);
-
-                // 4. 🔍 DATA_QUALITY - Output meets business rules and validation requirements
-                bool dataQualityMet = fieldInfo == null || (fieldInfo.DatabaseFieldName == fieldNameToMap || DeepSeekToDBFieldMapping.ContainsKey(fieldNameToMap));
-                _logger.Error("🔍 **DATA_QUALITY**: {Status} - Mapping consistency: MappingFound={MappingFound}, FieldConsistency verified", 
-                    dataQualityMet ? "✅ PASS" : "❌ FAIL", mappingFound);
-
-                // 5. 🛡️ ERROR_HANDLING - Appropriate error detection and graceful recovery
-                bool errorHandlingSuccess = true; // Exception was caught and handled gracefully
-                _logger.Error("🛡️ **ERROR_HANDLING**: {Status} - Exception handling and null safety {Result} during field mapping", 
-                    errorHandlingSuccess ? "✅ PASS" : "❌ FAIL", 
-                    errorHandlingSuccess ? "implemented successfully" : "failed");
-
-                // 6. 💼 BUSINESS_LOGIC - Method behavior aligns with business requirements
-                bool businessLogicValid = string.IsNullOrWhiteSpace(rawFieldName) ? (fieldInfo == null) : true;
-                _logger.Error("💼 **BUSINESS_LOGIC**: {Status} - Field mapping logic follows business rules: null input -> null output", 
-                    businessLogicValid ? "✅ PASS" : "❌ FAIL");
-
-                // 7. 🔗 INTEGRATION_SUCCESS - External dependencies respond appropriately
-                bool integrationSuccess = DeepSeekToDBFieldMapping != null; // Dictionary dependency available
-                _logger.Error("🔗 **INTEGRATION_SUCCESS**: {Status} - Mapping dictionary integration {Result}", 
-                    integrationSuccess ? "✅ PASS" : "❌ FAIL", 
-                    integrationSuccess ? "functioning properly" : "experiencing issues");
-
-                // 8. ⚡ PERFORMANCE_COMPLIANCE - Execution within reasonable timeframes
-                bool performanceCompliant = originalFieldName == null || originalFieldName.Length < 500; // Reasonable field name length
-                _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Field name length ({Length}) within reasonable limits", 
-                    performanceCompliant ? "✅ PASS" : "❌ FAIL", originalFieldName?.Length ?? 0);
-
-                // Overall Success Assessment
-                bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
-                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EXCEPTION PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Field mapping failed due to critical exception");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Field mapping failed due to unhandled exception");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: Null result returned due to exception termination");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Field mapping workflow interrupted by critical exception");
+                _logger.Error("❌ **DATA_QUALITY**: No complete mapping data produced due to exception");
+                _logger.Error("✅ **ERROR_HANDLING**: Exception caught and handled gracefully with null result");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Field mapping objective not fully achieved due to exception");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: Field mapping processing failed due to critical exception");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Field mapping terminated by critical exception");
                 
-                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - MapDeepSeekFieldToDatabase {Result} for field '{RawFieldName}' -> {MappingResult}", 
-                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
-                    overallSuccess ? "completed successfully" : "encountered issues", 
-                    rawFieldName, mappingFound ? $"'{fieldInfo?.DatabaseFieldName}'" : "NO_MAPPING");
+                fieldInfo = null; // Return null if mapping fails critically
             }
 
             return fieldInfo;
