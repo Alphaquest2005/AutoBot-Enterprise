@@ -124,10 +124,10 @@ namespace AutoBotUtilities.Tests
                 supplierName, ocrText.Length, sampleInvoice.InvoiceNo);
 
             // 4. Create the template (this is the main production call)
-            var template = await _ocrService.CreateInvoiceTemplateAsync(ocrText, "production_sample.pdf").ConfigureAwait(false);
+            var templates = await _ocrService.CreateInvoiceTemplateAsync(ocrText, "production_sample.pdf").ConfigureAwait(false);
 
             // 5. Handle the result (production error handling)
-            if (template != null)
+            if (templates != null && templates.Any())
             {
                 _logger.Information("🎯 **PRODUCTION_SUCCESS**: Template '{TemplateName}' created for future invoice processing", template.OcrTemplates?.Name);
                 
