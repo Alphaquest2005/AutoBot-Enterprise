@@ -587,34 +587,35 @@ namespace WaterNut.DataSpace
                             ReasoningContext = $"Template creation for document type: {separatedDoc.DocumentType}"
                         };
 
-                    // **STEP 6**: Execute template creation strategy
-                    _logger.Information("🚀 **TEMPLATE_STRATEGY_EXECUTION**: Executing template creation strategy");
-                    _logger.Information("   - **STRATEGY_INPUT_TEMPLATE_NAME**: '{TemplateName}'", templateRequest.TemplateName);
-                    _logger.Information("   - **STRATEGY_INPUT_CREATE_NEW**: {CreateNew}", templateRequest.CreateNewTemplate);
-                    _logger.Information("   - **STRATEGY_INPUT_ERROR_COUNT**: {ErrorCount}", templateRequest.AllDeepSeekErrors?.Count ?? 0);
-                    
-                    var strategy = new OCRCorrectionService.TemplateCreationStrategy(_logger);
-                    _logger.Information("📋 **STRATEGY_OBJECT_CREATED**: TemplateCreationStrategy instance created");
-                    
-                    _logger.Information("🔄 **STRATEGY_EXECUTION_START**: Calling strategy.ExecuteAsync...");
-                    var result = await strategy.ExecuteAsync(dbContext, templateRequest, this).ConfigureAwait(false);
-                    _logger.Information("🔄 **STRATEGY_EXECUTION_COMPLETE**: ExecuteAsync returned");
+                        // **STEP 2G**: Execute template creation strategy for this document type
+                        _logger.Information("🚀 **TEMPLATE_STRATEGY_EXECUTION**: Executing template creation strategy for '{DocumentType}'", separatedDoc.DocumentType);
+                        _logger.Information("   - **STRATEGY_INPUT_TEMPLATE_NAME**: '{TemplateName}'", templateRequest.TemplateName);
+                        _logger.Information("   - **STRATEGY_INPUT_CREATE_NEW**: {CreateNew}", templateRequest.CreateNewTemplate);
+                        _logger.Information("   - **STRATEGY_INPUT_ERROR_COUNT**: {ErrorCount}", templateRequest.AllDeepSeekErrors?.Count ?? 0);
+                        
+                        var strategy = new OCRCorrectionService.TemplateCreationStrategy(_logger);
+                        _logger.Information("📋 **STRATEGY_OBJECT_CREATED**: TemplateCreationStrategy instance created for '{DocumentType}'", separatedDoc.DocumentType);
+                        
+                        _logger.Information("🔄 **STRATEGY_EXECUTION_START**: Calling strategy.ExecuteAsync for '{DocumentType}'...", separatedDoc.DocumentType);
+                        var result = await strategy.ExecuteAsync(dbContext, templateRequest, this).ConfigureAwait(false);
+                        _logger.Information("🔄 **STRATEGY_EXECUTION_COMPLETE**: ExecuteAsync returned for '{DocumentType}'", separatedDoc.DocumentType);
 
-                    // **STEP 7**: Check template creation result
-                    _logger.Information("🔍 **STRATEGY_RESULT_ANALYSIS**: Analyzing strategy execution result");
-                    _logger.Information("   - **RESULT_IS_SUCCESS**: {IsSuccess}", result?.IsSuccess ?? false);
-                    _logger.Information("   - **RESULT_REGEX_ID**: {RegexId}", result?.RegexId?.ToString() ?? "NULL");
-                    _logger.Information("   - **RESULT_MESSAGE**: '{Message}'", result?.Message ?? "NULL");
-                    _logger.Information("   - **RESULT_OBJECT_TYPE**: {ResultType}", result?.GetType().FullName ?? "NULL");
-                    
-                    if (!result.IsSuccess || !result.RegexId.HasValue)
-                    {
-                        _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: Template '{TemplateName}' creation failed", templateName);
-                        _logger.Error("   - **FAILURE_REASON_IS_SUCCESS**: {IsSuccess}", result?.IsSuccess ?? false);
-                        _logger.Error("   - **FAILURE_REASON_REGEX_ID**: {RegexId}", result?.RegexId?.ToString() ?? "NULL_VALUE");
-                        _logger.Error("   - **FAILURE_MESSAGE**: '{Message}'", result?.Message ?? "NO_MESSAGE");
-                        return null;
-                    }
+                        // **STEP 2H**: Check template creation result for this document type
+                        _logger.Information("🔍 **STRATEGY_RESULT_ANALYSIS**: Analyzing strategy execution result for '{DocumentType}'", separatedDoc.DocumentType);
+                        _logger.Information("   - **RESULT_IS_SUCCESS**: {IsSuccess}", result?.IsSuccess ?? false);
+                        _logger.Information("   - **RESULT_REGEX_ID**: {RegexId}", result?.RegexId?.ToString() ?? "NULL");
+                        _logger.Information("   - **RESULT_MESSAGE**: '{Message}'", result?.Message ?? "NULL");
+                        _logger.Information("   - **RESULT_OBJECT_TYPE**: {ResultType}", result?.GetType().FullName ?? "NULL");
+                        
+                        if (!result.IsSuccess || !result.RegexId.HasValue)
+                        {
+                            _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: Template '{TemplateName}' creation failed for '{DocumentType}'", templateName, separatedDoc.DocumentType);
+                            _logger.Error("   - **FAILURE_REASON_IS_SUCCESS**: {IsSuccess}", result?.IsSuccess ?? false);
+                            _logger.Error("   - **FAILURE_REASON_REGEX_ID**: {RegexId}", result?.RegexId?.ToString() ?? "NULL_VALUE");
+                            _logger.Error("   - **FAILURE_MESSAGE**: '{Message}'", result?.Message ?? "NO_MESSAGE");
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping '{DocumentType}' due to template creation failure", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
 
                     _logger.Information("✅ **TEMPLATE_CREATION_SUCCESS**: Template '{TemplateName}' created successfully with ID {TemplateId}", templateName, result.RegexId.Value);
                     
