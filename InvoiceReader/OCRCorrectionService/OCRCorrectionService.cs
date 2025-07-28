@@ -531,44 +531,48 @@ namespace WaterNut.DataSpace
                         _logger.Information("📊 **METADATA_EXTRACTED**: Found {MetadataCount} metadata entries for '{DocumentType}'", 
                             metadata?.Count ?? 0, separatedDoc.DocumentType);
 
-                    // **STEP 3**: Run DeepSeek error detection to identify all patterns
-                    _logger.Information("🤖 **DEEPSEEK_ANALYSIS_START**: Running DeepSeek error detection for template creation");
-                    _logger.Information("   - **DEEPSEEK_INPUT_INVOICE**: InvoiceNo='{InvoiceNo}', SupplierName='{SupplierName}'", 
-                        blankInvoice.InvoiceNo, blankInvoice.SupplierName);
-                    _logger.Information("   - **DEEPSEEK_INPUT_TEXT_LENGTH**: {TextLength} characters", pdfText?.Length ?? 0);
-                    _logger.Information("   - **DEEPSEEK_INPUT_METADATA_COUNT**: {MetadataCount} entries", metadata?.Count ?? 0);
-                    
-                    List<InvoiceError> detectedErrors = null;
-                    try 
-                    {
-                        _logger.Information("🔄 **DEEPSEEK_API_CALL_START**: Calling DetectInvoiceErrorsForDiagnosticsAsync...");
-                        detectedErrors = await this.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, pdfText, metadata).ConfigureAwait(false);
-                        _logger.Information("🔄 **DEEPSEEK_API_CALL_COMPLETE**: DetectInvoiceErrorsForDiagnosticsAsync returned");
-                    }
-                    catch (Exception deepSeekEx)
-                    {
-                        _logger.Error(deepSeekEx, "❌ **DEEPSEEK_ANALYSIS_EXCEPTION**: Exception during DeepSeek error detection");
-                        _logger.Error("   - **DEEPSEEK_EXCEPTION_TYPE**: {ExceptionType}", deepSeekEx.GetType().FullName);
-                        _logger.Error("   - **DEEPSEEK_EXCEPTION_MESSAGE**: {ExceptionMessage}", deepSeekEx.Message);
-                        return null;
-                    }
-                    
-                    _logger.Information("🔍 **DEEPSEEK_ANALYSIS_COMPLETE**: Detected {ErrorCount} errors for template creation", detectedErrors?.Count ?? 0);
-                    
-                    if (detectedErrors == null)
-                    {
-                        _logger.Warning("⚠️ **DEEPSEEK_RETURNED_NULL**: DetectInvoiceErrorsForDiagnosticsAsync returned null");
-                        return null;
-                    }
+                        // **STEP 2D**: Run DeepSeek error detection for this document type
+                        _logger.Information("🤖 **DEEPSEEK_ANALYSIS_START**: Running DeepSeek error detection for '{DocumentType}'", separatedDoc.DocumentType);
+                        _logger.Information("   - **DEEPSEEK_INPUT_INVOICE**: InvoiceNo='{InvoiceNo}', SupplierName='{SupplierName}'", 
+                            blankInvoice.InvoiceNo, blankInvoice.SupplierName);
+                        _logger.Information("   - **DEEPSEEK_INPUT_TEXT_LENGTH**: {TextLength} characters for '{DocumentType}'", 
+                            separatedDoc.Content?.Length ?? 0, separatedDoc.DocumentType);
+                        _logger.Information("   - **DEEPSEEK_INPUT_METADATA_COUNT**: {MetadataCount} entries", metadata?.Count ?? 0);
+                        
+                        List<InvoiceError> detectedErrors = null;
+                        try 
+                        {
+                            _logger.Information("🔄 **DEEPSEEK_API_CALL_START**: Calling DetectInvoiceErrorsForDiagnosticsAsync for '{DocumentType}'...", separatedDoc.DocumentType);
+                            detectedErrors = await this.DetectInvoiceErrorsForDiagnosticsAsync(blankInvoice, separatedDoc.Content, metadata).ConfigureAwait(false);
+                            _logger.Information("🔄 **DEEPSEEK_API_CALL_COMPLETE**: DetectInvoiceErrorsForDiagnosticsAsync returned for '{DocumentType}'", separatedDoc.DocumentType);
+                        }
+                        catch (Exception deepSeekEx)
+                        {
+                            _logger.Error(deepSeekEx, "❌ **DEEPSEEK_ANALYSIS_EXCEPTION**: Exception during DeepSeek error detection for '{DocumentType}'", separatedDoc.DocumentType);
+                            _logger.Error("   - **DEEPSEEK_EXCEPTION_TYPE**: {ExceptionType}", deepSeekEx.GetType().FullName);
+                            _logger.Error("   - **DEEPSEEK_EXCEPTION_MESSAGE**: {ExceptionMessage}", deepSeekEx.Message);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping template creation for '{DocumentType}' due to DeepSeek error", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
+                        
+                        _logger.Information("🔍 **DEEPSEEK_ANALYSIS_COMPLETE**: Detected {ErrorCount} errors for '{DocumentType}' template creation", 
+                            detectedErrors?.Count ?? 0, separatedDoc.DocumentType);
+                        
+                        if (detectedErrors == null)
+                        {
+                            _logger.Warning("⚠️ **DEEPSEEK_RETURNED_NULL**: DetectInvoiceErrorsForDiagnosticsAsync returned null for '{DocumentType}'", separatedDoc.DocumentType);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping template creation for '{DocumentType}' due to null response", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
 
-                    if (!detectedErrors.Any())
-                    {
-                        var message = "DeepSeek detected no errors - cannot create template without field patterns";
-                        _logger.Warning("⚠️ **NO_ERRORS_DETECTED**: {Message}", message);
-                        _logger.Warning("   - **DETECTED_ERRORS_COUNT**: {Count}", detectedErrors.Count);
-                        _logger.Warning("   - **DETECTED_ERRORS_OBJECT**: {ErrorsObject}", detectedErrors.GetType().FullName);
-                        return null;
-                    }
+                        if (!detectedErrors.Any())
+                        {
+                            var message = $"DeepSeek detected no errors for '{separatedDoc.DocumentType}' - cannot create template without field patterns";
+                            _logger.Warning("⚠️ **NO_ERRORS_DETECTED**: {Message}", message);
+                            _logger.Warning("   - **DETECTED_ERRORS_COUNT**: {Count}", detectedErrors.Count);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping template creation for '{DocumentType}' due to no errors detected", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
 
                     // **STEP 4**: Log detected errors for LLM analysis
                     LogDetectedErrorsForDiagnosis(detectedErrors, templateName);
