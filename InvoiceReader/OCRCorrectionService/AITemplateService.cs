@@ -806,18 +806,25 @@ namespace WaterNut.DataSpace
             {
                 if (spec.HasFailure) return spec; // Short-circuit if already failed
 
+                // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
                 var dataTypeRecommendations = recommendations?.Where(r => 
                     r.Description.Contains("data type") || r.Description.Contains("validation") || 
                     r.Description.Contains("decimal") || r.Description.Contains("date")).ToList() ?? new List<PromptRecommendation>();
                 
-                bool success = dataTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                bool aiRecommendationSuccess = dataTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
                 
-                var result = success 
-                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_DATATYPE_RECOMMENDATIONS", 
-                        $"Generated {dataTypeRecommendations.Count} data type validation recommendations", 
+                // **DUAL LAYER 2: COMPREHENSIVE 8-LAYER ACTUAL DATA COMPLIANCE VALIDATION**
+                // Validate actual business data against ALL Template_Specifications.md requirements
+                bool actualDataCompliance = ValidateActualDataCompliance(spec, spec.DocumentType);
+                
+                bool overallSuccess = aiRecommendationSuccess && actualDataCompliance;
+                
+                var result = overallSuccess 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_DATATYPE_DUAL_LAYER", 
+                        $"✅ AI Quality: {dataTypeRecommendations.Count} recommendations + ✅ Data Compliance: 8-layer validation passed for {spec.DocumentType}", 
                         dataTypeRecommendations.Count)
-                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_DATATYPE_RECOMMENDATIONS", 
-                        "No data type validation recommendations - may miss type safety improvements");
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_DATATYPE_DUAL_LAYER", 
+                        $"❌ AI Quality: {aiRecommendationSuccess} + ❌ Data Compliance: {actualDataCompliance} - 8-layer validation failed for {spec.DocumentType}");
                 
                 spec.ValidationResults.Add(result);
                 return spec;
