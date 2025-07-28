@@ -1,0 +1,8 @@
+{
+  "name": "mssql-autobot",
+  "description": "MCP server for AutoBot-Enterprise database access",
+  "command": "node",
+  "args": ["C:\\Insight Software\\AutoBot-Enterprise\\mcp-servers\\mssql-mcp-server\\server.mjs"],
+  "cwd": "C:\\Insight Software\\AutoBot-Enterprise\\mcp-servers\\mssql-mcp-server",
+  "env": {}
+}
