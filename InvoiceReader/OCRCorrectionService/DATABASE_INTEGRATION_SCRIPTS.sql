@@ -241,6 +241,7 @@ FROM [dbo].[OCR_TemplateTableMapping] ottm
     INNER JOIN [CoreEntities].[dbo].[FileTypes] ft ON ottm.[FileTypeId] = ft.[Id]
     INNER JOIN [CoreEntities].[dbo].[FileImporterInfos] fii ON ft.[FileImporterInfosId] = fii.[Id]
 WHERE ottm.[IsActive] = 1;
+GO
 
 -- **STEP 6: VERIFICATION QUERIES**
 -- Verify the mappings were created correctly
