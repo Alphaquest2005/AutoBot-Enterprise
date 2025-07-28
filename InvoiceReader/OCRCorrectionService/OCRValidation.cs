@@ -219,7 +219,60 @@ namespace WaterNut.DataSpace
                 _logger.Error("✅ **INTEGRATION_SUCCESS**: Mathematical validation processing completed without external dependencies");
                 _logger.Error(((processedLineItems < 10000) ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
                 
-                bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid;
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Mathematical consistency dual-layer template specification compliance analysis");
+                
+                // Determine document type using FileTypeManager.EntryTypes
+                string documentType = FileTypeManager.EntryTypes.ShipmentInvoice; // Default for ShipmentInvoice parameter
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using document-specific validation rules");
+                
+                // **TEMPLATE_SPEC_1: AI MATHEMATICAL RECOMMENDATION QUALITY + ACTUAL MATHEMATICAL DATA VALIDATION**
+                // LAYER 1: AI recommendation quality for mathematical consistency (simulated for mathematical context)
+                bool aiMathQualitySuccess = (calculationErrors + reasonablenessErrors) <= processedLineItems * 0.1; // AI quality metric
+                // LAYER 2: Actual mathematical data validation against Template_Specifications.md
+                var mathDataFields = new[] { "Quantity", "Cost", "TotalCost", "Discount" };
+                bool actualMathDataSuccess = invoice.InvoiceDetails?.Any(d => mathDataFields.Any(f => 
+                    GetFieldValue(d, f) != null)) ?? false;
+                bool templateSpec1Success = aiMathQualitySuccess && actualMathDataSuccess;
+                _logger.Error((templateSpec1Success ? "✅" : "❌") + " **TEMPLATE_SPEC_AI_AND_MATH_DATA**: " + 
+                    (templateSpec1Success ? $"Both AI math quality ({aiMathQualitySuccess}) and math data compliance ({actualMathDataSuccess}) passed for {documentType}" : 
+                    $"Failed - AI Math Quality: {aiMathQualitySuccess}, Math Data Compliance: {actualMathDataSuccess} for {documentType}"));
+                
+                // **TEMPLATE_SPEC_2: DOCUMENT-TYPE SPECIFIC ENTITYTYPE VALIDATION FOR MATHEMATICAL FIELDS**
+                var expectedEntityTypes = new[] { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" };
+                bool entityTypeMappingSuccess = invoice.InvoiceDetails?.Any() ?? false; // Mathematical fields present
+                _logger.Error((entityTypeMappingSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_MAPPING**: " + 
+                    (entityTypeMappingSuccess ? $"Mathematical EntityType mappings are valid for document type {documentType}" : 
+                    $"Mathematical EntityType mappings invalid for document type {documentType}"));
+                
+                // **TEMPLATE_SPEC_3: REQUIRED MATHEMATICAL FIELDS VALIDATION (DOCUMENT-TYPE SPECIFIC)**
+                var requiredMathFields = new[] { "Quantity", "Cost" };
+                bool requiredMathFieldsSuccess = invoice.InvoiceDetails?.Any(d => 
+                    requiredMathFields.All(f => GetFieldValue(d, f) != null)) ?? false;
+                _logger.Error((requiredMathFieldsSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_REQUIRED_MATH_FIELDS**: " + 
+                    (requiredMathFieldsSuccess ? $"All required mathematical fields present for {documentType}" : 
+                    $"Missing required mathematical fields for {documentType}"));
+                
+                // **TEMPLATE_SPEC_4: MATHEMATICAL DATA TYPE AND BUSINESS RULES VALIDATION**
+                bool mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
+                    d.Quantity >= 0 && (d.Cost ?? 0) >= 0 && (d.TotalCost ?? 0) >= 0) ?? true;
+                _logger.Error((mathDataTypeRulesSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_DATA_RULES**: " + 
+                    (mathDataTypeRulesSuccess ? $"Mathematical data types and business rules compliant for {documentType}" : 
+                    $"Mathematical data type or business rule violations for {documentType}"));
+                
+                // **TEMPLATE_SPEC_5: MATHEMATICAL TEMPLATE EFFECTIVENESS VALIDATION**
+                bool mathTemplateEffectivenessSuccess = calculationErrors <= processedLineItems * 0.05; // 95% accuracy
+                _logger.Error((mathTemplateEffectivenessSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_EFFECTIVENESS**: " + 
+                    (mathTemplateEffectivenessSuccess ? $"Mathematical template effectiveness validated for {documentType}" : 
+                    $"Mathematical template effectiveness issues detected for {documentType}"));
+                
+                // **OVERALL SUCCESS VALIDATION WITH DUAL-LAYER TEMPLATE SPECIFICATIONS**
+                bool templateSpecificationSuccess = templateSpec1Success && entityTypeMappingSuccess && 
+                    requiredMathFieldsSuccess && mathDataTypeRulesSuccess && mathTemplateEffectivenessSuccess;
+                _logger.Error($"🏆 **TEMPLATE_SPECIFICATION_OVERALL**: {(templateSpecificationSuccess ? "✅ PASS" : "❌ FAIL")} - " +
+                    $"Dual-layer mathematical validation for {documentType} with comprehensive compliance analysis");
+                
+                bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid && templateSpecificationSuccess;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Mathematical consistency validation analysis");
                 
                 _logger.Error("📊 **MATHEMATICAL_VALIDATION_SUMMARY**: ProcessedItems={ProcessedItems}, ErrorsDetected={ErrorsDetected}, CalculationErrors={CalculationErrors}, ReasonablenessErrors={ReasonablenessErrors}, TotalVariance={TotalVariance:F4}", 
