@@ -631,27 +631,28 @@ namespace WaterNut.DataSpace
                     
                         var templateId = result.RegexId.Value;
                     
-                    // **CRITICAL_ARCHITECTURE_NOTE**: In OCR module design, the "Invoices" table stores TEMPLATE DEFINITIONS, not actual invoices.
-                    // - Invoices table = Template definitions (OCR patterns, parts, lines, fields)
-                    // - ShipmentInvoice entities = Actual invoice data (what gets imported)
-                    // - OCR_TemplateTableMapping = Document routing table (different purpose)
-                    // This naming convention is historical but functionally correct.
-                    
-                    _logger.Information("🔍 **DATABASE_QUERY_START**: Querying OCRContext.Invoices for template definition");
-                    _logger.Information("   - **ARCHITECTURAL_CONTEXT**: Invoices table contains TEMPLATE DEFINITIONS in OCR module");
-                    _logger.Information("   - **QUERY_FILTER**: Id == {TemplateId}", templateId);
-                    
-                    var ocrTemplate = await dbContext.Templates
-                        .Where(t => t.Id == templateId)
-                        .FirstOrDefaultAsync()
-                        .ConfigureAwait(false);
-                    
-                    _logger.Information("🔍 **DATABASE_QUERY_RESULT**: Query completed");
-                    if (ocrTemplate == null)
-                    {
-                        _logger.Error("❌ **DATABASE_TEMPLATE_RETRIEVAL_FAILED**: Could not retrieve template with ID {TemplateId}", templateId);
-                        return null;
-                    }
+                        // **CRITICAL_ARCHITECTURE_NOTE**: In OCR module design, the "Templates" table stores TEMPLATE DEFINITIONS, not actual invoices.
+                        // - Templates table = Template definitions (OCR patterns, parts, lines, fields)
+                        // - ShipmentInvoice entities = Actual invoice data (what gets imported)
+                        // - OCR_TemplateTableMapping = Document routing table (different purpose)
+                        // This naming convention is historical but functionally correct.
+                        
+                        _logger.Information("🔍 **DATABASE_QUERY_START**: Querying OCRContext.Templates for '{DocumentType}' template definition", separatedDoc.DocumentType);
+                        _logger.Information("   - **ARCHITECTURAL_CONTEXT**: Templates table contains TEMPLATE DEFINITIONS in OCR module");
+                        _logger.Information("   - **QUERY_FILTER**: Id == {TemplateId}", templateId);
+                        
+                        var ocrTemplate = await dbContext.Templates
+                            .Where(t => t.Id == templateId)
+                            .FirstOrDefaultAsync()
+                            .ConfigureAwait(false);
+                        
+                        _logger.Information("🔍 **DATABASE_QUERY_RESULT**: Query completed for '{DocumentType}'", separatedDoc.DocumentType);
+                        if (ocrTemplate == null)
+                        {
+                            _logger.Error("❌ **DATABASE_TEMPLATE_RETRIEVAL_FAILED**: Could not retrieve template with ID {TemplateId} for '{DocumentType}'", templateId, separatedDoc.DocumentType);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping '{DocumentType}' due to database retrieval failure", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
                     
                     _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved template successfully");
                     _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
