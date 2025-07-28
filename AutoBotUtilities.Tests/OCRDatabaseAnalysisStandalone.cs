@@ -132,7 +132,7 @@ namespace AutoBotUtilities.Tests
 
                 await ExecuteSqlScript(relationshipsScript, "Current FileType to OCR template relationships");
 
-                // 7. Get all OCR and FileType related tables
+                // 8. Get all OCR and FileType related tables
                 var ocrTablesScript = @"
                     SELECT TABLE_NAME 
                     FROM INFORMATION_SCHEMA.TABLES 
