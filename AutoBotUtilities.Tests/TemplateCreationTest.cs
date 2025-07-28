@@ -65,7 +65,12 @@ namespace AutoBotUtilities.Tests
             // **STEP 3**: Verify results and log comprehensive details
             if (templates != null && templates.Any())
             {
-                _logger.Information("✅ **VERIFICATION_SUCCESS**: Template created successfully");
+                _logger.Information("✅ **VERIFICATION_SUCCESS**: Templates created successfully");
+                _logger.Information("   - Templates Count: {TemplateCount}", templates.Count);
+                
+                // Use first template for existing single-template test logic
+                var template = templates.First();
+                
                 _logger.Information("   - Template ID: {TemplateId}", template.OcrTemplates?.Id);
                 _logger.Information("   - Template Name: {TemplateName}", template.OcrTemplates?.Name);
                 _logger.Information("   - Parts Count: {PartsCount}", template.Parts?.Count ?? 0);
@@ -81,8 +86,8 @@ namespace AutoBotUtilities.Tests
             }
             else
             {
-                _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned null");
-                Assert.Fail("Template creation failed: CreateInvoiceTemplateAsync returned null");
+                _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned null or empty");
+                Assert.Fail("Template creation failed: CreateInvoiceTemplateAsync returned null or empty");
             }
         }
 
