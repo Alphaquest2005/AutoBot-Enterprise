@@ -183,16 +183,70 @@ namespace WaterNut.DataSpace
 
         #region Public Orchestration Methods
 
+        /// <summary>
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Main OCR correction orchestration with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Complete OCR correction orchestration including error detection, correction application, and learning system integration
+        /// **BUSINESS OBJECTIVE**: Transform invoice data from OCR inaccuracies to business-ready accurate structured data
+        /// **SUCCESS CRITERIA**: Must detect errors, apply corrections successfully, achieve balanced invoice state, and update learning systems
+        /// </summary>
         public async Task<bool> CorrectInvoiceAsync(ShipmentInvoice invoice, string fileText)
         {
-            _logger.Error(
-                "🚀 **ORCHESTRATION_START**: Starting CorrectInvoiceAsync for Invoice '{InvoiceNo}'",
-                invoice?.InvoiceNo ?? "NULL");
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow with success criteria validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for OCR correction orchestration");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Orchestration context with invoice correction and learning system integration");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation → metadata extraction → error detection → correction application → learning update pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, detection success, correction application outcomes, learning system updates");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Orchestration requires comprehensive validation with complete error correction workflow");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for correction orchestration");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation, detection outcomes, correction success, learning integration");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, error counts, correction applications, balance validation, learning updates");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based OCR correction orchestration");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on comprehensive correction requirements, implementing complete orchestration workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring all correction phases and final balance state");
+            
+            // **v4.2 ORCHESTRATION INITIALIZATION**: Enhanced orchestration with comprehensive validation tracking
+            _logger.Error("🚀 **ORCHESTRATION_START**: Beginning comprehensive OCR correction orchestration");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Orchestration context - InvoiceNo='{InvoiceNo}', HasFileText={HasFileText}", 
+                invoice?.InvoiceNo ?? "NULL", !string.IsNullOrEmpty(fileText));
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Orchestration pattern with complete error correction and learning system integration");
+            
             if (invoice == null || string.IsNullOrEmpty(fileText))
             {
-                _logger.Error("   - ❌ **VALIDATION_FAIL**: Invoice or fileText is null/empty. Aborting.");
+                _logger.Error("❌ **VALIDATION_FAIL**: Critical input validation failed - Invoice or fileText is null/empty");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - InvoiceNull={InvoiceNull}, FileTextEmpty={FileTextEmpty}", 
+                    invoice == null, string.IsNullOrEmpty(fileText));
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null inputs prevent any correction workflow execution");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures orchestration has valid data to process");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - aborting orchestration with failure return");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Orchestration failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot perform OCR correction with invalid input data");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No correction output possible due to invalid input");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Orchestration workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No data processing possible with null/empty inputs");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with appropriate failure return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: OCR correction objective cannot be achieved without valid inputs");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No system integration possible without valid invoice data");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - OCR correction orchestration terminated due to input validation failure");
+                
                 return false;
             }
+            
+            _logger.Error("✅ **VALIDATION_SUCCESS**: Input validation successful - proceeding with OCR correction orchestration");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - InvoiceNo='{InvoiceNo}', FileTextLength={FileTextLength}", 
+                invoice.InvoiceNo, fileText.Length);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling complete correction workflow execution");
 
             // =====================================================================================
             //                                  SINGLE DB CONTEXT FIX

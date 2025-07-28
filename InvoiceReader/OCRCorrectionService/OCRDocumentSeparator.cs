@@ -126,67 +126,189 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Detects document types present in the text and their confidence scores
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: AI-powered document type detection for any supplier/format
+        /// 
+        /// Uses DeepSeek AI to analyze text and identify document types dynamically.
+        /// Completely general - works with any supplier, any document format, any content type.
         /// </summary>
-        private Dictionary<string, double> DetectDocumentTypes(string text)
+        private async Task<Dictionary<string, double>> DetectDocumentTypesAsync(string text)
         {
+            _logger.Information("🤖 **AI_DOCUMENT_DETECTION_START**: Using DeepSeek to detect document types");
+            _logger.Information("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
+            _logger.Information("   - **DETECTION_APPROACH**: AI-powered, supplier-agnostic, format-adaptive");
+
             var detection = new Dictionary<string, double>();
-            
-            // **MANGO INVOICE DETECTION**
-            var mangoPatterns = new[]
-            {
-                (@"MANGO\s+(OUTLET)?", 0.9),
-                (@"Order\s+number:\s*[A-Z0-9]+", 0.8),
-                (@"@mango\.com", 0.9),
-                (@"noreply@mango\.com", 1.0),
-                (@"ref\.\s*[\d\w]+", 0.6),
-                (@"Your\s+order.*on\s+its\s+way", 0.7)
-            };
 
-            var mangoScore = CalculatePatternScore(text, mangoPatterns);
-            if (mangoScore > 0.5)
+            try
             {
-                detection["MANGO_Invoice"] = mangoScore;
-                _logger.Information("🥭 **MANGO_DETECTED**: Confidence={Confidence:F2}", mangoScore);
-            }
+                // **AI PROMPT**: Ask DeepSeek to identify document types
+                var detectionPrompt = $@"Analyze this document text and identify what types of documents are present. 
+                
+TEXT TO ANALYZE:
+{text}
 
-            // **CARIBBEAN CUSTOMS DETECTION**
-            var customsPatterns = new[]
-            {
-                (@"Grenada", 0.9),
-                (@"Simplified\s+Declaration\s+Form", 1.0),
-                (@"FREIGHT\s+[\d.,]+\s+US", 0.8),
-                (@"Consignee:", 0.7),
-                (@"false\s+declaration", 0.8),
-                (@"Personal\s+Effects", 0.6)
-            };
+Please identify:
+1. What types of documents are in this text (e.g., Invoice, Customs Declaration, Shipping Form, Receipt, etc.)
+2. For each document type, provide a confidence score (0.0 to 1.0)
+3. Use descriptive names like 'SUPPLIER_Invoice', 'Country_CustomsForm', etc.
 
-            var customsScore = CalculatePatternScore(text, customsPatterns);
-            if (customsScore > 0.5)
-            {
-                detection["Grenada_Customs"] = customsScore;
-                _logger.Information("🏴 **CUSTOMS_DETECTED**: Confidence={Confidence:F2}", customsScore);
-            }
+Return your analysis in this exact JSON format:
+{{
+  ""document_types"": [
+    {{
+      ""type"": ""DocumentTypeName"",
+      ""confidence"": 0.95,
+      ""reasoning"": ""Brief explanation of detection""
+    }}
+  ]
+}}";
 
-            // **GENERIC INVOICE DETECTION** (fallback)
-            if (detection.Count == 0)
-            {
-                var genericPatterns = new[]
+                _logger.Information("🔄 **AI_DETECTION_CALL**: Calling DeepSeek for document type analysis");
+                
+                // Use existing LLM infrastructure from OCRCorrectionService
+                var aiResponse = await CallDeepSeekForDocumentAnalysis(detectionPrompt);
+                
+                _logger.Information("📊 **AI_DETECTION_RESPONSE**: Received {Length} chars from DeepSeek", aiResponse?.Length ?? 0);
+
+                // Parse AI response to extract document types and confidence scores
+                var parsedTypes = ParseDocumentTypeResponse(aiResponse);
+                
+                foreach (var docType in parsedTypes)
                 {
-                    (@"Invoice|Receipt|Order", 0.3),
-                    (@"Total|Amount|Price", 0.2),
-                    (@"Date|Address", 0.1)
-                };
-
-                var genericScore = CalculatePatternScore(text, genericPatterns);
-                if (genericScore > 0.2)
-                {
-                    detection["Generic_Invoice"] = genericScore;
-                    _logger.Information("📄 **GENERIC_DETECTED**: Confidence={Confidence:F2}", genericScore);
+                    detection[docType.Type] = docType.Confidence;
+                    _logger.Information("🎯 **AI_DETECTED_TYPE**: {Type} (Confidence: {Confidence:F2}) - {Reasoning}", 
+                        docType.Type, docType.Confidence, docType.Reasoning);
                 }
+
+                _logger.Information("✅ **AI_DOCUMENT_DETECTION_COMPLETE**: Detected {Count} document types", detection.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **AI_DETECTION_ERROR**: Failed to detect document types via AI");
+                
+                // **FALLBACK**: Use basic content analysis if AI fails
+                _logger.Warning("🔄 **FALLBACK_DETECTION**: Using basic content analysis as fallback");
+                detection = PerformBasicContentAnalysis(text);
             }
 
             return detection;
+        }
+
+        /// <summary>
+        /// Calls DeepSeek AI for document analysis using existing OCR service infrastructure
+        /// </summary>
+        private async Task<string> CallDeepSeekForDocumentAnalysis(string prompt)
+        {
+            _logger.Information("🤖 **DEEPSEEK_DOCUMENT_ANALYSIS**: Initiating AI call for document type detection");
+            
+            try
+            {
+                // Use the existing OCR correction service's LLM client infrastructure
+                // This leverages the same API configuration and error handling
+                var llmClient = new OCRLlmClient(_logger);
+                var response = await llmClient.CallDeepSeekAsync(prompt, "document_type_detection");
+                
+                _logger.Information("✅ **DEEPSEEK_RESPONSE_RECEIVED**: {Length} characters returned", response?.Length ?? 0);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **DEEPSEEK_CALL_ERROR**: Error calling DeepSeek for document analysis");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Parses DeepSeek response to extract document types and confidence scores
+        /// </summary>
+        private List<DocumentTypeResult> ParseDocumentTypeResponse(string aiResponse)
+        {
+            var results = new List<DocumentTypeResult>();
+            
+            try
+            {
+                _logger.Information("📊 **PARSING_AI_RESPONSE**: Extracting document types from AI response");
+                
+                // Parse JSON response from DeepSeek
+                var responseData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(aiResponse);
+                var documentTypes = responseData?.document_types;
+                
+                if (documentTypes != null)
+                {
+                    foreach (var docType in documentTypes)
+                    {
+                        var result = new DocumentTypeResult
+                        {
+                            Type = docType.type?.ToString() ?? "Unknown",
+                            Confidence = double.TryParse(docType.confidence?.ToString(), out var conf) ? conf : 0.5,
+                            Reasoning = docType.reasoning?.ToString() ?? "No reasoning provided"
+                        };
+                        
+                        results.Add(result);
+                        _logger.Verbose("📋 **PARSED_DOCUMENT_TYPE**: {Type} - {Confidence:F2}", result.Type, result.Confidence);
+                    }
+                }
+                
+                _logger.Information("✅ **PARSING_COMPLETE**: Extracted {Count} document types", results.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **PARSING_ERROR**: Failed to parse AI response for document types");
+                
+                // **FALLBACK**: Create a single generic document type
+                results.Add(new DocumentTypeResult 
+                { 
+                    Type = "Generic_Document", 
+                    Confidence = 0.7, 
+                    Reasoning = "Fallback due to parsing error" 
+                });
+            }
+            
+            return results;
+        }
+
+        /// <summary>
+        /// Basic content analysis fallback when AI detection fails
+        /// </summary>
+        private Dictionary<string, double> PerformBasicContentAnalysis(string text)
+        {
+            _logger.Information("🔍 **BASIC_CONTENT_ANALYSIS**: Performing fallback content analysis");
+            
+            var detection = new Dictionary<string, double>();
+            
+            // Simple keyword-based detection as absolute fallback
+            var lowerText = text?.ToLower() ?? "";
+            
+            if (lowerText.Contains("invoice") || lowerText.Contains("order") || lowerText.Contains("total"))
+            {
+                detection["Generic_Invoice"] = 0.6;
+                _logger.Information("📄 **BASIC_DETECTION**: Generic_Invoice detected");
+            }
+            
+            if (lowerText.Contains("customs") || lowerText.Contains("declaration") || lowerText.Contains("freight"))
+            {
+                detection["Generic_Customs"] = 0.6;
+                _logger.Information("🏛️ **BASIC_DETECTION**: Generic_Customs detected");
+            }
+            
+            // If nothing detected, assume single document
+            if (detection.Count == 0)
+            {
+                detection["Generic_Document"] = 0.5;
+                _logger.Information("📄 **BASIC_DETECTION**: Generic_Document as fallback");
+            }
+            
+            return detection;
+        }
+
+        /// <summary>
+        /// Data structure for document type detection results
+        /// </summary>
+        private class DocumentTypeResult
+        {
+            public string Type { get; set; }
+            public double Confidence { get; set; }
+            public string Reasoning { get; set; }
         }
 
         /// <summary>
