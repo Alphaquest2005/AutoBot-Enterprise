@@ -11,11 +11,69 @@ namespace WaterNut.DataSpace
 {
     /// <summary>
     /// Database-driven template specification helper
-    /// Connects FileTypeManager.EntryTypes to OCR template system through database
+    /// Connects string-based FileTypes-FileImporterInfo.EntryType to OCR template system
+    /// 
+    /// **DATABASE SCHEMA DISCOVERED**:
+    /// - FileTypes-FileImporterInfo: Id, EntryType (string like "INV", "PO", "BL"), Format
+    /// - OCR_TemplateTableMapping: 18 columns, NO FileTypeId column (needs to be added)
+    /// - OCR-PartLineFields: Contains EntityType="ShipmentInvoice" with 14 fields
+    /// 
+    /// **MAPPING STRATEGY**:
+    /// EntryType "INV" → DocumentType "Invoice" → EntityType "ShipmentInvoice"
+    /// EntryType "PO" → DocumentType "PurchaseOrder" → EntityType "PurchaseOrder"
+    /// EntryType "BL" → DocumentType "Manifest" → EntityType "Manifest"
     /// </summary>
     public static class DatabaseTemplateHelper
     {
         private static readonly ILogger _logger = Log.ForContext(typeof(DatabaseTemplateHelper));
+        
+        /// <summary>
+        /// Maps FileTypes-FileImporterInfo.EntryType strings to Template system DocumentTypes
+        /// Based on actual database analysis findings
+        /// </summary>
+        private static readonly Dictionary<string, string> EntryTypeToDocumentTypeMap = new Dictionary<string, string>
+        {
+            // Primary invoice types
+            { "INV", "Invoice" },
+            { "Shipment Invoice", "Invoice" },
+            
+            // Purchase order types
+            { "PO", "PurchaseOrder" },
+            { "POTemplate", "PurchaseOrder" },
+            
+            // Manifest and shipping documents
+            { "BL", "Manifest" },           // Bill of Lading
+            { "Manifest", "Manifest" },
+            { "Freight", "Manifest" },
+            
+            // Customs and declarations
+            { "C71", "CustomsDeclaration" },
+            { "C14", "CustomsDeclaration" },
+            { "Simplified Declaration", "CustomsDeclaration" },
+            { "EX9", "CustomsDeclaration" },
+            { "LIC", "CustomsDeclaration" },
+            { "XCUDA", "CustomsDeclaration" },
+            
+            // Other document types (map to closest template)
+            { "Sales", "Invoice" },
+            { "xSales", "Invoice" },
+            { "DIS", "Invoice" },
+            { "ADJ", "Invoice" },
+            { "OPS", "Invoice" },
+            { "Tariff", "CustomsDeclaration" },
+            { "Supplier", "Invoice" },
+            { "Rider", "Manifest" },
+            { "PrevDoc", "Invoice" },
+            { "Info", "Invoice" },
+            { "PDF", "Invoice" },
+            { "Unknown", "Invoice" },
+            
+            // Special processing types
+            { "CancelledEntries", "Invoice" },
+            { "ExpiredEntries", "Invoice" },
+            { "DiscrepancyExecution", "Invoice" },
+            { "Shipment Summary", "Invoice" }
+        };
 
         /// <summary>
         /// Template mapping information from database
@@ -23,8 +81,10 @@ namespace WaterNut.DataSpace
         public class TemplateMapping
         {
             public int FileTypeId { get; set; }
-            public string DocumentType { get; set; } // Maps to FileTypeManager.EntryTypes
-            public string PrimaryEntityType { get; set; }
+            public string EntryType { get; set; }        // From FileTypes-FileImporterInfo (e.g., "INV", "PO")
+            public string DocumentType { get; set; }     // Mapped template type (e.g., "Invoice", "PurchaseOrder")
+            public string Format { get; set; }           // From FileTypes-FileImporterInfo (e.g., "PDF", "CSV")
+            public string PrimaryEntityType { get; set; } // Primary EntityType for this document
             public List<string> SecondaryEntityTypes { get; set; } = new List<string>();
             public List<string> RequiredFields { get; set; } = new List<string>();
             public ValidationRules Rules { get; set; } = new ValidationRules();
