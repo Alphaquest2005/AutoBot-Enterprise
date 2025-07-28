@@ -654,39 +654,41 @@ namespace WaterNut.DataSpace
                             continue; // Skip this document and continue with next
                         }
                     
-                    _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved template successfully");
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
-                    _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
-                    
-                    // Create Invoice object from database template for pipeline
-                    _logger.Information("🏗️ **CREATING_INVOICE_OBJECT**: Creating Invoice object from OCR template definition");
-                    _logger.Information("   - **TEMPLATE_VERIFICATION**: Validating OCR template definition before Invoice constructor");
-                    _logger.Information("     • **OCR_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
-                    _logger.Information("     • **OCR_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
-                    _logger.Information("     • **OCR_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", ocrTemplate?.FileTypeId.ToString() ?? "NULL");
-                    _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrTemplate.IsActive.ToString() ?? "NULL");
-                    
-                    _logger.Information("🔄 **INVOICE_CONSTRUCTOR_START**: Calling Invoice constructor...");
-                    Template template = null;
-                    try 
-                    {
-                        template = new Template(ocrTemplate, _logger);
-                        _logger.Information("✅ **INVOICE_CONSTRUCTOR_SUCCESS**: Invoice constructor completed successfully");
-                    }
-                    catch (Exception constructorEx)
-                    {
-                        _logger.Error(constructorEx, "❌ **INVOICE_CONSTRUCTOR_EXCEPTION**: Exception in Invoice constructor");
-                        _logger.Error("   - **CONSTRUCTOR_EXCEPTION_TYPE**: {ExceptionType}", constructorEx.GetType().FullName);
-                        _logger.Error("   - **CONSTRUCTOR_EXCEPTION_MESSAGE**: {ExceptionMessage}", constructorEx.Message);
-                        return null;
-                    }
-                    
-                    _logger.Information("🔍 **INVOICE_OBJECT_VALIDATION**: Validating created Invoice object");
-                    if (template == null)
-                    {
-                        _logger.Error("❌ **INVOICE_OBJECT_NULL**: Invoice constructor returned null object");
-                        return null;
-                    }
+                        _logger.Information("✅ **DATABASE_TEMPLATE_FOUND**: Retrieved template successfully for '{DocumentType}'", separatedDoc.DocumentType);
+                        _logger.Information("   - **RETRIEVED_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
+                        _logger.Information("   - **RETRIEVED_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
+                        
+                        // **STEP 2K**: Create Template object from database template for pipeline
+                        _logger.Information("🏗️ **CREATING_TEMPLATE_OBJECT**: Creating Template object for '{DocumentType}' from OCR template definition", separatedDoc.DocumentType);
+                        _logger.Information("   - **TEMPLATE_VERIFICATION**: Validating OCR template definition before Template constructor");
+                        _logger.Information("     • **OCR_TEMPLATE_ID**: {Id}", ocrTemplate.Id);
+                        _logger.Information("     • **OCR_TEMPLATE_NAME**: '{Name}'", ocrTemplate.Name ?? "NULL");
+                        _logger.Information("     • **OCR_TEMPLATE_FILE_TYPE_ID**: {FileTypeId}", ocrTemplate?.FileTypeId.ToString() ?? "NULL");
+                        _logger.Information("     • **OCR_TEMPLATE_IS_ACTIVE**: {IsActive}", ocrTemplate.IsActive.ToString() ?? "NULL");
+                        
+                        _logger.Information("🔄 **TEMPLATE_CONSTRUCTOR_START**: Calling Template constructor for '{DocumentType}'...", separatedDoc.DocumentType);
+                        Template template = null;
+                        try 
+                        {
+                            template = new Template(ocrTemplate, _logger);
+                            _logger.Information("✅ **TEMPLATE_CONSTRUCTOR_SUCCESS**: Template constructor completed successfully for '{DocumentType}'", separatedDoc.DocumentType);
+                        }
+                        catch (Exception constructorEx)
+                        {
+                            _logger.Error(constructorEx, "❌ **TEMPLATE_CONSTRUCTOR_EXCEPTION**: Exception in Template constructor for '{DocumentType}'", separatedDoc.DocumentType);
+                            _logger.Error("   - **CONSTRUCTOR_EXCEPTION_TYPE**: {ExceptionType}", constructorEx.GetType().FullName);
+                            _logger.Error("   - **CONSTRUCTOR_EXCEPTION_MESSAGE**: {ExceptionMessage}", constructorEx.Message);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping '{DocumentType}' due to Template constructor exception", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
+                        
+                        _logger.Information("🔍 **TEMPLATE_OBJECT_VALIDATION**: Validating created Template object for '{DocumentType}'", separatedDoc.DocumentType);
+                        if (template == null)
+                        {
+                            _logger.Error("❌ **TEMPLATE_OBJECT_NULL**: Template constructor returned null object for '{DocumentType}'", separatedDoc.DocumentType);
+                            _logger.Warning("⚠️ **SKIPPING_DOCUMENT**: Skipping '{DocumentType}' due to null Template object", separatedDoc.DocumentType);
+                            continue; // Skip this document and continue with next
+                        }
                     
                     _logger.Information("✅ **INVOICE_OBJECT_CREATED**: Invoice object created successfully");
                     _logger.Information("   - **INVOICE_OCR_INVOICES**: {OcrInvoices}", template.OcrTemplates?.Id.ToString() ?? "NULL");
