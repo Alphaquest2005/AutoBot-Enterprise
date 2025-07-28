@@ -424,7 +424,7 @@ namespace WaterNut.DataSpace
                 _logger.Error((fieldValidationReasonable ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (fieldValidationReasonable ? "Field validation count within reasonable performance limits" : "Field validation count exceeds performance limits"));
                 
                 bool overallSuccess = validationExecuted && errorsCollected && processCompleted && dataQualityMet && errorTypesValid && fieldValidationReasonable;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Cross-field consistency validation analysis"));
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Cross-field consistency validation analysis");
                 
                 _logger.Error("📊 **CROSS_FIELD_VALIDATION_SUMMARY**: ValidatedFields={ValidatedFields}, ErrorsDetected={ErrorCount}, SubTotalVariance={SubTotalVar:F4}, TotalsZeroResult={TotalsZero}", 
                     validatedFields, errors.Count, Math.Abs(calculatedSubTotalFromDetails - reportedSubTotal), totalsZeroResult);
