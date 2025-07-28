@@ -220,7 +220,7 @@ namespace WaterNut.DataSpace
                 _logger.Error(((processedLineItems < 10000) ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
                 
                 bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Mathematical consistency validation analysis");
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Mathematical consistency validation analysis"));
                 
                 _logger.Error("📊 **MATHEMATICAL_VALIDATION_SUMMARY**: ProcessedItems={ProcessedItems}, ErrorsDetected={ErrorsDetected}, CalculationErrors={CalculationErrors}, ReasonablenessErrors={ReasonablenessErrors}, TotalVariance={TotalVariance:F4}", 
                     processedLineItems, errors.Count, calculationErrors, reasonablenessErrors, totalVariance);
@@ -414,17 +414,17 @@ namespace WaterNut.DataSpace
                 bool errorTypesValid = errors.All(e => e.ErrorType == "subtotal_mismatch" || e.ErrorType == "invoice_total_mismatch");
                 bool fieldValidationReasonable = validatedFields < 100;
                 
-                _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Cross-field consistency validation executed successfully" : "Cross-field validation execution failed"));
+                _logger.Error((validationExecuted ? "✅" : "❌") + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Cross-field consistency validation executed successfully" : "Cross-field validation execution failed"));
                 _logger.Error((errorsCollected ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
-                _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All cross-field validation steps completed successfully" : "Cross-field validation processing incomplete"));
-                _logger.Error(dataQualityMet ? "✅" : "❌" + " **DATA_QUALITY**: " + (dataQualityMet ? "Cross-field validation calculations properly verified" : "Cross-field validation calculations failed"));
+                _logger.Error((processCompleted ? "✅" : "❌") + " **PROCESS_COMPLETION**: " + (processCompleted ? "All cross-field validation steps completed successfully" : "Cross-field validation processing incomplete"));
+                _logger.Error((dataQualityMet ? "✅" : "❌") + " **DATA_QUALITY**: " + (dataQualityMet ? "Cross-field validation calculations properly verified" : "Cross-field validation calculations failed"));
                 _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
-                _logger.Error(errorTypesValid ? "✅" : "❌" + " **BUSINESS_LOGIC**: " + (errorTypesValid ? "Cross-field error types follow business standards" : "Cross-field error type validation failed"));
+                _logger.Error((errorTypesValid ? "✅" : "❌") + " **BUSINESS_LOGIC**: " + (errorTypesValid ? "Cross-field error types follow business standards" : "Cross-field error type validation failed"));
                 _logger.Error("✅ **INTEGRATION_SUCCESS**: TotalsZero integration and logging framework functioning properly");
-                _logger.Error(fieldValidationReasonable ? "✅" : "❌" + " **PERFORMANCE_COMPLIANCE**: " + (fieldValidationReasonable ? "Field validation count within reasonable performance limits" : "Field validation count exceeds performance limits"));
+                _logger.Error((fieldValidationReasonable ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (fieldValidationReasonable ? "Field validation count within reasonable performance limits" : "Field validation count exceeds performance limits"));
                 
                 bool overallSuccess = validationExecuted && errorsCollected && processCompleted && dataQualityMet && errorTypesValid && fieldValidationReasonable;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Cross-field consistency validation analysis");
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Cross-field consistency validation analysis"));
                 
                 _logger.Error("📊 **CROSS_FIELD_VALIDATION_SUMMARY**: ValidatedFields={ValidatedFields}, ErrorsDetected={ErrorCount}, SubTotalVariance={SubTotalVar:F4}, TotalsZeroResult={TotalsZero}", 
                     validatedFields, errors.Count, Math.Abs(calculatedSubTotalFromDetails - reportedSubTotal), totalsZeroResult);
