@@ -293,7 +293,7 @@ namespace InvoiceReader.PipelineInfrastructure
                                     }
                                 }
                                 
-                                var newTemplate = await ocrService.CreateInvoiceTemplateAsync(pdfText, context.FilePath).ConfigureAwait(false);
+                                var newTemplates = await ocrService.CreateInvoiceTemplateAsync(pdfText, context.FilePath).ConfigureAwait(false);
                                 
                                 if (newTemplate != null)
                                 {
