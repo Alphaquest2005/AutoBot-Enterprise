@@ -90,10 +90,9 @@ namespace WaterNut.DataSpace
             try
             {
 
-                // **📋 PHASE 3: EVIDENCE-BASED IMPLEMENTATION - Core Mathematical Validation Logic**
-                using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateMathematicalConsistency_V4.2_Implementation"))
-                {
-                    _logger.Information("⚡ **PHASE 3: IMPLEMENTATION** - Executing mathematical consistency validation algorithm");
+                // **v4.2 MATHEMATICAL PROCESSING**: Enhanced mathematical validation with comprehensive tracking
+                _logger.Error("🧮 **MATHEMATICAL_PROCESSING_START**: Beginning line item mathematical validation");
+                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with calculation tracking and error detection");
                     
                     try
                     {
