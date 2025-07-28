@@ -270,14 +270,24 @@ namespace WaterNut.DataSpace
         /// <returns>A list of InvoiceError objects for any detected inconsistencies.</returns>
         private List<InvoiceError> ValidateCrossFieldConsistency(ShipmentInvoice invoice)
         {
-            // **📋 PHASE 1: ANALYSIS - Current State Assessment**
-            using (Serilog.Context.LogContext.PushProperty("MethodContext", "ValidateCrossFieldConsistency_V4.2_Analysis"))
-            {
-                _logger.Information("🔍 **PHASE 1: ANALYSIS** - Assessing cross-field consistency validation requirements for invoice: {InvoiceNo}", invoice?.InvoiceNo ?? "NULL");
-                _logger.Information("📊 Analysis Context: Cross-field validation ensures mathematical relationships between summary and component fields are maintained");
-                _logger.Information("🎯 Expected Behavior: Validate SubTotal against line item totals and verify InvoiceTotal balance using TotalsZero canonical logic");
-                _logger.Information("🏗️ Current Architecture: Two-stage validation - SubTotal summation check and TotalsZero balance verification with component analysis");
-            }
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for cross-field consistency validation
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for cross-field consistency validation");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Cross-field validation context with mathematical relationships between summary and component fields");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation → SubTotal summation → TotalsZero verification → balance checking → error collection pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, field relationships, mathematical consistency, balance verification");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Cross-field consistency requires comprehensive validation with SubTotal and InvoiceTotal balance verification");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for cross-field consistency validation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation tracking, mathematical relationship verification, balance checking analysis");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, field summation, balance calculation, TotalsZero verification, error collection");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based cross-field consistency validation");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on invoice integrity requirements, implementing comprehensive cross-field validation workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring field relationship accuracy and balance verification completeness");
 
             var errors = new List<InvoiceError>();
             double calculatedSubTotalFromDetails = 0;

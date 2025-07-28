@@ -267,9 +267,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         "📊 **POST_CALL_STATE_CAPTURE**: CreateInvoiceTemplateAsync returned, analyzing result");
                                     context.Logger?.Information(
                                         "🔍 **OCR_SERVICE_RESULT**: OCR template result = {Result}",
-                                        ocrTemplate != null ? $"SUCCESS: {ocrTemplate.GetType().Name}" : "NULL");
+                                        ocrTemplates != null && ocrTemplates.Any() ? $"SUCCESS: {ocrTemplates.Count} templates" : "NULL or EMPTY");
 
-                                    if (ocrTemplate != null)
+                                    if (ocrTemplates != null && ocrTemplates.Any())
                                     {
                                         context.Logger?.Information(
                                             "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice template successfully");
