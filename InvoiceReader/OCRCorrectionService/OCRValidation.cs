@@ -210,14 +210,14 @@ namespace WaterNut.DataSpace
                 bool validationMetricsTracked = calculationErrors >= 0 && reasonablenessErrors >= 0 && totalVariance >= 0;
                 bool errorReportingValid = errors.All(e => !string.IsNullOrEmpty(e.Field) && !string.IsNullOrEmpty(e.ErrorType));
                 
-                _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Mathematical consistency validation executed successfully" : "Mathematical validation execution failed"));
-                _logger.Error(errorsCollected ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
-                _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All line items processed successfully" : "Line item processing incomplete"));
-                _logger.Error(validationMetricsTracked ? "✅" : "❌" + " **DATA_QUALITY**: " + (validationMetricsTracked ? "Mathematical validation metrics properly tracked" : "Validation metrics tracking failed"));
+                _logger.Error((validationExecuted ? "✅" : "❌") + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Mathematical consistency validation executed successfully" : "Mathematical validation execution failed"));
+                _logger.Error((errorsCollected ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
+                _logger.Error((processCompleted ? "✅" : "❌") + " **PROCESS_COMPLETION**: " + (processCompleted ? "All line items processed successfully" : "Line item processing incomplete"));
+                _logger.Error((validationMetricsTracked ? "✅" : "❌") + " **DATA_QUALITY**: " + (validationMetricsTracked ? "Mathematical validation metrics properly tracked" : "Validation metrics tracking failed"));
                 _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
-                _logger.Error(errorReportingValid ? "✅" : "❌" + " **BUSINESS_LOGIC**: " + (errorReportingValid ? "Error reporting follows business standards" : "Error reporting format validation failed"));
+                _logger.Error((errorReportingValid ? "✅" : "❌") + " **BUSINESS_LOGIC**: " + (errorReportingValid ? "Error reporting follows business standards" : "Error reporting format validation failed"));
                 _logger.Error("✅ **INTEGRATION_SUCCESS**: Mathematical validation processing completed without external dependencies");
-                _logger.Error((processedLineItems < 10000) ? "✅" : "❌" + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
+                _logger.Error(((processedLineItems < 10000) ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (processedLineItems < 10000 ? "Processed line items within reasonable performance limits" : "Performance limits exceeded"));
                 
                 bool overallSuccess = validationExecuted && errorsCollected && processCompleted && validationMetricsTracked && errorReportingValid;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Mathematical consistency validation analysis");
@@ -415,7 +415,7 @@ namespace WaterNut.DataSpace
                 bool fieldValidationReasonable = validatedFields < 100;
                 
                 _logger.Error(validationExecuted ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (validationExecuted ? "Cross-field consistency validation executed successfully" : "Cross-field validation execution failed"));
-                _logger.Error(errorsCollected ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
+                _logger.Error((errorsCollected ? "✅" : "❌") + " **OUTPUT_COMPLETENESS**: " + (errorsCollected ? "Valid error collection returned with proper structure" : "Error collection malformed or null"));
                 _logger.Error(processCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: " + (processCompleted ? "All cross-field validation steps completed successfully" : "Cross-field validation processing incomplete"));
                 _logger.Error(dataQualityMet ? "✅" : "❌" + " **DATA_QUALITY**: " + (dataQualityMet ? "Cross-field validation calculations properly verified" : "Cross-field validation calculations failed"));
                 _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
