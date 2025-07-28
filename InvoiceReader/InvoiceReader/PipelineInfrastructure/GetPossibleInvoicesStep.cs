@@ -322,13 +322,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
                                         // **INTEGRATION**: Add to MatchedTemplates for pipeline processing
                                         context.Logger?.Information(
-                                            "🔗 **TEMPLATE_INTEGRATION_START**: Adding OCR template to MatchedTemplates for pipeline processing");
+                                            "🔗 **TEMPLATE_INTEGRATION_START**: Adding OCR templates to MatchedTemplates for pipeline processing");
                                         context.Logger?.Information(
                                             "   - **BEFORE_INTEGRATION_COUNT**: {Count}",
                                             context.MatchedTemplates?.Count() ?? 0);
 
                                         var templateList = context.MatchedTemplates?.ToList() ?? new List<Template>();
-                                        templateList.Add(ocrTemplate);
+                                        templateList.AddRange(ocrTemplates);
                                         context.MatchedTemplates = templateList;
 
                                         context.Logger?.Information(
